@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EditFlight</class>
+ <widget class="QDialog" name="EditFlight">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>695</width>
+    <height>395</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edit Flight</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="3" colspan="2">
+    <widget class="QLabel" name="tofbLabel">
+     <property name="text">
+      <string>Time</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="2">
+    <widget class="QLabel" name="tonbLabel">
+     <property name="text">
+      <string>Time</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="picLabel">
+     <property name="text">
+      <string>Name PIC</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3">
+    <widget class="QLabel" name="searchLabelpic">
+     <property name="text">
+      <string>Search</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="9">
+    <widget class="QComboBox" name="desTZ">
+     <item>
+      <property name="text">
+       <string>UTC</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="3" colspan="2">
+    <widget class="QLabel" name="placeLabel2">
+     <property name="text">
+      <string>Place</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="10">
+    <spacer name="horizontalSpacer_5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>288</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QLabel" name="destLabel">
+     <property name="text">
+      <string>Destination</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="9">
+    <widget class="QComboBox" name="deptTZ">
+     <item>
+      <property name="text">
+       <string>UTC</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="10">
+    <spacer name="horizontalSpacer_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>288</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="acftLabel">
+     <property name="text">
+      <string>Aircraft</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" colspan="2">
+    <widget class="QLabel" name="placeLabel1">
+     <property name="text">
+      <string>Place</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="7" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="9" colspan="2">
+    <widget class="QLineEdit" name="destHintlineEdit">
+     <property name="maxLength">
+      <number>0</number>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Frankfurt International Airport</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLabel" name="searchLabelacft">
+     <property name="text">
+      <string>Search</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="5" colspan="2">
+    <widget class="QLineEdit" name="verifyEdit"/>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="deptLabel">
+     <property name="text">
+      <string>Departure</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="8" colspan="3">
+    <widget class="QLineEdit" name="acftHintLineEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Boeing 737-800</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="5" colspan="2">
+    <widget class="QLineEdit" name="newAcft">
+     <property name="placeholderText">
+      <string>D-LMAO</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="5" colspan="3">
+    <widget class="QLineEdit" name="newDest">
+     <property name="toolTip">
+      <string>Enter the ICAO 4-letter Identifier of the Airport</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="maxLength">
+      <number>4</number>
+     </property>
+     <property name="placeholderText">
+      <string>EDDF</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QPushButton" name="verifyButton">
+     <property name="text">
+      <string>Verify</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <widget class="QLabel" name="doftLabel">
+     <property name="text">
+      <string>Date of Flight</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="5" colspan="2">
+    <widget class="QLineEdit" name="newPic">
+     <property name="placeholderText">
+      <string>self</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5" colspan="3">
+    <widget class="QLineEdit" name="newDept">
+     <property name="toolTip">
+      <string>Enter the ICAO 4-letter Identifier of the Airport</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="maxLength">
+      <number>4</number>
+     </property>
+     <property name="placeholderText">
+      <string>KJFK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="9" colspan="2">
+    <widget class="QLineEdit" name="deptHintlineEdit">
+     <property name="maxLength">
+      <number>0</number>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>John F. Kennedy Intl. Airport</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="8" colspan="3">
+    <widget class="QLineEdit" name="picHintLineEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Sullenberger, C.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" colspan="3">
+    <widget class="QDateEdit" name="newDoft">
+     <property name="dateTime">
+      <datetime>
+       <hour>23</hour>
+       <minute>0</minute>
+       <second>0</second>
+       <year>2019</year>
+       <month>12</month>
+       <day>24</day>
+      </datetime>
+     </property>
+     <property name="displayFormat">
+      <string>yyyy/MM/dd</string>
+     </property>
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+     <property name="timeSpec">
+      <enum>Qt::UTC</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="5">
+    <widget class="QLineEdit" name="newTofb">
+     <property name="maxLength">
+      <number>5</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5">
+    <widget class="QLineEdit" name="newTonb"/>
+   </item>
+   <item row="0" column="9">
+    <widget class="QLineEdit" name="dateHintLineEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>YYYY/MM/DD</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>newDoft</tabstop>
+  <tabstop>newDept</tabstop>
+  <tabstop>newTofb</tabstop>
+  <tabstop>newDest</tabstop>
+  <tabstop>newTonb</tabstop>
+  <tabstop>newAcft</tabstop>
+  <tabstop>newPic</tabstop>
+  <tabstop>verifyEdit</tabstop>
+  <tabstop>deptHintlineEdit</tabstop>
+  <tabstop>deptTZ</tabstop>
+  <tabstop>destHintlineEdit</tabstop>
+  <tabstop>desTZ</tabstop>
+  <tabstop>acftHintLineEdit</tabstop>
+  <tabstop>picHintLineEdit</tabstop>
+  <tabstop>verifyButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>EditFlight</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>EditFlight</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
