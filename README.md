@@ -30,3 +30,11 @@ Clear answer for the time being - Don't use it. This is an early development sta
 # 'x' is a terrible idea, don't do that!
 
 As mentioned before, feedback is welcome and invited! If you know of a better way of doing something, this is an open project so feel free to contribute!
+
+# How does it look like?
+
+Here are some early screenshots:
+
+https://postimg.cc/LnmLfBJr
+
+https://postimg.cc/w7FJkyJ3
