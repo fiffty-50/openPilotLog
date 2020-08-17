@@ -19,13 +19,13 @@ This program is suppposed to replace a paper logbook with an electronic version.
 These are the guidelines for this project:
 - Speed: openPilotLog is supposed to be fast, lean and efficient. I have settled on using the Qt framework for the gui and code, as well as sqlite for the database.
 - Cross-Platform Support: I am primarily using Linux, but Windows and Mac (and maybe down the road iOS/Android) should also be supported. Qt provides this cross-platform compatibility.
-- Local: At the moment, I am not planning on implementing a cloud-synch solution. The database is local, on your machine and moving it around should be as easy as copying it onto a USB stick. While I am not opposed to cloud syncing functionality, I want the application to be independent of external services.
+- Local: At the moment, I am not planning on implementing a cloud-sync solution. The database is local, on your machine, and moving it around should be as easy as copying it onto a USB stick. While I am not opposed to cloud syncing functionality, I want the application to be independent of external services.
 
 
 
 # The state of the project - Should I use this?
 
-Clear answer for the time being - Don't use it. This is an early development stage and functionality, layout of the GUI etc. might change drastically. For this reason, I am not providing a release for now. If you want to try the programm, you'll have to compile it for yourself. QtCreator should work out of the box.
+Clear answer for the time being - Don't use it. This is an early development stage and functionality, layout of the GUI etc. might change drastically. For this reason, I am not providing a release for now.
 
 # 'x' is a terrible idea, don't do that!
 
@@ -39,8 +39,8 @@ Here are some early screenshots:
 
 ![Alt Screenshot 2](screenshots/screenshot3.png)
 
-# I want to try it!
+# But I want to try it!
 
-The most straight forward way is to get a copy of Qt https://www.qt.io/download and compile the project using QtCreator and qmake, the PRO file is included in this repository. After building, make sure to place a copy of the sample database in the application folder (not the source folder). If you want to start a fresh logbook, delete the default database file and rename the empty sample database.
+Well, you have been warned... The most straight forward way is to get a copy of Qt https://www.qt.io/download and compile the project using QtCreator and qmake, the PRO file is included in this repository. After building, make sure to place a copy of the sample database in the application folder (not the source folder). If you want to start a fresh logbook, delete the default database file and rename the empty sample database.
 
 
