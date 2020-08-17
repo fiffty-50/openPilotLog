@@ -96,25 +96,9 @@ public:
          */
     }
 
-
-
-
-
-
-
-
-
-
-
     /*
-     *
-     *
      * Flights Database Related Functions
-     *
-     *
      */
-
-
     static QVector<QString> SelectFlightDate(QString doft)
     {
         QSqlQuery query;
@@ -128,7 +112,6 @@ public:
             query.addBindValue(doft);
             qDebug() << "Searching flights for " << doft;
         }
-        //query.prepare("SELECT * FROM flights WHERE doft = ?");
 
         query.exec();
 
@@ -179,9 +162,6 @@ public:
             flight[index] = acft;
             ++index;
         }
-        //QString minutes = calc::minutes_to_string(flight[3]);
-        //flight.replace(3, minutes);
-        //qDebug() << "Length of flight vector " << flight.size();
         return flight;
 
     }
@@ -210,14 +190,6 @@ public:
         flight.append(query.value(6).toString());
         flight.append(query.value(7).toString());
         flight.append(query.value(8).toString());
-        /*
-        flight.append(calc::minutes_to_string((query.value(3).toString())));
-        flight.append(query.value(4).toString());
-        flight.append(calc::minutes_to_string((query.value(5).toString())));
-        flight.append(calc::minutes_to_string((query.value(6).toString())));
-        flight.append(db::RetreivePilotNameFromID(query.value(7).toString()));
-        flight.append(db::RetreiveRegistration(query.value(8).toString()));
-        */
 
 
         qDebug() << "db::SelectFlightById - retreived flight: " << flight;
