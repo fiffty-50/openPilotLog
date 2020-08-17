@@ -24,8 +24,6 @@
  * \return Block Time in minutes
  */
 QTime calc::blocktime(QTime tofb, QTime tonb)
-/* This function calculates block time for a given Departure Time and Arrival time.
- */
 {
     if(tonb > tofb)// landing same day
     {
@@ -53,8 +51,6 @@ QTime calc::blocktime(QTime tofb, QTime tonb)
  * \return String hh:mm
  */
 QString calc::minutes_to_string(QString blockminutes)
-/* Converts time from database (integer of minutes since midnight) to a QString "hh:mm"
- */
 {
     int minutes = blockminutes.toInt();
     QString hour = QString::number(minutes/60);
@@ -92,7 +88,7 @@ int calc::string_to_minutes(QString timestring)
 }
 
 /*!
- * The purpose of these functions is to provide functionality enabling the calculation of
+ * The purpose of the following functions is to provide functionality enabling the calculation of
  * night flying time. EASA defines night as follows:
  *
  * ‘Night’  means  the  period  between  the  end  of  evening  civil  twilight  and  the  beginning  of
