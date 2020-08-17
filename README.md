@@ -12,6 +12,7 @@ All that being said, while I know how to fly an aircraft, I never properly learn
 # What are the design principles of this program?
 
 Code: C++ (Qt5)
+
 Database: sqlite3
 
 This program is suppposed to replace a paper logbook with an electronic version. As a first step, I want to focus on the basics, and then add 'nice-to-haves' later.
