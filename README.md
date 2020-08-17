@@ -39,5 +39,8 @@ Here are some early screenshots:
 
 ![Alt Screenshot 2](screenshots/screenshot3.png)
 
+# I want to try it!
+
+The most straight forward way is to get a copy of Qt https://www.qt.io/download and compile the project using QtCreator and qmake, the PRO file is included in this repository. After building, make sure to place a copy of the sample database in the application folder (not the source folder). If you want to start a fresh logbook, delete the default database file and rename the empty sample database.
 
 
