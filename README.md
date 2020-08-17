@@ -35,6 +35,6 @@ As mentioned before, feedback is welcome and invited! If you know of a better wa
 
 Here are some early screenshots:
 
-https://postimg.cc/LnmLfBJr
+![Alt Screenshot 1](screenshots/screenshot1.png)
 
-https://postimg.cc/w7FJkyJ3
+![Alt Screenshot 2](screenshots/screenshot2.png)
