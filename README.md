@@ -37,7 +37,7 @@ Here are some early screenshots:
 
 ![Alt Screenshot 1](screenshots/screenshot1.png)
 
-![Alt Screenshot 2](screenshots/screenshot2.png)
+![Alt Screenshot 2](screenshots/screenshot3.png)
 
 
 
