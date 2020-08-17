@@ -360,17 +360,15 @@ public:
     }
 
     /*
-     *
-     *
      * Pilots Database Related Functions
-     *
-     *
      */
 
-    static QString RetreivePilotNameFromID(QString pilotID)
-    /* Looks up the pilot ID in the Database and returns the name as a string
-     * unless the pilot in command is the logbook owner.
+    /*!
+     * \brief RetreivePilotNameFromID Looks up pilot ID in database
+     * \param pilotID pilot_id in database
+     * \return Pilot Name
      */
+    static QString RetreivePilotNameFromID(QString pilotID)
     {
         QString pilotName("");
         if (pilotID == "1")
@@ -383,15 +381,10 @@ public:
         query.addBindValue(pilotID.toInt());
         query.exec();
 
-        //if(query.first());
-        //else
-        //  qDebug() << ("No Pilot with this ID found");
-        //query.previous();//To go back to index 0
         while (query.next()) {
             pilotName.append(query.value(0).toString());
             pilotName.append(", ");
             pilotName.append(query.value(1).toString());//.left(1));
-            //pilotName.append(".");
         }
 
         if(pilotName.length() == 0)
@@ -476,14 +469,18 @@ public:
 
         return result;
     }
-    static QStringList newPicGetString(QString searchstring)
-    /*
-     * This function is returning a QStringList for the QCompleter in the NewFlight::newPic line edit.
-     * A regular expression limits the input possibilities to only characters, followed by an optional ',' and 1 whitespace, e.g.:
+
+    /*!
+     * \brief newPicGetString This function is returning a QStringList for the QCompleter in the NewFlight::newPic line edit
+     * A regular expression limits the input possibilities to only characters,
+     * followed by an optional ',' and 1 whitespace, e.g.:
      * Miller, Jim ->valid / Miller,  Jim -> invalid / Miller,, Jim -> invalid
      * Miller Jim -> valid / Miller  Jim ->invalid
      * Jim Miller-> valid
+     * \param searchstring
+     * \return
      */
+    static QStringList newPicGetString(QString searchstring)
     {
         QStringList result;
         QStringList searchlist;
@@ -494,8 +491,6 @@ public:
             qDebug() << "Pilot is self";
             return result;
         }
-
-
 
         //Fall 1) Nachname, Vorname
         if(searchstring.contains(QLatin1Char(',')))
@@ -514,9 +509,6 @@ public:
                 name2[0] = name2[0].toUpper();
                 searchlist.append(name2);
             }
-
-
-
         }
         //Fall 2) Vorname Nachname
         if(searchstring.contains(" ") && !searchstring.contains(QLatin1Char(',')))
@@ -534,9 +526,7 @@ public:
                 name2 = name2.toLower();
                 name2[0] = name2[0].toUpper();
                 searchlist.append(name2);
-
             }
-
         }
         //Fall 3) Name
         if(!searchstring.contains(" ") && !searchstring.contains(QLatin1Char(',')))
@@ -572,7 +562,6 @@ public:
             {
                 result.append(query2.value(0).toString() + ", " + query2.value(1).toString());
             }
-
         }else
         {
             QSqlQuery query;
@@ -598,10 +587,7 @@ public:
             {
                 result.append(query2.value(0).toString() + ", " + query2.value(1).toString());
             }
-
         }
-
-
         qDebug() << "db::newPic Result" << result.length() << result;
         if(result.length() == 0)
         {
@@ -612,7 +598,6 @@ public:
         {
             return result;
         }
-
     }
     static QString newPicGetId(QString name)
     {
@@ -641,17 +626,15 @@ public:
         return result;
     }
 /*
- *
- *
  * Airport Database Related Functions
- *
- *
  */
-    static QString RetreiveAirportNameFromIcaoOrIata(QString identifier)
-    /*
-     * 'EDDF' gets looked up and 'Frankfurt International Airport' returned
-     *
+
+    /*!
+     * \brief RetreiveAirportNameFromIcaoOrIata Looks up Airport Name
+     * \param identifier can be ICAO or IATA airport codes.
+     * \return The name of the airport associated with the above code
      */
+    static QString RetreiveAirportNameFromIcaoOrIata(QString identifier)
     {
         QString result = "";
         QSqlQuery query;
@@ -709,8 +692,12 @@ public:
         return result;
     }
 
+    /*!
+     * \brief CheckICAOValid Verifies if a user input airport exists in the database
+     * \param identifier can be ICAO or IATA airport codes.
+     * \return bool if airport is in database.
+     */
     static bool CheckICAOValid(QString identifier)
-    // Verifies if a user input airport exists in the database
     {
         if(identifier.length() == 4)
         {
@@ -730,6 +717,12 @@ public:
             return 0;
         }
     }
+
+    /*!
+     * \brief retreiveIcaoCoordinates Looks up coordinates (lat,long) for a given airport
+     * \param icao 4-letter code for the airport
+     * \return {lat,lon} in decimal degrees
+     */
     static QVector<double> retreiveIcaoCoordinates(QString icao)
     {
         QSqlQuery query;
@@ -749,17 +742,16 @@ public:
 
 
 /*
- *
- *
  * Aircraft Database Related Functions
- *
- *
  */
 
-    static QString RetreiveRegistration(QString tail_ID)
-    /* Looks up the Aircraft Registration in the Database and returns it as a string
-     *
+    /*!
+     * \brief RetreiveRegistration Looks up tail_id from Database
+     * \param tail_ID Primary Key of tails database
+     * \return Registration
      */
+    static QString RetreiveRegistration(QString tail_ID)
+
     {
         QString acftRegistration("");
 
@@ -778,6 +770,7 @@ public:
 
         return acftRegistration;
     }
+
     static QStringList newAcftGetString(QString searchstring)
     {
         QStringList result;
@@ -835,10 +828,6 @@ public:
         searchstring.append("%");
         query.addBindValue(searchstring);
         query.exec();
-
-        //qDebug() << "SQL Error: " << query.lastError().text();
-        //qDebug() << "Query result: " << query.first();
-        //qDebug() << query.value(2);
 
         QVector<QString> result;
 
@@ -964,11 +953,7 @@ public:
     }
 
     /*
-     *
-     *
      * Aircraft Database Related Functions
-     *
-     *
      */
 
     static QVector<QString> retreiveSetting(QString setting_id)
@@ -1000,4 +985,3 @@ public:
     }
 
 };
-
