@@ -1,0 +1,1023 @@
+Registration,aircraft_id,Company
+D-QGOZ,91,NAS
+SE-QGWO,94,Norwegian
+EI-QHTJ,136,NAI
+D-QIZP,124,Lufthansa
+A6-QIZR,7,Emirates
+HB-QJJC,238,SWISS
+HB-QJML,63,SWISS
+HB-QKHO,208,SWISS
+HB-QLSB,199,SWISS
+HB-QMNR,227,SWISS
+HB-QMPF,216,SWISS
+HB-QOFK,135,SWISS
+HB-QOFR,209,SWISS
+HB-QOVY,113,SWISS
+HB-QQFR,46,SWISS
+HB-QSDT,23,SWISS
+HB-QTCQ,147,SWISS
+HB-QUPO,144,SWISS
+HB-QUVY,132,SWISS
+HB-QVXM,139,SWISS
+HB-QWJV,126,SWISS
+HB-QXBL,66,SWISS
+HB-QYDI,25,SWISS
+HB-QYPI,43,SWISS
+HB-QZCM,34,SWISS
+HB-QZVR,188,SWISS
+HB-QZWF,241,SWISS
+HB-REHO,236,SWISS
+HB-REHZ,53,SWISS
+HB-REOD,84,SWISS
+HB-REOU,213,SWISS
+HB-REPW,239,SWISS
+HB-RFJF,144,SWISS
+HB-RFWM,229,SWISS
+HB-RGJZ,72,SWISS
+HB-RGMJ,99,SWISS
+HB-RGPR,193,SWISS
+HB-RHTQ,106,SWISS
+HB-RIHK,30,SWISS
+HB-RLJY,232,SWISS
+HB-RLMY,179,SWISS
+HB-RLRB,221,SWISS
+HB-RMDX,111,SWISS
+HB-RMMO,121,SWISS
+HB-RMRT,221,SWISS
+HB-RMZR,198,SWISS
+HB-RNMX,201,SWISS
+HB-RNWB,192,SWISS
+HB-ROCV,198,SWISS
+HB-RODH,221,SWISS
+HB-ROYB,31,SWISS
+HB-RPCC,168,SWISS
+HB-RQFP,235,SWISS
+HB-RQHH,28,SWISS
+HB-RQHR,240,SWISS
+HB-RQOW,237,SWISS
+HB-RQQS,96,SWISS
+HB-RRMG,195,SWISS
+HB-RSPV,74,SWISS
+HB-RSYJ,154,SWISS
+HB-RUFS,183,SWISS
+HB-RULL,67,SWISS
+HB-RUWR,103,SWISS
+HB-RXAD,22,SWISS
+HB-RXBJ,17,SWISS
+HB-RXCI,148,SWISS
+HB-RXVR,165,SWISS
+HB-RYHF,125,SWISS
+HB-RYNY,210,SWISS
+HB-RZAN,17,SWISS
+HB-RZGD,113,SWISS
+HB-RZWP,90,SWISS
+HB-RZZQ,162,SWISS
+HB-SACK,32,SWISS
+HB-SALW,167,SWISS
+HB-SCER,127,SWISS
+HB-SEGN,125,SWISS
+HB-SFJF,190,SWISS
+HB-SFRW,220,SWISS
+HB-SFZG,96,SWISS
+HB-SGHF,43,SWISS
+HB-SGJV,93,SWISS
+HB-SHSA,14,SWISS
+HB-SIAH,3,SWISS
+HB-SIAR,99,SWISS
+HB-SITH,143,SWISS
+HB-SIZG,238,SWISS
+HB-SJOB,82,SWISS
+HB-SKGM,117,SWISS
+HB-SLFQ,202,SWISS
+HB-SLNH,234,SWISS
+HB-SMEL,182,SWISS
+HB-SMUD,32,SWISS
+HB-SMXR,205,SWISS
+HB-SONA,159,SWISS
+HB-SOPY,17,SWISS
+HB-SOUB,45,SWISS
+HB-SOWD,5,SWISS
+HB-SQJS,112,SWISS
+HB-SRAV,118,SWISS
+HB-SROQ,89,SWISS
+HB-SRVX,219,SWISS
+HB-SSUK,41,SWISS
+HB-STRC,111,SWISS
+HB-STZY,43,SWISS
+HB-SUWE,88,SWISS
+HB-SVKO,2,SWISS
+HB-SXOA,188,SWISS
+HB-SXQG,155,SWISS
+HB-SXRT,116,SWISS
+HB-SXXF,97,SWISS
+HB-SYLG,169,SWISS
+HB-SZLH,195,SWISS
+HB-SZWE,240,SWISS
+HB-TAVD,122,SWISS
+HB-TCIQ,57,SWISS
+HB-TCPS,76,SWISS
+HB-TDKV,136,SWISS
+HB-TEJK,187,SWISS
+HB-TFJK,101,SWISS
+HB-TFLR,179,SWISS
+HB-TFNX,166,SWISS
+HB-TFSP,13,SWISS
+HB-TFZZ,64,SWISS
+HB-TGLP,119,SWISS
+HB-TGQW,130,SWISS
+HB-TIYI,63,SWISS
+HB-TJYO,5,SWISS
+HB-TLHD,150,SWISS
+HB-TLLW,100,SWISS
+HB-TNGD,235,SWISS
+HB-TNSN,240,SWISS
+HB-TOHL,132,SWISS
+HB-TPHR,92,SWISS
+HB-TVAM,68,SWISS
+HB-TVKN,161,SWISS
+HB-TWGG,60,SWISS
+HB-TWME,65,SWISS
+HB-TWPY,102,SWISS
+HB-TWTE,32,SWISS
+HB-TWUY,185,SWISS
+HB-TXYA,92,SWISS
+HB-TYOW,154,SWISS
+HB-TYQY,157,SWISS
+HB-UAND,58,SWISS
+HB-UBDJ,112,SWISS
+HB-UBOJ,118,SWISS
+HB-UBTQ,196,SWISS
+HB-UBXN,29,SWISS
+HB-UEHA,66,SWISS
+HB-UEPV,2,SWISS
+HB-UEPY,113,SWISS
+HB-UGBM,127,SWISS
+HB-UHBL,108,SWISS
+HB-UHBZ,126,SWISS
+HB-UHHT,151,SWISS
+HB-UHJR,104,SWISS
+HB-UHMZ,73,SWISS
+HB-UHWT,172,SWISS
+HB-UISN,45,SWISS
+HB-UKZR,62,SWISS
+HB-ULZD,102,SWISS
+HB-UMNN,48,SWISS
+HB-UMOG,170,SWISS
+HB-UMSZ,147,SWISS
+HB-UPVM,222,SWISS
+HB-UPZM,70,SWISS
+HB-UREO,184,SWISS
+HB-USYM,197,SWISS
+HB-UTCD,119,SWISS
+HB-UUUE,238,SWISS
+HB-UUVN,129,SWISS
+HB-UVAJ,168,SWISS
+HB-UVLR,38,SWISS
+HB-UVRB,231,SWISS
+HB-UXYZ,235,SWISS
+HB-UYAL,99,SWISS
+HB-UYBP,50,SWISS
+HB-UZBA,47,SWISS
+HB-UZMR,65,SWISS
+HB-UZSQ,193,SWISS
+HB-UZWS,183,SWISS
+HB-VARS,141,SWISS
+HB-VASO,160,SWISS
+HB-VBNK,71,SWISS
+HB-VCWZ,39,SWISS
+HB-VDRJ,229,SWISS
+HB-VDRL,214,SWISS
+HB-VEXO,171,SWISS
+HB-VFKD,28,SWISS
+HB-VGLH,140,SWISS
+HB-VHYS,179,SWISS
+D-VICJ,115,Lufthansa
+D-VINW,74,Lufthansa
+D-VISR,98,Lufthansa
+D-VJKC,179,Lufthansa
+D-VJMV,29,Lufthansa
+D-VJNP,150,Lufthansa
+D-VJSI,22,Lufthansa
+D-VJSQ,26,Lufthansa
+D-VKNE,46,Lufthansa
+D-VLOV,3,Lufthansa
+D-VLUU,114,Lufthansa
+D-VMAH,131,Lufthansa
+D-VMLI,121,Lufthansa
+D-VMOH,202,Lufthansa
+D-VNVB,156,Lufthansa
+D-VOVQ,180,Lufthansa
+D-VPCB,81,Lufthansa
+D-VPHH,137,Lufthansa
+D-VQLD,107,Lufthansa
+D-VRGF,186,Lufthansa
+D-VRVR,39,Lufthansa
+D-VSMF,210,Lufthansa
+D-VTMT,104,Lufthansa
+D-VTPQ,239,Lufthansa
+D-VTRF,169,Lufthansa
+D-VTXA,138,Lufthansa
+D-VVXB,74,Lufthansa
+D-VWET,228,Lufthansa
+D-VYHW,236,Lufthansa
+D-VYPE,105,Lufthansa
+D-VYPM,226,Lufthansa
+D-VYVW,243,Lufthansa
+D-VYWT,108,Lufthansa
+D-VZUJ,87,Lufthansa
+D-VZXZ,138,Lufthansa
+D-WAHX,128,Lufthansa
+D-WBWO,1,Lufthansa
+D-WBZJ,116,Lufthansa
+D-WCHC,201,Lufthansa
+D-WCRQ,34,Lufthansa
+D-WECA,244,Lufthansa
+D-WFEP,169,Lufthansa
+D-WFRM,210,Lufthansa
+D-WGDN,230,Lufthansa
+D-WGWG,101,Lufthansa
+D-WHAS,65,Lufthansa
+D-WHOZ,79,Lufthansa
+D-WIJH,90,Lufthansa
+D-WIKL,37,Lufthansa
+D-WJCX,68,Lufthansa
+D-WJDB,197,Lufthansa
+D-WJHM,25,Lufthansa
+D-WJNK,88,Lufthansa
+D-WLGW,108,Lufthansa
+D-WMFZ,193,Lufthansa
+D-WMOX,103,Lufthansa
+D-WNJC,156,Lufthansa
+D-WOFI,40,Lufthansa
+D-WOKF,116,Lufthansa
+D-WONO,107,Lufthansa
+D-WQMI,171,Lufthansa
+D-WQOS,101,Lufthansa
+D-WRWB,10,Lufthansa
+D-WSYC,112,Lufthansa
+D-WSZF,132,Lufthansa
+D-WTQB,149,Lufthansa
+D-WTSP,239,Lufthansa
+D-WUIB,233,Lufthansa
+D-WUXC,167,Lufthansa
+D-WUXP,165,Lufthansa
+D-WWEN,20,Lufthansa
+D-WXNN,160,Lufthansa
+D-WYNB,126,Lufthansa
+D-XAGX,51,Lufthansa
+D-XAUW,133,Lufthansa
+D-XCKH,32,Lufthansa
+D-XESN,88,Lufthansa
+D-XFFM,204,Lufthansa
+D-XFIY,146,Lufthansa
+D-XFRX,39,Lufthansa
+D-XFSL,123,Lufthansa
+D-XHOK,178,Lufthansa
+D-XITR,90,Lufthansa
+D-XIZF,22,Lufthansa
+D-XJCE,108,Lufthansa
+D-XKOI,148,Lufthansa
+D-XKZN,124,Lufthansa
+D-XMBV,16,Lufthansa
+D-XMMJ,185,Lufthansa
+D-XNMC,200,Lufthansa
+D-XNRR,56,Lufthansa
+D-XPEQ,148,Lufthansa
+D-XPIQ,46,Lufthansa
+D-XPJI,30,Lufthansa
+D-XPMT,57,Lufthansa
+D-XQIO,140,Lufthansa
+D-XRBF,110,Lufthansa
+D-XRKL,17,Lufthansa
+D-XRLI,54,Lufthansa
+D-XRXE,80,Lufthansa
+D-XSJJ,40,Lufthansa
+D-XSWH,194,Lufthansa
+D-XTKC,67,Lufthansa
+D-XUAC,205,Lufthansa
+D-XUDW,226,Lufthansa
+D-XUXK,64,Lufthansa
+D-XYDQ,236,Lufthansa
+D-XYOL,244,Lufthansa
+D-XZGB,17,Lufthansa
+D-XZKB,69,Lufthansa
+D-YAAU,149,Lufthansa
+D-YBHV,27,Lufthansa
+D-YBNY,87,Lufthansa
+D-YBUL,25,Lufthansa
+D-YCAH,13,Lufthansa
+D-YCLH,114,Lufthansa
+D-YDFS,48,Lufthansa
+D-YDIV,244,Lufthansa
+D-YDYV,67,Lufthansa
+D-YEVO,159,Lufthansa
+D-YGRW,138,Lufthansa
+D-YGVP,192,Lufthansa
+D-YHJF,182,Lufthansa
+D-YHLH,28,Lufthansa
+D-YJAJ,172,Lufthansa
+D-YJQS,196,Lufthansa
+D-YJTJ,197,Lufthansa
+D-YJYO,50,Lufthansa
+D-YKBD,211,Lufthansa
+D-YKKK,131,Lufthansa
+D-YLKU,92,Lufthansa
+D-YLYT,129,Lufthansa
+D-YNAU,108,Lufthansa
+D-YNXQ,89,Lufthansa
+D-YOJE,128,Lufthansa
+D-YOMT,129,Lufthansa
+D-YPLW,128,Lufthansa
+D-YPML,134,Lufthansa
+D-YPQN,137,Lufthansa
+D-YPVK,107,Lufthansa
+D-YQEH,3,Lufthansa
+D-YQLV,50,Lufthansa
+D-YQUV,99,Lufthansa
+D-YQVF,54,Lufthansa
+D-YQVX,232,Lufthansa
+D-YRRD,221,Lufthansa
+D-YSGU,185,Lufthansa
+D-YTHQ,158,Lufthansa
+D-YTTJ,177,Lufthansa
+D-YUMP,97,Lufthansa
+D-YUYC,108,Lufthansa
+D-YVHD,144,Lufthansa
+D-YVNL,80,Lufthansa
+D-YYHW,56,Lufthansa
+D-YYZC,173,Lufthansa
+D-YZMW,125,Lufthansa
+D-YZPP,112,Lufthansa
+D-YZUA,187,Lufthansa
+D-YZUE,192,Lufthansa
+D-ZAVK,222,Lufthansa
+D-ZAWR,211,Lufthansa
+D-ZBNV,90,Lufthansa
+D-ZCDX,115,Lufthansa
+D-ZCQR,132,Lufthansa
+D-ZCTM,89,Lufthansa
+D-ZEDJ,155,Lufthansa
+D-ZEET,168,Lufthansa
+D-ZEUC,216,Lufthansa
+D-ZFWT,127,Lufthansa
+D-ZHJD,25,Lufthansa
+D-ZHMR,48,Lufthansa
+D-ZHQM,70,Lufthansa
+D-ZIAI,39,Lufthansa
+D-ZIKO,117,Lufthansa
+D-ZIPV,203,Lufthansa
+D-ZIRG,3,Lufthansa
+D-ZIXD,18,Lufthansa
+D-ZJBD,40,Lufthansa
+D-ZJFZ,2,Lufthansa
+D-ZJIZ,70,Lufthansa
+D-ZJLF,184,Lufthansa
+D-ZJTB,188,Lufthansa
+D-ZKUW,14,Lufthansa
+D-ZLRB,43,Lufthansa
+D-ZLRO,187,Lufthansa
+D-ZNAX,181,Lufthansa
+D-ZNUW,109,Lufthansa
+D-ZOPJ,189,Lufthansa
+D-ZOWE,191,Lufthansa
+D-ZPDE,211,Lufthansa
+D-ZPMO,224,Lufthansa
+D-ZPSM,206,Lufthansa
+D-ZPYK,235,Lufthansa
+D-ZQCQ,195,Lufthansa
+D-ZSNL,174,Lufthansa
+D-ZSRU,157,Lufthansa
+D-ZVIF,193,Lufthansa
+D-ZVMF,244,Lufthansa
+D-ZWFC,76,Lufthansa
+D-ZXAF,142,Lufthansa
+D-ZXDC,228,Lufthansa
+D-ZXDO,27,Lufthansa
+D-ZXLP,205,Lufthansa
+D-ZYHG,163,Lufthansa
+D-ZYKW,220,Lufthansa
+D-ZYYL,107,Lufthansa
+D-ZZKQ,164,Lufthansa
+D-QGH,92,Lufthansa
+D-QGH,23,Lufthansa
+D-QGV,165,Lufthansa
+D-QIA,166,Lufthansa
+D-QIY,6,Lufthansa
+D-QJW,141,Lufthansa
+D-QJW,36,Lufthansa
+D-QKF,8,Lufthansa
+SE-QKQ,232,Norwegian
+SE-QKV,25,Norwegian
+SE-QLE,13,Norwegian
+SE-QLG,15,Norwegian
+SE-QLY,205,Norwegian
+SE-QMT,99,Norwegian
+SE-QMY,52,Norwegian
+SE-QNL,19,Norwegian
+SE-QOB,33,Norwegian
+SE-QOG,86,Norwegian
+SE-QPG,129,Norwegian
+SE-QPU,101,Norwegian
+SE-QQO,71,Norwegian
+SE-QQR,211,Norwegian
+SE-QSS,170,Norwegian
+SE-QTA,230,Norwegian
+SE-QTO,63,Norwegian
+SE-QTP,40,Norwegian
+SE-QTY,54,Norwegian
+SE-QUD,180,Norwegian
+SE-QUZ,119,Norwegian
+SE-QVG,190,Norwegian
+SE-QVY,45,Norwegian
+SE-QWL,44,Norwegian
+SE-QWX,146,Norwegian
+SE-QWZ,127,Norwegian
+SE-QXB,186,Norwegian
+SE-QXD,158,Norwegian
+SE-QXQ,198,Norwegian
+SE-QYD,40,Norwegian
+SE-QZS,174,Norwegian
+SE-RAD,227,Norwegian
+SE-RAJ,57,Norwegian
+SE-RAO,57,Norwegian
+SE-RCH,113,Norwegian
+SE-RDJ,204,Norwegian
+SE-RDL,43,Norwegian
+SE-REH,139,Norwegian
+SE-RER,88,Norwegian
+SE-RGI,62,Norwegian
+SE-RGP,227,Norwegian
+SE-RGV,42,Norwegian
+SE-RHM,142,Norwegian
+SE-RID,141,Norwegian
+SE-RIO,199,Norwegian
+SE-RJE,241,Norwegian
+SE-RJG,91,Norwegian
+SE-RJN,41,Norwegian
+SE-RJX,112,Norwegian
+SE-RJZ,36,Norwegian
+SE-RKK,243,Norwegian
+SE-RKP,96,Norwegian
+SE-RLL,190,Norwegian
+SE-RNU,165,Norwegian
+SE-RNZ,166,Norwegian
+SE-ROP,159,Norwegian
+SE-ROR,46,Norwegian
+SE-RPK,3,Norwegian
+SE-RQB,40,Norwegian
+SE-RQD,162,Norwegian
+SE-RQL,71,Norwegian
+SE-RQS,39,Norwegian
+SE-RQX,213,Norwegian
+SE-RSC,157,Norwegian
+SE-RWA,244,Norwegian
+SE-RXY,181,Norwegian
+SE-RYF,98,Norwegian
+SE-RZH,231,Norwegian
+SE-SAK,240,Norwegian
+SE-SAV,126,Norwegian
+SE-SBT,61,Norwegian
+SE-SCA,30,Norwegian
+SE-SDO,43,Norwegian
+SE-SDV,180,Norwegian
+SE-SFY,224,Norwegian
+SE-SGE,69,Norwegian
+SE-SHN,182,Norwegian
+SE-SHU,20,Norwegian
+SE-SIQ,35,Norwegian
+SE-SIY,124,Norwegian
+SE-SJG,8,Norwegian
+SE-SJH,102,Norwegian
+SE-SJO,192,Norwegian
+SE-SKD,121,Norwegian
+SE-SKG,75,Norwegian
+SE-SKK,111,Norwegian
+SE-SKN,190,Norwegian
+SE-SKV,147,Norwegian
+SE-SLB,189,Norwegian
+SE-SLW,46,Norwegian
+SE-SMJ,106,Norwegian
+SE-SMS,89,Norwegian
+SE-SNA,204,Norwegian
+SE-SPA,237,Norwegian
+SE-SPC,167,Norwegian
+SE-SQU,232,Norwegian
+SE-SRB,4,Norwegian
+SE-SRX,29,Norwegian
+SE-SSS,95,Norwegian
+SE-SSS,155,Norwegian
+SE-SUB,126,Norwegian
+SE-SUH,155,Norwegian
+SE-SVA,56,Norwegian
+SE-SVI,145,Norwegian
+SE-SVM,112,Norwegian
+SE-SWZ,104,Norwegian
+SE-SXD,210,Norwegian
+SE-SYZ,216,Norwegian
+SE-SZL,136,Norwegian
+SE-TAA,182,Norwegian
+SE-TAM,96,Norwegian
+SE-TAP,65,Norwegian
+SE-TAT,131,Norwegian
+SE-TBB,151,Norwegian
+SE-TBQ,218,Norwegian
+SE-TEJ,42,Norwegian
+SE-TEX,112,Norwegian
+SE-TFG,45,Norwegian
+SE-TFO,84,Norwegian
+SE-TGA,238,Norwegian
+SE-TGE,142,Norwegian
+SE-TGF,38,Norwegian
+SE-THJ,237,Norwegian
+SE-THM,187,Norwegian
+SE-THN,102,Norwegian
+SE-THW,137,Norwegian
+SE-TIU,169,Norwegian
+SE-TJG,213,Norwegian
+SE-TJN,127,Norwegian
+SE-TMS,235,Norwegian
+SE-TPC,45,Norwegian
+SE-TPS,140,Norwegian
+SE-TQT,97,Norwegian
+SE-TTD,218,Norwegian
+SE-TTH,228,Norwegian
+SE-TVE,192,Norwegian
+SE-TVV,106,Norwegian
+SE-TXE,143,Norwegian
+SE-TXX,128,Norwegian
+SE-TXY,155,Norwegian
+SE-UBO,11,Norwegian
+SE-UCG,179,Norwegian
+SE-UCM,237,Norwegian
+SE-UDK,91,Norwegian
+SE-UEW,113,Norwegian
+SE-UFN,60,Norwegian
+SE-UGD,12,Norwegian
+SE-UGR,168,Norwegian
+SE-UHF,49,Norwegian
+SE-UHT,118,Norwegian
+SE-UHT,70,Norwegian
+SE-UKK,135,Norwegian
+SE-UKK,96,Norwegian
+SE-ULF,216,Norwegian
+SE-ULG,9,Norwegian
+SE-ULJ,166,Norwegian
+SE-UMP,138,Norwegian
+SE-UNE,110,Norwegian
+SE-UNU,60,Norwegian
+SE-UPJ,17,Norwegian
+SE-UPM,72,Norwegian
+SE-UPM,51,Norwegian
+SE-UQE,137,Norwegian
+SE-UQX,166,Norwegian
+SE-URA,46,Norwegian
+SE-URJ,241,Norwegian
+SE-USJ,72,Norwegian
+SE-USM,206,Norwegian
+SE-USV,51,Norwegian
+SE-UUC,139,Norwegian
+SE-UVB,100,Norwegian
+SE-UXG,211,Norwegian
+SE-UYA,85,Norwegian
+SE-UYB,99,Norwegian
+SE-UYE,40,Norwegian
+SE-UYK,40,Norwegian
+SE-UYX,172,Norwegian
+SE-UZG,156,Norwegian
+SE-UZT,83,Norwegian
+SE-UZX,54,Norwegian
+SE-UZZ,231,Norwegian
+SE-VAE,87,Norwegian
+SE-VAM,143,Norwegian
+SE-VAY,235,Norwegian
+SE-VBE,224,Norwegian
+SE-VEL,9,Norwegian
+SE-VES,245,Norwegian
+SE-VFC,9,Norwegian
+SE-VFF,201,Norwegian
+SE-VFM,187,Norwegian
+SE-VFY,222,Norwegian
+SE-VGJ,181,Norwegian
+SE-VGU,161,Norwegian
+SE-VHV,111,Norwegian
+SE-VIC,44,Norwegian
+SE-VIL,60,Norwegian
+SE-VKB,82,Norwegian
+SE-VKE,194,Norwegian
+SE-VKJ,136,Norwegian
+SE-VKS,179,Norwegian
+SE-VKX,245,Norwegian
+SE-VLH,13,Norwegian
+SE-VLJ,205,Norwegian
+SE-VMJ,224,Norwegian
+SE-VMZ,183,Norwegian
+SE-VNB,71,Norwegian
+SE-VPP,210,Norwegian
+LN-VPU,9,NAS
+LN-VRK,235,NAS
+LN-VRO,9,NAS
+LN-VSO,81,NAS
+LN-VSX,210,NAS
+LN-VTT,115,NAS
+LN-VUJ,123,NAS
+LN-VUX,169,NAS
+LN-VVF,229,NAS
+LN-VVP,8,NAS
+LN-VWF,25,NAS
+LN-VWF,237,NAS
+LN-VZH,172,NAS
+LN-WBH,195,NAS
+LN-WBN,201,NAS
+LN-WDB,237,NAS
+LN-WEX,73,NAS
+LN-WEZ,35,NAS
+LN-WFB,114,NAS
+LN-WGQ,81,NAS
+LN-WHM,91,NAS
+LN-WHN,87,NAS
+LN-WIV,103,NAS
+LN-WIX,164,NAS
+LN-WKX,182,NAS
+LN-WMR,78,NAS
+LN-WMX,81,NAS
+LN-WNW,63,NAS
+LN-WOE,11,NAS
+LN-WPD,175,NAS
+LN-WPR,198,NAS
+LN-WQE,244,NAS
+LN-WQI,83,NAS
+LN-WSG,54,NAS
+LN-WSJ,140,NAS
+LN-WSJ,150,NAS
+LN-WTB,234,NAS
+LN-WTO,57,NAS
+LN-WUQ,62,NAS
+LN-WVS,77,NAS
+LN-WVW,136,NAS
+LN-WVZ,68,NAS
+LN-WVZ,143,NAS
+LN-WWA,171,NAS
+LN-WXE,43,NAS
+LN-WXK,118,NAS
+LN-WXO,27,NAS
+LN-WZB,93,NAS
+LN-XAR,48,NAS
+LN-XCA,131,NAS
+LN-XDV,209,NAS
+LN-XEV,147,NAS
+LN-XEY,6,NAS
+LN-XEZ,149,NAS
+LN-XFE,66,NAS
+LN-XGF,14,NAS
+LN-XIT,155,NAS
+LN-XJB,47,NAS
+LN-XJF,94,NAS
+LN-XJM,243,NAS
+LN-XJW,1,NAS
+LN-XKD,226,NAS
+LN-XMN,140,NAS
+LN-XMS,26,NAS
+LN-XMZ,87,NAS
+LN-XNA,138,NAS
+LN-XNE,165,NAS
+LN-XOL,165,NAS
+LN-XOV,191,NAS
+LN-XPE,129,NAS
+LN-XPG,242,NAS
+LN-XPI,96,NAS
+LN-XQR,113,NAS
+LN-XQT,197,NAS
+LN-XRN,12,NAS
+LN-XRP,139,NAS
+LN-XRZ,187,NAS
+LN-XSH,158,NAS
+LN-XUT,52,NAS
+LN-XVB,204,NAS
+LN-XWF,57,NAS
+LN-XWR,126,NAS
+LN-XWS,136,NAS
+LN-XWZ,239,NAS
+LN-XXJ,223,NAS
+LN-XYW,68,NAS
+LN-YBN,201,NAS
+LN-YBQ,140,NAS
+LN-YBS,214,NAS
+LN-YDD,20,NAS
+LN-YDS,35,NAS
+LN-YDU,11,NAS
+LN-YEL,164,NAS
+LN-YEL,232,NAS
+LN-YHG,219,NAS
+LN-YHP,198,NAS
+LN-YIT,63,NAS
+LN-YJB,133,NAS
+LN-YKF,228,NAS
+LN-YKH,228,NAS
+LN-YLD,236,NAS
+LN-YLK,48,NAS
+LN-YNF,194,NAS
+LN-YNW,77,NAS
+LN-YOX,113,NAS
+LN-YOY,141,NAS
+LN-YPD,200,NAS
+LN-YPY,213,NAS
+LN-YTB,221,NAS
+LN-YTG,41,NAS
+LN-YTS,204,NAS
+LN-YUC,184,NAS
+LN-YUI,198,NAS
+LN-YVD,52,NAS
+LN-YVK,38,NAS
+LN-YWJ,44,NAS
+LN-YXA,166,NAS
+LN-YXP,64,NAS
+LN-YYM,125,NAS
+LN-YYX,238,NAS
+LN-YZE,201,NAS
+LN-ZAR,84,NAS
+LN-ZBJ,225,NAS
+LN-ZBS,134,NAS
+LN-ZBZ,94,NAS
+LN-ZCM,121,NAS
+LN-ZFH,177,NAS
+LN-ZFI,46,NAS
+LN-ZGD,17,NAS
+LN-ZGL,194,NAS
+LN-ZIV,118,NAS
+A6-ZJG,4,Emirates
+A6-ZJM,210,Emirates
+A6-ZKY,67,Emirates
+A6-ZKY,68,Emirates
+A6-ZLJ,60,Emirates
+A6-ZMS,119,Emirates
+A6-ZNC,218,Emirates
+A6-ZNC,106,Emirates
+A6-ZOR,127,Emirates
+A6-ZOY,42,Emirates
+A6-ZPB,77,Emirates
+A6-ZPK,64,Emirates
+A6-ZPP,54,Emirates
+A6-ZPV,132,Emirates
+A6-ZQS,29,Emirates
+A6-ZQW,165,Emirates
+A6-ZSB,80,Emirates
+A6-ZSC,121,Emirates
+A6-ZSI,129,Emirates
+A6-ZSL,23,Emirates
+A6-ZSX,115,Emirates
+A6-ZTZ,63,Emirates
+A6-ZUF,98,Emirates
+A6-ZVP,91,Emirates
+A6-ZVP,95,Emirates
+A6-ZWR,159,Emirates
+A6-ZZA,64,Emirates
+A6-QH,217,Emirates
+A6-QI,170,Emirates
+A6-QI,8,Emirates
+A6-QK,244,Emirates
+A6-QK,23,Emirates
+A6-QL,108,Emirates
+A6-QM,103,Emirates
+A6-QM,73,Emirates
+A6-QM,243,Emirates
+A6-QN,101,Emirates
+A6-QN,86,Emirates
+A6-QO,122,Emirates
+A6-QO,39,Emirates
+A6-QO,173,Emirates
+A6-QP,119,Emirates
+A6-QP,96,Emirates
+A6-QP,140,Emirates
+A6-QQ,218,Emirates
+A6-QS,180,Emirates
+A6-QT,40,Emirates
+A6-QT,165,Emirates
+A6-QT,153,Emirates
+A6-QU,244,Emirates
+A6-QV,134,Emirates
+A6-QV,202,Emirates
+A6-QV,187,Emirates
+A6-QW,210,Emirates
+A6-QZ,52,Emirates
+A6-QZ,28,Emirates
+A6-RA,114,Emirates
+A6-RB,102,Emirates
+A6-RB,24,Emirates
+A6-RB,15,Emirates
+A6-RB,156,Emirates
+A6-RC,55,Emirates
+A6-RC,91,Emirates
+A6-RC,92,Emirates
+A6-RE,1,Emirates
+A6-RF,45,Emirates
+A6-RG,44,Emirates
+A6-RG,232,Emirates
+A6-RH,128,Emirates
+A6-RI,217,Emirates
+A6-RJ,130,Emirates
+A6-RK,13,Emirates
+A6-RK,38,Emirates
+A6-RL,48,Emirates
+A6-RL,63,Emirates
+A6-RL,97,Emirates
+A6-RM,132,Emirates
+A6-RM,213,Emirates
+A6-RM,57,Emirates
+A6-RM,20,Emirates
+A6-RN,243,Emirates
+A6-RP,184,Emirates
+A6-RQ,217,Emirates
+A6-RS,62,Emirates
+A6-RT,73,Emirates
+A6-RT,125,Emirates
+A6-RT,29,Emirates
+A6-RW,181,Emirates
+A6-RW,241,Emirates
+A6-RW,240,Emirates
+A6-RW,212,Emirates
+A6-RX,152,Emirates
+A6-RY,122,Emirates
+A6-RZ,233,Emirates
+A6-RZ,164,Emirates
+A6-SA,107,Emirates
+A6-SA,66,Emirates
+A6-SA,181,Emirates
+A6-SA,189,Emirates
+A6-SB,241,Emirates
+A6-SB,86,Emirates
+A6-SB,204,Emirates
+A6-SB,196,Emirates
+A6-SB,61,Emirates
+A6-SB,83,Emirates
+A6-SC,61,Emirates
+A6-SE,101,Emirates
+A6-SE,49,Emirates
+A6-SE,49,Emirates
+A6-SE,48,Emirates
+A6-SF,188,Emirates
+A6-SF,162,Emirates
+A6-SF,70,Emirates
+A6-SH,172,Emirates
+A6-SH,243,Emirates
+A6-SI,107,Emirates
+A6-SI,188,Emirates
+A6-SJ,110,Emirates
+A6-SJ,33,Emirates
+A6-SK,162,Emirates
+A6-SL,147,Emirates
+A6-SL,85,Emirates
+A6-SM,220,Emirates
+A6-SM,161,Emirates
+A6-SN,61,Emirates
+A6-SO,89,Emirates
+A6-SP,19,Emirates
+A6-SQ,40,Emirates
+A6-SR,77,Emirates
+A6-SR,197,Emirates
+A6-SS,156,Emirates
+A6-SV,60,Emirates
+A6-SW,75,Emirates
+A6-SW,69,Emirates
+A6-SX,201,Emirates
+A6-SX,119,Emirates
+A6-SX,75,Emirates
+A6-SY,186,Emirates
+A6-SY,7,Emirates
+A6-TB,157,Emirates
+A6-TB,164,Emirates
+A6-TC,213,Emirates
+N-TD,187,Honolulu Air
+N-TD,183,Honolulu Air
+N-TE,231,Honolulu Air
+N-TE,158,Honolulu Air
+N-TF,78,Honolulu Air
+N-TG,127,Honolulu Air
+N-TH,206,Honolulu Air
+N-TI,48,Honolulu Air
+N-TI,108,Honolulu Air
+N-TI,150,Honolulu Air
+N-TK,107,Honolulu Air
+N-TK,124,Honolulu Air
+N-TL,97,Honolulu Air
+N-TM,69,Honolulu Air
+N-TN,117,Honolulu Air
+N-TN,98,Honolulu Air
+N-TN,241,Honolulu Air
+N-TN,69,Honolulu Air
+N-TO,8,Honolulu Air
+N-TO,137,Honolulu Air
+N-TP,111,Honolulu Air
+N-TP,60,Honolulu Air
+N-TQ,36,Honolulu Air
+N-TQ,196,Honolulu Air
+N-TQ,158,Honolulu Air
+N-TR,227,Honolulu Air
+N-TR,203,Honolulu Air
+N-TR,221,Honolulu Air
+N-TU,31,Honolulu Air
+N-TU,118,Honolulu Air
+N-TU,230,Honolulu Air
+N-TV,8,Honolulu Air
+N-TX,24,Honolulu Air
+N-TX,209,Honolulu Air
+N-TY,35,Honolulu Air
+N-TY,161,Honolulu Air
+N-TZ,80,Honolulu Air
+N-TZ,82,Honolulu Air
+N-UA,123,Honolulu Air
+N-UB,59,Honolulu Air
+N-UD,122,Honolulu Air
+N-UF,166,Honolulu Air
+N-UI,108,Honolulu Air
+N-UI,73,Honolulu Air
+N-UJ,144,Honolulu Air
+N-UJ,54,Honolulu Air
+N-UK,66,Honolulu Air
+N-UK,11,Honolulu Air
+N-UL,2,Honolulu Air
+N-UM,170,Honolulu Air
+N-UM,189,Honolulu Air
+N-UM,76,Honolulu Air
+N-UM,31,Honolulu Air
+N-UN,90,Honolulu Air
+N-UN,159,Honolulu Air
+N-UO,31,Honolulu Air
+N-UP,62,Honolulu Air
+N-UP,3,Honolulu Air
+N-UP,149,Honolulu Air
+N-UP,139,Honolulu Air
+N-UQ,113,Honolulu Air
+N-UR,98,Honolulu Air
+N-US,70,Honolulu Air
+N-US,99,Honolulu Air
+N-UT,148,Honolulu Air
+N-UU,10,Honolulu Air
+N-UU,227,Honolulu Air
+N-UU,129,Honolulu Air
+N-UV,151,Honolulu Air
+N-UV,63,Honolulu Air
+N-UZ,68,Honolulu Air
+N-VB,129,Honolulu Air
+N-VB,164,Honolulu Air
+N-VD,209,Honolulu Air
+N-VD,232,Honolulu Air
+N-VD,14,Honolulu Air
+N-VF,223,Honolulu Air
+N-VF,171,Honolulu Air
+N-VI,20,Honolulu Air
+N-VJ,57,Honolulu Air
+N-VJ,232,Honolulu Air
+N-VJ,26,Honolulu Air
+N-VK,66,Honolulu Air
+N-VK,122,Honolulu Air
+N-VL,176,Honolulu Air
+N-VL,49,Honolulu Air
+N-VL,77,Honolulu Air
+N-VM,201,Honolulu Air
+N-VM,98,Honolulu Air
+N-VN,121,Honolulu Air
+N-VN,137,Honolulu Air
+N-VN,39,Honolulu Air
+N-VO,139,Honolulu Air
+N-VO,120,Honolulu Air
+N-VO,212,Honolulu Air
+N-VO,211,Honolulu Air
+N-VP,2,Honolulu Air
+N-VP,190,Honolulu Air
+N-VQ,149,Honolulu Air
+N-VQ,51,Honolulu Air
+N-VQ,50,Honolulu Air
+N-VQ,163,Honolulu Air
+N-VR,174,Honolulu Air
+N-VR,53,Honolulu Air
+N-VR,114,Honolulu Air
+N-VS,5,Honolulu Air
+N-VT,41,Honolulu Air
+N-VT,233,Honolulu Air
+N-VT,87,Honolulu Air
+N-VT,145,Honolulu Air
+N-VU,180,Honolulu Air
+N-VV,190,Honolulu Air
+N-VX,36,Honolulu Air
+N-VX,177,Honolulu Air
+N-VX,39,Honolulu Air
+N-VX,27,Honolulu Air
+N-VY,80,Honolulu Air
+N-VZ,76,Honolulu Air
+N-VZ,138,Honolulu Air
+N-WA,96,Honolulu Air
+N-WA,238,Honolulu Air
+N-WB,194,Honolulu Air
+N-WB,168,Honolulu Air
+N-WB,211,Honolulu Air
+N-WC,54,Honolulu Air
+N-WE,10,Honolulu Air
+N-WF,80,Honolulu Air
+N-WG,52,Honolulu Air
+N-WG,145,Honolulu Air
+N-WI,123,Honolulu Air
+N-WI,42,Honolulu Air
+N-WI,53,Honolulu Air
+N-WK,241,Honolulu Air
+N-WL,141,Honolulu Air
+N-WM,134,Honolulu Air
