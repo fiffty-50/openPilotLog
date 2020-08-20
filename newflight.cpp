@@ -29,7 +29,7 @@
 #include <QButtonGroup>
 
 
-void NewFlight::on_verifyButton_clicked()
+void NewFlight::on_verifyButton_clicked()//debug
 {
     /*on_newDoft_editingFinished();// - activate slots in case user has been active in last input before clicking submit
     on_newTonb_editingFinished();
@@ -312,6 +312,7 @@ bool NewFlight::verifyInput()
 void NewFlight::returnInput(QVector<QString> flight)
 {
     // Re-populates the input masks with the selected fields if input was erroneous to allow for corrections to be made
+    qDebug() << "return Input: " << flight;
     ui->newDoft->setDate(QDate::fromString(flight[1],Qt::ISODate));
     ui->newDept->setText(flight[2]);
     ui->newTofb->setText(flight[3]);
@@ -341,7 +342,7 @@ void NewFlight::storeSettings()
 }
 void NewFlight::restoreSettings()
 {
-    qDebug() << "Restoring Settings...";
+    qDebug() << "Restoring Settings...";//crashes if db is empty due to QVector index out of range.
     ui->FunctionComboBox->setCurrentText(db::retreiveSetting("100")[1]);
     ui->ApproachComboBox->setCurrentText(db::retreiveSetting("101")[1]);
     ui->PilotFlyingCheckBox->setChecked(db::retreiveSetting("102")[1].toInt());

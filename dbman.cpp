@@ -39,7 +39,7 @@ public:
             QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
 
             //QString pathtodb = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-            //db.setDatabaseName(pathtodb+"/flog.db");
+            //db.setDatabaseName(pathtodb+"/logbook.db");
             //qDebug() << "Database: " << pathtodb+"/logbook.db";
             db.setDatabaseName("logbook.db");
 
@@ -52,7 +52,7 @@ public:
     }
     static void initexample()
     {
-        QSqlQuery query("CREATE TABLE people (id INTEGER PRIMARY KEY, name TEXT)");
+        QSqlQuery query("CREATE TABLE flights (id INTEGER PRIMARY KEY, date NUMERIC)");
 
         if(!query.isActive())
             qWarning() << "MainWindow::DatabaseInit - ERROR: " << query.lastError().text();
@@ -99,10 +99,15 @@ public:
     /*
      * Flights Database Related Functions
      */
+    /*!
+     * \brief SelectFlightDate Retreives Flights from the database
+     * \param doft Date of flight for filtering result set. "ALL" means no filter.
+     * \return Flight(s) for selected date.
+     */
     static QVector<QString> SelectFlightDate(QString doft)
     {
         QSqlQuery query;
-        if (doft == "ALL")
+        if (doft == "ALL") // Special Selector
         {
             query.prepare("SELECT * FROM flights ORDER BY doft DESC, tofb ASC");
             qDebug() << "All flights selected";
@@ -165,6 +170,11 @@ public:
         return flight;
 
     }
+    /*!
+     * \brief SelectFlightById Retreives a single flight from the database.
+     * \param flight_id Primary Key of flights database
+     * \return Flight details of selected flight.
+     */
     static QVector<QString> SelectFlightById(QString flight_id)
     {
         QSqlQuery query;
@@ -191,11 +201,22 @@ public:
         flight.append(query.value(7).toString());
         flight.append(query.value(8).toString());
 
-
         qDebug() << "db::SelectFlightById - retreived flight: " << flight;
         return flight;
-
     }
+
+    /*!
+     * \brief CreateFlightVectorFromInput Converts input from NewFlight Window into database format
+     * \param doft Date of flight
+     * \param dept Place of Departure
+     * \param tofb Time Off Blocks (UTC)
+     * \param dest Place of Destination
+     * \param tonb Time On Blocks (UTC)
+     * \param tblk Total Block Time
+     * \param pic Pilot in command
+     * \param acft Aircraft
+     * \return Vector of values ready for committing
+     */
     static QVector<QString> CreateFlightVectorFromInput(QString doft, QString dept, QTime tofb, QString dest, QTime tonb, QTime tblk, QString pic, QString acft)
     {
 
@@ -212,7 +233,12 @@ public:
         //qDebug() << flight;
         return flight;
     }
-    static int CommitFlight(QVector<QString> flight)// flight vector shall always have length 9
+    /*!
+     * \brief CommitFlight Inserts prepared flight vector into database. Also creates
+     * a corresponding entry in the extras database to ensure matching IDs.
+     * \param flight a Vector of values in database format
+     */
+    static void CommitFlight(QVector<QString> flight)// flight vector shall always have length 9
     {
         QSqlQuery query;
         query.prepare("INSERT INTO flights (doft, dept, tofb, dest, tonb, tblk, pic, acft) "
@@ -232,12 +258,14 @@ public:
         QSqlQuery query2;
         query2.prepare("INSERT INTO extras DEFAULT VALUES");
         query2.exec();
-
         qDebug() << "Creating extras entry" << query2.lastError().text();
-        return 0;
     }
-
-    static int CommitToScratchpad(QVector<QString> flight)// to store input mask
+    /*!
+     * \brief CommitToScratchpad Commits the inputs of the NewFlight window to a scratchpad
+     * to make them available for restoring entries when the input fields are being reloaded.
+     * \param flight The input data, which was not accepted for commiting to the flights table.
+     */
+    static void CommitToScratchpad(QVector<QString> flight)// to store input mask
     {
         //qDebug() << "Saving invalid flight to scratchpad";
         QSqlQuery query;
@@ -254,8 +282,11 @@ public:
         query.bindValue(":acft", flight[8].toInt());
         query.exec();
         qDebug() << query.lastError().text();
-        return 0;
     }
+    /*!
+     * \brief CheckScratchpad Verifies if the scratchpad contains data
+     * \return true if scratchpad contains data
+     */
     static bool CheckScratchpad() // see if scratchpad is empty
     {
         //qDebug() << "Checking if scratchpad contains data";
@@ -274,6 +305,20 @@ public:
             return 0;
         }
     }
+    /*!
+     * \brief ClearScratchpad Deletes data contained in the scratchpad
+     */
+    static void ClearScratchpad()
+    {
+        qDebug() << "Deleting scratchpad";
+        QSqlQuery query;
+        query.prepare("DELETE FROM scratchpad;");
+        query.exec();
+    }
+    /*!
+     * \brief RetreiveScratchpad Selects data from scratchpad
+     * \return Vector of data contained in scratchpad
+     */
     static QVector<QString> RetreiveScratchpad()
     {
         //qDebug() << "Retreiving invalid flight from scratchpad";
@@ -289,57 +334,23 @@ public:
             return flight;
         }
 
-        query.previous();// To go back to index 0
-        //query.last(); // this can be very slow, used to determine query size since .size is not supported by sqlite
-        //int numRows = query.at() + 1; // Number of rows (flights) in the query
-        //query.first();
-        //query.previous();// Go back to index 0
-
-        //QVector<QString> flight(numRows * 9); // Every flight has 9 fields in the database
-        QVector<QString> flight(9);
-        int index = 0; // counter for output vector
-
+        query.previous();
+        QVector<QString> flight;
         while (query.next()) {
-            QString id = query.value(0).toString();
-            QString doft = query.value(1).toString();
-            QString dept = query.value(2).toString();
-            QString tofb = calc::minutes_to_string((query.value(3).toString()));
-            QString dest = query.value(4).toString();
-            QString tonb = calc::minutes_to_string((query.value(5).toString()));
-            QString tblk = calc::minutes_to_string((query.value(6).toString()));
-            QString pic = query.value(7).toString();
-            QString acft = query.value(8).toString();
-            //qDebug() << id << doft << dept << tofb << dest << tonb << tblk << pic << acft << endl;
-            flight[index] = id;
-            ++index;
-            flight[index] = doft;
-            ++index;
-            flight[index] = dept;
-            ++index;
-            flight[index] = tofb;
-            ++index;
-            flight[index] = dest;
-            ++index;
-            flight[index] = tonb;
-            ++index;
-            flight[index] = tblk;
-            ++index;
-            flight[index] = pic;
-            ++index;
-            flight[index] = acft;
-            ++index;
+            flight.append(query.value(0).toString());
+            flight.append(query.value(1).toString());
+            flight.append(query.value(2).toString());
+            flight.append(calc::minutes_to_string((query.value(3).toString())));
+            flight.append(query.value(4).toString());
+            flight.append(calc::minutes_to_string((query.value(5).toString())));
+            flight.append(calc::minutes_to_string((query.value(6).toString())));
+            flight.append(query.value(7).toString());
+            flight.append(query.value(8).toString());
         }
-
         ClearScratchpad();
         return flight;
     }
-    static void ClearScratchpad()
-    {
-        qDebug() << "Deleting scratchpad";
-        QSqlQuery query;
-        query.prepare("DELETE FROM scratchpad;");
-        query.exec();
-    }
+
 
     static bool DeleteFlightById(QString flight_id)
     {
