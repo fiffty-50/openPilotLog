@@ -1,6 +1,6 @@
 # Database Population
 
-This is a couple of python scripts used to create the initial database layout and fill it with data.
+This is a couple of python scripts used to create the initial database layout and fill it with data from CSV files.
 
 It is written in Python for convenience and a release of the application will probably include a prefilled database,
 so this won't be part of any release.
