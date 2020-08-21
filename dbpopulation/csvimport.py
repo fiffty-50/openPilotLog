@@ -104,7 +104,8 @@ with open(os.path.join('./csv', 'aircraft.csv')) as fin:  # imports flights
 
 
 def csvtodbac(to_db):
-    c.executemany("INSERT INTO aircraft (Name, icao, iata) VALUES (?, ?, ?);", to_db)
+    
+    c.executemany("INSERT INTO aircraft (aircraft_id,make,model,variant,name,iata,icao,singlepilot,multipilot,singleengine,multiengine,turboprop,jet,heavy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
     conn.commit()
     print('Databse entries have been added. New table:')
     for row in c.execute("select * from aircraft"):
