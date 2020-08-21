@@ -100,77 +100,6 @@ public:
      * Flights Database Related Functions
      */
     /*!
-     * \brief SelectFlightDate Retreives Flights from the database
-     * \param doft Date of flight for filtering result set. "ALL" means no filter.
-     * \return Flight(s) for selected date.
-     */
-    static QVector<QString> SelectFlightDate(QString doft)
-    {
-        QSqlQuery query;
-        if (doft == "ALL") // Special Selector
-        {
-            query.prepare("SELECT * FROM flights ORDER BY doft DESC, tofb ASC");
-            qDebug() << "All flights selected";
-        }else
-        {
-            query.prepare("SELECT * FROM flights WHERE doft = ? ORDER BY tofb ASC");
-            query.addBindValue(doft);
-            qDebug() << "Searching flights for " << doft;
-        }
-
-        query.exec();
-
-        if(query.first());
-        else
-        {
-            qDebug() << ("No flight with this date found");
-            QVector<QString> flight; //return empty
-            return flight;
-        }
-
-        query.previous();// To go back to index 0
-        query.last(); // this can be very slow, used to determine query size since .size is not supported by sqlite
-        int numRows = query.at() + 1; // Number of rows (flights) in the query
-        query.first();
-        query.previous();// Go back to index 0
-
-        QVector<QString> flight(numRows * 9); // Every flight has 9 fields in the database
-        int index = 0; // counter for output vector
-
-        while (query.next()) {
-            QString id = query.value(0).toString();
-            QString doft = query.value(1).toString();
-            QString dept = query.value(2).toString();
-            QString tofb = calc::minutes_to_string((query.value(3).toString()));
-            QString dest = query.value(4).toString();
-            QString tonb = calc::minutes_to_string((query.value(5).toString()));
-            QString tblk = calc::minutes_to_string((query.value(6).toString()));
-            QString pic = db::RetreivePilotNameFromID(query.value(7).toString());
-            QString acft = db::RetreiveRegistration(query.value(8).toString());
-            //qDebug() << id << doft << dept << tofb << dest << tonb << tblk << pic << acft << endl;
-            flight[index] = id;
-            ++index;
-            flight[index] = doft;
-            ++index;
-            flight[index] = dept;
-            ++index;
-            flight[index] = tofb;
-            ++index;
-            flight[index] = dest;
-            ++index;
-            flight[index] = tonb;
-            ++index;
-            flight[index] = tblk;
-            ++index;
-            flight[index] = pic;
-            ++index;
-            flight[index] = acft;
-            ++index;
-        }
-        return flight;
-
-    }
-    /*!
      * \brief SelectFlightById Retreives a single flight from the database.
      * \param flight_id Primary Key of flights database
      * \return Flight details of selected flight.
@@ -589,7 +518,7 @@ public:
 
             QSqlQuery query2;
             query2.prepare("SELECT piclastname, picfirstname FROM pilots "
-                          "WHERE picfirstname LIKE ? AND piclastname LIKE ?");
+                           "WHERE picfirstname LIKE ? AND piclastname LIKE ?");
             query2.addBindValue(searchlist[0] + '%');
             query2.addBindValue(searchlist[1] + '%');
             query2.exec();
@@ -636,7 +565,7 @@ public:
         qDebug() << "newPicGetId: result = " << result;
         return result;
     }
-/*
+    /*
  * Airport Database Related Functions
  */
 
@@ -752,7 +681,7 @@ public:
     }
 
 
-/*
+    /*
  * Aircraft Database Related Functions
  */
 
@@ -782,6 +711,11 @@ public:
         return acftRegistration;
     }
 
+    /*!
+     * \brief newAcftGetString Looks up an aircraft Registration in the database
+     * \param searchstring
+     * \return Registration, make, model and variant
+     */
     static QStringList newAcftGetString(QString searchstring)
     {
         QStringList result;
@@ -994,5 +928,78 @@ public:
         query.addBindValue(setting_id);
         query.exec();
     }
+/*
+ *  Obsolete Functions
+ */
+    /*!
+     * \brief SelectFlightDate Retreives Flights from the database currently not in use.
+     * \param doft Date of flight for filtering result set. "ALL" means no filter.
+     * \return Flight(s) for selected date.
+     */
+    static QVector<QString> SelectFlightDate(QString doft)
+    {
+        QSqlQuery query;
+        if (doft == "ALL") // Special Selector
+        {
+            query.prepare("SELECT * FROM flights ORDER BY doft DESC, tofb ASC");
+            qDebug() << "All flights selected";
+        }else
+        {
+            query.prepare("SELECT * FROM flights WHERE doft = ? ORDER BY tofb ASC");
+            query.addBindValue(doft);
+            qDebug() << "Searching flights for " << doft;
+        }
 
+        query.exec();
+
+        if(query.first());
+        else
+        {
+            qDebug() << ("No flight with this date found");
+            QVector<QString> flight; //return empty
+            return flight;
+        }
+
+        query.previous();// To go back to index 0
+        query.last(); // this can be very slow, used to determine query size since .size is not supported by sqlite
+        int numRows = query.at() + 1; // Number of rows (flights) in the query
+        query.first();
+        query.previous();// Go back to index 0
+
+        QVector<QString> flight(numRows * 9); // Every flight has 9 fields in the database
+        int index = 0; // counter for output vector
+
+        while (query.next()) {
+            QString id = query.value(0).toString();
+            QString doft = query.value(1).toString();
+            QString dept = query.value(2).toString();
+            QString tofb = calc::minutes_to_string((query.value(3).toString()));
+            QString dest = query.value(4).toString();
+            QString tonb = calc::minutes_to_string((query.value(5).toString()));
+            QString tblk = calc::minutes_to_string((query.value(6).toString()));
+            QString pic = db::RetreivePilotNameFromID(query.value(7).toString());
+            QString acft = db::RetreiveRegistration(query.value(8).toString());
+            //qDebug() << id << doft << dept << tofb << dest << tonb << tblk << pic << acft << endl;
+            flight[index] = id;
+            ++index;
+            flight[index] = doft;
+            ++index;
+            flight[index] = dept;
+            ++index;
+            flight[index] = tofb;
+            ++index;
+            flight[index] = dest;
+            ++index;
+            flight[index] = tonb;
+            ++index;
+            flight[index] = tblk;
+            ++index;
+            flight[index] = pic;
+            ++index;
+            flight[index] = acft;
+            ++index;
+        }
+        return flight;
+
+    }
 };
