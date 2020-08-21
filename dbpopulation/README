@@ -1,0 +1,6 @@
+# Database Population
+
+This is a couple of python scripts used to create the initial database layout and fill it with data.
+
+It is written in Python for convenience and a release of the application will probably includea prefilled database,
+so this won't be part of any release.
