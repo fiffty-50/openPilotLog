@@ -99,7 +99,35 @@ private slots:
 
 
 
+
+
+    void on_tabWidget_tabBarClicked(int index);
+
+    void on_spseTimeLineEdit_editingFinished();
+
+    void on_spmeTimeLineEdit_editingFinished();
+
+    void on_mpTimeLineEdit_editingFinished();
+
+    void on_totalTimeLineEdit_editingFinished();
+
+    void on_ifrTimeLineEdit_editingFinished();
+
+    void on_vfrTimeLineEdit_editingFinished();
+
     void on_nightTimeLineEdit_editingFinished();
+
+    void on_xcTimeLineEdit_editingFinished();
+
+    void on_picTimeLineEdit_editingFinished();
+
+    void on_copTimeLineEdit_editingFinished();
+
+    void on_dualTimeLineEdit_editingFinished();
+
+    void on_fiTimeLineEdit_editingFinished();
+
+    void on_simTimeLineEdit_editingFinished();
 
 private:
     Ui::NewFlight *ui;

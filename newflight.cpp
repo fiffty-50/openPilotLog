@@ -28,7 +28,9 @@
 #include <QSortFilterProxyModel>
 #include <QButtonGroup>
 
-
+/*
+ * Debug / WIP
+ */
 void NewFlight::on_verifyButton_clicked()//debug
 {
     /*on_newDoft_editingFinished();// - activate slots in case user has been active in last input before clicking submit
@@ -41,6 +43,12 @@ void NewFlight::on_verifyButton_clicked()//debug
     verifyInput();*/
     fillExtrasLineEdits();
 
+}
+void NewFlight::on_tabWidget_tabBarClicked(int index)
+{
+    if(index == 1){
+        nope();
+    }
 }
 /*
  * Initialise variables
@@ -92,7 +100,7 @@ NewFlight::NewFlight(QWidget *parent) :
     QValidator *ICAOvalidator = new QRegExpValidator(icao_rx, this);
     ui->newDept->setValidator(ICAOvalidator);
     ui->newDest->setValidator(ICAOvalidator);
-    QRegExp timehhmm("([01]?[0-9]|2[0-3]):?[0-5][0-9]"); //allows time in 24h format with optional leading 0 and with or without seperator
+    QRegExp timehhmm("([01]?[0-9]?|2[0-3]):?[0-5][0-9]?"); //allows time in 24h format with optional leading 0 and with or without seperator
     QValidator *timeInputValidator = new QRegExpValidator(timehhmm, this);
     ui->newTofb->setValidator(timeInputValidator);
     ui->newTonb->setValidator(timeInputValidator);
@@ -147,20 +155,14 @@ void NewFlight::nope()
 
 /*!
  * \brief NewFlight::validateTimeInput verifies user input and formats to hh:mm
+ * if the output is not a valid time, an empty string is returned.
  * \param userinput from a QLineEdit
- * \return formatted QString "hh:mm"
+ * \return formatted QString "hh:mm" or Empty String
  */
 QString NewFlight::validateTimeInput(QString userinput)
 {
-    QString output;
-    QTime temptime;
-
-    if(userinput.length() <3)
-    {
-        QMessageBox timeformat(this);
-        timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
-        timeformat.exec();
-    }
+    QString output; //
+    QTime temptime; //empty time object is invalid by default
 
     bool containsSeperator = userinput.contains(":");
         if(userinput.length() == 4 && !containsSeperator)
@@ -184,7 +186,14 @@ QString NewFlight::validateTimeInput(QString userinput)
             temptime = QTime::fromString(userinput,"hh:mm");
         }
 
-        return temptime.toString("hh:mm");
+        output = temptime.toString("hh:mm");
+        if(output.isEmpty())
+        {
+            QMessageBox timeformat(this);
+            timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
+            timeformat.exec();
+        }
+        return output;
 }
 
 /*!
@@ -202,7 +211,7 @@ void NewFlight::fillExtrasLineEdits()
     // IFR
     // VFR
     // Night
-    if(ui->autoNightCheckBox->isChecked() && tofb.isValid() && tonb.isValid() && dept.length() == 4 && dest.length() == 4) {
+    if(tofb.isValid() && tonb.isValid() && dept.length() == 4 && dest.length() == 4) {
         QString deptDate = date.toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
         qDebug() << "Departure Date: " << deptDate;
         QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
@@ -212,8 +221,6 @@ void NewFlight::fillExtrasLineEdits()
             //qDebug() << calc::calculateNightTime(dept, dest, deptDateTime, blocktime);
             //qDebug() << calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime)));
             ui->nightTimeLineEdit->setText(calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime))));
-    }else if(!ui->autoNightCheckBox->isChecked()) {
-        ui->nightTimeLineEdit->setText("");
     }
     // XC
     // PIC
@@ -338,7 +345,7 @@ void NewFlight::storeSettings()
     db::storesetting(109, QString::number(ui->AutolandCheckBox->isChecked()));
     db::storesetting(110, QString::number(ui->IfrCheckBox->isChecked()));
     db::storesetting(111, QString::number(ui->VfrCheckBox->isChecked()));
-    db::storesetting(112, QString::number(ui->autoNightCheckBox->isChecked()));
+    //db::storesetting(112, QString::number(ui->autoNightCheckBox->isChecked()));
 }
 void NewFlight::restoreSettings()
 {
@@ -355,7 +362,7 @@ void NewFlight::restoreSettings()
     ui->AutolandCheckBox->setChecked(db::retreiveSetting("109")[1].toInt());
     ui->IfrCheckBox->setChecked(db::retreiveSetting("110")[1].toInt());
     ui->VfrCheckBox->setChecked(db::retreiveSetting("111")[1].toInt());
-    ui->autoNightCheckBox->setChecked(db::retreiveSetting("112")[1].toInt());
+    //ui->autoNightCheckBox->setChecked(db::retreiveSetting("112")[1].toInt());
     //qDebug() << "restore Settings ifr to int: " << db::retreiveSetting("110")[1].toInt();
 
 /*
@@ -502,6 +509,13 @@ void NewFlight::on_newTofb_editingFinished()
 {
     ui->newTofb->setText(validateTimeInput(ui->newTofb->text()));
     tofb = QTime::fromString(ui->newTofb->text(),"hh:mm");
+
+    if(!tofb.isValid()){
+        ui->newTofb->setStyleSheet("border: 1px solid red");
+        ui->newTofb->setFocus();
+    }else{
+        ui->newTofb->setStyleSheet("");
+    }
     qDebug() << "New Time Off Blocks: " << tofb;
 }
 
@@ -509,6 +523,13 @@ void NewFlight::on_newTonb_editingFinished()
 {
     ui->newTonb->setText(validateTimeInput(ui->newTonb->text()));
     tonb = QTime::fromString(ui->newTonb->text(),"hh:mm");
+
+    if(!tonb.isValid()){
+        ui->newTonb->setStyleSheet("border: 1px solid red");
+        ui->newTonb->setFocus();
+    }else{
+        ui->newTonb->setStyleSheet("");
+    }
     qDebug() << "New Time On Blocks: " << tonb;
 }
 
@@ -715,7 +736,148 @@ void NewFlight::on_ApproachComboBox_currentTextChanged(const QString &arg1)
  */
 
 
+
+
+
+void NewFlight::on_spseTimeLineEdit_editingFinished()
+{
+    ui->spseTimeLineEdit->setText(validateTimeInput(ui->spseTimeLineEdit->text()));
+    if(ui->spseTimeLineEdit->text() == ""){
+        ui->spseTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->spseTimeLineEdit->setFocus();
+    }else{
+        ui->spseTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_spmeTimeLineEdit_editingFinished()
+{
+    ui->spmeTimeLineEdit->setText(validateTimeInput(ui->spmeTimeLineEdit->text()));
+    if(ui->spmeTimeLineEdit->text() == ""){
+        ui->spmeTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->spmeTimeLineEdit->setFocus();
+    }else{
+        ui->spmeTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_mpTimeLineEdit_editingFinished()
+{
+    ui->mpTimeLineEdit->setText(validateTimeInput(ui->mpTimeLineEdit->text()));
+    if(ui->mpTimeLineEdit->text() == ""){
+        ui->mpTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->mpTimeLineEdit->setFocus();
+    }else{
+        ui->mpTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_totalTimeLineEdit_editingFinished()
+{
+    ui->totalTimeLineEdit->setText(validateTimeInput(ui->totalTimeLineEdit->text()));
+    if(ui->totalTimeLineEdit->text() == ""){
+        ui->totalTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->totalTimeLineEdit->setFocus();
+    }else{
+        ui->totalTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_ifrTimeLineEdit_editingFinished()
+{
+    ui->ifrTimeLineEdit->setText(validateTimeInput(ui->ifrTimeLineEdit->text()));
+    if(ui->ifrTimeLineEdit->text() == ""){
+        ui->ifrTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->ifrTimeLineEdit->setFocus();
+    }else{
+        ui->ifrTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_vfrTimeLineEdit_editingFinished()
+{
+    ui->vfrTimeLineEdit->setText(validateTimeInput(ui->vfrTimeLineEdit->text()));
+    if(ui->vfrTimeLineEdit->text() == ""){
+        ui->vfrTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->vfrTimeLineEdit->setFocus();
+    }else{
+        ui->vfrTimeLineEdit->setStyleSheet("");
+    }
+}
+
 void NewFlight::on_nightTimeLineEdit_editingFinished()
 {
     ui->nightTimeLineEdit->setText(validateTimeInput(ui->nightTimeLineEdit->text()));
+    if(ui->nightTimeLineEdit->text() == ""){
+        ui->nightTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->nightTimeLineEdit->setFocus();
+    }else{
+        ui->nightTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_xcTimeLineEdit_editingFinished()
+{
+    ui->xcTimeLineEdit->setText(validateTimeInput(ui->xcTimeLineEdit->text()));
+    if(ui->xcTimeLineEdit->text() == ""){
+        ui->xcTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->xcTimeLineEdit->setFocus();
+    }else{
+        ui->xcTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_picTimeLineEdit_editingFinished()
+{
+    ui->picTimeLineEdit->setText(validateTimeInput(ui->picTimeLineEdit->text()));
+    if(ui->picTimeLineEdit->text() == ""){
+        ui->picTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->picTimeLineEdit->setFocus();
+    }else{
+        ui->picTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_copTimeLineEdit_editingFinished()
+{
+    ui->copTimeLineEdit->setText(validateTimeInput(ui->copTimeLineEdit->text()));
+    if(ui->copTimeLineEdit->text() == ""){
+        ui->copTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->copTimeLineEdit->setFocus();
+    }else{
+        ui->copTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_dualTimeLineEdit_editingFinished()
+{
+    ui->dualTimeLineEdit->setText(validateTimeInput(ui->dualTimeLineEdit->text()));
+    if(ui->dualTimeLineEdit->text() == ""){
+        ui->dualTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->dualTimeLineEdit->setFocus();
+    }else{
+        ui->dualTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_fiTimeLineEdit_editingFinished()
+{
+    ui->fiTimeLineEdit->setText(validateTimeInput(ui->fiTimeLineEdit->text()));
+    if(ui->fiTimeLineEdit->text() == ""){
+        ui->fiTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->fiTimeLineEdit->setFocus();
+    }else{
+        ui->fiTimeLineEdit->setStyleSheet("");
+    }
+}
+
+void NewFlight::on_simTimeLineEdit_editingFinished()
+{
+    ui->simTimeLineEdit->setText(validateTimeInput(ui->simTimeLineEdit->text()));
+    if(ui->simTimeLineEdit->text() == ""){
+        ui->simTimeLineEdit->setStyleSheet("border: 1px solid red");
+        ui->simTimeLineEdit->setFocus();
+    }else{
+        ui->simTimeLineEdit->setStyleSheet("");
+    }
 }
