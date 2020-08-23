@@ -36,31 +36,15 @@ private slots:
 
     void nope();
 
-    void on_newflightButton_clicked();
-
     void on_actionNew_Flight_triggered();
 
     void on_actionQuit_triggered();
 
     void on_quitButton_clicked();
 
-    void on_ShowAllButton_clicked();
+    void on_actionHome_triggered();
 
-    void on_filterComboBox_activated(const QString &arg1);
-
-    void on_editflightButton_clicked();
-
-    void on_deleteFlightPushButton_clicked();
-
-    void on_FilterDateEdit_editingFinished();
-
-    void on_filterFlightsByDateButton_clicked();
-
-    void on_EasaViewButton_clicked();
-
-    void on_tableView_pressed(const QModelIndex &index);
-
-    void on_tableView_entered(const QModelIndex &index);
+    void on_actionLogbook_triggered();
 
 private:
     Ui::MainWindow *ui;

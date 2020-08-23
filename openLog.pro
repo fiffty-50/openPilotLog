@@ -24,6 +24,8 @@ SOURCES += \
     dbman.cpp \
     easaview.cpp \
     editflight.cpp \
+    homewidget.cpp \
+    logbookwidget.cpp \
     main.cpp \
     mainwindow.cpp \
     newacft.cpp \
@@ -34,6 +36,8 @@ HEADERS += \
     calc.h \
     easaview.h \
     editflight.h \
+    homewidget.h \
+    logbookwidget.h \
     mainwindow.h \
     newacft.h \
     newflight.h \
@@ -42,6 +46,8 @@ HEADERS += \
 FORMS += \
     easaview.ui \
     editflight.ui \
+    homewidget.ui \
+    logbookwidget.ui \
     mainwindow.ui \
     newacft.ui \
     newflight.ui \
