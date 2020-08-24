@@ -50,7 +50,7 @@ logbookWidget::logbookWidget(QWidget *parent) :
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    qDebug() << "homeWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
+    qDebug() << "logbookWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
 }
 
 logbookWidget::~logbookWidget()

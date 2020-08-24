@@ -31,6 +31,7 @@ SOURCES += \
     mainwindow.cpp \
     newacft.cpp \
     newflight.cpp \
+    settingswidget.cpp \
     showaircraftlist.cpp \
 
 HEADERS += \
@@ -42,6 +43,7 @@ HEADERS += \
     mainwindow.h \
     newacft.h \
     newflight.h \
+    settingswidget.h \
     showaircraftlist.h \
 
 FORMS += \
@@ -52,6 +54,7 @@ FORMS += \
     mainwindow.ui \
     newacft.ui \
     newflight.ui \
+    settingswidget.ui \
     showaircraftlist.ui \
 
 # Default rules for deployment.

@@ -41,11 +41,13 @@ int main(int argc, char *argv[])
     selectedtheme = db::retreiveSetting("10")[1].toInt();
     QDir::setCurrent("/themes");
     if (selectedtheme == 1){
+        qDebug() << "Loading light theme";
         QFile file(":light.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);
         openLog.setStyleSheet(stream.readAll());
     }else if (selectedtheme == 2){
+        qDebug() << "Loading dark theme";
         QFile file(":dark.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);

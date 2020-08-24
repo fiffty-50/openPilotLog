@@ -25,6 +25,7 @@
 #include "calc.h"
 #include "homewidget.h"
 #include "logbookwidget.h"
+#include "settingswidget.h"
 #include <QTime>
 #include <QSqlDatabase>
 #include <QSqlDriver>
@@ -121,5 +122,7 @@ void MainWindow::on_actionLogbook_triggered()
 
 void MainWindow::on_actionSettings_triggered()
 {
-    nope();
+    auto sw = new settingsWidget(this);
+    ui->stackedWidget->addWidget(sw);
+    ui->stackedWidget->setCurrentWidget(sw);
 }
