@@ -35,26 +35,38 @@
 #include <chrono>
 #include <QMessageBox>
 
+#include <QDir>
+#include <QFile>
+
 qlonglong SelectedFlightold = -1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
-    // Adds space between toolbar items and actionQuit item
+
+    // Set up Toolbar
+    ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->toolBar->setIconSize(QSize(64,64));
+    ui->actionLogbook->setIcon(QIcon(":/logbook_icon.png"));
+    ui->actionHome->setIcon(QIcon(":/home_icon.svg"));
+    ui->actionSettings->setIcon(QIcon(":/settings_icon.svg"));
+    ui->actionQuit->setIcon(QIcon(":/quit_icon.svg"));
+
+    // Adds space between toolbar items and actionSetting item
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(10);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionQuit,spacer);
+    ui->toolBar->insertWidget(ui->actionSettings,spacer);
+
 
     // create and show homeWidget
     auto hw = new homeWidget(this);
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 
-    db::connect();  //connect to the database
+
 }
 
 MainWindow::~MainWindow()
@@ -105,4 +117,9 @@ void MainWindow::on_actionLogbook_triggered()
     auto lw = new logbookWidget(this);
     ui->stackedWidget->addWidget(lw);
     ui->stackedWidget->setCurrentWidget(lw);
+}
+
+void MainWindow::on_actionSettings_triggered()
+{
+    nope();
 }

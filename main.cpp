@@ -23,9 +23,10 @@
 #include <QDir>
 #include <QPalette>
 #include <QColor>
+#include "dbman.cpp"
 #include <QDebug>
 
-
+int selectedtheme = 1; //Variable to store theming information
 
 int main(int argc, char *argv[])
 {
@@ -33,13 +34,24 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("f-cloud.ch");
     QCoreApplication::setApplicationName("openLog");
     QApplication openLog(argc, argv);
+    db::connect();  //connect to the database
+
     //Theming with CSS inlcues QFile,QTextStream, QDir, themes folder and TARGET = flog, RESOURCES = themes/breeze.qrc in pro
     // credit: https://github.com/Alexhuszagh/BreezeStyleSheets
+    selectedtheme = db::retreiveSetting("10")[1].toInt();
     QDir::setCurrent("/themes");
-    QFile file(":dark.qss");
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream stream(&file);
-    openLog.setStyleSheet(stream.readAll());
+    if (selectedtheme == 1){
+        QFile file(":light.qss");
+        file.open(QFile::ReadOnly | QFile::Text);
+        QTextStream stream(&file);
+        openLog.setStyleSheet(stream.readAll());
+    }else if (selectedtheme == 2){
+        QFile file(":dark.qss");
+        file.open(QFile::ReadOnly | QFile::Text);
+        QTextStream stream(&file);
+        openLog.setStyleSheet(stream.readAll());
+    }
+
 
 
     MainWindow w;

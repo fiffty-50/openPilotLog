@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -55,7 +55,7 @@
    </attribute>
    <addaction name="actionHome"/>
    <addaction name="actionLogbook"/>
-   <addaction name="actionNew_Flight"/>
+   <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
   <action name="actionNew_Flight">
@@ -78,10 +78,24 @@
    <property name="text">
     <string>Home</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionLogbook">
    <property name="text">
     <string>Logbook</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

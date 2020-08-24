@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>logbook_icon.png</file>
+        <file>home_icon.svg</file>
+        <file>settings_icon.svg</file>
+        <file>search_icon.svg</file>
+        <file>quit_icon.svg</file>
+    </qresource>
+</RCC>

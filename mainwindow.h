@@ -46,6 +46,8 @@ private slots:
 
     void on_actionLogbook_triggered();
 
+    void on_actionSettings_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

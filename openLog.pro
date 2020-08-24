@@ -6,7 +6,8 @@ CONFIG += c++11
 
 TARGET = openLog
 
-RESOURCES = themes/breeze.qrc
+RESOURCES = themes/breeze.qrc \
+    themes/icons/icons.qrc
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
