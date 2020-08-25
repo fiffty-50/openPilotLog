@@ -1,5 +1,5 @@
 icao,iata,name,lat,long,country,alt,utcoffset,tzolson
-AYGA,GKA,Goroka Airport,-6.08168983459,145.391998291,Papua New Guinea,5282,10,Pacific/Port_Moresby
+AYGA,GKA,Goroka Airport,-6.0816898345,145.391998291,Papua New Guinea,5282,10,Pacific/Port_Moresby
 AYMD,MAG,Madang Airport,-5.20707988739,145.789001465,Papua New Guinea,20,10,Pacific/Port_Moresby
 AYMH,HGU,Mount Hagen Kagamuga Airport,-5.82678985595703,144.296005249023,Papua New Guinea,5388,10,Pacific/Port_Moresby
 AYNZ,LAE,Nadzab Airport,-6.569803,146.725977,Papua New Guinea,239,10,Pacific/Port_Moresby
