@@ -40,8 +40,6 @@ private slots:
 
     void on_actionQuit_triggered();
 
-    void on_quitButton_clicked();
-
     void on_actionHome_triggered();
 
     void on_actionLogbook_triggered();

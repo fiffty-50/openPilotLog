@@ -101,11 +101,6 @@ void MainWindow::on_actionQuit_triggered()
     QApplication::quit();
 }
 
-void MainWindow::on_quitButton_clicked()
-{
-    QApplication::quit();
-}
-
 void MainWindow::on_actionHome_triggered()
 {
     auto hw = new homeWidget(this);

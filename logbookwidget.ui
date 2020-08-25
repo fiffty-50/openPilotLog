@@ -21,6 +21,9 @@
        <family>Cantarell</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>
@@ -45,7 +48,7 @@
        <second>0</second>
        <year>2019</year>
        <month>12</month>
-       <day>18</day>
+       <day>17</day>
       </datetime>
      </property>
      <property name="displayFormat">
