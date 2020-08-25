@@ -898,10 +898,34 @@ public:
     }
 
     /*
-     * Aircraft Database Related Functions
+     * Settings Database Related Functions
      */
 
-    static QVector<QString> retreiveSetting(QString setting_id)
+    /*!
+     * \brief retreiveSetting Looks up a setting in the database and returns its value
+     * \param setting_id
+     * \return setting value
+     */
+    static QString retreiveSetting(QString setting_id)
+    {
+        QSqlQuery query;
+        query.prepare("SELECT setting FROM settings WHERE setting_id = ?");
+        query.addBindValue(setting_id);
+        query.exec();
+
+        QString setting = "-1";
+
+        while(query.next()){
+            setting = query.value(0).toString();
+        }
+        return setting;
+    }
+    /*!
+     * \brief retreiveSettingInfo Looks up a setting in the database and returns its value and description
+     * \param setting_id
+     * \return {setting_id, setting, description}
+     */
+    static QVector<QString> retreiveSettingInfo(QString setting_id)
     {
         QSqlQuery query;
         query.prepare("SELECT * FROM settings WHERE setting_id = ?");
@@ -917,7 +941,11 @@ public:
         }
         return setting;
     }
-
+    /*!
+     * \brief storesetting Updates a stored setting in the database
+     * \param setting_id
+     * \param setting_value
+     */
     static void storesetting(int setting_id, QString setting_value)
     {
         QSqlQuery query;

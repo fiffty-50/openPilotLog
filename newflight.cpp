@@ -350,18 +350,18 @@ void NewFlight::storeSettings()
 void NewFlight::restoreSettings()
 {
     qDebug() << "Restoring Settings...";//crashes if db is empty due to QVector index out of range.
-    ui->FunctionComboBox->setCurrentText(db::retreiveSetting("100")[1]);
-    ui->ApproachComboBox->setCurrentText(db::retreiveSetting("101")[1]);
-    ui->PilotFlyingCheckBox->setChecked(db::retreiveSetting("102")[1].toInt());
-    ui->PilotMonitoringCheckBox->setChecked(db::retreiveSetting("103")[1].toInt());
-    ui->TakeoffSpinBox->setValue(db::retreiveSetting("104")[1].toInt());
-    ui->TakeoffCheckBox->setChecked(db::retreiveSetting("105")[1].toInt());
-    ui->LandingSpinBox->setValue(db::retreiveSetting("106")[1].toInt());
-    ui->LandingCheckBox->setChecked(db::retreiveSetting("107")[1].toInt());
-    ui->AutolandSpinBox->setValue(db::retreiveSetting("108")[1].toInt());
-    ui->AutolandCheckBox->setChecked(db::retreiveSetting("109")[1].toInt());
-    ui->IfrCheckBox->setChecked(db::retreiveSetting("110")[1].toInt());
-    ui->VfrCheckBox->setChecked(db::retreiveSetting("111")[1].toInt());
+    ui->FunctionComboBox->setCurrentText(db::retreiveSetting("100"));
+    ui->ApproachComboBox->setCurrentText(db::retreiveSetting("101"));
+    ui->PilotFlyingCheckBox->setChecked(db::retreiveSetting("102").toInt());
+    ui->PilotMonitoringCheckBox->setChecked(db::retreiveSetting("103").toInt());
+    ui->TakeoffSpinBox->setValue(db::retreiveSetting("104").toInt());
+    ui->TakeoffCheckBox->setChecked(db::retreiveSetting("105").toInt());
+    ui->LandingSpinBox->setValue(db::retreiveSetting("106").toInt());
+    ui->LandingCheckBox->setChecked(db::retreiveSetting("107").toInt());
+    ui->AutolandSpinBox->setValue(db::retreiveSetting("108").toInt());
+    ui->AutolandCheckBox->setChecked(db::retreiveSetting("109").toInt());
+    ui->IfrCheckBox->setChecked(db::retreiveSetting("110").toInt());
+    ui->VfrCheckBox->setChecked(db::retreiveSetting("111").toInt());
     //ui->autoNightCheckBox->setChecked(db::retreiveSetting("112")[1].toInt());
     //qDebug() << "restore Settings ifr to int: " << db::retreiveSetting("110")[1].toInt();
 

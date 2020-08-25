@@ -17,7 +17,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
     themeGroup->addButton(ui->lightThemeCheckBox);
     themeGroup->addButton(ui->darkThemeCheckBox);
 
-    int themeSetting = db::retreiveSetting("10")[1].toInt();
+    int themeSetting = db::retreiveSetting("10").toInt();
     qDebug() << themeSetting;
     switch (themeSetting) {
       case 0:

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     //Theming with CSS inlcues QFile,QTextStream, QDir, themes folder and TARGET = flog, RESOURCES = themes/breeze.qrc in pro
     // credit: https://github.com/Alexhuszagh/BreezeStyleSheets
-    selectedtheme = db::retreiveSetting("10")[1].toInt();
+    selectedtheme = db::retreiveSetting("10").toInt();
     QDir::setCurrent("/themes");
     if (selectedtheme == 1){
         qDebug() << "Loading light theme";
