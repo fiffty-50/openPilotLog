@@ -24,33 +24,54 @@
        <string>Flight Data</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="doftLabel">
+       <item row="3" column="3">
+        <widget class="QLabel" name="picLabel">
          <property name="text">
-          <string>Date of Flight</string>
+          <string>Name PIC</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QDateEdit" name="newDoft">
-         <property name="dateTime">
-          <datetime>
-           <hour>23</hour>
-           <minute>0</minute>
-           <second>0</second>
-           <year>2019</year>
-           <month>12</month>
-           <day>15</day>
-          </datetime>
+       <item row="3" column="0">
+        <widget class="QLabel" name="acftLabel">
+         <property name="text">
+          <string>Aircraft</string>
          </property>
-         <property name="displayFormat">
-          <string>yyyy/MM/dd</string>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="newDest">
+         <property name="toolTip">
+          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
          </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
+         <property name="inputMethodHints">
+          <set>Qt::ImhNone</set>
          </property>
-         <property name="timeSpec">
-          <enum>Qt::UTC</enum>
+         <property name="maxLength">
+          <number>4</number>
+         </property>
+         <property name="placeholderText">
+          <string>EDDF</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
+        <widget class="QLineEdit" name="thirdPilotLineEdit">
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="destLabel">
+         <property name="text">
+          <string>Destination</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="newAcft">
+         <property name="placeholderText">
+          <string>D-LMAO</string>
          </property>
         </widget>
        </item>
@@ -61,10 +82,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="placeLabel1">
+       <item row="0" column="0">
+        <widget class="QLabel" name="doftLabel">
          <property name="text">
-          <string>Place</string>
+          <string>Date of Flight</string>
          </property>
         </widget>
        </item>
@@ -81,6 +102,34 @@
          </property>
          <property name="placeholderText">
           <string>KJFK</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="placeLabel2">
+         <property name="text">
+          <string>Place</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="FlightNumberLabel">
+         <property name="text">
+          <string>Flight number</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLineEdit" name="FlightNumberLineEdit">
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLabel" name="tonbLabel">
+         <property name="text">
+          <string>Time</string>
          </property>
         </widget>
        </item>
@@ -101,53 +150,6 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="4">
-        <widget class="QLabel" name="tofbLabel">
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="5">
-        <widget class="QLineEdit" name="newTofb">
-         <property name="maxLength">
-          <number>5</number>
-         </property>
-         <property name="placeholderText">
-          <string>00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="destLabel">
-         <property name="text">
-          <string>Destination</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="placeLabel2">
-         <property name="text">
-          <string>Place</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLineEdit" name="newDest">
-         <property name="toolTip">
-          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
-         </property>
-         <property name="inputMethodHints">
-          <set>Qt::ImhNone</set>
-         </property>
-         <property name="maxLength">
-          <number>4</number>
-         </property>
-         <property name="placeholderText">
-          <string>EDDF</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="3">
         <widget class="QComboBox" name="destTZ">
          <property name="toolTip">
@@ -165,41 +167,6 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="4">
-        <widget class="QLabel" name="tonbLabel">
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="5">
-        <widget class="QLineEdit" name="newTonb">
-         <property name="placeholderText">
-          <string>00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="acftLabel">
-         <property name="text">
-          <string>Aircraft</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLineEdit" name="newAcft">
-         <property name="placeholderText">
-          <string>D-LMAO</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QLabel" name="picLabel">
-         <property name="text">
-          <string>Name PIC</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="5">
         <widget class="QLineEdit" name="newPic">
          <property name="placeholderText">
@@ -207,10 +174,10 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="picLabel_2">
-         <property name="text">
-          <string>Second Pilot</string>
+       <item row="5" column="5">
+        <widget class="QLineEdit" name="RemarksLineEdit">
+         <property name="placeholderText">
+          <string>optional</string>
          </property>
         </widget>
        </item>
@@ -224,6 +191,46 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="2">
+        <widget class="QDateEdit" name="newDoft">
+         <property name="dateTime">
+          <datetime>
+           <hour>23</hour>
+           <minute>0</minute>
+           <second>0</second>
+           <year>2019</year>
+           <month>12</month>
+           <day>14</day>
+          </datetime>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy/MM/dd</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="QLineEdit" name="newTofb">
+         <property name="maxLength">
+          <number>5</number>
+         </property>
+         <property name="placeholderText">
+          <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="placeLabel1">
+         <property name="text">
+          <string>Place</string>
+         </property>
+        </widget>
+       </item>
        <item row="4" column="3">
         <widget class="QLabel" name="thirdPilotLabel">
          <property name="text">
@@ -231,24 +238,10 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="5">
-        <widget class="QLineEdit" name="thirdPilotLineEdit">
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="FlightNumberLabel">
+       <item row="1" column="4">
+        <widget class="QLabel" name="tofbLabel">
          <property name="text">
-          <string>Flight number</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QLineEdit" name="FlightNumberLineEdit">
-         <property name="placeholderText">
-          <string>optional</string>
+          <string>Time</string>
          </property>
         </widget>
        </item>
@@ -259,10 +252,17 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="5">
-        <widget class="QLineEdit" name="RemarksLineEdit">
+       <item row="4" column="0">
+        <widget class="QLabel" name="picLabel_2">
+         <property name="text">
+          <string>Second Pilot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="QLineEdit" name="newTonb">
          <property name="placeholderText">
-          <string>optional</string>
+          <string>00:00</string>
          </property>
         </widget>
        </item>
@@ -270,360 +270,278 @@
      </widget>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="verifyButton">
+     <property name="text">
+      <string>DebugButton</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="verifyEdit">
+     <property name="placeholderText">
+      <string>Debug Text</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
        <string>Auto-Logging</string>
       </attribute>
-      <widget class="QPushButton" name="setAsDefaultButton">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>220</y>
-         <width>109</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Set current selection as default</string>
-       </property>
-       <property name="text">
-        <string>Set As Default</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="restoreDefaultButton">
-       <property name="geometry">
-        <rect>
-         <x>403</x>
-         <y>220</y>
-         <width>120</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Restore previously stored default selection</string>
-       </property>
-       <property name="text">
-        <string>Restore Default</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="FunctionComboBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>9</y>
-         <width>99</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <item>
-        <property name="text">
-         <string>PIC</string>
-        </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="PilotMonitoringCheckBox">
+         <property name="text">
+          <string>PM</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>Co-Pilot</string>
-        </property>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Approach </string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>Dual</string>
-        </property>
+       <item row="6" column="0">
+        <widget class="QLabel" name="RulesLabel">
+         <property name="text">
+          <string>Rules</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>Instructor</string>
-        </property>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="IfrCheckBox">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>IFR</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
-      </widget>
-      <widget class="QCheckBox" name="PilotFlyingCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>79</y>
-         <width>44</width>
-         <height>26</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Assumes T/O and LDG performed. If not, edit details.</string>
-       </property>
-       <property name="text">
-        <string>PF</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <property name="autoExclusive">
-        <bool>false</bool>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="PilotMonitoringCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>116</y>
-         <width>49</width>
-         <height>26</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>PM</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="RulesLabel">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>151</y>
-         <width>40</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Rules</string>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="IfrCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>153</y>
-         <width>49</width>
-         <height>26</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>IFR</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="VfrCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>188</y>
-         <width>54</width>
-         <height>26</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>VFR</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>43</y>
-         <width>72</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Approach </string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="ApproachComboBox">
-       <property name="geometry">
-        <rect>
-         <x>206</x>
-         <y>43</y>
-         <width>139</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="currentText">
-        <string>ILS CAT I</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>ILS CAT I</string>
-        </property>
+       <item row="8" column="1" colspan="2">
+        <widget class="QPushButton" name="setAsDefaultButton">
+         <property name="toolTip">
+          <string>Set current selection as default</string>
+         </property>
+         <property name="text">
+          <string>Set As Default</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>ILS CAT II</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>ILS CAT III</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Visual</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>RNAV</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>RNAV (RNP)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>RNAV (RNP AR)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>VOR</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>NDB</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>LOC</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GLS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MLS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>SRA</string>
-        </property>
-       </item>
-      </widget>
-      <widget class="QLabel" name="FunctionLabel">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>63</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Function</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="TaskLabel">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>77</y>
-         <width>34</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Task</string>
-       </property>
-      </widget>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>403</x>
-         <y>77</y>
-         <width>136</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QCheckBox" name="LandingCheckBox">
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="FunctionComboBox">
+         <item>
           <property name="text">
-           <string>Landing</string>
+           <string>PIC</string>
           </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="LandingSpinBox">
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>403</x>
-         <y>114</y>
-         <width>141</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QCheckBox" name="TakeoffCheckBox">
-          <property name="toolTip">
-           <string/>
-          </property>
+         </item>
+         <item>
           <property name="text">
-           <string>Take Off</string>
+           <string>Co-Pilot</string>
           </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="TakeoffSpinBox">
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>403</x>
-         <y>151</y>
-         <width>144</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QCheckBox" name="AutolandCheckBox">
+         </item>
+         <item>
           <property name="text">
-           <string>Autoland</string>
+           <string>Dual</string>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="AutolandSpinBox"/>
-        </item>
-       </layout>
-      </widget>
+         </item>
+         <item>
+          <property name="text">
+           <string>Instructor</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="FunctionLabel">
+         <property name="text">
+          <string>Function</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QComboBox" name="ApproachComboBox">
+         <property name="currentText">
+          <string>ILS CAT I</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>ILS CAT I</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT II</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT III</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Visual</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP AR)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VOR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NDB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SRA</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="TaskLabel">
+         <property name="text">
+          <string>Task</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="PilotFlyingCheckBox">
+         <property name="toolTip">
+          <string>Assumes T/O and LDG performed. If not, edit details.</string>
+         </property>
+         <property name="text">
+          <string>PF</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QCheckBox" name="VfrCheckBox">
+         <property name="text">
+          <string>VFR</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3" colspan="2">
+        <widget class="QPushButton" name="restoreDefaultButton">
+         <property name="toolTip">
+          <string>Restore previously stored default selection</string>
+         </property>
+         <property name="text">
+          <string>Restore Default</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QCheckBox" name="LandingCheckBox">
+         <property name="text">
+          <string>Landing</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="TakeoffCheckBox">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Take Off</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QSpinBox" name="TakeoffSpinBox">
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QCheckBox" name="AutolandCheckBox">
+         <property name="text">
+          <string>Autoland</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="3">
+        <widget class="QSpinBox" name="AutolandSpinBox"/>
+       </item>
+       <item row="4" column="3">
+        <widget class="QSpinBox" name="LandingSpinBox">
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -764,30 +682,6 @@
      </widget>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="verifyButton">
-     <property name="text">
-      <string>DebugButton</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="verifyEdit">
-     <property name="placeholderText">
-      <string>Debug Text</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>
@@ -801,10 +695,6 @@
   <tabstop>thirdPilotLineEdit</tabstop>
   <tabstop>FlightNumberLineEdit</tabstop>
   <tabstop>RemarksLineEdit</tabstop>
-  <tabstop>TakeoffSpinBox</tabstop>
-  <tabstop>TakeoffCheckBox</tabstop>
-  <tabstop>AutolandSpinBox</tabstop>
-  <tabstop>AutolandCheckBox</tabstop>
   <tabstop>setAsDefaultButton</tabstop>
   <tabstop>restoreDefaultButton</tabstop>
   <tabstop>spseTimeLineEdit</tabstop>
