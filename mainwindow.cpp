@@ -80,7 +80,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::nope()
 {
-    QMessageBox nope; //error box
+    QMessageBox nope(this); //error box
     nope.setText("This feature is not yet available!");
     nope.exec();
 }
@@ -117,6 +117,7 @@ void MainWindow::on_actionLogbook_triggered()
 
 void MainWindow::on_actionSettings_triggered()
 {
+    nope();
     auto sw = new settingsWidget(this);
     ui->stackedWidget->addWidget(sw);
     ui->stackedWidget->setCurrentWidget(sw);

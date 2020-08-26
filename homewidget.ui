@@ -182,7 +182,7 @@
      <item row="2" column="1">
       <widget class="QLabel" name="currencyLabel">
        <property name="text">
-        <string>Currency:</string>
+        <string>Currency (last 90 days):</string>
        </property>
       </widget>
      </item>

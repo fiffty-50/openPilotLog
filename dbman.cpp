@@ -281,16 +281,36 @@ public:
     }
 
 
-    static bool DeleteFlightById(QString flight_id)
+    static bool deleteFlightById(QString flight_id) // To Do: also remove associated extras
     {
+        /*QString extras_id = flight_id;
+        QSqlQuery query;
+        query.prepare("DELETE FROM flights WHERE id = :flight_id");
+        query.bindValue(":flight_id", flight_id);
+        query.exec();
+        QString error = query.lastError().text();
+
+        QSqlQuery query2;
+        query2.prepare("DELETE FROM extras WHERE extras_id = :extras_id");
+        query2.bindValue(":extras_id", extras_id);
+        query2.exec();
+        QString error2 = query2.lastError().text();*/
         QSqlQuery query;
         query.prepare("DELETE FROM flights WHERE id = ?");
         query.addBindValue(flight_id);
         query.exec();
         QString error = query.lastError().text();
-        qDebug() << "db::DeleteFlightById: Removing flight with ID#: " << flight_id << "Query Error: " << error;
-        if(error.length() > 0)
+
+        QSqlQuery query2;
+        query2.prepare("DELETE FROM extras WHERE extras_id = ?");
+        query2.addBindValue(flight_id);
+        query2.exec();
+        QString error2 = query2.lastError().text();
+
+        qDebug() << "db::deleteFlightById: Removing flight with ID#: " << flight_id;
+        if(error.length() > 0 || error2.length() > 0)
         {
+            qWarning() << "db::deleteFlightsById: Errors have occured: " << error << " " << error2;
             return false;
         }else
         {

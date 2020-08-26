@@ -64,10 +64,13 @@ void logbookWidget::on_newFlightButton_clicked()
     nf.exec();
 }
 
-void logbookWidget::on_editFlightButton_clicked()
+void logbookWidget::on_editFlightButton_clicked() // To Do: Fix!
 {
-    EditFlight ef(this);
-    ef.exec();
+    QMessageBox *nope = new QMessageBox(this); // edit widget currently INOP
+    nope->setText("This feature is temporarily INOP.");
+    nope->exec();
+    //EditFlight ef(this);
+    //ef.exec();
 }
 
 void logbookWidget::on_deleteFlightPushButton_clicked()
@@ -76,13 +79,19 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
     {
         qDebug() << "Valid Flight Selected";
         // To Do: Confirmation Dialog
-        db::DeleteFlightById(QString::number(SelectedFlight));
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Delete Flight", "The following flight will be deleted:\n{retreive Flight Details}\nAre you sure?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes)
+        {
+            qDebug() << "Deleting Flight with ID# " << SelectedFlight;
+            db::deleteFlightById(QString::number(SelectedFlight));
 
-        QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
-        ShowAllModel->setTable("Logbook");
-        ShowAllModel->select();
-
-        ui->tableView->setModel(ShowAllModel);
+            QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
+            ShowAllModel->setTable("Logbook");
+            ShowAllModel->select();
+            ui->tableView->setModel(ShowAllModel);
+        }
     }else
     {
         QMessageBox NoFlight;
