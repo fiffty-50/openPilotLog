@@ -1,5 +1,7 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
+#include "calc.h"
+#include "dbman.cpp"
 
 #include <QDebug>
 
@@ -15,12 +17,30 @@ homeWidget::homeWidget(QWidget *parent) :
      * To Do: Functions to retreive values from DB
      */
 
-    ui->totalTimeDisplayLabel->setText("123:45");
-    ui->blockHoursDisplayLabel->setText("123:45");
-    ui->currencyDisplayLabel->setText("17 Take Offs\n15 Landings");
+    ui->totalTimeDisplayLabel->setText(calc::minutes_to_string(db::retreiveTotalTime()));
+
+    QString blockMinutesThisYear = db::retreiveTotalTimeThisCalendarYear();
+    ui->blockHoursCalDisplayLabel->setText(calc::minutes_to_string(blockMinutesThisYear));
+    if (blockMinutesThisYear.toInt() > 900*60) {
+        qDebug() << "More than 900 block hours this calendar year!";
+        // set Text Red
+    }
+    QString blockMinutesRollingYear = db::retreiveTotalTimeRollingYear();
+    ui->blockHoursRolDisplayLabel->setText(calc::minutes_to_string(blockMinutesRollingYear));
+    QVector<QString> currency = db::retreiveCurrencyTakeoffLanding();
+    ui->currencyDisplayLabel->setText(currency[0] + " Take Offs\n" + currency[1] + " Landings");
+    if (currency[0].toInt() < 3 || currency[1].toInt() < 3){
+        qDebug() << "Less than 3 TO/LDG in last 90 days!";
+        //set Text Red
+    }
 }
 
 homeWidget::~homeWidget()
 {
     delete ui;
+}
+
+void homeWidget::on_debugButton_clicked()
+{
+    ui->debugLineEdit->setText(db::retreiveTotalTimeRollingYear());
 }

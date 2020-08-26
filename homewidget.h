@@ -18,6 +18,8 @@ public:
 private slots:
 
 
+    void on_debugButton_clicked();
+
 private:
     Ui::homeWidget *ui;
 };

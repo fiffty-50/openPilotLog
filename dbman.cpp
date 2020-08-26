@@ -311,6 +311,97 @@ public:
         }
     }
 
+    /*!
+     * \brief retreiveTotalTime Looks up Total Blocktime in the flights database
+     * \return Amount of Total Block Time in blockminutes
+     */
+    static QString retreiveTotalTime()
+    {
+        QSqlQuery query;
+        query.prepare("SELECT SUM(tblk) FROM flights");
+        query.exec();
+
+        QString result;
+        while (query.next()){
+          result = query.value(0).toString();
+        }
+        return result;
+    }
+
+    /*!
+     * \brief retreiveTotalTimeThisCalendarYear Looks up Total Block Time in
+     * the current calendar year
+     * \return Total Amount of Blockminutes
+     */
+    static QString retreiveTotalTimeThisCalendarYear()
+    {
+        QDate today = QDate::currentDate();
+        QDate start;
+        start.setDate(today.year(),1,1);
+        QString startdate = start.toString(Qt::ISODate);
+
+        QSqlQuery query;
+        query.prepare("SELECT SUM(tblk) FROM flights WHERE doft >= ?");
+        query.addBindValue(startdate);
+        query.exec();
+
+        QString result;
+        while (query.next()){
+            result = query.value(0).toString();
+        }
+
+        qDebug() << "db::retreiveTotalTimeThisCalendarYear: Total minutes: " << result;
+        return result;
+    }
+    /*!
+     * \brief retreiveTotalTimeRollingYear Looks up Total Time in the last 365 days.
+     * \return Total Blockminutes
+     */
+    static QString retreiveTotalTimeRollingYear()
+    {
+        QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
+        QString startdate = start.toString(Qt::ISODate);
+
+        QSqlQuery query;
+        query.prepare("SELECT SUM(tblk) FROM flights WHERE doft >= ?");
+        query.addBindValue(startdate);
+        query.exec();
+
+        QString result;
+        while (query.next()){
+            result = query.value(0).toString();
+        }
+
+        qDebug() << "db::retreiveTotalTimeRollingYear: Total minutes: " << result;
+        return result;
+    }
+    /*!
+     * \brief retreiveCurrencyTakeoffLanding Looks up the amount of Take Offs and
+     * Landings performed in the last 90 days.
+     * \return {TO,LDG}
+     */
+    static QVector<QString> retreiveCurrencyTakeoffLanding()
+    {
+        QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 90);
+
+        QSqlQuery query;
+        query.prepare("SELECT "
+                      "SUM(extras.TOday + extras.TOnight) AS 'TakeOFF', "
+                      "SUM(extras.LDGday + extras.LDGnight) AS 'Landing' "
+                      "FROM flights "
+                      "INNER JOIN extras on flights.id = extras.extras_id "
+                      "WHERE doft >= ?");
+        query.addBindValue(start.toString(Qt::ISODate));
+        query.exec();
+
+        QVector<QString> result(2,"0"); // make sure to return a valid vector even if result 0
+        while (query.next()){
+            result.insert(0,query.value(0).toString());
+            result.insert(1,query.value(1).toString());
+        }
+        qDebug() << "db::retreiveCurrencyTakeoffLanding: " << result[0] << " TO, " <<result[1] << " LDG";
+        return result;
+    }
     /*
      * Pilots Database Related Functions
      */

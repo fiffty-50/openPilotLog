@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1330</width>
-    <height>609</height>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -127,9 +127,9 @@
       </spacer>
      </item>
      <item row="1" column="1">
-      <widget class="QLabel" name="blockHoursLabel">
+      <widget class="QLabel" name="blockHoursCalendarYearLabel">
        <property name="text">
-        <string>Block hours this year:</string>
+        <string>Block hours (this year):</string>
        </property>
       </widget>
      </item>
@@ -147,7 +147,7 @@
       </spacer>
      </item>
      <item row="1" column="3">
-      <widget class="QLabel" name="blockHoursDisplayLabel">
+      <widget class="QLabel" name="blockHoursCalDisplayLabel">
        <property name="text">
         <string>hours</string>
        </property>
@@ -167,7 +167,7 @@
       </spacer>
      </item>
      <item row="2" column="0">
-      <spacer name="horizontalSpacer_9">
+      <spacer name="horizontalSpacer_12">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -180,14 +180,14 @@
       </spacer>
      </item>
      <item row="2" column="1">
-      <widget class="QLabel" name="currencyLabel">
+      <widget class="QLabel" name="blockHoursRollingLabel">
        <property name="text">
-        <string>Currency (last 90 days):</string>
+        <string>Block hours (rolling year):</string>
        </property>
       </widget>
      </item>
      <item row="2" column="2">
-      <spacer name="horizontalSpacer_3">
+      <spacer name="horizontalSpacer_10">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -200,13 +200,66 @@
       </spacer>
      </item>
      <item row="2" column="3">
+      <widget class="QLabel" name="blockHoursRolDisplayLabel">
+       <property name="text">
+        <string>hours</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <spacer name="horizontalSpacer_11">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="0">
+      <spacer name="horizontalSpacer_9">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="currencyLabel">
+       <property name="text">
+        <string>Currency (last 90 days):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="3">
       <widget class="QLabel" name="currencyDisplayLabel">
        <property name="text">
         <string>TO/LDG</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="4">
+     <item row="3" column="4">
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -233,6 +286,16 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="debugButton">
+     <property name="text">
+      <string>Debug</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLineEdit" name="debugLineEdit"/>
    </item>
   </layout>
  </widget>

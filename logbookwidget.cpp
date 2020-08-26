@@ -9,6 +9,8 @@
 #include <chrono>
 #include <QDebug>
 
+//To Do: Update Selection in Tableview on arrow key press.
+
 qint32 SelectedFlight = -1; // Variable to store selected row in QTableView
 
 logbookWidget::logbookWidget(QWidget *parent) :
