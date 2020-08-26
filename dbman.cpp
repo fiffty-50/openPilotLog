@@ -280,21 +280,14 @@ public:
         return flight;
     }
 
-
-    static bool deleteFlightById(QString flight_id) // To Do: also remove associated extras
+    /*!
+     * \brief deleteFlightById Deletes a Flight from the database.
+     * Entries in the basic flights table as well as in the extras table are deleted.
+     * \param flight_id The primary key of the entry in the database
+     * \return True if no errors, otherwise false
+     */
+    static bool deleteFlightById(QString flight_id)
     {
-        /*QString extras_id = flight_id;
-        QSqlQuery query;
-        query.prepare("DELETE FROM flights WHERE id = :flight_id");
-        query.bindValue(":flight_id", flight_id);
-        query.exec();
-        QString error = query.lastError().text();
-
-        QSqlQuery query2;
-        query2.prepare("DELETE FROM extras WHERE extras_id = :extras_id");
-        query2.bindValue(":extras_id", extras_id);
-        query2.exec();
-        QString error2 = query2.lastError().text();*/
         QSqlQuery query;
         query.prepare("DELETE FROM flights WHERE id = ?");
         query.addBindValue(flight_id);
@@ -316,7 +309,6 @@ public:
         {
             return true;
         }
-
     }
 
     /*
