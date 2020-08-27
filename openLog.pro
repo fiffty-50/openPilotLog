@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     calc.cpp \
     dbman.cpp \
+    dbstat.cpp \
     easaview.cpp \
     editflight.cpp \
     homewidget.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 
 HEADERS += \
     calc.h \
+    dbstat.h \
     easaview.h \
     editflight.h \
     homewidget.h \
