@@ -10,7 +10,6 @@
 class dbFlight
 {
 public:
-    dbFlight();
 
     static QVector<QString> selectFlightById(QString flight_id);
 

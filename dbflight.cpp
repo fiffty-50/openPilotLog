@@ -1,11 +1,6 @@
 #include "dbflight.h"
 #include "dbman.cpp"
 
-dbFlight::dbFlight()
-{
-
-}
-
 /*!
  * \brief SelectFlightById Retreives a single flight from the database.
  * \param flight_id Primary Key of flights database

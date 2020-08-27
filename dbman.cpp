@@ -183,7 +183,6 @@ public:
         query.addBindValue(searchstring);
         query.exec();
 
-
         QStringList result;
         while (query.next()) {
             QString piclastname = query.value(0).toString();
@@ -193,16 +192,12 @@ public:
             result.append(name);
         }
         qDebug() << "db::RetreivePilotNameFromString Result: "  << result;
-        //qDebug() << query.lastError();
-
 
         if(result.size() == 0)
         {
             qDebug() << ("db::RetreivePilotNameFromString: No Pilot found");
             return result;
         }
-
-
         return result;
     }
 
@@ -335,6 +330,7 @@ public:
             return result;
         }
     }
+
     static QString newPicGetId(QString name)
     {
         QString result;
@@ -361,7 +357,7 @@ public:
         qDebug() << "newPicGetId: result = " << result;
         return result;
     }
-    /*
+/*
  * Airport Database Related Functions
  */
 
@@ -409,6 +405,7 @@ public:
 
         return result;
     }
+
     static QStringList CompleteIcaoOrIata(QString icaoStub)
     {
         QStringList result;
@@ -424,7 +421,6 @@ public:
             result.append(query.value(0).toString());
             qDebug() << "db::CompleteIcaoOrIata says... Result:" << result;
         }
-
         return result;
     }
 
@@ -475,7 +471,6 @@ public:
         }
         return result;
     }
-
 
     /*
  * Aircraft Database Related Functions
@@ -533,6 +528,7 @@ public:
         return result;
 
     }
+
     static QString newAcftGetId(QString registration)
     {
         QString result;
@@ -647,6 +643,7 @@ public:
 
         return result;
     }
+
     static QString RetreiveAircraftIdFromMakeModelVariant(QString make, QString model, QString variant)
     {
         QString result;
@@ -669,9 +666,8 @@ public:
             qDebug() << "db::RetreiveAircraftIdFromMakeModelVariant: ERROR - no AircraftId found.";
             return  result;
         }
-
-
     }
+
     static bool CommitTailToDb(QString registration, QString aircraft_id, QString company)
     {
         QSqlQuery commit;
@@ -690,7 +686,6 @@ public:
             return true;
         }
     }
-
 
 /*
  *  Obsolete Functions
@@ -764,6 +759,5 @@ public:
             ++index;
         }
         return flight;
-
     }
 };
