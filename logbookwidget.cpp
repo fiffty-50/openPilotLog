@@ -50,6 +50,13 @@ logbookWidget::logbookWidget(QWidget *parent) :
     view->hideColumn(0); // don't show the ID
     view->show();
 
+    //connect(this, ui->tableView->selectionChanged(), this, )
+    connect(
+     ui->tableView->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+     SLOT(on_tableView_changed(const QItemSelection &, const QItemSelection &))
+    );
+
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     qDebug() << "logbookWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
@@ -137,4 +144,12 @@ void logbookWidget::on_tableView_pressed(const QModelIndex &index)
     auto NewIndex = ui->tableView->model()->index(index.row(), 0);
     SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
     qDebug() << "Selected Flight with ID#(entered): " << SelectedFlight;
+}
+
+void logbookWidget::on_tableView_changed(const QItemSelection &index, const QItemSelection &index2)// TO DO
+{
+    //auto NewIndex = ui->tableView->model()->index(index.row(), 0);
+    //SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
+    qDebug() << "Selected Flight with ID#(signalslot): " << SelectedFlight;
+    qDebug() << "lol";// << index.value(1) << index.at(2);
 }
