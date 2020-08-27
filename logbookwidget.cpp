@@ -3,6 +3,7 @@
 #include <QSqlTableModel>
 #include <QMessageBox>
 #include "dbman.cpp"
+#include "dbflight.h"
 #include "newflight.h"
 #include "editflight.h"
 
@@ -32,7 +33,6 @@ logbookWidget::logbookWidget(QWidget *parent) :
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
 
     view->setColumnWidth(1,120);
     view->setColumnWidth(2,60);
@@ -87,7 +87,7 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
         if (reply == QMessageBox::Yes)
         {
             qDebug() << "Deleting Flight with ID# " << SelectedFlight;
-            db::deleteFlightById(QString::number(SelectedFlight));
+            dbFlight::deleteFlightById(QString::number(SelectedFlight));
 
             QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
             ShowAllModel->setTable("Logbook");

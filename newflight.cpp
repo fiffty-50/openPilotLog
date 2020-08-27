@@ -20,6 +20,7 @@
 #include "newacft.h"
 #include "calc.h"
 #include "dbman.cpp"
+#include "dbflight.h"
 #include <QMessageBox>
 #include <QDebug>
 #include <QCompleter>
@@ -86,11 +87,11 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->setupUi(this);
     ui->newDoft->setDate(QDate::currentDate());
 
-    bool hasoldinput = db::CheckScratchpad();
+    bool hasoldinput = dbFlight::checkScratchpad();
     qDebug() << "Hasoldinput? = " << hasoldinput;
     if(hasoldinput) // Re-populate the Form
     {
-        flight = db::RetreiveScratchpad();
+        flight = dbFlight::retreiveScratchpad();
         qDebug() << "Re-Filling Form from Scratchpad";
         returnInput(flight);
     }
@@ -239,7 +240,7 @@ QVector<QString> NewFlight::collectInput()
 
 
     // Prepare Vector for commit to database
-    flight = db::CreateFlightVectorFromInput(doft, dept, tofb, dest, tonb, tblk, pic, acft);
+    flight = dbFlight::createFlightVectorFromInput(doft, dept, tofb, dest, tonb, tblk, pic, acft);
     qDebug() << "Created flight vector:" << flight;
 
     return flight;
@@ -333,37 +334,37 @@ void NewFlight::returnInput(QVector<QString> flight)
 void NewFlight::storeSettings()
 {
     qDebug() << "Storing Settings...";
-    db::storesetting(100, ui->FunctionComboBox->currentText());
-    db::storesetting(101, ui->ApproachComboBox->currentText());
-    db::storesetting(102, QString::number(ui->PilotFlyingCheckBox->isChecked()));
-    db::storesetting(103, QString::number(ui->PilotMonitoringCheckBox->isChecked()));
-    db::storesetting(104, QString::number(ui->TakeoffSpinBox->value()));
-    db::storesetting(105, QString::number(ui->TakeoffCheckBox->isChecked()));
-    db::storesetting(106, QString::number(ui->LandingSpinBox->value()));
-    db::storesetting(107, QString::number(ui->LandingCheckBox->isChecked()));
-    db::storesetting(108, QString::number(ui->AutolandSpinBox->value()));
-    db::storesetting(109, QString::number(ui->AutolandCheckBox->isChecked()));
-    db::storesetting(110, QString::number(ui->IfrCheckBox->isChecked()));
-    db::storesetting(111, QString::number(ui->VfrCheckBox->isChecked()));
-    //db::storesetting(112, QString::number(ui->autoNightCheckBox->isChecked()));
+    dbSettings::storeSetting(100, ui->FunctionComboBox->currentText());
+    dbSettings::storeSetting(101, ui->ApproachComboBox->currentText());
+    dbSettings::storeSetting(102, QString::number(ui->PilotFlyingCheckBox->isChecked()));
+    dbSettings::storeSetting(103, QString::number(ui->PilotMonitoringCheckBox->isChecked()));
+    dbSettings::storeSetting(104, QString::number(ui->TakeoffSpinBox->value()));
+    dbSettings::storeSetting(105, QString::number(ui->TakeoffCheckBox->isChecked()));
+    dbSettings::storeSetting(106, QString::number(ui->LandingSpinBox->value()));
+    dbSettings::storeSetting(107, QString::number(ui->LandingCheckBox->isChecked()));
+    dbSettings::storeSetting(108, QString::number(ui->AutolandSpinBox->value()));
+    dbSettings::storeSetting(109, QString::number(ui->AutolandCheckBox->isChecked()));
+    dbSettings::storeSetting(110, QString::number(ui->IfrCheckBox->isChecked()));
+    dbSettings::storeSetting(111, QString::number(ui->VfrCheckBox->isChecked()));
+    //dbSettings::storesetting(112, QString::number(ui->autoNightCheckBox->isChecked()));
 }
 void NewFlight::restoreSettings()
 {
     qDebug() << "Restoring Settings...";//crashes if db is empty due to QVector index out of range.
-    ui->FunctionComboBox->setCurrentText(db::retreiveSetting("100"));
-    ui->ApproachComboBox->setCurrentText(db::retreiveSetting("101"));
-    ui->PilotFlyingCheckBox->setChecked(db::retreiveSetting("102").toInt());
-    ui->PilotMonitoringCheckBox->setChecked(db::retreiveSetting("103").toInt());
-    ui->TakeoffSpinBox->setValue(db::retreiveSetting("104").toInt());
-    ui->TakeoffCheckBox->setChecked(db::retreiveSetting("105").toInt());
-    ui->LandingSpinBox->setValue(db::retreiveSetting("106").toInt());
-    ui->LandingCheckBox->setChecked(db::retreiveSetting("107").toInt());
-    ui->AutolandSpinBox->setValue(db::retreiveSetting("108").toInt());
-    ui->AutolandCheckBox->setChecked(db::retreiveSetting("109").toInt());
-    ui->IfrCheckBox->setChecked(db::retreiveSetting("110").toInt());
-    ui->VfrCheckBox->setChecked(db::retreiveSetting("111").toInt());
-    //ui->autoNightCheckBox->setChecked(db::retreiveSetting("112")[1].toInt());
-    //qDebug() << "restore Settings ifr to int: " << db::retreiveSetting("110")[1].toInt();
+    ui->FunctionComboBox->setCurrentText(dbSettings::retreiveSetting("100"));
+    ui->ApproachComboBox->setCurrentText(dbSettings::retreiveSetting("101"));
+    ui->PilotFlyingCheckBox->setChecked(dbSettings::retreiveSetting("102").toInt());
+    ui->PilotMonitoringCheckBox->setChecked(dbSettings::retreiveSetting("103").toInt());
+    ui->TakeoffSpinBox->setValue(dbSettings::retreiveSetting("104").toInt());
+    ui->TakeoffCheckBox->setChecked(dbSettings::retreiveSetting("105").toInt());
+    ui->LandingSpinBox->setValue(dbSettings::retreiveSetting("106").toInt());
+    ui->LandingCheckBox->setChecked(dbSettings::retreiveSetting("107").toInt());
+    ui->AutolandSpinBox->setValue(dbSettings::retreiveSetting("108").toInt());
+    ui->AutolandCheckBox->setChecked(dbSettings::retreiveSetting("109").toInt());
+    ui->IfrCheckBox->setChecked(dbSettings::retreiveSetting("110").toInt());
+    ui->VfrCheckBox->setChecked(dbSettings::retreiveSetting("111").toInt());
+    //ui->autoNightCheckBox->setChecked(dbSettings::retreiveSetting("112")[1].toInt());
+    //qDebug() << "restore Settings ifr to int: " << dbSettings::retreiveSetting("110")[1].toInt();
 
 /*
  *
@@ -693,7 +694,7 @@ void NewFlight::on_buttonBox_accepted()
         flight = collectInput();
         if(verifyInput())
         {
-            db::CommitFlight(flight);
+            dbFlight::commitFlight(flight);
             qDebug() << flight << "Has been commited.";
             QMessageBox msgBox(this);
             msgBox.setText("Flight has been commited.");
@@ -701,7 +702,7 @@ void NewFlight::on_buttonBox_accepted()
         }else
         {
             qDebug() << "Invalid Input. No entry has been made in the database.";
-            db::CommitToScratchpad(flight);
+            dbFlight::commitToScratchpad(flight);
             QMessageBox msgBox(this);
             msgBox.setText("Invalid entries detected. Please check your input.");
             msgBox.exec();

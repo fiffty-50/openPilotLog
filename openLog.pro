@@ -23,7 +23,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     calc.cpp \
+    dbflight.cpp \
     dbman.cpp \
+    dbsettings.cpp \
     dbstat.cpp \
     easaview.cpp \
     editflight.cpp \
@@ -38,6 +40,8 @@ SOURCES += \
 
 HEADERS += \
     calc.h \
+    dbflight.h \
+    dbsettings.h \
     dbstat.h \
     easaview.h \
     editflight.h \

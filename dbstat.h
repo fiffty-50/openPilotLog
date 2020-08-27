@@ -2,11 +2,7 @@
 #define DBSTAT_H
 
 #include <QCoreApplication>
-#include <QDebug>
-#include <QSqlDatabase>
-#include <QSqlDriver>
-#include <QSqlError>
-#include <QSqlQuery>
+
 
 /*!
  * \brief The dbStat class provides functionality for retreiving various statistics

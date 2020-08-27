@@ -2,6 +2,7 @@
 #define SETTINGSWIDGET_H
 
 #include <QWidget>
+#include "dbsettings.h"
 
 namespace Ui {
 class settingsWidget;

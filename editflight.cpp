@@ -19,6 +19,7 @@
 #include "ui_editflight.h"
 #include "calc.h"
 #include "dbman.cpp"
+#include "dbflight.h"
 #include <QMessageBox>
 #include <QDebug>
 
@@ -51,7 +52,7 @@ EditFlight::EditFlight(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    editflight = db::RetreiveScratchpad();
+    editflight = dbFlight::retreiveScratchpad();
     qDebug() << "EditFlight: Re-assigning variables from vector " << editflight;
 
     editdate = QDate::fromString(editflight[1],Qt::ISODate);
@@ -114,7 +115,7 @@ QVector<QString> EditFlight::collectInput()
 
 
     // Prepare Vector for commit to database
-    editflight = db::CreateFlightVectorFromInput(editdoft, editdept, edittofb, editdest, edittonb, tblk, editpic, editacft);
+    editflight = dbFlight::createFlightVectorFromInput(editdoft, editdept, edittofb, editdest, edittonb, tblk, editpic, editacft);
     qDebug() << "Created flight vector:" << editflight;
 
     return editflight;
@@ -431,7 +432,7 @@ void EditFlight::on_buttonBox_accepted()
     }else
     {
         qDebug() << "Invalid Input. No entry has been made in the database.";
-        db::CommitToScratchpad(flight);
+        dbFlight::commitToScratchpad(flight);
         QMessageBox msgBox;
         msgBox.setText("La Base de datos se niega a ser violada!");
         msgBox.exec();
@@ -443,7 +444,7 @@ void EditFlight::on_buttonBox_accepted()
 
 void EditFlight::on_buttonBox_rejected()
 {
-    db::ClearScratchpad();
+    dbFlight::clearScratchpad();
 }
 
 void EditFlight::on_verifyButton_clicked()

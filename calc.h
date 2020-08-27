@@ -29,16 +29,27 @@
 class calc
 {
 public:
+
     static QTime blocktime(QTime tofb, QTime tonb);
+
     static QString minutes_to_string(QString blockminutes);
+
     static int string_to_minutes(QString time);
+
     static int time_to_minutes(QTime time);
+
     static double radToDeg(double rad);
+
     static double degToRad(double deg);
+
     static double radToNauticalMiles(double rad);
+
     static double greatCircleDistance(double lat1, double lon1, double lat2, double lon2);
+
     static QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1, double lon1, double lat2, double lon2, int tblk);
+
     static double solarElevation(QDateTime utc_time_point, double lat, double lon);
+
     static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk);
 };
 
