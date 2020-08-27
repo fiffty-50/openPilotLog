@@ -94,9 +94,8 @@ QVector<QString> dbStat::retreiveCurrencyTakeoffLanding()
     QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 90);
 
     QSqlQuery query;
-    query.prepare("SELECT "
-                  "SUM(extras.TOday + extras.TOnight) AS 'TakeOFF', "
-                  "SUM(extras.LDGday + extras.LDGnight) AS 'Landing' "
+    query.prepare("SELECT SUM(extras.TOday) + SUM(extras.TOnight) AS 'TO', "
+                  "SUM(extras.LDGday) + SUM(extras.LDGnight) AS 'LDG' "
                   "FROM flights "
                   "INNER JOIN extras on flights.id = extras.extras_id "
                   "WHERE doft >= ?");

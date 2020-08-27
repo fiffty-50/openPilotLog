@@ -27,11 +27,7 @@ private slots:
 
     void on_showAllButton_clicked();
 
-    void on_tableView_entered(const QModelIndex &index);
-
-    void on_tableView_pressed(const QModelIndex &index);
-
-    void on_tableView_changed(const QItemSelection &index, const QItemSelection &index2);
+    void on_tableView_changed(const QItemSelection &index, const QItemSelection &);
 
 private:
     Ui::logbookWidget *ui;

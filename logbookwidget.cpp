@@ -132,24 +132,15 @@ void logbookWidget::on_showAllButton_clicked()
     ui->tableView->setModel(ShowAllModel);
 }
 
-void logbookWidget::on_tableView_entered(const QModelIndex &index)
+/*void logbookWidget::on_tableView_pressed(const QModelIndex &index)
 {
     auto NewIndex = ui->tableView->model()->index(index.row(), 0);
     SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
-    qDebug() << "Selected Flight with ID#(entered): " << SelectedFlight;
-}
+    qDebug() << "Selected Flight with ID#(pressed): " << SelectedFlight;
+}*/
 
-void logbookWidget::on_tableView_pressed(const QModelIndex &index)
+void logbookWidget::on_tableView_changed(const QItemSelection &index, const QItemSelection &)// TO DO
 {
-    auto NewIndex = ui->tableView->model()->index(index.row(), 0);
-    SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
-    qDebug() << "Selected Flight with ID#(entered): " << SelectedFlight;
-}
-
-void logbookWidget::on_tableView_changed(const QItemSelection &index, const QItemSelection &index2)// TO DO
-{
-    //auto NewIndex = ui->tableView->model()->index(index.row(), 0);
-    //SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
-    qDebug() << "Selected Flight with ID#(signalslot): " << SelectedFlight;
-    qDebug() << "lol";// << index.value(1) << index.at(2);
+    SelectedFlight = index.indexes()[0].data().toInt();
+    qDebug() << "Selected Flight with ID#(selectionChanged): " << SelectedFlight;
 }
