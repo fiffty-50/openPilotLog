@@ -134,6 +134,14 @@ private slots:
 
     void on_simTimeLineEdit_editingFinished();
 
+    void on_secondPilotLineEdit_textEdited(const QString &arg1);
+
+    void on_secondPilotLineEdit_editingFinished();
+
+    void on_thirdPilotLineEdit_textEdited(const QString &arg1);
+
+    void on_thirdPilotLineEdit_editingFinished();
+
 private:
     Ui::NewFlight *ui;
 };

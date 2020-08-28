@@ -62,6 +62,8 @@ QString pic;
 QString acft;
 QVector<QString> flight;
 // extras
+QString secondPilot;
+QString thirdPilot;
 QString PilotFunction;
 QString PilotTask;
 QString TakeOff;
@@ -115,9 +117,12 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->dualTimeLineEdit->setValidator(timeInputValidator);
     ui->fiTimeLineEdit->setValidator(timeInputValidator);
     ui->simTimeLineEdit->setValidator(timeInputValidator);
+
     QRegExp picname("^[a-zA-Z_]+,?( [a-zA-Z_]+)*$");// allow only lastname, firstname or lastname firstname with one whitespace
     QValidator *picNameValidator = new QRegExpValidator(picname, this);
     ui->newPic->setValidator(picNameValidator);
+    ui->secondPilotLineEdit->setValidator(picNameValidator);
+    ui->thirdPilotLineEdit->setValidator(picNameValidator);
 
     // Groups for CheckBoxes
     QButtonGroup *FlightRulesGroup = new QButtonGroup(this);
@@ -636,17 +641,100 @@ void NewFlight::on_newPic_editingFinished()
             }
         }
     }
-
 }
 
+void NewFlight::on_secondPilotLineEdit_textEdited(const QString &arg1)
+{
+    if(arg1.length()>2)
+    {
+        QStringList picList = dbPilots::newPicGetString(arg1);
+        QCompleter *picCompleter = new QCompleter(picList, this);
+        picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+        picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+        ui->secondPilotLineEdit->setCompleter(picCompleter);
+     }
+}
 
+void NewFlight::on_secondPilotLineEdit_editingFinished()
+{
+    secondPilot = "-1"; // set invalid
+    if(ui->secondPilotLineEdit->text() == "self")
+    {
+        secondPilot = "1";
+    }else
+    {
+        QString picname;
+        QStringList picList = dbPilots::newPicGetString(ui->secondPilotLineEdit->text());
+        qDebug() << picList;
+        if(picList.length()!= 0)
+        {
+            picname = picList[0];
+            ui->secondPilotLineEdit->setText(picname);
+            secondPilot = dbPilots::newPicGetId(picname);
+        }else
+        {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
+                                          QMessageBox::Yes|QMessageBox::No);
+            if (reply == QMessageBox::Yes)
+            {
+                qDebug() << "Add new pilot selected";
+                nope();
+            }
+        }
+    }
+    qDebug() << "Second Pilot: " << secondPilot;
+}
+
+void NewFlight::on_thirdPilotLineEdit_textEdited(const QString &arg1)
+{
+    if(arg1.length()>2)
+    {
+        QStringList picList = dbPilots::newPicGetString(arg1);
+        QCompleter *picCompleter = new QCompleter(picList, this);
+        picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+        picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+        ui->thirdPilotLineEdit->setCompleter(picCompleter);
+     }
+}
+
+void NewFlight::on_thirdPilotLineEdit_editingFinished()
+{
+    thirdPilot = "-1"; // set invalid
+    if(ui->thirdPilotLineEdit->text() == "self")
+    {
+        thirdPilot = "1";
+    }else
+    {
+        QString picname;
+        QStringList picList = dbPilots::newPicGetString(ui->thirdPilotLineEdit->text());
+        qDebug() << picList;
+        if(picList.length()!= 0)
+        {
+            picname = picList[0];
+            ui->thirdPilotLineEdit->setText(picname);
+            thirdPilot = dbPilots::newPicGetId(picname);
+        }else
+        {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
+                                          QMessageBox::Yes|QMessageBox::No);
+            if (reply == QMessageBox::Yes)
+            {
+                qDebug() << "Add new pilot selected";
+                nope();
+            }
+        }
+    }
+    qDebug() << "Third Pilot: " << thirdPilot;
+}
 
 
 /*
  * Extras
  */
 
-void NewFlight::on_PilotFlyingCheckBox_stateChanged(int)//0, unchecked, 2 checked
+void NewFlight::on_PilotFlyingCheckBox_stateChanged(int)
 {
     if(ui->PilotFlyingCheckBox->isChecked()){
         ui->TakeoffSpinBox->setValue(1);
@@ -685,8 +773,6 @@ void NewFlight::on_buttonBox_accepted()
     on_newAcft_editingFinished();
     on_newPic_editingFinished();
 
-
-
         QVector<QString> flight;
         flight = collectInput();
         if(verifyInput())
@@ -706,8 +792,6 @@ void NewFlight::on_buttonBox_accepted()
             NewFlight nf(this);
             nf.exec();
         }
-
-
 }
 
 void NewFlight::on_buttonBox_rejected()
@@ -732,10 +816,6 @@ void NewFlight::on_ApproachComboBox_currentTextChanged(const QString &arg1)
 /*
  * Times
  */
-
-
-
-
 
 void NewFlight::on_spseTimeLineEdit_editingFinished()
 {
