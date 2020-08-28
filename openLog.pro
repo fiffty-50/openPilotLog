@@ -15,6 +15,7 @@ RESOURCES = themes/breeze.qrc \
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES *= QT_USE_QSTRINGBUILDER # more efficient use of string concatenation
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
