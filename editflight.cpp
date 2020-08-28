@@ -188,7 +188,7 @@ void EditFlight::returnInput(QVector<QString> flight)
     ui->newDest->setText(flight[4]);
     ui->newTonb->setText(flight[5]);
     // flight[6] is blocktime
-    ui->newPic->setText(db::RetreivePilotNameFromID(flight[7]));
+    ui->newPic->setText(dbPilots::retreivePilotNameFromID(flight[7]));
     ui->newAcft->setText(db::RetreiveRegistration(flight[8]));
 }
 

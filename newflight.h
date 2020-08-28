@@ -19,7 +19,11 @@
 #define NEWFLIGHT_H
 
 #include <QDialog>
+#include "newacft.h"
+#include "calc.h"
 #include "dbsettings.h"
+#include "dbflight.h"
+#include "dbpilots.h"
 
 namespace Ui {
 class NewFlight;

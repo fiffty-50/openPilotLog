@@ -25,6 +25,7 @@ SOURCES += \
     calc.cpp \
     dbflight.cpp \
     dbman.cpp \
+    dbpilots.cpp \
     dbsettings.cpp \
     dbstat.cpp \
     easaview.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 HEADERS += \
     calc.h \
     dbflight.h \
+    dbpilots.h \
     dbsettings.h \
     dbstat.h \
     easaview.h \

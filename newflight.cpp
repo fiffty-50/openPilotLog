@@ -17,10 +17,7 @@
  */
 #include "newflight.h"
 #include "ui_newflight.h"
-#include "newacft.h"
-#include "calc.h"
 #include "dbman.cpp"
-#include "dbflight.h"
 #include <QMessageBox>
 #include <QDebug>
 #include <QCompleter>
@@ -327,7 +324,7 @@ void NewFlight::returnInput(QVector<QString> flight)
     ui->newDest->setText(flight[4]);
     ui->newTonb->setText(flight[5]);
     // flight[6] is blocktime
-    ui->newPic->setText(db::RetreivePilotNameFromID(flight[7]));
+    ui->newPic->setText(dbPilots::retreivePilotNameFromID(flight[7]));
     ui->newAcft->setText(db::RetreiveRegistration(flight[8]));
 }
 
@@ -604,7 +601,7 @@ void NewFlight::on_newPic_textEdited(const QString &arg1)
 {
     if(arg1.length()>2)
     {
-        QStringList picList = db::newPicGetString(arg1);
+        QStringList picList = dbPilots::newPicGetString(arg1);
         QCompleter *picCompleter = new QCompleter(picList, this);
         picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
         picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
@@ -620,13 +617,13 @@ void NewFlight::on_newPic_editingFinished()
     }else
     {
         QString picname;
-        QStringList picList = db::newPicGetString(ui->newPic->text());
+        QStringList picList = dbPilots::newPicGetString(ui->newPic->text());
         qDebug() << picList;
         if(picList.length()!= 0)
         {
             picname = picList[0];
             ui->newPic->setText(picname);
-            pic = db::newPicGetId(picname);
+            pic = dbPilots::newPicGetId(picname);
         }else
         {
             QMessageBox::StandardButton reply;

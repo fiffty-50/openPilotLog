@@ -54,9 +54,12 @@ logbookWidget::logbookWidget(QWidget *parent) :
     connect(
      ui->tableView->selectionModel(),
      SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-     SLOT(on_tableView_changed(const QItemSelection &, const QItemSelection &))
+     SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
     );
-
+    /*connect(ui->tableView,
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
+                );*/
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     qDebug() << "logbookWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
@@ -139,8 +142,9 @@ void logbookWidget::on_showAllButton_clicked()
     qDebug() << "Selected Flight with ID#(pressed): " << SelectedFlight;
 }*/
 
-void logbookWidget::on_tableView_changed(const QItemSelection &index, const QItemSelection &)// TO DO
+void logbookWidget::on_tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)// TO DO
 {
+    // To Do: QMetaObject::connectSlotsByName: No matching signal for on_tableView_selectionChanged(QItemSelection,QItemSelection)
     SelectedFlight = index.indexes()[0].data().toInt();
     qDebug() << "Selected Flight with ID#(selectionChanged): " << SelectedFlight;
 }
