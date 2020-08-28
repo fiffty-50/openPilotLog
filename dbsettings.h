@@ -14,7 +14,7 @@ public:
 
     static void storeSetting(int setting_id, QString setting_value);
 
-    static QString retreiveSetting(QString setting_id);
+    static QString retreiveSetting(int setting_id);
 
     static QVector<QString> retreiveSettingInfo(QString setting_id);
 };

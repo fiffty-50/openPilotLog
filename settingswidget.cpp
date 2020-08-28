@@ -22,7 +22,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
     themeGroup->addButton(ui->lightThemeCheckBox);
     themeGroup->addButton(ui->darkThemeCheckBox);
 
-    switch (dbSettings::retreiveSetting("10").toInt()) {
+    switch (dbSettings::retreiveSetting(10).toInt()) {
       case 0:
         qDebug() << "System Theme";
         ui->systemThemeCheckBox->setChecked(true);
@@ -38,7 +38,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
     /*
      * Flight Logging Tab
      */
-    QString storedPrefix = dbSettings::retreiveSetting("50");
+    QString storedPrefix = dbSettings::retreiveSetting(50);
     if (storedPrefix.length() != 0){
         ui->flightNumberPrefixLineEdit->setText(storedPrefix);
     }

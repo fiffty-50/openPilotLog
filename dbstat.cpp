@@ -42,9 +42,8 @@ QString dbStat::retreiveTotalTime()
  */
 QString dbStat::retreiveTotalTimeThisCalendarYear()
 {
-    QDate today = QDate::currentDate();
     QDate start;
-    start.setDate(today.year(),1,1);
+    start.setDate(QDate::currentDate().year(),1,1);
     QString startdate = start.toString(Qt::ISODate);
 
     QSqlQuery query;

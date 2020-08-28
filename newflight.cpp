@@ -138,7 +138,7 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->destTZ->setFocusPolicy(Qt::NoFocus);
     ui->newDept->setFocus();
 
-    QString flightNumberPrefix = dbSettings::retreiveSetting("50");
+    QString flightNumberPrefix = dbSettings::retreiveSetting(50);
     if(flightNumberPrefix.length() != 0){
         ui->FlightNumberLineEdit->setText(flightNumberPrefix);
     }
@@ -358,18 +358,18 @@ void NewFlight::storeSettings()
 void NewFlight::restoreSettings()
 {
     qDebug() << "Restoring Settings...";//crashes if db is empty due to QVector index out of range.
-    ui->FunctionComboBox->setCurrentText(dbSettings::retreiveSetting("100"));
-    ui->ApproachComboBox->setCurrentText(dbSettings::retreiveSetting("101"));
-    ui->PilotFlyingCheckBox->setChecked(dbSettings::retreiveSetting("102").toInt());
-    ui->PilotMonitoringCheckBox->setChecked(dbSettings::retreiveSetting("103").toInt());
-    ui->TakeoffSpinBox->setValue(dbSettings::retreiveSetting("104").toInt());
-    ui->TakeoffCheckBox->setChecked(dbSettings::retreiveSetting("105").toInt());
-    ui->LandingSpinBox->setValue(dbSettings::retreiveSetting("106").toInt());
-    ui->LandingCheckBox->setChecked(dbSettings::retreiveSetting("107").toInt());
-    ui->AutolandSpinBox->setValue(dbSettings::retreiveSetting("108").toInt());
-    ui->AutolandCheckBox->setChecked(dbSettings::retreiveSetting("109").toInt());
-    ui->IfrCheckBox->setChecked(dbSettings::retreiveSetting("110").toInt());
-    ui->VfrCheckBox->setChecked(dbSettings::retreiveSetting("111").toInt());
+    ui->FunctionComboBox->setCurrentText(dbSettings::retreiveSetting(100));
+    ui->ApproachComboBox->setCurrentText(dbSettings::retreiveSetting(101));
+    ui->PilotFlyingCheckBox->setChecked(dbSettings::retreiveSetting(102).toInt());
+    ui->PilotMonitoringCheckBox->setChecked(dbSettings::retreiveSetting(103).toInt());
+    ui->TakeoffSpinBox->setValue(dbSettings::retreiveSetting(104).toInt());
+    ui->TakeoffCheckBox->setChecked(dbSettings::retreiveSetting(105).toInt());
+    ui->LandingSpinBox->setValue(dbSettings::retreiveSetting(106).toInt());
+    ui->LandingCheckBox->setChecked(dbSettings::retreiveSetting(107).toInt());
+    ui->AutolandSpinBox->setValue(dbSettings::retreiveSetting(108).toInt());
+    ui->AutolandCheckBox->setChecked(dbSettings::retreiveSetting(109).toInt());
+    ui->IfrCheckBox->setChecked(dbSettings::retreiveSetting(110).toInt());
+    ui->VfrCheckBox->setChecked(dbSettings::retreiveSetting(111).toInt());
     //ui->autoNightCheckBox->setChecked(dbSettings::retreiveSetting("112")[1].toInt());
     //qDebug() << "restore Settings ifr to int: " << dbSettings::retreiveSetting("110")[1].toInt();
 

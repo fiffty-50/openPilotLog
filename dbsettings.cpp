@@ -25,7 +25,7 @@ void dbSettings::storeSetting(int setting_id, QString setting_value)
  * \param setting_id
  * \return setting value
  */
-QString dbSettings::retreiveSetting(QString setting_id)
+QString dbSettings::retreiveSetting(int setting_id)
 {
     QSqlQuery query;
     query.prepare("SELECT setting FROM settings WHERE setting_id = ?");
