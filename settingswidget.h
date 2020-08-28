@@ -16,6 +16,9 @@ public:
     explicit settingsWidget(QWidget *parent = nullptr);
     ~settingsWidget();
 
+private slots:
+    void on_flightNumberPrefixLineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::settingsWidget *ui;
 };

@@ -142,6 +142,8 @@ private slots:
 
     void on_thirdPilotLineEdit_editingFinished();
 
+    void on_FlightNumberLineEdit_editingFinished();
+
 private:
     Ui::NewFlight *ui;
 };

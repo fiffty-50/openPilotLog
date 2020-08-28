@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="generalTab">
       <attribute name="title">
@@ -54,10 +54,36 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="flightLoggingTab">
       <attribute name="title">
-       <string>Tab 2</string>
+       <string>Flight Logging</string>
       </attribute>
+      <widget class="QLabel" name="flightNumberPrefixLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>161</width>
+         <height>19</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Flight Number Prefix</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="flightNumberPrefixLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>20</y>
+         <width>113</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>optional</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

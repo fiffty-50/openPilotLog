@@ -138,6 +138,11 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->destTZ->setFocusPolicy(Qt::NoFocus);
     ui->newDept->setFocus();
 
+    QString flightNumberPrefix = dbSettings::retreiveSetting("50");
+    if(flightNumberPrefix.length() != 0){
+        ui->FlightNumberLineEdit->setText(flightNumberPrefix);
+    }
+
 }
 
 NewFlight::~NewFlight()
@@ -683,7 +688,6 @@ void NewFlight::on_secondPilotLineEdit_editingFinished()
             }
         }
     }
-    qDebug() << "Second Pilot: " << secondPilot;
 }
 
 void NewFlight::on_thirdPilotLineEdit_textEdited(const QString &arg1)
@@ -726,9 +730,14 @@ void NewFlight::on_thirdPilotLineEdit_editingFinished()
             }
         }
     }
-    qDebug() << "Third Pilot: " << thirdPilot;
 }
 
+void NewFlight::on_FlightNumberLineEdit_editingFinished()
+{
+    qDebug() << "tbd: FlightNumber slot";
+    // To Do: Store input in variable, perform some checks
+    // Setting for optional Prefix (e.g. LH, LX etc.)
+}
 
 /*
  * Extras
@@ -761,44 +770,6 @@ void NewFlight::on_restoreDefaultButton_clicked()
 {
     restoreSettings();
 }
-
-
-void NewFlight::on_buttonBox_accepted()
-{
-    on_newDoft_editingFinished();// - activate slots in case user has been active in last input before clicking submit
-    on_newTonb_editingFinished();
-    on_newTofb_editingFinished();
-    on_newDept_editingFinished();
-    on_newDest_editingFinished();
-    on_newAcft_editingFinished();
-    on_newPic_editingFinished();
-
-        QVector<QString> flight;
-        flight = collectInput();
-        if(verifyInput())
-        {
-            dbFlight::commitFlight(flight);
-            qDebug() << flight << "Has been commited.";
-            QMessageBox msgBox(this);
-            msgBox.setText("Flight has been commited.");
-            msgBox.exec();
-        }else
-        {
-            qDebug() << "Invalid Input. No entry has been made in the database.";
-            dbFlight::commitToScratchpad(flight);
-            QMessageBox msgBox(this);
-            msgBox.setText("Invalid entries detected. Please check your input.");
-            msgBox.exec();
-            NewFlight nf(this);
-            nf.exec();
-        }
-}
-
-void NewFlight::on_buttonBox_rejected()
-{
-    qDebug() << "NewFlight: Rejected\n";
-}
-
 
 void NewFlight::on_ApproachComboBox_currentTextChanged(const QString &arg1)
 {
@@ -958,4 +929,45 @@ void NewFlight::on_simTimeLineEdit_editingFinished()
     }else{
         ui->simTimeLineEdit->setStyleSheet("");
     }
+}
+
+
+/*
+ * Control Buttons
+ */
+
+void NewFlight::on_buttonBox_accepted()
+{
+    on_newDoft_editingFinished();// - activate slots in case user has been active in last input before clicking submit
+    on_newTonb_editingFinished();
+    on_newTofb_editingFinished();
+    on_newDept_editingFinished();
+    on_newDest_editingFinished();
+    on_newAcft_editingFinished();
+    on_newPic_editingFinished();
+
+        QVector<QString> flight;
+        flight = collectInput();
+        if(verifyInput())
+        {
+            dbFlight::commitFlight(flight);
+            qDebug() << flight << "Has been commited.";
+            QMessageBox msgBox(this);
+            msgBox.setText("Flight has been commited.");
+            msgBox.exec();
+        }else
+        {
+            qDebug() << "Invalid Input. No entry has been made in the database.";
+            dbFlight::commitToScratchpad(flight);
+            QMessageBox msgBox(this);
+            msgBox.setText("Invalid entries detected. Please check your input.");
+            msgBox.exec();
+            NewFlight nf(this);
+            nf.exec();
+        }
+}
+
+void NewFlight::on_buttonBox_rejected()
+{
+    qDebug() << "NewFlight: Rejected\n";
 }
