@@ -3,6 +3,10 @@
 
 #include <QCoreApplication>
 
+/*!
+ * \brief The dbPilots class class provides a databank interface for actions related to the
+ * pilots table.
+ */
 class dbPilots
 {
 public:

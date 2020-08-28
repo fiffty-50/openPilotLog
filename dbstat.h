@@ -13,10 +13,13 @@
 class dbStat
 {
 public:
-    dbStat();
+
     static QString retreiveTotalTime();
+
     static QString retreiveTotalTimeThisCalendarYear();
+
     static QString retreiveTotalTimeRollingYear();
+
     static QVector<QString> retreiveCurrencyTakeoffLanding();
 };
 

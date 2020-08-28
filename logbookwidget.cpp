@@ -27,13 +27,11 @@ logbookWidget::logbookWidget(QWidget *parent) :
     model->setTable("Logbook");
     model->select();
 
-
     QTableView *view = ui->tableView;
     view->setModel(model);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     view->setColumnWidth(1,120);
     view->setColumnWidth(2,60);
     view->setColumnWidth(3,60);
@@ -47,22 +45,22 @@ logbookWidget::logbookWidget(QWidget *parent) :
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
-    view->hideColumn(0); // don't show the ID
+    view->hideColumn(0);
     view->show();
 
-    //connect(this, ui->tableView->selectionChanged(), this, )
-    connect(
-     ui->tableView->selectionModel(),
-     SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-     SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
-    );
-    /*connect(ui->tableView,
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
-                );*/
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     qDebug() << "logbookWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
+
+    connect(ui->tableView->selectionModel(),
+    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+}
+
+void logbookWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)// TO DO
+{
+    SelectedFlight = index.indexes()[0].data().toInt();
+    qDebug() << "Selected Flight with ID#(selectionChanged): " << SelectedFlight;
 }
 
 logbookWidget::~logbookWidget()
@@ -76,7 +74,7 @@ void logbookWidget::on_newFlightButton_clicked()
     nf.exec();
 }
 
-void logbookWidget::on_editFlightButton_clicked() // To Do: Fix!
+void logbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new flight, pre-filled with entry loaded from DB
 {
     QMessageBox *nope = new QMessageBox(this); // edit widget currently INOP
     nope->setText("This feature is temporarily INOP.");
@@ -141,10 +139,3 @@ void logbookWidget::on_showAllButton_clicked()
     SelectedFlight = ui->tableView->model()->data(NewIndex).toInt();
     qDebug() << "Selected Flight with ID#(pressed): " << SelectedFlight;
 }*/
-
-void logbookWidget::on_tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)// TO DO
-{
-    // To Do: QMetaObject::connectSlotsByName: No matching signal for on_tableView_selectionChanged(QItemSelection,QItemSelection)
-    SelectedFlight = index.indexes()[0].data().toInt();
-    qDebug() << "Selected Flight with ID#(selectionChanged): " << SelectedFlight;
-}
