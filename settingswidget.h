@@ -19,6 +19,8 @@ public:
 private slots:
     void on_flightNumberPrefixLineEdit_textEdited(const QString &arg1);
 
+    void themeGroup_toggled(int id);
+
 private:
     Ui::settingsWidget *ui;
 };

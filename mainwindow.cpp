@@ -117,7 +117,7 @@ void MainWindow::on_actionLogbook_triggered()
 
 void MainWindow::on_actionSettings_triggered()
 {
-    nope();
+    //nope();
     auto sw = new settingsWidget(this);
     ui->stackedWidget->addWidget(sw);
     ui->stackedWidget->setCurrentWidget(sw);
