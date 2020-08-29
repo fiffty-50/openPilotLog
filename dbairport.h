@@ -3,6 +3,10 @@
 
 #include <QCoreApplication>
 
+/*!
+ * \brief The dbAirport class provides functionality for retreiving airport related
+ * data from the database.
+ */
 class dbAirport
 {
 public:
