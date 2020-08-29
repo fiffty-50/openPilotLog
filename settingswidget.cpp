@@ -22,16 +22,6 @@ settingsWidget::settingsWidget(QWidget *parent) :
     themeGroup->addButton(ui->systemThemeCheckBox, 0);
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
-
-    /*connect(themeGroup,
-            SIGNAL(idToggled(int)),
-            this,
-            SLOT(themeGroup_toggled(int)));*/
-
-    /*connect(themeGroup,
-    SIGNAL(idToggled(int)),
-    SLOT(themeGroup_toggled(int)));*/
-
     connect(themeGroup, SIGNAL(buttonClicked(int)), this, SLOT(themeGroup_toggled(int)));
 
     switch (dbSettings::retreiveSetting(10).toInt()) {
@@ -55,7 +45,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
         ui->flightNumberPrefixLineEdit->setText(storedPrefix);
     }
 
-    QRegExp flightNumberPrefix_rx("[a-zA-Z]?[a-zA-Z]?[a-zA-Z]?[a-zA-Z]"); // allow max 4 letters (upper and lower)
+    QRegExp flightNumberPrefix_rx("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]"); // allow max 3 letters (upper and lower) and numbers
     QValidator *flightNumberPrefixValidator = new QRegExpValidator(flightNumberPrefix_rx, this);
     ui->flightNumberPrefixLineEdit->setValidator(flightNumberPrefixValidator);
 

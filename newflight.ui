@@ -200,7 +200,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>14</day>
+           <day>13</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -263,6 +263,19 @@
         <widget class="QLineEdit" name="newTonb">
          <property name="placeholderText">
           <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="flightNumberPrefixLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Can bet changed in Settings&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>

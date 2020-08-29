@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QCompleter>
+#include <QLatin1Char>
 #include <QStringList>
 #include <QStringListModel>
 #include <QSortFilterProxyModel>
@@ -137,12 +138,6 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->deptTZ->setFocusPolicy(Qt::NoFocus);
     ui->destTZ->setFocusPolicy(Qt::NoFocus);
     ui->newDept->setFocus();
-
-    QString flightNumberPrefix = dbSettings::retreiveSetting(50);
-    if(flightNumberPrefix.length() != 0){
-        ui->FlightNumberLineEdit->setText(flightNumberPrefix);
-    }
-
 }
 
 NewFlight::~NewFlight()
@@ -370,6 +365,8 @@ void NewFlight::restoreSettings()
     ui->AutolandCheckBox->setChecked(dbSettings::retreiveSetting(109).toInt());
     ui->IfrCheckBox->setChecked(dbSettings::retreiveSetting(110).toInt());
     ui->VfrCheckBox->setChecked(dbSettings::retreiveSetting(111).toInt());
+
+    ui->flightNumberPrefixLabel->setText(dbSettings::retreiveSetting(50) + QLatin1Char('-'));
     //ui->autoNightCheckBox->setChecked(dbSettings::retreiveSetting("112")[1].toInt());
     //qDebug() << "restore Settings ifr to int: " << dbSettings::retreiveSetting("110")[1].toInt();
 

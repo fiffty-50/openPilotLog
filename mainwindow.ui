@@ -36,6 +36,7 @@
    </attribute>
    <addaction name="actionHome"/>
    <addaction name="actionLogbook"/>
+   <addaction name="actionNew_Flight"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
