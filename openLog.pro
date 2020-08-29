@@ -7,15 +7,14 @@ CONFIG += c++11
 TARGET = openLog
 
 RESOURCES = themes/breeze.qrc \
-    themes/icons/icons.qrc \
-    themes/images/images.qrc
+    themes/icons/icons.qrc
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-DEFINES *= QT_USE_QSTRINGBUILDER # more efficient use of string concatenation
+#DEFINES *= QT_USE_QSTRINGBUILDER # more efficient use of string concatenation
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
