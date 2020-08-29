@@ -36,8 +36,6 @@ private slots:
 
     void nope();
 
-    void on_actionNew_Flight_triggered();
-
     void on_actionQuit_triggered();
 
     void on_actionHome_triggered();
@@ -45,6 +43,8 @@ private slots:
     void on_actionLogbook_triggered();
 
     void on_actionSettings_triggered();
+
+    void on_actionNewFlight_triggered();
 
 private:
     Ui::MainWindow *ui;

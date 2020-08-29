@@ -292,13 +292,13 @@ double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
  */
 int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
 {
-    double deptLat = db::retreiveIcaoCoordinates(dept)[0];
+    double deptLat = dbAirport::retreiveIcaoCoordinates(dept)[0];
     qDebug() << "calc::calculateNightTime deptLat = " << deptLat;
-    double deptLon = db::retreiveIcaoCoordinates(dept)[1];
+    double deptLon = dbAirport::retreiveIcaoCoordinates(dept)[1];
     qDebug() << "calc::calculateNightTime deptLon = " << deptLon;
-    double destLat = db::retreiveIcaoCoordinates(dest)[0];
+    double destLat = dbAirport::retreiveIcaoCoordinates(dest)[0];
     qDebug() << "calc::calculateNightTime destLat = " << destLat;
-    double destLon = db::retreiveIcaoCoordinates(dest)[1];
+    double destLon = dbAirport::retreiveIcaoCoordinates(dest)[1];
     qDebug() << "calc::calculateNightTime destLon = " << destLon;
 
     QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon, tblk);

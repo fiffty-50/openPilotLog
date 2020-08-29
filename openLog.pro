@@ -24,6 +24,7 @@ DEFINES *= QT_USE_QSTRINGBUILDER # more efficient use of string concatenation
 
 SOURCES += \
     calc.cpp \
+    dbairport.cpp \
     dbflight.cpp \
     dbman.cpp \
     dbpilots.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
     calc.h \
+    dbairport.h \
     dbflight.h \
     dbpilots.h \
     dbsettings.h \

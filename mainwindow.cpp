@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionHome->setIcon(QIcon(":/home_icon.svg"));
     ui->actionSettings->setIcon(QIcon(":/settings_icon.svg"));
     ui->actionQuit->setIcon(QIcon(":/quit_icon.svg"));
+    ui->actionNewFlight->setIcon(QIcon(":/new_flight_icon.jpg"));
 
     // Adds space between toolbar items and actionSetting item
     auto *spacer = new QWidget();
@@ -89,13 +90,6 @@ void MainWindow::nope()
  * Slots
  */
 
-
-void MainWindow::on_actionNew_Flight_triggered()
-{
-    NewFlight nf(this);
-    nf.exec();
-}
-
 void MainWindow::on_actionQuit_triggered()
 {
     QApplication::quit();
@@ -121,4 +115,10 @@ void MainWindow::on_actionSettings_triggered()
     auto sw = new settingsWidget(this);
     ui->stackedWidget->addWidget(sw);
     ui->stackedWidget->setCurrentWidget(sw);
+}
+
+void MainWindow::on_actionNewFlight_triggered()
+{
+    NewFlight nf(this);
+    nf.exec();
 }

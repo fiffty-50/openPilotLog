@@ -266,10 +266,10 @@ bool NewFlight::verifyInput()
     bool doftValid = true; //doft assumed to be always valid due to QDateTimeEdit constraints
     qDebug() << "NewFlight::verifyInput() says: Date:" << doft << " - Valid?\t" << doftValid;
 
-    deptValid = db::CheckICAOValid(dept);
+    deptValid = dbAirport::checkICAOValid(dept);
     qDebug() << "NewFlight::verifyInput() says: Departure is:\t" << dept << " - Valid?\t" << deptValid;
 
-    destValid = db::CheckICAOValid(dest);
+    destValid = dbAirport::checkICAOValid(dest);
     qDebug() << "NewFlight::verifyInput() says: Destination is:\t" << dest << " - Valid?\t" << destValid;
 
     tofbValid = (unsigned)(calc::time_to_minutes(tofb)-0) <= (1440-0) && tofb.toString("hh:mm") != ""; // Make sure time is within range, DB 1 day = 1440 minutes. 0 is allowed (midnight) & that it is not empty.
@@ -416,7 +416,7 @@ void NewFlight::on_newDept_textEdited(const QString &arg1)
     ui->newDept->setText(arg1.toUpper());
     if(arg1.length()>2)
     {
-        QStringList deptList = db::CompleteIcaoOrIata(arg1);
+        QStringList deptList = dbAirport::completeIcaoOrIata(arg1);
         qDebug() << "deptList = " << deptList;
         QCompleter *deptCompleter = new QCompleter(deptList, this);
         deptCompleter->setCaseSensitivity(Qt::CaseInsensitive);
@@ -440,7 +440,7 @@ void NewFlight::on_newDept_editingFinished()
 
     if(ui->newDept->text().length()>1)
     {
-        QStringList deptList = db::CompleteIcaoOrIata(ui->newDept->text());
+        QStringList deptList = dbAirport::completeIcaoOrIata(ui->newDept->text());
         if(deptList.length() != 0)
         {
             dept = deptList.first();
@@ -465,7 +465,7 @@ void NewFlight::on_newDest_textEdited(const QString &arg1)
     ui->newDest->setText(arg1.toUpper());
     if(arg1.length()>2)
     {
-        QStringList destList = db::CompleteIcaoOrIata(arg1);
+        QStringList destList = dbAirport::completeIcaoOrIata(arg1);
         QCompleter *destCompleter = new QCompleter(destList, this);
         destCompleter->setCaseSensitivity(Qt::CaseInsensitive);
         destCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
@@ -487,7 +487,7 @@ void NewFlight::on_newDest_editingFinished()
     QStringList destList;
     if(ui->newDest->text().length()>1)
     {
-        QStringList destList = db::CompleteIcaoOrIata(ui->newDest->text());
+        QStringList destList = dbAirport::completeIcaoOrIata(ui->newDest->text());
         if(destList.length() != 0)
         {
             dest = destList.first();

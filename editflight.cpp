@@ -139,10 +139,10 @@ bool EditFlight::verifyInput()
     bool doftValid = true; //doft assumed to be always valid due to QDateTimeEdit constraints
     qDebug() << "EditFlight::verifyInput() says: Date:" << editdoft << " - Valid?\t" << doftValid;
 
-    deptValid = db::CheckICAOValid(editdept);
+    deptValid = dbAirport::checkICAOValid(editdept);
     qDebug() << "EditFlight::verifyInput() says: Departure is:\t" << editdept << " - Valid?\t" << deptValid;
 
-    destValid = db::CheckICAOValid(editdest);
+    destValid = dbAirport::checkICAOValid(editdest);
     qDebug() << "EditFlight::verifyInput() says: Destination is:\t" << editdest << " - Valid?\t" << destValid;
 
     tofbValid = (unsigned)(calc::time_to_minutes(edittofb)-0) <= (1440-0) && edittofb.toString("hh:mm") != ""; // Make sure time is within range, DB 1 day = 1440 minutes. 0 is allowed (midnight) & that it is not empty.
@@ -208,7 +208,7 @@ void EditFlight::on_newDept_textChanged(const QString &arg1)
     if(arg1.length() > 2)
     {
         QString result;
-        result = db::RetreiveAirportNameFromIcaoOrIata(arg1);
+        result = dbAirport::retreiveAirportNameFromIcaoOrIata(arg1);
         ui->deptHintlineEdit->setPlaceholderText(result);
     }
 }
@@ -218,7 +218,7 @@ void EditFlight::on_newDest_textChanged(const QString &arg1)
     if(arg1.length() > 2)
     {
         QString result;
-        result = db::RetreiveAirportNameFromIcaoOrIata(arg1);
+        result = dbAirport::retreiveAirportNameFromIcaoOrIata(arg1);
         ui->destHintlineEdit->setPlaceholderText(result);
     }
 }

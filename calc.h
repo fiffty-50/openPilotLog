@@ -18,6 +18,8 @@
 
 #ifndef CALC_H
 #define CALC_H
+
+#include "dbairport.h"
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>

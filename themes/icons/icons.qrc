@@ -5,5 +5,6 @@
         <file>settings_icon.svg</file>
         <file>search_icon.svg</file>
         <file>quit_icon.svg</file>
+        <file>new_flight_icon.jpg</file>
     </qresource>
 </RCC>

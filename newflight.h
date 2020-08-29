@@ -24,6 +24,7 @@
 #include "dbsettings.h"
 #include "dbflight.h"
 #include "dbpilots.h"
+#include "dbairport.h"
 
 namespace Ui {
 class NewFlight;
