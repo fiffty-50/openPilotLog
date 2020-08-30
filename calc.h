@@ -48,7 +48,13 @@ public:
 
     static double greatCircleDistance(double lat1, double lon1, double lat2, double lon2);
 
-    static QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1, double lon1, double lat2, double lon2, int tblk);
+    static double greatCircleDistanceBetweenAirports(QString dept, QString dest);
+
+    static QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1,
+                                                                    double lon1,
+                                                                    double lat2,
+                                                                    double lon2,
+                                                                    int tblk);
 
     static double solarElevation(QDateTime utc_time_point, double lat, double lon);
 

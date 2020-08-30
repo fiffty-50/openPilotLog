@@ -111,9 +111,6 @@ int calc::string_to_minutes(QString timestring)
  * Radians.
  */
 
-
-
-
 /*!
  * \brief radToDeg Converts radians to degrees
  * \param rad
@@ -169,8 +166,32 @@ double calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
 
     double result = pow(sin(deltalat / 2), 2) +
             cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
-    result = 2 * asin(sqrt(result));
+    result = 2 * asin(sqrt(result));  
     return result;
+}
+
+/*!
+ * \brief calc::greatCircleDistanceBetweenAirports Calculates Great
+ * Circle distance between two coordinates, return in nautical miles.
+ * \param dept ICAO 4-letter Airport Identifier
+ * \param dest ICAO 4-letter Airport Identifier
+ * \return Nautical Miles From Departure to Destination
+ */
+double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
+{
+    double lat1 = degToRad(dbAirport::retreiveIcaoCoordinates(dept)[0]);
+    double lon1 = degToRad(dbAirport::retreiveIcaoCoordinates(dept)[1]);
+    double lat2 = degToRad(dbAirport::retreiveIcaoCoordinates(dest)[0]);
+    double lon2 = degToRad(dbAirport::retreiveIcaoCoordinates(dest)[1]);
+
+    // Haversine Formula
+    double deltalon = lon2 - lon1;
+    double deltalat = lat2 - lat1;
+
+    double result = pow(sin(deltalat / 2), 2) +
+            cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
+    result = 2 * asin(sqrt(result));
+    return radToNauticalMiles(result);
 }
 
 /*!

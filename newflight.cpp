@@ -204,28 +204,29 @@ QString NewFlight::validateTimeInput(QString userinput)
  */
 void NewFlight::fillExtrasLineEdits()
 {
+    QString blockTime = calc::blocktime(tofb,tonb).toString("hh:mm");
     // SP SE
     // SP ME
     // MP
     // TOTAL
-    if(tofb.isValid() && tonb.isValid()) {
-        ui->totalTimeLineEdit->setText(calc::blocktime(tofb,tonb).toString("hh:mm"));
-    }
+    ui->totalTimeLineEdit->setText(blockTime);
     // IFR
     // VFR
     // Night
-    if(tofb.isValid() && tonb.isValid() && dept.length() == 4 && dest.length() == 4) {
-        QString deptDate = date.toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
-        qDebug() << "Departure Date: " << deptDate;
-        QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
-        qDebug() << "Departure DateTime " << deptDateTime;
-        int blocktime = calc::time_to_minutes(calc::blocktime(tofb,tonb));
-        qDebug() << "Blocktime: " << blocktime;
-            //qDebug() << calc::calculateNightTime(dept, dest, deptDateTime, blocktime);
-            //qDebug() << calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime)));
-            ui->nightTimeLineEdit->setText(calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime))));
+    QString deptDate = date.toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
+    QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
+    int blocktime = calc::time_to_minutes(calc::blocktime(tofb,tonb));
+    qDebug() << "Blocktime: " << blocktime;
+    QString nightTime = calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime)));
+    ui->nightTimeLineEdit->setText(nightTime);
+
+    // XC - Cross-country flight, if more than 50nm long
+    if(calc::greatCircleDistanceBetweenAirports(dept,dest) >= 50){
+        qDebug() << "Cross-country Flight: nm = " << calc::greatCircleDistanceBetweenAirports(dept,dest);
+        ui->xcTimeLineEdit->setText(blockTime);
+    }else{
+        ui->xcTimeLineEdit->setText("00:00");
     }
-    // XC
     // PIC
     // Co-Pilot
     // Dual
