@@ -23,6 +23,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 SOURCES += \
     calc.cpp \
+    dbaircraft.cpp \
     dbairport.cpp \
     dbflight.cpp \
     dbman.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
     calc.h \
+    dbaircraft.h \
     dbairport.h \
     dbflight.h \
     dbpilots.h \

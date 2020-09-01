@@ -25,6 +25,7 @@
 #include "dbflight.h"
 #include "dbpilots.h"
 #include "dbairport.h"
+#include "dbaircraft.h"
 
 namespace Ui {
 class NewFlight;

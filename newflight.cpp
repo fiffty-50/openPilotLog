@@ -331,7 +331,7 @@ void NewFlight::returnInput(QVector<QString> flight)
     ui->newTonb->setText(flight[5]);
     // flight[6] is blocktime
     ui->newPic->setText(dbPilots::retreivePilotNameFromID(flight[7]));
-    ui->newAcft->setText(db::RetreiveRegistration(flight[8]));
+    ui->newAcft->setText(dbAircraft::retreiveRegistration(flight[8]));
 }
 
 void NewFlight::storeSettings()
@@ -544,7 +544,7 @@ void NewFlight::on_newAcft_textEdited(const QString &arg1)
 {
     if(arg1.length()>1)
     {
-        QStringList acftList = db::newAcftGetString(arg1);
+        QStringList acftList = dbAircraft::newAcftGetString(arg1);
         QCompleter *acftCompleter = new QCompleter(acftList, this);
         acftCompleter->setCaseSensitivity(Qt::CaseInsensitive);
         acftCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
@@ -560,11 +560,11 @@ void NewFlight::on_newAcft_editingFinished()
     {
         QStringList input = ui->newAcft->text().split(" ");
         QString registration = input[0].trimmed();
-        QStringList result = db::newAcftGetString(registration);
+        QStringList result = dbAircraft::newAcftGetString(registration);
         if(result.length() > 0)
         {
             ui->newAcft->setText(result[0]);
-            acft = db::newAcftGetId(registration);
+            acft = dbAircraft::newAcftGetId(registration);
         }else
         {
             acft = "-1";
@@ -572,14 +572,14 @@ void NewFlight::on_newAcft_editingFinished()
     }else // is input from user
     {
         QString input = ui->newAcft->text();
-        QStringList result = db::newAcftGetString(input);
+        QStringList result = dbAircraft::newAcftGetString(input);
         if(result.length() > 0)
         {
             ui->newAcft->setText(result[0]);
 
             QStringList input = ui->newAcft->text().split(" ");
             QString registration = input[0].trimmed();
-            acft = db::newAcftGetId(registration);
+            acft = dbAircraft::newAcftGetId(registration);
         }else
         {
             acft = "-1";

@@ -19,6 +19,7 @@
 #define NEWACFT_H
 
 #include <QDialog>
+#include "dbaircraft.h"
 
 namespace Ui {
 class NewAcft;

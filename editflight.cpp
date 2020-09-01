@@ -189,7 +189,7 @@ void EditFlight::returnInput(QVector<QString> flight)
     ui->newTonb->setText(flight[5]);
     // flight[6] is blocktime
     ui->newPic->setText(dbPilots::retreivePilotNameFromID(flight[7]));
-    ui->newAcft->setText(db::RetreiveRegistration(flight[8]));
+    ui->newAcft->setText(dbAircraft::retreiveRegistration(flight[8]));
 }
 
 /*
@@ -386,7 +386,7 @@ void EditFlight::on_newAcft_textChanged(const QString &arg1)
 {
     if(arg1.length() > 2)
     {
-        QVector<QString> hint = db::RetreiveAircraftTypeFromReg(arg1);
+        QVector<QString> hint = dbAircraft::retreiveAircraftTypeFromReg(arg1);
         if(hint.size() != 0)
         {
             ui->acftHintLineEdit->setPlaceholderText(hint[1] + " [ " + hint[0] + " | " + hint[2] + " ]");
@@ -401,7 +401,7 @@ void EditFlight::on_newAcft_editingFinished()
     if(ui->newAcft->text().length()>2)
     {
         QVector<QString> result;
-        result = db::RetreiveAircraftTypeFromReg(editacft);
+        result = dbAircraft::retreiveAircraftTypeFromReg(editacft);
         if(result.size()!=0)
         {
             ui->newAcft->setText(result[0]);// to do: pop up to navigate result set, here first result is selected

@@ -51,7 +51,7 @@ NewAcft::~NewAcft()
 
 void NewAcft::on_MakeLineEdit_textEdited(const QString &arg1)
 {
-    QStringList makeList = db::RetreiveAircraftMake(arg1);
+    QStringList makeList = dbAircraft::retreiveAircraftMake(arg1);
     makeList.removeDuplicates();
     QCompleter *makeCompleter = new QCompleter(makeList, this);
     makeCompleter->setCaseSensitivity(Qt::CaseInsensitive);
@@ -61,7 +61,7 @@ void NewAcft::on_MakeLineEdit_textEdited(const QString &arg1)
 }
 void NewAcft::on_MakeLineEdit_editingFinished()
 {
-    QStringList makeList = db::RetreiveAircraftMake(ui->MakeLineEdit->text());
+    QStringList makeList = dbAircraft::retreiveAircraftMake(ui->MakeLineEdit->text());
     if(makeList.length() != 0)
     {
         make = makeList.first();
@@ -78,7 +78,7 @@ void NewAcft::on_MakeLineEdit_editingFinished()
 
 void NewAcft::on_ModelLineEdit_textEdited(const QString &arg1)
 {
-    QStringList modelList = db::RetreiveAircraftModel(make, arg1);
+    QStringList modelList = dbAircraft::retreiveAircraftModel(make, arg1);
     modelList.removeDuplicates();
     QCompleter *modelCompleter = new QCompleter(modelList, this);
     modelCompleter->setCaseSensitivity(Qt::CaseInsensitive);
@@ -87,7 +87,7 @@ void NewAcft::on_ModelLineEdit_textEdited(const QString &arg1)
 }
 void NewAcft::on_ModelLineEdit_editingFinished()
 {
-    QStringList modelList = db::RetreiveAircraftModel(make, ui->ModelLineEdit->text());
+    QStringList modelList = dbAircraft::retreiveAircraftModel(make, ui->ModelLineEdit->text());
     if(modelList.length() != 0)
     {
         model = modelList.first();
@@ -103,7 +103,7 @@ void NewAcft::on_ModelLineEdit_editingFinished()
 
 void NewAcft::on_VariantLineEdit_textEdited(const QString &arg1)
 {
-    QStringList variantList = db::RetreiveAircraftVariant(make, model, arg1);
+    QStringList variantList = dbAircraft::retreiveAircraftVariant(make, model, arg1);
     variantList.removeDuplicates();
     QCompleter *variantCompleter = new QCompleter(variantList, this);
     variantCompleter->setCaseSensitivity(Qt::CaseInsensitive);
@@ -113,7 +113,7 @@ void NewAcft::on_VariantLineEdit_textEdited(const QString &arg1)
 
 void NewAcft::on_VariantLineEdit_editingFinished()
 {
-    QStringList VariantList = db::RetreiveAircraftVariant(make, model, ui->VariantLineEdit->text());
+    QStringList VariantList = dbAircraft::retreiveAircraftVariant(make, model, ui->VariantLineEdit->text());
     if(VariantList.length() != 0)
     {
         variant = VariantList.first();
@@ -130,7 +130,7 @@ void NewAcft::on_VariantLineEdit_editingFinished()
 void NewAcft::on_buttonBox_accepted()
 {
     qDebug() << "Accepted Button pressed";
-    aircraft_id = db::RetreiveAircraftIdFromMakeModelVariant(make, model, variant);
+    aircraft_id = dbAircraft::retreiveAircraftIdFromMakeModelVariant(make, model, variant);
     if(aircraft_id.contains("0") && aircraft_id.length() < 2)
     {
         QMessageBox nope;
@@ -140,7 +140,7 @@ void NewAcft::on_buttonBox_accepted()
         nope.exec();
     }else
     {
-        db::CommitTailToDb(registration, aircraft_id, "");
+        dbAircraft::commitTailToDb(registration, aircraft_id, "");
         NewAcft::reject();
     }
 
