@@ -60,5 +60,5 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_debugButton_clicked()
 {
-    ui->debugLineEdit->setText(dbStat::retreiveTotalTimeRollingYear());
+//    ui->debugLineEdit->setText(dbAircraft::retreiveAircraftDetails("102")[1]);
 }

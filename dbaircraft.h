@@ -14,7 +14,9 @@ public:
 
     static QStringList newAcftGetString(QString searchstring);
 
-    static QString newAcftGetId(QString registration);
+    static QString retreiveTailId(QString registration);
+
+    static QString retreiveAircraftId(QString tail_id);
 
     static QVector<QString> retreiveAircraftTypeFromReg(QString searchstring);
 
@@ -27,6 +29,8 @@ public:
     static QString retreiveAircraftIdFromMakeModelVariant(QString make, QString model, QString variant);
 
     static bool commitTailToDb(QString registration, QString aircraft_id, QString company);
+
+    static QVector<QString> retreiveAircraftDetails(QString aircraft_id);
 
 };
 

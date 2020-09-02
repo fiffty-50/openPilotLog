@@ -69,25 +69,32 @@ const qint8 AIRCRAFT_MAX_LENGTH   = 10;
 const qint8 PILOT_NAME_MAX_LENGTH = 15;
 
 /// Initialising variables used for storing user input
+/// Variables are initalised invalid to later fill them with
+/// meaningful inputs once they have been validated
 QVector<QString>    flight;
 QDate               date(QDate::currentDate());
 QString             doft(QDate::currentDate().toString(Qt::ISODate));
-QString             dept;
-QString             dest;
-QTime               tofb;
+QString             dept    =   "INVA";
+QString             dest    =   "INVA";
+QTime               tofb;   //QTime is initalised invalid
 QTime               tonb;
 QTime               tblk;
-QString             pic;
-QString             acft;
+QString             pic     =   "-1";
+QString             acft    =   "-1";
 // extras
-QString             secondPilot;
-QString             thirdPilot;
-QString             pilotFunction;
-QString             pilotTask;
-QString             takeoff;
-QString             landing;
-QString             autoland;
-QString             approachType;
+QString             secondPilot     = "-1";
+QString             thirdPilot      = "-1";
+QString             pilotFunction   = "-1";
+QString             pilotTask       = "-1";
+QString             takeoff         = "0";
+QString             landing         = "0";
+QString             autoland        = "0";
+QString             approachType    = "-1";
+// extra times
+QString             tSPSE   =   "00:00";
+QString             tSPME   =   "00:00";
+QString             tMP     =   "00:00";
+
 
 bool hasOldInput = dbFlight::checkScratchpad();
 
@@ -261,32 +268,86 @@ void NewFlight::nope()
 void NewFlight::fillExtrasLineEdits()
 {
     QString blockTime = calc::blocktime(tofb,tonb).toString("hh:mm");
-    // SP SE
-    // SP ME
-    // MP
+    DEBUG(blockTime);
+
+    QVector<QString> aircraftDetails = dbAircraft::retreiveAircraftDetails(dbAircraft::retreiveAircraftId(acft));
+    DEBUG("aircraftDetails: " << aircraftDetails);
+    if(!aircraftDetails.isEmpty()){// valid aircraft
+        // SP SE
+        if(aircraftDetails[0] == "1" && aircraftDetails[2] == "1"){
+            DEBUG("SPSE yes");
+            tSPSE = blockTime;
+            ui->spseTimeLineEdit->setText(blockTime);
+        }
+        // SP ME
+        if(aircraftDetails[0] == "1" && aircraftDetails[3] == "1"){
+            DEBUG("SP ME yes");
+            tSPME = blockTime;
+            ui->spmeTimeLineEdit->setText(blockTime);
+        }
+        // MP
+        if(aircraftDetails[1] == "1"){
+            DEBUG("Multipilot yes");
+            tMP = blockTime;
+            ui->mpTimeLineEdit->setText(blockTime);
+        }
+    }else{DEBUG("Aircraft Details Empty");}//invalid aircraft
+
     // TOTAL
     ui->totalTimeLineEdit->setText(blockTime);
     // IFR
+    if(ui->IfrCheckBox->isChecked()){
+        ui->ifrTimeLineEdit->setText(blockTime);
+        ui->vfrTimeLineEdit->setText("");
+    }
     // VFR
+    if(ui->VfrCheckBox->isChecked()){
+        ui->vfrTimeLineEdit->setText(blockTime);
+        ui->ifrTimeLineEdit->setText("");
+    }
+
     // Night
     QString deptDate = date.toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
-    int blocktime = calc::time_to_minutes(calc::blocktime(tofb,tonb));
-    qDebug() << "Blocktime: " << blocktime;
-    QString nightTime = calc::minutes_to_string(QString::number(calc::calculateNightTime(dept, dest, deptDateTime, blocktime)));
+    int tblk = calc::time_to_minutes(calc::blocktime(tofb,tonb));
+
+    QString nightTime = calc::minutes_to_string(
+                        QString::number(
+                        calc::calculateNightTime(
+                        dept, dest, deptDateTime, tblk)));
     ui->nightTimeLineEdit->setText(nightTime);
 
     // XC - Cross-country flight, if more than 50nm long
     if(calc::greatCircleDistanceBetweenAirports(dept,dest) >= 50){
         qDebug() << "Cross-country Flight: nm = " << calc::greatCircleDistanceBetweenAirports(dept,dest);
         ui->xcTimeLineEdit->setText(blockTime);
-    }else{
-        ui->xcTimeLineEdit->setText("00:00");
+    }else{ui->xcTimeLineEdit->setText("00:00");}
+    // Function times
+    switch (ui->FunctionComboBox->currentIndex()) {
+    case 0://PIC
+        ui->picTimeLineEdit->setText(blockTime);
+        ui->copTimeLineEdit->setText("");
+        ui->dualTimeLineEdit->setText("");
+        ui->fiTimeLineEdit->setText("");
+        break;
+    case 1://Co-Pilot
+        ui->picTimeLineEdit->setText("");
+        ui->copTimeLineEdit->setText(blockTime);
+        ui->dualTimeLineEdit->setText("");
+        ui->fiTimeLineEdit->setText("");
+        break;
+    case 2://Dual
+        ui->picTimeLineEdit->setText("");
+        ui->copTimeLineEdit->setText("");
+        ui->dualTimeLineEdit->setText(blockTime);
+        ui->fiTimeLineEdit->setText("");
+        break;
+    case 3://Instructor
+        ui->picTimeLineEdit->setText("");
+        ui->copTimeLineEdit->setText("");
+        ui->dualTimeLineEdit->setText("");
+        ui->fiTimeLineEdit->setText(blockTime);
     }
-    // PIC
-    // Co-Pilot
-    // Dual
-    // FI
     // SIM
 }
 
@@ -472,22 +533,23 @@ void NewFlight::on_newDeptLocLineEdit_textEdited(const QString &arg1)
 
 void NewFlight::on_newDeptLocLineEdit_editingFinished()
 {
-    QStringList deptList;
+    auto line_edit = ui->newDeptLocLineEdit;
 
-    if(ui->newDeptLocLineEdit->text().length()>1)
+    QStringList deptList;
+    if(line_edit->text().length()>1)
     {
-        auto line_edit = ui->newDeptLocLineEdit;
-        onEditingFinished(line_edit);
 
         QStringList deptList = dbAirport::completeIcaoOrIata(line_edit->text());
         if(deptList.length() != 0) {//exists in database
             dept = deptList.first();
             line_edit->setText(dept);
+            DEBUG("Departure set: " << dept);
         }else{
             qWarning() << "Departure Location not in database. ";
             emit onInputRejected(line_edit, QRegularExpression(LOC_INVALID_RGX));
         }
     }
+    onEditingFinished(line_edit);
 }
 
 /// newDeptLocLineEdit
@@ -512,32 +574,23 @@ void NewFlight::on_newDestLocLineEdit_textEdited(const QString &arg1)
 
 void NewFlight::on_newDestLocLineEdit_editingFinished()
 {
+    auto line_edit = ui->newDestLocLineEdit;
     QStringList destList;
 
-    if(ui->newDestLocLineEdit->text().length()>1)
+    if(line_edit->text().length()>1)
     {
-        auto line_edit = ui->newDestLocLineEdit;
-        onEditingFinished(line_edit);
-
         QStringList destList = dbAirport::completeIcaoOrIata(line_edit->text());
         if(destList.length() != 0) {
-            dept = destList.first();
-            ui->newDestLocLineEdit->setText(dept);
+            dest = destList.first();
+            ui->newDestLocLineEdit->setText(dest);
+            DEBUG("Destination set: " << dest);
         }else{
             qWarning() << "Destination location not in database. ";
             emit onInputRejected(line_edit, QRegularExpression(LOC_INVALID_RGX));
         }
     }
+    onEditingFinished(line_edit);
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -713,7 +766,7 @@ void NewFlight::on_newAcft_editingFinished()
         if(result.length() > 0)
         {
             ui->newAcft->setText(result[0]);
-            acft = dbAircraft::newAcftGetId(registration);
+            acft = dbAircraft::retreiveTailId(registration);
         }else
         {
             acft = "-1";
@@ -728,7 +781,7 @@ void NewFlight::on_newAcft_editingFinished()
 
             QStringList input = ui->newAcft->text().split(" ");
             QString registration = input[0].trimmed();
-            acft = dbAircraft::newAcftGetId(registration);
+            acft = dbAircraft::retreiveTailId(registration);
         }else
         {
             acft = "-1";
@@ -825,14 +878,15 @@ void NewFlight::on_secondPilotLineEdit_editingFinished()
             secondPilot = dbPilots::newPicGetId(picname);
         }else
         {
-            QMessageBox::StandardButton reply;
+            ui->secondPilotLineEdit->setStyleSheet("border: 1px solid red");
+            /*QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
                                           QMessageBox::Yes|QMessageBox::No);
             if (reply == QMessageBox::Yes)
             {
                 qDebug() << "Add new pilot selected";
                 nope();
-            }
+            }*/
         }
     }
 }
@@ -867,14 +921,15 @@ void NewFlight::on_thirdPilotLineEdit_editingFinished()
             thirdPilot = dbPilots::newPicGetId(picname);
         }else
         {
-            QMessageBox::StandardButton reply;
+            ui->thirdPilotLineEdit->setStyleSheet("border: 1px solid red");
+            /*QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
                                           QMessageBox::Yes|QMessageBox::No);
             if (reply == QMessageBox::Yes)
             {
                 qDebug() << "Add new pilot selected";
                 nope();
-            }
+            }*/
         }
     }
 }

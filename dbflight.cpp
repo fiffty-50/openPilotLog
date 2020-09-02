@@ -231,4 +231,3 @@ void dbFlight::clearScratchpad()
     query.prepare("DELETE FROM scratchpad;");
     query.exec();
 }
-

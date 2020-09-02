@@ -200,7 +200,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>12</day>
+           <day>11</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -322,7 +322,7 @@
    <item row="1" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">

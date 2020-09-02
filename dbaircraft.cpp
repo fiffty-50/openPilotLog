@@ -60,7 +60,7 @@ QStringList dbAircraft::newAcftGetString(QString searchstring)
  * \param registration Aircraft Registration
  * \return tail_id
  */
-QString dbAircraft::newAcftGetId(QString registration)
+QString dbAircraft::retreiveTailId(QString registration)
 {
     QString result;
     QSqlQuery query;
@@ -75,9 +75,32 @@ QString dbAircraft::newAcftGetId(QString registration)
     {
         result.append(query.value(0).toString());
     }
-    qDebug() << "newAcftGetId: " << result;
+    qDebug() << "retreiveTailId: " << result;
     return result;
 
+}
+
+/*!
+ * \brief dbAircraft::retreiveAircraftId Looks up aircraft_id in tails table
+ * \param tail_id
+ * \return aircraft_id
+ */
+QString dbAircraft::retreiveAircraftId(QString tail_id)
+{
+    QString result;
+    QSqlQuery query;
+    query.prepare("SELECT aircraft_id "
+                  "FROM tails "
+                  "WHERE tail_id = ?");
+    query.addBindValue(tail_id);
+    query.exec();
+
+    while(query.next())
+    {
+        result.append(query.value(0).toString());
+    }
+    qDebug() << "retreiveAircraftId: " << result;
+    return result;
 }
 /*!
  * \brief dbAircraft::retreiveAircraftTypeFromReg Searches the tails Database
@@ -240,4 +263,29 @@ bool dbAircraft::commitTailToDb(QString registration, QString aircraft_id, QStri
     }else{
         return true;
     }
+}
+
+QVector<QString> dbAircraft::retreiveAircraftDetails(QString aircraft_id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT singlepilot, multipilot, singleengine, "
+                  "multiengine, turboprop, jet, heavy "
+                  "FROM aircraft "
+                  "WHERE aircraft_id = ?");
+    query.addBindValue(aircraft_id);
+    query.exec();
+
+    QVector<QString> result;
+    while(query.next())
+    {
+        result.append(query.value(0).toString()); // Singlepilot
+        result.append(query.value(1).toString()); // Multipilot
+        result.append(query.value(2).toString()); // Singlengine
+        result.append(query.value(3).toString()); // Multiengine
+        result.append(query.value(4).toString()); // turboprop
+        result.append(query.value(5).toString()); // jet
+        result.append(query.value(6).toString()); // heavy
+        qDebug() << "dbaircraft::retreiveAircraftDetails... Result:" << result;
+    }
+    return result;
 }

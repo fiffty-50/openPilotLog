@@ -179,6 +179,10 @@ double calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
  */
 double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
 {
+    if(dbAirport::retreiveIcaoCoordinates(dept).isEmpty() || dbAirport::retreiveIcaoCoordinates(dest).isEmpty()){
+        qWarning() << "greatCircleDistance - invalid input. aborting.";
+        return 0;
+    }
     double lat1 = degToRad(dbAirport::retreiveIcaoCoordinates(dept)[0]);
     double lon1 = degToRad(dbAirport::retreiveIcaoCoordinates(dept)[1]);
     double lat2 = degToRad(dbAirport::retreiveIcaoCoordinates(dest)[0]);
@@ -313,6 +317,10 @@ double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
  */
 int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
 {
+    if(dbAirport::retreiveIcaoCoordinates(dept).isEmpty() || dbAirport::retreiveIcaoCoordinates(dest).isEmpty()){
+        qWarning() << "calculateNightTime - invalid input. aborting.";
+        return 0;
+    }
     double deptLat = dbAirport::retreiveIcaoCoordinates(dept)[0];
     qDebug() << "calc::calculateNightTime deptLat = " << deptLat;
     double deptLon = dbAirport::retreiveIcaoCoordinates(dept)[1];
