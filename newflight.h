@@ -19,6 +19,15 @@
 #define NEWFLIGHT_H
 
 #include <QDialog>
+#include <QRegularExpression>
+#include <QMessageBox>
+#include <QDebug>
+#include <QCompleter>
+#include <QLatin1Char>
+#include <QStringList>
+#include <QStringListModel>
+#include <QSortFilterProxyModel>
+#include <QButtonGroup>
 #include "newacft.h"
 #include "calc.h"
 #include "dbsettings.h"
@@ -26,6 +35,7 @@
 #include "dbpilots.h"
 #include "dbairport.h"
 #include "dbaircraft.h"
+#include "strictregularexpressionvalidator.h"
 
 namespace Ui {
 class NewFlight;
@@ -41,8 +51,6 @@ public:
 
 private slots:
     void nope();//error box
-
-    QString validateTimeInput(QString userinput);
 
     QVector<QString> collectInput();
 
@@ -60,19 +68,19 @@ private slots:
 
     void on_destTZ_currentIndexChanged(const QString &arg1);
 
-    void on_newDept_textEdited(const QString &arg1);
+    void on_newDeptTimeLineEdit_editingFinished();
 
-    void on_newDept_editingFinished();
+    void on_newDestTimeLineEdit_editingFinished();
 
-    void on_newDest_textEdited(const QString &arg1);
+    void on_newDeptLocLineEdit_editingFinished();
 
-    void on_newDest_editingFinished();
+    void on_newDestLocLineEdit_editingFinished();
+
+    void on_newDeptLocLineEdit_textEdited(const QString &arg1);
+
+    void on_newDestLocLineEdit_textEdited(const QString &arg1);
 
     void on_newDoft_editingFinished();
-
-    void on_newTofb_editingFinished();
-
-    void on_newTonb_editingFinished();
 
     void on_newAcft_textEdited(const QString &arg1);
 
@@ -145,6 +153,16 @@ private slots:
     void on_thirdPilotLineEdit_editingFinished();
 
     void on_FlightNumberLineEdit_editingFinished();
+
+
+
+    void on_newDeptLocLineEdit_inputRejected();
+
+    void on_newDestLocLineEdit_inputRejected();
+
+    void on_newDeptTimeLineEdit_inputRejected();
+
+    void on_newDestTimeLineEdit_inputRejected();
 
 private:
     Ui::NewFlight *ui;

@@ -18,14 +18,10 @@
 #include "newflight.h"
 #include "ui_newflight.h"
 #include "dbman.cpp"
-#include <QMessageBox>
-#include <QDebug>
-#include <QCompleter>
-#include <QLatin1Char>
-#include <QStringList>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
-#include <QButtonGroup>
+
+
+#define DEBUG(expr) \
+    qDebug() << "~DEBUG" << __func__ << expr
 
 /*
  * Debug / WIP
@@ -49,29 +45,108 @@ void NewFlight::on_tabWidget_tabBarClicked(int index)
         nope();
     }
 }
-/*
- * Initialise variables
- */
-QDate date(QDate::currentDate());
-QString doft(QDate::currentDate().toString(Qt::ISODate));
-QString dept;
-QString dest;
-QTime tofb;
-QTime tonb;
-QTime tblk;
-QString pic;
-QString acft;
-QVector<QString> flight;
-// extras
-QString secondPilot;
-QString thirdPilot;
-QString PilotFunction;
-QString PilotTask;
-QString TakeOff;
-QString Landing;
-QString Autoland;
-QString ApproachType;
 
+
+
+/// Raw Input validation
+const QString TIME_REGEX_PATTERN       = "([01]?[0-9]?|2[0-3]):?[0-5][0-9]?";// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
+const QString IATA                     = "[\\w]{3}";
+const QString ICAO                     = "[\\w0-9]{4}";
+const QString LOC_REGEX_PATTERN        = IATA + "|" + ICAO;
+const QString AIRCRAFT_REGEX_PATTERN   = "([\\w0-9]+-)?[\\w0-9]+";
+const QString PILOT_NAME_REGEX_PATTERN = "[\\w]+ [\\w]+";
+
+/// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
+const QString TIME_INVALID_RGX         = "[^\\d:]";
+const QString LOC_INVALID_RGX          = "[^\\w0-9]";
+const QString AIRCRAFT_INVALID_RGX     = "[^A-Z0-9\\-]";
+const QString PILOT_NAME_INVALID_RGX   = "[^a-zA-Z ]";
+
+/// Input max lengths
+const qint8 TIME_MAX_LENGTH  = 5; //to allow for ':' e.g. "08:45"
+const qint8 LOC_MAX_LENGTH   = 4;
+const qint8 AIRCRAFT_MAX_LENGTH   = 10;
+const qint8 PILOT_NAME_MAX_LENGTH = 15;
+
+/// Initialising variables used for storing user input
+QVector<QString>    flight;
+QDate               date(QDate::currentDate());
+QString             doft(QDate::currentDate().toString(Qt::ISODate));
+QString             dept;
+QString             dest;
+QTime               tofb;
+QTime               tonb;
+QTime               tblk;
+QString             pic;
+QString             acft;
+// extras
+QString             secondPilot;
+QString             thirdPilot;
+QString             pilotFunction;
+QString             pilotTask;
+QString             takeoff;
+QString             landing;
+QString             autoland;
+QString             approachType;
+
+bool hasOldInput = dbFlight::checkScratchpad();
+
+
+/*!
+ * \brief setLineEditValidator set Validators for QLineEdits that end with Time, Loc,
+ * Aircraft or Name
+ */
+static inline void setLineEditValidator(QLineEdit* line_edit)
+{
+    auto line_edit_objectName = line_edit->objectName();
+    DEBUG("Setting validators for " << line_edit_objectName);
+
+    static const
+    QVector<QPair<QRegularExpression, QRegularExpression>> objectName_inputValidation_regexes = {
+        {QRegularExpression("\\w+Time"),     QRegularExpression(TIME_REGEX_PATTERN)},
+        {QRegularExpression("\\w+Loc"),      QRegularExpression(LOC_REGEX_PATTERN)},
+        {QRegularExpression("\\w+Aircraft"), QRegularExpression(AIRCRAFT_REGEX_PATTERN)},
+        {QRegularExpression("\\w+Name"),     QRegularExpression(PILOT_NAME_REGEX_PATTERN)},
+    };
+    auto validator = new StrictRegularExpressionValidator();
+
+    for(auto pair : objectName_inputValidation_regexes)
+    {
+        if(pair.first.match(line_edit_objectName).hasMatch()) {
+            validator->setRegularExpression(pair.second);
+            line_edit->setValidator(validator);
+            return;
+        }
+    }
+    DEBUG("Couldnt find QLineEdit" << line_edit_objectName);
+}
+/*!
+ * \brief setLineEditMaxLength set Max Length for QLineEdits that end with Time, Loc,
+ * Aircraft or Name
+ */
+static inline void setLineEditMaxLength(QLineEdit* line_edit)
+{
+    auto line_edit_objectName = line_edit->objectName();
+    DEBUG("Setting Max Length for " << line_edit_objectName);
+
+    static const
+    QVector<QPair<QRegularExpression, int>> objectName_inputValidation_regexes = {
+        {QRegularExpression("\\w+TimeLineEdit"),     TIME_MAX_LENGTH},
+        {QRegularExpression("\\w+LocLineEdit"),      LOC_MAX_LENGTH},
+        {QRegularExpression("\\w+AircraftLineEdit"), AIRCRAFT_MAX_LENGTH},
+        {QRegularExpression("\\w+NameLineEdit"),     PILOT_NAME_MAX_LENGTH},
+    };
+
+    for(auto pair : objectName_inputValidation_regexes)
+    {
+        if(pair.first.match(line_edit_objectName).hasMatch())
+        {
+            line_edit->setMaxLength(pair.second);
+            return;
+        }
+    }
+    DEBUG("Couldnt find QLineEdit" << line_edit_objectName);
+}
 
 
 
@@ -87,43 +162,26 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->setupUi(this);
     ui->newDoft->setDate(QDate::currentDate());
 
-    bool hasoldinput = dbFlight::checkScratchpad();
-    qDebug() << "Hasoldinput? = " << hasoldinput;
-    if(hasoldinput) // Re-populate the Form
+    qDebug() << "Hasoldinput? = " << hasOldInput;
+    if(hasOldInput) // Re-populate the Form
     {
         flight = dbFlight::retreiveScratchpad();
         qDebug() << "Re-Filling Form from Scratchpad";
         returnInput(flight);
     }
 
-    // Validators for Line Edits
-    QRegExp icao_rx("[a-zA-Z]?[a-zA-Z]?[a-zA-Z]?[a-zA-Z]"); // allow only letters (upper and lower)
-    QValidator *ICAOvalidator = new QRegExpValidator(icao_rx, this);
-    ui->newDept->setValidator(ICAOvalidator);
-    ui->newDest->setValidator(ICAOvalidator);
-    QRegExp timehhmm("([01]?[0-9]?|2[0-3]):?[0-5][0-9]?"); //allows time in 24h format with optional leading 0 and with or without seperator
-    QValidator *timeInputValidator = new QRegExpValidator(timehhmm, this);
-    ui->newTofb->setValidator(timeInputValidator);
-    ui->newTonb->setValidator(timeInputValidator);
-    ui->spseTimeLineEdit->setValidator(timeInputValidator);
-    ui->spmeTimeLineEdit->setValidator(timeInputValidator);
-    ui->mpTimeLineEdit->setValidator(timeInputValidator);
-    ui->totalTimeLineEdit->setValidator(timeInputValidator);
-    ui->ifrTimeLineEdit->setValidator(timeInputValidator);
-    ui->vfrTimeLineEdit->setValidator(timeInputValidator);
-    ui->nightTimeLineEdit->setValidator(timeInputValidator);
-    ui->xcTimeLineEdit->setValidator(timeInputValidator);
-    ui->picTimeLineEdit->setValidator(timeInputValidator);
-    ui->copTimeLineEdit->setValidator(timeInputValidator);
-    ui->dualTimeLineEdit->setValidator(timeInputValidator);
-    ui->fiTimeLineEdit->setValidator(timeInputValidator);
-    ui->simTimeLineEdit->setValidator(timeInputValidator);
-
-    QRegExp picname("^[a-zA-Z_]+,?( [a-zA-Z_]+)*$");// allow only lastname, firstname or lastname firstname with one whitespace
-    QValidator *picNameValidator = new QRegExpValidator(picname, this);
-    ui->newPic->setValidator(picNameValidator);
-    ui->secondPilotLineEdit->setValidator(picNameValidator);
-    ui->thirdPilotLineEdit->setValidator(picNameValidator);
+    for(auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>();
+            auto line_edit : line_edits)
+        {
+            setLineEditValidator(line_edit);
+            setLineEditMaxLength(line_edit);
+        }
+    for(auto line_edits = ui->extraTimes->findChildren<QLineEdit*>();
+            auto line_edit : line_edits)
+        {
+            setLineEditValidator(line_edit);
+            setLineEditMaxLength(line_edit);
+        }
 
     // Groups for CheckBoxes
     QButtonGroup *FlightRulesGroup = new QButtonGroup(this);
@@ -137,7 +195,16 @@ NewFlight::NewFlight(QWidget *parent) :
     restoreSettings();
     ui->deptTZ->setFocusPolicy(Qt::NoFocus);
     ui->destTZ->setFocusPolicy(Qt::NoFocus);
-    ui->newDept->setFocus();
+
+    // Visually mark mandatory fields
+    ui->newDeptLocLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->newDestLocLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->newDeptTimeLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->newDestTimeLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->newPic->setStyleSheet("border: 1px solid orange");
+    ui->newAcft->setStyleSheet("border: 1px solid orange");
+
+    ui->newDeptLocLineEdit->setFocus();
 }
 
 NewFlight::~NewFlight()
@@ -149,6 +216,36 @@ NewFlight::~NewFlight()
  * Functions
  */
 
+
+
+/// Input Validation
+
+/*!
+ * \brief onInputRejected Set `line_edit`'s border to red and check if `rgx` matches
+ * in order to keep text on line.
+ */
+static void onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
+    DEBUG("Input rejected" << line_edit->text());
+    line_edit->setStyleSheet("border: 1px solid red");
+    if(auto text = line_edit->text();
+            rgx.match(text).hasMatch() == false)
+    {
+        line_edit->setText(line_edit->text());
+    }
+}
+
+/*!
+ * \brief onEditingFinished signal is emitted if input passed raw validation
+ */
+static void onEditingFinished(QLineEdit* line_edit){
+    DEBUG("Input accepted" << line_edit->text() << line_edit->metaObject()->className());
+    line_edit->setStyleSheet("");
+}
+
+
+/*!
+ * \brief NewFlight::nope for features that are not yet implemented
+ */
 void NewFlight::nope()
 {
     QMessageBox nope(this); //error box
@@ -156,48 +253,7 @@ void NewFlight::nope()
     nope.exec();
 }
 
-/*!
- * \brief NewFlight::validateTimeInput verifies user input and formats to hh:mm
- * if the output is not a valid time, an empty string is returned.
- * \param userinput from a QLineEdit
- * \return formatted QString "hh:mm" or Empty String
- */
-QString NewFlight::validateTimeInput(QString userinput)
-{
-    QString output; //
-    QTime temptime; //empty time object is invalid by default
 
-    bool containsSeperator = userinput.contains(":");
-        if(userinput.length() == 4 && !containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"hhmm");
-        }else if(userinput.length() == 3 && !containsSeperator)
-        {
-            if(userinput.toInt() < 240) //Qtime is invalid if time is between 000 and 240 for this case
-            {
-                QString tempstring = userinput.prepend("0");
-                temptime = QTime::fromString(tempstring,"hhmm");
-            }else
-            {
-                temptime = QTime::fromString(userinput,"Hmm");
-            }
-        }else if(userinput.length() == 4 && containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"h:mm");
-        }else if(userinput.length() == 5 && containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"hh:mm");
-        }
-
-        output = temptime.toString("hh:mm");
-        if(output.isEmpty())
-        {
-            QMessageBox timeformat(this);
-            timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
-            timeformat.exec();
-        }
-        return output;
-}
 
 /*!
  * \brief NewFlight::fillExtrasLineEdits Fills the flight time line edits according to ui selections
@@ -249,8 +305,11 @@ QVector<QString> NewFlight::collectInput()
     return flight;
 }
 
+/*!
+ * \brief NewFlight::verifyInput checks if input exists in database.
+ * \return
+ */
 bool NewFlight::verifyInput()
-    //check if the input is correctly formatted and all required fields are filled
 {
 
     bool deptValid = false;
@@ -313,7 +372,6 @@ bool NewFlight::verifyInput()
     {
         qDebug() << "====================================================";
         qDebug() << "NewFlight::verifyInput() says: Flight is invalid.";
-        qDebug() << "NewFlight::verifyInput() says: I will call the cops.";
         return 0;
     }
     return 0;
@@ -325,10 +383,10 @@ void NewFlight::returnInput(QVector<QString> flight)
     // Re-populates the input masks with the selected fields if input was erroneous to allow for corrections to be made
     qDebug() << "return Input: " << flight;
     ui->newDoft->setDate(QDate::fromString(flight[1],Qt::ISODate));
-    ui->newDept->setText(flight[2]);
-    ui->newTofb->setText(flight[3]);
-    ui->newDest->setText(flight[4]);
-    ui->newTonb->setText(flight[5]);
+    ui->newDeptLocLineEdit->setText(flight[2]);
+    ui->newDeptTimeLineEdit->setText(flight[3]);
+    ui->newDestLocLineEdit->setText(flight[4]);
+    ui->newDestTimeLineEdit->setText(flight[5]);
     // flight[6] is blocktime
     ui->newPic->setText(dbPilots::retreivePilotNameFromID(flight[7]));
     ui->newAcft->setText(dbAircraft::retreiveRegistration(flight[8]));
@@ -368,31 +426,8 @@ void NewFlight::restoreSettings()
     ui->VfrCheckBox->setChecked(dbSettings::retreiveSetting(111).toInt());
 
     ui->flightNumberPrefixLabel->setText(dbSettings::retreiveSetting(50) + QLatin1Char('-'));
-    //ui->autoNightCheckBox->setChecked(dbSettings::retreiveSetting("112")[1].toInt());
-    //qDebug() << "restore Settings ifr to int: " << dbSettings::retreiveSetting("110")[1].toInt();
-
-/*
- *
- * QString PilotFunction;
-QString PilotTask;
-QString TakeOff;
-QString Landing;
-QString Autoland;
-QString ApproachType;
-100	PIC	NewFlight::FunctionComboBox
-101	ILS CAT I	NewFlight::ApproachComboBox
-102	Qt::Checked	NewFlight::PilotFlyingCheckBox
-103	Qt::Unchecked	NewFlight::PilotMonitoringCheckBox
-104	1	NewFlight::TakeoffSpinBox
-105	Qt::Checked	NewFlight::TakeoffCheckBox
-106	1	NewFlight::LandingSpinBox
-107	Qt::Checked	NewFlight::LandingCheckBox
-108	0	NewFlight::AutolandSpinBox
-109	Qt::Unchecked	NewFlight::AutolandCheckBox
-110	Qt::Checked	NewFlight::IfrCheckBox
-111	Qt::Unchecked	NewFlight::VfrCheckBox
-*/
 }
+
 /*
  * Slots
  */
@@ -411,6 +446,102 @@ void NewFlight::on_destTZ_currentIndexChanged(const QString &arg1)
     ui->destTZ->setCurrentIndex(0);
 }
 
+
+
+/// newDeptLocLineEdit
+
+void NewFlight::on_newDeptLocLineEdit_inputRejected()
+{
+     onInputRejected(ui->newDeptLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
+}
+
+void NewFlight::on_newDeptLocLineEdit_textEdited(const QString &arg1)
+{
+    ui->newDeptLocLineEdit->setText(arg1.toUpper());
+
+    if(arg1.length()>2)
+    {
+        QStringList deptList = dbAirport::completeIcaoOrIata(arg1);
+        qDebug() << "deptList = " << deptList;
+        QCompleter *deptCompleter = new QCompleter(deptList, this);
+        deptCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+        deptCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+        ui->newDeptLocLineEdit->setCompleter(deptCompleter);
+    }
+}
+
+void NewFlight::on_newDeptLocLineEdit_editingFinished()
+{
+    QStringList deptList;
+
+    if(ui->newDeptLocLineEdit->text().length()>1)
+    {
+        auto line_edit = ui->newDeptLocLineEdit;
+        onEditingFinished(line_edit);
+
+        QStringList deptList = dbAirport::completeIcaoOrIata(line_edit->text());
+        if(deptList.length() != 0) {//exists in database
+            dept = deptList.first();
+            line_edit->setText(dept);
+        }else{
+            qWarning() << "Departure Location not in database. ";
+            emit onInputRejected(line_edit, QRegularExpression(LOC_INVALID_RGX));
+        }
+    }
+}
+
+/// newDeptLocLineEdit
+
+void NewFlight::on_newDestLocLineEdit_inputRejected()
+{
+    onInputRejected(ui->newDestLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
+}
+
+void NewFlight::on_newDestLocLineEdit_textEdited(const QString &arg1)
+{
+    ui->newDestLocLineEdit->setText(arg1.toUpper());
+    if(arg1.length()>2)
+    {
+        QStringList destList = dbAirport::completeIcaoOrIata(arg1);
+        QCompleter *destCompleter = new QCompleter(destList, this);
+        destCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+        destCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+        ui->newDestLocLineEdit->setCompleter(destCompleter);
+    }
+}
+
+void NewFlight::on_newDestLocLineEdit_editingFinished()
+{
+    QStringList destList;
+
+    if(ui->newDestLocLineEdit->text().length()>1)
+    {
+        auto line_edit = ui->newDestLocLineEdit;
+        onEditingFinished(line_edit);
+
+        QStringList destList = dbAirport::completeIcaoOrIata(line_edit->text());
+        if(destList.length() != 0) {
+            dept = destList.first();
+            ui->newDestLocLineEdit->setText(dept);
+        }else{
+            qWarning() << "Destination location not in database. ";
+            emit onInputRejected(line_edit, QRegularExpression(LOC_INVALID_RGX));
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 
 void NewFlight::on_newDept_textEdited(const QString &arg1)
 {
@@ -503,7 +634,7 @@ void NewFlight::on_newDest_editingFinished()
         }
     }
 }
-
+*/
 
 void NewFlight::on_newDoft_editingFinished()
 {
@@ -511,32 +642,50 @@ void NewFlight::on_newDoft_editingFinished()
     doft = date.toString(Qt::ISODate);
 }
 
-void NewFlight::on_newTofb_editingFinished()
-{
-    ui->newTofb->setText(validateTimeInput(ui->newTofb->text()));
-    tofb = QTime::fromString(ui->newTofb->text(),"hh:mm");
+/// newDeptTimeLineEdit
 
-    if(!tofb.isValid()){
-        ui->newTofb->setStyleSheet("border: 1px solid red");
-        ui->newTofb->setFocus();
-    }else{
-        ui->newTofb->setStyleSheet("");
-    }
-    qDebug() << "New Time Off Blocks: " << tofb;
+void NewFlight::on_newDeptTimeLineEdit_inputRejected()
+{
+    onInputRejected(ui->newDeptTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
 }
 
-void NewFlight::on_newTonb_editingFinished()
+void NewFlight::on_newDeptTimeLineEdit_editingFinished()
 {
-    ui->newTonb->setText(validateTimeInput(ui->newTonb->text()));
-    tonb = QTime::fromString(ui->newTonb->text(),"hh:mm");
+    ui->newDeptTimeLineEdit->setText(calc::formatTimeInput(ui->newDeptTimeLineEdit->text()));
+    tofb = QTime::fromString(ui->newDeptTimeLineEdit->text(),"hh:mm");
 
-    if(!tonb.isValid()){
-        ui->newTonb->setStyleSheet("border: 1px solid red");
-        ui->newTonb->setFocus();
+    auto line_edit = ui->newDeptTimeLineEdit;
+    onEditingFinished(line_edit);
+
+    if(tofb.isValid()){
+        // continue
+        DEBUG("Time Off Blocks is valid:" << tofb);
     }else{
-        ui->newTonb->setStyleSheet("");
+        emit line_edit->inputRejected();
     }
-    qDebug() << "New Time On Blocks: " << tonb;
+}
+
+/// newDestTimeLineEdit
+
+void NewFlight::on_newDestTimeLineEdit_inputRejected()
+{
+    onInputRejected(ui->newDestTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
+}
+
+void NewFlight::on_newDestTimeLineEdit_editingFinished()
+{
+    ui->newDestTimeLineEdit->setText(calc::formatTimeInput(ui->newDestTimeLineEdit->text()));
+    tonb = QTime::fromString(ui->newDestTimeLineEdit->text(),"hh:mm");
+
+    auto line_edit = ui->newDestTimeLineEdit;
+    onEditingFinished(line_edit);
+
+    if(tonb.isValid()){
+        // continue
+        DEBUG("Time On Blocks is valid:" << tonb);
+    }else{
+        emit line_edit->inputRejected();
+    }
 }
 
 
@@ -778,17 +927,20 @@ void NewFlight::on_ApproachComboBox_currentTextChanged(const QString &arg1)
         ui->AutolandCheckBox->setCheckState(Qt::Unchecked);
         ui->AutolandSpinBox->setValue(0);
     }
-    ApproachType = arg1;
-    qDebug() << "Approach Type: " << ApproachType;
+    approachType = arg1;
+    qDebug() << "Approach Type: " << approachType;
 }
 
+
+
+
 /*
- * Times
+ * Extra Times
  */
 
 void NewFlight::on_spseTimeLineEdit_editingFinished()
 {
-    ui->spseTimeLineEdit->setText(validateTimeInput(ui->spseTimeLineEdit->text()));
+    ui->spseTimeLineEdit->setText(calc::formatTimeInput(ui->spseTimeLineEdit->text()));
     if(ui->spseTimeLineEdit->text() == ""){
         ui->spseTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->spseTimeLineEdit->setFocus();
@@ -799,7 +951,7 @@ void NewFlight::on_spseTimeLineEdit_editingFinished()
 
 void NewFlight::on_spmeTimeLineEdit_editingFinished()
 {
-    ui->spmeTimeLineEdit->setText(validateTimeInput(ui->spmeTimeLineEdit->text()));
+    ui->spmeTimeLineEdit->setText(calc::formatTimeInput(ui->spmeTimeLineEdit->text()));
     if(ui->spmeTimeLineEdit->text() == ""){
         ui->spmeTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->spmeTimeLineEdit->setFocus();
@@ -810,7 +962,7 @@ void NewFlight::on_spmeTimeLineEdit_editingFinished()
 
 void NewFlight::on_mpTimeLineEdit_editingFinished()
 {
-    ui->mpTimeLineEdit->setText(validateTimeInput(ui->mpTimeLineEdit->text()));
+    ui->mpTimeLineEdit->setText(calc::formatTimeInput(ui->mpTimeLineEdit->text()));
     if(ui->mpTimeLineEdit->text() == ""){
         ui->mpTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->mpTimeLineEdit->setFocus();
@@ -821,7 +973,7 @@ void NewFlight::on_mpTimeLineEdit_editingFinished()
 
 void NewFlight::on_totalTimeLineEdit_editingFinished()
 {
-    ui->totalTimeLineEdit->setText(validateTimeInput(ui->totalTimeLineEdit->text()));
+    ui->totalTimeLineEdit->setText(calc::formatTimeInput(ui->totalTimeLineEdit->text()));
     if(ui->totalTimeLineEdit->text() == ""){
         ui->totalTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->totalTimeLineEdit->setFocus();
@@ -832,7 +984,7 @@ void NewFlight::on_totalTimeLineEdit_editingFinished()
 
 void NewFlight::on_ifrTimeLineEdit_editingFinished()
 {
-    ui->ifrTimeLineEdit->setText(validateTimeInput(ui->ifrTimeLineEdit->text()));
+    ui->ifrTimeLineEdit->setText(calc::formatTimeInput(ui->ifrTimeLineEdit->text()));
     if(ui->ifrTimeLineEdit->text() == ""){
         ui->ifrTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->ifrTimeLineEdit->setFocus();
@@ -843,7 +995,7 @@ void NewFlight::on_ifrTimeLineEdit_editingFinished()
 
 void NewFlight::on_vfrTimeLineEdit_editingFinished()
 {
-    ui->vfrTimeLineEdit->setText(validateTimeInput(ui->vfrTimeLineEdit->text()));
+    ui->vfrTimeLineEdit->setText(calc::formatTimeInput(ui->vfrTimeLineEdit->text()));
     if(ui->vfrTimeLineEdit->text() == ""){
         ui->vfrTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->vfrTimeLineEdit->setFocus();
@@ -854,7 +1006,7 @@ void NewFlight::on_vfrTimeLineEdit_editingFinished()
 
 void NewFlight::on_nightTimeLineEdit_editingFinished()
 {
-    ui->nightTimeLineEdit->setText(validateTimeInput(ui->nightTimeLineEdit->text()));
+    ui->nightTimeLineEdit->setText(calc::formatTimeInput(ui->nightTimeLineEdit->text()));
     if(ui->nightTimeLineEdit->text() == ""){
         ui->nightTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->nightTimeLineEdit->setFocus();
@@ -865,7 +1017,7 @@ void NewFlight::on_nightTimeLineEdit_editingFinished()
 
 void NewFlight::on_xcTimeLineEdit_editingFinished()
 {
-    ui->xcTimeLineEdit->setText(validateTimeInput(ui->xcTimeLineEdit->text()));
+    ui->xcTimeLineEdit->setText(calc::formatTimeInput(ui->xcTimeLineEdit->text()));
     if(ui->xcTimeLineEdit->text() == ""){
         ui->xcTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->xcTimeLineEdit->setFocus();
@@ -876,7 +1028,7 @@ void NewFlight::on_xcTimeLineEdit_editingFinished()
 
 void NewFlight::on_picTimeLineEdit_editingFinished()
 {
-    ui->picTimeLineEdit->setText(validateTimeInput(ui->picTimeLineEdit->text()));
+    ui->picTimeLineEdit->setText(calc::formatTimeInput(ui->picTimeLineEdit->text()));
     if(ui->picTimeLineEdit->text() == ""){
         ui->picTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->picTimeLineEdit->setFocus();
@@ -887,7 +1039,7 @@ void NewFlight::on_picTimeLineEdit_editingFinished()
 
 void NewFlight::on_copTimeLineEdit_editingFinished()
 {
-    ui->copTimeLineEdit->setText(validateTimeInput(ui->copTimeLineEdit->text()));
+    ui->copTimeLineEdit->setText(calc::formatTimeInput(ui->copTimeLineEdit->text()));
     if(ui->copTimeLineEdit->text() == ""){
         ui->copTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->copTimeLineEdit->setFocus();
@@ -898,7 +1050,7 @@ void NewFlight::on_copTimeLineEdit_editingFinished()
 
 void NewFlight::on_dualTimeLineEdit_editingFinished()
 {
-    ui->dualTimeLineEdit->setText(validateTimeInput(ui->dualTimeLineEdit->text()));
+    ui->dualTimeLineEdit->setText(calc::formatTimeInput(ui->dualTimeLineEdit->text()));
     if(ui->dualTimeLineEdit->text() == ""){
         ui->dualTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->dualTimeLineEdit->setFocus();
@@ -909,7 +1061,7 @@ void NewFlight::on_dualTimeLineEdit_editingFinished()
 
 void NewFlight::on_fiTimeLineEdit_editingFinished()
 {
-    ui->fiTimeLineEdit->setText(validateTimeInput(ui->fiTimeLineEdit->text()));
+    ui->fiTimeLineEdit->setText(calc::formatTimeInput(ui->fiTimeLineEdit->text()));
     if(ui->fiTimeLineEdit->text() == ""){
         ui->fiTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->fiTimeLineEdit->setFocus();
@@ -920,7 +1072,7 @@ void NewFlight::on_fiTimeLineEdit_editingFinished()
 
 void NewFlight::on_simTimeLineEdit_editingFinished()
 {
-    ui->simTimeLineEdit->setText(validateTimeInput(ui->simTimeLineEdit->text()));
+    ui->simTimeLineEdit->setText(calc::formatTimeInput(ui->simTimeLineEdit->text()));
     if(ui->simTimeLineEdit->text() == ""){
         ui->simTimeLineEdit->setStyleSheet("border: 1px solid red");
         ui->simTimeLineEdit->setFocus();
@@ -937,10 +1089,10 @@ void NewFlight::on_simTimeLineEdit_editingFinished()
 void NewFlight::on_buttonBox_accepted()
 {
     on_newDoft_editingFinished();// - activate slots in case user has been active in last input before clicking submit
-    on_newTonb_editingFinished();
-    on_newTofb_editingFinished();
-    on_newDept_editingFinished();
-    on_newDest_editingFinished();
+    //on_newTonb_editingFinished();
+    //on_newTofb_editingFinished();
+    //on_newDept_editingFinished();
+    //on_newDest_editingFinished();
     on_newAcft_editingFinished();
     on_newPic_editingFinished();
 
@@ -969,3 +1121,4 @@ void NewFlight::on_buttonBox_rejected()
 {
     qDebug() << "NewFlight: Rejected\n";
 }
+

@@ -39,7 +39,7 @@
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QLineEdit" name="newDest">
+        <widget class="QLineEdit" name="newDestLocLineEdit">
          <property name="toolTip">
           <string>Enter the ICAO 4-letter Identifier of the Airport</string>
          </property>
@@ -90,7 +90,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QLineEdit" name="newDept">
+        <widget class="QLineEdit" name="newDeptLocLineEdit">
          <property name="toolTip">
           <string>Enter the ICAO 4-letter Identifier of the Airport</string>
          </property>
@@ -200,7 +200,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>13</day>
+           <day>12</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -215,7 +215,13 @@
         </widget>
        </item>
        <item row="1" column="5">
-        <widget class="QLineEdit" name="newTofb">
+        <widget class="QLineEdit" name="newDeptTimeLineEdit">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="maxLength">
           <number>5</number>
          </property>
@@ -260,7 +266,13 @@
         </widget>
        </item>
        <item row="2" column="5">
-        <widget class="QLineEdit" name="newTonb">
+        <widget class="QLineEdit" name="newDestTimeLineEdit">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="placeholderText">
           <string>00:00</string>
          </property>
@@ -310,7 +322,7 @@
    <item row="1" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -556,7 +568,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="extraTimes">
       <attribute name="title">
        <string>Edit Times</string>
       </attribute>
@@ -698,10 +710,10 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>newDept</tabstop>
-  <tabstop>newTofb</tabstop>
-  <tabstop>newDest</tabstop>
-  <tabstop>newTonb</tabstop>
+  <tabstop>newDeptLocLineEdit</tabstop>
+  <tabstop>newDeptTimeLineEdit</tabstop>
+  <tabstop>newDestLocLineEdit</tabstop>
+  <tabstop>newDestTimeLineEdit</tabstop>
   <tabstop>newAcft</tabstop>
   <tabstop>newPic</tabstop>
   <tabstop>secondPilotLineEdit</tabstop>

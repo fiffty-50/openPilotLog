@@ -2,7 +2,7 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 TARGET = openLog
 
@@ -40,6 +40,7 @@ SOURCES += \
     newflight.cpp \
     settingswidget.cpp \
     showaircraftlist.cpp \
+    strictregularexpressionvalidator.cpp \
 
 HEADERS += \
     calc.h \
@@ -58,6 +59,7 @@ HEADERS += \
     newflight.h \
     settingswidget.h \
     showaircraftlist.h \
+    strictregularexpressionvalidator.h \
 
 FORMS += \
     easaview.ui \

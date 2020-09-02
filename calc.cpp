@@ -333,3 +333,48 @@ int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     qDebug() << "calc::calculateNightTime result: " << nightTime << " minutes night flying time.";
     return nightTime;
 }
+
+/*!
+ * \brief calc::formatTimeInput verifies user input and formats to hh:mm
+ * if the output is not a valid time, an empty string is returned. Accepts
+ * input as hh:mm, h:mm, hhmm or hmm.
+ * \param userinput from a QLineEdit
+ * \return formatted QString "hh:mm" or Empty String
+ */
+QString calc::formatTimeInput(QString userinput)
+{
+    QString output; //
+    QTime temptime; //empty time object is invalid by default
+
+    bool containsSeperator = userinput.contains(":");
+        if(userinput.length() == 4 && !containsSeperator)
+        {
+            temptime = QTime::fromString(userinput,"hhmm");
+        }else if(userinput.length() == 3 && !containsSeperator)
+        {
+            if(userinput.toInt() < 240) //Qtime is invalid if time is between 000 and 240 for this case
+            {
+                QString tempstring = userinput.prepend("0");
+                temptime = QTime::fromString(tempstring,"hhmm");
+            }else
+            {
+                temptime = QTime::fromString(userinput,"Hmm");
+            }
+        }else if(userinput.length() == 4 && containsSeperator)
+        {
+            temptime = QTime::fromString(userinput,"h:mm");
+        }else if(userinput.length() == 5 && containsSeperator)
+        {
+            temptime = QTime::fromString(userinput,"hh:mm");
+        }
+
+        output = temptime.toString("hh:mm");
+        if(output.isEmpty())
+        {
+            /*QMessageBox timeformat(this);
+            timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
+            timeformat.exec();*/
+            qDebug() << "Time input is invalid.";
+        }
+        return output;
+}

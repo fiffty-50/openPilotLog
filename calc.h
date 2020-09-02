@@ -59,6 +59,8 @@ public:
     static double solarElevation(QDateTime utc_time_point, double lat, double lon);
 
     static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk);
+
+    static QString formatTimeInput(QString userinput);
 };
 
 
