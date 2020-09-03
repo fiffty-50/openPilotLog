@@ -12,6 +12,8 @@ class dbAircraft
 public:
     static QString retreiveRegistration(QString tail_ID);
 
+    static QStringList retreiveRegistrationList();
+
     static QStringList newAcftGetString(QString searchstring);
 
     static QString retreiveTailId(QString registration);

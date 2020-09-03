@@ -29,6 +29,19 @@ QString dbAircraft::retreiveRegistration(QString tail_ID)
     return acftRegistration;
 }
 
+QStringList dbAircraft::retreiveRegistrationList()
+{
+    QSqlQuery query;
+    query.prepare("SELECT registration FROM tails");
+    query.exec();
+
+    QStringList result;
+    while (query.next()) {
+        result.append(query.value(0).toString());
+    }
+    return result;
+}
+
 /*!
  * \brief newAcftGetString Looks up an aircraft Registration in the database
  * \param searchstring

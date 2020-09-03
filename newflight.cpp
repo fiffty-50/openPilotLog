@@ -80,7 +80,7 @@ const QString TIME_REGEX_PATTERN        = "([01]?[0-9]?|2[0-3]):?[0-5][0-9]?";//
 const QString IATA                      = "[\\w]{3}";
 const QString ICAO                      = "[\\w0-9]{4}";
 const QString LOC_REGEX_PATTERN         = IATA + "|" + ICAO;
-const QString AIRCRAFT_REGEX_PATTERN    = "([\\w0-9]+-)?[\\w0-9]+";
+const QString AIRCRAFT_REGEX_PATTERN    = "[\\w0-9]+-?([\\w0-9]?)+";
 const QString PILOT_NAME_REGEX_PATTERN  = "[\\w]+,? ?[\\w]+";
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
@@ -175,7 +175,9 @@ void NewFlight::restoreSettings()
  * Window Construction
  */
 
-NewFlight::NewFlight(QWidget *parent, QStringList locationList) :
+NewFlight::NewFlight(QWidget *parent, QStringList locationList,
+                                      QStringList registrationList,
+                                      QStringList pilotNameList) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
@@ -189,11 +191,17 @@ NewFlight::NewFlight(QWidget *parent, QStringList locationList) :
     }
 
     // Airport Line Edits Auto Completion
-    QCompleter *locationCompleter = new QCompleter(locationList);
+    auto *locationCompleter = new QCompleter(locationList);
     locationCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     locationCompleter->setCompletionMode(QCompleter::PopupCompletion);
     ui->newDeptLocLineEdit->setCompleter(locationCompleter);
     ui->newDestLocLineEdit->setCompleter(locationCompleter);
+    // Aircraft Line Edits Auto Completion
+    auto *aircraftCompleter = new QCompleter(registrationList);
+    aircraftCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    aircraftCompleter->setCompletionMode(QCompleter::PopupCompletion);
+    aircraftCompleter->setFilterMode(Qt::MatchContains);
+    ui->newAcft->setCompleter(aircraftCompleter);
     // To Do: Aircraft and Pilot Names Completer
 
     // Groups for CheckBoxes
@@ -408,55 +416,29 @@ void NewFlight::on_newDoft_editingFinished()
 
 /// Aircraft
 
-void NewFlight::on_newAcft_textEdited(const QString &arg1)
+void NewFlight::on_newAcft_inputRejected()
 {
-    if(arg1.length()>1)
-    {
-        QStringList acftList = dbAircraft::newAcftGetString(arg1);
-        QCompleter *acftCompleter = new QCompleter(acftList, this);
-        acftCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-        acftCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-        ui->newAcft->setCompleter(acftCompleter);
-     }
+    onInputRejected(ui->newAcft, QRegularExpression(AIRCRAFT_INVALID_RGX));
 }
 
 void NewFlight::on_newAcft_editingFinished()
 {
     acft = "-1";// set invalid
+    QString registration;
 
-    if(ui->newAcft->text().contains(" "))// is input from QCompleter
-    {
-        QStringList input = ui->newAcft->text().split(" ");
-        QString registration = input[0].trimmed();
-        QStringList result = dbAircraft::newAcftGetString(registration);
-        if(result.length() > 0)
-        {
-            ui->newAcft->setText(result[0]);
-            acft = dbAircraft::retreiveTailId(registration);
-        }else
-        {
-            acft = "-1";
-        }
-    }else // is input from user
-    {
-        QString input = ui->newAcft->text();
-        QStringList result = dbAircraft::newAcftGetString(input);
-        if(result.length() > 0)
-        {
-            ui->newAcft->setText(result[0]);
+    auto registrationList = dbAircraft::retreiveRegistrationList();
+    auto line_edit = ui->newAcft;
 
-            QStringList input = ui->newAcft->text().split(" ");
-            QString registration = input[0].trimmed();
-            acft = dbAircraft::retreiveTailId(registration);
-        }else
-        {
-            acft = "-1";
-        }
-    }
+    QStringList match = registrationList.filter(line_edit->text(), Qt::CaseInsensitive);
 
+    if(match.length() != 0) {
+        acft = match[0];
+        line_edit->setText(acft);
+        onEditingFinished(line_edit);
+    }else{
+        DEBUG("Registration not in List!");
+        emit line_edit->inputRejected();
 
-    if(acft == "-1")
-    {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "No aircraft found", "No aircraft found.\n Would you like to add a new aircraft to the database?",
                                       QMessageBox::Yes|QMessageBox::No);
@@ -466,10 +448,7 @@ void NewFlight::on_newAcft_editingFinished()
             ui->newAcft->setText("");
             ui->newAcft->setFocus();
         }
-
     }
-
-    qDebug() << "Editing finished. Acft: " << acft;
 }
 
 /// Pilot(s)
@@ -1104,3 +1083,5 @@ void NewFlight::on_tabWidget_currentChanged(int index)
         }
     }
 }
+
+

@@ -46,7 +46,9 @@ class NewFlight : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFlight(QWidget *parent, QStringList locationList);
+    explicit NewFlight(QWidget *parent, QStringList locationList,
+                                        QStringList registrationList,
+                                        QStringList pilotNameList);
     ~NewFlight();
 
 private slots:
@@ -84,7 +86,7 @@ private slots:
 
     void on_newDoft_editingFinished();
 
-    void on_newAcft_textEdited(const QString &arg1);
+    void on_newAcft_inputRejected();
 
     void on_newAcft_editingFinished();
 
@@ -155,6 +157,8 @@ private slots:
 
 
     void on_tabWidget_currentChanged(int index);
+
+
 
 private:
     Ui::NewFlight *ui;
