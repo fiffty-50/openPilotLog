@@ -55,7 +55,7 @@
         </widget>
        </item>
        <item row="4" column="5">
-        <widget class="QLineEdit" name="thirdPilotLineEdit">
+        <widget class="QLineEdit" name="thirdPilotNameLineEdit">
          <property name="placeholderText">
           <string>optional</string>
          </property>
@@ -168,7 +168,7 @@
         </widget>
        </item>
        <item row="3" column="5">
-        <widget class="QLineEdit" name="newPic">
+        <widget class="QLineEdit" name="newPicNameLineEdit">
          <property name="placeholderText">
           <string>self</string>
          </property>
@@ -182,7 +182,7 @@
         </widget>
        </item>
        <item row="4" column="2">
-        <widget class="QLineEdit" name="secondPilotLineEdit">
+        <widget class="QLineEdit" name="secondPilotNameLineEdit">
          <property name="text">
           <string/>
          </property>
@@ -200,7 +200,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>11</day>
+           <day>9</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -715,9 +715,9 @@
   <tabstop>newDestLocLineEdit</tabstop>
   <tabstop>newDestTimeLineEdit</tabstop>
   <tabstop>newAcft</tabstop>
-  <tabstop>newPic</tabstop>
-  <tabstop>secondPilotLineEdit</tabstop>
-  <tabstop>thirdPilotLineEdit</tabstop>
+  <tabstop>newPicNameLineEdit</tabstop>
+  <tabstop>secondPilotNameLineEdit</tabstop>
+  <tabstop>thirdPilotNameLineEdit</tabstop>
   <tabstop>FlightNumberLineEdit</tabstop>
   <tabstop>RemarksLineEdit</tabstop>
   <tabstop>setAsDefaultButton</tabstop>

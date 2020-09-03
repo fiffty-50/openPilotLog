@@ -82,6 +82,26 @@ QStringList dbAirport::completeIcaoOrIata(QString icaoStub)
 }
 
 /*!
+ * \brief dbAirport::retreiveIataIcaoList Provides a QStringList of airport codes
+ * in the database
+ * \return ICAO and IATA codes in the database
+ */
+QStringList dbAirport::retreiveIataIcaoList()
+{
+    QSqlQuery query;
+    query.prepare("SELECT icao, iata from airports");
+    query.exec();
+
+    QStringList result;
+    while(query.next())
+    {
+        result.append(query.value(0).toString());
+        result.append(query.value(1).toString());
+    }
+    result.removeAll(QString(""));
+    return result;
+}
+/*!
      * \brief CheckICAOValid Verifies if a user input airport exists in the database
      * \param identifier can be ICAO or IATA airport codes.
      * \return bool if airport is in database.

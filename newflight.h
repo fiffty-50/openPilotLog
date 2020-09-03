@@ -86,37 +86,25 @@ private slots:
 
     void on_newAcft_editingFinished();
 
-    void on_newPic_textEdited(const QString &arg1);
+    void on_newPicNameLineEdit_inputRejected();
 
-    void on_newPic_editingFinished();
+    void on_newPicNameLineEdit_textEdited(const QString &arg1);
+
+    void on_newPicNameLineEdit_editingFinished();
 
     void on_verifyButton_clicked();
-
-
-
-
-
 
     void on_setAsDefaultButton_clicked();
 
     void on_restoreDefaultButton_clicked();
 
-
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
 
-
-
     void on_PilotFlyingCheckBox_stateChanged(int);
 
     void on_ApproachComboBox_currentTextChanged(const QString &arg1);
-
-
-
-
-
-    void on_tabWidget_tabBarClicked(int index);
 
     void on_spseTimeLineEdit_editingFinished();
 
@@ -144,13 +132,13 @@ private slots:
 
     void on_simTimeLineEdit_editingFinished();
 
-    void on_secondPilotLineEdit_textEdited(const QString &arg1);
+    void on_secondPilotNameLineEdit_textEdited(const QString &arg1);
 
-    void on_secondPilotLineEdit_editingFinished();
+    void on_secondPilotNameLineEdit_editingFinished();
 
-    void on_thirdPilotLineEdit_textEdited(const QString &arg1);
+    void on_thirdPilotNameLineEdit_textEdited(const QString &arg1);
 
-    void on_thirdPilotLineEdit_editingFinished();
+    void on_thirdPilotNameLineEdit_editingFinished();
 
     void on_FlightNumberLineEdit_editingFinished();
 
@@ -163,6 +151,10 @@ private slots:
     void on_newDeptTimeLineEdit_inputRejected();
 
     void on_newDestTimeLineEdit_inputRejected();
+
+
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
     Ui::NewFlight *ui;

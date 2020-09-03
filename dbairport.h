@@ -37,6 +37,8 @@ public:
     static QVector<double> retreiveIcaoCoordinates(QString icao);
 
     static QStringList completeIcaoOrIata(QString icaoStub);
+
+    static QStringList retreiveIataIcaoList();
 };
 
 #endif // DBAIRPORT_H
