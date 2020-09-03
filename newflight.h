@@ -46,11 +46,13 @@ class NewFlight : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFlight(QWidget *parent = nullptr);
+    explicit NewFlight(QWidget *parent, QStringList locationList);
     ~NewFlight();
 
 private slots:
     void nope();//error box
+
+    void on_verifyButton_clicked(); //debug button
 
     QVector<QString> collectInput();
 
@@ -91,8 +93,6 @@ private slots:
     void on_newPicNameLineEdit_textEdited(const QString &arg1);
 
     void on_newPicNameLineEdit_editingFinished();
-
-    void on_verifyButton_clicked();
 
     void on_setAsDefaultButton_clicked();
 

@@ -119,6 +119,7 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlight nf(this);
+    QStringList locationList = dbAirport::retreiveIataIcaoList();
+    NewFlight nf(this, locationList);
     nf.exec();
 }

@@ -87,8 +87,8 @@ logbookWidget::~logbookWidget()
 
 void logbookWidget::on_newFlightButton_clicked()
 {
-    NewFlight nf(this);
-    nf.exec();
+    //NewFlight nf(this);
+    //nf.exec();
 }
 
 void logbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new flight, pre-filled with entry loaded from DB

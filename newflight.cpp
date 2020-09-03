@@ -28,7 +28,9 @@
 
 void NewFlight::on_verifyButton_clicked()//debug button
 {
-    fillExtrasLineEdits();
+    //fillExtrasLineEdits();
+    //qDebug() << testlist;
+    qDebug() << parent();
 }
 /*!
  * \brief NewFlight::nope for features that are not yet implemented
@@ -173,7 +175,7 @@ void NewFlight::restoreSettings()
  * Window Construction
  */
 
-NewFlight::NewFlight(QWidget *parent) :
+NewFlight::NewFlight(QWidget *parent, QStringList locationList) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
@@ -187,7 +189,6 @@ NewFlight::NewFlight(QWidget *parent) :
     }
 
     // Airport Line Edits Auto Completion
-    QStringList locationList = dbAirport::retreiveIataIcaoList(); //To be moved outside of dialog eventually
     QCompleter *locationCompleter = new QCompleter(locationList);
     locationCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     locationCompleter->setCompletionMode(QCompleter::PopupCompletion);
@@ -289,7 +290,7 @@ void NewFlight::on_newDeptLocLineEdit_textEdited(const QString &arg1)
 void NewFlight::on_newDeptLocLineEdit_editingFinished()
 {
     QStringList locationList = dbAirport::retreiveIataIcaoList(); //To be moved outside of dialog eventually
-
+    //DEBUG(locationList);
     auto line_edit = ui->newDeptLocLineEdit;
     onEditingFinished(line_edit); //reset style sheet
     dept = line_edit->text();
@@ -882,8 +883,8 @@ void NewFlight::on_buttonBox_accepted()
             QMessageBox msgBox(this);
             msgBox.setText("Invalid entries detected. Please check your input.");
             msgBox.exec();
-            NewFlight nf(this);
-            nf.exec();
+            //NewFlight nf(this);
+            //nf.exec();
         }
 }
 
