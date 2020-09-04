@@ -17,15 +17,10 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-#include <QSqlTableModel>
-#include <QMessageBox>
-#include "dbman.cpp"
 #include "dbflight.h"
 #include "newflight.h"
 #include "editflight.h"
 
-#include <chrono>
-#include <QDebug>
 
 //To Do: Update Selection in Tableview on arrow key press.
 

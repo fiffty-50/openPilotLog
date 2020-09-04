@@ -21,25 +21,10 @@
 #include "editflight.h"
 #include "newacft.h"
 #include "easaview.h"
-#include "dbman.cpp"
 #include "calc.h"
 #include "homewidget.h"
 #include "logbookwidget.h"
 #include "settingswidget.h"
-#include <QTime>
-#include <QSqlDatabase>
-#include <QSqlDriver>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlTableModel>
-#include <QTableView>
-#include <chrono>
-#include <QMessageBox>
-
-#include <QDir>
-#include <QFile>
-
-qlonglong SelectedFlightold = -1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

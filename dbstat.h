@@ -19,6 +19,10 @@
 #define DBSTAT_H
 
 #include <QCoreApplication>
+#include <QDate>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 
 /*!

@@ -17,7 +17,6 @@
  */
 #include "easaview.h"
 #include "ui_easaview.h"
-#include "dbman.cpp"
 #include <QSqlTableModel>
 
 EasaView::EasaView(QWidget *parent) :

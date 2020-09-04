@@ -20,6 +20,10 @@
 
 #include <QWidget>
 #include <QItemSelection>
+#include <QSqlTableModel>
+#include <QMessageBox>
+#include <chrono>
+#include <QDebug>
 
 namespace Ui {
 class logbookWidget;

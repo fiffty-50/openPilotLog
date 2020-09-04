@@ -19,6 +19,11 @@
 #define SETTINGSWIDGET_H
 
 #include <QWidget>
+#include <QButtonGroup>
+#include <QRegExp>
+#include <QValidator>
+#include <QMessageBox>
+#include <QDebug>
 #include "dbsettings.h"
 
 namespace Ui {

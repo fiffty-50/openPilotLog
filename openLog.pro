@@ -26,7 +26,6 @@ SOURCES += \
     dbaircraft.cpp \
     dbairport.cpp \
     dbflight.cpp \
-    dbman.cpp \
     dbpilots.cpp \
     dbsettings.cpp \
     dbstat.cpp \

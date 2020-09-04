@@ -19,6 +19,11 @@
 #define SHOWAIRCRAFTLIST_H
 
 #include <QDialog>
+#include <QStringListModel>
+#include <QDebug>
+#include <QMessageBox>
+#include <QSqlQueryModel>
+#include <QSqlTableModel>
 
 namespace Ui {
 class ShowAircraftList;

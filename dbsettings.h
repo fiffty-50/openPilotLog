@@ -19,6 +19,9 @@
 #define DBSETTINGS_H
 
 #include <QCoreApplication>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 /*!
  * \brief The dbSettings class provides functionality for retreiving settings

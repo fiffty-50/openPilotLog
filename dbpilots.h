@@ -19,6 +19,9 @@
 #define DBPILOTS_H
 
 #include <QCoreApplication>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 /*!
  * \brief The dbPilots class class provides a databank interface for actions related to the

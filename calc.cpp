@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "calc.h"
-#include "dbman.cpp"
+//#include "dbman.cpp"
 /*!
  * \brief calc::blocktime Calculates Block Time for a given departure and arrival time
  * \param tofb QTime Time Off Blocks

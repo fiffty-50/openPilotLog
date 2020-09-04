@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbstat.h"
-#include "dbman.cpp"
+
 
 /*!
  * \brief retreiveTotalTime Looks up Total Blocktime in the flights database

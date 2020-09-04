@@ -19,6 +19,9 @@
 #define DBFLIGHT_H
 
 #include <QCoreApplication>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 /*!
  * \brief The dbFlight class provides a databank interface for actions related to the

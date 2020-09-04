@@ -18,8 +18,10 @@
 #include "editflight.h"
 #include "ui_editflight.h"
 #include "calc.h"
-#include "dbman.cpp"
 #include "dbflight.h"
+#include "dbaircraft.h"
+#include "dbairport.h"
+#include "dbpilots.h"
 #include <QMessageBox>
 #include <QDebug>
 

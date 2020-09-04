@@ -17,12 +17,7 @@
  */
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
-#include "dbman.cpp"
-#include <QButtonGroup>
-#include <QRegExp>
-#include <QValidator>
-#include <QMessageBox>
-#include <QDebug>
+
 
 
 

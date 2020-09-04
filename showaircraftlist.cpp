@@ -15,14 +15,9 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "dbman.cpp"
 #include "showaircraftlist.h"
 #include "ui_showaircraftlist.h"
-#include <QStringListModel>
-#include <QDebug>
-#include <QMessageBox>
-#include <QSqlQueryModel>
-#include <QSqlTableModel>
+
 
 ShowAircraftList::ShowAircraftList(QWidget *parent) :
     QDialog(parent),

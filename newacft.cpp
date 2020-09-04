@@ -17,7 +17,6 @@
  */
 #include "newacft.h"
 #include "ui_newacft.h"
-#include "dbman.cpp"
 #include "showaircraftlist.h"
 #include <QStringListModel>
 #include <QSortFilterProxyModel>
@@ -45,10 +44,6 @@ NewAcft::~NewAcft()
     delete ui;
 }
 
-
-
-
-
 void NewAcft::on_MakeLineEdit_textEdited(const QString &arg1)
 {
     QStringList makeList = dbAircraft::retreiveAircraftMake(arg1);
@@ -74,7 +69,6 @@ void NewAcft::on_MakeLineEdit_editingFinished()
         ui->MakeLineEdit->setText("");
     }
 }
-
 
 void NewAcft::on_ModelLineEdit_textEdited(const QString &arg1)
 {
@@ -166,9 +160,6 @@ void NewAcft::on_VerifyButton_clicked()
     {
         ui->VerifyLineEdit->setText("EASA FCL.050 compliance checks disabled.");
     }
-
-
-
 }
 
 void NewAcft::on_RegistrationLineEdit_editingFinished()

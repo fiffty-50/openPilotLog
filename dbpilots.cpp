@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbpilots.h"
-#include "dbman.cpp"
+
 
 /*!
  * \brief RetreivePilotNameFromID Looks up pilot ID in database

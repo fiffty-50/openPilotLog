@@ -23,11 +23,38 @@
 #include <QDir>
 #include <QPalette>
 #include <QColor>
-#include "dbman.cpp"
+#include <QSqlDatabase>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
 #include "dbsettings.h"
 #include <QDebug>
 
 int selectedtheme = 1; //Variable to store theming information
+
+void connectToDatabase()
+{
+    const QString DRIVER("QSQLITE");
+
+    if(QSqlDatabase::isDriverAvailable(DRIVER))
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
+
+        /*For a release, we need to decide where to put the database, for now
+         *it is in the executable working directory for ease of developtment*/
+
+        //QString pathtodb = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+        //db.setDatabaseName(pathtodb+"/logbook.db");
+        //qDebug() << "Database: " << pathtodb+"/logbook.db";
+        db.setDatabaseName("logbook.db");
+
+        if(!db.open())
+            qWarning() << "MainWindow::DatabaseConnect - ERROR: " << db.lastError().text();
+    }
+    else
+        qWarning() << "MainWindow::DatabaseConnect - ERROR: no driver " << DRIVER << " available";
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +62,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("f-cloud.ch");
     QCoreApplication::setApplicationName("openLog");
     QApplication openLog(argc, argv);
-    db::connect();  //connect to the database
+
+    connectToDatabase();
 
     //Theming with CSS inlcues QFile,QTextStream, QDir, themes folder and TARGET = flog, RESOURCES = themes/breeze.qrc in pro
     // credit: https://github.com/Alexhuszagh/BreezeStyleSheets
@@ -54,8 +82,6 @@ int main(int argc, char *argv[])
         QTextStream stream(&file);
         openLog.setStyleSheet(stream.readAll());
     }
-
-
 
     MainWindow w;
     w.show();

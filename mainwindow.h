@@ -19,6 +19,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTime>
+#include <QSqlTableModel>
+#include <QTableView>
+#include <chrono>
+#include <QMessageBox>
+#include <QDir>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

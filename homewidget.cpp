@@ -18,8 +18,8 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
 #include "calc.h"
-#include "dbman.cpp"
 #include "dbstat.h"
+#include "dbpilots.h"
 
 #include <QDebug>
 
