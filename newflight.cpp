@@ -193,10 +193,10 @@ NewFlight::NewFlight(QWidget *parent, QVector<QStringList> completionLists) :
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
+
     // Set up Line Edits with QValidators, QCompleters and set Max length
     auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>() +
                 ui->extraTimes->findChildren<QLineEdit*>();
-    DEBUG(line_edits);
         for(auto line_edit : line_edits)
         {
             setupLineEdit(line_edit, completionLists);
