@@ -121,7 +121,7 @@ void MainWindow::on_actionNewFlight_triggered()
 {
     auto locationList = dbAirport::retreiveIataIcaoList();
     auto registrationList = dbAircraft::retreiveRegistrationList();
-    QStringList pilotNameList;
-    NewFlight nf(this, locationList, registrationList, pilotNameList);
+    auto pilotList = dbPilots::retreivePilotList();
+    NewFlight nf(this, locationList, registrationList, pilotList);
     nf.exec();
 }

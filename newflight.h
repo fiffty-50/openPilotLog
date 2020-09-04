@@ -48,13 +48,15 @@ class NewFlight : public QDialog
 public:
     explicit NewFlight(QWidget *parent, QStringList locationList,
                                         QStringList registrationList,
-                                        QStringList pilotNameList);
+                                        QStringList pilotList);
     ~NewFlight();
 
 private slots:
     void nope();//error box
 
     void on_verifyButton_clicked(); //debug button
+
+    void addNewPilotMessageBox();
 
     QVector<QString> collectInput();
 
@@ -91,8 +93,6 @@ private slots:
     void on_newAcft_editingFinished();
 
     void on_newPicNameLineEdit_inputRejected();
-
-    void on_newPicNameLineEdit_textEdited(const QString &arg1);
 
     void on_newPicNameLineEdit_editingFinished();
 
@@ -134,11 +134,7 @@ private slots:
 
     void on_simTimeLineEdit_editingFinished();
 
-    void on_secondPilotNameLineEdit_textEdited(const QString &arg1);
-
     void on_secondPilotNameLineEdit_editingFinished();
-
-    void on_thirdPilotNameLineEdit_textEdited(const QString &arg1);
 
     void on_thirdPilotNameLineEdit_editingFinished();
 
@@ -159,6 +155,10 @@ private slots:
     void on_tabWidget_currentChanged(int index);
 
 
+
+    void on_secondPilotNameLineEdit_inputRejected();
+
+    void on_thirdPilotNameLineEdit_inputRejected();
 
 private:
     Ui::NewFlight *ui;

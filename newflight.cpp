@@ -177,7 +177,7 @@ void NewFlight::restoreSettings()
 
 NewFlight::NewFlight(QWidget *parent, QStringList locationList,
                                       QStringList registrationList,
-                                      QStringList pilotNameList) :
+                                      QStringList pilotList) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
@@ -202,7 +202,15 @@ NewFlight::NewFlight(QWidget *parent, QStringList locationList,
     aircraftCompleter->setCompletionMode(QCompleter::PopupCompletion);
     aircraftCompleter->setFilterMode(Qt::MatchContains);
     ui->newAcft->setCompleter(aircraftCompleter);
-    // To Do: Aircraft and Pilot Names Completer
+    // Pilot Line Edits Auto Completion
+    auto *pilotCompleter = new QCompleter(pilotList);
+    pilotCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    pilotCompleter->setCompletionMode(QCompleter::PopupCompletion);
+    pilotCompleter->setFilterMode(Qt::MatchContains);
+    ui->newPicNameLineEdit->setCompleter(pilotCompleter);
+    ui->secondPilotNameLineEdit->setCompleter(pilotCompleter);;
+    ui->thirdPilotNameLineEdit->setCompleter(pilotCompleter);
+
 
     // Groups for CheckBoxes
     QButtonGroup *FlightRulesGroup = new QButtonGroup(this);
@@ -424,7 +432,6 @@ void NewFlight::on_newAcft_inputRejected()
 void NewFlight::on_newAcft_editingFinished()
 {
     acft = "-1";// set invalid
-    QString registration;
 
     auto registrationList = dbAircraft::retreiveRegistrationList();
     auto line_edit = ui->newAcft;
@@ -453,147 +460,131 @@ void NewFlight::on_newAcft_editingFinished()
 
 /// Pilot(s)
 
+/*!
+ * \brief NewFlight::addNewPilotMessageBox If the user input is not in the pilotNameList, the user
+ * is prompted if he wants to add a new entry to the database
+ */
+void NewFlight::addNewPilotMessageBox()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "No Pilot found",
+                                  "No pilot found.\n Would you like to add a new pilot to the database?",
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes)
+    {
+        qDebug() << "Add new pilot selected";
+        DEBUG("This feature is not yet available.");
+        // create and open new pilot dialog
+    }
+}
+
 void NewFlight::on_newPicNameLineEdit_inputRejected()
 {
     onInputRejected(ui->newPicNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
 }
 
-void NewFlight::on_newPicNameLineEdit_textEdited(const QString &arg1)
-{
-    if(arg1.length()>2)
-    {
-        QStringList picList = dbPilots::newPicGetString(arg1);
-        QCompleter *picCompleter = new QCompleter(picList, this);
-        picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-        picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-        ui->newPicNameLineEdit->setCompleter(picCompleter);
-     }
-}
 void NewFlight::on_newPicNameLineEdit_editingFinished()
 {
+    auto line_edit = ui->newPicNameLineEdit;
     pic = "-1"; // set invalid
-    if(ui->newPicNameLineEdit->text() == "self")
+    if(ui->newPicNameLineEdit->text() == "self") // Logbook owner is PIC
     {
-        pic = "1";
-    }else
+        pic = "self";
+        DEBUG("Pilot selected: " << pic);
+    }else //check if entry is in pilotList
     {
-        QString picname;
-        QStringList picList = dbPilots::newPicGetString(ui->newPicNameLineEdit->text());
-        qDebug() << picList;
-        if(picList.length()!= 0)
+        QStringList pilotList = dbPilots::retreivePilotList();
+        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+
+        if(match.length()!= 0)
         {
-            picname = picList[0];
-            ui->newPicNameLineEdit->setText(picname);
-            pic = dbPilots::newPicGetId(picname);
+            pic = match[0];
+            line_edit->setText(pic);
+            DEBUG("Pilot selected: " << pic);
+            onEditingFinished(line_edit);
         }else
         {
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
-                                          QMessageBox::Yes|QMessageBox::No);
-            if (reply == QMessageBox::Yes)
-            {
-                qDebug() << "Add new pilot selected";
-                nope();
-            }
+            DEBUG("Pilot not found.");
+            emit line_edit->inputRejected();
+            addNewPilotMessageBox();
         }
     }
 }
 
 
 /*!
- * ===================================================
+ * ============================================================================
  * The above entris are mandatory for logging a flight,
  * the rest of the entries are either optional or can
  * be determined from the entries already made.
+ * ============================================================================
  */
-void NewFlight::on_secondPilotNameLineEdit_textEdited(const QString &arg1)
+
+void NewFlight::on_secondPilotNameLineEdit_inputRejected()
 {
-    if(arg1.length()>2)
-    {
-        QStringList picList = dbPilots::newPicGetString(arg1);
-        QCompleter *picCompleter = new QCompleter(picList, this);
-        picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-        picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-        ui->secondPilotNameLineEdit->setCompleter(picCompleter);
-     }
+    onInputRejected(ui->secondPilotNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
 }
 
 void NewFlight::on_secondPilotNameLineEdit_editingFinished()
 {
+    auto line_edit = ui->secondPilotNameLineEdit;
     secondPilot = "-1"; // set invalid
-    if(ui->secondPilotNameLineEdit->text() == "self")
+    if(ui->newPicNameLineEdit->text() == "self") // Logbook owner is PIC
     {
-        secondPilot = "1";
-    }else
+        secondPilot = "self";
+        DEBUG("Pilot selected: " << secondPilot);
+    }else //check if entry is in pilotList
     {
-        QString picname;
-        QStringList picList = dbPilots::newPicGetString(ui->secondPilotNameLineEdit->text());
-        qDebug() << picList;
-        if(picList.length()!= 0)
+        QStringList pilotList = dbPilots::retreivePilotList();
+        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+
+        if(match.length()!= 0)
         {
-            picname = picList[0];
-            ui->secondPilotNameLineEdit->setText(picname);
-            secondPilot = dbPilots::newPicGetId(picname);
+            secondPilot = match[0];
+            line_edit->setText(secondPilot);
+            DEBUG("Pilot selected: " << secondPilot);
+            onEditingFinished(line_edit);
         }else
         {
-            ui->secondPilotNameLineEdit->setStyleSheet("border: 1px solid red");
-            /*QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
-                                          QMessageBox::Yes|QMessageBox::No);
-            if (reply == QMessageBox::Yes)
-            {
-                qDebug() << "Add new pilot selected";
-                nope();
-            }*/
+            DEBUG("Pilot not found.");
+            emit line_edit->inputRejected();
+            addNewPilotMessageBox();
         }
     }
 }
 
-void NewFlight::on_thirdPilotNameLineEdit_textEdited(const QString &arg1)
+void NewFlight::on_thirdPilotNameLineEdit_inputRejected()
 {
-    if(arg1.length()>2)
-    {
-        QStringList picList = dbPilots::newPicGetString(arg1);
-        QCompleter *picCompleter = new QCompleter(picList, this);
-        picCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-        picCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-        ui->thirdPilotNameLineEdit->setCompleter(picCompleter);
-     }
+    onInputRejected(ui->thirdPilotNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
 }
 
 void NewFlight::on_thirdPilotNameLineEdit_editingFinished()
 {
+    auto line_edit = ui->thirdPilotNameLineEdit;
     thirdPilot = "-1"; // set invalid
-    if(ui->thirdPilotNameLineEdit->text() == "self")
+    if(ui->newPicNameLineEdit->text() == "self") // Logbook owner is PIC
     {
-        thirdPilot = "1";
-    }else
+        thirdPilot = "self";
+        DEBUG("Pilot selected: " << thirdPilot);
+    }else //check if entry is in pilotList
     {
-        QString picname;
-        QStringList picList = dbPilots::newPicGetString(ui->thirdPilotNameLineEdit->text());
-        qDebug() << picList;
-        if(picList.length()!= 0)
+        QStringList pilotList = dbPilots::retreivePilotList();
+        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+
+        if(match.length()!= 0)
         {
-            picname = picList[0];
-            ui->thirdPilotNameLineEdit->setText(picname);
-            thirdPilot = dbPilots::newPicGetId(picname);
+            thirdPilot = match[0];
+            line_edit->setText(thirdPilot);
+            DEBUG("Pilot selected: " << thirdPilot);
+            onEditingFinished(line_edit);
         }else
         {
-            ui->thirdPilotNameLineEdit->setStyleSheet("border: 1px solid red");
-            /*QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "No Pilot found", "No pilot found.\n Would you like to add a new pilot to the database?",
-                                          QMessageBox::Yes|QMessageBox::No);
-            if (reply == QMessageBox::Yes)
-            {
-                qDebug() << "Add new pilot selected";
-                nope();
-            }*/
+            DEBUG("Pilot not found.");
+            emit line_edit->inputRejected();
+            addNewPilotMessageBox();
         }
     }
 }
-
-
-
 
 void NewFlight::on_FlightNumberLineEdit_editingFinished()
 {
@@ -603,10 +594,12 @@ void NewFlight::on_FlightNumberLineEdit_editingFinished()
 }
 
 /*
+ * ============================================================================
  * Extras Tab - These are for user convenience. From many of
  * these selections, determinations can be made on how to log
  * details, so that the user does not have to enter each item
  * manually. See also fillExtrasLineEdits()
+ * ============================================================================
  */
 
 void NewFlight::on_setAsDefaultButton_clicked()
@@ -1083,5 +1076,7 @@ void NewFlight::on_tabWidget_currentChanged(int index)
         }
     }
 }
+
+
 
 

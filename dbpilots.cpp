@@ -140,6 +140,7 @@ QStringList dbPilots::retreivePilotNameFromString(QString searchstring)
  */
 QStringList dbPilots::newPicGetString(QString searchstring)
 {
+    qWarning() << "newPicGetString is deprecated";
     QStringList result;
     QStringList searchlist;
 
@@ -256,6 +257,19 @@ QStringList dbPilots::newPicGetString(QString searchstring)
     {
         return result;
     }
+}
+
+QStringList dbPilots::retreivePilotList()
+{
+    QSqlQuery query;
+    query.prepare("SELECT piclastname, picfirstname FROM pilots");
+    query.exec();
+
+    QStringList result;
+    while (query.next()) {
+        result.append(query.value(0).toString() + ", " + query.value(1).toString());
+    }
+    return result;
 }
 
 QString dbPilots::newPicGetId(QString name)

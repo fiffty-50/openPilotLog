@@ -34,7 +34,9 @@ public:
 
     static QStringList retreivePilotNameFromString(QString searchstring);
 
-    static QStringList newPicGetString(QString searchstring);
+    static QStringList newPicGetString(QString searchstring); //deprecated
+
+    static QStringList retreivePilotList();
 
     static QString newPicGetId(QString name);
 };

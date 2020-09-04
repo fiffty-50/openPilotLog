@@ -61,5 +61,6 @@ homeWidget::~homeWidget()
 void homeWidget::on_debugButton_clicked()
 {
 //    ui->debugLineEdit->setText(dbAircraft::retreiveAircraftDetails("102")[1]);
-    dbAirport::retreiveIataIcaoList();
+    qDebug() << "Debug: ";
+    dbPilots::retreivePilotList();
 }
