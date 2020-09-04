@@ -46,9 +46,7 @@ class NewFlight : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFlight(QWidget *parent, QStringList locationList,
-                                        QStringList registrationList,
-                                        QStringList pilotList);
+    explicit NewFlight(QWidget *parent, QVector<QStringList>);
     ~NewFlight();
 
 private slots:

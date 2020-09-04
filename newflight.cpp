@@ -59,14 +59,14 @@ QTime               tblk;
 QString             pic                 =   "-1";
 QString             acft                =   "-1";
 // extras
-QString             secondPilot         = "-1";
-QString             thirdPilot          = "-1";
-QString             pilotFunction       = "-1";
-QString             pilotTask           = "-1";
-QString             takeoff             = "0";
-QString             landing             = "0";
-QString             autoland            = "0";
-QString             approachType        = "-1";
+QString             secondPilot         =   "-1";
+QString             thirdPilot          =   "-1";
+QString             pilotFunction       =   "-1";
+QString             pilotTask           =   "-1";
+QString             takeoff             =   "0";
+QString             landing             =   "0";
+QString             autoland            =   "0";
+QString             approachType        =   "-1";
 // extra times
 QString             tSPSE               =   "00:00";
 QString             tSPME               =   "00:00";
@@ -76,22 +76,22 @@ QString             tMP                 =   "00:00";
 bool                hasOldInput         = dbFlight::checkScratchpad();
 
 /// Raw Input validation
-const QString TIME_REGEX_PATTERN        = "([01]?[0-9]?|2[0-3]):?[0-5][0-9]?";// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
-const QString IATA                      = "[\\w]{3}";
-const QString ICAO                      = "[\\w0-9]{4}";
-const QString LOC_REGEX_PATTERN         = IATA + "|" + ICAO;
-const QString AIRCRAFT_REGEX_PATTERN    = "[\\w0-9]+-?([\\w0-9]?)+";
-const QString PILOT_NAME_REGEX_PATTERN  = "[\\w]+,? ?[\\w]+";
+const QString TIME_REGEX_PATTERN        =   "([01]?[0-9]?|2[0-3]):?[0-5][0-9]?";// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
+const QString IATA                      =   "[a-zA-Z0-9]{3}";
+const QString ICAO                      =   "[a-zA-Z0-9]{4}";
+const QString LOC_REGEX_PATTERN         =   IATA + "|" + ICAO;
+const QString AIRCRAFT_REGEX_PATTERN    =   "[\\w0-9]+-?([\\w0-9]?)+";
+const QString PILOT_NAME_REGEX_PATTERN  =   "[\\w]+,? ?[\\w]+";
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
-const QString TIME_INVALID_RGX          = "[^\\d:]";
-const QString LOC_INVALID_RGX           = "[^\\w0-9]";
-const QString AIRCRAFT_INVALID_RGX      = "[^A-Z0-9\\-]";
-const QString PILOT_NAME_INVALID_RGX    = "[^a-zA-Z, ]";
+const QString TIME_INVALID_RGX          =   "[^\\d:]";
+const QString LOC_INVALID_RGX           =   "[^a-zA-Z0-9]";
+const QString AIRCRAFT_INVALID_RGX      =   "[^A-Z0-9\\-]";
+const QString PILOT_NAME_INVALID_RGX    =   "[^a-zA-Z, ]";
 
 /// Input max lengths
 const qint8 TIME_MAX_LENGTH             = 5; //to allow for ':' e.g. "08:45"
-const qint8 LOC_MAX_LENGTH              = 4; //!
+const qint8 LOC_MAX_LENGTH              = 4;
 const qint8 AIRCRAFT_MAX_LENGTH         = 10;
 const qint8 PILOT_NAME_MAX_LENGTH       = 15;
 
@@ -100,16 +100,21 @@ const qint8 PILOT_NAME_MAX_LENGTH       = 15;
  * \brief setLineEditValidator set Validators for QLineEdits that end with Time, Loc,
  * Aircraft or Name
  */
-static inline void setupLineEdit(QLineEdit* line_edit)
+static inline void setupLineEdit(QLineEdit* line_edit, QVector<QStringList> completionLists)
 {
     auto line_edit_objectName = line_edit->objectName();
     DEBUG("Setting validators for " << line_edit_objectName);
     static const
-    QVector<std::tuple<QRegularExpression, QRegularExpression, qint8>> objectName_inputValidation_rgxs = {
-        {QRegularExpression("\\w+Time"),     QRegularExpression(TIME_REGEX_PATTERN),       TIME_MAX_LENGTH},
-        {QRegularExpression("\\w+Loc"),      QRegularExpression(LOC_REGEX_PATTERN),        LOC_MAX_LENGTH},
-        {QRegularExpression("\\w+Acft"),     QRegularExpression(AIRCRAFT_REGEX_PATTERN),   AIRCRAFT_MAX_LENGTH},
-        {QRegularExpression("\\w+Name"),     QRegularExpression(PILOT_NAME_REGEX_PATTERN), PILOT_NAME_MAX_LENGTH},
+    QVector<std::tuple<QRegularExpression, QRegularExpression,
+            qint8, QStringList>> objectName_inputValidation_rgxs = {
+        {QRegularExpression("\\w+Time"),    QRegularExpression(TIME_REGEX_PATTERN),
+         TIME_MAX_LENGTH,                   completionLists[0]},
+        {QRegularExpression("\\w+Loc"),     QRegularExpression(LOC_REGEX_PATTERN),
+         LOC_MAX_LENGTH,                    completionLists[1]},
+        {QRegularExpression("\\w+Acft"),    QRegularExpression(AIRCRAFT_REGEX_PATTERN),
+         AIRCRAFT_MAX_LENGTH,               completionLists[2]},
+        {QRegularExpression("\\w+Name"),    QRegularExpression(PILOT_NAME_REGEX_PATTERN),
+         PILOT_NAME_MAX_LENGTH,             completionLists[3]},
     };
 
     auto validator = new StrictRegularExpressionValidator();
@@ -118,11 +123,19 @@ static inline void setupLineEdit(QLineEdit* line_edit)
         auto objName_rgx = std::get<0>(tuple);
         auto input_rgx = std::get<1>(tuple);
         auto max_length = std::get<2>(tuple);
+        auto completer_list = std::get<3>(tuple);
         if(objName_rgx.match(line_edit_objectName).hasMatch())
         {
             validator->setRegularExpression(input_rgx);
             line_edit->setValidator(validator);
             line_edit->setMaxLength(max_length);
+            QCompleter* completer = new QCompleter(completer_list, line_edit);
+            completer->setCaseSensitivity(Qt::CaseInsensitive);
+            completer->setCompletionMode(QCompleter::PopupCompletion);
+            if(objName_rgx != QRegularExpression("\\w+Loc")){
+                completer->setFilterMode(Qt::MatchContains);
+            }
+            line_edit->setCompleter(completer);
             return;
         }
     }
@@ -175,41 +188,19 @@ void NewFlight::restoreSettings()
  * Window Construction
  */
 
-NewFlight::NewFlight(QWidget *parent, QStringList locationList,
-                                      QStringList registrationList,
-                                      QStringList pilotList) :
+NewFlight::NewFlight(QWidget *parent, QVector<QStringList> completionLists) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
-    // Set up Line Edits with QValidators and set Max length
+    // Set up Line Edits with QValidators, QCompleters and set Max length
     auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>() +
-            ui->extraTimes->findChildren<QLineEdit*>();
-    for(auto line_edit : line_edits)
-    {
-        setupLineEdit(line_edit);
-    }
-
-    // Airport Line Edits Auto Completion
-    auto *locationCompleter = new QCompleter(locationList);
-    locationCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-    locationCompleter->setCompletionMode(QCompleter::PopupCompletion);
-    ui->newDeptLocLineEdit->setCompleter(locationCompleter);
-    ui->newDestLocLineEdit->setCompleter(locationCompleter);
-    // Aircraft Line Edits Auto Completion
-    auto *aircraftCompleter = new QCompleter(registrationList);
-    aircraftCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-    aircraftCompleter->setCompletionMode(QCompleter::PopupCompletion);
-    aircraftCompleter->setFilterMode(Qt::MatchContains);
-    ui->newAcft->setCompleter(aircraftCompleter);
-    // Pilot Line Edits Auto Completion
-    auto *pilotCompleter = new QCompleter(pilotList);
-    pilotCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-    pilotCompleter->setCompletionMode(QCompleter::PopupCompletion);
-    pilotCompleter->setFilterMode(Qt::MatchContains);
-    ui->newPicNameLineEdit->setCompleter(pilotCompleter);
-    ui->secondPilotNameLineEdit->setCompleter(pilotCompleter);;
-    ui->thirdPilotNameLineEdit->setCompleter(pilotCompleter);
+                ui->extraTimes->findChildren<QLineEdit*>();
+    DEBUG(line_edits);
+        for(auto line_edit : line_edits)
+        {
+            setupLineEdit(line_edit, completionLists);
+        }
 
 
     // Groups for CheckBoxes

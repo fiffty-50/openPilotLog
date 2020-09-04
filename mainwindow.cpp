@@ -119,9 +119,13 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    auto locationList = dbAirport::retreiveIataIcaoList();
-    auto registrationList = dbAircraft::retreiveRegistrationList();
-    auto pilotList = dbPilots::retreivePilotList();
-    NewFlight nf(this, locationList, registrationList, pilotList);
+    QVector<QStringList> lineEdit_completionLists = {
+        QStringList(),//empty dummy list for TimeLineEdits
+        dbAirport::retreiveIataIcaoList(),
+        dbAircraft::retreiveRegistrationList(),
+        dbPilots::retreivePilotList()
+    };
+
+    NewFlight nf(this, lineEdit_completionLists);
     nf.exec();
 }
