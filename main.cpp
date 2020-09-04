@@ -59,7 +59,7 @@ void connectToDatabase()
 int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("Fiffty50");
-    QCoreApplication::setOrganizationDomain("f-cloud.ch");
+    QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openLog");
     QApplication openLog(argc, argv);
 
