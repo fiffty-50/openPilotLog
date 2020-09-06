@@ -78,3 +78,16 @@ QVector<QString> dbSettings::retreiveSettingInfo(QString setting_id)
     }
     return setting;
 }
+
+QString dbSettings::sqliteversion()
+{
+    QSqlQuery version;
+    version.prepare("SELECT sqlite_version()");
+    version.exec();
+    QString result;
+
+    while (version.next()) {
+        result.append(version.value(0).toString());
+    }
+    return result;
+}

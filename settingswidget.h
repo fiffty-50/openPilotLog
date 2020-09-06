@@ -43,6 +43,8 @@ private slots:
 
     void themeGroup_toggled(int id);
 
+    void on_aboutPushButton_clicked();
+
 private:
     Ui::settingsWidget *ui;
 };

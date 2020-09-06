@@ -37,6 +37,8 @@ public:
     static QString retreiveSetting(int setting_id);
 
     static QVector<QString> retreiveSettingInfo(QString setting_id);
+
+    static QString sqliteversion();
 };
 
 #endif // DBSETTINGS_H
