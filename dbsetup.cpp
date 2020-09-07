@@ -26,7 +26,7 @@ void dbSetup::connect()
     if(QSqlDatabase::isDriverAvailable(DRIVER))
     {
         QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
-        db.setDatabaseName("aaadebug.db");
+        db.setDatabaseName("debug.db");
 
         if(!db.open())
             qWarning() << "DatabaseConnect - ERROR: " << db.lastError().text();
