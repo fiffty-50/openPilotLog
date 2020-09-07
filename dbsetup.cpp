@@ -17,7 +17,7 @@
  */
 #include "dbsetup.h"
 
-/// db connection for debugging
+/// dummy db connection for debugging
 
 void dbSetup::connect()
 {
@@ -35,6 +35,7 @@ void dbSetup::connect()
         qWarning() << "DatabaseConnect - ERROR: no driver " << DRIVER << " available";
 }
 
+// Pragmas for creation of database table
 const QString createTablePilots = "CREATE TABLE pilots ( "
                             "pilot_id       INTEGER, "
                             "picfirstname	TEXT, "
@@ -112,7 +113,7 @@ const QString createTableExtras = "CREATE TABLE extras ( "
                             "PRIMARY KEY(extras_id) "
                             ")";
 
-const QString createTableAirports = "CREATE TABLE airports( "
+const QString createTableAirports = "CREATE TABLE airports ( "
                             "airport_id INTEGER primary key, "
                             "icao       TEXT NOT NULL, "
                             "iata       TEXT, "
@@ -143,52 +144,107 @@ const QString createTableSettings = "CREATE TABLE settings ( "
                              "description	TEXT "
                              ")";
 
+// Pragmas for creation of views in the database
 
+const QString createViewQCompleterView = "CREATE VIEW QCompleterView AS "
+                              "SELECT airport_id, icao, iata, "
+                              "tail_id, registration, "
+                              "pilot_id, "
+                              "piclastname||', '||picfirstname AS 'pilot_name', "
+                              "alias "
+                              "FROM airports "
+                              "LEFT JOIN tails ON airports.airport_id = tails.tail_id "
+                              "LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id";
+
+const QString createViewAircraftList = "CREATE VIEW AircraftListView AS "
+                              "SELECT make AS 'Make', "
+                              "model AS 'Model', "
+                              "variant AS 'Variant' "
+                              "FROM aircraft "
+                              "WHERE variant IS NOT NULL";
+
+const QString createViewLogbook = "CREATE VIEW Logbook AS "
+                              "SELECT id, doft as 'Date', dept AS 'Dept', "
+                              "printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time', "
+                              "dest AS 'Dest', "
+                              "printf('%02d',(tonb/60))||':'||printf('%02d',(tonb%60)) AS 'Time ', "
+                              "printf('%02d',(tblk/60))||':'||printf('%02d',(tblk%60)) AS 'Total', "
+                              "piclastname||', '||substr(picfirstname,1,1)||'.' AS 'Name PIC', "
+                              "make||' '||model||'-'||variant AS 'Type', Registration, "
+                              "FlightNumber AS 'Flight #', Remarks "
+                              "FROM flights "
+                              "INNER JOIN pilots on flights.pic = pilots.pilot_id "
+                              "INNER JOIN tails on flights.acft = tails.tail_id "
+                              "INNER JOIN aircraft on tails.aircraft_id = aircraft.aircraft_id "
+                              "INNER JOIN extras on extras.extras_id = flights.id "
+                              "ORDER BY date DESC ";
+
+//Displays Single Engine, Multi Engine and Multi Pilot Time
+const QString createViewTimes = "CREATE VIEW ViewPilotTimes AS "
+                              "SELECT id, "
+                              "tblk*singlepilot*singleengine AS 'SPSE', "
+                              "tblk*singlepilot*multiengine AS 'SPME', "
+                              "tblk*multipilot AS 'MP' "
+                              "FROM flights "
+                              "INNER JOIN tails on flights.acft = tails.tail_id "
+                              "INNER JOIN aircraft on tails.aircraft_id = aircraft.aircraft_id ";
+QStringList tables = {
+    createTablePilots,
+    createTableAircraft,
+    createTableTails,
+    createTableFlights,
+    createTableExtras,
+    createTableScratchpad,
+    createTableAirports,
+    createTableSettings
+};
+QStringList views = {
+    createViewQCompleterView,
+    createViewAircraftList,
+    createViewLogbook,
+    createViewTimes
+};
+
+/*!
+ * \brief dbSetup::createTables Create the required tables for the database
+ */
 void dbSetup::createTables()
 {
     QSqlQuery query;
 
-    query.prepare(createTablePilots);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
-    query.prepare(createTableAircraft);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
-    query.prepare(createTableTails);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
-    query.prepare(createTableFlights);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
-    query.prepare(createTableExtras);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
-    query.prepare(createTableAirports);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-    query.prepare(createTableScratchpad);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-    query.prepare(createTableSettings);
-    query.exec();
-    if(!query.isActive())
-        qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
-
+    for(int i = 0; i<tables.length() ; i++) {
+        query.prepare(tables[i]);
+        query.exec();
+        if(!query.isActive()) {
+            qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
+        }else
+            qDebug() << "Adding table " << tables[i].section(QLatin1Char(' '),2,2);
+    }
+    //verify tables are created
     query.prepare("SELECT name FROM sqlite_master WHERE type='table'");
     query.exec();
     while (query.next()) {
         qDebug() << "Table: " << query.value(0).toString();
+    }
+}
+
+void dbSetup::createViews()
+{
+    QSqlQuery query;
+
+    for(int i = 0; i<views.length() ; i++) {
+        query.prepare(views[i]);
+        query.exec();
+        if(!query.isActive()){
+            qWarning() << "DatabaseInit - ERROR: " << query.lastError().text();
+        }else{
+            qDebug() << "Adding View " << views[i].section(QLatin1Char(' '),2,2);
+        }
+    }
+    //verify views are created
+    query.prepare("SELECT name FROM sqlite_master WHERE type='view'");
+    query.exec();
+    while (query.next()) {
+        qDebug() << "View: " << query.value(0).toString();
     }
 }

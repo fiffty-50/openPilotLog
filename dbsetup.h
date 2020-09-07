@@ -34,6 +34,8 @@ public:
     static void connect();
 
     static void createTables();
+
+    static void createViews();
 };
 
 #endif // DBSETUP_H
