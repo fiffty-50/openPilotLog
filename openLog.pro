@@ -28,6 +28,7 @@ SOURCES += \
     dbflight.cpp \
     dbpilots.cpp \
     dbsettings.cpp \
+    dbsetup.cpp \
     dbstat.cpp \
     easaview.cpp \
     editflight.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     dbflight.h \
     dbpilots.h \
     dbsettings.h \
+    dbsetup.h \
     dbstat.h \
     easaview.h \
     editflight.h \

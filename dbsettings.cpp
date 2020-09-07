@@ -79,6 +79,9 @@ QVector<QString> dbSettings::retreiveSettingInfo(QString setting_id)
     return setting;
 }
 
+/*!
+ * \brief dbSettings::sqliteversion queries database version.
+ */
 QString dbSettings::sqliteversion()
 {
     QSqlQuery version;

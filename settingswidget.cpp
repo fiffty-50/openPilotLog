@@ -121,7 +121,6 @@ void settingsWidget::on_aboutPushButton_clicked()
                       QLatin1String("qt.io"),
                       QLatin1String(QT_VERSION_STR),
                       QString(SQLITE_VERSION));
-
     mb->setText(text);
     mb->open();
 }
