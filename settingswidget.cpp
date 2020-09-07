@@ -85,3 +85,43 @@ void settingsWidget::themeGroup_toggled(int id)
     info->setText("Theme change will take effect next time you start the application.");
     info->exec();
 }
+
+void settingsWidget::on_aboutPushButton_clicked()
+{
+    auto mb = new QMessageBox(this);
+    QString SQLITE_VERSION = dbSettings::sqliteversion();
+    QString text = QMessageBox::tr(
+
+                "<h3><center>About openPilotLog</center></h3>"
+                "<br>"
+                "(c) 2020 Felix Turowsky"
+                "<br>"
+                "<p>This is a collaboratively developed Free and Open Source Application. "
+                "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
+
+                "<p>This program is free software: you can redistribute it and/or modify "
+                "it under the terms of the GNU General Public License as published by "
+                "the Free Software Foundation, either version 3 of the License, or "
+                "(at your option) any later version.</p>"
+
+                "<p>This program is distributed in the hope that it will be useful, "
+                "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                "GNU General Public License for more details.</p> "
+
+                "<p>You should have received a copy of the GNU General Public License "
+                "along with this program.  If not, "
+                "please click <a href=\"https://www.gnu.org/licenses/\">here</a>.</p>"
+
+                "<br>"
+
+                "<p>This program uses <a href=\"http://%2/\">Qt</a> version %3 and "
+                "<a href=\"https://sqlite.org/about.html/\">SQLite</a> version %4</p>"
+                ).arg(QLatin1String("github.com/fiffty-50/openpilotlog"),
+                      QLatin1String("qt.io"),
+                      QLatin1String(QT_VERSION_STR),
+                      QString(SQLITE_VERSION));
+
+    mb->setText(text);
+    mb->open();
+}
