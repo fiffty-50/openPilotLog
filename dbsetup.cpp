@@ -17,23 +17,6 @@
  */
 #include "dbsetup.h"
 
-/// dummy db connection for debugging
-
-void dbSetup::connect()
-{
-    const QString DRIVER("QSQLITE");
-
-    if(QSqlDatabase::isDriverAvailable(DRIVER))
-    {
-        QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
-        db.setDatabaseName("debug.db");
-
-        if(!db.open())
-            qWarning() << "DatabaseConnect - ERROR: " << db.lastError().text();
-    }
-    else
-        qWarning() << "DatabaseConnect - ERROR: no driver " << DRIVER << " available";
-}
 
 // Pragmas for creation of database table
 const QString createTablePilots = "CREATE TABLE pilots ( "
@@ -206,13 +189,33 @@ QStringList views = {
 };
 
 /*!
+ * \brief dbSetup::showDatabase Outputs database information to Console
+ */
+void dbSetup::showDatabase()
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table'");
+    query.exec();
+    while (query.next()) {
+        qDebug() << "Tables: " << query.value(0).toString();
+    }
+
+    query.prepare("SELECT name FROM sqlite_master WHERE type='view'");
+    query.exec();
+    while (query.next()) {
+        qDebug() << "Views: " << query.value(0).toString();
+    }
+}
+
+/*!
  * \brief dbSetup::createTables Create the required tables for the database
  */
 void dbSetup::createTables()
 {
     QSqlQuery query;
 
-    for(int i = 0; i<tables.length() ; i++) {
+    for(int i = 0; i<tables.length(); i++) {
         query.prepare(tables[i]);
         query.exec();
         if(!query.isActive()) {
@@ -220,14 +223,11 @@ void dbSetup::createTables()
         }else
             qDebug() << "Adding table " << tables[i].section(QLatin1Char(' '),2,2);
     }
-    //verify tables are created
-    query.prepare("SELECT name FROM sqlite_master WHERE type='table'");
-    query.exec();
-    while (query.next()) {
-        qDebug() << "Table: " << query.value(0).toString();
-    }
 }
 
+/*!
+ * \brief dbSetup::createViews Create the required views for the database
+ */
 void dbSetup::createViews()
 {
     QSqlQuery query;
@@ -241,10 +241,76 @@ void dbSetup::createViews()
             qDebug() << "Adding View " << views[i].section(QLatin1Char(' '),2,2);
         }
     }
-    //verify views are created
-    query.prepare("SELECT name FROM sqlite_master WHERE type='view'");
-    query.exec();
-    while (query.next()) {
-        qDebug() << "View: " << query.value(0).toString();
+}
+
+/*!
+ * \brief dbSetup::importCSV reads from a CSV file
+ * \param filename - QString to csv file.
+ * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input file
+ */
+QVector<QStringList> dbSetup::importCSV(QString filename)
+{
+    QFile csvfile(filename);
+    csvfile.open(QIODevice::ReadOnly);
+    QTextStream stream(&csvfile);
+
+    QVector<QStringList> values;
+
+    //Read CSV headers and create QStringLists accordingly
+    QString line = stream.readLine();
+    auto items = line.split(",");
+    for (int i = 0; i < items.length(); i++) {
+        QStringList list;
+        list.append(items[i]);
+        values.append(list);
     }
+    //Fill QStringLists with data
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        auto items = line.split(",");
+        for (int i = 0; i < values.length(); i++) {
+            values[i].append(items[i]);
+        }
+    }
+    return values;
+}
+
+void dbSetup::commitAirportData(QVector<QStringList> airportData)
+{
+    //remove header names
+    for(int i=0; i < airportData.length(); i++)
+    {
+        airportData[i].removeFirst();
+    }
+
+    QSqlQuery query;
+    qDebug() << "Updating Airport Database...";
+
+    query.exec("BEGIN EXCLUSIVE TRANSACTION;"); // otherwise execution takes forever
+    for (int i = 0; i < airportData[0].length(); i++){
+        query.prepare("INSERT INTO airports ("
+                      "icao, "
+                      "iata, "
+                      "name, "
+                      "lat, "
+                      "long, "
+                      "country, "
+                      "alt, "
+                      "utcoffset, "
+                      "tzolson"
+                      ") "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        query.addBindValue(airportData[0][i]);
+        query.addBindValue(airportData[1][i]);
+        query.addBindValue(airportData[2][i]);
+        query.addBindValue(airportData[3][i]);
+        query.addBindValue(airportData[4][i]);
+        query.addBindValue(airportData[5][i]);
+        query.addBindValue(airportData[6][i]);
+        query.addBindValue(airportData[7][i]);
+        query.addBindValue(airportData[8][i]);
+        query.exec();
+    }
+    query.exec("COMMIT;"); //commit transaction
+    qDebug() << "Airport Database updated!";
 }

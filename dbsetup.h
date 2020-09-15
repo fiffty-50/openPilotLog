@@ -22,6 +22,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QFile>
 
 /*!
  * \brief The dbSetup class is responsible for the inital setup of the database when
@@ -31,11 +32,16 @@
 class dbSetup
 {
 public:
-    static void connect();
+
+    static void showDatabase();
 
     static void createTables();
 
     static void createViews();
+
+    static QVector<QStringList> importCSV(QString);
+
+    static void commitAirportData(QVector<QStringList>);
 };
 
 #endif // DBSETUP_H
