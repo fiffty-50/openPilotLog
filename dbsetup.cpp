@@ -17,23 +17,6 @@
  */
 #include "dbsetup.h"
 
-/// dummy db connection for debugging
-
-void dbSetup::connect()
-{
-    const QString DRIVER("QSQLITE");
-
-    if(QSqlDatabase::isDriverAvailable(DRIVER))
-    {
-        QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
-        db.setDatabaseName("debug.db");
-
-        if(!db.open())
-            qWarning() << "DatabaseConnect - ERROR: " << db.lastError().text();
-    }
-    else
-        qWarning() << "DatabaseConnect - ERROR: no driver " << DRIVER << " available";
-}
 
 // Pragmas for creation of database table
 const QString createTablePilots = "CREATE TABLE pilots ( "
@@ -232,7 +215,7 @@ void dbSetup::createTables()
 {
     QSqlQuery query;
 
-    for(int i = 0; i<tables.length() ; i++) {
+    for(int i = 0; i<tables.length(); i++) {
         query.prepare(tables[i]);
         query.exec();
         if(!query.isActive()) {
@@ -289,61 +272,8 @@ QVector<QStringList> dbSetup::importCSV(QString filename)
             values[i].append(items[i]);
         }
     }
-    qDebug() << "Values: " << values;
     return values;
-
 }
-
-/*QVector<QStringList> dbSetup::importAirportsFromCSV()
-{
-    QStringList icao;
-    QStringList iata;
-    QStringList name;
-    QStringList latitude;
-    QStringList longitude;
-    QStringList country;
-    QStringList altitude;
-    QStringList utcoffset;
-    QStringList tzolson;
-
-
-
-    QFile input("test.csv");
-    input.open(QIODevice::ReadOnly);
-    QTextStream inputStream(&input);
-
-    while (!inputStream.atEnd()) {
-        QString line = inputStream.readLine();
-        auto items = line.split(",");
-        icao.append(items[0]);
-        iata.append(items[1]);
-        name.append(items[2]);
-        latitude.append(items[3]);
-        longitude.append(items[4]);
-        country.append(items[5]);
-        altitude.append(items[6]);
-        utcoffset.append(items[7]);
-        tzolson.append(items[8]);
-    }
-
-    QVector<QStringList> airportData = {
-        icao,
-        iata,
-        name,
-        latitude,
-        longitude,
-        country,
-        altitude,
-        utcoffset,
-        tzolson
-    };
-    for(int i=0; i < airportData.length(); i++)
-    {
-        airportData[i].removeFirst();
-    }
-    qDebug() << "Airport Data: " << airportData;
-    return airportData;
-}*/
 
 void dbSetup::commitAirportData(QVector<QStringList> airportData)
 {
@@ -357,7 +287,6 @@ void dbSetup::commitAirportData(QVector<QStringList> airportData)
     qDebug() << "Updating Airport Database...";
 
     query.exec("BEGIN EXCLUSIVE TRANSACTION;"); // otherwise execution takes forever
-
     for (int i = 0; i < airportData[0].length(); i++){
         query.prepare("INSERT INTO airports ("
                       "icao, "

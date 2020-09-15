@@ -32,7 +32,6 @@
 class dbSetup
 {
 public:
-    static void connect();
 
     static void showDatabase();
 
@@ -41,8 +40,6 @@ public:
     static void createViews();
 
     static QVector<QStringList> importCSV(QString);
-
-    //static QVector<QStringList> importAirportsFromCSV();
 
     static void commitAirportData(QVector<QStringList>);
 };
