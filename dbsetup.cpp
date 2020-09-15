@@ -206,6 +206,26 @@ QStringList views = {
 };
 
 /*!
+ * \brief dbSetup::showDatabase Outputs database information to Console
+ */
+void dbSetup::showDatabase()
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table'");
+    query.exec();
+    while (query.next()) {
+        qDebug() << "Tables: " << query.value(0).toString();
+    }
+
+    query.prepare("SELECT name FROM sqlite_master WHERE type='view'");
+    query.exec();
+    while (query.next()) {
+        qDebug() << "Views: " << query.value(0).toString();
+    }
+}
+
+/*!
  * \brief dbSetup::createTables Create the required tables for the database
  */
 void dbSetup::createTables()
@@ -220,14 +240,11 @@ void dbSetup::createTables()
         }else
             qDebug() << "Adding table " << tables[i].section(QLatin1Char(' '),2,2);
     }
-    //verify tables are created
-    query.prepare("SELECT name FROM sqlite_master WHERE type='table'");
-    query.exec();
-    while (query.next()) {
-        qDebug() << "Table: " << query.value(0).toString();
-    }
 }
 
+/*!
+ * \brief dbSetup::createViews Create the required views for the database
+ */
 void dbSetup::createViews()
 {
     QSqlQuery query;
@@ -241,10 +258,121 @@ void dbSetup::createViews()
             qDebug() << "Adding View " << views[i].section(QLatin1Char(' '),2,2);
         }
     }
-    //verify views are created
-    query.prepare("SELECT name FROM sqlite_master WHERE type='view'");
-    query.exec();
-    while (query.next()) {
-        qDebug() << "View: " << query.value(0).toString();
+}
+
+void dbSetup::csvtest()
+{
+    QStringList firstColumn;
+
+
+    QFile f1("test.csv");
+    f1.open(QIODevice::ReadOnly);
+    QTextStream s1(&f1);
+   // qDebug() << "Stream: " << s1.readAll();
+    while (!s1.atEnd()){
+      QString s=s1.readLine(); // reads line from file
+      qDebug() << s;
+      //firstColumn.append(s.split(",").first()); // appends first column to list, ',' is separator
+      firstColumn.append(s.split(",")[1]);//second Column
     }
+    qDebug() << "First Column: " << firstColumn;
+
+    f1.close();
+}
+
+QVector<QStringList> dbSetup::importAirportsFromCSV()
+{
+    QStringList icao;
+    QStringList iata;
+    QStringList name;
+    QStringList latitude;
+    QStringList longitude;
+    QStringList country;
+    QStringList altitude;
+    QStringList utcoffset;
+    QStringList tzolson;
+
+
+
+    QFile input("airports.csv");
+    input.open(QIODevice::ReadOnly);
+    QTextStream inputStream(&input);
+
+    while (!inputStream.atEnd()) {
+        QString line = inputStream.readLine();
+        auto items = line.split(",");
+        icao.append(items[0]);
+        iata.append(items[1]);
+        name.append(items[2]);
+        latitude.append(items[3]);
+        longitude.append(items[4]);
+        country.append(items[5]);
+        altitude.append(items[6]);
+        utcoffset.append(items[7]);
+        tzolson.append(items[8]);
+    }
+
+    QVector<QStringList> airportData = {
+        icao,
+        iata,
+        name,
+        latitude,
+        longitude,
+        country,
+        altitude,
+        utcoffset,
+        tzolson
+    };
+    for(int i=0; i < airportData.length(); i++)
+    {
+        airportData[i].removeFirst();
+    }
+    //qDebug() << "Airport Data: " << airportData;
+    return airportData;
+}
+
+void dbSetup::commitAirportData(QVector<QStringList> airportData)
+{
+    qDebug() << "Airport Data: " << airportData[0];
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO airports ("
+                  "icao, "
+                  "iata, "
+                  "name, "
+                  "lat, "
+                  "long, "
+                  "country, "
+                  "alt, "
+                  "utcoffset, "
+                  "tzolson"
+                  ") "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    //query.prepare("INSERT INTO airports (icao) VALUES (?)");
+    query.addBindValue(airportData[0]);
+    query.addBindValue(airportData[1]);
+    query.addBindValue(airportData[2]);
+    query.addBindValue(airportData[3]);
+    query.addBindValue(airportData[4]);
+    query.addBindValue(airportData[5]);
+    query.addBindValue(airportData[6]);
+    query.addBindValue(airportData[7]);
+    query.addBindValue(airportData[8]);
+
+    //if (!query.execBatch())
+    //    qDebug() << query.lastError();
+    auto start = std::chrono::high_resolution_clock::now(); // execution timer
+    //code
+    qDebug() << "Updating Airport Database...";
+    query.execBatch();
+    qDebug() << "Error: " << query.lastError();
+    qDebug() << "Airport Database updated...";
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    qDebug() << "Time taken: " << duration.count() << " microseconds";
+
+
+/*    for (int i = 0; i < airportData.length(); i++) {
+        qDebug() << "List number " << i << ": " << airportData[i];
+    }*/
 }
