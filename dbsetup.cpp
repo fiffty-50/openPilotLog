@@ -260,27 +260,41 @@ void dbSetup::createViews()
     }
 }
 
-void dbSetup::csvtest()
+/*!
+ * \brief dbSetup::importCSV reads from a CSV file
+ * \param filename - QString to csv file.
+ * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input file
+ */
+QVector<QStringList> dbSetup::importCSV(QString filename)
 {
-    QStringList firstColumn;
+    QFile csvfile(filename);
+    csvfile.open(QIODevice::ReadOnly);
+    QTextStream stream(&csvfile);
 
+    QVector<QStringList> values;
 
-    QFile f1("test.csv");
-    f1.open(QIODevice::ReadOnly);
-    QTextStream s1(&f1);
-   // qDebug() << "Stream: " << s1.readAll();
-    while (!s1.atEnd()){
-      QString s=s1.readLine(); // reads line from file
-      qDebug() << s;
-      //firstColumn.append(s.split(",").first()); // appends first column to list, ',' is separator
-      firstColumn.append(s.split(",")[1]);//second Column
+    //Read CSV headers and create QStringLists accordingly
+    QString line = stream.readLine();
+    auto items = line.split(",");
+    for (int i = 0; i < items.length(); i++) {
+        QStringList list;
+        list.append(items[i]);
+        values.append(list);
     }
-    qDebug() << "First Column: " << firstColumn;
+    //Fill QStringLists with data
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        auto items = line.split(",");
+        for (int i = 0; i < values.length(); i++) {
+            values[i].append(items[i]);
+        }
+    }
+    qDebug() << "Values: " << values;
+    return values;
 
-    f1.close();
 }
 
-QVector<QStringList> dbSetup::importAirportsFromCSV()
+/*QVector<QStringList> dbSetup::importAirportsFromCSV()
 {
     QStringList icao;
     QStringList iata;
@@ -294,7 +308,7 @@ QVector<QStringList> dbSetup::importAirportsFromCSV()
 
 
 
-    QFile input("airports.csv");
+    QFile input("test.csv");
     input.open(QIODevice::ReadOnly);
     QTextStream inputStream(&input);
 
@@ -327,12 +341,18 @@ QVector<QStringList> dbSetup::importAirportsFromCSV()
     {
         airportData[i].removeFirst();
     }
-    //qDebug() << "Airport Data: " << airportData;
+    qDebug() << "Airport Data: " << airportData;
     return airportData;
-}
+}*/
 
 void dbSetup::commitAirportData(QVector<QStringList> airportData)
 {
+    //remove header names
+    for(int i=0; i < airportData.length(); i++)
+    {
+        airportData[i].removeFirst();
+    }
+
     QSqlQuery query;
     qDebug() << "Updating Airport Database...";
 

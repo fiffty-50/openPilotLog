@@ -40,9 +40,9 @@ public:
 
     static void createViews();
 
-    static void csvtest();
+    static QVector<QStringList> importCSV(QString);
 
-    static QVector<QStringList> importAirportsFromCSV();
+    //static QVector<QStringList> importAirportsFromCSV();
 
     static void commitAirportData(QVector<QStringList>);
 };
