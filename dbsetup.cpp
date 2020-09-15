@@ -333,46 +333,35 @@ QVector<QStringList> dbSetup::importAirportsFromCSV()
 
 void dbSetup::commitAirportData(QVector<QStringList> airportData)
 {
-    qDebug() << "Airport Data: " << airportData[0];
-
     QSqlQuery query;
-    query.prepare("INSERT INTO airports ("
-                  "icao, "
-                  "iata, "
-                  "name, "
-                  "lat, "
-                  "long, "
-                  "country, "
-                  "alt, "
-                  "utcoffset, "
-                  "tzolson"
-                  ") "
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    //query.prepare("INSERT INTO airports (icao) VALUES (?)");
-    query.addBindValue(airportData[0]);
-    query.addBindValue(airportData[1]);
-    query.addBindValue(airportData[2]);
-    query.addBindValue(airportData[3]);
-    query.addBindValue(airportData[4]);
-    query.addBindValue(airportData[5]);
-    query.addBindValue(airportData[6]);
-    query.addBindValue(airportData[7]);
-    query.addBindValue(airportData[8]);
-
-    //if (!query.execBatch())
-    //    qDebug() << query.lastError();
-    auto start = std::chrono::high_resolution_clock::now(); // execution timer
-    //code
     qDebug() << "Updating Airport Database...";
-    query.execBatch();
-    qDebug() << "Error: " << query.lastError();
-    qDebug() << "Airport Database updated...";
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    qDebug() << "Time taken: " << duration.count() << " microseconds";
 
+    query.exec("BEGIN EXCLUSIVE TRANSACTION;"); // otherwise execution takes forever
 
-/*    for (int i = 0; i < airportData.length(); i++) {
-        qDebug() << "List number " << i << ": " << airportData[i];
-    }*/
+    for (int i = 0; i < airportData[0].length(); i++){
+        query.prepare("INSERT INTO airports ("
+                      "icao, "
+                      "iata, "
+                      "name, "
+                      "lat, "
+                      "long, "
+                      "country, "
+                      "alt, "
+                      "utcoffset, "
+                      "tzolson"
+                      ") "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        query.addBindValue(airportData[0][i]);
+        query.addBindValue(airportData[1][i]);
+        query.addBindValue(airportData[2][i]);
+        query.addBindValue(airportData[3][i]);
+        query.addBindValue(airportData[4][i]);
+        query.addBindValue(airportData[5][i]);
+        query.addBindValue(airportData[6][i]);
+        query.addBindValue(airportData[7][i]);
+        query.addBindValue(airportData[8][i]);
+        query.exec();
+    }
+    query.exec("COMMIT;"); //commit transaction
+    qDebug() << "Airport Database updated!";
 }
