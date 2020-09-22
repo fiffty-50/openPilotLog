@@ -147,3 +147,22 @@ QVector<double> dbAirport::retreiveIcaoCoordinates(QString icao)
     }
     return result;
 }
+/*!
+ * \brief dbAirport::retreiveTimezonesIATA look up a list of timezones
+ * for airports based on their IATA code.
+ * \return
+ */
+QVector<QPair<QString, QString>> dbAirport::retreiveTimezonesIATA()
+{
+    QSqlQuery query;
+    query.prepare("SELECT iata, tzolson "
+                  "FROM airports "
+                  "WHERE tzolson IS NOT NULL AND iata IS NOT NULL");
+    query.exec();
+
+    QVector<QPair<QString, QString>> result;
+    while(query.next()) {
+        result.append(QPair<QString, QString>(query.value(0).toString(),query.value(1).toString()));
+    }
+    return result;
+}
