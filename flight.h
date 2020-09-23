@@ -6,10 +6,10 @@
 #include <QDebug>
 
 /*!
- * \brief The flight class is a container for a logbook entry. It contains all the
+ * \brief The flight class is a container class for a logbook entry. It contains all the
  * entries relevant to a flight. There are 8 mandatory entries which are initalized
  * invalid and need to be set before the flight can be committed. The other entries
- * are optional.
+ * are optional. All time entries in a flight object shall be UTC.
  */
 class flight
 {

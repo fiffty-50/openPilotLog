@@ -60,6 +60,12 @@ void flight::printFlight()
     }else{
        cout << "Blocktime:\t\tnot set\n";
     }
+
+    if(isValid){
+        cout << "Object status:\t\033[38;2;0;255;0;48;2;0;0;0mVERIFIED\033[0m\n";
+    }else{
+        cout << "Object status:\t\033[38;2;255;0;0;48;2;0;0;0mUNVERIFIED\033[0m\n";
+    }
 }
 /*!
  * \brief flight::debug Provides compatibility with qDebug
@@ -77,41 +83,79 @@ flight flight::fromVector(QVector<QString> details)
         qWarning() << __PRETTY_FUNCTION__ << "Invalid Input. Aborting.";
         return flight();
     }
-    flight flightobject;
-    flightobject.id      = details[1].toInt();
-    flightobject.doft    = QDate::fromString(details[2],Qt::ISODate);
-    flightobject.dept    = details[3];
-    flightobject.dest    = details[4];
-    flightobject.tofb    = QTime::fromString(details[5],"hh:mm");
-    flightobject.tonb    = QTime::fromString(details[6],"hh:mm");
-    flightobject.pic     = details[7];
-    flightobject.acft    = details[8];
-    flightobject.tblk    = QTime::fromString(details[9],"hh:mm");
-    flightobject.tSPSE   = QTime::fromString(details[10],"hh:mm");
-    flightobject.tSPME   = QTime::fromString(details[11],"hh:mm");
-    flightobject.tMP     = QTime::fromString(details[12],"hh:mm");
-    flightobject.tNIGHT  = QTime::fromString(details[13],"hh:mm");
-    flightobject.tIFR    = QTime::fromString(details[14],"hh:mm");
+    flight object;
+    object.id      = details[1].toInt();
+    object.doft    = QDate::fromString(details[2],Qt::ISODate);
+    object.dept    = details[3];
+    object.dest    = details[4];
+    object.tofb    = QTime::fromString(details[5],"hh:mm");
+    object.tonb    = QTime::fromString(details[6],"hh:mm");
+    object.pic     = details[7];
+    object.acft    = details[8];
+    object.tblk    = QTime::fromString(details[9],"hh:mm");
+    object.tSPSE   = QTime::fromString(details[10],"hh:mm");
+    object.tSPME   = QTime::fromString(details[11],"hh:mm");
+    object.tMP     = QTime::fromString(details[12],"hh:mm");
+    object.tNIGHT  = QTime::fromString(details[13],"hh:mm");
+    object.tIFR    = QTime::fromString(details[14],"hh:mm");
 
-    flightobject.tPIC    = QTime::fromString(details[15],"hh:mm");
-    flightobject.tSIC    = QTime::fromString(details[16],"hh:mm");
-    flightobject.tDUAL   = QTime::fromString(details[17],"hh:mm");
-    flightobject.tFI     = QTime::fromString(details[18],"hh:mm");
+    object.tPIC    = QTime::fromString(details[15],"hh:mm");
+    object.tSIC    = QTime::fromString(details[16],"hh:mm");
+    object.tDUAL   = QTime::fromString(details[17],"hh:mm");
+    object.tFI     = QTime::fromString(details[18],"hh:mm");
 
-    flightobject.tSIM    = QTime::fromString(details[19],"hh:mm");
+    object.tSIM    = QTime::fromString(details[19],"hh:mm");
 
-    flightobject.pilotFlying  = details[20].toInt();
-    flightobject.toDay        = details[21].toInt();
-    flightobject.toNight      = details[22].toInt();
-    flightobject.ldgDay       = details[23].toInt();
-    flightobject.ldgNight     = details[24].toInt();
-    flightobject.autoland     = details[25].toInt();
+    object.pilotFlying  = details[20].toInt();
+    object.toDay        = details[21].toInt();
+    object.toNight      = details[22].toInt();
+    object.ldgDay       = details[23].toInt();
+    object.ldgNight     = details[24].toInt();
+    object.autoland     = details[25].toInt();
 
-    flightobject.secondPilot  = details[26];
-    flightobject.thirdPilot   = details[27];
-    flightobject.approachType = details[28];
-    flightobject.flightNumber = details[29];
-    flightobject.remarks      = details[30];
+    object.secondPilot  = details[26];
+    object.thirdPilot   = details[27];
+    object.approachType = details[28];
+    object.flightNumber = details[29];
+    object.remarks      = details[30];
 
-    return flightobject;
+    return object;
+}
+
+QVector<QString> flight::toVector(flight object)
+{
+    QVector<QString> vecOut(31);
+
+    vecOut [1]  = QString::number(object.id);
+    vecOut [2]  = object.doft.toString(Qt::ISODate);
+    vecOut [3]  = object.dept;
+    vecOut [4]  = object.dest;
+    vecOut [5]  = object.tofb.toString("hh:mm");
+    vecOut [6]  = object.tonb.toString("hh:mm");
+    vecOut [7]  = object.pic;
+    vecOut [8]  = object.acft;
+    vecOut [9]  = object.tblk.toString("hh:mm");
+    vecOut [10] = object.tSPSE.toString("hh:mm");
+    vecOut [11] = object.tSPME.toString("hh:mm");
+    vecOut [12] = object.tMP.toString("hh:mm");
+    vecOut [13] = object.tNIGHT.toString("hh:mm");
+    vecOut [14] = object.tIFR.toString("hh:mm");
+    vecOut [15] = object.tPIC.toString("hh:mm");
+    vecOut [16] = object.tSIC.toString("hh:mm");
+    vecOut [17] = object.tDUAL.toString("hh:mm");
+    vecOut [18] = object.tFI.toString("hh:mm");
+    vecOut [19] = object.tSIM.toString("hh:mm");
+    vecOut [20] = QString::number(object.pilotFlying);
+    vecOut [21] = QString::number(object.toDay);
+    vecOut [22] = QString::number(object.toNight);
+    vecOut [23] = QString::number(object.ldgDay);
+    vecOut [24] = QString::number(object.ldgNight);
+    vecOut [25] = QString::number(object.autoland);
+    vecOut [26] = object.secondPilot;
+    vecOut [27] = object.thirdPilot;
+    vecOut [28] = object.approachType;
+    vecOut [29] = object.flightNumber;
+    vecOut [30] = object.remarks;
+
+    return vecOut;
 }
