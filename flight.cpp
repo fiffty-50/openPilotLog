@@ -87,31 +87,31 @@ flight flight::fromVector(QVector<QString> details)
     flightobject.pic     = details[7];
     flightobject.acft    = details[8];
     flightobject.tblk    = QTime::fromString(details[9],"hh:mm");
-    flightobject.tSPSE = details[10].toInt();
-    flightobject.tSPME = details[11].toInt();
-    flightobject.tMP = details[12].toInt();
-    flightobject.tNIGHT = details[13].toInt();
-    flightobject.tIFR = details[14].toInt();
+    flightobject.tSPSE   = QTime::fromString(details[10],"hh:mm");
+    flightobject.tSPME   = QTime::fromString(details[11],"hh:mm");
+    flightobject.tMP     = QTime::fromString(details[12],"hh:mm");
+    flightobject.tNIGHT  = QTime::fromString(details[13],"hh:mm");
+    flightobject.tIFR    = QTime::fromString(details[14],"hh:mm");
 
-    flightobject.tPIC = details[15].toInt();
-    flightobject.tSIC = details[16].toInt();
-    flightobject.tDUAL = details[17].toInt();
-    flightobject.tFI = details[18].toInt();
+    flightobject.tPIC    = QTime::fromString(details[15],"hh:mm");
+    flightobject.tSIC    = QTime::fromString(details[16],"hh:mm");
+    flightobject.tDUAL   = QTime::fromString(details[17],"hh:mm");
+    flightobject.tFI     = QTime::fromString(details[18],"hh:mm");
 
-    flightobject.tSIM = details[19].toInt();
+    flightobject.tSIM    = QTime::fromString(details[19],"hh:mm");
 
-    flightobject.pilotFlying = details[20].toInt();
-    flightobject.toDay = details[21].toInt();
-    flightobject.toNight = details[22].toInt();
-    flightobject.ldgDay = details[23].toInt();
-    flightobject.ldgNight = details[24].toInt();
-    flightobject.autoland = details[25].toInt();
+    flightobject.pilotFlying  = details[20].toInt();
+    flightobject.toDay        = details[21].toInt();
+    flightobject.toNight      = details[22].toInt();
+    flightobject.ldgDay       = details[23].toInt();
+    flightobject.ldgNight     = details[24].toInt();
+    flightobject.autoland     = details[25].toInt();
 
-    flightobject.secondPilot = details[26];
-    flightobject.thirdPilot = details[27];
+    flightobject.secondPilot  = details[26];
+    flightobject.thirdPilot   = details[27];
     flightobject.approachType = details[28];
     flightobject.flightNumber = details[29];
-    flightobject.remarks = details[30];
+    flightobject.remarks      = details[30];
 
     return flightobject;
 }
