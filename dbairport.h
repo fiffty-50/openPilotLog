@@ -42,6 +42,8 @@ public:
     static QStringList completeIcaoOrIata(QString icaoStub);
 
     static QStringList retreiveIataIcaoList();
+
+    static QVector<QPair<QString, QString>> retreiveTimezonesIATA();
 };
 
 #endif // DBAIRPORT_H
