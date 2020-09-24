@@ -3,7 +3,7 @@
 /*!
  * \brief flight::printFlight Displays basic data for debugging
  */
-void flight::printFlight()
+void flight::print()
 {
     QTextStream cout(stdout, QIODevice::WriteOnly);
 
@@ -66,6 +66,12 @@ void flight::printFlight()
     }else{
         cout << "Object status:\t\033[38;2;255;0;0;48;2;0;0;0m UNVERIFIED \033[0m\n";
     }
+    if(!invalidItems.isEmpty()){
+        cout << "Invalid items:\t";
+        for(auto const& item : invalidItems){
+            cout << item + QLatin1Char(' ');
+        }
+    }
 }
 /*!
  * \brief flight::debug Provides compatibility with qDebug
@@ -73,7 +79,7 @@ void flight::printFlight()
  */
 QString flight::debug()
 {
-    printFlight();
+    print();
     return QString();
 }
 

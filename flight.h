@@ -63,7 +63,7 @@ public:
     static QVector<QString> toVector(flight);
 
     // Debug functionality
-    void printFlight();
+    void print();
     QString debug();
     operator QString() { return debug(); }
 };

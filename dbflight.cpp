@@ -16,6 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbflight.h"
+#include "dbpilots.h"
+#include "dbaircraft.h"
 
 
 /*!
@@ -26,8 +28,106 @@
  */
 void dbFlight::verifyInput(flight object)
 {
-    object.printFlight();
+    object.print();
     //to do
+}
+
+flight dbFlight::retreiveFlight(QString flight_id)
+{
+    //To Do
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM flights WHERE id = ?");
+    query.addBindValue(flight_id);
+    query.exec();
+
+    if(query.first());
+    else
+    {
+        qWarning() << __func__ << "No Flight with this ID found";
+        return flight(); //return empty
+
+    }
+    flight object;
+
+    object.id      = query.value(0).toInt();
+    object.doft    = QDate::fromString(query.value(1).toString(),Qt::ISODate);
+    object.dept    = query.value(2).toString();
+    object.dest    = query.value(3).toString();
+    object.tofb    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(4).toString()),"hh:mm");
+    object.tonb    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(5).toString()),"hh:mm");
+    object.pic     = dbPilots::retreivePilotNameFromID(
+                     query.value(6).toString());
+    object.acft    = dbAircraft::retreiveRegistration(
+                     query.value(7).toString());
+    object.tblk    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(8).toString()),"hh:mm");
+    object.tSPSE   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(9).toString()),"hh:mm");
+    object.tSPME   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(10).toString()),"hh:mm");
+    object.tMP     = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(11).toString()),"hh:mm");
+    object.tNIGHT  = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(12).toString()),"hh:mm");
+    object.tIFR    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(13).toString()),"hh:mm");
+
+    object.tPIC    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(14).toString()),"hh:mm");
+    object.tPICUS  = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(15).toString()),"hh:mm");
+    object.tSIC    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(16).toString()),"hh:mm");
+    object.tDUAL   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(17).toString()),"hh:mm");
+    object.tFI     = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(18).toString()),"hh:mm");
+    object.tSIM    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(19).toString()),"hh:mm");
+
+    object.pilotFlying  = query.value(20).toInt();
+    object.toDay        = query.value(21).toInt();
+    object.toNight      = query.value(22).toInt();
+    object.ldgDay       = query.value(23).toInt();
+    object.ldgNight     = query.value(24).toInt();
+    object.autoland     = query.value(25).toInt();
+
+    object.secondPilot  = query.value(26).toInt();
+    object.thirdPilot   = query.value(27).toInt();
+    object.approachType = query.value(28).toString();
+    object.flightNumber = query.value(29).toString();
+    object.remarks      = query.value(30).toString();
+
+    //Database entries are assumed to be valid
+    object.isValid = true;
+    object.invalidItems.clear();
+
+    return object;
+}
+
+
+bool dbFlight::commitFlight(flight object)
+{
+    //To Do
+    qDebug() << object;
+    return false;
 }
 
 /*!
@@ -124,33 +224,7 @@ QVector<QString> dbFlight::createFlightVectorFromInput(QString doft, QString dep
     //qDebug() << flight;
     return flight;
 }
-/*!
- * \brief CommitFlight Inserts prepared flight vector into database. Also creates
- * a corresponding entry in the extras database to ensure matching IDs.
- * \param flight a Vector of values in database format
- */
-void dbFlight::commitFlight(QVector<QString> flight)// flight vector shall always have length 9
-{
-    QSqlQuery query;
-    query.prepare("INSERT INTO flights (doft, dept, tofb, dest, tonb, tblk, pic, acft) "
-                  "VALUES (:doft, :dept, :tofb, :dest, :tonb, :tblk, :pic, :acft)");
-    //flight[0] is primary key, not required for commit
-    query.bindValue(":doft", flight[1]); //string
-    query.bindValue(":dept", flight[2]);
-    query.bindValue(":tofb", flight[3].toInt()); //int
-    query.bindValue(":dest", flight[4]);
-    query.bindValue(":tonb", flight[5].toInt());
-    query.bindValue(":tblk", flight[6].toInt());
-    query.bindValue(":pic", flight[7].toInt());
-    query.bindValue(":acft", flight[8].toInt());
-    query.exec();
-    qDebug() << "Error message for commiting flight: " << query.lastError().text();
 
-    QSqlQuery query2;
-    query2.prepare("INSERT INTO extras DEFAULT VALUES");
-    query2.exec();
-    qDebug() << "Creating extras entry" << query2.lastError().text();
-}
 /*!
  * \brief CommitToScratchpad Commits the inputs of the NewFlight window to a scratchpad
  * to make them available for restoring entries when the input fields are being reloaded.

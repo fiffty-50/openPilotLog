@@ -35,13 +35,18 @@ public:
 
     static void verifyInput(flight object);
 
+    static flight retreiveFlight(QString flight_id);
+
+    static bool commitFlight(flight object);
+
+
+
     static QVector<QString> selectFlightById(QString flight_id);
 
     static bool deleteFlightById(QString flight_id);
 
     static QVector<QString> createFlightVectorFromInput(QString doft, QString dept, QTime tofb, QString dest,
                                                         QTime tonb, QTime tblk, QString pic, QString acft);
-    static void commitFlight(QVector<QString> flight);
 
     static void commitToScratchpad(QVector<QString> flight);
 
