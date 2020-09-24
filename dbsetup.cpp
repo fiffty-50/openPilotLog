@@ -327,7 +327,7 @@ QVector<QString> dbSetup::getColumnNames(QString table)
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
     QVector<QString> columnNames;
 
-    QSqlRecord fields = db.driver()->record(table);
+    QSqlRecord fields = db.record(table);
     for(int i = 0; i < fields.count(); i++){
         columnNames << fields.field(i).name();
     }
