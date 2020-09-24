@@ -112,14 +112,14 @@ bool dbAirport::checkICAOValid(QString identifier)
         QString check = retreiveAirportIdFromIcao(identifier);
         if(check.length() > 0)
         {
-            return 1;
+            return true;
         }else
         {
-            return 0;
+            return false;
         }
     }else
     {
-        return 0;
+        return false;
     }
 }
 

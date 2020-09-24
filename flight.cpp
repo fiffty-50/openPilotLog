@@ -71,6 +71,7 @@ void flight::print()
         for(auto const& item : invalidItems){
             cout << item + QLatin1Char(' ');
         }
+        cout << "\n";
     }
 }
 /*!
