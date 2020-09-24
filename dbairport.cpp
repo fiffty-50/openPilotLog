@@ -112,16 +112,13 @@ bool dbAirport::checkICAOValid(QString identifier)
         QString check = retreiveAirportIdFromIcao(identifier);
         if(check.length() > 0)
         {
-            //qDebug() << "db::CheckICAOValid says: Check passed!";
             return 1;
         }else
         {
-            //qDebug() << "db::CheckICAOValid says: Check NOT passed! Lookup unsuccessful";
             return 0;
         }
     }else
     {
-        //qDebug() << "db::CheckICAOValid says: Check NOT passed! Empty String NOT epico!";
         return 0;
     }
 }

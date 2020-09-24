@@ -58,43 +58,48 @@ const QString createTableTails = "CREATE TABLE tails ( "
                              ")";
 
 const QString createTableFlights = "CREATE TABLE flights  ( "
-                             "id	INTEGER, "
-                             "doft	NUMERIC NOT NULL, "
-                             "dept	TEXT    NOT NULL, "
-                             "tofb	INTEGER NOT NULL, "
-                             "dest	TEXT    NOT NULL, "
-                             "tonb	INTEGER NOT NULL, "
-                             "tblk	INTEGER NOT NULL, "
-                             "pic	INTEGER, "
-                             "acft	INTEGER, "
-                             "PRIMARY KEY(id), "
-                             "FOREIGN KEY(pic)  REFERENCES pilots(pilot_id), "
-                             "FOREIGN KEY(acft) REFERENCES tails(tail_id) "
-                             ")";
-//extras table might eventually be merged into flights table.
-const QString createTableExtras = "CREATE TABLE extras ( "
-                            "extras_id      INTEGER NOT NULL, "
-                            "PilotFlying	INTEGER, "
-                            "TOday          INTEGER, "
-                            "TOnight        INTEGER, "
-                            "LDGday         INTEGER, "
-                            "LDGnight       INTEGER, "
-                            "autoland       INTEGER, "
-                            "tSPSE          INTEGER, "
-                            "tSPME          INTEGER, "
-                            "tMPME          INTEGER, "
-                            "tNight         INTEGER, "
-                            "tIFR           INTEGER, "
-                            "tPIC           INTEGER, "
-                            "tSIC           INTEGER, "
-                            "tDual          INTEGER, "
-                            "tInstructor	INTEGER, "
-                            "tSIM           INTEGER, "
-                            "ApproachType	TEXT, "
-                            "FlightNumber	TEXT, "
-                            "Remarks        TEXT, "
-                            "PRIMARY KEY(extras_id) "
-                            ")";
+                                   "id              INTEGER, "
+                                   "doft        	NUMERIC NOT NULL, "
+                                   "dept            TEXT    NOT NULL, "
+                                   "dest            TEXT    NOT NULL, "
+                                   "tofb            INTEGER NOT NULL, "
+                                   "tonb            INTEGER NOT NULL, "
+
+                                   "pic             INTEGER NOT NULL, "
+                                   "acft        	INTEGER NOT NULL, "
+                                   "tblk        	INTEGER NOT NULL, "
+
+
+                                   "tSPSE           INTEGER, "
+                                   "tSPME           INTEGER, "
+                                   "tMP             INTEGER, "
+                                   "tNIGHT          INTEGER, "
+                                   "tIFR            INTEGER, "
+
+                                   "tPIC            INTEGER, "
+                                   "tPICUS          INTEGER, "
+                                   "tSIC            INTEGER, "
+                                   "tDual           INTEGER, "
+                                   "tFI        	    INTEGER, "
+                                   "tSIM            INTEGER, "
+
+                                   "pilotFlying     INTEGER, "
+                                   "toDay           INTEGER, "
+                                   "toNight         INTEGER, "
+                                   "ldgDay          INTEGER, "
+                                   "ldgNight        INTEGER, "
+                                   "autoland        INTEGER, "
+
+                                   "secondPilot     INTEGER, "
+                                   "thirdPilot      INTEGER"
+                                   "ApproachType	TEXT, "
+                                   "FlightNumber	TEXT, "
+                                   "Remarks         TEXT, "
+
+                                   "PRIMARY KEY(id), "
+                                   "FOREIGN KEY(pic)  REFERENCES pilots(pilot_id), "
+                                   "FOREIGN KEY(acft) REFERENCES tails(tail_id) "
+                                   ")";
 
 const QString createTableAirports = "CREATE TABLE airports ( "
                             "airport_id INTEGER primary key, "
@@ -176,7 +181,6 @@ QStringList tables = {
     createTableAircraft,
     createTableTails,
     createTableFlights,
-    createTableExtras,
     createTableScratchpad,
     createTableAirports,
     createTableSettings

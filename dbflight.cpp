@@ -16,7 +16,19 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbflight.h"
-#include "calc.h"
+
+
+/*!
+ * \brief dbFlight::verifyInput Checks the validity of the data in a
+ * flight object against the database and sets its verified flag
+ * accordingly. Information about partial validity can be obtained
+ * by querying the flight objects invalidItems member.
+ */
+void dbFlight::verifyInput(flight object)
+{
+    object.printFlight();
+    //to do
+}
 
 /*!
  * \brief SelectFlightById Retreives a single flight from the database.

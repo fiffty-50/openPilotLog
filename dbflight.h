@@ -22,6 +22,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include "flight.h"
+#include "calc.h"
 
 /*!
  * \brief The dbFlight class provides a databank interface for actions related to the
@@ -30,6 +32,8 @@
 class dbFlight
 {
 public:
+
+    static void verifyInput(flight object);
 
     static QVector<QString> selectFlightById(QString flight_id);
 
