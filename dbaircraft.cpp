@@ -84,7 +84,7 @@ QStringList dbAircraft::newAcftGetString(QString searchstring)
 /*!
  * \brief dbAircraft::newAcftGetId Looks up a registration in the databse
  * \param registration Aircraft Registration
- * \return tail_id
+ * \return tail_id or empty string
  */
 QString dbAircraft::retreiveTailId(QString registration)
 {

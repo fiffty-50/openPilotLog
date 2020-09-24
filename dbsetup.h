@@ -21,6 +21,9 @@
 #include <QCoreApplication>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlRecord>
+#include <QSqlField>
+#include <QSqlDriver>
 #include <QDebug>
 #include <QFile>
 
@@ -42,6 +45,8 @@ public:
     static QVector<QStringList> importCSV(QString);
 
     static void commitAirportData(QVector<QStringList>);
+
+    static QVector<QString> getColumnNames(QString table);
 };
 
 #endif // DBSETUP_H

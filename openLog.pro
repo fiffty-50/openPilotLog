@@ -32,6 +32,7 @@ SOURCES += \
     dbstat.cpp \
     easaview.cpp \
     editflight.cpp \
+    flight.cpp \
     homewidget.cpp \
     logbookwidget.cpp \
     main.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     dbstat.h \
     easaview.h \
     editflight.h \
+    flight.h \
     homewidget.h \
     logbookwidget.h \
     mainwindow.h \

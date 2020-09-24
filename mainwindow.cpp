@@ -25,6 +25,9 @@
 #include "homewidget.h"
 #include "logbookwidget.h"
 #include "settingswidget.h"
+#include "dbsetup.h"
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

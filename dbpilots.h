@@ -42,6 +42,8 @@ public:
     static QStringList retreivePilotList();
 
     static QString newPicGetId(QString name);
+
+    static bool verifyPilotExists(QStringList);
 };
 
 #endif // DBPILOTS_H

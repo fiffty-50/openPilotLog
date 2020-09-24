@@ -298,3 +298,46 @@ QString dbPilots::newPicGetId(QString name)
     qDebug() << "newPicGetId: result = " << result;
     return result;
 }
+
+bool dbPilots::verifyPilotExists(QStringList names)
+{
+    QString name0;
+    QString name1;
+    if (!names.isEmpty()){
+        if(names.length() == 1){                 //only lastname
+            name0 = names[0].trimmed();
+        }else if (names.length() == 2){     //firstname and lastname
+            name0 = names[0].trimmed();
+            name1 = names[1].trimmed();
+        }
+    }else{
+        qWarning() << __func__ << "Invalid Input. Aborting.";
+        return false;
+    }
+
+    QSqlQuery query;
+
+    if(names.length() == 1){                 //only lastname
+        query.prepare("SELECT pilot_id FROM pilots "
+                      "WHERE piclastname = ?");
+        query.addBindValue(name0);
+    }else if (names.length() == 2){     //firstname and lastname
+        query.prepare("SELECT pilot_id FROM pilots "
+                      "WHERE piclastname = ?  AND picfirstname = ? "
+                      "OR picfirstname = ? AND piclastname = ? ");
+        query.addBindValue(name0);
+        query.addBindValue(name1);
+        query.addBindValue(name0);
+        query.addBindValue(name1);
+    }
+
+    query.exec();
+
+    if(query.first()){
+        qDebug() << __func__ << "Pilot found: " << name0;
+        return true;
+    }else{
+        qDebug() << __func__ << "No Pilot found";
+        return false;
+    }
+}

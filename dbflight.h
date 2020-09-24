@@ -22,6 +22,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include "flight.h"
+#include "calc.h"
 
 /*!
  * \brief The dbFlight class provides a databank interface for actions related to the
@@ -31,13 +33,20 @@ class dbFlight
 {
 public:
 
+    static flight verifyInput(flight object);
+
+    static flight retreiveFlight(QString flight_id);
+
+    static bool commitFlight(flight object);
+
+
+
     static QVector<QString> selectFlightById(QString flight_id);
 
     static bool deleteFlightById(QString flight_id);
 
     static QVector<QString> createFlightVectorFromInput(QString doft, QString dept, QTime tofb, QString dest,
                                                         QTime tonb, QTime tblk, QString pic, QString acft);
-    static void commitFlight(QVector<QString> flight);
 
     static void commitToScratchpad(QVector<QString> flight);
 

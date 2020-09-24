@@ -16,7 +16,224 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbflight.h"
-#include "calc.h"
+#include "dbpilots.h"
+#include "dbaircraft.h"
+
+
+/*!
+ * \brief dbFlight::verifyInput Checks the validity of the data in a
+ * flight object against the database and sets its verified flag
+ * accordingly. Information about partial validity can be obtained
+ * by querying the flight objects invalidItems member.
+ */
+flight dbFlight::verifyInput(flight object)
+{
+
+    if (object.doft.isValid()){
+        object.invalidItems.removeOne("doft");
+        qDebug() << "doft verified.";
+    }else{
+        qWarning() << "Invalid entry: doft";
+    }
+
+    if(dbAirport::checkICAOValid(object.dept)){
+        object.invalidItems.removeOne("dept");
+        qDebug() << "dept verified.";
+    }else{
+        qWarning() << "Invalid entry: dept";
+    }
+
+    if(dbAirport::checkICAOValid(object.dest)){
+        object.invalidItems.removeOne("dest");
+        qDebug() << "dest verified.";
+    }else{
+        qWarning() << "Invalid entry: dest";
+    }
+
+    if(object.tofb.isValid()){
+        object.invalidItems.removeOne("tofb");
+        qDebug() << "tofb verified.";
+    }else{
+        qWarning() << "Invalid entry: tofb";
+    }
+
+    if(object.tonb.isValid()){
+        object.invalidItems.removeOne("tonb");
+        qDebug() << "tonb verified.";
+    }else{
+        qWarning() << "Invalid entry: tonb";
+    }
+
+    if(dbPilots::verifyPilotExists(object.pic.split(QLatin1Char(',')))){
+        object.invalidItems.removeOne("pic");
+        qDebug() << "pic verified.";
+    }else{
+        qWarning() << "Invalid entry: pic";
+    }
+
+    //acft
+
+    QTime tblkcheck = calc::blocktime(object.tofb, object.tonb);
+    if(object.tblk.isValid() && !object.tblk.isNull() && tblkcheck == object.tblk){
+        object.invalidItems.removeOne("tblk");
+        qDebug() << "tblk verified.";
+    }else{
+        qWarning() << "Invalid entry: tblk";
+    }
+
+    if(!dbAircraft::retreiveTailId(object.acft).isEmpty()){
+        object.invalidItems.removeOne("acft");
+        qDebug() << "acft verified.";
+    }else{
+        qWarning() << "Invalid entry: acft";
+    }
+
+    if(object.invalidItems.isEmpty()){
+        object.isValid = true;
+        qDebug() << "All checks passed. Object is now verified.";
+    }else{
+        qDebug() << "Not all checks have been passed.";
+        qDebug() << "Invalid items: " << object.invalidItems;
+    }
+
+    return object;
+
+    /* To Do: Checks on internal logic, i.e. times <= tblk,
+     * restrict what strings are allowed in remarks etc.
+
+    object.pic     = details[7];
+    object.acft    = details[8];
+    object.tblk    = QTime::fromString(details[9],"hh:mm");*/
+
+    /*object.tSPSE   = QTime::fromString(details[10],"hh:mm");
+    object.tSPME   = QTime::fromString(details[11],"hh:mm");
+    object.tMP     = QTime::fromString(details[12],"hh:mm");
+    object.tNIGHT  = QTime::fromString(details[13],"hh:mm");
+    object.tIFR    = QTime::fromString(details[14],"hh:mm");
+
+    object.tPIC    = QTime::fromString(details[15],"hh:mm");
+    object.tPICUS  = QTime::fromString(details[16],"hh:mm");
+    object.tSIC    = QTime::fromString(details[17],"hh:mm");
+    object.tDUAL   = QTime::fromString(details[18],"hh:mm");
+    object.tFI     = QTime::fromString(details[19],"hh:mm");
+    object.tSIM    = QTime::fromString(details[20],"hh:mm");
+
+    object.pilotFlying  = details[21].toInt();
+    object.toDay        = details[22].toInt();
+    object.toNight      = details[23].toInt();
+    object.ldgDay       = details[24].toInt();
+    object.ldgNight     = details[25].toInt();
+    object.autoland     = details[26].toInt();
+
+    object.secondPilot  = details[27];
+    object.thirdPilot   = details[28];
+    object.approachType = details[29];
+    object.flightNumber = details[30];
+    object.remarks      = details[31];*/
+}
+
+/*!
+ * \brief dbFlight::retreiveFlight Runs a select statement on the database
+ * for a given flight_id and returns a flight object containing the details
+ * for the given ID. If no matching ID is found, an empty flight object is
+ * returned
+ * \param flight_id Primary Key of flight database
+ */
+flight dbFlight::retreiveFlight(QString flight_id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM flights WHERE id = ?");
+    query.addBindValue(flight_id);
+    query.exec();
+
+    if(query.first());
+    else
+    {
+        qWarning() << __func__ << "No Flight with this ID found";
+        return flight(); //return empty
+
+    }
+    flight object;
+
+    object.id      = query.value(0).toInt();
+    object.doft    = QDate::fromString(query.value(1).toString(),Qt::ISODate);
+    object.dept    = query.value(2).toString();
+    object.dest    = query.value(3).toString();
+    object.tofb    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(4).toString()),"hh:mm");
+    object.tonb    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(5).toString()),"hh:mm");
+    object.pic     = dbPilots::retreivePilotNameFromID(
+                     query.value(6).toString());
+    object.acft    = dbAircraft::retreiveRegistration(
+                     query.value(7).toString());
+    object.tblk    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(8).toString()),"hh:mm");
+    object.tSPSE   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(9).toString()),"hh:mm");
+    object.tSPME   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(10).toString()),"hh:mm");
+    object.tMP     = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(11).toString()),"hh:mm");
+    object.tNIGHT  = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(12).toString()),"hh:mm");
+    object.tIFR    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(13).toString()),"hh:mm");
+
+    object.tPIC    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(14).toString()),"hh:mm");
+    object.tPICUS  = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(15).toString()),"hh:mm");
+    object.tSIC    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(16).toString()),"hh:mm");
+    object.tDUAL   = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(17).toString()),"hh:mm");
+    object.tFI     = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(18).toString()),"hh:mm");
+    object.tSIM    = QTime::fromString(
+                     calc::minutes_to_string(
+                     query.value(19).toString()),"hh:mm");
+
+    object.pilotFlying  = query.value(20).toInt();
+    object.toDay        = query.value(21).toInt();
+    object.toNight      = query.value(22).toInt();
+    object.ldgDay       = query.value(23).toInt();
+    object.ldgNight     = query.value(24).toInt();
+    object.autoland     = query.value(25).toInt();
+
+    object.secondPilot  = query.value(26).toInt();
+    object.thirdPilot   = query.value(27).toInt();
+    object.approachType = query.value(28).toString();
+    object.flightNumber = query.value(29).toString();
+    object.remarks      = query.value(30).toString();
+
+    //Database entries are assumed to be valid
+    object.isValid      = true;
+    object.invalidItems.clear();
+
+    return object;
+}
+
+
+bool dbFlight::commitFlight(flight object)
+{
+    //To Do
+    qDebug() << object;
+    return false;
+}
 
 /*!
  * \brief SelectFlightById Retreives a single flight from the database.
@@ -112,33 +329,7 @@ QVector<QString> dbFlight::createFlightVectorFromInput(QString doft, QString dep
     //qDebug() << flight;
     return flight;
 }
-/*!
- * \brief CommitFlight Inserts prepared flight vector into database. Also creates
- * a corresponding entry in the extras database to ensure matching IDs.
- * \param flight a Vector of values in database format
- */
-void dbFlight::commitFlight(QVector<QString> flight)// flight vector shall always have length 9
-{
-    QSqlQuery query;
-    query.prepare("INSERT INTO flights (doft, dept, tofb, dest, tonb, tblk, pic, acft) "
-                  "VALUES (:doft, :dept, :tofb, :dest, :tonb, :tblk, :pic, :acft)");
-    //flight[0] is primary key, not required for commit
-    query.bindValue(":doft", flight[1]); //string
-    query.bindValue(":dept", flight[2]);
-    query.bindValue(":tofb", flight[3].toInt()); //int
-    query.bindValue(":dest", flight[4]);
-    query.bindValue(":tonb", flight[5].toInt());
-    query.bindValue(":tblk", flight[6].toInt());
-    query.bindValue(":pic", flight[7].toInt());
-    query.bindValue(":acft", flight[8].toInt());
-    query.exec();
-    qDebug() << "Error message for commiting flight: " << query.lastError().text();
 
-    QSqlQuery query2;
-    query2.prepare("INSERT INTO extras DEFAULT VALUES");
-    query2.exec();
-    qDebug() << "Creating extras entry" << query2.lastError().text();
-}
 /*!
  * \brief CommitToScratchpad Commits the inputs of the NewFlight window to a scratchpad
  * to make them available for restoring entries when the input fields are being reloaded.

@@ -17,8 +17,7 @@
  */
 #include "dbsetup.h"
 
-
-// Pragmas for creation of database table
+// Statements for creation of database table
 const QString createTablePilots = "CREATE TABLE pilots ( "
                             "pilot_id       INTEGER, "
                             "picfirstname	TEXT, "
@@ -58,43 +57,48 @@ const QString createTableTails = "CREATE TABLE tails ( "
                              ")";
 
 const QString createTableFlights = "CREATE TABLE flights  ( "
-                             "id	INTEGER, "
-                             "doft	NUMERIC NOT NULL, "
-                             "dept	TEXT    NOT NULL, "
-                             "tofb	INTEGER NOT NULL, "
-                             "dest	TEXT    NOT NULL, "
-                             "tonb	INTEGER NOT NULL, "
-                             "tblk	INTEGER NOT NULL, "
-                             "pic	INTEGER, "
-                             "acft	INTEGER, "
-                             "PRIMARY KEY(id), "
-                             "FOREIGN KEY(pic)  REFERENCES pilots(pilot_id), "
-                             "FOREIGN KEY(acft) REFERENCES tails(tail_id) "
-                             ")";
-//extras table might eventually be merged into flights table.
-const QString createTableExtras = "CREATE TABLE extras ( "
-                            "extras_id      INTEGER NOT NULL, "
-                            "PilotFlying	INTEGER, "
-                            "TOday          INTEGER, "
-                            "TOnight        INTEGER, "
-                            "LDGday         INTEGER, "
-                            "LDGnight       INTEGER, "
-                            "autoland       INTEGER, "
-                            "tSPSE          INTEGER, "
-                            "tSPME          INTEGER, "
-                            "tMPME          INTEGER, "
-                            "tNight         INTEGER, "
-                            "tIFR           INTEGER, "
-                            "tPIC           INTEGER, "
-                            "tSIC           INTEGER, "
-                            "tDual          INTEGER, "
-                            "tInstructor	INTEGER, "
-                            "tSIM           INTEGER, "
-                            "ApproachType	TEXT, "
-                            "FlightNumber	TEXT, "
-                            "Remarks        TEXT, "
-                            "PRIMARY KEY(extras_id) "
-                            ")";
+                                   "id              INTEGER, "
+                                   "doft        	NUMERIC NOT NULL, "
+                                   "dept            TEXT    NOT NULL, "
+                                   "dest            TEXT    NOT NULL, "
+                                   "tofb            INTEGER NOT NULL, "
+                                   "tonb            INTEGER NOT NULL, "
+
+                                   "pic             INTEGER NOT NULL, "
+                                   "acft        	INTEGER NOT NULL, "
+                                   "tblk        	INTEGER NOT NULL, "
+
+
+                                   "tSPSE           INTEGER, "
+                                   "tSPME           INTEGER, "
+                                   "tMP             INTEGER, "
+                                   "tNIGHT          INTEGER, "
+                                   "tIFR            INTEGER, "
+
+                                   "tPIC            INTEGER, "
+                                   "tPICUS          INTEGER, "
+                                   "tSIC            INTEGER, "
+                                   "tDual           INTEGER, "
+                                   "tFI        	    INTEGER, "
+                                   "tSIM            INTEGER, "
+
+                                   "pilotFlying     INTEGER, "
+                                   "toDay           INTEGER, "
+                                   "toNight         INTEGER, "
+                                   "ldgDay          INTEGER, "
+                                   "ldgNight        INTEGER, "
+                                   "autoland        INTEGER, "
+
+                                   "secondPilot     INTEGER, "
+                                   "thirdPilot      INTEGER"
+                                   "ApproachType	TEXT, "
+                                   "FlightNumber	TEXT, "
+                                   "Remarks         TEXT, "
+
+                                   "PRIMARY KEY(id), "
+                                   "FOREIGN KEY(pic)  REFERENCES pilots(pilot_id), "
+                                   "FOREIGN KEY(acft) REFERENCES tails(tail_id) "
+                                   ")";
 
 const QString createTableAirports = "CREATE TABLE airports ( "
                             "airport_id INTEGER primary key, "
@@ -127,7 +131,7 @@ const QString createTableSettings = "CREATE TABLE settings ( "
                              "description	TEXT "
                              ")";
 
-// Pragmas for creation of views in the database
+// Statements for creation of views in the database
 
 const QString createViewQCompleterView = "CREATE VIEW QCompleterView AS "
                               "SELECT airport_id, icao, iata, "
@@ -159,7 +163,6 @@ const QString createViewLogbook = "CREATE VIEW Logbook AS "
                               "INNER JOIN pilots on flights.pic = pilots.pilot_id "
                               "INNER JOIN tails on flights.acft = tails.tail_id "
                               "INNER JOIN aircraft on tails.aircraft_id = aircraft.aircraft_id "
-                              "INNER JOIN extras on extras.extras_id = flights.id "
                               "ORDER BY date DESC ";
 
 //Displays Single Engine, Multi Engine and Multi Pilot Time
@@ -176,7 +179,6 @@ QStringList tables = {
     createTableAircraft,
     createTableTails,
     createTableFlights,
-    createTableExtras,
     createTableScratchpad,
     createTableAirports,
     createTableSettings
@@ -314,3 +316,21 @@ void dbSetup::commitAirportData(QVector<QStringList> airportData)
     query.exec("COMMIT;"); //commit transaction
     qDebug() << "Airport Database updated!";
 }
+//dbSetup::commitAirportData(dbSetup::importCSV("airports.csv")); //import airports and write to db
+
+/*!
+ * \brief dbSetup::getColumnNames Looks up column names of a given table
+ * \param table name of the table in the database
+ */
+QVector<QString> dbSetup::getColumnNames(QString table)
+{
+    QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
+    QVector<QString> columnNames;
+
+    QSqlRecord fields = db.driver()->record(table);
+    for(int i = 0; i < fields.count(); i++){
+        columnNames << fields.field(i).name();
+    }
+    return columnNames;
+}
+
