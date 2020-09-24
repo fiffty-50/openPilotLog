@@ -1,5 +1,87 @@
 #include "flight.h"
 
+flight::flight()
+{
+    isValid = false;
+    invalidItems.append( {                      // Upon verification, verified entries are removed from the list
+        "doft", "dept", "dest", "tofb",
+        "tonb", "pic",  "acft", "tblk"
+    });
+
+    id      = -1;                         //[1] Primary Key in Database, needed for retreival but not for commiting (sqlite autoincrement)
+    doft    = QDate();                    //[2] Date of Flight, initialised invalid
+    dept    = "INVA";                     //[3] Departure, initialised invalid
+    dest    = "INVA";                     //[4] Destination, initialised invalid
+    tofb    = QTime();                    //[5] Time off blocks (UTC), initialised invalid
+    tonb    = QTime();                    //[6] Time on blocks (UTC), initialised invalid
+    pic     = "INVA";                     //[7] Pilot in command (ID), initialised invalid
+    acft    = "INVA";                     //[8] Aircraft Registration (ID), initialised invalid
+
+    tblk    = QTime();                    //[9] Total Blocktime, initialised invalid
+    tSPSE   = QTime(0,0);                 //[10] optional times initialised as 0
+    tSPME   = QTime(0,0);                 //[11]
+    tMP     = QTime(0,0);                 //[12]
+    tNIGHT  = QTime(0,0);                 //[13]
+    tIFR    = QTime(0,0);                 //[14]
+
+    tPIC    = QTime(0,0);                 //[15]
+    tPICUS  = QTime(0,0);                 //[16]
+    tSIC    = QTime(0,0);                 //[17]
+    tDUAL   = QTime(0,0);                 //[18]
+    tFI     = QTime(0,0);                 //[19]
+
+    tSIM    = QTime(0,0);                 //[20]
+}
+
+flight::flight(QVector<QString> details)
+{
+    isValid = false;
+    invalidItems.append({                      // Upon verification, verified entries are removed from the list
+        "doft", "dept", "dest", "tofb",
+        "tonb", "pic",  "acft", "tblk"
+    });
+    if(details.length() != 32){
+        qWarning() << __PRETTY_FUNCTION__ << "Vector needs to be of size 32.";
+        qWarning() << __PRETTY_FUNCTION__ << "Unable to create object.";
+        details = QVector<QString>(32);
+    }
+
+    id      = details[1].toInt();
+    doft    = QDate::fromString(details[2],Qt::ISODate);
+    dept    = details[3];
+    dest    = details[4];
+    tofb    = QTime::fromString(details[5],"hh:mm");
+    tonb    = QTime::fromString(details[6],"hh:mm");
+    pic     = details[7];
+    acft    = details[8];
+    tblk    = QTime::fromString(details[9],"hh:mm");
+    tSPSE   = QTime::fromString(details[10],"hh:mm");
+    tSPME   = QTime::fromString(details[11],"hh:mm");
+    tMP     = QTime::fromString(details[12],"hh:mm");
+    tNIGHT  = QTime::fromString(details[13],"hh:mm");
+    tIFR    = QTime::fromString(details[14],"hh:mm");
+
+    tPIC    = QTime::fromString(details[15],"hh:mm");
+    tPICUS  = QTime::fromString(details[16],"hh:mm");
+    tSIC    = QTime::fromString(details[17],"hh:mm");
+    tDUAL   = QTime::fromString(details[18],"hh:mm");
+    tFI     = QTime::fromString(details[19],"hh:mm");
+    tSIM    = QTime::fromString(details[20],"hh:mm");
+
+    pilotFlying  = details[21].toInt();
+    toDay        = details[22].toInt();
+    toNight      = details[23].toInt();
+    ldgDay       = details[24].toInt();
+    ldgNight     = details[25].toInt();
+    autoland     = details[26].toInt();
+
+    secondPilot  = details[27];
+    thirdPilot   = details[28];
+    approachType = details[29];
+    flightNumber = details[30];
+    remarks      = details[31];
+}
+
 /*!
  * \brief flight::printFlight Displays basic data for debugging
  */

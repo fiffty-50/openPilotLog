@@ -17,8 +17,7 @@
  */
 #include "dbsetup.h"
 
-
-// Pragmas for creation of database table
+// Statements for creation of database table
 const QString createTablePilots = "CREATE TABLE pilots ( "
                             "pilot_id       INTEGER, "
                             "picfirstname	TEXT, "
@@ -132,7 +131,7 @@ const QString createTableSettings = "CREATE TABLE settings ( "
                              "description	TEXT "
                              ")";
 
-// Pragmas for creation of views in the database
+// Statements for creation of views in the database
 
 const QString createViewQCompleterView = "CREATE VIEW QCompleterView AS "
                               "SELECT airport_id, icao, iata, "
@@ -164,7 +163,6 @@ const QString createViewLogbook = "CREATE VIEW Logbook AS "
                               "INNER JOIN pilots on flights.pic = pilots.pilot_id "
                               "INNER JOIN tails on flights.acft = tails.tail_id "
                               "INNER JOIN aircraft on tails.aircraft_id = aircraft.aircraft_id "
-                              "INNER JOIN extras on extras.extras_id = flights.id "
                               "ORDER BY date DESC ";
 
 //Displays Single Engine, Multi Engine and Multi Pilot Time
@@ -318,3 +316,21 @@ void dbSetup::commitAirportData(QVector<QStringList> airportData)
     query.exec("COMMIT;"); //commit transaction
     qDebug() << "Airport Database updated!";
 }
+//dbSetup::commitAirportData(dbSetup::importCSV("airports.csv")); //import airports and write to db
+
+/*!
+ * \brief dbSetup::getColumnNames Looks up column names of a given table
+ * \param table name of the table in the database
+ */
+QVector<QString> dbSetup::getColumnNames(QString table)
+{
+    QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
+    QVector<QString> columnNames;
+
+    QSqlRecord fields = db.driver()->record(table);
+    for(int i = 0; i < fields.count(); i++){
+        columnNames << fields.field(i).name();
+    }
+    return columnNames;
+}
+

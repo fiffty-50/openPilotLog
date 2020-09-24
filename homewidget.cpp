@@ -30,7 +30,6 @@ homeWidget::homeWidget(QWidget *parent) :
     ui->setupUi(this);
     qDebug() << "homeWidget: Activated";
 
-
     /*
      * To Do: Functions to retreive values from DB
      */

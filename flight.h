@@ -15,35 +15,36 @@
 class flight
 {
 public:
-    bool        isValid = false;
-    QStringList invalidItems = {                      // Upon verification, verified entries are removed from the list
+
+    bool        isValid;
+    QStringList invalidItems;/* = {                      // Upon verification, verified entries are removed from the list
         "doft", "dept", "dest", "tofb",
         "tonb", "pic",  "acft", "tblk"
-    };
+    };*/
 
-    int         id      = -1;                         //[1] Primary Key in Database, needed for retreival but not for commiting (sqlite autoincrement)
-    QDate       doft    = QDate();                    //[2] Date of Flight, initialised invalid
-    QString     dept    = "INVA";                     //[3] Departure, initialised invalid
-    QString     dest    = "INVA";                     //[4] Destination, initialised invalid
-    QTime       tofb    = QTime();                    //[5] Time off blocks (UTC), initialised invalid
-    QTime       tonb    = QTime();                    //[6] Time on blocks (UTC), initialised invalid
-    QString     pic     = "INVA";                     //[7] Pilot in command (ID), initialised invalid
-    QString     acft    = "INVA";                     //[8] Aircraft Registration (ID), initialised invalid
+    int         id;//      = -1;                         //[1] Primary Key in Database, needed for retreival but not for commiting (sqlite autoincrement)
+    QDate       doft;//   = QDate();                    //[2] Date of Flight, initialised invalid
+    QString     dept;//    = "INVA";                     //[3] Departure, initialised invalid
+    QString     dest;//    = "INVA";                     //[4] Destination, initialised invalid
+    QTime       tofb;// = QTime();                    //[5] Time off blocks (UTC), initialised invalid
+    QTime       tonb;//    = QTime();                    //[6] Time on blocks (UTC), initialised invalid
+    QString     pic;//     = "INVA";                     //[7] Pilot in command (ID), initialised invalid
+    QString     acft;//    = "INVA";                     //[8] Aircraft Registration (ID), initialised invalid
 
-    QTime       tblk    = QTime();                    //[9] Total Blocktime, initialised invalid
-    QTime       tSPSE   = QTime(0,0);                 //[10] optional times initialised as 0
-    QTime       tSPME   = QTime(0,0);                 //[11]
-    QTime       tMP     = QTime(0,0);                 //[12]
-    QTime       tNIGHT  = QTime(0,0);                 //[13]
-    QTime       tIFR    = QTime(0,0);                 //[14]
+    QTime       tblk;//    = QTime();                    //[9] Total Blocktime, initialised invalid
+    QTime       tSPSE;//   = QTime(0,0);                 //[10] optional times initialised as 0
+    QTime       tSPME;//   = QTime(0,0);                 //[11]
+    QTime       tMP;//     = QTime(0,0);                 //[12]
+    QTime       tNIGHT;//  = QTime(0,0);                 //[13]
+    QTime       tIFR;//    = QTime(0,0);                 //[14]
 
-    QTime       tPIC    = QTime(0,0);                 //[15]
-    QTime       tPICUS  = QTime(0,0);                 //[16]
-    QTime       tSIC    = QTime(0,0);                 //[17]
-    QTime       tDUAL   = QTime(0,0);                 //[18]
-    QTime       tFI     = QTime(0,0);                 //[19]
+    QTime       tPIC;//    = QTime(0,0);                 //[15]
+    QTime       tPICUS;//  = QTime(0,0);                 //[16]
+    QTime       tSIC;//    = QTime(0,0);                 //[17]
+    QTime       tDUAL;//   = QTime(0,0);                 //[18]
+    QTime       tFI;//     = QTime(0,0);                 //[19]
 
-    QTime       tSIM    = QTime(0,0);                 //[20]
+    QTime       tSIM;//    = QTime(0,0);                 //[20]
 
     int         pilotFlying;                          //[21]
     int         toDay;                                //[22]
@@ -57,6 +58,10 @@ public:
     QString     approachType;                         //[29]
     QString     flightNumber;                         //[30]
     QString     remarks;                              //[31]
+
+    flight();
+    flight(QVector<QString>);
+
 
     // Functions
     static flight           fromVector(QVector<QString>);

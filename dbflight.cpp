@@ -26,7 +26,7 @@
  * accordingly. Information about partial validity can be obtained
  * by querying the flight objects invalidItems member.
  */
-void dbFlight::verifyInput(flight object)
+flight dbFlight::verifyInput(flight object)
 {
 
     if (object.doft.isValid()){
@@ -95,6 +95,8 @@ void dbFlight::verifyInput(flight object)
         qDebug() << "Not all checks have been passed.";
         qDebug() << "Invalid items: " << object.invalidItems;
     }
+
+    return object;
 
     /* To Do: Checks on internal logic, i.e. times <= tblk,
      * restrict what strings are allowed in remarks etc.

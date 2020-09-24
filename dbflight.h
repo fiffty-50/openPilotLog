@@ -33,7 +33,7 @@ class dbFlight
 {
 public:
 
-    static void verifyInput(flight object);
+    static flight verifyInput(flight object);
 
     static flight retreiveFlight(QString flight_id);
 

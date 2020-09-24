@@ -28,9 +28,9 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include "dbsettings.h"
+#include "dbsetup.h"
 #include <QDebug>
 
-int selectedtheme = 1; //Variable to store theming information
 
 void connectToDatabase()
 {
@@ -58,16 +58,16 @@ void connectToDatabase()
 
 int main(int argc, char *argv[])
 {
+    connectToDatabase();
+
     QCoreApplication::setOrganizationName("Fiffty50");
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openLog");
     QApplication openLog(argc, argv);
 
-    connectToDatabase();
-
     //Theming with CSS inlcues QFile,QTextStream, QDir, themes folder and TARGET = flog, RESOURCES = themes/breeze.qrc in pro
     // credit: https://github.com/Alexhuszagh/BreezeStyleSheets
-    selectedtheme = dbSettings::retreiveSetting(10).toInt();
+    int selectedtheme = dbSettings::retreiveSetting(10).toInt();
     QDir::setCurrent("/themes");
     if (selectedtheme == 1){
         qDebug() << "Loading light theme";
@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
         QTextStream stream(&file);
         openLog.setStyleSheet(stream.readAll());
     }
-
     MainWindow w;
     w.show();
     return openLog.exec();
