@@ -19,13 +19,7 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QSqlRecord>
-#include <QSqlField>
-#include <QSqlDriver>
-#include <QDebug>
-#include <QFile>
+
 
 /*!
  * \brief The dbSetup class is responsible for the inital setup of the database when

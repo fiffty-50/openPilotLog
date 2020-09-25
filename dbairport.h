@@ -19,9 +19,7 @@
 #define DBAIRPORT_H
 
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
+
 
 /*!
  * \brief The dbAirport class provides functionality for retreiving airport related

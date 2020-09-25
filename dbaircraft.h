@@ -2,9 +2,6 @@
 #define DBAIRCRAFT_H
 
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
 
 /*!
  * \brief The dbAircraft class provides functionality for retreiving and storing

@@ -19,9 +19,6 @@
 #define DBFLIGHT_H
 
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
 #include "flight.h"
 #include "calc.h"
 
