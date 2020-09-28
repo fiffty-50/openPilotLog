@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbaircraft.h"
+#include "dbapi.h"
 /*!
  * \brief RetreiveRegistration Looks up tail_id from Database
  * \param tail_ID Primary Key of tails database

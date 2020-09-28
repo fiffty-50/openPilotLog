@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbairport.h"
+#include "dbapi.h"
 
 /*!
      * \brief RetreiveAirportNameFromIcaoOrIata Looks up Airport Name

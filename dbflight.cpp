@@ -16,8 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbflight.h"
-#include "dbpilots.h"
-#include "dbaircraft.h"
+#include "dbapi.h"
 
 
 /*!
