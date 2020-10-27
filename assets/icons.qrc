@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>ionicon-icons/airplane.png</file>
+        <file>ionicon-icons/airplane-outline.png</file>
+        <file>ionicon-icons/alarm.png</file>
+        <file>ionicon-icons/alarm-outline.png</file>
+        <file>ionicon-icons/book.png</file>
+        <file>ionicon-icons/book-outline.png</file>
+        <file>ionicon-icons/home.png</file>
+        <file>ionicon-icons/home-outline.png</file>
+        <file>ionicon-icons/settings.png</file>
+        <file>ionicon-icons/settings-outline.png</file>
+        <file>ionicon-icons/power.png</file>
+        <file>ionicon-icons/power-outline.png</file>
+    </qresource>
+</RCC>

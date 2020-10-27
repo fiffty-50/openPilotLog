@@ -1,48 +1,21 @@
-/*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
- *
- *This program is free software: you can redistribute it and/or modify
- *it under the terms of the GNU General Public License as published by
- *the Free Software Foundation, either version 3 of the License, or
- *(at your option) any later version.
- *
- *This program is distributed in the hope that it will be useful,
- *but WITHOUT ANY WARRANTY; without even the implied warranty of
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *GNU General Public License for more details.
- *
- *You should have received a copy of the GNU General Public License
- *along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "newflight.h"
-#include "editflight.h"
-#include "newacft.h"
-#include "easaview.h"
-#include "calc.h"
-#include "homewidget.h"
-#include "logbookwidget.h"
-#include "settingswidget.h"
-#include "dbsetup.h"
-
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    db::connect();
 
     // Set up Toolbar
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     ui->toolBar->setIconSize(QSize(64,64));
-    ui->actionLogbook->setIcon(QIcon(":/logbook_icon.png"));
-    ui->actionHome->setIcon(QIcon(":/home_icon.svg"));
-    ui->actionSettings->setIcon(QIcon(":/settings_icon.svg"));
-    ui->actionQuit->setIcon(QIcon(":/quit_icon.svg"));
-    ui->actionNewFlight->setIcon(QIcon(":/new_flight_icon.jpg"));
+    ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
+    ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
+    ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
+    ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
 
     // Adds space between toolbar items and actionSetting item
     auto *spacer = new QWidget();
@@ -56,16 +29,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-/*
- * Functions
- */
 
 void MainWindow::nope()
 {
@@ -73,6 +42,7 @@ void MainWindow::nope()
     nope.setText("This feature is not yet available!");
     nope.exec();
 }
+
 
 /*
  * Slots
@@ -106,7 +76,7 @@ void MainWindow::on_actionSettings_triggered()
 }
 
 void MainWindow::on_actionNewFlight_triggered()
-{
+{/*
     QVector<QStringList> lineEdit_completionLists = {
         QStringList(),//empty dummy list for TimeLineEdits
         dbAirport::retreiveIataIcaoList(),
@@ -116,4 +86,5 @@ void MainWindow::on_actionNewFlight_triggered()
 
     NewFlight nf(this, lineEdit_completionLists);
     nf.exec();
+    */
 }

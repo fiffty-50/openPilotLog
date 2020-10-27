@@ -15,49 +15,41 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SETTINGSWIDGET_H
+#define SETTINGSWIDGET_H
 
-#include <QMainWindow>
-#include <QTime>
-#include <QSqlTableModel>
-#include <QTableView>
-#include <chrono>
+#include <QWidget>
+#include <QButtonGroup>
+#include <QRegExp>
+#include <QValidator>
 #include <QMessageBox>
-#include <QDir>
-#include <QFile>
+#include <QProcess>
+#include <QDebug>
+#include <QSettings>
+#include "src/database/db.h"
 
-#include "src/gui/widgets/homewidget.h"
-#include "src/gui/widgets/settingswidget.h"
-#include "src/gui/widgets/logbookwidget.h"
+namespace Ui {
+class settingsWidget;
+}
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
+class settingsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit settingsWidget(QWidget *parent = nullptr);
+    ~settingsWidget();
 
 private slots:
+    void on_flightNumberPrefixLineEdit_textEdited(const QString &arg1);
 
-    void nope();
+    void themeGroup_toggled(int id);
 
-    void on_actionQuit_triggered();
-
-    void on_actionHome_triggered();
-
-    void on_actionLogbook_triggered();
-
-    void on_actionSettings_triggered();
-
-    void on_actionNewFlight_triggered();
+    void on_aboutPushButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::settingsWidget *ui;
+
 };
-#endif // MAINWINDOW_H
+
+#endif // SETTINGSWIDGET_H

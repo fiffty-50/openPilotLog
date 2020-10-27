@@ -15,49 +15,52 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LOGBOOKWIDGET_H
+#define LOGBOOKWIDGET_H
 
-#include <QMainWindow>
-#include <QTime>
+#include <QWidget>
+#include <QItemSelection>
 #include <QSqlTableModel>
-#include <QTableView>
-#include <chrono>
 #include <QMessageBox>
-#include <QDir>
-#include <QFile>
+#include <chrono>
+#include <QDebug>
 
-#include "src/gui/widgets/homewidget.h"
-#include "src/gui/widgets/settingswidget.h"
-#include "src/gui/widgets/logbookwidget.h"
+#include "src/database/db.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+namespace Ui {
+class logbookWidget;
+}
 
-class MainWindow : public QMainWindow
+
+
+class logbookWidget : public QWidget
 {
     Q_OBJECT
 
+
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit logbookWidget(QWidget *parent = nullptr);
+    ~logbookWidget();
+
+    qint32 selectedFlight = 0;
+    void setSelectedFlight(const qint32 &value);
 
 private slots:
+    void on_newFlightButton_clicked();
 
-    void nope();
+    void on_editFlightButton_clicked();
 
-    void on_actionQuit_triggered();
+    void on_deleteFlightPushButton_clicked();
 
-    void on_actionHome_triggered();
+    void on_filterFlightsByDateButton_clicked();
 
-    void on_actionLogbook_triggered();
+    void on_showAllButton_clicked();
 
-    void on_actionSettings_triggered();
-
-    void on_actionNewFlight_triggered();
+    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::logbookWidget *ui;
+
 };
-#endif // MAINWINDOW_H
+
+#endif // LOGBOOKWIDGET_H
