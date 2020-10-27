@@ -1,5 +1,4 @@
-# openpilotlog
-A FOSS pilot logbook written in C++(Qt5)
+# openpilotlog changelog
 
 
 New folder and organizational structure
