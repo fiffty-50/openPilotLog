@@ -26,7 +26,7 @@ These are the guidelines for this project:
 
 # The state of the project - Should I use this?
 
-Clear answer for the time being - Don't use it. This is an early development stage and functionality, layout of the GUI etc. might change drastically. For this reason, I am not providing a release for now.
+Clear answer for the time being - Don't use it. This is an early development stage and functionality, layout of the GUI etc. might change drastically. For this reason, I am not providing a release for now. If you would like to test it, you'll have to compile the project yourself.
 
 # 'x' is a terrible idea, don't do that!
 
@@ -42,4 +42,4 @@ Here are some early screenshots:
 
 # But I want to try it!
 
-Well, you have been warned... The most straight forward way is to get a copy of Qt https://www.qt.io/download and compile the project using QtCreator and qmake, the PRO file is included in this repository. After building, make sure to place a copy of the sample database in the application folder (not the source folder). If you want to start a fresh logbook, delete the default database file and rename the empty sample database and place it in the application folder. Without a valid database, the application will not start.
+The most straight forward way is to get a copy of Qt https://www.qt.io/download and compile the project using QtCreator and qmake, the PRO file is included in this repository. After building, make sure to place a copy of the sample database in the application/data folder - this folder will be created the first time you run the application. Make sure you are placing the database in the folder the application is executed from. If you want to start a fresh logbook, rename and place the empty sample database into the application folder. Without a valid database, the application will not start.
