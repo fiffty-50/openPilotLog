@@ -28,8 +28,7 @@ SOURCES += \
     src/gui/dialogues/newtail.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
-    src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/showaircraftlist.cpp
+    src/gui/widgets/settingswidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -43,16 +42,14 @@ HEADERS += \
     src/gui/dialogues/newtail.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
-    src/gui/widgets/settingswidget.h \
-    src/gui/widgets/showaircraftlist.h
+    src/gui/widgets/settingswidget.h
 
 FORMS += \
     mainwindow.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
-    src/gui/widgets/settingswidget.ui \
-    src/gui/widgets/showaircraftlist.ui
+    src/gui/widgets/settingswidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -20,8 +20,6 @@
 
 
 
-
-
 settingsWidget::settingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::settingsWidget)
@@ -41,15 +39,12 @@ settingsWidget::settingsWidget(QWidget *parent) :
 
     switch (settings.value("main/theme").toInt()) {
       case 0:
-        qDebug() << "System Theme";
         ui->systemThemeCheckBox->setChecked(true);
         break;
       case 1:
-        qDebug() << "Light Theme";
         ui->lightThemeCheckBox->setChecked(true);
         break;
       case 2:
-        qDebug() << "Dark Theme";
         ui->darkThemeCheckBox->setChecked(true);
     }
     /*

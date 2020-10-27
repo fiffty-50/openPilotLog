@@ -17,6 +17,10 @@
  */
 #include "aircraft.h"
 
+// Debug Makro
+#define DEB(expr) \
+    qDebug() << "aircraft ::" << __func__ << "\t" << expr
+
 aircraft::aircraft()
 {
 
@@ -33,7 +37,7 @@ aircraft aircraft::fromTails(int tail_id)
     };
     auto tail = db::multiSelect(columns,"tails","tail_id",QString::number(tail_id),sql::exactMatch);
 
-    qDebug() << tail;
+    //DEB(tail);
     aircraft acft;
 
     acft.id = tail[0];

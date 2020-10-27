@@ -18,6 +18,11 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
 
+// Debug Makro
+#define DEB(expr) \
+    qDebug() << "homeWidget ::" << __func__ << "\t" << expr
+
+
 homeWidget::homeWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::homeWidget)
@@ -30,7 +35,13 @@ homeWidget::homeWidget(QWidget *parent) :
                 calc::minutes_to_string(
                 stat::totalTime(stat::rollingYear)));
     QVector<QString> toldg = stat::currencyTakeOffLanding(90);
-    QString ToLdg = toldg[0] + " / " + toldg[1];
+    QString ToLdg;// = toldg[0] + " / " + toldg[1];
+    for(const auto& item : toldg)
+    {
+        ToLdg += item;
+        if(toldg.indexOf(item) != toldg.length()-1) {ToLdg += QLatin1String(" / ");}
+    }
+
     ui->ToLdgDisplay->setText(ToLdg);
 }
 
@@ -44,5 +55,5 @@ void homeWidget::on_pushButton_clicked()
     //auto nt = new NewTail(this);
     //nt->show();
     auto ac = aircraft::fromTails(1);
-    qDebug() << ac;
+    DEB(ac);
 }

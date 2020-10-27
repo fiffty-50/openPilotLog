@@ -86,7 +86,6 @@ bool db::exists(QString column, QString table, QString checkColumn, QString valu
         break;
     }
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -136,7 +135,6 @@ QString db::singleSelect(QString column, QString table, QString checkColumn, QSt
         break;
     }
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -189,7 +187,6 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QStrin
         break;
     }
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -232,7 +229,6 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
     }
     statement.append(" FROM " + table);
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -284,7 +280,6 @@ bool db::singleUpdate(QString table, QString column, QString value, QString chec
         break;
     }
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -328,7 +323,6 @@ bool db::deleteRow(QString table, QString column, QString value, sql::matchType 
         break;
     }
 
-    DEB("Executing SQL...");
     DEB(statement);
 
     QSqlQuery q(statement);
@@ -355,6 +349,7 @@ bool db::deleteRow(QString table, QString column, QString value, sql::matchType 
 QVector<QString> db::customQuery(QString query, int returnValues)
 {
     QSqlQuery q(query);
+    DEB(query);
     q.exec();
 
     if(!q.first()){

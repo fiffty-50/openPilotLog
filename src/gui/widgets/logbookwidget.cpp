@@ -18,6 +18,10 @@
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
 
+// Debug Makro
+#define DEB(expr) \
+    qDebug() << "logbookWidget ::" << __func__ << "\t" << expr
+
 logbookWidget::logbookWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::logbookWidget)
@@ -54,7 +58,7 @@ logbookWidget::logbookWidget(QWidget *parent) :
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    qDebug() << "logbookWidget: Time taken for lookup and rendering: " << duration.count() << " microseconds";
+    DEB("Time taken for lookup and rendering: " << duration.count() << " microseconds");
 
     connect(ui->tableView->selectionModel(),
     SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
@@ -74,7 +78,7 @@ void logbookWidget::setSelectedFlight(const qint32 &value)
 void logbookWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)// TO DO
 {
     setSelectedFlight(index.indexes()[0].data().toInt());
-    qDebug() << "New selected Flight with ID#(selectionChanged): " << selectedFlight;
+    DEB("Selected flight with ID#: " << selectedFlight);
 }
 
 
@@ -118,7 +122,7 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
                                       QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes)
         {
-            qDebug() << "Deleting Flight with ID# " << selectedFlight;
+            DEB("Deleting flight with ID# " << selectedFlight);
             db::deleteRow("flights","id",QString::number(selectedFlight),sql::exactMatch);
 
             QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
