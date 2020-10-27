@@ -9,6 +9,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("openPilotLog");
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openPilotLog");
+
+
+    if(!QDir("data").exists()){
+        QDir().mkdir("data");
+    }
     QSettings::setPath(QSettings::IniFormat,QSettings::UserScope,"data");
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;

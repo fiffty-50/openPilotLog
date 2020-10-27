@@ -26,7 +26,6 @@ void homeWidget::on_pushButton_clicked()
 {
     //auto nt = new NewTail(this);
     //nt->show();
-    //qDebug() <<
     auto ac = aircraft::fromTails(1);
     qDebug() << ac;
 }
