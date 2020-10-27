@@ -20,6 +20,7 @@ These are the guidelines for this project:
 - Speed: openPilotLog is supposed to be fast, lean and efficient. I have settled on using the Qt framework for the gui and code, as well as sqlite for the database.
 - Cross-Platform Support: I am primarily using Linux, but Windows and Mac (and maybe down the road iOS/Android) should also be supported. Qt provides this cross-platform compatibility.
 - Local: At the moment, I am not planning on implementing a cloud-sync solution. The database is local, on your machine, and moving it around should be as easy as copying it onto a USB stick. While I am not opposed to cloud syncing functionality, I want the application to be independent of external services.
+- Free: This application is and always will be free to use, distribute and modify. I have used commercial solutions before and have been disappointed when a 'lifetime' license expired because the company needs to support their development and cloud infrastructure. That's fair enough, but I believe keeping a logbook of your flights is not rocket science and you should not have to pay a monthly subscription for that. 
 
 
 
