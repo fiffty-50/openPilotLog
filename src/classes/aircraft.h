@@ -21,10 +21,18 @@
 #include <QVector>
 #include "src/database/db.h"
 
+/*!
+ * \brief The aircraft class
+ *
+ */
 class aircraft
 {
 public:
+    enum database {tail, acft};
+
     aircraft();
+    aircraft(int database_id, database);
+    aircraft(QString registration);
 
     QString id;
     QString registration;
@@ -32,27 +40,25 @@ public:
     QString make;
     QString model;
     QString variant;
-    bool singlepilot;
-    bool multipilot;
-    bool singleengine;
-    bool multiengine;
-    bool unpowered;
-    bool piston;
-    bool turboprop;
-    bool jet;
-    bool light;
-    bool medium;
-    bool heavy;
+    bool singlepilot    = false;
+    bool multipilot     = false;
+    bool singleengine   = false;
+    bool multiengine    = false;
+    bool unpowered      = false;
+    bool piston         = false;
+    bool turboprop      = false;
+    bool jet            = false;
+    bool light          = false;
+    bool medium         = false;
+    bool heavy          = false;
 
     // Functions
-    static aircraft         fromTails(int tail_id);
-    static aircraft         fromAircraft(int acft_id);
     static QVector<QString> toVector(aircraft);
 
     // Debug functionality
     void print();
     QString debug();
-    operator QString() { return debug(); }
+    operator QString() { return debug(); } //overload for compatibility with qDebug()
 };
 
 #endif // AIRCRAFT_H

@@ -28,7 +28,7 @@ homeWidget::homeWidget(QWidget *parent) :
     ui(new Ui::homeWidget)
 {
     ui->setupUi(this);
-    ui->totalTimeThisYearDisplay->setText(
+    /*ui->totalTimeThisYearDisplay->setText(
                 calc::minutes_to_string(
                 stat::totalTime(stat::calendarYear)));
     ui->totalTime365DaysDisplay->setText(
@@ -40,9 +40,9 @@ homeWidget::homeWidget(QWidget *parent) :
     {
         ToLdg += item;
         if(toldg.indexOf(item) != toldg.length()-1) {ToLdg += QLatin1String(" / ");}
-    }
+    }*/
 
-    ui->ToLdgDisplay->setText(ToLdg);
+    //ui->ToLdgDisplay->setText(ToLdg);
 }
 
 homeWidget::~homeWidget()
@@ -52,8 +52,12 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_pushButton_clicked()
 {
-    //auto nt = new NewTail(this);
-    //nt->show();
-    auto ac = aircraft::fromTails(1);
-    DEB(ac);
+    aircraft ac(203,aircraft::tail);
+
+    auto nt = new NewTail("SE-NEU",this);
+    nt->show();
+    //aircraft ac2(114,aircraft::acft);
+    //aircraft ac3(0,aircraft::acft);
+    //DEB(ac << ac2 << ac3);
+
 }

@@ -20,28 +20,60 @@
 
 #include <QDialog>
 #include <QCompleter>
+#include <QMessageBox>
 #include "src/classes/completionlist.h"
+#include "src/classes/aircraft.h"
 
 namespace Ui {
 class NewTail;
 }
-
+/*!
+ * \brief The NewTail class is a dialog for adding a new tail to
+ * the database or editing an existing one.
+ *
+ * For a new tail, construct using QString reg.
+ * For editing an existing tail, provide the aircraft object.
+ */
 class NewTail : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit NewTail(QWidget *parent = nullptr);
+    explicit NewTail(aircraft acft, QWidget *parent = nullptr);
+
+    explicit NewTail(QString reg, QWidget *parent = nullptr);
+
     ~NewTail();
+
 
 private slots:
 
     void on_searchLineEdit_textChanged(const QString &arg1);
 
+    void on_buttonBox_accepted();
+
+    void on_operationComboBox_currentIndexChanged(int index);
+
+    void on_ppTypeComboBox_currentIndexChanged(int index);
+
+    void on_ppNumberComboBox_currentIndexChanged(int index);
+
+    void on_weightComboBox_currentIndexChanged(int index);
+
 private:
+
     Ui::NewTail *ui;
 
+    void formFiller(aircraft);
+
+    bool verify();
+
+    aircraft createAircraftFromSelection();
+
     QStringList aircraftlist;
+
+    QMap<QString, int> idMap;
+
 };
 
 #endif // NEWTAIL_H

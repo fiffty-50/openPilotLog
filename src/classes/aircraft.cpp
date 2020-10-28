@@ -26,7 +26,12 @@ aircraft::aircraft()
 
 }
 
-aircraft aircraft::fromTails(int tail_id)
+/*!
+ * \brief aircraft::aircraft creates an aircraft object from the database.
+ * \param database_id primary key in database
+ * \param db either database::tails or database::acft
+ */
+aircraft::aircraft(int database_id, aircraft::database db)
 {
     QVector<QString> columns = {
         "tail_id", "registration", "company",
@@ -35,38 +40,80 @@ aircraft aircraft::fromTails(int tail_id)
         "unpowered", "piston", "turboprop",
         "jet", "light", "medium", "heavy"
     };
-    auto tail = db::multiSelect(columns,"tails","tail_id",QString::number(tail_id),sql::exactMatch);
+    QString checkColumn;
+    QString table;
 
-    //DEB(tail);
-    aircraft acft;
+    switch (db) {
+    case database::tail:
+        //DEB("tails:" << columns);
+        table.append("tails");
+        checkColumn.append("tail_id");
+        break;
+    case database::acft:
+        columns.replace(0,"aircraft_id");
+        columns.remove(1,2);
+        //DEB("acft:" << columns;)
+        table.append("aircraft");
+        checkColumn.append("aircraft_id");
+        break;
+    }
 
-    acft.id = tail[0];
-    acft.registration = tail[1];
-    acft.company = tail[2];
-    acft.make = tail[3];
-    acft.model = tail[4];
-    acft.variant = tail[5];
-    //bool
-    acft.singlepilot = tail[6].toInt();
-    acft.multipilot = tail[7].toInt();
-    acft.singleengine = tail[8].toInt();
-    acft.multiengine = tail[9].toInt();
-    acft.unpowered = tail[10].toInt();
-    acft.piston = tail[11].toInt();
-    acft.turboprop = tail[12].toInt();
-    acft.jet = tail[13].toInt();
-    acft.light = tail[14].toInt();
-    acft.medium = tail[15].toInt();
-    acft.heavy = tail[16].toInt();
+    auto vector = db::multiSelect(columns,table,checkColumn,QString::number(database_id),sql::exactMatch);
 
-    return acft;
+    if(vector.length() < 2){
+        id = "invalid";
+    }else{
+        switch (db) {
+        case database::tail:
+            id = vector[0];
+            registration = vector[1];
+            company = vector[2];
+            make = vector[3];
+            model = vector[4];
+            variant = vector[5];
+            //bool
+            singlepilot = vector[6].toInt();
+            multipilot = vector[7].toInt();
+            singleengine = vector[8].toInt();
+            multiengine = vector[9].toInt();
+            unpowered = vector[10].toInt();
+            piston = vector[11].toInt();
+            turboprop = vector[12].toInt();
+            jet = vector[13].toInt();
+            light = vector[14].toInt();
+            medium = vector[15].toInt();
+            heavy = vector[16].toInt();
+            break;
+        case database::acft:
+            id = vector[0];
+            make = vector[1];
+            model = vector[2];
+            variant = vector[3];
+            //bool
+            singlepilot = vector[4].toInt();
+            multipilot = vector[5].toInt();
+            singleengine = vector[6].toInt();
+            multiengine = vector[7].toInt();
+            unpowered = vector[8].toInt();
+            piston = vector[9].toInt();
+            turboprop = vector[10].toInt();
+            jet = vector[11].toInt();
+            light = vector[12].toInt();
+            medium = vector[13].toInt();
+            heavy = vector[14].toInt();
+            break;
+        }
+    }
 }
 
+/*!
+ * \brief aircraft::print Debug output
+ */
 void aircraft::print()
 {
     QTextStream cout(stdout, QIODevice::WriteOnly);
 
-    cout << "\t\033[38;2;0;255;0;48;2;0;0;0m Aircraft Object: \033[0m\n";
+    cout << "\t\033[38;2;0;255;0;48;2;0;0;0m Aircraft Object \033[0m\n";
     cout << "ID: \t\t" << id << "\n";
     cout << "Reg: \t\t" << registration<< "\n";
     cout << "Company: \t" << company<< "\n";
