@@ -66,6 +66,8 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
     auto nt = new NewTail(aircraft(selectedAircraft,aircraft::tail),this);
+    //auto nt = new NewTail(db(sql::tails,selectedAircraft),this);
+
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
     ui->stackedWidget->setCurrentWidget(nt);

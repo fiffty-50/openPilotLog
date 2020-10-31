@@ -43,6 +43,8 @@ public:
 
     explicit NewTail(QString reg, QWidget *parent = nullptr);
 
+    explicit NewTail(db dbentry, sql::editRole edRole, QWidget *parent = nullptr);
+
     ~NewTail();
 
 
@@ -64,11 +66,17 @@ private:
 
     Ui::NewTail *ui;
 
+    sql::editRole role;
+
     void formFiller(aircraft);
+
+    void formFiller(db);
 
     bool verify();
 
     aircraft createAircraftFromSelection();
+
+    void createEntry();
 
     QStringList aircraftlist;
 

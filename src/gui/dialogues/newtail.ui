@@ -274,6 +274,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>searchLineEdit</tabstop>
+  <tabstop>registrationLineEdit</tabstop>
+  <tabstop>companyLineEdit</tabstop>
+  <tabstop>makeLineEdit</tabstop>
+  <tabstop>modelLineEdit</tabstop>
+  <tabstop>variantLineEdit</tabstop>
+  <tabstop>operationComboBox</tabstop>
+  <tabstop>ppTypeComboBox</tabstop>
+  <tabstop>ppNumberComboBox</tabstop>
+  <tabstop>weightComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

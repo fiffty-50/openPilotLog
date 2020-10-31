@@ -127,7 +127,14 @@ void NewTail::on_buttonBox_accepted()
     }else{
         if(verify()){
             DEB("Form verified");
-            auto acOut = createAircraftFromSelection();
+            switch (role) {
+            case sql::createNew:
+                break;
+            case sql::editExisting:
+                break;
+            }
+            //auto acOut = createAircraftFromSelection();
+            createEntry();
             //commit to database
             //accept();
         }else{
@@ -287,4 +294,89 @@ aircraft NewTail::createAircraftFromSelection()
         newacft.heavy = true;
     }
     return newacft;
+}
+
+
+
+
+
+
+
+//=============================DB Object ==================================
+
+
+
+//Dialog to be used to edit existing tail
+NewTail::NewTail(db dbentry, sql::editRole edRole, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewTail)
+{
+    ui->setupUi(this);
+    role = edRole;
+    ui->searchLabel->hide();
+    ui->searchLineEdit->hide();
+    formFiller(dbentry);
+}
+
+/*!
+ * \brief NewTail::formFiller populates the Dialog with the
+ * information contained in an aircraft object.
+ * \param db - entry retreived from database
+ */
+void NewTail::formFiller(db entry)
+{
+    DEB("Filling Form for a/c" << entry);
+    //fill Line Edits
+    auto line_edits = parent()->findChildren<QLineEdit*>();
+    for (const auto& le : line_edits) {
+        QString name = le->objectName();
+        name.chop(8);//remove "LineEdit"
+        QString value = entry.data.value(name);
+        le->setText(value);
+    }
+    //select comboboxes
+    QVector<QString> operation = {entry.data.value("singleengine"),entry.data.value("multiengine")};
+    QVector<QString> ppNumber =  {entry.data.value("singlepilot"),entry.data.value("multipilot")};
+    QVector<QString> ppType =    {entry.data.value("unpowered"),entry.data.value("piston"),
+                                  entry.data.value("turboprop"),entry.data.value("jet")};
+    QVector<QString> weight =    {entry.data.value("light"),entry.data.value("medium"),
+                                  entry.data.value("heavy"),entry.data.value("super")};
+
+
+    ui->operationComboBox->setCurrentIndex(operation.indexOf("1")+1);
+    ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1")+1);
+    ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1")+1);
+    ui->weightComboBox->setCurrentIndex(weight.indexOf("1")+1);
+}
+
+void NewTail::createEntry()
+{
+    DEB("Creating Object...");
+    QMap<QString,QString> newData;
+    //retreive Line Edits
+    auto line_edits = parent()->findChildren<QLineEdit*>();
+
+    for (const auto& le : line_edits) {
+        QString name = le->objectName();
+        name.chop(8);//remove "LineEdit"
+        if(!le->text().isEmpty()){
+            newData.insert(name,le->text());
+        }
+    }
+
+    //prepare comboboxes
+    QVector<QString> operation = {"singlepilot","multipilot"};
+    QVector<QString> ppNumber  = {"singleengine","multiengine"};
+    QVector<QString> ppType    = {"unpowered","piston",
+                                  "turboprop","jet"};
+    QVector<QString> weight    = {"light","medium",
+                                  "heavy","super"};
+
+    newData.insert(operation[ui->operationComboBox->currentIndex()-1],QLatin1String("1"));
+    newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex()-1],QLatin1String("1"));
+    newData.insert(ppType[ui->ppTypeComboBox->currentIndex()-1],QLatin1String("1"));
+    newData.insert(weight[ui->weightComboBox->currentIndex()-1],QLatin1String("1"));
+    //create db object
+    auto newObject = db(sql::tails,newData);
+    //DEB("Committing Succesfull: " << newObject.commit());
 }

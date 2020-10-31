@@ -57,6 +57,39 @@ db::db(sql::tableName tn, int row_ID)
     }
 }
 
+db::db(sql::tableName tn, QMap<QString, QString> newData)
+{
+    switch (tn) {
+    case sql::flights:
+        table = "flights";
+        break;
+    case sql::pilots:
+        table = "pilots";
+        break;
+    case sql::aircraft:
+        table = "aircraft";
+        break;
+    case sql::tails:
+        table = "tails";
+        break;
+    case sql::airports:
+        table = "airports";
+        break;
+    }
+    //Do some checks
+    auto in = dbInfo();
+    auto columns = in.format.value(table);
+    QMap<QString,QString>::iterator i;
+    for (i = newData.begin(); i != newData.end(); ++i){
+        if(!columns.contains(i.key())){
+            DEB(newData);
+            DEB(i.key()<< i.value() << "Not in column list for " << table <<". Removing.");
+            newData.remove(i.key());
+        }
+    }
+    data = newData;
+}
+
 /*!
  * \brief db::connect connects to the database via the default connection.
  * Can then be accessed globally with QSqlDatabase::database("qt_sql_default_connection")
@@ -462,7 +495,6 @@ bool db::update()
 
     //execute query
     QSqlQuery q(statement);
-    DEB(statement);
     q.exec();
     //check result. Upon success, error should be " "
     QString error = q.lastError().text();
@@ -470,6 +502,41 @@ bool db::update()
         return true;
     }else{
         DEB("Query Error: " << q.lastError().text());
+        return false;
+    }
+}
+
+bool db::commit()
+{
+    //check prerequisites
+    if(row_id != 0){
+        DEB("Row ID already set. Unable to commit as new, try update() for existing entries: " << row_id);
+        return false;
+    }
+    if(data.isEmpty()){
+        DEB("Object Contains no data. Aborting.");
+        return false;
+    }
+    QString statement = "INSERT INTO " + table + QLatin1String(" (");
+    QMap<QString,QString>::iterator i;
+    for (i = data.begin(); i != data.end(); ++i){
+        statement += i.key() + QLatin1String(", ");
+    }
+    statement.chop(2);
+    statement += QLatin1String(") VALUES (");
+    for (i = data.begin(); i != data.end(); ++i){
+        statement += QLatin1String("'") + i.value() + QLatin1String("', ");
+    }
+    statement.chop(2);
+    statement += QLatin1String(")");
+
+    QSqlQuery q(statement);
+    QString error = q.lastError().text();
+    if(error.length() < 2){
+        DEB("Entry successfully committed.");
+        return true;
+    }else{
+        DEB("Unable to commit. Query Error: " << q.lastError().text());
         return false;
     }
 }

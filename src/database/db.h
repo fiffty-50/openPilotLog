@@ -33,7 +33,7 @@ class sql
 {
 public:
     enum tableName {flights, pilots, tails, aircraft, airports };
-    enum queryType {select, update };
+    enum editRole {createNew, editExisting};
     enum matchType {exactMatch, partialMatch};
 };
 
@@ -41,19 +41,22 @@ public:
 class db
 {
 private:
-    QString table = QString();
-
-    int row_id = 0;
 
     bool retreiveData();
-
-    QMap<QString, QString> data;
 
 public:
 
     db(sql::tableName, int row_ID);
 
+    db(sql::tableName, QMap<QString, QString> newData);
+
     bool isValid = false;
+
+    QMap<QString, QString> data;
+
+    QString table = QString();
+
+    int row_id = 0;
 
     void setData(const QMap<QString, QString> &value);
 
@@ -62,6 +65,8 @@ public:
     //Functions
 
     bool update();
+
+    bool commit();
 
     static void connect();
 

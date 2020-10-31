@@ -8,6 +8,7 @@
 #include <QLabel>
 #include "src/gui/dialogues/newtail.h"
 #include "src/classes/aircraft.h"
+#include "src/database/db.h"
 
 namespace Ui {
 class aircraftWidget;
