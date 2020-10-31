@@ -31,39 +31,39 @@ aircraft::aircraft()
  * \param database_id primary key in database
  * \param db either database::tails or database::acft
  */
-aircraft::aircraft(int database_id, aircraft::database db)
+aircraft::aircraft(int database_id, aircraft::database table)
 {
     QVector<QString> columns = {
         "tail_id", "registration", "company",
         "make", "model", "variant",
         "singlepilot", "multipilot", "singleengine", "multiengine",
         "unpowered", "piston", "turboprop",
-        "jet", "light", "medium", "heavy"
+        "jet", "light", "medium", "heavy", "super"
     };
     QString checkColumn;
-    QString table;
+    QString tableName;
 
-    switch (db) {
+    switch (table) {
     case database::tail:
         //DEB("tails:" << columns);
-        table.append("tails");
+        tableName.append("tails");
         checkColumn.append("tail_id");
         break;
     case database::acft:
         columns.replace(0,"aircraft_id");
         columns.remove(1,2);
         //DEB("acft:" << columns;)
-        table.append("aircraft");
+        tableName.append("aircraft");
         checkColumn.append("aircraft_id");
         break;
     }
 
-    auto vector = db::multiSelect(columns,table,checkColumn,QString::number(database_id),sql::exactMatch);
+    auto vector = db::multiSelect(columns,tableName,checkColumn,QString::number(database_id),sql::exactMatch);
 
     if(vector.length() < 2){
         id = "invalid";
     }else{
-        switch (db) {
+        switch (table) {
         case database::tail:
             id = vector[0];
             registration = vector[1];
@@ -83,6 +83,7 @@ aircraft::aircraft(int database_id, aircraft::database db)
             light = vector[14].toInt();
             medium = vector[15].toInt();
             heavy = vector[16].toInt();
+            super = vector[17].toInt();
             break;
         case database::acft:
             id = vector[0];
@@ -101,6 +102,7 @@ aircraft::aircraft(int database_id, aircraft::database db)
             light = vector[12].toInt();
             medium = vector[13].toInt();
             heavy = vector[14].toInt();
+            super = vector[15].toInt();
             break;
         }
     }
@@ -122,7 +124,8 @@ void aircraft::print()
          << "SE:\t" << singleengine << "\tME:\t" << multiengine << "\n";
     cout << "UNP:\t\t" << unpowered << "\tPIS:\t" << piston << "\t"
          << "TPR:\t" << turboprop << "\tJET:\t" << jet << "\n";
-    cout << "Light:\t" << light << "\tMedium:\t" << medium << "\tHeavy:\t" << heavy << "\n";
+    cout << "Light:\t" << light << "\tMedium:\t" << medium;
+    cout << "Heavy:\t" << heavy << "\tSuper:\t" << super << "\n";
 
 }
 

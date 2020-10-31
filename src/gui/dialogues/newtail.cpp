@@ -39,6 +39,7 @@ NewTail::NewTail(QString newreg, QWidget *parent) :
     ui(new Ui::NewTail)
 {
     ui->setupUi(this);
+    ui->editLabel->hide();
     ui->registrationLineEdit->setText(newreg);
 
     //creating a QMap<id,searchstring>
@@ -196,6 +197,8 @@ void NewTail::formFiller(aircraft ac)
         ui->weightComboBox->setCurrentIndex(2);
     }else if(ac.heavy){
         ui->weightComboBox->setCurrentIndex(3);
+    }else if (ac.super) {
+        ui->weightComboBox->setCurrentIndex(4);
     }
 }
 

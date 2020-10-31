@@ -28,10 +28,11 @@
 #include <QDir>
 #include <QDebug>
 
+
 class sql
 {
 public:
-    enum tableName {flights, pilots, settings };
+    enum tableName {flights, pilots, tails, aircraft, airports };
     enum queryType {select, update };
     enum matchType {exactMatch, partialMatch};
 };
@@ -39,14 +40,32 @@ public:
 
 class db
 {
+private:
+    QString table = QString();
+
+    int row_id = 0;
+
+    bool retreiveData();
+
+    QMap<QString, QString> data;
+
 public:
+
+    db(sql::tableName, int row_ID);
+
+    bool isValid = false;
+
+    void setData(const QMap<QString, QString> &value);
+
+    QMap<QString, QString> getData() const;
+
+    //Functions
+
+    bool update();
 
     static void connect();
 
-    static QString sqliteversion();
-
     static QVector<QString> getColumnNames(QString table);
-
 
     static bool exists(QString column, QString table, QString checkColumn, QString value, sql::matchType match);
 
@@ -61,6 +80,11 @@ public:
     static bool deleteRow(QString table, QString column, QString value, sql::matchType match);
 
     static QVector<QString> customQuery(QString query, int returnValues);
+
+    // Debug functionality
+    void print();
+    QString debug();
+    operator QString() { return debug(); } //overload for compatibility with qDebug()
 
 };
 

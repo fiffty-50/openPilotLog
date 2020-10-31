@@ -31,7 +31,7 @@ public:
     enum database {tail, acft};
 
     aircraft();
-    aircraft(int database_id, database);
+    aircraft(int database_id, database table);
     aircraft(QString registration);
 
     QString id;
@@ -51,6 +51,7 @@ public:
     bool light          = false;
     bool medium         = false;
     bool heavy          = false;
+    bool super          = false;
 
     // Functions
     static QVector<QString> toVector(aircraft);

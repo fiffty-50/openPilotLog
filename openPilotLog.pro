@@ -25,7 +25,9 @@ SOURCES += \
     src/classes/stat.cpp \
     src/classes/strictregularexpressionvalidator.cpp \
     src/database/db.cpp \
+    src/database/dbinfo.cpp \
     src/gui/dialogues/newtail.cpp \
+    src/gui/widgets/aircraftwidget.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/settingswidget.cpp
@@ -39,7 +41,9 @@ HEADERS += \
     src/classes/stat.h \
     src/classes/strictregularexpressionvalidator.h \
     src/database/db.h \
+    src/database/dbinfo.h \
     src/gui/dialogues/newtail.h \
+    src/gui/widgets/aircraftwidget.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/settingswidget.h
@@ -47,6 +51,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     src/gui/dialogues/newtail.ui \
+    src/gui/widgets/aircraftwidget.ui \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/settingswidget.ui

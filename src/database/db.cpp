@@ -16,10 +16,46 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "db.h"
+#include "dbinfo.h"
 
 // Debug Makro
 #define DEB(expr) \
     qDebug() << "db ::" << __func__ << "\t" << expr
+
+db::db(sql::tableName tn, int row_ID)
+{
+    switch (tn) {
+    case sql::flights:
+        table = "flights";
+        break;
+    case sql::pilots:
+        table = "pilots";
+        break;
+    case sql::aircraft:
+        table = "aircraft";
+        break;
+    case sql::tails:
+        table = "tails";
+        break;
+    case sql::airports:
+        table = "airports";
+        break;
+    }
+    row_id = row_ID;
+
+
+    QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_="+QString::number(row_id);
+    QSqlQuery q(statement);
+    q.exec();
+    q.next();
+    int rows = q.value(0).toInt();
+    if(rows==0){
+        DEB("No entry found for row id: " << row_ID );
+    }else{
+        DEB("Retreiving data for row id: " << row_id);
+        isValid = retreiveData();
+    }
+}
 
 /*!
  * \brief db::connect connects to the database via the default connection.
@@ -47,19 +83,30 @@ void db::connect()
 }
 
 /*!
- * \brief db::sqliteversion queries database version.
+ * \brief db::retreiveData retreives data from the database.
+ * \return
  */
-QString db::sqliteversion()
+bool db::retreiveData()
 {
-    QSqlQuery version;
-    version.prepare("SELECT sqlite_version()");
-    version.exec();
-    QString result;
+    const auto info = dbInfo();
 
-    while (version.next()) {
-        result.append(version.value(0).toString());
+    QString statement = "SELECT * FROM " + table + " WHERE _rowid_="+QString::number(row_id);
+    DEB("Executing SQL...");
+    DEB(statement);
+
+    QSqlQuery q(statement);
+    q.exec();
+    q.next();
+    for(int i=0; i < info.format.value(table).length(); i++){
+        data.insert(info.format.value(table)[i],q.value(i).toString());
     }
-    return result;
+
+
+    QString error = q.lastError().text();
+    if(error.length() > 2){
+        DEB("Error: " << q.lastError().text());
+        return false;
+    }else{return true;}
 }
 
 
@@ -373,7 +420,7 @@ QVector<QString> db::customQuery(QString query, int returnValues)
 /*!
  * \brief db::getColumnNames Looks up column names of a given table
  * \param table name of the table in the database
- */
+
 QVector<QString> db::getColumnNames(QString table)
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
@@ -384,4 +431,69 @@ QVector<QString> db::getColumnNames(QString table)
         columnNames << fields.field(i).name();
     }
     return columnNames;
+}*/
+
+/*!
+ * \brief db::update updates the database with the values contained in the object.
+ * \return True on Success
+ */
+bool db::update()
+{
+    //check prerequisites
+    if(row_id == 0){
+        DEB("Invalid Row ID: " << row_id);
+        return false;
+    }
+    if(data.isEmpty()){
+        DEB("Object Contains no data. Aborting.");
+        return false;
+    }
+    //create query
+    QString statement = "UPDATE " + table + " SET ";
+
+    QMap<QString,QString>::const_iterator i;
+    for (i = data.constBegin(); i != data.constEnd(); ++i){
+        if(i.value()!=QString()){
+            statement += i.key()+QLatin1String("='")+i.value()+QLatin1String("', ");
+        }else{DEB(i.key() << "is empty. skipping.");}
+    }
+    statement.chop(2); // Remove last comma
+    statement.append(QLatin1String(" WHERE _rowid_=")+QString::number(row_id));
+
+    //execute query
+    QSqlQuery q(statement);
+    DEB(statement);
+    q.exec();
+    //check result. Upon success, error should be " "
+    QString error = q.lastError().text();
+    if(error.length() < 2){
+        return true;
+    }else{
+        DEB("Query Error: " << q.lastError().text());
+        return false;
+    }
+}
+
+
+//Debug
+void db::print()
+{
+    QString v = "Object status:\t\033[38;2;0;255;0;48;2;0;0;0m VALID \033[0m\n";
+    QString nv = "Object status:\t\033[38;2;255;0;0;48;2;0;0;0m INVALID \033[0m\n";
+    QTextStream cout(stdout, QIODevice::WriteOnly);
+
+    cout << "=========Database Object=========\n";
+    if(isValid){cout << v;}else{cout << nv;}
+    cout << "Record from table: " << table << ", row: " << row_id << "\n";
+    cout << "=================================\n";
+    QMap<QString,QString>::const_iterator i;
+    for (i = data.constBegin(); i != data.constEnd(); ++i){
+        cout << i.key() << ": " << i.value() << "\n";
+    }
+}
+
+QString db::debug()
+{
+    print();
+    return QString();
 }

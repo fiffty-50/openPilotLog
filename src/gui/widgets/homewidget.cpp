@@ -52,12 +52,14 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_pushButton_clicked()
 {
-    aircraft ac(203,aircraft::tail);
+    //aircraft ac(203,aircraft::tail);
 
-    auto nt = new NewTail("SE-NEU",this);
-    nt->show();
+    //auto nt = new NewTail("SE-NEU",this);
+    //nt->show();
     //aircraft ac2(114,aircraft::acft);
     //aircraft ac3(0,aircraft::acft);
-    //DEB(ac << ac2 << ac3);
+
+    auto ob = db(sql::flights,1);
+    DEB(ob);
 
 }

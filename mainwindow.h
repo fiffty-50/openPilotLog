@@ -30,6 +30,7 @@
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
+#include "src/gui/widgets/aircraftwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

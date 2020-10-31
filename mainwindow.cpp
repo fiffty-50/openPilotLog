@@ -46,6 +46,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 
+    // currently working on aircraftWidget
+
+    auto aw = new aircraftWidget(this);
+    ui->stackedWidget->addWidget(aw);
+    ui->stackedWidget->setCurrentWidget(aw);
+
 }
 
 MainWindow::~MainWindow()
