@@ -37,8 +37,10 @@
    <addaction name="actionHome"/>
    <addaction name="actionLogbook"/>
    <addaction name="actionAircraft"/>
+   <addaction name="actionPilots"/>
    <addaction name="actionNewFlight"/>
    <addaction name="actionNewAircraft"/>
+   <addaction name="actionNewPilot"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
@@ -99,6 +101,25 @@
    </property>
    <property name="toolTip">
     <string>Add a new aircraft to the database</string>
+   </property>
+  </action>
+  <action name="actionPilots">
+   <property name="text">
+    <string>Pilots</string>
+   </property>
+   <property name="toolTip">
+    <string>Show or edit Pilots</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionNewPilot">
+   <property name="text">
+    <string>NewPilot</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a new Pilot to the database</string>
    </property>
   </action>
  </widget>

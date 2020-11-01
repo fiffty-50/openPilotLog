@@ -62,6 +62,10 @@ private slots:
 
     void on_actionNewAircraft_triggered();
 
+    void on_actionPilots_triggered();
+
+    void on_actionNewPilot_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

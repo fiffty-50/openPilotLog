@@ -35,12 +35,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionNewAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
+    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionNewPilot->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
 
-    // Adds space between toolbar items and actionSetting item
+    // Adds space between toolbar items
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(10);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionSettings,spacer);
+    ui->toolBar->insertWidget(ui->actionNewFlight,spacer);
 
 
     // create and show homeWidget
@@ -119,4 +121,14 @@ void MainWindow::on_actionNewAircraft_triggered()
 {
     auto nt = new NewTail(QString(), sql::createNew,this);
     nt->show();
+}
+
+void MainWindow::on_actionPilots_triggered()
+{
+    nope();
+}
+
+void MainWindow::on_actionNewPilot_triggered()
+{
+    nope();
 }

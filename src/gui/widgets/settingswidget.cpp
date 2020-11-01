@@ -60,6 +60,10 @@ settingsWidget::settingsWidget(QWidget *parent) :
     QRegExp flightNumberPrefix_rx("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]"); // allow max 3 letters (upper and lower) and numbers
     QValidator *flightNumberPrefixValidator = new QRegExpValidator(flightNumberPrefix_rx, this);
     ui->flightNumberPrefixLineEdit->setValidator(flightNumberPrefixValidator);
+    /*
+     * Aircraft Tab
+     */
+    ui->acSortComboBox->setCurrentIndex(settings.value("userdata/acSortColumn").toInt());
 
 }
 
@@ -136,4 +140,33 @@ void settingsWidget::on_aboutPushButton_clicked()
                       QString(SQLITE_VERSION));
     mb->setText(text);
     mb->open();
+}
+
+void settingsWidget::on_acSortComboBox_currentIndexChanged(int index)
+{
+    QSettings settings;
+    settings.setValue("userdata/acSortColumn",index);
+}
+
+void settingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
+{
+    QSettings settings;
+    settings.setValue("userdata/acAllowIncomplete",index);
+    if(index){
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Warning",
+                                      "Warning: Enabling incomplete logging will enable you to add aircraft with incomplete data.\n\n"
+                                      "If you do not fill out the aircraft details, "
+                                      "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
+                                      "This will also impact statistics and auto-logging capabilites.\n\n"
+                                      "It is highly recommended to keep this option off unless you have a specific reason not to.\n\n"
+                                      "Are you sure you want to proceed?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes){
+            QSettings settings;
+            settings.setValue("userdata/acAllowIncomplete",index);
+        }else{
+            ui->acAllowIncompleteComboBox->setCurrentIndex(0);
+        }
+    }
 }

@@ -14,6 +14,45 @@
    <string>Add New Aircraft</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="11" column="0">
+    <widget class="QLabel" name="weightLabel">
+     <property name="text">
+      <string>Weight Class</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QComboBox" name="ppNumberComboBox">
+     <property name="currentText">
+      <string>&lt;Select&gt;</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>&lt;Select&gt;</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Single Engine</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Multi Engine</string>
+      </property>
+     </item>
+    </widget>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="registrationLabel">
      <property name="text">
@@ -21,68 +60,20 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="registrationLineEdit">
-     <property name="maxLength">
-      <number>20</number>
-     </property>
-     <property name="placeholderText">
-      <string>mandatory</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="companyLabel">
-     <property name="text">
-      <string>Company</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="searchLineEdit">
-     <property name="maxLength">
-      <number>20</number>
-     </property>
-     <property name="placeholderText">
-      <string>start typing to search for aircraft types</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="operationLabel">
-     <property name="text">
-      <string>Operation</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0" colspan="2">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLineEdit" name="variantLineEdit">
-     <property name="maxLength">
-      <number>20</number>
-     </property>
-     <property name="placeholderText">
-      <string>e.g. 800</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="powerPlantLabel">
+    <widget class="QLabel" name="editLabel">
      <property name="text">
-      <string>Power Plant</string>
+      <string>Edit Aircraft</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
-    <widget class="QLabel" name="weightLabel">
+   <item row="5" column="0">
+    <widget class="QLabel" name="makeLabel">
      <property name="text">
-      <string>Weight Class</string>
+      <string>Make</string>
      </property>
     </widget>
    </item>
@@ -93,8 +84,14 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
-    <widget class="QComboBox" name="weightComboBox">
+   <item row="8" column="1">
+    <widget class="QComboBox" name="operationComboBox">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="currentText">
+      <string>&lt;Select&gt;</string>
+     </property>
      <item>
       <property name="text">
        <string>&lt;Select&gt;</string>
@@ -102,33 +99,20 @@
      </item>
      <item>
       <property name="text">
-       <string>Light</string>
+       <string>Single Pilot</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Medium</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Heavy</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Super</string>
+       <string>Multi Pilot</string>
       </property>
      </item>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="makeLineEdit">
-     <property name="maxLength">
-      <number>20</number>
-     </property>
-     <property name="placeholderText">
-      <string>e.g. Boeing</string>
+   <item row="8" column="0">
+    <widget class="QLabel" name="operationLabel">
+     <property name="text">
+      <string>Operation</string>
      </property>
     </widget>
    </item>
@@ -174,45 +158,23 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="makeLineEdit">
+     <property name="maxLength">
+      <number>20</number>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="placeholderText">
+      <string>e.g. Boeing</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QComboBox" name="operationComboBox">
-     <property name="editable">
-      <bool>false</bool>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="variantLineEdit">
+     <property name="maxLength">
+      <number>20</number>
      </property>
-     <property name="currentText">
-      <string>&lt;Select&gt;</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>&lt;Select&gt;</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Single Pilot</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multi Pilot</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="makeLabel">
-     <property name="text">
-      <string>Make</string>
+     <property name="placeholderText">
+      <string>e.g. 800</string>
      </property>
     </widget>
    </item>
@@ -226,11 +188,8 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
-    <widget class="QComboBox" name="ppNumberComboBox">
-     <property name="currentText">
-      <string>&lt;Select&gt;</string>
-     </property>
+   <item row="11" column="1">
+    <widget class="QComboBox" name="weightComboBox">
      <item>
       <property name="text">
        <string>&lt;Select&gt;</string>
@@ -238,20 +197,50 @@
      </item>
      <item>
       <property name="text">
-       <string>Single Engine</string>
+       <string>Light</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Multi Engine</string>
+       <string>Medium</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Heavy</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Super</string>
       </property>
      </item>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="modelLabel">
+   <item row="9" column="0">
+    <widget class="QLabel" name="powerPlantLabel">
      <property name="text">
-      <string>Model</string>
+      <string>Power Plant</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="registrationLineEdit">
+     <property name="maxLength">
+      <number>20</number>
+     </property>
+     <property name="placeholderText">
+      <string>mandatory</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="searchLineEdit">
+     <property name="maxLength">
+      <number>20</number>
+     </property>
+     <property name="placeholderText">
+      <string>start typing to search for aircraft types</string>
      </property>
     </widget>
    </item>
@@ -262,13 +251,24 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="editLabel">
+   <item row="4" column="0">
+    <widget class="QLabel" name="companyLabel">
      <property name="text">
-      <string>Edit Aircraft</string>
+      <string>Company</string>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="modelLabel">
+     <property name="text">
+      <string>Model</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>

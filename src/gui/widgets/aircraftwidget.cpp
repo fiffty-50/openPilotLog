@@ -32,18 +32,16 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->setColumnWidth(0,60);
     view->setColumnWidth(1,120);
-    view->setColumnWidth(2,60);
-    view->setColumnWidth(3,60);
-    view->setColumnWidth(4,60);
-    view->setColumnWidth(5,60);
+    view->setColumnWidth(2,180);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
-    for (int i = 6;i <= 17; i++) {
-        view->hideColumn(i);
-    }
     view->setSortingEnabled(true);
-    view->sortByColumn(0,Qt::AscendingOrder);
+    QSettings settings;
+
+    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(),Qt::AscendingOrder);
+
     view->show();
 
     connect(ui->tableView->selectionModel(),
@@ -91,4 +89,10 @@ void aircraftWidget::on_deleteButton_clicked()
         mb->setText("No aircraft selected.");
         mb->show();
     }
+}
+
+void aircraftWidget::on_newButton_clicked()
+{
+    auto nt = new NewTail(QString(), sql::createNew,this);
+    nt->show();
 }

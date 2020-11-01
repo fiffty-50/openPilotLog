@@ -47,6 +47,10 @@ private slots:
 
     void on_aboutPushButton_clicked();
 
+    void on_acSortComboBox_currentIndexChanged(int index);
+
+    void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
+
 private:
     Ui::settingsWidget *ui;
 

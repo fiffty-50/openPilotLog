@@ -58,6 +58,7 @@ NewTail::NewTail(db dbentry, sql::editRole edRole, QWidget *parent) :
     role = edRole;
     ui->searchLabel->hide();
     ui->searchLineEdit->hide();
+    ui->line->hide();
     formFiller(dbentry);
 }
 
@@ -194,6 +195,7 @@ bool NewTail::verify()
 
     for(const auto le : recommended_line_edits){
         if(le->text() != ""){
+            DEB("Good: " << le);
             recommended_line_edits.removeOne(le);
             le->setStyleSheet("");
         }else{
@@ -363,19 +365,27 @@ void NewTail::on_buttonBox_accepted()
             submitForm(role);
             accept();
         }else{
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Warning",
-                                          "Some recommended fields are empty.\n\n"
-                                          "If you do not fill out the aircraft details, "
-                                          "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
-                                          "This will also impact statistics and auto-logging capabilites.\n\n"
-                                          "It is highly recommended to fill in all the details.\n\n"
-                                          "Are you sure you want to proceed?",
-                                          QMessageBox::Yes|QMessageBox::No);
-            if (reply == QMessageBox::Yes)
-            {
-                submitForm(role);
-                accept();
+            QSettings setting;
+            if(!setting.value("userdata/acAllowIncomplete").toInt()){
+                auto nope = new QMessageBox(this);
+                nope->setText("Some or all fields are empty.\nPlease go back and "
+                              "complete.\n\nYou can allow logging incomplete entries on the settings page.");
+                nope->show();
+            }else{
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question(this, "Warning",
+                                              "Some recommended fields are empty.\n\n"
+                                              "If you do not fill out the aircraft details, "
+                                              "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
+                                              "This will also impact statistics and auto-logging capabilites.\n\n"
+                                              "It is highly recommended to fill in all the details.\n\n"
+                                              "Are you sure you want to proceed?",
+                                              QMessageBox::Yes|QMessageBox::No);
+                if (reply == QMessageBox::Yes)
+                {
+                    submitForm(role);
+                    accept();
+                }
             }
         }
     }

@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QCompleter>
 #include <QMessageBox>
+#include <QSettings>
 #include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
 

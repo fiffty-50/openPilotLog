@@ -6,6 +6,7 @@
 #include <QSqlTableModel>
 #include <QDebug>
 #include <QLabel>
+#include <QSettings>
 #include "src/gui/dialogues/newtail.h"
 #include "src/classes/aircraft.h"
 #include "src/database/db.h"
@@ -30,6 +31,8 @@ private slots:
     void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
 
     void on_deleteButton_clicked();
+
+    void on_newButton_clicked();
 
 private:
     Ui::aircraftWidget *ui;
