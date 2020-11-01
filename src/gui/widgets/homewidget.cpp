@@ -59,7 +59,7 @@ void homeWidget::on_pushButton_clicked()
     //aircraft ac3(0,aircraft::acft);
 
     auto ob = db(sql::tails,1);
-    auto nt = new NewTail(ob,this);
+    auto nt = new NewTail("DE-NEU", sql::createNew,this);
     nt->show();
 
 

@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
     ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
+    ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
+    ui->actionNewAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
 
     // Adds space between toolbar items and actionSetting item
     auto *spacer = new QWidget();
@@ -44,13 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     // create and show homeWidget
     auto hw = new homeWidget(this);
     ui->stackedWidget->addWidget(hw);
-    ui->stackedWidget->setCurrentWidget(hw);
-
-    // currently working on aircraftWidget
-
-    auto aw = new aircraftWidget(this);
-    ui->stackedWidget->addWidget(aw);
-    ui->stackedWidget->setCurrentWidget(aw);
+    ui->stackedWidget->setCurrentWidget(hw);  
 
 }
 
@@ -110,4 +106,17 @@ void MainWindow::on_actionNewFlight_triggered()
     NewFlight nf(this, lineEdit_completionLists);
     nf.exec();
     */
+}
+
+void MainWindow::on_actionAircraft_triggered()
+{
+    auto aw = new aircraftWidget(this);
+    ui->stackedWidget->addWidget(aw);
+    ui->stackedWidget->setCurrentWidget(aw);
+}
+
+void MainWindow::on_actionNewAircraft_triggered()
+{
+    auto nt = new NewTail(QString(), sql::createNew,this);
+    nt->show();
 }

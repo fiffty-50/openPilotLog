@@ -29,6 +29,8 @@ public:
 private slots:
     void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
 
+    void on_deleteButton_clicked();
+
 private:
     Ui::aircraftWidget *ui;
 };

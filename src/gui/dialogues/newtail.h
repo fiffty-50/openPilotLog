@@ -39,10 +39,11 @@ class NewTail : public QDialog
     Q_OBJECT
 
 public:
+
     explicit NewTail(aircraft acft, QWidget *parent = nullptr);
-
-    explicit NewTail(QString reg, QWidget *parent = nullptr);
-
+    //to create new tail from scratch
+    explicit NewTail(QString reg, sql::editRole edRole, QWidget *parent = nullptr);
+    //to edit existing tail
     explicit NewTail(db dbentry, sql::editRole edRole, QWidget *parent = nullptr);
 
     ~NewTail();
@@ -68,15 +69,19 @@ private:
 
     sql::editRole role;
 
-    void formFiller(aircraft);
+    db oldEntry;
+
+    void submitForm(sql::editRole edRole);
+
+    void setupCompleter();
+
+    //void formFiller(aircraft);
 
     void formFiller(db);
 
     bool verify();
 
-    aircraft createAircraftFromSelection();
-
-    void createEntry();
+    //aircraft createAircraftFromSelection();
 
     QStringList aircraftlist;
 

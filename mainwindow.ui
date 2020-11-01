@@ -36,7 +36,9 @@
    </attribute>
    <addaction name="actionHome"/>
    <addaction name="actionLogbook"/>
+   <addaction name="actionAircraft"/>
    <addaction name="actionNewFlight"/>
+   <addaction name="actionNewAircraft"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
@@ -78,6 +80,25 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionAircraft">
+   <property name="text">
+    <string>Aircraft</string>
+   </property>
+   <property name="toolTip">
+    <string>Show or edit Aircraft</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionNewAircraft">
+   <property name="text">
+    <string>NewAircraft</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a new aircraft to the database</string>
    </property>
   </action>
  </widget>

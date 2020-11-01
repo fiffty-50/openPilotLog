@@ -43,6 +43,7 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
         view->hideColumn(i);
     }
     view->setSortingEnabled(true);
+    view->sortByColumn(0,Qt::AscendingOrder);
     view->show();
 
     connect(ui->tableView->selectionModel(),
@@ -65,10 +66,29 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
-    auto nt = new NewTail(aircraft(selectedAircraft,aircraft::tail),this);
+    auto nt = new NewTail(db(sql::tails,selectedAircraft),sql::editExisting,this);
     //auto nt = new NewTail(db(sql::tails,selectedAircraft),this);
 
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
     ui->stackedWidget->setCurrentWidget(nt);
+}
+
+void aircraftWidget::on_deleteButton_clicked()
+{
+    if(selectedAircraft > 0){
+
+        db::deleteRow("tails","_rowid_",QString::number(selectedAircraft),sql::exactMatch);
+
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable("viewTails");
+        model->select();
+        ui->tableView->setModel(model);
+
+
+    }else{
+        auto mb = new QMessageBox(this);
+        mb->setText("No aircraft selected.");
+        mb->show();
+    }
 }

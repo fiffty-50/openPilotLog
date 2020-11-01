@@ -22,6 +22,11 @@
 #define DEB(expr) \
     qDebug() << "db ::" << __func__ << "\t" << expr
 
+db::db()
+{
+
+}
+
 db::db(sql::tableName tn, int row_ID)
 {
     switch (tn) {
@@ -88,6 +93,11 @@ db::db(sql::tableName tn, QMap<QString, QString> newData)
         }
     }
     data = newData;
+}
+
+void db::setData(const QMap<QString, QString> &value)
+{
+    data = value;
 }
 
 /*!

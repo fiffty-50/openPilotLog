@@ -46,6 +46,8 @@ private:
 
 public:
 
+    db();
+
     db(sql::tableName, int row_ID);
 
     db(sql::tableName, QMap<QString, QString> newData);
