@@ -20,7 +20,7 @@
 
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "homeWidget ::" << __func__ << "\t" << expr
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
 
 homeWidget::homeWidget(QWidget *parent) :
@@ -52,15 +52,14 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_pushButton_clicked()
 {
-    //aircraft ac(203,aircraft::tail);
+    auto pl = new pilot("pilots",498);
+    auto np = new NewPilot(db::editExisting,*pl,this);
+    np->show();
 
+    //auto ob = db(db::pilots,34);
 
-    //aircraft ac2(114,aircraft::acft);
-    //aircraft ac3(0,aircraft::acft);
-
-    auto ob = db(sql::tails,1);
-    auto nt = new NewTail("DE-NEU", sql::createNew,this);
-    nt->show();
+    //auto np = new NewPilot(db::editExisting,ob,this);
+    //np->show();
 
 
 }

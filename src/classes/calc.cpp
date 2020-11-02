@@ -179,15 +179,15 @@ double calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
  */
 double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
 {
-    //db::multiSelect("airports", columns, "EDDF", "icao", sql::exactMatch);
+    //db::multiSelect("airports", columns, "EDDF", "icao", db::exactMatch);
     /*if(dbAirport::retreiveIcaoCoordinates(dept).isEmpty() || dbAirport::retreiveIcaoCoordinates(dest).isEmpty()){
         qWarning() << "greatCircleDistance - invalid input. aborting.";
         return 0;
     }*/
 
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, sql::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, sql::exactMatch);
+    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, db::exactMatch);
+    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, db::exactMatch);
 
     if(deptCoordinates.isEmpty() || destCoordinates.isEmpty()
        )
@@ -331,8 +331,8 @@ double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
 {
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, sql::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, sql::exactMatch);
+    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, db::exactMatch);
+    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, db::exactMatch);
 
     if(deptCoordinates.isEmpty() || destCoordinates.isEmpty()
        )

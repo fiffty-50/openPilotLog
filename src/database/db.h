@@ -28,70 +28,39 @@
 #include <QDir>
 #include <QDebug>
 
-
-class sql
-{
-public:
-    enum tableName {flights, pilots, tails, aircraft, airports };
-    enum editRole {createNew, editExisting};
-    enum matchType {exactMatch, partialMatch};
-};
-
-
+/*!
+ * \brief The db class provides a basic API for accessing the database programatically.
+ * It is used to set up the initial connection and various basic queries can be
+ * executed using a set of static functions. When interfacing with the database
+ * for the purpose of adding, deleting or updating entries, the use of the entry class
+ * and its subclasses is recommended.
+ */
 class db
 {
-private:
-
-    bool retreiveData();
-
 public:
+    /*!
+     * \brief The editRole enum {createNew, editExisting} is used to differentiate
+     * between creating a new entry in the database vs editing an existing one
+     */
+    enum editRole {createNew, editExisting};
+    /*!
+     * \brief The matchType enum {exactMatch, partialMatch} is used to determine the
+     * matching when using a WHERE sql statement. exactMatch results in a "=" operator,
+     * whereas partiasMatch results in a "LIKE" operator
+     */
+    enum matchType {exactMatch, partialMatch};
 
-    db();
-
-    db(sql::tableName, int row_ID);
-
-    db(sql::tableName, QMap<QString, QString> newData);
-
-    bool isValid = false;
-
-    QMap<QString, QString> data;
-
-    QString table = QString();
-
-    int row_id = 0;
-
-    void setData(const QMap<QString, QString> &value);
-
-    QMap<QString, QString> getData() const;
-
-    //Functions
-
-    bool update();
-
-    bool commit();
-
-    static void connect();
-
-    static QVector<QString> getColumnNames(QString table);
-
-    static bool exists(QString column, QString table, QString checkColumn, QString value, sql::matchType match);
-
-    static QString singleSelect(QString column, QString table, QString checkColumn, QString value, sql::matchType match);
-
-    static QVector<QString> multiSelect(QVector<QString> columns, QString table, QString checkColumn, QString value, sql::matchType match);
-
+    static void             connect();
+    static bool             exists(QString column, QString table, QString checkColumn,
+                                   QString value, db::matchType match);
+    static bool             singleUpdate(QString table, QString column, QString value,
+                                         QString checkColumn, QString checkvalue, db::matchType match);
+    static QString          singleSelect(QString column, QString table, QString checkColumn,
+                                         QString value, db::matchType match);
+    static QVector<QString> multiSelect(QVector<QString> columns, QString table,
+                                        QString checkColumn, QString value, db::matchType match);
     static QVector<QString> multiSelect(QVector<QString> columns, QString table);
-
-    static bool singleUpdate(QString table, QString column, QString value, QString checkColumn, QString checkvalue, sql::matchType match);
-
-    static bool deleteRow(QString table, QString column, QString value, sql::matchType match);
-
     static QVector<QString> customQuery(QString query, int returnValues);
-
-    // Debug functionality
-    void print();
-    QString debug();
-    operator QString() { return debug(); } //overload for compatibility with qDebug()
 
 };
 

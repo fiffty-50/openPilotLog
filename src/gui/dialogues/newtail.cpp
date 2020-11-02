@@ -20,21 +20,11 @@
 
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "NewTail ::" << __func__ << "\t" << expr
+    qDebug() << __PRETTY_FUNCTION__<< "\t" << expr
 
-/*Dialog to be used to edit existing tail
-NewTail::NewTail(aircraft acft, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewTail)
-{
-    ui->setupUi(this);
-    ui->searchLabel->hide();
-    ui->searchLineEdit->hide();
-    formFiller(acft);
-}*/
 
 //Dialog to be used to create a new tail
-NewTail::NewTail(QString newreg, sql::editRole edRole, QWidget *parent) :
+NewTail::NewTail(QString newreg, db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -49,7 +39,7 @@ NewTail::NewTail(QString newreg, sql::editRole edRole, QWidget *parent) :
 }
 
 //Dialog to be used to edit an existing tail
-NewTail::NewTail(db dbentry, sql::editRole edRole, QWidget *parent) :
+NewTail::NewTail(aircraft dbentry, db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -72,7 +62,7 @@ NewTail::~NewTail()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTail::formFiller(db entry)
+void NewTail::formFiller(aircraft entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
@@ -128,57 +118,6 @@ void NewTail::setupCompleter()
     completer->setFilterMode(Qt::MatchContains);
     ui->searchLineEdit->setCompleter(completer);
 }
-
-/*!
- * \brief NewTail::formFiller populates the Dialog with the
- * information contained in an aircraft object.
- * \param ac
- *
-void NewTail::formFiller(aircraft ac)
-{
-    DEB("Filling Form for a/c" << ac);
-    if(!ac.registration.isEmpty()){
-        ui->registrationLineEdit->setText(ac.registration);
-    }
-
-    ui->companyLineEdit->setText(ac.company);
-    ui->makeLineEdit->setText(ac.make);
-    ui->modelLineEdit->setText(ac.model);
-    ui->variantLineEdit->setText(ac.variant);
-
-    if(ac.singlepilot){
-        ui->operationComboBox->setCurrentIndex(1);
-    }else if(ac.multipilot){
-        ui->operationComboBox->setCurrentIndex(2);
-    }
-
-    if(ac.unpowered){
-        ui->ppTypeComboBox->setCurrentIndex(1);
-    }else if(ac.piston){
-        ui->ppTypeComboBox->setCurrentIndex(2);
-    }else if(ac.turboprop){
-        ui->ppTypeComboBox->setCurrentIndex(3);
-    }else if(ac.jet){
-        ui->ppTypeComboBox->setCurrentIndex(4);
-    }
-
-    if(ac.singleengine){
-        ui->ppNumberComboBox->setCurrentIndex(1);
-    }else if(ac.multiengine){
-        ui->ppNumberComboBox->setCurrentIndex(2);
-    }
-
-    if(ac.light){
-        ui->weightComboBox->setCurrentIndex(1);
-    }else if(ac.medium){
-        ui->weightComboBox->setCurrentIndex(2);
-    }else if(ac.heavy){
-        ui->weightComboBox->setCurrentIndex(3);
-    }else if (ac.super) {
-        ui->weightComboBox->setCurrentIndex(4);
-    }
-}*/
-
 /*!
  * \brief NewTail::verify A simple check for empty recommended fields in the form
  * \return true if all reconmmended fields are populated
@@ -221,7 +160,7 @@ bool NewTail::verify()
     }
 }
 
-void NewTail::submitForm(sql::editRole edRole)
+void NewTail::submitForm(db::editRole edRole)
 {
     DEB("Creating Database Object...");
     QMap<QString,QString> newData;
@@ -244,69 +183,30 @@ void NewTail::submitForm(sql::editRole edRole)
     QVector<QString> weight    = {"light","medium",
                                   "heavy","super"};
 
-    newData.insert(operation[ui->operationComboBox->currentIndex()-1],QLatin1String("1"));
-    newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex()-1],QLatin1String("1"));
-    newData.insert(ppType[ui->ppTypeComboBox->currentIndex()-1],QLatin1String("1"));
-    newData.insert(weight[ui->weightComboBox->currentIndex()-1],QLatin1String("1"));
+    if(ui->operationComboBox->currentIndex()!=0){
+        newData.insert(operation[ui->operationComboBox->currentIndex()-1],QLatin1String("1"));
+    }
+    if(ui->ppNumberComboBox->currentIndex()!=0){
+        newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex()-1],QLatin1String("1"));
+    }
+    if(ui->ppTypeComboBox->currentIndex()!=0){
+        newData.insert(ppType[ui->ppTypeComboBox->currentIndex()-1],QLatin1String("1"));
+    }
+    if(ui->weightComboBox->currentIndex()!=0){
+        newData.insert(weight[ui->weightComboBox->currentIndex()-1],QLatin1String("1"));
+    }
     //create db object
     switch (edRole) {
-    case sql::createNew:{
-        auto newEntry = db(sql::tails,newData);;
-        newEntry.commit();
+    case db::createNew:{
+        auto newEntry = new aircraft("tails",newData);;
+        newEntry->commit();
         break;}
-    case sql::editExisting:
+    case db::editExisting:
         oldEntry.setData(newData);
-        oldEntry.update();
+        oldEntry.commit();
         break;
     }
 }
-
-
-/*!
- * \brief NewTail::createAircraftFromSelection Creates an aircraft object
- * from the current ui selections
- * \return
- *
-aircraft NewTail::createAircraftFromSelection()
-{
-    auto newacft = aircraft();
-    newacft.registration = ui->registrationLineEdit->text();
-    newacft.company = ui->companyLineEdit->text();
-    newacft.make = ui->makeLineEdit->text();
-    newacft.model = ui->modelLineEdit->text();
-    newacft.variant = ui->variantLineEdit->text();
-
-    if(ui->operationComboBox->currentIndex() == 1){
-        newacft.singlepilot = true;
-    }else if(ui->operationComboBox->currentIndex() == 2){
-        newacft.multipilot = true;
-    }
-
-    if(ui->ppNumberComboBox->currentIndex() == 1){
-        newacft.singleengine = true;
-    }else if(ui->ppNumberComboBox->currentIndex() == 2){
-        newacft.multiengine = true;
-    }
-
-    if(ui->ppTypeComboBox->currentIndex() == 1){
-        newacft.unpowered = true;
-    }else if (ui->ppTypeComboBox->currentIndex() == 2) {
-        newacft.piston = true;
-    }else if (ui->ppTypeComboBox->currentIndex() == 3) {
-        newacft.turboprop = true;
-    }else if (ui->ppTypeComboBox->currentIndex() == 4) {
-        newacft.jet = true;
-    }
-
-    if(ui->weightComboBox->currentIndex() == 1){
-        newacft.light = true;
-    }else if (ui->weightComboBox->currentIndex() == 2) {
-        newacft.medium = true;
-    }else if (ui->weightComboBox->currentIndex() == 3) {
-        newacft.heavy = true;
-    }
-    return newacft;
-}*/
 
 /// Slots
 
@@ -316,7 +216,7 @@ void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(db(sql::aircraft,idMap.value(arg1)));
+        formFiller(aircraft("aircraft",idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     }else{
         //for example, editing finished without selecting a result from Qcompleter

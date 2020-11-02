@@ -26,6 +26,7 @@
 #include <QDebug>
 
 #include "src/database/db.h"
+#include "src/classes/flight.h"
 
 namespace Ui {
 class logbookWidget;

@@ -119,7 +119,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    auto nt = new NewTail(QString(), sql::createNew,this);
+    auto nt = new NewTail(QString(), db::createNew,this);
     nt->show();
 }
 
@@ -130,5 +130,6 @@ void MainWindow::on_actionPilots_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    nope();
+    auto np = new NewPilot(db::createNew,this);
+    np->show();
 }

@@ -22,10 +22,13 @@ SOURCES += \
     src/classes/calc.cpp \
     src/classes/completionlist.cpp \
     src/classes/flight.cpp \
+    src/classes/pilot.cpp \
     src/classes/stat.cpp \
     src/classes/strictregularexpressionvalidator.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
+    src/database/entry.cpp \
+    src/gui/dialogues/newpilot.cpp \
     src/gui/dialogues/newtail.cpp \
     src/gui/widgets/aircraftwidget.cpp \
     src/gui/widgets/homewidget.cpp \
@@ -38,10 +41,13 @@ HEADERS += \
     src/classes/calc.h \
     src/classes/completionlist.h \
     src/classes/flight.h \
+    src/classes/pilot.h \
     src/classes/stat.h \
     src/classes/strictregularexpressionvalidator.h \
     src/database/db.h \
     src/database/dbinfo.h \
+    src/database/entry.h \
+    src/gui/dialogues/newpilot.h \
     src/gui/dialogues/newtail.h \
     src/gui/widgets/aircraftwidget.h \
     src/gui/widgets/homewidget.h \
@@ -50,6 +56,7 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
+    src/gui/dialogues/newpilot.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/aircraftwidget.ui \
     src/gui/widgets/homewidget.ui \

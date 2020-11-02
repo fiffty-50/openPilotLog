@@ -18,48 +18,17 @@
 #ifndef AIRCRAFT_H
 #define AIRCRAFT_H
 #include <QCoreApplication>
-#include <QVector>
-#include "src/database/db.h"
+#include "src/database/entry.h"
 
 /*!
  * \brief The aircraft class
  *
  */
-class aircraft
+class aircraft : public entry
 {
+using entry::entry;
 public:
-    enum database {tail, acft};
-
-    aircraft();
-    aircraft(int database_id, database table);
-    aircraft(QString registration);
-
-    QString id;
-    QString registration;
-    QString company;
-    QString make;
-    QString model;
-    QString variant;
-    bool singlepilot    = false;
-    bool multipilot     = false;
-    bool singleengine   = false;
-    bool multiengine    = false;
-    bool unpowered      = false;
-    bool piston         = false;
-    bool turboprop      = false;
-    bool jet            = false;
-    bool light          = false;
-    bool medium         = false;
-    bool heavy          = false;
-    bool super          = false;
-
-    // Functions
-    static QVector<QString> toVector(aircraft);
-
-    // Debug functionality
-    void print();
-    QString debug();
-    operator QString() { return debug(); } //overload for compatibility with qDebug()
+    void verify();
 };
 
 #endif // AIRCRAFT_H

@@ -15,44 +15,39 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AIRCRAFTWIDGET_H
-#define AIRCRAFTWIDGET_H
+#ifndef NEWPILOT_H
+#define NEWPILOT_H
 
-#include <QWidget>
-#include <QItemSelection>
-#include <QSqlTableModel>
-#include <QDebug>
-#include <QLabel>
-#include <QSettings>
-#include "src/gui/dialogues/newtail.h"
-#include "src/classes/aircraft.h"
-#include "src/database/db.h"
+#include <QDialog>
+#include <QMessageBox>
+#include "src/classes/pilot.h"
 
 namespace Ui {
-class aircraftWidget;
+class NewPilot;
 }
 
-class aircraftWidget : public QWidget
+class NewPilot : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit aircraftWidget(QWidget *parent = nullptr);
-    ~aircraftWidget();
-
-    qint32 selectedAircraft = 0;
-
-    void setSelectedAircraft(const qint32 &value);
+    explicit NewPilot(db::editRole, QWidget *parent = nullptr);
+    explicit NewPilot(db::editRole, pilot, QWidget *parent = nullptr);
+    ~NewPilot();
 
 private slots:
-    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
-
-    void on_deleteButton_clicked();
-
-    void on_newButton_clicked();
+    void on_buttonBox_accepted();
 
 private:
-    Ui::aircraftWidget *ui;
+    Ui::NewPilot *ui;
+
+    db::editRole role;
+
+    pilot oldEntry;
+
+    void formFiller();
+
+    void submitForm();
 };
 
-#endif // AIRCRAFTWIDGET_H
+#endif // NEWPILOT_H

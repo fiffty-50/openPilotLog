@@ -1,9 +1,26 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "aircraftwidget.h"
 #include "ui_aircraftwidget.h"
 
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "aircraftWidget ::" << __func__ << "\t" << expr
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
 aircraftWidget::aircraftWidget(QWidget *parent) :
     QWidget(parent),
@@ -64,8 +81,8 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
-    auto nt = new NewTail(db(sql::tails,selectedAircraft),sql::editExisting,this);
-    //auto nt = new NewTail(db(sql::tails,selectedAircraft),this);
+    auto nt = new NewTail(aircraft("tails",selectedAircraft),db::editExisting,this);
+    //auto nt = new NewTail(db(db::tails,selectedAircraft),this);
 
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
@@ -76,7 +93,9 @@ void aircraftWidget::on_deleteButton_clicked()
 {
     if(selectedAircraft > 0){
 
-        db::deleteRow("tails","_rowid_",QString::number(selectedAircraft),sql::exactMatch);
+        auto ac = new aircraft("tails",selectedAircraft);
+        ac->remove();
+
 
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable("viewTails");
@@ -93,6 +112,6 @@ void aircraftWidget::on_deleteButton_clicked()
 
 void aircraftWidget::on_newButton_clicked()
 {
-    auto nt = new NewTail(QString(), sql::createNew,this);
+    auto nt = new NewTail(QString(), db::createNew,this);
     nt->show();
 }

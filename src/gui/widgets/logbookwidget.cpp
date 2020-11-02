@@ -20,13 +20,14 @@
 
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "logbookWidget ::" << __func__ << "\t" << expr
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
 logbookWidget::logbookWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::logbookWidget)
 {
     ui->setupUi(this);
+    ui->filterDateEdit->setDate(QDate::currentDate());
     ui->filterDateEdit_2->setDate(QDate::currentDate());
 
     auto start = std::chrono::high_resolution_clock::now(); // timer for performance testing
@@ -108,7 +109,7 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
         QVector<QString> columns = {
             "doft", "dept", "dest"
         };
-        QVector<QString> details = db::multiSelect(columns,"flights","id",QString::number(selectedFlight),sql::exactMatch);
+        QVector<QString> details = db::multiSelect(columns,"flights","id",QString::number(selectedFlight),db::exactMatch);
         QString detailsstring = "The following flight will be deleted:\n\n";
         for(const auto& item : details)
         {
@@ -123,7 +124,8 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
         if (reply == QMessageBox::Yes)
         {
             DEB("Deleting flight with ID# " << selectedFlight);
-            db::deleteRow("flights","id",QString::number(selectedFlight),sql::exactMatch);
+            auto en = new flight("flights",selectedFlight);
+            en->remove();
 
             QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
             ShowAllModel->setTable("Logbook");

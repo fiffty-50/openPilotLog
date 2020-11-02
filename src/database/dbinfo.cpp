@@ -18,7 +18,7 @@
 #include "dbinfo.h"
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "dbInfo ::" << __func__ << "\t" << expr
+    qDebug() << "dbInfo ::" << __PRETTY_FUNCTION__ << "\t" << expr
 dbInfo::dbInfo()
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");

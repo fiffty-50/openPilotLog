@@ -15,20 +15,5 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef FLIGHT_H
-#define FLIGHT_H
+#include "pilot.h"
 
-#include <QCoreApplication>
-#include <QDateTime>
-#include <QDebug>
-#include "src/database/entry.h"
-
-
-class flight : public entry
-{
-    using entry::entry;
-
-    bool verify();
-};
-
-#endif // FLIGHT_H
