@@ -15,39 +15,43 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef NEWPILOT_H
-#define NEWPILOT_H
+#ifndef PILOTSWIDGET_H
+#define PILOTSWIDGET_H
 
-#include <QDialog>
-#include <QMessageBox>
+#include <QWidget>
+#include <QItemSelection>
+#include <QSqlTableModel>
+#include <QDebug>
+#include <QLabel>
+#include <QSettings>
 #include "src/classes/pilot.h"
+#include "src/gui/dialogues/newpilot.h"
 
 namespace Ui {
-class NewPilot;
+class pilotsWidget;
 }
 
-class NewPilot : public QDialog
+class pilotsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit NewPilot(db::editRole, QWidget *parent = nullptr);
-    explicit NewPilot(pilot, db::editRole, QWidget *parent = nullptr);
-    ~NewPilot();
+    explicit pilotsWidget(QWidget *parent = nullptr);
+    ~pilotsWidget();
+
+    void setSelectedPilot(const qint32 &value);
 
 private slots:
-    void on_buttonBox_accepted();
+    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
+
+    void on_newButton_clicked();
+
+    void on_deletePushButton_clicked();
 
 private:
-    Ui::NewPilot *ui;
+    Ui::pilotsWidget *ui;
 
-    db::editRole role;
-
-    pilot oldEntry;
-
-    void formFiller();
-
-    void submitForm();
+    qint32 selectedPilot = 0;
 };
 
-#endif // NEWPILOT_H
+#endif // PILOTSWIDGET_H

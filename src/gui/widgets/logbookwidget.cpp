@@ -131,6 +131,9 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
             ShowAllModel->setTable("Logbook");
             ShowAllModel->select();
             ui->tableView->setModel(ShowAllModel);
+            connect(ui->tableView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
         }
     }else
     {

@@ -33,6 +33,7 @@ SOURCES += \
     src/gui/widgets/aircraftwidget.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
+    src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp
 
 HEADERS += \
@@ -52,6 +53,7 @@ HEADERS += \
     src/gui/widgets/aircraftwidget.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
+    src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h
 
 FORMS += \
@@ -61,6 +63,7 @@ FORMS += \
     src/gui/widgets/aircraftwidget.ui \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
+    src/gui/widgets/pilotswidget.ui \
     src/gui/widgets/settingswidget.ui
 
 # Default rules for deployment.

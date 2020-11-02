@@ -29,7 +29,7 @@ NewPilot::NewPilot(db::editRole edRole, QWidget *parent) :
     ui->setupUi(this);
 }
 
-NewPilot::NewPilot(db::editRole edRole, pilot existingEntry, QWidget *parent) :
+NewPilot::NewPilot(pilot existingEntry, db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {

@@ -27,6 +27,7 @@
 #include "src/classes/aircraft.h"
 #include "src/gui/dialogues/newpilot.h"
 
+
 namespace Ui {
 class homeWidget;
 }

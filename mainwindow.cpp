@@ -125,7 +125,9 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionPilots_triggered()
 {
-    nope();
+    auto pw = new pilotsWidget(this);
+    ui->stackedWidget->addWidget(pw);
+    ui->stackedWidget->setCurrentWidget(pw);
 }
 
 void MainWindow::on_actionNewPilot_triggered()

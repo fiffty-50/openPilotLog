@@ -15,22 +15,22 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aircraftwidget.h"
-#include "ui_aircraftwidget.h"
+#include "pilotswidget.h"
+#include "ui_pilotswidget.h"
 
 // Debug Makro
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-aircraftWidget::aircraftWidget(QWidget *parent) :
+pilotsWidget::pilotsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::aircraftWidget)
+    ui(new Ui::pilotsWidget)
 {
     ui->setupUi(this);
 
-    QString welcomeMessage = "Select an Aircraft to show or edit details.";
+    QString welcomeMessage = "Select a Pilot to show or edit details.";
     QWidget *start = new QWidget();
-    start->setObjectName("welcomeAC");
+    start->setObjectName("welcomePL");
     QLabel *label = new QLabel(welcomeMessage);
     label->setAlignment(Qt::AlignCenter);
     QHBoxLayout *layout = new QHBoxLayout();
@@ -41,7 +41,7 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
 
 
     QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("viewTails");
+    model->setTable("viewPilots");
     model->select();
 
     QTableView *view = ui->tableView;
@@ -51,14 +51,14 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->setColumnWidth(0,60);
-    view->setColumnWidth(1,120);
+    view->setColumnWidth(1,240);
     view->setColumnWidth(2,180);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
     QSettings settings;
 
-    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(),Qt::AscendingOrder);
+    view->sortByColumn(settings.value("userdata/pilSortColumn").toInt(),Qt::AscendingOrder);
 
     view->show();
 
@@ -67,56 +67,55 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
     SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
-aircraftWidget::~aircraftWidget()
+pilotsWidget::~pilotsWidget()
 {
     delete ui;
 }
 
-void aircraftWidget::setSelectedAircraft(const qint32 &value)
+void pilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
 {
-    selectedAircraft = value;
+    setSelectedPilot(index.indexes()[0].data().toInt());
+    DEB("Selected Pilot with ID#: " << selectedPilot);
+
+    auto np = new NewPilot(pilot("pilots",selectedPilot), db::editExisting, this);
+
+    np->setWindowFlag(Qt::Widget);
+    ui->stackedWidget->addWidget(np);
+    ui->stackedWidget->setCurrentWidget(np);
 }
 
-void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
+void pilotsWidget::setSelectedPilot(const qint32 &value)
 {
-    setSelectedAircraft(index.indexes()[0].data().toInt());
-    DEB("Selected aircraft with ID#: " << selectedAircraft);
-
-    auto nt = new NewTail(aircraft("tails",selectedAircraft),db::editExisting,this);
-    //auto nt = new NewTail(db(db::tails,selectedAircraft),this);
-
-    nt->setWindowFlag(Qt::Widget);
-    ui->stackedWidget->addWidget(nt);
-    ui->stackedWidget->setCurrentWidget(nt);
+    selectedPilot = value;
 }
 
-void aircraftWidget::on_deleteButton_clicked()
+void pilotsWidget::on_newButton_clicked()
 {
-    if(selectedAircraft > 0){
+    auto np = new NewPilot(db::createNew,this);
+    np->show();
+}
 
-        auto ac = new aircraft("tails",selectedAircraft);
-        ac->remove();
+void pilotsWidget::on_deletePushButton_clicked()
+{
+    if(selectedPilot > 0){
+
+        auto pil = new pilot("pilots",selectedPilot);
+        pil->remove();
 
 
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("viewTails");
+        model->setTable("viewPilots");
         model->select();
         ui->tableView->setModel(model);
         connect(ui->tableView->selectionModel(),
         SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
         SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 
-        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomeAC"));
+        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePL"));
 
     }else{
         auto mb = new QMessageBox(this);
-        mb->setText("No aircraft selected.");
+        mb->setText("No Pilot selected.");
         mb->show();
     }
-}
-
-void aircraftWidget::on_newButton_clicked()
-{
-    auto nt = new NewTail(QString(), db::createNew,this);
-    nt->show();
 }

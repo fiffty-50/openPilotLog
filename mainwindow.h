@@ -31,6 +31,7 @@
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/dialogues/newtail.h"
 #include "src/gui/dialogues/newpilot.h"
 
