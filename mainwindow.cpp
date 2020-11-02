@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Set up Toolbar
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     ui->toolBar->setIconSize(QSize(64,64));
+    auto buttons = ui->toolBar->findChildren<QWidget*>();
+    for (const auto& button : buttons) {
+        button->setMinimumWidth(128);
+    }
+
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));

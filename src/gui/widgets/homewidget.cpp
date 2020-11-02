@@ -28,6 +28,7 @@ homeWidget::homeWidget(QWidget *parent) :
     ui(new Ui::homeWidget)
 {
     ui->setupUi(this);
+    showTotals();
     /*ui->totalTimeThisYearDisplay->setText(
                 calc::minutes_to_string(
                 stat::totalTime(stat::calendarYear)));
@@ -55,11 +56,13 @@ void homeWidget::on_pushButton_clicked()
     auto pl = new pilot("pilots",498);
     auto np = new NewPilot(*pl,db::editExisting,this);
     np->show();
+}
 
-    //auto ob = db(db::pilots,34);
-
-    //auto np = new NewPilot(db::editExisting,ob,this);
-    //np->show();
-
+void homeWidget::showTotals()
+{
+    auto tw = new totalsWidget(this);
+    ui->stackedWidget->addWidget(tw);
+    ui->stackedWidget->setCurrentWidget(tw);
+    ui->stackedWidget->show();
 
 }

@@ -36,6 +36,8 @@ public:
 
     static QVector<QString> currencyTakeOffLanding(int days);
 
+    static QVector<QPair<QString, QString>> totals();
+
 };
 
 #endif // STAT_H

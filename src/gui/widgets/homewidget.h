@@ -19,6 +19,9 @@
 #define HOMEWIDGET_H
 
 #include <QWidget>
+#include <QStackedLayout>
+#include <QLabel>
+#include <QLineEdit>
 #include "src/database/db.h"
 #include "src/classes/stat.h"
 #include "src/classes/calc.h"
@@ -26,6 +29,8 @@
 #include "src/gui/dialogues/newtail.h"
 #include "src/classes/aircraft.h"
 #include "src/gui/dialogues/newpilot.h"
+#include "src/database/entry.h"
+#include "src/gui/widgets/totalswidget.h"
 
 
 namespace Ui {
@@ -45,6 +50,8 @@ private slots:
 
 private:
     Ui::homeWidget *ui;
+
+    void showTotals();
 };
 
 #endif // HOMEWIDGET_H

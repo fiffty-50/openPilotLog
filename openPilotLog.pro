@@ -34,7 +34,8 @@ SOURCES += \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
-    src/gui/widgets/settingswidget.cpp
+    src/gui/widgets/settingswidget.cpp \
+    src/gui/widgets/totalswidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -54,7 +55,8 @@ HEADERS += \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
-    src/gui/widgets/settingswidget.h
+    src/gui/widgets/settingswidget.h \
+    src/gui/widgets/totalswidget.h
 
 FORMS += \
     mainwindow.ui \
@@ -64,7 +66,8 @@ FORMS += \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
-    src/gui/widgets/settingswidget.ui
+    src/gui/widgets/settingswidget.ui \
+    src/gui/widgets/totalswidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
