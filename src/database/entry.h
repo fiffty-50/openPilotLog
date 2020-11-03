@@ -43,6 +43,8 @@ public:
     bool remove();
     bool exists();
 
+    bool virtual verify();
+
     // Debug functionality
     void print();
     QString debug();

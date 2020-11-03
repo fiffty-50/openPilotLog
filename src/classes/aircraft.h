@@ -28,7 +28,7 @@ class aircraft : public entry
 {
 using entry::entry;
 public:
-    void verify();
+    bool verify() override;
 };
 
 #endif // AIRCRAFT_H
