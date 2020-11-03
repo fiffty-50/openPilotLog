@@ -21,4 +21,3 @@
 #define DEB(expr) \
     qDebug() << "aircraft ::" << __func__ << "\t" << expr
 
-

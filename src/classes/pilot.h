@@ -23,8 +23,6 @@
 class pilot : public entry
 {
     using entry::entry;
-public:
-    bool verify() override;
 };
 
 #endif // PILOT_H
