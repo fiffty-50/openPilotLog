@@ -22,6 +22,14 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__<< "\t" << expr
 
+const auto MAKE_VALID = QPair<QString, QRegularExpression> {
+    "makeLineEdit", QRegularExpression("[a-zA-Z]+")};
+const auto MODEL_VALID = QPair<QString, QRegularExpression> {
+    "modelLineEdit", QRegularExpression("\\w+")};
+const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
+    "variantLineEdit", QRegularExpression("\\w+")};
+const auto LINE_EDIT_VALIDATORS = QVector({MAKE_VALID, MODEL_VALID, VARIANT_VALID});
+
 
 //Dialog to be used to create a new tail
 NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
@@ -31,6 +39,7 @@ NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
     ui->setupUi(this);
     role = edRole;
     setupCompleter();
+    setupValidators();
 
     ui->editLabel->hide();
     ui->registrationLineEdit->setText(newreg);
@@ -44,19 +53,58 @@ NewTail::NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
     ui(new Ui::NewTail)
 {
     oldEntry = dbentry;
-    ui->setupUi(this);
     role = edRole;
+    ui->setupUi(this);
     ui->searchLabel->hide();
     ui->searchLineEdit->hide();
     ui->line->hide();
-    formFiller(dbentry);
+
+    setupValidators();
+    formFiller(oldEntry);
 }
 
 NewTail::~NewTail()
 {
     delete ui;
 }
+/// Functions
 
+/*!
+ * \brief NewTail::setupCompleter creates a QMap<aircaft_id,searchstring> for auto completion,
+ * obtains a QStringList for QCompleter and sets up search line edit accordingly
+ */
+void NewTail::setupCompleter()
+{
+    auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
+    auto vector = Db::customQuery(query, 2);
+    QMap<QString, int> map;
+    for (int i = 0; i < vector.length() - 2 ; i += 2) {
+        if (vector[i] != QLatin1String("")) {
+            map.insert(vector[i], vector[i + 1].toInt());
+        }
+    }
+    //creating QStringlist for QCompleter. This list is identical to a list of map<key>,
+    //but creating it like this is faster.
+    auto cl = new CompletionList(CompleterTarget::aircraft);
+
+    aircraftlist = cl->list;
+    idMap = map;
+
+    QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
+    completer->setFilterMode(Qt::MatchContains);
+    ui->searchLineEdit->setCompleter(completer);
+}
+
+void NewTail::setupValidators()
+{
+    for(const auto& pair : LINE_EDIT_VALIDATORS){
+        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
+        auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+        line_edit->setValidator(validator);
+    }
+}
 /*!
  * \brief NewTail::formFiller populates the Dialog with the
  * information contained in an aircraft object.
@@ -90,35 +138,6 @@ void NewTail::formFiller(Aircraft entry)
     ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1") + 1);
     ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1") + 1);
     ui->weightComboBox->setCurrentIndex(weight.indexOf("1") + 1);
-}
-
-/// Functions
-
-/*!
- * \brief NewTail::setupCompleter creates a QMap<aircaft_id,searchstring> for auto completion,
- * obtains a QStringList for QCompleter and sets up search line edit accordingly
- */
-void NewTail::setupCompleter()
-{
-    auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
-    auto vector = Db::customQuery(query, 2);
-    QMap<QString, int> map;
-    for (int i = 0; i < vector.length() - 2 ; i += 2) {
-        if (vector[i] != QLatin1String("")) {
-            map.insert(vector[i], vector[i + 1].toInt());
-        }
-    }
-    //creating QStringlist for QCompleter
-    auto cl = new CompletionList(CompleterTarget::aircraft);
-
-    aircraftlist = cl->list;
-    idMap = map;
-
-    QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setFilterMode(Qt::MatchContains);
-    ui->searchLineEdit->setCompleter(completer);
 }
 /*!
  * \brief NewTail::verify A simple check for empty recommended fields in the form
@@ -161,7 +180,11 @@ bool NewTail::verify()
         return false;
     }
 }
-
+/*!
+ * \brief NewTail::submitForm collects input from Line Edits and creates
+ * or updates a database entry and commits or updates the database
+ * \param edRole editExisting or createNew
+ */
 void NewTail::submitForm(Db::editRole edRole)
 {
     DEB("Creating Database Object...");
@@ -176,7 +199,6 @@ void NewTail::submitForm(Db::editRole edRole)
             newData.insert(name, le->text());
         }
     }
-
     //prepare comboboxes
     QVector<QString> operation = {"singlepilot", "multipilot"};
     QVector<QString> ppNumber  = {"singleengine", "multiengine"};
@@ -202,8 +224,8 @@ void NewTail::submitForm(Db::editRole edRole)
     //create db object
     switch (edRole) {
     case Db::createNew: {
-        auto newEntry = new Aircraft("tails", newData);;
-        newEntry->commit();
+        auto newEntry = Aircraft("tails", newData);;
+        newEntry.commit();
         break;
     }
     case Db::editExisting:
@@ -275,7 +297,7 @@ void NewTail::on_buttonBox_accepted()
             if (!setting.value("userdata/acAllowIncomplete").toInt()) {
                 auto nope = new QMessageBox(this);
                 nope->setText("Some or all fields are empty.\nPlease go back and "
-                              "complete.\n\nYou can allow logging incomplete entries on the settings page.");
+                              "complete the form.\n\nYou can allow logging incomplete entries on the settings page.");
                 nope->show();
             } else {
                 QMessageBox::StandardButton reply;

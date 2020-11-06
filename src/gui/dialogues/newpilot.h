@@ -20,6 +20,8 @@
 
 #include <QDialog>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include "src/classes/pilot.h"
 
 namespace Ui {
@@ -44,6 +46,8 @@ private:
     Db::editRole role;
 
     Pilot oldEntry;
+
+    void setupValidators();
 
     void formFiller();
 

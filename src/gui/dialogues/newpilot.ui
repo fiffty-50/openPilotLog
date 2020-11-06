@@ -15,7 +15,11 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="1">
-    <widget class="QLineEdit" name="phoneLineEdit"/>
+    <widget class="QLineEdit" name="phoneLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="picfirstnameLabel">
@@ -32,7 +36,11 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLineEdit" name="emailLineEdit"/>
+    <widget class="QLineEdit" name="emailLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="aliasLabel">
@@ -56,10 +64,18 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="piclastnameLineEdit"/>
+    <widget class="QLineEdit" name="piclastnameLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="picfirstnameLineEdit"/>
+    <widget class="QLineEdit" name="picfirstnameLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="piclastnameLabel">
@@ -69,12 +85,19 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="aliasLineEdit"/>
+    <widget class="QLineEdit" name="aliasLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
    </item>
    <item row="3" column="1">
     <widget class="QLineEdit" name="employeeidLineEdit">
      <property name="text">
       <string/>
+     </property>
+     <property name="maxLength">
+      <number>40</number>
      </property>
     </widget>
    </item>
@@ -90,6 +113,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>picfirstnameLineEdit</tabstop>
+  <tabstop>piclastnameLineEdit</tabstop>
+  <tabstop>aliasLineEdit</tabstop>
+  <tabstop>employeeidLineEdit</tabstop>
+  <tabstop>phoneLineEdit</tabstop>
+  <tabstop>emailLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

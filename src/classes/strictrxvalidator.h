@@ -26,6 +26,7 @@
  */
 class StrictRxValidator : public QRegularExpressionValidator
 {
+    using QRegularExpressionValidator::QRegularExpressionValidator;
 public:
     QValidator::State validate(QString &txt, int &pos) const;
 };

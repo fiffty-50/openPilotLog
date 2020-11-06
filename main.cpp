@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w;
-    w.showMaximized();
+    //w.showMaximized();
+    w.show();
     return openPilotLog.exec();
 }

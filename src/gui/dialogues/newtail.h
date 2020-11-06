@@ -22,8 +22,10 @@
 #include <QCompleter>
 #include <QMessageBox>
 #include <QSettings>
+#include <QRegularExpression>
 #include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
+#include "src/classes/strictrxvalidator.h"
 
 namespace Ui {
 class NewTail;
@@ -40,16 +42,12 @@ class NewTail : public QDialog
     Q_OBJECT
 
 public:
-
-    //explicit NewTail(aircraft acft, QWidget *parent = nullptr);
     //to create new tail from scratch
     explicit NewTail(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
     //to edit existing tail
     explicit NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
 
     ~NewTail();
-
-
 private slots:
 
     void on_searchLineEdit_textChanged(const QString &arg1);
@@ -72,22 +70,19 @@ private:
 
     Aircraft oldEntry;
 
-    void submitForm(Db::editRole edRole);
-
-    void setupCompleter();
-
-    //void formFiller(aircraft);
-
-    void formFiller(Aircraft);
-
-    bool verify();
-
-    //aircraft createAircraftFromSelection();
-
     QStringList aircraftlist;
 
     QMap<QString, int> idMap;
 
+    void submitForm(Db::editRole edRole);
+
+    void setupCompleter();
+
+    void setupValidators();
+
+    void formFiller(Aircraft);
+
+    bool verify();
 };
 
 #endif // NEWTAIL_H

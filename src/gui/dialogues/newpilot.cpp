@@ -21,12 +21,33 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
+const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+    "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
+const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+    "piclastnameLineEdit", QRegularExpression("\\w+")};
+const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+    "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+    "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+                                        "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
+const auto ALIAS_VALID = QPair<QString, QRegularExpression> {
+    "aliasLineEdit", QRegularExpression("\\w+")};
+const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+    "employeeidLineEdit", QRegularExpression("\\w+")};
+
+
+
+const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
+                                           PHONE_VALID,     EMAIL_VALID,
+                                           ALIAS_VALID,     EMPLOYEENR_VALID});
+
 NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
     role = edRole;
     ui->setupUi(this);
+    setupValidators();
 }
 
 NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
@@ -36,6 +57,7 @@ NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     oldEntry = existingEntry;
     role = edRole;
     ui->setupUi(this);
+    setupValidators();
     formFiller();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -47,12 +69,22 @@ NewPilot::~NewPilot()
 
 void NewPilot::on_buttonBox_accepted()
 {
-    DEB("aseontuh");
+    DEB("accepted.");
     if (ui->piclastnameLineEdit->text().isEmpty()) {
         auto mb = new QMessageBox(this);
         mb->setText("Last Name is required.");
+        mb->show();
     } else {
         submitForm();
+    }
+}
+
+void NewPilot::setupValidators()
+{
+    for(const auto& pair : LINE_EDIT_VALIDATORS){
+        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
+        auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+        line_edit->setValidator(validator);
     }
 }
 
