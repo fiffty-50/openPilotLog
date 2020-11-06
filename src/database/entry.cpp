@@ -20,21 +20,21 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-entry::entry()
+Entry::Entry()
 {
 
 }
 
-entry::entry(QString table, int row)
+Entry::Entry(QString table, int row)
 {
     //retreive database layout
-    const auto dbContent = dbInfo();
+    const auto dbContent = DbInfo();
 
     if (dbContent.tables.contains(table)) {
         position.first = table;
         columns = dbContent.format.value(table);
     } else {
-        DEB(table << " not a table in database. Unable to create entry object.");
+        DEB(table << " not a table in database. Unable to create Entry object.");
         position.first = QString();
     }
 
@@ -44,7 +44,7 @@ entry::entry(QString table, int row)
     q.next();
     int rows = q.value(0).toInt();
     if (rows == 0) {
-        DEB("No entry found for row id: " << row );
+        DEB("No Entry found for row id: " << row );
         position.second = 0;
     } else {
         DEB("Retreiving data for row id: " << row);
@@ -69,17 +69,17 @@ entry::entry(QString table, int row)
     }
 }
 
-entry::entry(QString table, QMap<QString, QString> newData)
+Entry::Entry(QString table, QMap<QString, QString> newData)
 {
     //retreive database layout
-    const auto dbContent = dbInfo();
+    const auto dbContent = DbInfo();
 
     if (dbContent.tables.contains(table)) {
         position.first = table;
         position.second = 0;
         columns = dbContent.format.value(table);
     } else {
-        DEB(table << " not a table in database. Unable to create entry object.");
+        DEB(table << " not a table in database. Unable to create Entry object.");
         position.first = QString();
     }
     //Check validity of newData
@@ -97,12 +97,12 @@ entry::entry(QString table, QMap<QString, QString> newData)
     data = newData;
 }
 
-void entry::setData(const QMap<QString, QString> &value)
+void Entry::setData(const QMap<QString, QString> &value)
 {
     data = value;
 }
 
-bool entry::commit()
+bool Entry::commit()
 {
     if (exists()) {
         return update();
@@ -111,7 +111,7 @@ bool entry::commit()
     }
 }
 
-bool entry::remove()
+bool Entry::remove()
 {
     if (exists()) {
         QString statement = "DELETE FROM " + position.first +
@@ -131,7 +131,7 @@ bool entry::remove()
     }
 }
 
-bool entry::exists()
+bool Entry::exists()
 {
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + position.first +
@@ -148,7 +148,7 @@ bool entry::exists()
     }
 }
 
-bool entry::insert()
+bool Entry::insert()
 {
     DEB("Inserting...");
     //check prerequisites
@@ -181,7 +181,7 @@ bool entry::insert()
     }
 }
 
-bool entry::update()
+bool Entry::update()
 {
     //create query
     QString statement = "UPDATE " + position.first + " SET ";
@@ -211,7 +211,7 @@ bool entry::update()
 }
 
 //Debug
-void entry::print()
+void Entry::print()
 {
     QString v = "Object status:\t\033[38;2;0;255;0;48;2;0;0;0m VALID \033[0m\n";
     QString nv = "Object status:\t\033[38;2;255;0;0;48;2;0;0;0m INVALID \033[0m\n";
@@ -227,7 +227,7 @@ void entry::print()
     }
 }
 
-QString entry::debug()
+QString Entry::debug()
 {
     print();
     return QString();

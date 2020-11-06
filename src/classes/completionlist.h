@@ -21,7 +21,7 @@
 #include <QCoreApplication>
 #include "src/database/db.h"
 
-class completerTarget
+class CompleterTarget
 {
 public:
     enum targets {airports, pilots, registrations, aircraft};
@@ -31,17 +31,14 @@ public:
 /*!
  * \brief The completionList class provides QStringLists to be used by a QCompleter
  */
-class completionList
+class CompletionList
 {
 public:
-
-
-
     QStringList list;
 
-    completionList();
+    CompletionList();
 
-    completionList(completerTarget::targets);
+    CompletionList(CompleterTarget::targets);
 };
 
 #endif // COMPLETIONLIST_H

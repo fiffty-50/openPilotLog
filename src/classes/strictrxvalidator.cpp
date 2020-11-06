@@ -15,9 +15,9 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "strictregularexpressionvalidator.h"
+#include "strictrxvalidator.h"
 
-QValidator::State StrictRegularExpressionValidator::validate(QString &txt, int &pos) const
+QValidator::State StrictRxValidator::validate(QString &txt, int &pos) const
 {
     auto validation = QRegularExpressionValidator::validate(txt, pos);
     if (validation == QValidator::Intermediate) {

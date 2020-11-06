@@ -77,7 +77,7 @@ void pilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     setSelectedPilot(index.indexes()[0].data().toInt());
     DEB("Selected Pilot with ID#: " << selectedPilot);
 
-    auto np = new NewPilot(pilot("pilots", selectedPilot), db::editExisting, this);
+    auto np = new NewPilot(Pilot("pilots", selectedPilot), Db::editExisting, this);
 
     np->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(np);
@@ -91,7 +91,7 @@ void pilotsWidget::setSelectedPilot(const qint32 &value)
 
 void pilotsWidget::on_newButton_clicked()
 {
-    auto np = new NewPilot(db::createNew, this);
+    auto np = new NewPilot(Db::createNew, this);
     np->show();
 }
 
@@ -99,7 +99,7 @@ void pilotsWidget::on_deletePushButton_clicked()
 {
     if (selectedPilot > 0) {
 
-        auto pil = new pilot("pilots", selectedPilot);
+        auto pil = new Pilot("pilots", selectedPilot);
         pil->remove();
 
 

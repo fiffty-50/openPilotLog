@@ -22,7 +22,7 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-void db::connect()
+void Db::connect()
 {
     const QString driver("QSQLITE");
 
@@ -43,23 +43,23 @@ void db::connect()
     }
 }
 /*!
- * \brief db::exists checks if a certain value exists in the database with a sqlite WHERE statement
+ * \brief Db::exists checks if a certain value exists in the database with a sqlite WHERE statement
  * \param table - Name of the table
  * \param column - Name of the column
  * \param value - The value to be checked
  * \return
  */
-bool db::exists(QString column, QString table, QString checkColumn, QString value,
-                db::matchType match)
+bool Db::exists(QString column, QString table, QString checkColumn, QString value,
+                Db::matchType match)
 {
     bool output = false;
     QString statement = "SELECT " + column + " FROM " + table + " WHERE " + checkColumn;
 
     switch (match) {
-    case db::exactMatch:
+    case Db::exactMatch:
         statement += " = '" + value + QLatin1Char('\'');
         break;
-    case db::partialMatch:
+    case Db::partialMatch:
         value.append(QLatin1Char('%'));
         value.prepend(QLatin1Char('%'));
         statement.append(" LIKE '" + value + QLatin1Char('\''));
@@ -96,20 +96,20 @@ bool db::exists(QString column, QString table, QString checkColumn, QString valu
  * \param table - Name of the table
  * \param column - Name of the column
  * \param value - Identifier for WHERE statement
- * \param match - enum db::exactMatch or db::partialMatch
+ * \param match - enum Db::exactMatch or Db::partialMatch
  * \return QString
  */
-QString db::singleSelect(QString column, QString table, QString checkColumn, QString value,
-                         db::matchType match)
+QString Db::singleSelect(QString column, QString table, QString checkColumn, QString value,
+                         Db::matchType match)
 {
     QString statement = "SELECT " + column + " FROM " + table + " WHERE " + checkColumn;
     QString result;
 
     switch (match) {
-    case db::exactMatch:
+    case Db::exactMatch:
         statement += " = '" + value + QLatin1Char('\'');
         break;
-    case db::partialMatch:
+    case Db::partialMatch:
         value.append(QLatin1Char('%'));
         value.prepend(QLatin1Char('%'));
         statement.append(" LIKE '" + value + QLatin1Char('\''));
@@ -136,16 +136,16 @@ QString db::singleSelect(QString column, QString table, QString checkColumn, QSt
 }
 
 /*!
- * \brief db::multiSelect Returns multiple values from the database with a sqlite WHERE statement
+ * \brief Db::multiSelect Returns multiple values from the database with a sqlite WHERE statement
  * \param table - Name of the table
  * \param columns - QVector<QString> Names of the columns to be queried
  * \param value - Identifier for WHERE statement
  * \param checkColumn - column to match value to
- * \param match - enum db::exactMatch or db::partialMatch
+ * \param match - enum Db::exactMatch or Db::partialMatch
  * \return QVector<QString>
  */
-QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QString checkColumn,
-                                 QString value, db::matchType match)
+QVector<QString> Db::multiSelect(QVector<QString> columns, QString table, QString checkColumn,
+                                 QString value, Db::matchType match)
 {
     QString statement = "SELECT ";
     for (const auto &column : columns) {
@@ -157,10 +157,10 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QStrin
     statement.append(" FROM " + table + " WHERE " + checkColumn);
 
     switch (match) {
-    case db::exactMatch:
+    case Db::exactMatch:
         statement += " = '" + value + QLatin1Char('\'');
         break;
-    case db::partialMatch:
+    case Db::partialMatch:
         value.append(QLatin1Char('%'));
         value.prepend(QLatin1Char('%'));
         statement.append(" LIKE '" + value + QLatin1Char('\''));
@@ -189,12 +189,12 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QStrin
     }
 }
 /*!
- * \brief db::multiSelect Returns a complete column(s) for a given table.
+ * \brief Db::multiSelect Returns a complete column(s) for a given table.
  * \param column
  * \param table
  * \return
  */
-QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
+QVector<QString> Db::multiSelect(QVector<QString> columns, QString table)
 {
     QString statement = "SELECT ";
     for (const auto &column : columns) {
@@ -228,28 +228,28 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
 }
 
 /*!
- * \brief db::singleUpdate Updates a single value in the database.
+ * \brief Db::singleUpdate Updates a single value in the database.
  * Query format: UPDATE table SET column = value WHERE checkcolumn =/LIKE checkvalue
  * \param table Name of the table to be updated
  * \param column Name of the column to be updated
  * \param checkColumn Name of the column for WHERE statement
  * \param value The value to be set
  * \param checkvalue The value for the WHERE statement
- * \param match enum db::exactMatch or db::partialMatch
+ * \param match enum Db::exactMatch or Db::partialMatch
  * \return true on success, otherwise error messages in debug out
  */
-bool db::singleUpdate(QString table, QString column, QString value, QString checkColumn,
-                      QString checkvalue, db::matchType match)
+bool Db::singleUpdate(QString table, QString column, QString value, QString checkColumn,
+                      QString checkvalue, Db::matchType match)
 {
     QString statement = "UPDATE " + table;
     statement.append(QLatin1String(" SET ") + column + QLatin1String(" = '") + value);
     statement.append(QLatin1String("' WHERE "));
 
     switch (match) {
-    case db::exactMatch:
+    case Db::exactMatch:
         statement.append(checkColumn + " = '" + checkvalue + QLatin1Char('\''));
         break;
-    case db::partialMatch:
+    case Db::partialMatch:
         value.append(QLatin1Char('%'));
         value.prepend(QLatin1Char('%'));
         statement.append(checkColumn + " LIKE '" + checkvalue + QLatin1Char('\''));
@@ -271,12 +271,12 @@ bool db::singleUpdate(QString table, QString column, QString value, QString chec
     }
 }
 /*!
- * \brief db::customQuery Can be used to send a complex query to the database.
+ * \brief Db::customQuery Can be used to send a complex query to the database.
  * \param query - the full sql query statement
  * \param returnValues - the number of expected return values
  * \return QVector<QString> of results
  */
-QVector<QString> db::customQuery(QString query, int returnValues)
+QVector<QString> Db::customQuery(QString query, int returnValues)
 {
     QSqlQuery q(query);
     DEB(query);

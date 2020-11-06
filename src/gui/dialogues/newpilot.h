@@ -31,8 +31,8 @@ class NewPilot : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewPilot(db::editRole, QWidget *parent = nullptr);
-    explicit NewPilot(pilot, db::editRole, QWidget *parent = nullptr);
+    explicit NewPilot(Db::editRole, QWidget *parent = nullptr);
+    explicit NewPilot(Pilot, Db::editRole, QWidget *parent = nullptr);
     ~NewPilot();
 
 private slots:
@@ -41,9 +41,9 @@ private slots:
 private:
     Ui::NewPilot *ui;
 
-    db::editRole role;
+    Db::editRole role;
 
-    pilot oldEntry;
+    Pilot oldEntry;
 
     void formFiller();
 

@@ -29,13 +29,13 @@
 #include <QDebug>
 
 /*!
- * \brief The db class provides a basic API for accessing the database programatically.
+ * \brief The Db class provides a basic API for accessing the database programatically.
  * It is used to set up the initial connection and various basic queries can be
  * executed using a set of static functions. When interfacing with the database
  * for the purpose of adding, deleting or updating entries, the use of the entry class
  * and its subclasses is recommended.
  */
-class db
+class Db
 {
 public:
     /*!
@@ -52,13 +52,13 @@ public:
 
     static void             connect();
     static bool             exists(QString column, QString table, QString checkColumn,
-                                   QString value, db::matchType match);
+                                   QString value, Db::matchType match);
     static bool             singleUpdate(QString table, QString column, QString value,
-                                         QString checkColumn, QString checkvalue, db::matchType match);
+                                         QString checkColumn, QString checkvalue, Db::matchType match);
     static QString          singleSelect(QString column, QString table, QString checkColumn,
-                                         QString value, db::matchType match);
+                                         QString value, Db::matchType match);
     static QVector<QString> multiSelect(QVector<QString> columns, QString table,
-                                        QString checkColumn, QString value, db::matchType match);
+                                        QString checkColumn, QString value, Db::matchType match);
     static QVector<QString> multiSelect(QVector<QString> columns, QString table);
     static QVector<QString> customQuery(QString query, int returnValues);
 

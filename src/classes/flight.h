@@ -24,9 +24,9 @@
 #include "src/database/entry.h"
 
 
-class flight : public entry
+class Flight : public Entry
 {
-    using entry::entry;
+    using Entry::Entry;
 };
 
 #endif // FLIGHT_H

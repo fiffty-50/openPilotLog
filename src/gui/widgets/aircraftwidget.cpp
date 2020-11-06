@@ -82,7 +82,7 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
-    auto nt = new NewTail(aircraft("tails", selectedAircraft), db::editExisting, this);
+    auto nt = new NewTail(Aircraft("tails", selectedAircraft), Db::editExisting, this);
     //auto nt = new NewTail(db(db::tails,selectedAircraft),this);
 
     nt->setWindowFlag(Qt::Widget);
@@ -94,7 +94,7 @@ void aircraftWidget::on_deleteButton_clicked()
 {
     if (selectedAircraft > 0) {
 
-        auto ac = new aircraft("tails", selectedAircraft);
+        auto ac = new Aircraft("tails", selectedAircraft);
         ac->remove();
 
 
@@ -117,6 +117,6 @@ void aircraftWidget::on_deleteButton_clicked()
 
 void aircraftWidget::on_newButton_clicked()
 {
-    auto nt = new NewTail(QString(), db::createNew, this);
+    auto nt = new NewTail(QString(), Db::createNew, this);
     nt->show();
 }

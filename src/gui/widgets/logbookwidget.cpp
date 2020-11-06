@@ -109,8 +109,8 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
         QVector<QString> columns = {
             "doft", "dept", "dest"
         };
-        QVector<QString> details = db::multiSelect(columns, "flights", "id",
-                                                   QString::number(selectedFlight), db::exactMatch);
+        QVector<QString> details = Db::multiSelect(columns, "flights", "id",
+                                                   QString::number(selectedFlight), Db::exactMatch);
         QString detailsstring = "The following flight will be deleted:\n\n";
         for (const auto &item : details) {
             detailsstring.append(item);
@@ -123,7 +123,7 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             DEB("Deleting flight with ID# " << selectedFlight);
-            auto en = new flight("flights", selectedFlight);
+            auto en = new Flight("flights", selectedFlight);
             en->remove();
 
             QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view

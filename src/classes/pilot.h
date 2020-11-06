@@ -20,9 +20,9 @@
 #include "src/database/entry.h"
 
 
-class pilot : public entry
+class Pilot : public Entry
 {
-    using entry::entry;
+    using Entry::Entry;
 };
 
 #endif // PILOT_H

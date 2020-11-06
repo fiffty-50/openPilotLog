@@ -21,7 +21,7 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-NewPilot::NewPilot(db::editRole edRole, QWidget *parent) :
+NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
@@ -29,7 +29,7 @@ NewPilot::NewPilot(db::editRole edRole, QWidget *parent) :
     ui->setupUi(this);
 }
 
-NewPilot::NewPilot(pilot existingEntry, db::editRole edRole, QWidget *parent) :
+NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
@@ -91,13 +91,13 @@ void NewPilot::submitForm()
     DEB("Role: " << role);
     //create db object
     switch (role) {
-    case db::createNew: {
-        auto newEntry = pilot("pilots", newData);;
+    case Db::createNew: {
+        auto newEntry = Pilot("pilots", newData);;
         DEB("New Object: ");
         newEntry.commit();
         break;
     }
-    case db::editExisting:
+    case Db::editExisting:
         oldEntry.setData(newData);
         DEB("updated entry: " << oldEntry);
         oldEntry.commit();

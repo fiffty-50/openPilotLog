@@ -22,10 +22,10 @@
 #include <QDebug>
 #include "db.h"
 
-class dbInfo
+class DbInfo
 {
 public:
-    dbInfo();
+    DbInfo();
 
     QString version = QString();
 

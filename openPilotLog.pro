@@ -24,7 +24,7 @@ SOURCES += \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
     src/classes/stat.cpp \
-    src/classes/strictregularexpressionvalidator.cpp \
+    src/classes/strictrxvalidator.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
     src/database/entry.cpp \
@@ -45,7 +45,7 @@ HEADERS += \
     src/classes/flight.h \
     src/classes/pilot.h \
     src/classes/stat.h \
-    src/classes/strictregularexpressionvalidator.h \
+    src/classes/strictrxvalidator.h \
     src/database/db.h \
     src/database/dbinfo.h \
     src/database/entry.h \

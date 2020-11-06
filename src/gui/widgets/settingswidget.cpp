@@ -106,7 +106,7 @@ void settingsWidget::themeGroup_toggled(int id)
 void settingsWidget::on_aboutPushButton_clicked()
 {
     auto mb = new QMessageBox(this);
-    QString SQLITE_VERSION = dbInfo().version;
+    QString SQLITE_VERSION = DbInfo().version;
     QString text = QMessageBox::tr(
 
                        "<h3><center>About openPilotLog</center></h3>"

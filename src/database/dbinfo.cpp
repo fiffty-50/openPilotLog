@@ -18,8 +18,8 @@
 #include "dbinfo.h"
 // Debug Makro
 #define DEB(expr) \
-    qDebug() << "dbInfo ::" << __PRETTY_FUNCTION__ << "\t" << expr
-dbInfo::dbInfo()
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+DbInfo::DbInfo()
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
     tables = db.tables().toVector();
@@ -28,10 +28,10 @@ dbInfo::dbInfo()
 }
 
 /*!
- * \brief dbInfo::getColumnNames Looks up column names for all tables
+ * \brief DbInfo::getColumnNames Looks up column names for all tables
  * in the database.
  */
-void dbInfo::getColumnNames()
+void DbInfo::getColumnNames()
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
     QVector<QString> columnNames;
@@ -48,7 +48,7 @@ void dbInfo::getColumnNames()
 /*!
  * \brief db::sqliteversion queries database version.
  */
-void dbInfo::sqliteversion()
+void DbInfo::sqliteversion()
 {
     QSqlQuery q;
     q.prepare("SELECT sqlite_version()");

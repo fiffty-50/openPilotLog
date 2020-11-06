@@ -9,7 +9,7 @@ totalsWidget::totalsWidget(QWidget *parent) :
     ui(new Ui::totalsWidget)
 {
     ui->setupUi(this);
-    auto data = stat::totals();
+    auto data = Stat::totals();
     DEB("Filling Totals Line Edits...");
     for (const auto &field : data) {
         auto line_edit = parent->findChild<QLineEdit *>(field.first + "LineEdit");

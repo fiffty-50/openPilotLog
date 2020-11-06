@@ -18,12 +18,12 @@
 #include "calc.h"
 //#include "dbman.cpp"
 /*!
- * \brief calc::blocktime Calculates Block Time for a given departure and arrival time
+ * \brief Calc::blocktime Calculates Block Time for a given departure and arrival time
  * \param tofb QTime Time Off Blocks
  * \param tonb QTime Time On Blocks
  * \return Block Time in minutes
  */
-QTime calc::blocktime(QTime tofb, QTime tonb)
+QTime Calc::blocktime(QTime tofb, QTime tonb)
 {
     if (tonb > tofb) { // landing same day
         QTime blocktimeout(0, 0); // initialise return value at midnight
@@ -44,11 +44,11 @@ QTime calc::blocktime(QTime tofb, QTime tonb)
 
 
 /*!
- * \brief calc::minutes_to_string Converts database time to String Time
+ * \brief Calc::minutes_to_string Converts database time to String Time
  * \param blockminutes int from database
  * \return String hh:mm
  */
-QString calc::minutes_to_string(QString blockminutes)
+QString Calc::minutes_to_string(QString blockminutes)
 {
     int minutes = blockminutes.toInt();
     QString hour = QString::number(minutes / 60);
@@ -64,11 +64,11 @@ QString calc::minutes_to_string(QString blockminutes)
 };
 
 /*!
- * \brief calc::time_to_minutes converts QTime to int minutes
+ * \brief Calc::time_to_minutes converts QTime to int minutes
  * \param time QTime
  * \return int time as number of minutes
  */
-int calc::time_to_minutes(QTime time)
+int Calc::time_to_minutes(QTime time)
 {
     QString timestring = time.toString("hh:mm");
     int minutes = (timestring.left(2).toInt()) * 60;
@@ -77,11 +77,11 @@ int calc::time_to_minutes(QTime time)
 }
 
 /*!
- * \brief calc::string_to_minutes Converts String Time to String Number of Minutes
+ * \brief Calc::string_to_minutes Converts String Time to String Number of Minutes
  * \param timestring "hh:mm"
  * \return String number of minutes
  */
-int calc::string_to_minutes(QString timestring)
+int Calc::string_to_minutes(QString timestring)
 {
     int minutes = (timestring.left(2).toInt()) * 60;
     minutes += timestring.right(2).toInt();
@@ -90,7 +90,7 @@ int calc::string_to_minutes(QString timestring)
 }
 
 /*!
- * The purpose of the following functions is to provide functionality enabling the calculation of
+ * The purpose of the following functions is to provide functionality enabling the Calculation of
  * night flying time. EASA defines night as follows:
  *
  * ‘Night’  means  the  period  between  the  end  of  evening  civil  twilight  and  the  beginning  of
@@ -99,14 +99,14 @@ int calc::string_to_minutes(QString timestring)
  *
  *
  *
- * This is the proccess of calculating night time in this program:
+ * This is the proccess of Calculating night time in this program:
  *
  * 1) A flight from A to B follows the Great Circle Track along these two points
  *    at an average cruising height of 11km. (~FL 360)
  *
  * 2) Any time the Elevation of the Sun at the current position is less
  *    than -6 degrees, night conditions are present.
- * 3) The calculation is performed for every minute of flight time.
+ * 3) The Calculation is performed for every minute of flight time.
  *
  * In general, input and output for most functions is decimal degrees, like coordinates
  * are stowed in the airports table. Calculations are normally done using
@@ -118,7 +118,7 @@ int calc::string_to_minutes(QString timestring)
  * \param rad
  * \return degrees
  */
-double calc::radToDeg(double rad)
+double Calc::radToDeg(double rad)
 {
     double deg = rad * (180 / M_PI);
     return deg;
@@ -129,7 +129,7 @@ double calc::radToDeg(double rad)
  * \param deg
  * \return radians
  */
-double calc::degToRad(double deg)
+double Calc::degToRad(double deg)
 {
     double rad = deg * (M_PI / 180);
     return rad;
@@ -140,7 +140,7 @@ double calc::degToRad(double deg)
  * \param rad
  * \return nautical miles
  */
-double calc::radToNauticalMiles(double rad)
+double Calc::radToNauticalMiles(double rad)
 {
     double nm = rad * 3440.06479482;
     return nm;
@@ -154,7 +154,7 @@ double calc::radToNauticalMiles(double rad)
  * \param lon2 Location Longitude in degrees -180:180 W(-) E(+)
  * \return
  */
-double calc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
+double Calc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
 {
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
@@ -173,13 +173,13 @@ double calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
 }
 
 /*!
- * \brief calc::greatCircleDistanceBetweenAirports Calculates Great
+ * \brief Calc::greatCircleDistanceBetweenAirports Calculates Great
  * Circle distance between two coordinates, return in nautical miles.
  * \param dept ICAO 4-letter Airport Identifier
  * \param dest ICAO 4-letter Airport Identifier
  * \return Nautical Miles From Departure to Destination
  */
-double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
+double Calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
 {
     //db::multiSelect("airports", columns, "EDDF", "icao", db::exactMatch);
     /*if(dbAirport::retreiveIcaoCoordinates(dept).isEmpty() || dbAirport::retreiveIcaoCoordinates(dest).isEmpty()){
@@ -188,10 +188,10 @@ double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
     }*/
 
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns, "airports", "icao", dept,
-                                                       db::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns, "airports", "icao", dest,
-                                                       db::exactMatch);
+    QVector<QString> deptCoordinates = Db::multiSelect(columns, "airports", "icao", dept,
+                                                       Db::exactMatch);
+    QVector<QString> destCoordinates = Db::multiSelect(columns, "airports", "icao", dest,
+                                                       Db::exactMatch);
 
     if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
        ) {
@@ -224,10 +224,10 @@ double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
  * \param tblk Total Blocktime in minutes
  * \return coordinates {lat,lon} along the Great Circle Track
  */
-QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
+QVector<QVector<double>> Calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
                                                                double lat2, double lon2, int tblk)
 {
-    double d = greatCircleDistance(lat1, lon1, lat2, lon2); //calculate distance (radians)
+    double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (radians)
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
     lon1 = degToRad(lon1);
@@ -265,16 +265,16 @@ QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, doub
  * Darin C. Koblock: https://www.mathworks.com/matlabcentral/profile/authors/1284781
  * Kevin Godden: https://www.ridgesolutions.ie/index.php/about-us/
  *
- * \param utc_time_point - QDateTime (UTC) for which the elevation is calculated
+ * \param utc_time_point - QDateTime (UTC) for which the elevation is Calculated
  * \param lat - Location Latitude in degrees -90:90 ;S(-) N(+)
  * \param lon - Location Longitude in degrees -180:180 W(-) E(+)
  * \return elevation - double of solar elevation in degrees.
  */
-double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
+double Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
     double Alt =
         11; // I am taking 11 kilometers as an average cruising height for a commercial passenger airplane.
-    // convert current DateTime Object to a J2000 value used in the calculation
+    // convert current DateTime Object to a J2000 value used in the Calculation
     double d = utc_time_point.date().toJulianDay() - 2451544 + utc_time_point.time().hour() / 24.0 +
                utc_time_point.time().minute() / 1440.0;
 
@@ -337,17 +337,17 @@ double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
  * \param tblk - Total block time in minutes
  * \return Total number of minutes under night flying conditions
  */
-int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
+int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
 {
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns, "airports", "icao", dept,
-                                                       db::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns, "airports", "icao", dest,
-                                                       db::exactMatch);
+    QVector<QString> deptCoordinates = Db::multiSelect(columns, "airports", "icao", dept,
+                                                       Db::exactMatch);
+    QVector<QString> destCoordinates = Db::multiSelect(columns, "airports", "icao", dest,
+                                                       Db::exactMatch);
 
     if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
        ) {
-        qDebug() << "calc::calculateNightTime - invalid input. aborting.";
+        qDebug() << "Calc::CalculateNightTime - invalid input. aborting.";
         return 0;
     }
 
@@ -356,10 +356,10 @@ int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     double destLat = degToRad(destCoordinates[0].toDouble());
     double destLon = degToRad(destCoordinates[1].toDouble());
 
-    qDebug() << "calc::calculateNightTime deptLat = " << deptLat;
-    qDebug() << "calc::calculateNightTime deptLon = " << deptLon;
-    qDebug() << "calc::calculateNightTime destLat = " << destLat;
-    qDebug() << "calc::calculateNightTime destLon = " << destLon;
+    qDebug() << "Calc::CalculateNightTime deptLat = " << deptLat;
+    qDebug() << "Calc::CalculateNightTime deptLon = " << deptLon;
+    qDebug() << "Calc::CalculateNightTime destLat = " << destLat;
+    qDebug() << "Calc::CalculateNightTime destLon = " << destLon;
 
     QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon,
                                                                      tblk);
@@ -371,18 +371,18 @@ int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
             nightTime ++;
         }
     }
-    qDebug() << "calc::calculateNightTime result: " << nightTime << " minutes night flying time.";
+    qDebug() << "Calc::CalculateNightTime result: " << nightTime << " minutes night flying time.";
     return nightTime;
 }
 
 /*!
- * \brief calc::formatTimeInput verifies user input and formats to hh:mm
+ * \brief Calc::formatTimeInput verifies user input and formats to hh:mm
  * if the output is not a valid time, an empty string is returned. Accepts
  * input as hh:mm, h:mm, hhmm or hmm.
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
  */
-QString calc::formatTimeInput(QString userinput)
+QString Calc::formatTimeInput(QString userinput)
 {
     QString output; //
     QTime temptime; //empty time object is invalid by default

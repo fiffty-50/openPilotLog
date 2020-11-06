@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    db::connect();
+    Db::connect();
 
     // Set up Toolbar
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -125,7 +125,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    auto nt = new NewTail(QString(), db::createNew, this);
+    auto nt = new NewTail(QString(), Db::createNew, this);
     nt->show();
 }
 
@@ -138,6 +138,6 @@ void MainWindow::on_actionPilots_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    auto np = new NewPilot(db::createNew, this);
+    auto np = new NewPilot(Db::createNew, this);
     np->show();
 }

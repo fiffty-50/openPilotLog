@@ -28,7 +28,7 @@
  * outside of the database. This includes tasks like converting different units and formats,
  * or functions calculating block time or night time.
  */
-class calc
+class Calc
 {
 public:
 

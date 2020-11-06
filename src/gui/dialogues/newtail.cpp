@@ -24,7 +24,7 @@
 
 
 //Dialog to be used to create a new tail
-NewTail::NewTail(QString newreg, db::editRole edRole, QWidget *parent) :
+NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -39,7 +39,7 @@ NewTail::NewTail(QString newreg, db::editRole edRole, QWidget *parent) :
 }
 
 //Dialog to be used to edit an existing tail
-NewTail::NewTail(aircraft dbentry, db::editRole edRole, QWidget *parent) :
+NewTail::NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -62,7 +62,7 @@ NewTail::~NewTail()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTail::formFiller(aircraft entry)
+void NewTail::formFiller(Aircraft entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
@@ -101,7 +101,7 @@ void NewTail::formFiller(aircraft entry)
 void NewTail::setupCompleter()
 {
     auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
-    auto vector = db::customQuery(query, 2);
+    auto vector = Db::customQuery(query, 2);
     QMap<QString, int> map;
     for (int i = 0; i < vector.length() - 2 ; i += 2) {
         if (vector[i] != QLatin1String("")) {
@@ -109,7 +109,7 @@ void NewTail::setupCompleter()
         }
     }
     //creating QStringlist for QCompleter
-    auto cl = new completionList(completerTarget::aircraft);
+    auto cl = new CompletionList(CompleterTarget::aircraft);
 
     aircraftlist = cl->list;
     idMap = map;
@@ -162,7 +162,7 @@ bool NewTail::verify()
     }
 }
 
-void NewTail::submitForm(db::editRole edRole)
+void NewTail::submitForm(Db::editRole edRole)
 {
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;
@@ -201,12 +201,12 @@ void NewTail::submitForm(db::editRole edRole)
     }
     //create db object
     switch (edRole) {
-    case db::createNew: {
-        auto newEntry = new aircraft("tails", newData);;
+    case Db::createNew: {
+        auto newEntry = new Aircraft("tails", newData);;
         newEntry->commit();
         break;
     }
-    case db::editExisting:
+    case Db::editExisting:
         oldEntry.setData(newData);
         oldEntry.commit();
         break;
@@ -222,7 +222,7 @@ void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(aircraft("aircraft", idMap.value(arg1)));
+        formFiller(Aircraft("aircraft", idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     } else {
         //for example, editing finished without selecting a result from Qcompleter

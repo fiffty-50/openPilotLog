@@ -22,16 +22,16 @@
 #include "src/database/db.h"
 #include "src/database/dbinfo.h"
 /*!
- * \brief The entry class is the base class for database entries.
+ * \brief The Entry class is the base class for database entries.
  * It can be seen as a row in a table within the database.
  *
  */
-class entry
+class Entry
 {
 public:
-    entry();
-    entry(QString table, int row);
-    entry(QString table, QMap<QString, QString> newData);
+    Entry();
+    Entry(QString table, int row);
+    Entry(QString table, QMap<QString, QString> newData);
 
 
 

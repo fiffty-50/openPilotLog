@@ -17,7 +17,7 @@
  */
 #include "completionlist.h"
 
-completionList::completionList()
+CompletionList::CompletionList()
 {
 
 }
@@ -27,32 +27,32 @@ completionList::completionList()
  * Access object->list for the list.
  * \param type see enum completerTarget::targets
  */
-completionList::completionList(completerTarget::targets type)
+CompletionList::CompletionList(CompleterTarget::targets type)
 {
     QString query;
     QVector<QString> columns;
     QVector<QString> result;
 
     switch (type) {
-    case completerTarget::pilots:
+    case CompleterTarget::pilots:
         query.append("SELECT piclastname||', '||picfirstname FROM pilots");
-        result = db::customQuery(query, 1);
+        result = Db::customQuery(query, 1);
         break;
-    case completerTarget::airports:
+    case CompleterTarget::airports:
         columns.append("icao");
         columns.append("iata");
-        result = db::multiSelect(columns, "airports");
+        result = Db::multiSelect(columns, "airports");
         break;
-    case completerTarget::registrations:
+    case CompleterTarget::registrations:
         columns.append("registration");
-        result = db::multiSelect(columns, "tails");
+        result = Db::multiSelect(columns, "tails");
         break;
-    case completerTarget::aircraft:
+    case CompleterTarget::aircraft:
         query.append("SELECT make||' '||model||'-'||variant FROM aircraft");
-        result = db::customQuery(query, 1);
+        result = Db::customQuery(query, 1);
         break;
     }
 
-    completionList::list = result.toList();
-    completionList::list.removeAll(QString(""));
+    CompletionList::list = result.toList();
+    CompletionList::list.removeAll(QString(""));
 }

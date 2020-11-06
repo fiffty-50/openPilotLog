@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef STRICTREGULAREXPRESSIONVALIDATOR_H
-#define STRICTREGULAREXPRESSIONVALIDATOR_H
+#ifndef STRICTRXVALIDATOR_H
+#define STRICTRXVALIDATOR_H
 
 #include <QRegularExpression>
 #include <QValidator>
@@ -24,23 +24,10 @@
 /*!
  * \brief The StrictRegularExpressionValidator class only returns Invalid or Acceptable
  */
-class StrictRegularExpressionValidator : public QRegularExpressionValidator
+class StrictRxValidator : public QRegularExpressionValidator
 {
 public:
     QValidator::State validate(QString &txt, int &pos) const;
 };
 
-#endif // STRICTREGULAREXPRESSIONVALIDATOR_H
-
-/*class StrictRegularExpressionValidator : public QRegularExpressionValidator {
-public:
-    QValidator::State validate(QString& txt, int& pos) const {
-        {
-            auto validation = QRegularExpressionValidator::validate(txt, pos);
-            if(validation == QValidator::Intermediate) {
-                return QValidator::Invalid;
-            }
-            return validation;
-        }
-    }
-};*/
+#endif

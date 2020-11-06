@@ -24,9 +24,9 @@
  * \brief The aircraft class
  *
  */
-class aircraft : public entry
+class Aircraft : public Entry
 {
-    using entry::entry;
+    using Entry::Entry;
 };
 
 #endif // AIRCRAFT_H

@@ -29,21 +29,6 @@ homeWidget::homeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     showTotals();
-    /*ui->totalTimeThisYearDisplay->setText(
-                calc::minutes_to_string(
-                stat::totalTime(stat::calendarYear)));
-    ui->totalTime365DaysDisplay->setText(
-                calc::minutes_to_string(
-                stat::totalTime(stat::rollingYear)));
-    QVector<QString> toldg = stat::currencyTakeOffLanding(90);
-    QString ToLdg;// = toldg[0] + " / " + toldg[1];
-    for(const auto& item : toldg)
-    {
-        ToLdg += item;
-        if(toldg.indexOf(item) != toldg.length()-1) {ToLdg += QLatin1String(" / ");}
-    }*/
-
-    //ui->ToLdgDisplay->setText(ToLdg);
 }
 
 homeWidget::~homeWidget()
@@ -53,8 +38,8 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_pushButton_clicked()
 {
-    auto pl = new pilot("pilots", 498);
-    auto np = new NewPilot(*pl, db::editExisting, this);
+    auto pl = new Pilot("pilots", 498);
+    auto np = new NewPilot(*pl, Db::editExisting, this);
     np->show();
 }
 

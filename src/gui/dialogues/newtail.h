@@ -43,9 +43,9 @@ public:
 
     //explicit NewTail(aircraft acft, QWidget *parent = nullptr);
     //to create new tail from scratch
-    explicit NewTail(QString reg, db::editRole edRole, QWidget *parent = nullptr);
+    explicit NewTail(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
     //to edit existing tail
-    explicit NewTail(aircraft dbentry, db::editRole edRole, QWidget *parent = nullptr);
+    explicit NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
 
     ~NewTail();
 
@@ -68,17 +68,17 @@ private:
 
     Ui::NewTail *ui;
 
-    db::editRole role;
+    Db::editRole role;
 
-    aircraft oldEntry;
+    Aircraft oldEntry;
 
-    void submitForm(db::editRole edRole);
+    void submitForm(Db::editRole edRole);
 
     void setupCompleter();
 
     //void formFiller(aircraft);
 
-    void formFiller(aircraft);
+    void formFiller(Aircraft);
 
     bool verify();
 

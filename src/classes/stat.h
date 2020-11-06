@@ -26,7 +26,7 @@
  * from the database, such as total times or recency. In general, most values are
  * provided as either QString or QVector<QString>.
  */
-class stat
+class Stat
 {
 public:
 
