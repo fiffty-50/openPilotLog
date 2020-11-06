@@ -34,11 +34,11 @@ public:
 
     static QTime blocktime(QTime tofb, QTime tonb);
 
-    static QString minutes_to_string(QString blockminutes);
+    static QString minutesToString(QString blockminutes);
 
-    static int string_to_minutes(QString time);
+    static int stringToMinutes(QString time);
 
-    static int time_to_minutes(QTime time);
+    static int qTimeToMinutes(QTime time);
 
     static double radToDeg(double rad);
 

@@ -48,7 +48,7 @@ QTime Calc::blocktime(QTime tofb, QTime tonb)
  * \param blockminutes int from database
  * \return String hh:mm
  */
-QString Calc::minutes_to_string(QString blockminutes)
+QString Calc::minutesToString(QString blockminutes)
 {
     int minutes = blockminutes.toInt();
     QString hour = QString::number(minutes / 60);
@@ -68,7 +68,7 @@ QString Calc::minutes_to_string(QString blockminutes)
  * \param time QTime
  * \return int time as number of minutes
  */
-int Calc::time_to_minutes(QTime time)
+int Calc::qTimeToMinutes(QTime time)
 {
     QString timestring = time.toString("hh:mm");
     int minutes = (timestring.left(2).toInt()) * 60;
@@ -81,7 +81,7 @@ int Calc::time_to_minutes(QTime time)
  * \param timestring "hh:mm"
  * \return String number of minutes
  */
-int Calc::string_to_minutes(QString timestring)
+int Calc::stringToMinutes(QString timestring)
 {
     int minutes = (timestring.left(2).toInt()) * 60;
     minutes += timestring.right(2).toInt();
@@ -405,9 +405,6 @@ QString Calc::formatTimeInput(QString userinput)
 
     output = temptime.toString("hh:mm");
     if (output.isEmpty()) {
-        /*QMessageBox timeformat(this);
-        timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
-        timeformat.exec();*/
         qDebug() << "Time input is invalid.";
     }
     return output;
