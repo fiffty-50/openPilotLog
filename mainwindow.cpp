@@ -50,8 +50,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->insertWidget(ui->actionNewFlight, spacer);
 
 
-    // create and show homeWidget
-    auto hw = new homeWidget(this);
+    // create and show HomeWidget
+    auto hw = new HomeWidget(this);
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 
@@ -81,14 +81,14 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionHome_triggered()
 {
-    auto hw = new homeWidget(this);
+    auto hw = new HomeWidget(this);
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 }
 
 void MainWindow::on_actionLogbook_triggered()
 {
-    auto lw = new logbookWidget(this);
+    auto lw = new LogbookWidget(this);
     ui->stackedWidget->addWidget(lw);
     ui->stackedWidget->setCurrentWidget(lw);
 }
@@ -96,7 +96,7 @@ void MainWindow::on_actionLogbook_triggered()
 void MainWindow::on_actionSettings_triggered()
 {
     //nope();
-    auto sw = new settingsWidget(this);
+    auto sw = new SettingsWidget(this);
     ui->stackedWidget->addWidget(sw);
     ui->stackedWidget->setCurrentWidget(sw);
 }
@@ -118,7 +118,7 @@ void MainWindow::on_actionNewFlight_triggered()
 
 void MainWindow::on_actionAircraft_triggered()
 {
-    auto aw = new aircraftWidget(this);
+    auto aw = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aw);
     ui->stackedWidget->setCurrentWidget(aw);
 }
@@ -131,7 +131,7 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionPilots_triggered()
 {
-    auto pw = new pilotsWidget(this);
+    auto pw = new PilotsWidget(this);
     ui->stackedWidget->addWidget(pw);
     ui->stackedWidget->setCurrentWidget(pw);
 }

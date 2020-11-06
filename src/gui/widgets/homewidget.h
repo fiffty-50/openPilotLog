@@ -34,22 +34,22 @@
 
 
 namespace Ui {
-class homeWidget;
+class HomeWidget;
 }
 
-class homeWidget : public QWidget
+class HomeWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit homeWidget(QWidget *parent = nullptr);
-    ~homeWidget();
+    explicit HomeWidget(QWidget *parent = nullptr);
+    ~HomeWidget();
 
 private slots:
     void on_pushButton_clicked();
 
 private:
-    Ui::homeWidget *ui;
+    Ui::HomeWidget *ui;
 
     void showTotals();
 };

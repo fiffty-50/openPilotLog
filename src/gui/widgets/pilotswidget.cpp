@@ -22,9 +22,9 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-pilotsWidget::pilotsWidget(QWidget *parent) :
+PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::pilotsWidget)
+    ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
 
@@ -67,12 +67,12 @@ pilotsWidget::pilotsWidget(QWidget *parent) :
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
-pilotsWidget::~pilotsWidget()
+PilotsWidget::~PilotsWidget()
 {
     delete ui;
 }
 
-void pilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
+void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
 {
     setSelectedPilot(index.indexes()[0].data().toInt());
     DEB("Selected Pilot with ID#: " << selectedPilot);
@@ -84,18 +84,18 @@ void pilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     ui->stackedWidget->setCurrentWidget(np);
 }
 
-void pilotsWidget::setSelectedPilot(const qint32 &value)
+void PilotsWidget::setSelectedPilot(const qint32 &value)
 {
     selectedPilot = value;
 }
 
-void pilotsWidget::on_newButton_clicked()
+void PilotsWidget::on_newButton_clicked()
 {
     auto np = new NewPilot(Db::createNew, this);
     np->show();
 }
 
-void pilotsWidget::on_deletePushButton_clicked()
+void PilotsWidget::on_deletePushButton_clicked()
 {
     if (selectedPilot > 0) {
 

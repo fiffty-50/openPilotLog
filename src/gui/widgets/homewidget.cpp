@@ -23,29 +23,29 @@
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
 
-homeWidget::homeWidget(QWidget *parent) :
+HomeWidget::HomeWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::homeWidget)
+    ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
     showTotals();
 }
 
-homeWidget::~homeWidget()
+HomeWidget::~HomeWidget()
 {
     delete ui;
 }
 
-void homeWidget::on_pushButton_clicked()
+void HomeWidget::on_pushButton_clicked()
 {
     auto pl = new Pilot("pilots", 498);
     auto np = new NewPilot(*pl, Db::editExisting, this);
     np->show();
 }
 
-void homeWidget::showTotals()
+void HomeWidget::showTotals()
 {
-    auto tw = new totalsWidget(this);
+    auto tw = new TotalsWidget(this);
     ui->stackedWidget->addWidget(tw);
     ui->stackedWidget->setCurrentWidget(tw);
     ui->stackedWidget->show();

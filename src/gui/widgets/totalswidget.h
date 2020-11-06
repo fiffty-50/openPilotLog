@@ -9,19 +9,19 @@
 #include "src/classes/stat.h"
 
 namespace Ui {
-class totalsWidget;
+class TotalsWidget;
 }
 
-class totalsWidget : public QWidget
+class TotalsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit totalsWidget(QWidget *parent = nullptr);
-    ~totalsWidget();
+    explicit TotalsWidget(QWidget *parent = nullptr);
+    ~TotalsWidget();
 
 private:
-    Ui::totalsWidget *ui;
+    Ui::TotalsWidget *ui;
 };
 
 #endif // TOTALSWIDGET_H

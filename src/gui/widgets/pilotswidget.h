@@ -28,16 +28,16 @@
 #include "src/gui/dialogues/newpilot.h"
 
 namespace Ui {
-class pilotsWidget;
+class PilotsWidget;
 }
 
-class pilotsWidget : public QWidget
+class PilotsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit pilotsWidget(QWidget *parent = nullptr);
-    ~pilotsWidget();
+    explicit PilotsWidget(QWidget *parent = nullptr);
+    ~PilotsWidget();
 
     void setSelectedPilot(const qint32 &value);
 
@@ -49,7 +49,7 @@ private slots:
     void on_deletePushButton_clicked();
 
 private:
-    Ui::pilotsWidget *ui;
+    Ui::PilotsWidget *ui;
 
     qint32 selectedPilot = 0;
 };

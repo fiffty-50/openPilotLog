@@ -22,9 +22,9 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-aircraftWidget::aircraftWidget(QWidget *parent) :
+AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::aircraftWidget)
+    ui(new Ui::AircraftWidget)
 {
     ui->setupUi(this);
 
@@ -67,17 +67,17 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
-aircraftWidget::~aircraftWidget()
+AircraftWidget::~AircraftWidget()
 {
     delete ui;
 }
 
-void aircraftWidget::setSelectedAircraft(const qint32 &value)
+void AircraftWidget::setSelectedAircraft(const qint32 &value)
 {
     selectedAircraft = value;
 }
 
-void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
+void AircraftWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
 {
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
@@ -90,7 +90,7 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     ui->stackedWidget->setCurrentWidget(nt);
 }
 
-void aircraftWidget::on_deleteButton_clicked()
+void AircraftWidget::on_deleteButton_clicked()
 {
     if (selectedAircraft > 0) {
 
@@ -115,7 +115,7 @@ void aircraftWidget::on_deleteButton_clicked()
     }
 }
 
-void aircraftWidget::on_newButton_clicked()
+void AircraftWidget::on_newButton_clicked()
 {
     auto nt = new NewTail(QString(), Db::createNew, this);
     nt->show();

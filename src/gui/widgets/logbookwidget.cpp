@@ -22,9 +22,9 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-logbookWidget::logbookWidget(QWidget *parent) :
+LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::logbookWidget)
+    ui(new Ui::LogbookWidget)
 {
     ui->setupUi(this);
     ui->filterDateEdit->setDate(QDate::currentDate());
@@ -66,17 +66,17 @@ logbookWidget::logbookWidget(QWidget *parent) :
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
-logbookWidget::~logbookWidget()
+LogbookWidget::~LogbookWidget()
 {
     delete ui;
 }
 
-void logbookWidget::setSelectedFlight(const qint32 &value)
+void LogbookWidget::setSelectedFlight(const qint32 &value)
 {
     selectedFlight = value;
 }
 
-void logbookWidget::tableView_selectionChanged(const QItemSelection &index,
+void LogbookWidget::tableView_selectionChanged(const QItemSelection &index,
                                                const QItemSelection &)// TO DO
 {
     setSelectedFlight(index.indexes()[0].data().toInt());
@@ -85,7 +85,7 @@ void logbookWidget::tableView_selectionChanged(const QItemSelection &index,
 
 
 
-void logbookWidget::on_newFlightButton_clicked()
+void LogbookWidget::on_newFlightButton_clicked()
 {
     //NewFlight nf(this);
     //nf.exec();
@@ -94,7 +94,7 @@ void logbookWidget::on_newFlightButton_clicked()
     nope->exec();
 }
 
-void logbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new flight, pre-filled with entry loaded from DB
+void LogbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new flight, pre-filled with entry loaded from DB
 {
     QMessageBox *nope = new QMessageBox(this); // edit widget currently INOP
     nope->setText("This feature is temporarily INOP.");
@@ -103,7 +103,7 @@ void logbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new fligh
     //ef.exec();
 }
 
-void logbookWidget::on_deleteFlightPushButton_clicked()
+void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
     if (selectedFlight > 0) {
         QVector<QString> columns = {
@@ -141,7 +141,7 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
     }
 }
 
-void logbookWidget::on_filterFlightsByDateButton_clicked()
+void LogbookWidget::on_filterFlightsByDateButton_clicked()
 {
     QDate date(ui->filterDateEdit->date());
     QString startdate = date.toString("yyyy-MM-dd");
@@ -157,7 +157,7 @@ void logbookWidget::on_filterFlightsByDateButton_clicked()
     ui->tableView->setModel(DateFilteredModel);
 }
 
-void logbookWidget::on_showAllButton_clicked()
+void LogbookWidget::on_showAllButton_clicked()
 {
     QSqlTableModel *ShowAllModel = new QSqlTableModel;
     ShowAllModel->setTable("Logbook");

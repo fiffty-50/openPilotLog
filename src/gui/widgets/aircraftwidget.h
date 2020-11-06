@@ -29,16 +29,16 @@
 #include "src/database/db.h"
 
 namespace Ui {
-class aircraftWidget;
+class AircraftWidget;
 }
 
-class aircraftWidget : public QWidget
+class AircraftWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit aircraftWidget(QWidget *parent = nullptr);
-    ~aircraftWidget();
+    explicit AircraftWidget(QWidget *parent = nullptr);
+    ~AircraftWidget();
 
     qint32 selectedAircraft = 0;
 
@@ -52,7 +52,7 @@ private slots:
     void on_newButton_clicked();
 
 private:
-    Ui::aircraftWidget *ui;
+    Ui::AircraftWidget *ui;
 };
 
 #endif // AIRCRAFTWIDGET_H

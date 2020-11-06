@@ -29,16 +29,16 @@
 #include "src/database/db.h"
 
 namespace Ui {
-class settingsWidget;
+class SettingsWidget;
 }
 
-class settingsWidget : public QWidget
+class SettingsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit settingsWidget(QWidget *parent = nullptr);
-    ~settingsWidget();
+    explicit SettingsWidget(QWidget *parent = nullptr);
+    ~SettingsWidget();
 
 private slots:
     void on_flightNumberPrefixLineEdit_textEdited(const QString &arg1);
@@ -52,7 +52,7 @@ private slots:
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
 
 private:
-    Ui::settingsWidget *ui;
+    Ui::SettingsWidget *ui;
 
 };
 

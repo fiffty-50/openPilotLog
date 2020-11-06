@@ -21,9 +21,9 @@
 
 
 
-settingsWidget::settingsWidget(QWidget *parent) :
+SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::settingsWidget)
+    ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
     QSettings settings;
@@ -67,7 +67,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
 
 }
 
-settingsWidget::~settingsWidget()
+SettingsWidget::~SettingsWidget()
 {
     delete ui;
 }
@@ -76,13 +76,13 @@ settingsWidget::~settingsWidget()
  * Slots
  */
 
-void settingsWidget::on_flightNumberPrefixLineEdit_textEdited(const QString &arg1)
+void SettingsWidget::on_flightNumberPrefixLineEdit_textEdited(const QString &arg1)
 {
     QSettings settings;
     settings.setValue("userdata/flightnumberPrefix", arg1);
 }
 
-void settingsWidget::themeGroup_toggled(int id)
+void SettingsWidget::themeGroup_toggled(int id)
 {
     QSettings settings;
     settings.setValue("main/theme", id);
@@ -103,7 +103,7 @@ void settingsWidget::themeGroup_toggled(int id)
     }
 }
 
-void settingsWidget::on_aboutPushButton_clicked()
+void SettingsWidget::on_aboutPushButton_clicked()
 {
     auto mb = new QMessageBox(this);
     QString SQLITE_VERSION = DbInfo().version;
@@ -142,13 +142,13 @@ void settingsWidget::on_aboutPushButton_clicked()
     mb->open();
 }
 
-void settingsWidget::on_acSortComboBox_currentIndexChanged(int index)
+void SettingsWidget::on_acSortComboBox_currentIndexChanged(int index)
 {
     QSettings settings;
     settings.setValue("userdata/acSortColumn", index);
 }
 
-void settingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
+void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 {
     QSettings settings;
     settings.setValue("userdata/acAllowIncomplete", index);

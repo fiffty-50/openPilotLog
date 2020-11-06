@@ -4,9 +4,9 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-totalsWidget::totalsWidget(QWidget *parent) :
+TotalsWidget::TotalsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::totalsWidget)
+    ui(new Ui::TotalsWidget)
 {
     ui->setupUi(this);
     auto data = Stat::totals();
@@ -17,7 +17,7 @@ totalsWidget::totalsWidget(QWidget *parent) :
     }
 }
 
-totalsWidget::~totalsWidget()
+TotalsWidget::~TotalsWidget()
 {
     delete ui;
 }

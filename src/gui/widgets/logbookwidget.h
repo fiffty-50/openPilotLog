@@ -29,19 +29,19 @@
 #include "src/classes/flight.h"
 
 namespace Ui {
-class logbookWidget;
+class LogbookWidget;
 }
 
 
 
-class logbookWidget : public QWidget
+class LogbookWidget : public QWidget
 {
     Q_OBJECT
 
 
 public:
-    explicit logbookWidget(QWidget *parent = nullptr);
-    ~logbookWidget();
+    explicit LogbookWidget(QWidget *parent = nullptr);
+    ~LogbookWidget();
 
     qint32 selectedFlight = 0;
     void setSelectedFlight(const qint32 &value);
@@ -60,7 +60,7 @@ private slots:
     void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
 
 private:
-    Ui::logbookWidget *ui;
+    Ui::LogbookWidget *ui;
 
 };
 
