@@ -16,31 +16,49 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
+#include "src/gui/dialogues/firstrundialog.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
+#include <QFileInfo>
+
+const auto DATA_DIR = QLatin1String("data");
+/*!
+ * \brief setup checks if data folder and settings files exists.
+ * \return
+ */
+bool setup()
+{
+    if (!QDir(DATA_DIR).exists())
+        QDir().mkdir(DATA_DIR);
+
+    QDir      settingspath(DATA_DIR + QLatin1Char('/') + QCoreApplication::organizationName());
+    QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
+    QFileInfo check_file(settingspath,settingsfile);
+
+    return check_file.exists() && check_file.isFile();
+};
 
 int main(int argc, char *argv[])
 {
-
     QCoreApplication::setOrganizationName("openPilotLog");
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openPilotLog");
 
-
-    if (!QDir("data").exists()) {
-        QDir().mkdir("data");
-    }
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, "data");
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, DATA_DIR);
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;
 
     QApplication openPilotLog(argc, argv);
+    if(!setup()){
+        FirstRunDialog dialog;
+        dialog.exec();
+    }
+
 
     //Theming
     int selectedtheme = settings.value("main/theme").toInt();
     QDir::setCurrent("/themes");
-
     switch (selectedtheme) {
     case 1: {
         qDebug() << "main :: Loading light theme";

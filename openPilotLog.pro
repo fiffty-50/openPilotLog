@@ -28,6 +28,7 @@ SOURCES += \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
     src/database/entry.cpp \
+    src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newpilot.cpp \
     src/gui/dialogues/newtail.cpp \
     src/gui/widgets/aircraftwidget.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     src/database/db.h \
     src/database/dbinfo.h \
     src/database/entry.h \
+    src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newpilot.h \
     src/gui/dialogues/newtail.h \
     src/gui/widgets/aircraftwidget.h \
@@ -60,6 +62,7 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
+    src/gui/dialogues/firstrundialog.ui \
     src/gui/dialogues/newpilot.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/aircraftwidget.ui \
