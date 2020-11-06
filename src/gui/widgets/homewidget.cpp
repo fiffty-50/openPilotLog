@@ -53,8 +53,8 @@ homeWidget::~homeWidget()
 
 void homeWidget::on_pushButton_clicked()
 {
-    auto pl = new pilot("pilots",498);
-    auto np = new NewPilot(*pl,db::editExisting,this);
+    auto pl = new pilot("pilots", 498);
+    auto np = new NewPilot(*pl, db::editExisting, this);
     np->show();
 }
 

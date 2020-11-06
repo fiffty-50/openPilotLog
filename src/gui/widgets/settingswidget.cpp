@@ -39,13 +39,13 @@ settingsWidget::settingsWidget(QWidget *parent) :
 
 
     switch (settings.value("main/theme").toInt()) {
-      case 0:
+    case 0:
         ui->systemThemeCheckBox->setChecked(true);
         break;
-      case 1:
+    case 1:
         ui->lightThemeCheckBox->setChecked(true);
         break;
-      case 2:
+    case 2:
         ui->darkThemeCheckBox->setChecked(true);
     }
     /*
@@ -53,7 +53,7 @@ settingsWidget::settingsWidget(QWidget *parent) :
      */
     //QString storedPrefix = db::singleSelect("setting","settings","setting_id","50",sql::exactMatch);
     QString storedPrefix = settings.value("userdata/flightnumberPrefix").toString();
-    if (storedPrefix.length() != 0){
+    if (storedPrefix.length() != 0) {
         ui->flightNumberPrefixLineEdit->setText(storedPrefix);
     }
 
@@ -79,24 +79,24 @@ settingsWidget::~settingsWidget()
 void settingsWidget::on_flightNumberPrefixLineEdit_textEdited(const QString &arg1)
 {
     QSettings settings;
-    settings.setValue("userdata/flightnumberPrefix",arg1);
+    settings.setValue("userdata/flightnumberPrefix", arg1);
 }
 
 void settingsWidget::themeGroup_toggled(int id)
 {
     QSettings settings;
-    settings.setValue("main/theme",id);
+    settings.setValue("main/theme", id);
 
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Changing Themes", "Changing the theme requires restarting the Application.\n\nWould you like to restart now?",
-                                  QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes)
-    {
+    reply = QMessageBox::question(this, "Changing Themes",
+                                  "Changing the theme requires restarting the Application.\n\nWould you like to restart now?",
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 
-    }else{
+    } else {
         QMessageBox *info = new QMessageBox(this);
         info->setText("Theme change will take effect the next time you start the application.");
         info->exec();
@@ -109,35 +109,35 @@ void settingsWidget::on_aboutPushButton_clicked()
     QString SQLITE_VERSION = dbInfo().version;
     QString text = QMessageBox::tr(
 
-                "<h3><center>About openPilotLog</center></h3>"
-                "<br>"
-                "(c) 2020 Felix Turowsky"
-                "<br>"
-                "<p>This is a collaboratively developed Free and Open Source Application. "
-                "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
+                       "<h3><center>About openPilotLog</center></h3>"
+                       "<br>"
+                       "(c) 2020 Felix Turowsky"
+                       "<br>"
+                       "<p>This is a collaboratively developed Free and Open Source Application. "
+                       "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
 
-                "<p>This program is free software: you can redistribute it and/or modify "
-                "it under the terms of the GNU General Public License as published by "
-                "the Free Software Foundation, either version 3 of the License, or "
-                "(at your option) any later version.</p>"
+                       "<p>This program is free software: you can redistribute it and/or modify "
+                       "it under the terms of the GNU General Public License as published by "
+                       "the Free Software Foundation, either version 3 of the License, or "
+                       "(at your option) any later version.</p>"
 
-                "<p>This program is distributed in the hope that it will be useful, "
-                "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
-                "GNU General Public License for more details.</p> "
+                       "<p>This program is distributed in the hope that it will be useful, "
+                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                       "GNU General Public License for more details.</p> "
 
-                "<p>You should have received a copy of the GNU General Public License "
-                "along with this program.  If not, "
-                "please click <a href=\"https://www.gnu.org/licenses/\">here</a>.</p>"
+                       "<p>You should have received a copy of the GNU General Public License "
+                       "along with this program.  If not, "
+                       "please click <a href=\"https://www.gnu.org/licenses/\">here</a>.</p>"
 
-                "<br>"
+                       "<br>"
 
-                "<p>This program uses <a href=\"http://%2/\">Qt</a> version %3 and "
-                "<a href=\"https://sqlite.org/about.html/\">SQLite</a> version %4</p>"
-                ).arg(QLatin1String("github.com/fiffty-50/openpilotlog"),
-                      QLatin1String("qt.io"),
-                      QLatin1String(QT_VERSION_STR),
-                      QString(SQLITE_VERSION));
+                       "<p>This program uses <a href=\"http://%2/\">Qt</a> version %3 and "
+                       "<a href=\"https://sqlite.org/about.html\">SQLite</a> version %4</p>"
+                   ).arg(QLatin1String("github.com/fiffty-50/openpilotlog"),
+                         QLatin1String("qt.io"),
+                         QLatin1String(QT_VERSION_STR),
+                         QString(SQLITE_VERSION));
     mb->setText(text);
     mb->open();
 }
@@ -145,14 +145,14 @@ void settingsWidget::on_aboutPushButton_clicked()
 void settingsWidget::on_acSortComboBox_currentIndexChanged(int index)
 {
     QSettings settings;
-    settings.setValue("userdata/acSortColumn",index);
+    settings.setValue("userdata/acSortColumn", index);
 }
 
 void settingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 {
     QSettings settings;
-    settings.setValue("userdata/acAllowIncomplete",index);
-    if(index){
+    settings.setValue("userdata/acAllowIncomplete", index);
+    if (index) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Warning",
                                       "Warning: Enabling incomplete logging will enable you to add aircraft with incomplete data.\n\n"
@@ -161,11 +161,11 @@ void settingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
                                       "This will also impact statistics and auto-logging capabilites.\n\n"
                                       "It is highly recommended to keep this option off unless you have a specific reason not to.\n\n"
                                       "Are you sure you want to proceed?",
-                                      QMessageBox::Yes|QMessageBox::No);
-        if (reply == QMessageBox::Yes){
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
             QSettings settings;
-            settings.setValue("userdata/acAllowIncomplete",index);
-        }else{
+            settings.setValue("userdata/acAllowIncomplete", index);
+        } else {
             ui->acAllowIncompleteComboBox->setCurrentIndex(0);
         }
     }

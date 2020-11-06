@@ -66,28 +66,30 @@ void NewTail::formFiller(aircraft entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
-    auto line_edits = parent()->findChildren<QLineEdit*>();
-    for (const auto& le : line_edits) {
+    auto line_edits = parent()->findChildren<QLineEdit *>();
+    for (const auto &le : line_edits) {
         QString name = le->objectName();
         name.chop(8);//remove "LineEdit"
         QString value = entry.data.value(name);
-        if(!value.isEmpty()){
+        if (!value.isEmpty()) {
             le->setText(value);
         };
     }
     //select comboboxes
-    QVector<QString> operation = {entry.data.value("singleengine"),entry.data.value("multiengine")};
-    QVector<QString> ppNumber =  {entry.data.value("singlepilot"),entry.data.value("multipilot")};
-    QVector<QString> ppType =    {entry.data.value("unpowered"),entry.data.value("piston"),
-                                  entry.data.value("turboprop"),entry.data.value("jet")};
-    QVector<QString> weight =    {entry.data.value("light"),entry.data.value("medium"),
-                                  entry.data.value("heavy"),entry.data.value("super")};
+    QVector<QString> operation = {entry.data.value("singleengine"), entry.data.value("multiengine")};
+    QVector<QString> ppNumber =  {entry.data.value("singlepilot"), entry.data.value("multipilot")};
+    QVector<QString> ppType =    {entry.data.value("unpowered"), entry.data.value("piston"),
+                                  entry.data.value("turboprop"), entry.data.value("jet")
+                                 };
+    QVector<QString> weight =    {entry.data.value("light"), entry.data.value("medium"),
+                                  entry.data.value("heavy"), entry.data.value("super")
+                                 };
 
 
-    ui->operationComboBox->setCurrentIndex(operation.indexOf("1")+1);
-    ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1")+1);
-    ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1")+1);
-    ui->weightComboBox->setCurrentIndex(weight.indexOf("1")+1);
+    ui->operationComboBox->setCurrentIndex(operation.indexOf("1") + 1);
+    ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1") + 1);
+    ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1") + 1);
+    ui->weightComboBox->setCurrentIndex(weight.indexOf("1") + 1);
 }
 
 /// Functions
@@ -99,11 +101,11 @@ void NewTail::formFiller(aircraft entry)
 void NewTail::setupCompleter()
 {
     auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
-    auto vector = db::customQuery(query,2);
+    auto vector = db::customQuery(query, 2);
     QMap<QString, int> map;
-    for (int i = 0; i < vector.length()-2 ; i += 2){
-        if(vector[i] != QLatin1String("")){
-            map.insert(vector[i],vector[i+1].toInt());
+    for (int i = 0; i < vector.length() - 2 ; i += 2) {
+        if (vector[i] != QLatin1String("")) {
+            map.insert(vector[i], vector[i + 1].toInt());
         }
     }
     //creating QStringlist for QCompleter
@@ -112,7 +114,7 @@ void NewTail::setupCompleter()
     aircraftlist = cl->list;
     idMap = map;
 
-    QCompleter* completer = new QCompleter(aircraftlist,ui->searchLineEdit);
+    QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
@@ -124,38 +126,38 @@ void NewTail::setupCompleter()
  */
 bool NewTail::verify()
 {
-    auto recommended_line_edits = parent()->findChildren<QLineEdit*>("registrationLineEdit");
-    recommended_line_edits.append(parent()->findChild<QLineEdit*>("makeLineEdit"));
-    recommended_line_edits.append(parent()->findChild<QLineEdit*>("modelLineEdit"));
+    auto recommended_line_edits = parent()->findChildren<QLineEdit *>("registrationLineEdit");
+    recommended_line_edits.append(parent()->findChild<QLineEdit *>("makeLineEdit"));
+    recommended_line_edits.append(parent()->findChild<QLineEdit *>("modelLineEdit"));
 
-    auto recommended_combo_boxes = parent()->findChildren<QComboBox*>("operationComboBox");
-    recommended_combo_boxes.append(parent()->findChild<QComboBox*>("ppNumberComboBox"));
-    recommended_combo_boxes.append(parent()->findChild<QComboBox*>("ppTypeComboBox"));
+    auto recommended_combo_boxes = parent()->findChildren<QComboBox *>("operationComboBox");
+    recommended_combo_boxes.append(parent()->findChild<QComboBox *>("ppNumberComboBox"));
+    recommended_combo_boxes.append(parent()->findChild<QComboBox *>("ppTypeComboBox"));
 
-    for(const auto le : recommended_line_edits){
-        if(le->text() != ""){
+    for (const auto le : recommended_line_edits) {
+        if (le->text() != "") {
             DEB("Good: " << le);
             recommended_line_edits.removeOne(le);
             le->setStyleSheet("");
-        }else{
+        } else {
             le->setStyleSheet("border: 1px solid red");
             DEB("Not Good: " << le);
         }
     }
-    for(const auto cb : recommended_combo_boxes){
-        if(cb->currentIndex() != 0){
+    for (const auto cb : recommended_combo_boxes) {
+        if (cb->currentIndex() != 0) {
 
             recommended_combo_boxes.removeOne(cb);
             cb->setStyleSheet("");
-        }else{
+        } else {
             cb->setStyleSheet("background: orange");
             DEB("Not Good: " << cb);
         }
     }
 
-    if(recommended_line_edits.isEmpty() && recommended_combo_boxes.isEmpty()){
+    if (recommended_line_edits.isEmpty() && recommended_combo_boxes.isEmpty()) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -163,44 +165,47 @@ bool NewTail::verify()
 void NewTail::submitForm(db::editRole edRole)
 {
     DEB("Creating Database Object...");
-    QMap<QString,QString> newData;
+    QMap<QString, QString> newData;
     //retreive Line Edits
-    auto line_edits = parent()->findChildren<QLineEdit*>();
+    auto line_edits = parent()->findChildren<QLineEdit *>();
 
-    for (const auto& le : line_edits) {
+    for (const auto &le : line_edits) {
         QString name = le->objectName();
         name.chop(8);//remove "LineEdit"
-        if(!le->text().isEmpty()){
-            newData.insert(name,le->text());
+        if (!le->text().isEmpty()) {
+            newData.insert(name, le->text());
         }
     }
 
     //prepare comboboxes
-    QVector<QString> operation = {"singlepilot","multipilot"};
-    QVector<QString> ppNumber  = {"singleengine","multiengine"};
-    QVector<QString> ppType    = {"unpowered","piston",
-                                  "turboprop","jet"};
-    QVector<QString> weight    = {"light","medium",
-                                  "heavy","super"};
+    QVector<QString> operation = {"singlepilot", "multipilot"};
+    QVector<QString> ppNumber  = {"singleengine", "multiengine"};
+    QVector<QString> ppType    = {"unpowered", "piston",
+                                  "turboprop", "jet"
+                                 };
+    QVector<QString> weight    = {"light", "medium",
+                                  "heavy", "super"
+                                 };
 
-    if(ui->operationComboBox->currentIndex()!=0){
-        newData.insert(operation[ui->operationComboBox->currentIndex()-1],QLatin1String("1"));
+    if (ui->operationComboBox->currentIndex() != 0) {
+        newData.insert(operation[ui->operationComboBox->currentIndex() - 1], QLatin1String("1"));
     }
-    if(ui->ppNumberComboBox->currentIndex()!=0){
-        newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex()-1],QLatin1String("1"));
+    if (ui->ppNumberComboBox->currentIndex() != 0) {
+        newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex() - 1], QLatin1String("1"));
     }
-    if(ui->ppTypeComboBox->currentIndex()!=0){
-        newData.insert(ppType[ui->ppTypeComboBox->currentIndex()-1],QLatin1String("1"));
+    if (ui->ppTypeComboBox->currentIndex() != 0) {
+        newData.insert(ppType[ui->ppTypeComboBox->currentIndex() - 1], QLatin1String("1"));
     }
-    if(ui->weightComboBox->currentIndex()!=0){
-        newData.insert(weight[ui->weightComboBox->currentIndex()-1],QLatin1String("1"));
+    if (ui->weightComboBox->currentIndex() != 0) {
+        newData.insert(weight[ui->weightComboBox->currentIndex() - 1], QLatin1String("1"));
     }
     //create db object
     switch (edRole) {
-    case db::createNew:{
-        auto newEntry = new aircraft("tails",newData);;
+    case db::createNew: {
+        auto newEntry = new aircraft("tails", newData);;
         newEntry->commit();
-        break;}
+        break;
+    }
     case db::editExisting:
         oldEntry.setData(newData);
         oldEntry.commit();
@@ -212,13 +217,14 @@ void NewTail::submitForm(db::editRole edRole)
 
 void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
 {
-    if(aircraftlist.contains(arg1)){//equivalent to editing finished for this purpose. todo: consider connecing qcompleter activated signal with editing finished slot.
+    if (aircraftlist.contains(
+                arg1)) { //equivalent to editing finished for this purpose. todo: consider connecing qcompleter activated signal with editing finished slot.
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(aircraft("aircraft",idMap.value(arg1)));
+        formFiller(aircraft("aircraft", idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
-    }else{
+    } else {
         //for example, editing finished without selecting a result from Qcompleter
         ui->searchLineEdit->setStyleSheet("border: 1px solid orange");
     }
@@ -226,28 +232,28 @@ void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
 
 void NewTail::on_operationComboBox_currentIndexChanged(int index)
 {
-    if(index != 0){
+    if (index != 0) {
         ui->operationComboBox->setStyleSheet("");
     }
 }
 
 void NewTail::on_ppTypeComboBox_currentIndexChanged(int index)
 {
-    if(index != 0){
+    if (index != 0) {
         ui->ppTypeComboBox->setStyleSheet("");
     }
 }
 
 void NewTail::on_ppNumberComboBox_currentIndexChanged(int index)
 {
-    if(index != 0){
+    if (index != 0) {
         ui->ppNumberComboBox->setStyleSheet("");
     }
 }
 
 void NewTail::on_weightComboBox_currentIndexChanged(int index)
 {
-    if(index != 0){
+    if (index != 0) {
         ui->weightComboBox->setStyleSheet("");
     }
 }
@@ -255,23 +261,23 @@ void NewTail::on_weightComboBox_currentIndexChanged(int index)
 void NewTail::on_buttonBox_accepted()
 {
     DEB("Button Box Accepted.");
-    if(ui->registrationLineEdit->text().isEmpty()){
+    if (ui->registrationLineEdit->text().isEmpty()) {
         auto nope = new QMessageBox(this);
         nope->setText("Registration cannot be empty.");
         nope->show();
-    }else{
-        if(verify()){
+    } else {
+        if (verify()) {
             DEB("Form verified");
             submitForm(role);
             accept();
-        }else{
+        } else {
             QSettings setting;
-            if(!setting.value("userdata/acAllowIncomplete").toInt()){
+            if (!setting.value("userdata/acAllowIncomplete").toInt()) {
                 auto nope = new QMessageBox(this);
                 nope->setText("Some or all fields are empty.\nPlease go back and "
                               "complete.\n\nYou can allow logging incomplete entries on the settings page.");
                 nope->show();
-            }else{
+            } else {
                 QMessageBox::StandardButton reply;
                 reply = QMessageBox::question(this, "Warning",
                                               "Some recommended fields are empty.\n\n"
@@ -280,9 +286,8 @@ void NewTail::on_buttonBox_accepted()
                                               "This will also impact statistics and auto-logging capabilites.\n\n"
                                               "It is highly recommended to fill in all the details.\n\n"
                                               "Are you sure you want to proceed?",
-                                              QMessageBox::Yes|QMessageBox::No);
-                if (reply == QMessageBox::Yes)
-                {
+                                              QMessageBox::Yes | QMessageBox::No);
+                if (reply == QMessageBox::Yes) {
                     submitForm(role);
                     accept();
                 }

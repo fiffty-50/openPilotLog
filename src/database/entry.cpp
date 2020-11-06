@@ -30,39 +30,40 @@ entry::entry(QString table, int row)
     //retreive database layout
     const auto dbContent = dbInfo();
 
-    if(dbContent.tables.contains(table)){
+    if (dbContent.tables.contains(table)) {
         position.first = table;
         columns = dbContent.format.value(table);
-    }else{
+    } else {
         DEB(table << " not a table in database. Unable to create entry object.");
-        position.first = QString();}
+        position.first = QString();
+    }
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_="+QString::number(row);
+    QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_=" + QString::number(row);
     QSqlQuery q(statement);
     q.next();
     int rows = q.value(0).toInt();
-    if(rows==0){
+    if (rows == 0) {
         DEB("No entry found for row id: " << row );
         position.second = 0;
-    }else{
+    } else {
         DEB("Retreiving data for row id: " << row);
-        QString statement = "SELECT * FROM " + table + " WHERE _rowid_="+QString::number(row);
+        QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(row);
         DEB("Executing SQL...");
         DEB(statement);
 
         QSqlQuery q(statement);
         q.exec();
         q.next();
-        for(int i=0; i < dbContent.format.value(table).length(); i++){
-            data.insert(dbContent.format.value(table)[i],q.value(i).toString());
+        for (int i = 0; i < dbContent.format.value(table).length(); i++) {
+            data.insert(dbContent.format.value(table)[i], q.value(i).toString());
         }
 
         QString error = q.lastError().text();
-        if(error.length() > 2){
+        if (error.length() > 2) {
             DEB("Error: " << q.lastError().text());
             position.second = 0;
-        }else{
+        } else {
             position.second = row;
         }
     }
@@ -73,24 +74,24 @@ entry::entry(QString table, QMap<QString, QString> newData)
     //retreive database layout
     const auto dbContent = dbInfo();
 
-    if(dbContent.tables.contains(table)){
+    if (dbContent.tables.contains(table)) {
         position.first = table;
         position.second = 0;
         columns = dbContent.format.value(table);
-    }else{
+    } else {
         DEB(table << " not a table in database. Unable to create entry object.");
         position.first = QString();
     }
     //Check validity of newData
     QVector<QString> badkeys;
-    QMap<QString,QString>::iterator i;
-    for (i = newData.begin(); i != newData.end(); ++i){
-        if(!columns.contains(i.key())){
-            DEB(i.key() << "Not in column list for table " << table <<". Discarding.");
+    QMap<QString, QString>::iterator i;
+    for (i = newData.begin(); i != newData.end(); ++i) {
+        if (!columns.contains(i.key())) {
+            DEB(i.key() << "Not in column list for table " << table << ". Discarding.");
             badkeys << i.key();
         }
     }
-    for(const auto& var : badkeys){
+    for (const auto &var : badkeys) {
         newData.remove(var);
     }
     data = newData;
@@ -103,31 +104,29 @@ void entry::setData(const QMap<QString, QString> &value)
 
 bool entry::commit()
 {
-    if(exists()){
+    if (exists()) {
         return update();
-    }else{
+    } else {
         return insert();
     }
 }
 
 bool entry::remove()
 {
-    if(exists()){
+    if (exists()) {
         QString statement = "DELETE FROM " + position.first +
-                           " WHERE _rowid_=" + QString::number(position.second);
+                            " WHERE _rowid_=" + QString::number(position.second);
         QSqlQuery q(statement);
         QString error = q.lastError().text();
 
-        if(error.length() > 1)
-        {
+        if (error.length() > 1) {
             DEB("Errors have occured: " << error);
             return false;
-        }else
-        {
+        } else {
             DEB("Entry removed.");
             return true;
         }
-    }else{
+    } else {
         return false;
     }
 }
@@ -136,15 +135,15 @@ bool entry::exists()
 {
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + position.first +
-                       " WHERE _rowid_="+QString::number(position.second);
+                        " WHERE _rowid_=" + QString::number(position.second);
     QSqlQuery q(statement);
     q.next();
     int rows = q.value(0).toInt();
-    if(rows){
-        DEB("Entry exists. "<<rows);
+    if (rows) {
+        DEB("Entry exists. " << rows);
         return true;
-    }else{
-        DEB("Entry does not exist. "<<rows);
+    } else {
+        DEB("Entry does not exist. " << rows);
         return false;
     }
 }
@@ -154,18 +153,18 @@ bool entry::insert()
     DEB("Inserting...");
     //check prerequisites
 
-    if(data.isEmpty()){
+    if (data.isEmpty()) {
         DEB("Object Contains no data. Aborting.");
         return false;
     }
     QString statement = "INSERT INTO " + position.first + QLatin1String(" (");
-    QMap<QString,QString>::iterator i;
-    for (i = data.begin(); i != data.end(); ++i){
+    QMap<QString, QString>::iterator i;
+    for (i = data.begin(); i != data.end(); ++i) {
         statement += i.key() + QLatin1String(", ");
     }
     statement.chop(2);
     statement += QLatin1String(") VALUES (");
-    for (i = data.begin(); i != data.end(); ++i){
+    for (i = data.begin(); i != data.end(); ++i) {
         statement += QLatin1String("'") + i.value() + QLatin1String("', ");
     }
     statement.chop(2);
@@ -173,10 +172,10 @@ bool entry::insert()
 
     QSqlQuery q(statement);
     QString error = q.lastError().text();
-    if(error.length() < 2){
+    if (error.length() < 2) {
         DEB("Entry successfully committed.");
         return true;
-    }else{
+    } else {
         DEB("Unable to commit. Query Error: " << q.lastError().text());
         return false;
     }
@@ -187,23 +186,25 @@ bool entry::update()
     //create query
     QString statement = "UPDATE " + position.first + " SET ";
 
-    QMap<QString,QString>::const_iterator i;
-    for (i = data.constBegin(); i != data.constEnd(); ++i){
-        if(i.key()!=QString()){
-            statement += i.key()+QLatin1String("='")+i.value()+QLatin1String("', ");
-        }else{DEB(i.key() << "is empty key. skipping.");}
+    QMap<QString, QString>::const_iterator i;
+    for (i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.key() != QString()) {
+            statement += i.key() + QLatin1String("='") + i.value() + QLatin1String("', ");
+        } else {
+            DEB(i.key() << "is empty key. skipping.");
+        }
     }
     statement.chop(2); // Remove last comma
-    statement.append(QLatin1String(" WHERE _rowid_=")+QString::number(position.second));
+    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(position.second));
 
     //execute query
     QSqlQuery q(statement);
     //check result. Upon success, error should be " "
     QString error = q.lastError().text();
-    if(error.length() < 2){
+    if (error.length() < 2) {
         DEB("Object successfully updated.");
         return true;
-    }else{
+    } else {
         DEB("Query Error: " << q.lastError().text());
         return false;
     }
@@ -220,8 +221,8 @@ void entry::print()
     //if(isValid){cout << v;}else{cout << nv;}
     cout << "Record from table: " << position.first << ", row: " << position.second << "\n";
     cout << "=================================\n";
-    QMap<QString,QString>::const_iterator i;
-    for (i = data.constBegin(); i != data.constEnd(); ++i){
+    QMap<QString, QString>::const_iterator i;
+    for (i = data.constBegin(); i != data.constEnd(); ++i) {
         cout << i.key() << ":\t" << i.value() << "\n";
     }
 }

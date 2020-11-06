@@ -36,7 +36,7 @@ completionList::completionList(completerTarget::targets type)
     switch (type) {
     case completerTarget::pilots:
         query.append("SELECT piclastname||', '||picfirstname FROM pilots");
-        result = db::customQuery(query,1);
+        result = db::customQuery(query, 1);
         break;
     case completerTarget::airports:
         columns.append("icao");
@@ -49,7 +49,7 @@ completionList::completionList(completerTarget::targets type)
         break;
     case completerTarget::aircraft:
         query.append("SELECT make||' '||model||'-'||variant FROM aircraft");
-        result = db::customQuery(query,1);
+        result = db::customQuery(query, 1);
         break;
     }
 

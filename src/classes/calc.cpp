@@ -25,17 +25,15 @@
  */
 QTime calc::blocktime(QTime tofb, QTime tonb)
 {
-    if(tonb > tofb)// landing same day
-    {
-        QTime blocktimeout(0,0); // initialise return value at midnight
+    if (tonb > tofb) { // landing same day
+        QTime blocktimeout(0, 0); // initialise return value at midnight
         int blockseconds = tofb.secsTo(tonb); // returns seconds between 2 time objects
         blocktimeout = blocktimeout.addSecs(blockseconds);
         return blocktimeout;
 
-    } else // landing next day
-    {
-        QTime midnight(0,0);
-        QTime blocktimeout(0,0); // initialise return value at midnight
+    } else { // landing next day
+        QTime midnight(0, 0);
+        QTime blocktimeout(0, 0); // initialise return value at midnight
         int blockseconds = tofb.secsTo(midnight); // returns seconds passed until midnight
         blocktimeout = blocktimeout.addSecs(blockseconds);
         blockseconds = midnight.secsTo(tonb); // returns seconds passed after midnight
@@ -53,10 +51,14 @@ QTime calc::blocktime(QTime tofb, QTime tonb)
 QString calc::minutes_to_string(QString blockminutes)
 {
     int minutes = blockminutes.toInt();
-    QString hour = QString::number(minutes/60);
-    if (hour.size() < 2) {hour.prepend("0");}
+    QString hour = QString::number(minutes / 60);
+    if (hour.size() < 2) {
+        hour.prepend("0");
+    }
     QString minute = QString::number(minutes % 60);
-    if (minute.size() < 2) {minute.prepend("0");}
+    if (minute.size() < 2) {
+        minute.prepend("0");
+    }
     QString blocktime = hour + ":" + minute;
     return blocktime;
 };
@@ -165,8 +167,8 @@ double calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
     double deltalat = lat2 - lat1;
 
     double result = pow(sin(deltalat / 2), 2) +
-            cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
-    result = 2 * asin(sqrt(result));  
+                    cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
+    result = 2 * asin(sqrt(result));
     return result;
 }
 
@@ -186,12 +188,13 @@ double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
     }*/
 
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, db::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, db::exactMatch);
+    QVector<QString> deptCoordinates = db::multiSelect(columns, "airports", "icao", dept,
+                                                       db::exactMatch);
+    QVector<QString> destCoordinates = db::multiSelect(columns, "airports", "icao", dest,
+                                                       db::exactMatch);
 
-    if(deptCoordinates.isEmpty() || destCoordinates.isEmpty()
-       )
-    {
+    if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
+       ) {
         qDebug() << "greatCircleDistance - invalid input. aborting.";
         return 0;
     }
@@ -206,7 +209,7 @@ double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
     double deltalat = lat2 - lat1;
 
     double result = pow(sin(deltalat / 2), 2) +
-            cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
+                    cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
     result = 2 * asin(sqrt(result));
     return radToNauticalMiles(result);
 }
@@ -221,7 +224,8 @@ double calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
  * \param tblk Total Blocktime in minutes
  * \return coordinates {lat,lon} along the Great Circle Track
  */
-QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, double lon1, double lat2, double lon2, int tblk)
+QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
+                                                               double lat2, double lon2, int tblk)
 {
     double d = greatCircleDistance(lat1, lon1, lat2, lon2); //calculate distance (radians)
     // Converting Latitude and Longitude to Radians
@@ -233,18 +237,18 @@ QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, doub
     //loop for creating one minute steps along the Great Circle
     // 0 is departure point, 1 is end point
     QVector<QVector<double>> coordinates;
-    double fraction = 1.0/tblk;
-    for(int i = 0; i <= tblk; i++) {
+    double fraction = 1.0 / tblk;
+    for (int i = 0; i <= tblk; i++) {
         // Calculating intermediate point for fraction of distance
-        double A=sin((1-fraction * i) * d)/sin(d);
-        double B=sin(fraction * i * d)/sin(d);
-        double x = A*cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
-        double y = A*cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
-        double z = A*sin(lat1) + B * sin(lat2);
+        double A = sin((1 - fraction * i) * d) / sin(d);
+        double B = sin(fraction * i * d) / sin(d);
+        double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
+        double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
+        double z = A * sin(lat1) + B * sin(lat2);
         double lat = atan2(z, sqrt( pow(x, 2) + pow(y, 2) ));
         double lon = atan2(y, x);
 
-        QVector<double> coordinate = {lat,lon};
+        QVector<double> coordinate = {lat, lon};
         coordinates.append(coordinate);
     }
     return coordinates;
@@ -268,55 +272,60 @@ QVector<QVector<double>> calc::intermediatePointsOnGreatCircle(double lat1, doub
  */
 double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
-    double Alt = 11; // I am taking 11 kilometers as an average cruising height for a commercial passenger airplane.
+    double Alt =
+        11; // I am taking 11 kilometers as an average cruising height for a commercial passenger airplane.
     // convert current DateTime Object to a J2000 value used in the calculation
-    double d = utc_time_point.date().toJulianDay() - 2451544 + utc_time_point.time().hour()/24.0 + utc_time_point.time().minute()/1440.0;
+    double d = utc_time_point.date().toJulianDay() - 2451544 + utc_time_point.time().hour() / 24.0 +
+               utc_time_point.time().minute() / 1440.0;
 
     // Orbital Elements (in degress)
     double w = 282.9404 + 4.70935e-5 * d; // (longitude of perihelion)
     double e = 0.016709 - 1.151e-9 * d; // (eccentricity)
-    double M = fmod(356.0470 + 0.9856002585 * d, 360.0); // (mean anomaly, needs to be between 0 and 360 degrees)
-    double oblecl = 23.4393 - 3.563e-7*d; // (Sun's obliquity of the ecliptic)
+    double M = fmod(356.0470 + 0.9856002585 * d,
+                    360.0); // (mean anomaly, needs to be between 0 and 360 degrees)
+    double oblecl = 23.4393 - 3.563e-7 * d; // (Sun's obliquity of the ecliptic)
     double L = w + M; // (Sun's mean longitude)
     // auxiliary angle
-    double  E = M + (180 / M_PI)*e*sin(M*(M_PI / 180))*(1 + e*cos(M*(M_PI / 180)));
+    double  E = M + (180 / M_PI) * e * sin(M * (M_PI / 180)) * (1 + e * cos(M * (M_PI / 180)));
     // The Sun's rectangular coordinates in the plane of the ecliptic
-    double x = cos(E*(M_PI / 180)) - e;
-    double y = sin(E*(M_PI / 180))*sqrt(1 - pow(e, 2));
+    double x = cos(E * (M_PI / 180)) - e;
+    double y = sin(E * (M_PI / 180)) * sqrt(1 - pow(e, 2));
     // find the distance and true anomaly
-    double r = sqrt(pow(x,2) + pow(y,2));
-    double v = atan2(y, x)*(180 / M_PI);
+    double r = sqrt(pow(x, 2) + pow(y, 2));
+    double v = atan2(y, x) * (180 / M_PI);
     // find the longitude of the sun
     double solarlongitude = v + w;
     // compute the ecliptic rectangular coordinates
-    double xeclip = r*cos(solarlongitude*(M_PI / 180));
-    double yeclip = r*sin(solarlongitude*(M_PI / 180));
+    double xeclip = r * cos(solarlongitude * (M_PI / 180));
+    double yeclip = r * sin(solarlongitude * (M_PI / 180));
     double zeclip = 0.0;
     //rotate these coordinates to equitorial rectangular coordinates
     double xequat = xeclip;
-    double yequat = yeclip*cos(oblecl*(M_PI / 180)) + zeclip * sin(oblecl*(M_PI / 180));
-    double zequat = yeclip*sin(23.4406*(M_PI / 180)) + zeclip * cos(oblecl*(M_PI / 180));
+    double yequat = yeclip * cos(oblecl * (M_PI / 180)) + zeclip * sin(oblecl * (M_PI / 180));
+    double zequat = yeclip * sin(23.4406 * (M_PI / 180)) + zeclip * cos(oblecl * (M_PI / 180));
     // convert equatorial rectangular coordinates to RA and Decl:
-    r = sqrt(pow(xequat, 2) + pow(yequat, 2) + pow(zequat, 2)) - (Alt / 149598000); //roll up the altitude correction
-    double RA = atan2(yequat, xequat)*(180 / M_PI);
-    double delta = asin(zequat / r)*(180 / M_PI);
+    r = sqrt(pow(xequat, 2) + pow(yequat, 2) + pow(zequat,
+                                                   2)) - (Alt / 149598000); //roll up the altitude correction
+    double RA = atan2(yequat, xequat) * (180 / M_PI);
+    double delta = asin(zequat / r) * (180 / M_PI);
 
     // GET UTH time
-    double UTH = utc_time_point.time().hour() + utc_time_point.time().minute()/60.0 + utc_time_point.time().second()/3600.0;
+    double UTH = utc_time_point.time().hour() + utc_time_point.time().minute() / 60.0 +
+                 utc_time_point.time().second() / 3600.0;
     // Calculate local siderial time
     double GMST0 = fmod(L + 180, 360.0) / 15;
     double SIDTIME = GMST0 + UTH + lon / 15;
     // Replace RA with hour angle HA
-    double HA = (SIDTIME*15 - RA);
+    double HA = (SIDTIME * 15 - RA);
     // convert to rectangular coordinate system
-    x = cos(HA*(M_PI / 180))*cos(delta*(M_PI / 180));
-    y = sin(HA*(M_PI / 180))*cos(delta*(M_PI / 180));
-    double z = sin(delta*(M_PI / 180));
+    x = cos(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
+    y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
+    double z = sin(delta * (M_PI / 180));
     // rotate this along an axis going east - west.
-    double zhor = x*sin((90 - lat)*(M_PI / 180)) + z*cos((90 - lat)*(M_PI / 180));
+    double zhor = x * sin((90 - lat) * (M_PI / 180)) + z * cos((90 - lat) * (M_PI / 180));
 
     // Find the Elevation
-    double elevation = asin(zhor)*(180 / M_PI);
+    double elevation = asin(zhor) * (180 / M_PI);
     return elevation;
 }
 
@@ -331,12 +340,13 @@ double calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
 {
     QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = db::multiSelect(columns,"airports", "icao", dept, db::exactMatch);
-    QVector<QString> destCoordinates = db::multiSelect(columns,"airports", "icao", dest, db::exactMatch);
+    QVector<QString> deptCoordinates = db::multiSelect(columns, "airports", "icao", dept,
+                                                       db::exactMatch);
+    QVector<QString> destCoordinates = db::multiSelect(columns, "airports", "icao", dest,
+                                                       db::exactMatch);
 
-    if(deptCoordinates.isEmpty() || destCoordinates.isEmpty()
-       )
-    {
+    if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
+       ) {
         qDebug() << "calc::calculateNightTime - invalid input. aborting.";
         return 0;
     }
@@ -351,11 +361,13 @@ int calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     qDebug() << "calc::calculateNightTime destLat = " << destLat;
     qDebug() << "calc::calculateNightTime destLon = " << destLon;
 
-    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon, tblk);
+    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon,
+                                                                     tblk);
 
     int nightTime = 0;
-    for(int i = 0; i < tblk ; i++) {
-        if(solarElevation(departureTime.addSecs(60*i),radToDeg(route[i][0]),radToDeg(route[i][1])) < -0.6) {
+    for (int i = 0; i < tblk ; i++) {
+        if (solarElevation(departureTime.addSecs(60 * i), radToDeg(route[i][0]),
+                           radToDeg(route[i][1])) < -0.6) {
             nightTime ++;
         }
     }
@@ -376,34 +388,27 @@ QString calc::formatTimeInput(QString userinput)
     QTime temptime; //empty time object is invalid by default
 
     bool containsSeperator = userinput.contains(":");
-        if(userinput.length() == 4 && !containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"hhmm");
-        }else if(userinput.length() == 3 && !containsSeperator)
-        {
-            if(userinput.toInt() < 240) //Qtime is invalid if time is between 000 and 240 for this case
-            {
-                QString tempstring = userinput.prepend("0");
-                temptime = QTime::fromString(tempstring,"hhmm");
-            }else
-            {
-                temptime = QTime::fromString(userinput,"Hmm");
-            }
-        }else if(userinput.length() == 4 && containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"h:mm");
-        }else if(userinput.length() == 5 && containsSeperator)
-        {
-            temptime = QTime::fromString(userinput,"hh:mm");
+    if (userinput.length() == 4 && !containsSeperator) {
+        temptime = QTime::fromString(userinput, "hhmm");
+    } else if (userinput.length() == 3 && !containsSeperator) {
+        if (userinput.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
+            QString tempstring = userinput.prepend("0");
+            temptime = QTime::fromString(tempstring, "hhmm");
+        } else {
+            temptime = QTime::fromString(userinput, "Hmm");
         }
+    } else if (userinput.length() == 4 && containsSeperator) {
+        temptime = QTime::fromString(userinput, "h:mm");
+    } else if (userinput.length() == 5 && containsSeperator) {
+        temptime = QTime::fromString(userinput, "hh:mm");
+    }
 
-        output = temptime.toString("hh:mm");
-        if(output.isEmpty())
-        {
-            /*QMessageBox timeformat(this);
-            timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
-            timeformat.exec();*/
-            qDebug() << "Time input is invalid.";
-        }
-        return output;
+    output = temptime.toString("hh:mm");
+    if (output.isEmpty()) {
+        /*QMessageBox timeformat(this);
+        timeformat.setText("Please enter a valid time. Any of these formats is valid:\n845 0845 8:45 08:45");
+        timeformat.exec();*/
+        qDebug() << "Time input is invalid.";
+    }
+    return output;
 }

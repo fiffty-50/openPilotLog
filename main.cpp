@@ -28,10 +28,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("openPilotLog");
 
 
-    if(!QDir("data").exists()){
+    if (!QDir("data").exists()) {
         QDir().mkdir("data");
     }
-    QSettings::setPath(QSettings::IniFormat,QSettings::UserScope,"data");
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, "data");
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;
 
@@ -42,8 +42,7 @@ int main(int argc, char *argv[])
     QDir::setCurrent("/themes");
 
     switch (selectedtheme) {
-    case 1:
-    {
+    case 1: {
         qDebug() << "main :: Loading light theme";
         QFile file(":light.qss");
         file.open(QFile::ReadOnly | QFile::Text);

@@ -29,7 +29,7 @@ public:
 
     QString version = QString();
 
-    QMap<QString,QVector<QString>> format;
+    QMap<QString, QVector<QString>> format;
 
     QVector<QString> tables;
 

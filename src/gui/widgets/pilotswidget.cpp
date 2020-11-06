@@ -50,21 +50,21 @@ pilotsWidget::pilotsWidget(QWidget *parent) :
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->setColumnWidth(0,60);
-    view->setColumnWidth(1,240);
-    view->setColumnWidth(2,180);
+    view->setColumnWidth(0, 60);
+    view->setColumnWidth(1, 240);
+    view->setColumnWidth(2, 180);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
     QSettings settings;
 
-    view->sortByColumn(settings.value("userdata/pilSortColumn").toInt(),Qt::AscendingOrder);
+    view->sortByColumn(settings.value("userdata/pilSortColumn").toInt(), Qt::AscendingOrder);
 
     view->show();
 
     connect(ui->tableView->selectionModel(),
-    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
 pilotsWidget::~pilotsWidget()
@@ -77,7 +77,7 @@ void pilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     setSelectedPilot(index.indexes()[0].data().toInt());
     DEB("Selected Pilot with ID#: " << selectedPilot);
 
-    auto np = new NewPilot(pilot("pilots",selectedPilot), db::editExisting, this);
+    auto np = new NewPilot(pilot("pilots", selectedPilot), db::editExisting, this);
 
     np->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(np);
@@ -91,15 +91,15 @@ void pilotsWidget::setSelectedPilot(const qint32 &value)
 
 void pilotsWidget::on_newButton_clicked()
 {
-    auto np = new NewPilot(db::createNew,this);
+    auto np = new NewPilot(db::createNew, this);
     np->show();
 }
 
 void pilotsWidget::on_deletePushButton_clicked()
 {
-    if(selectedPilot > 0){
+    if (selectedPilot > 0) {
 
-        auto pil = new pilot("pilots",selectedPilot);
+        auto pil = new pilot("pilots", selectedPilot);
         pil->remove();
 
 
@@ -108,12 +108,12 @@ void pilotsWidget::on_deletePushButton_clicked()
         model->select();
         ui->tableView->setModel(model);
         connect(ui->tableView->selectionModel(),
-        SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-        SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 
-        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePL"));
+        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget *>("welcomePL"));
 
-    }else{
+    } else {
         auto mb = new QMessageBox(this);
         mb->setText("No Pilot selected.");
         mb->show();

@@ -26,7 +26,7 @@
  */
 class aircraft : public entry
 {
-using entry::entry;
+    using entry::entry;
 };
 
 #endif // AIRCRAFT_H

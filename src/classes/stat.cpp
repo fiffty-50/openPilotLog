@@ -35,7 +35,7 @@ QString stat::totalTime(yearType yt)
         query = "SELECT SUM(tblk) FROM flights";
         break;
     case stat::calendarYear:
-        start.setDate(QDate::currentDate().year(),1,1);
+        start.setDate(QDate::currentDate().year(), 1, 1);
         startdate = start.toString(Qt::ISODate);
         startdate.append(QLatin1Char('\''));
         startdate.prepend(QLatin1Char('\''));
@@ -47,13 +47,14 @@ QString stat::totalTime(yearType yt)
         startdate.append(QLatin1Char('\''));
         startdate.prepend(QLatin1Char('\''));
         query = "SELECT SUM(tblk) FROM flights WHERE doft >= " + startdate;
-        break;}
+        break;
+    }
 
     QVector<QString> result = db::customQuery(query, 1);
 
-    if(!result.isEmpty()){
+    if (!result.isEmpty()) {
         return result[0];
-    }else{
+    } else {
         return QString();
     }
 }
@@ -78,9 +79,9 @@ QVector<QString> stat::currencyTakeOffLanding(int days)
                     "WHERE doft >= " + startdate;
     QVector<QString> result = db::customQuery(query, 2);
 
-    if(!result.isEmpty()){
+    if (!result.isEmpty()) {
         return result;
-    }else{
+    } else {
         return QVector<QString>();
     }
 
@@ -89,35 +90,36 @@ QVector<QString> stat::currencyTakeOffLanding(int days)
 QVector<QPair<QString, QString>> stat::totals()
 {
     QString statement = "SELECT"
-            " printf(SUM(tblk)/60)||':'||printf('%02d',SUM(tblk)%60),"
-            " printf(SUM(tSPSE)/60)||':'||printf('%02d',SUM(tSPSE)%60),"
-            " printf(SUM(tSPME)/60)||':'||printf('%02d',SUM(tSPME)%60),"
-            " printf(SUM(tNIGHT)/60)||':'||printf('%02d',SUM(tNIGHT)%60),"
-            " printf(SUM(tIFR)/60)||':'||printf('%02d',SUM(tIFR)%60),"
-            " printf(SUM(tPIC)/60)||':'||printf('%02d',SUM(tPIC)%60),"
-            " printf(SUM(tPICUS)/60)||':'||printf('%02d',SUM(tPICUS)%60),"
-            " printf(SUM(tSIC)/60)||':'||printf('%02d',SUM(tSIC)%60),"
-            " printf(SUM(tDual)/60)||':'||printf('%02d',SUM(tDual)%60),"
-            " printf(SUM(tFI)/60)||':'||printf('%02d',SUM(tFI)%60),"
-            " printf(SUM(tSIM)/60)||':'||printf('%02d',SUM(tSIM)%60),"
-            " printf(SUM(tMP)/60)||':'||printf('%02d',SUM(tMP)%60),"
-            " SUM(toDay) AS 'TO Day', SUM(toNight),"
-            " SUM(ldgDay) AS 'LDG Day', SUM(ldgNight)"
-            " FROM flights";
-    QVector<QString> columns = {"total","spse","spme" , "night", "ifr",
-                                "pic" , "picus", "sic", "dual", "fi", "sim","multipilot",
-                                "today", "tonight", "ldgday", "ldgnight"};
+                        " printf(SUM(tblk)/60)||':'||printf('%02d',SUM(tblk)%60),"
+                        " printf(SUM(tSPSE)/60)||':'||printf('%02d',SUM(tSPSE)%60),"
+                        " printf(SUM(tSPME)/60)||':'||printf('%02d',SUM(tSPME)%60),"
+                        " printf(SUM(tNIGHT)/60)||':'||printf('%02d',SUM(tNIGHT)%60),"
+                        " printf(SUM(tIFR)/60)||':'||printf('%02d',SUM(tIFR)%60),"
+                        " printf(SUM(tPIC)/60)||':'||printf('%02d',SUM(tPIC)%60),"
+                        " printf(SUM(tPICUS)/60)||':'||printf('%02d',SUM(tPICUS)%60),"
+                        " printf(SUM(tSIC)/60)||':'||printf('%02d',SUM(tSIC)%60),"
+                        " printf(SUM(tDual)/60)||':'||printf('%02d',SUM(tDual)%60),"
+                        " printf(SUM(tFI)/60)||':'||printf('%02d',SUM(tFI)%60),"
+                        " printf(SUM(tSIM)/60)||':'||printf('%02d',SUM(tSIM)%60),"
+                        " printf(SUM(tMP)/60)||':'||printf('%02d',SUM(tMP)%60),"
+                        " SUM(toDay) AS 'TO Day', SUM(toNight),"
+                        " SUM(ldgDay) AS 'LDG Day', SUM(ldgNight)"
+                        " FROM flights";
+    QVector<QString> columns = {"total", "spse", "spme", "night", "ifr",
+                                "pic", "picus", "sic", "dual", "fi", "sim", "multipilot",
+                                "today", "tonight", "ldgday", "ldgnight"
+                               };
     QSqlQuery q(statement);
     QVector<QPair<QString, QString>> output;
     QString value;
     q.next();
-    for(const auto& column : columns){
+    for (const auto &column : columns) {
         value = q.value(columns.indexOf(column)).toString();
-        if(!value.isEmpty()){
+        if (!value.isEmpty()) {
             output << QPair{column, value};
-        }else{
-            output << QPair{column,QString("00:00")};
+        } else {
+            output << QPair{column, QString("00:00")};
         }
     }
-return output;
+    return output;
 }

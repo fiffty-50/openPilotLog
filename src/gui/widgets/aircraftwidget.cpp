@@ -50,21 +50,21 @@ aircraftWidget::aircraftWidget(QWidget *parent) :
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->setColumnWidth(0,60);
-    view->setColumnWidth(1,120);
-    view->setColumnWidth(2,180);
+    view->setColumnWidth(0, 60);
+    view->setColumnWidth(1, 120);
+    view->setColumnWidth(2, 180);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
     QSettings settings;
 
-    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(),Qt::AscendingOrder);
+    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(), Qt::AscendingOrder);
 
     view->show();
 
     connect(ui->tableView->selectionModel(),
-    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
 aircraftWidget::~aircraftWidget()
@@ -82,7 +82,7 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
-    auto nt = new NewTail(aircraft("tails",selectedAircraft),db::editExisting,this);
+    auto nt = new NewTail(aircraft("tails", selectedAircraft), db::editExisting, this);
     //auto nt = new NewTail(db(db::tails,selectedAircraft),this);
 
     nt->setWindowFlag(Qt::Widget);
@@ -92,9 +92,9 @@ void aircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
 
 void aircraftWidget::on_deleteButton_clicked()
 {
-    if(selectedAircraft > 0){
+    if (selectedAircraft > 0) {
 
-        auto ac = new aircraft("tails",selectedAircraft);
+        auto ac = new aircraft("tails", selectedAircraft);
         ac->remove();
 
 
@@ -103,12 +103,12 @@ void aircraftWidget::on_deleteButton_clicked()
         model->select();
         ui->tableView->setModel(model);
         connect(ui->tableView->selectionModel(),
-        SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-        SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 
-        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomeAC"));
+        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget *>("welcomeAC"));
 
-    }else{
+    } else {
         auto mb = new QMessageBox(this);
         mb->setText("No aircraft selected.");
         mb->show();
@@ -117,6 +117,6 @@ void aircraftWidget::on_deleteButton_clicked()
 
 void aircraftWidget::on_newButton_clicked()
 {
-    auto nt = new NewTail(QString(), db::createNew,this);
+    auto nt = new NewTail(QString(), db::createNew, this);
     nt->show();
 }

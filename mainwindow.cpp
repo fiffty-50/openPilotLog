@@ -27,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Set up Toolbar
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    ui->toolBar->setIconSize(QSize(64,64));
-    auto buttons = ui->toolBar->findChildren<QWidget*>();
-    for (const auto& button : buttons) {
+    ui->toolBar->setIconSize(QSize(64, 64));
+    auto buttons = ui->toolBar->findChildren<QWidget *>();
+    for (const auto &button : buttons) {
         button->setMinimumWidth(128);
     }
 
@@ -47,13 +47,13 @@ MainWindow::MainWindow(QWidget *parent)
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(10);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionNewFlight,spacer);
+    ui->toolBar->insertWidget(ui->actionNewFlight, spacer);
 
 
     // create and show homeWidget
     auto hw = new homeWidget(this);
     ui->stackedWidget->addWidget(hw);
-    ui->stackedWidget->setCurrentWidget(hw);  
+    ui->stackedWidget->setCurrentWidget(hw);
 
 }
 
@@ -102,17 +102,18 @@ void MainWindow::on_actionSettings_triggered()
 }
 
 void MainWindow::on_actionNewFlight_triggered()
-{/*
-    QVector<QStringList> lineEdit_completionLists = {
-        QStringList(),//empty dummy list for TimeLineEdits
-        dbAirport::retreiveIataIcaoList(),
-        dbAircraft::retreiveRegistrationList(),
-        dbPilots::retreivePilotList()
-    };
+{
+    /*
+       QVector<QStringList> lineEdit_completionLists = {
+           QStringList(),//empty dummy list for TimeLineEdits
+           dbAirport::retreiveIataIcaoList(),
+           dbAircraft::retreiveRegistrationList(),
+           dbPilots::retreivePilotList()
+       };
 
-    NewFlight nf(this, lineEdit_completionLists);
-    nf.exec();
-    */
+       NewFlight nf(this, lineEdit_completionLists);
+       nf.exec();
+       */
 }
 
 void MainWindow::on_actionAircraft_triggered()
@@ -124,7 +125,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    auto nt = new NewTail(QString(), db::createNew,this);
+    auto nt = new NewTail(QString(), db::createNew, this);
     nt->show();
 }
 
@@ -137,6 +138,6 @@ void MainWindow::on_actionPilots_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    auto np = new NewPilot(db::createNew,this);
+    auto np = new NewPilot(db::createNew, this);
     np->show();
 }

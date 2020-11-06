@@ -48,10 +48,10 @@ NewPilot::~NewPilot()
 void NewPilot::on_buttonBox_accepted()
 {
     DEB("aseontuh");
-    if(ui->piclastnameLineEdit->text().isEmpty()){
+    if (ui->piclastnameLineEdit->text().isEmpty()) {
         auto mb = new QMessageBox(this);
         mb->setText("Last Name is required.");
-    }else{
+    } else {
         submitForm();
     }
 }
@@ -60,13 +60,13 @@ void NewPilot::formFiller()
 {
     DEB("Filling Form...");
     DEB(oldEntry);
-    auto line_edits = parent()->findChildren<QLineEdit*>();
+    auto line_edits = parent()->findChildren<QLineEdit *>();
 
-    for (const auto& le : line_edits) {
+    for (const auto &le : line_edits) {
         QString key = le->objectName();
         key.chop(8);//remove "LineEdit"
         QString value = oldEntry.data.value(key);
-        if(!value.isEmpty()){
+        if (!value.isEmpty()) {
             le->setText(value);
         }
     }
@@ -75,30 +75,31 @@ void NewPilot::formFiller()
 void NewPilot::submitForm()
 {
     DEB("Creating Database Object...");
-    QMap<QString,QString> newData;
+    QMap<QString, QString> newData;
 
-    auto line_edits = parent()->findChildren<QLineEdit*>();
+    auto line_edits = parent()->findChildren<QLineEdit *>();
 
-    for (const auto& le : line_edits) {
+    for (const auto &le : line_edits) {
         QString key = le->objectName();
         key.chop(8);//remove "LineEdit"
         QString value = le->text();
-        if(!key.isEmpty()){
-            newData.insert(key,value);
+        if (!key.isEmpty()) {
+            newData.insert(key, value);
         }
     }
-    DEB("New Data: "<<newData);
-    DEB("Role: "<<role);
+    DEB("New Data: " << newData);
+    DEB("Role: " << role);
     //create db object
     switch (role) {
-    case db::createNew:{
-        auto newEntry = pilot("pilots",newData);;
+    case db::createNew: {
+        auto newEntry = pilot("pilots", newData);;
         DEB("New Object: ");
         newEntry.commit();
-        break;}
+        break;
+    }
     case db::editExisting:
         oldEntry.setData(newData);
-        DEB("updated entry: "<< oldEntry);
+        DEB("updated entry: " << oldEntry);
         oldEntry.commit();
         break;
     }

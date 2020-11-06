@@ -35,12 +35,12 @@ void dbInfo::getColumnNames()
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
     QVector<QString> columnNames;
-    for(const auto& table : tables){
+    for (const auto &table : tables) {
         columnNames.clear();
         QSqlRecord fields = db.record(table);
-        for(int i = 0; i < fields.count(); i++){
+        for (int i = 0; i < fields.count(); i++) {
             columnNames << fields.field(i).name();
-            format.insert(table,columnNames);
+            format.insert(table, columnNames);
         }
     }
 }

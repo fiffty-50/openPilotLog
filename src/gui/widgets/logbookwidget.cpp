@@ -41,16 +41,16 @@ logbookWidget::logbookWidget(QWidget *parent) :
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setColumnWidth(1,120);
-    view->setColumnWidth(2,60);
-    view->setColumnWidth(3,60);
-    view->setColumnWidth(4,60);
-    view->setColumnWidth(5,60);
-    view->setColumnWidth(6,60);
-    view->setColumnWidth(7,120);
-    view->setColumnWidth(8,180);
-    view->setColumnWidth(9,120);
-    view->setColumnWidth(10,90);
+    view->setColumnWidth(1, 120);
+    view->setColumnWidth(2, 60);
+    view->setColumnWidth(3, 60);
+    view->setColumnWidth(4, 60);
+    view->setColumnWidth(5, 60);
+    view->setColumnWidth(6, 60);
+    view->setColumnWidth(7, 120);
+    view->setColumnWidth(8, 180);
+    view->setColumnWidth(9, 120);
+    view->setColumnWidth(10, 90);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
@@ -62,8 +62,8 @@ logbookWidget::logbookWidget(QWidget *parent) :
     DEB("Time taken for lookup and rendering: " << duration.count() << " microseconds");
 
     connect(ui->tableView->selectionModel(),
-    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
 logbookWidget::~logbookWidget()
@@ -76,7 +76,8 @@ void logbookWidget::setSelectedFlight(const qint32 &value)
     selectedFlight = value;
 }
 
-void logbookWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)// TO DO
+void logbookWidget::tableView_selectionChanged(const QItemSelection &index,
+                                               const QItemSelection &)// TO DO
 {
     setSelectedFlight(index.indexes()[0].data().toInt());
     DEB("Selected flight with ID#: " << selectedFlight);
@@ -104,15 +105,14 @@ void logbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new fligh
 
 void logbookWidget::on_deleteFlightPushButton_clicked()
 {
-    if(selectedFlight > 0)
-    {
+    if (selectedFlight > 0) {
         QVector<QString> columns = {
             "doft", "dept", "dest"
         };
-        QVector<QString> details = db::multiSelect(columns,"flights","id",QString::number(selectedFlight),db::exactMatch);
+        QVector<QString> details = db::multiSelect(columns, "flights", "id",
+                                                   QString::number(selectedFlight), db::exactMatch);
         QString detailsstring = "The following flight will be deleted:\n\n";
-        for(const auto& item : details)
-        {
+        for (const auto &item : details) {
             detailsstring.append(item);
             detailsstring.append(QLatin1Char(' '));
         }
@@ -120,11 +120,10 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
 
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Delete Flight", detailsstring,
-                                      QMessageBox::Yes|QMessageBox::No);
-        if (reply == QMessageBox::Yes)
-        {
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
             DEB("Deleting flight with ID# " << selectedFlight);
-            auto en = new flight("flights",selectedFlight);
+            auto en = new flight("flights", selectedFlight);
             en->remove();
 
             QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
@@ -132,11 +131,10 @@ void logbookWidget::on_deleteFlightPushButton_clicked()
             ShowAllModel->select();
             ui->tableView->setModel(ShowAllModel);
             connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+                    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
         }
-    }else
-    {
+    } else {
         QMessageBox NoFlight;
         NoFlight.setText("No flight selected.");
         NoFlight.exec();
@@ -149,7 +147,7 @@ void logbookWidget::on_filterFlightsByDateButton_clicked()
     QString startdate = date.toString("yyyy-MM-dd");
     date = ui->filterDateEdit_2->date();
     QString enddate = date.toString("yyyy-MM-dd");
-    QString datefilter = "Date BETWEEN '" + startdate +"' AND '" + enddate + QLatin1Char('\'');
+    QString datefilter = "Date BETWEEN '" + startdate + "' AND '" + enddate + QLatin1Char('\'');
 
     QSqlTableModel *DateFilteredModel = new QSqlTableModel;
     DateFilteredModel ->setTable("Logbook");

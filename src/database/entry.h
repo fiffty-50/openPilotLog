@@ -33,9 +33,13 @@ public:
     entry(QString table, int row);
     entry(QString table, QMap<QString, QString> newData);
 
-    QPair   <QString,int>       position = QPair<QString,int>();     // Position within the database, i.e. <table,row>
+
+
+    QPair   <QString, int>       position =
+        QPair<QString, int>();   // Position within the database, i.e. <table,row>
     QVector <QString>           columns  = QVector<QString>();       // The columns within the table
-    QMap    <QString,QString>   data     = QMap<QString,QString>();  // Tha data to fill that table, <column,value>
+    QMap    <QString, QString>   data     =
+        QMap<QString, QString>(); // Tha data to fill that table, <column,value>
 
     void setData(const QMap<QString, QString> &value);
 
@@ -43,11 +47,13 @@ public:
     bool remove();
     bool exists();
 
-
     // Debug functionality
     void print();
     QString debug();
-    operator QString() { return debug(); } //overload for compatibility with qDebug()
+    operator QString()
+    {
+        return debug();    //overload for compatibility with qDebug()
+    }
 
 private:
 

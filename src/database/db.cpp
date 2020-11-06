@@ -26,19 +26,19 @@ void db::connect()
 {
     const QString driver("QSQLITE");
 
-    if(QSqlDatabase::isDriverAvailable(driver)){
+    if (QSqlDatabase::isDriverAvailable(driver)) {
 
         QDir directory("data");
         QString databaseLocation = directory.filePath("logbook.db");
         QSqlDatabase db = QSqlDatabase::addDatabase(driver);
         db.setDatabaseName(databaseLocation);
 
-        if(!db.open()){
+        if (!db.open()) {
             DEB("DatabaseConnect - ERROR: " << db.lastError().text());
-        }else{
+        } else {
             DEB("Database connection established.");
         }
-    }else{
+    } else {
         DEB("DatabaseConnect - ERROR: no driver " << driver << " available");
     }
 }
@@ -49,7 +49,8 @@ void db::connect()
  * \param value - The value to be checked
  * \return
  */
-bool db::exists(QString column, QString table, QString checkColumn, QString value, db::matchType match)
+bool db::exists(QString column, QString table, QString checkColumn, QString value,
+                db::matchType match)
 {
     bool output = false;
     QString statement = "SELECT " + column + " FROM " + table + " WHERE " + checkColumn;
@@ -70,21 +71,21 @@ bool db::exists(QString column, QString table, QString checkColumn, QString valu
     QSqlQuery q(statement);
     q.exec();
 
-    if(!q.first()){
+    if (!q.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
-    }else{
+    } else {
         DEB("Success. Found a result.");
         output = true;
-        if(q.next()){
+        if (q.next()) {
             DEB("More than one result in Database for your query");
         }
     }
 // Debug:
     q.first();
     q.previous();
-    while(q.next()){
-            DEB("Query result: " << q.value(0).toString());
+    while (q.next()) {
+        DEB("Query result: " << q.value(0).toString());
     }
 // end of Debug
     return output;
@@ -98,7 +99,8 @@ bool db::exists(QString column, QString table, QString checkColumn, QString valu
  * \param match - enum db::exactMatch or db::partialMatch
  * \return QString
  */
-QString db::singleSelect(QString column, QString table, QString checkColumn, QString value, db::matchType match)
+QString db::singleSelect(QString column, QString table, QString checkColumn, QString value,
+                         db::matchType match)
 {
     QString statement = "SELECT " + column + " FROM " + table + " WHERE " + checkColumn;
     QString result;
@@ -119,14 +121,14 @@ QString db::singleSelect(QString column, QString table, QString checkColumn, QSt
     QSqlQuery q(statement);
     q.exec();
 
-    if(!q.first()){
+    if (!q.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
         return QString();
-    }else{
+    } else {
         DEB("Success. Found a result.");
         result.append(q.value(0).toString());
-        if(q.next()){
+        if (q.next()) {
             DEB("More than one result in Database for your query");
         }
         return result;
@@ -142,14 +144,13 @@ QString db::singleSelect(QString column, QString table, QString checkColumn, QSt
  * \param match - enum db::exactMatch or db::partialMatch
  * \return QVector<QString>
  */
-QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QString checkColumn, QString value, db::matchType match)
+QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QString checkColumn,
+                                 QString value, db::matchType match)
 {
     QString statement = "SELECT ";
-    for(const auto& column : columns)
-    {
+    for (const auto &column : columns) {
         statement.append(column);
-        if(column != columns.last())
-        {
+        if (column != columns.last()) {
             statement.append(QLatin1String(", "));
         }
     }
@@ -171,17 +172,16 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QStrin
     QSqlQuery q(statement);
     q.exec();
 
-    if(!q.first()){
+    if (!q.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
         return QVector<QString>();
-    }else{
+    } else {
         q.first();
         q.previous();
         QVector<QString> result;
         while (q.next()) {
-            for(int i = 0; i < columns.size() ; i++)
-            {
+            for (int i = 0; i < columns.size() ; i++) {
                 result.append(q.value(i).toString());
             }
         }
@@ -197,11 +197,9 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table, QStrin
 QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
 {
     QString statement = "SELECT ";
-    for(const auto& column : columns)
-    {
+    for (const auto &column : columns) {
         statement.append(column);
-        if(column != columns.last())
-        {
+        if (column != columns.last()) {
             statement.append(QLatin1String(", "));
         }
     }
@@ -212,17 +210,16 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
     QSqlQuery q(statement);
     q.exec();
 
-    if(!q.first()){
+    if (!q.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
         return QVector<QString>();
-    }else{
+    } else {
         q.first();
         q.previous();
         QVector<QString> result;
         while (q.next()) {
-            for(int i = 0; i < columns.size() ; i++)
-            {
+            for (int i = 0; i < columns.size() ; i++) {
                 result.append(q.value(i).toString());
             }
         }
@@ -241,7 +238,8 @@ QVector<QString> db::multiSelect(QVector<QString> columns, QString table)
  * \param match enum db::exactMatch or db::partialMatch
  * \return true on success, otherwise error messages in debug out
  */
-bool db::singleUpdate(QString table, QString column, QString value, QString checkColumn, QString checkvalue, db::matchType match)
+bool db::singleUpdate(QString table, QString column, QString value, QString checkColumn,
+                      QString checkvalue, db::matchType match)
 {
     QString statement = "UPDATE " + table;
     statement.append(QLatin1String(" SET ") + column + QLatin1String(" = '") + value);
@@ -264,12 +262,10 @@ bool db::singleUpdate(QString table, QString column, QString value, QString chec
     q.exec();
     QString error = q.lastError().text();
 
-    if(error.length() > 1)
-    {
+    if (error.length() > 1) {
         DEB("Errors have occured: " << error);
         return false;
-    }else
-    {
+    } else {
         DEB("Success!");
         return true;
     }
@@ -286,17 +282,16 @@ QVector<QString> db::customQuery(QString query, int returnValues)
     DEB(query);
     q.exec();
 
-    if(!q.first()){
+    if (!q.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
         return QVector<QString>();
-    }else{
+    } else {
         q.first();
         q.previous();
         QVector<QString> result;
         while (q.next()) {
-            for(int i = 0; i < returnValues ; i++)
-            {
+            for (int i = 0; i < returnValues ; i++) {
                 result.append(q.value(i).toString());
             }
         }
