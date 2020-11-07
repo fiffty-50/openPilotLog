@@ -89,22 +89,22 @@ QVector<QString> Stat::currencyTakeOffLanding(int days)
 
 QVector<QPair<QString, QString>> Stat::totals()
 {
-    QString statement = "SELECT"
-                        " printf(SUM(tblk)/60)||':'||printf('%02d',SUM(tblk)%60),"
-                        " printf(SUM(tSPSE)/60)||':'||printf('%02d',SUM(tSPSE)%60),"
-                        " printf(SUM(tSPME)/60)||':'||printf('%02d',SUM(tSPME)%60),"
-                        " printf(SUM(tNIGHT)/60)||':'||printf('%02d',SUM(tNIGHT)%60),"
-                        " printf(SUM(tIFR)/60)||':'||printf('%02d',SUM(tIFR)%60),"
-                        " printf(SUM(tPIC)/60)||':'||printf('%02d',SUM(tPIC)%60),"
-                        " printf(SUM(tPICUS)/60)||':'||printf('%02d',SUM(tPICUS)%60),"
-                        " printf(SUM(tSIC)/60)||':'||printf('%02d',SUM(tSIC)%60),"
-                        " printf(SUM(tDual)/60)||':'||printf('%02d',SUM(tDual)%60),"
-                        " printf(SUM(tFI)/60)||':'||printf('%02d',SUM(tFI)%60),"
-                        " printf(SUM(tSIM)/60)||':'||printf('%02d',SUM(tSIM)%60),"
-                        " printf(SUM(tMP)/60)||':'||printf('%02d',SUM(tMP)%60),"
-                        " SUM(toDay) AS 'TO Day', SUM(toNight),"
-                        " SUM(ldgDay) AS 'LDG Day', SUM(ldgNight)"
-                        " FROM flights";
+    QString statement = "SELECT "
+            "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
+            "printf('%02d',CAST(SUM(tSPSE) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPSE) AS INT)%60) AS 'SP SE', "
+            "printf('%02d',CAST(SUM(tSPME) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPME) AS INT)%60) AS 'SP ME', "
+            "printf('%02d',CAST(SUM(tNIGHT) AS INT)/60)||':'||printf('%02d',CAST(SUM(tNIGHT) AS INT)%60) AS 'NIGHT', "
+            "printf('%02d',CAST(SUM(tIFR) AS INT)/60)||':'||printf('%02d',CAST(SUM(tIFR) AS INT)%60) AS 'IFR', "
+            "printf('%02d',CAST(SUM(tPIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPIC) AS INT)%60) AS 'PIC', "
+            "printf('%02d',CAST(SUM(tPICUS) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPICUS) AS INT)%60) AS 'PICUS', "
+            "printf('%02d',CAST(SUM(tSIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIC) AS INT)%60) AS 'SIC', "
+            "printf('%02d',CAST(SUM(tDual) AS INT)/60)||':'||printf('%02d',CAST(SUM(tDual) AS INT)%60) AS 'DUAL', "
+            "printf('%02d',CAST(SUM(tFI) AS INT)/60)||':'||printf('%02d',CAST(SUM(tFI) AS INT)%60) AS 'INSTRUCTOR', "
+            "printf('%02d',CAST(SUM(tSIM) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIM) AS INT)%60) AS 'SIMULATOR', "
+            "printf('%02d',CAST(SUM(tMP) AS INT)/60)||':'||printf('%02d',CAST(SUM(tMP) AS INT)%60) AS 'MultPilot', "
+            "CAST(SUM(toDay) AS INT) AS 'TO Day', CAST(SUM(toNight) AS INT) AS 'TO Night', "
+            "CAST(SUM(ldgDay) AS INT) AS 'LDG Day', CAST(SUM(ldgNight) AS INT) AS 'LDG Night' "
+            "FROM flights";
     QVector<QString> columns = {"total", "spse", "spme", "night", "ifr",
                                 "pic", "picus", "sic", "dual", "fi", "sim", "multipilot",
                                 "today", "tonight", "ldgday", "ldgnight"
