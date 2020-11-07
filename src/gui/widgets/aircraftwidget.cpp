@@ -45,7 +45,7 @@ void AircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     setSelectedAircraft(index.indexes()[0].data().toInt());
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
-    auto nt = new NewTail(Aircraft("tails", selectedAircraft), Db::editExisting, this);
+    auto nt = new NewTail(Aircraft(selectedAircraft), Db::editExisting, this);
     connect(nt, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
     connect(nt, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
 
@@ -58,7 +58,7 @@ void AircraftWidget::on_deleteButton_clicked()
 {
     if (selectedAircraft > 0) {
 
-        auto ac = new Aircraft("tails", selectedAircraft);
+        auto ac = new Aircraft(selectedAircraft);
         ac->remove();
         refreshView();
 

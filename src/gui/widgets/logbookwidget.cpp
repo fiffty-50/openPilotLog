@@ -127,7 +127,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             DEB("Deleting flight with ID# " << selectedFlight);
-            auto en = new Flight("flights", selectedFlight);
+            auto en = new Flight(selectedFlight);
             en->remove();
             refreshView();
         }

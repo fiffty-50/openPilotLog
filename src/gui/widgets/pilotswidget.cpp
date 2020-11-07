@@ -40,7 +40,7 @@ void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     setSelectedPilot(index.indexes()[0].data().toInt());
     DEB("Selected Pilot with ID#: " << selectedPilot);
 
-    auto np = new NewPilot(Pilot("pilots", selectedPilot), Db::editExisting, this);
+    auto np = new NewPilot(Pilot(selectedPilot), Db::editExisting, this);
     connect(np, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
     connect(np, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
 
@@ -68,7 +68,7 @@ void PilotsWidget::on_deletePushButton_clicked()
 {
     if (selectedPilot > 0) {
 
-        auto pil = new Pilot("pilots", selectedPilot);
+        auto pil = new Pilot(selectedPilot);
         pil->remove();
         refreshView();
 
