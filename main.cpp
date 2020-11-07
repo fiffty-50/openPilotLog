@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     int selectedtheme = settings.value("main/theme").toInt();
     QDir::setCurrent("/themes");
     switch (selectedtheme) {
-    case 1: {
+    case 1:{
         qDebug() << "main :: Loading light theme";
         QFile file(":light.qss");
         file.open(QFile::ReadOnly | QFile::Text);
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         openPilotLog.setStyleSheet(stream.readAll());
         break;
     }
-    case 2:
+    case 2:{
         qDebug() << "Loading dark theme";
         QFile file(":dark.qss");
         file.open(QFile::ReadOnly | QFile::Text);
@@ -76,6 +76,10 @@ int main(int argc, char *argv[])
         openPilotLog.setStyleSheet(stream.readAll());
         break;
     }
+    default:
+        break;
+    }
+
 
     MainWindow w;
     //w.showMaximized();

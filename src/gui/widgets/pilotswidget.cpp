@@ -42,6 +42,7 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
 
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("viewPilots");
+    model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
     model->select();
 
     QTableView *view = ui->tableView;

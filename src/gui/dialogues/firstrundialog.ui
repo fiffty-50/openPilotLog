@@ -6,40 +6,489 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>250</y>
-     <width>80</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>OK</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>200</y>
-     <width>304</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>First Run / Setup Dialog to be shown here.</string>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tab_1">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook. OpenPilotLog will never collect, sell use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lastNameLabel">
+         <property name="text">
+          <string>Last Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="piclastnameLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>required</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="firstNameLabel">
+         <property name="text">
+          <string>First Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="picfirstnameLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>required</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="employeeLabel">
+         <property name="text">
+          <string>Employee ID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="employeeidLineEdit">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="emailLabel">
+         <property name="text">
+          <string>eMail</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="emailLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="phoneLabel">
+         <property name="text">
+          <string>Phone</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="phoneLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Flight Logging</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Flight Logging&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;Here you can make selections about which parts of a new flight will be automatically completed by default. You can always change these settings for an individual flight or adjust them globally in the settings menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="aliasLabel">
+         <property name="text">
+          <string>Show own name as</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="aliasComboBox">
+         <item>
+          <property name="text">
+           <string>self</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SELF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Lastname, Firstname</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="functionLabel">
+         <property name="text">
+          <string>Function</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="functionComboBox">
+         <item>
+          <property name="text">
+           <string>PIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DUAL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>INSTRUCTOR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="rulesLabel">
+         <property name="text">
+          <string>Flight Rules</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="rulesComboBox">
+         <item>
+          <property name="text">
+           <string>VFR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>IFR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="approachLabel">
+         <property name="text">
+          <string>Approach</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="approachComboBox">
+         <item>
+          <property name="text">
+           <string>VISUAL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT I</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT II</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT III</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LOC/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LNAV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LNAV/VNAV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LPV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP-AR)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VOR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VOR/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NDB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NDB/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TACAN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SRA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PAR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="nightLabel">
+         <property name="text">
+          <string>Night Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="nightComboBox">
+         <item>
+          <property name="text">
+           <string>NO</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>YES (EASA)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>YES (SR/SS)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="prefixLabel">
+         <property name="text">
+          <string>Airline Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="prefixLineEdit">
+         <property name="maxLength">
+          <number>10</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Finish</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Finish&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Almost done! Here you can select the theme to be used for the application.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="themeLabel">
+         <property name="text">
+          <string>Theme</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="systemThemeCheckBox">
+         <property name="text">
+          <string>System Theme</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="lightThemeCheckBox">
+         <property name="text">
+          <string>Light Theme</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="darkThemeCheckBox">
+         <property name="text">
+          <string>Dark Theme</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QPushButton" name="finishButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color:rgb(78, 154, 6)</string>
+         </property>
+         <property name="text">
+          <string>Finish Setup</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="previousPushButton">
+     <property name="text">
+      <string>Previous</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="nextPushButton">
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <tabstops>
+  <tabstop>piclastnameLineEdit</tabstop>
+  <tabstop>picfirstnameLineEdit</tabstop>
+  <tabstop>employeeidLineEdit</tabstop>
+  <tabstop>emailLineEdit</tabstop>
+  <tabstop>phoneLineEdit</tabstop>
+  <tabstop>previousPushButton</tabstop>
+  <tabstop>nextPushButton</tabstop>
+  <tabstop>aliasComboBox</tabstop>
+  <tabstop>functionComboBox</tabstop>
+  <tabstop>rulesComboBox</tabstop>
+  <tabstop>approachComboBox</tabstop>
+  <tabstop>nightComboBox</tabstop>
+  <tabstop>prefixLineEdit</tabstop>
+  <tabstop>systemThemeCheckBox</tabstop>
+  <tabstop>lightThemeCheckBox</tabstop>
+  <tabstop>darkThemeCheckBox</tabstop>
+  <tabstop>finishButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

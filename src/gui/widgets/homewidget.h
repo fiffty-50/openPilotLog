@@ -31,6 +31,7 @@
 #include "src/gui/dialogues/newpilot.h"
 #include "src/database/entry.h"
 #include "src/gui/widgets/totalswidget.h"
+#include "src/gui/dialogues/firstrundialog.h"
 
 
 namespace Ui {

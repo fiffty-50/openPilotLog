@@ -2,6 +2,11 @@
 #define FIRSTRUNDIALOG_H
 
 #include <QDialog>
+#include <QButtonGroup>
+#include <QSettings>
+#include <QMessageBox>
+#include <QRegularExpressionValidator>
+#include "src/classes/pilot.h"
 
 namespace Ui {
 class FirstRunDialog;
@@ -16,11 +21,18 @@ public:
     ~FirstRunDialog();
 
 private slots:
-    void on_pushButton_clicked();
+
+    void on_previousPushButton_clicked();
+
+    void on_nextPushButton_clicked();
+
+    void themeGroup_toggled(int id);
+
+    void on_finishButton_clicked();
 
 private:
     Ui::FirstRunDialog *ui;
-    void disregard();
+
 };
 
 #endif // FIRSTRUNDIALOG_H

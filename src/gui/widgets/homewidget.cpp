@@ -38,9 +38,8 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    auto pl = new Pilot("pilots", 498);
-    auto np = new NewPilot(*pl, Db::editExisting, this);
-    np->show();
+    FirstRunDialog dialog;
+    dialog.exec();
 }
 
 void HomeWidget::showTotals()

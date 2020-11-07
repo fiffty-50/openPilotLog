@@ -53,7 +53,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
      * Flight Logging Tab
      */
     //QString storedPrefix = db::singleSelect("setting","settings","setting_id","50",sql::exactMatch);
-    QString storedPrefix = settings.value("userdata/flightnumberPrefix").toString();
+    QString storedPrefix = settings.value("flightlogging/flightnumberPrefix").toString();
     if (storedPrefix.length() != 0) {
         ui->flightNumberPrefixLineEdit->setText(storedPrefix);
     }
@@ -80,7 +80,7 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::on_flightNumberPrefixLineEdit_textEdited(const QString &arg1)
 {
     QSettings settings;
-    settings.setValue("userdata/flightnumberPrefix", arg1);
+    settings.setValue("flightlogging/flightnumberPrefix", arg1);
 }
 
 void SettingsWidget::themeGroup_toggled(int id)
