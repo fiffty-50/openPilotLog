@@ -38,7 +38,6 @@
    <addaction name="actionLogbook"/>
    <addaction name="actionAircraft"/>
    <addaction name="actionPilots"/>
-   <addaction name="actionNewFlight"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>

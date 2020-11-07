@@ -26,6 +26,7 @@
 #include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
+#include "src/classes/calc.h"
 
 namespace Ui {
 class NewTail;
