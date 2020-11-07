@@ -70,12 +70,13 @@ NewPilot::~NewPilot()
 void NewPilot::on_buttonBox_accepted()
 {
     DEB("accepted.");
-    if (ui->piclastnameLineEdit->text().isEmpty()) {
+    if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
         auto mb = new QMessageBox(this);
-        mb->setText("Last Name is required.");
+        mb->setText("Last Name and First Name are required.");
         mb->show();
     } else {
         submitForm();
+        accept();
     }
 }
 
@@ -119,6 +120,12 @@ void NewPilot::submitForm()
             newData.insert(key, value);
         }
     }
+    QString displayName;
+    displayName.append(ui->piclastnameLineEdit->text());
+    displayName.append(QLatin1String(", "));
+    displayName.append(ui->picfirstnameLineEdit->text().left(1));
+    displayName.append(QLatin1Char('.'));
+    newData.insert("displayname",displayName);
     DEB("New Data: " << newData);
     DEB("Role: " << role);
     //create db object
