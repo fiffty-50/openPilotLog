@@ -51,8 +51,12 @@ private slots:
 
     void on_newButton_clicked();
 
+    void on_widget_accepted();
+
 private:
     Ui::AircraftWidget *ui;
+
+    void refreshView();
 };
 
 #endif // AIRCRAFTWIDGET_H

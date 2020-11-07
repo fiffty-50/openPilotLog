@@ -39,7 +39,67 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui->stackedWidget->addWidget(start);
     ui->stackedWidget->setCurrentWidget(start);
 
+    refreshView();
+}
 
+PilotsWidget::~PilotsWidget()
+{
+    delete ui;
+}
+
+void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
+{
+    setSelectedPilot(index.indexes()[0].data().toInt());
+    DEB("Selected Pilot with ID#: " << selectedPilot);
+
+    auto np = new NewPilot(Pilot("pilots", selectedPilot), Db::editExisting, this);
+    connect(np,
+            SIGNAL(accepted()), this,
+            SLOT(on_widget_accepted()));
+
+    np->setWindowFlag(Qt::Widget);
+    ui->stackedWidget->addWidget(np);
+    ui->stackedWidget->setCurrentWidget(np);
+
+}
+
+void PilotsWidget::setSelectedPilot(const qint32 &value)
+{
+    selectedPilot = value;
+}
+
+void PilotsWidget::on_newButton_clicked()
+{
+    auto np = new NewPilot(Db::createNew, this);
+    connect(np,
+            SIGNAL(accepted()), this,
+            SLOT(on_widget_accepted()));
+    np->show();
+}
+
+void PilotsWidget::on_deletePushButton_clicked()
+{
+    if (selectedPilot > 0) {
+
+        auto pil = new Pilot("pilots", selectedPilot);
+        pil->remove();
+        refreshView();
+
+    } else {
+        auto mb = new QMessageBox(this);
+        mb->setText("No Pilot selected.");
+        mb->show();
+    }
+}
+
+void PilotsWidget::on_widget_accepted()
+{
+    DEB("Refreshing View...");
+    refreshView();
+}
+
+void PilotsWidget::refreshView()
+{
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("viewPilots");
     model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
@@ -66,57 +126,4 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     connect(ui->tableView->selectionModel(),
             SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-}
-
-PilotsWidget::~PilotsWidget()
-{
-    delete ui;
-}
-
-void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
-{
-    setSelectedPilot(index.indexes()[0].data().toInt());
-    DEB("Selected Pilot with ID#: " << selectedPilot);
-
-    auto np = new NewPilot(Pilot("pilots", selectedPilot), Db::editExisting, this);
-
-    np->setWindowFlag(Qt::Widget);
-    ui->stackedWidget->addWidget(np);
-    ui->stackedWidget->setCurrentWidget(np);
-}
-
-void PilotsWidget::setSelectedPilot(const qint32 &value)
-{
-    selectedPilot = value;
-}
-
-void PilotsWidget::on_newButton_clicked()
-{
-    auto np = new NewPilot(Db::createNew, this);
-    np->show();
-}
-
-void PilotsWidget::on_deletePushButton_clicked()
-{
-    if (selectedPilot > 0) {
-
-        auto pil = new Pilot("pilots", selectedPilot);
-        pil->remove();
-
-
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("viewPilots");
-        model->select();
-        ui->tableView->setModel(model);
-        connect(ui->tableView->selectionModel(),
-                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-
-        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget *>("welcomePL"));
-
-    } else {
-        auto mb = new QMessageBox(this);
-        mb->setText("No Pilot selected.");
-        mb->show();
-    }
 }

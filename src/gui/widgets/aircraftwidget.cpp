@@ -39,32 +39,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     ui->stackedWidget->addWidget(start);
     ui->stackedWidget->setCurrentWidget(start);
 
-
-    QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("viewTails");
-    model->select();
-
-    QTableView *view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->setColumnWidth(0, 60);
-    view->setColumnWidth(1, 120);
-    view->setColumnWidth(2, 180);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->setSortingEnabled(true);
-    QSettings settings;
-
-    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(), Qt::AscendingOrder);
-
-    view->show();
-
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+    refreshView();
 }
 
 AircraftWidget::~AircraftWidget()
@@ -83,8 +58,10 @@ void AircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
     auto nt = new NewTail(Aircraft("tails", selectedAircraft), Db::editExisting, this);
-    //auto nt = new NewTail(db(db::tails,selectedAircraft),this);
 
+    connect(nt,
+            SIGNAL(accepted()), this,
+            SLOT(on_widget_accepted()));
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
     ui->stackedWidget->setCurrentWidget(nt);
@@ -96,17 +73,7 @@ void AircraftWidget::on_deleteButton_clicked()
 
         auto ac = new Aircraft("tails", selectedAircraft);
         ac->remove();
-
-
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("viewTails");
-        model->select();
-        ui->tableView->setModel(model);
-        connect(ui->tableView->selectionModel(),
-                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-
-        ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget *>("welcomeAC"));
+        refreshView();
 
     } else {
         auto mb = new QMessageBox(this);
@@ -118,5 +85,43 @@ void AircraftWidget::on_deleteButton_clicked()
 void AircraftWidget::on_newButton_clicked()
 {
     auto nt = new NewTail(QString(), Db::createNew, this);
+    connect(nt,
+            SIGNAL(accepted()), this,
+            SLOT(on_widget_accepted()));
     nt->show();
+}
+
+void AircraftWidget::on_widget_accepted()
+{
+    DEB("Refreshing View...");
+    refreshView();
+}
+
+void AircraftWidget::refreshView()
+{
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable("viewTails");
+    model->select();
+
+    QTableView *view = ui->tableView;
+    view->setModel(model);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->setColumnWidth(0, 60);
+    view->setColumnWidth(1, 120);
+    view->setColumnWidth(2, 180);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->setSortingEnabled(true);
+
+    QSettings settings;
+    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(), Qt::AscendingOrder);
+
+    view->show();
+
+    connect(ui->tableView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
 }

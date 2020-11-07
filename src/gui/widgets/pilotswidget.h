@@ -48,10 +48,14 @@ private slots:
 
     void on_deletePushButton_clicked();
 
+    void on_widget_accepted();
+
 private:
     Ui::PilotsWidget *ui;
 
     qint32 selectedPilot = 0;
+
+    void refreshView();
 };
 
 #endif // PILOTSWIDGET_H
