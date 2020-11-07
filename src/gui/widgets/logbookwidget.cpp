@@ -27,11 +27,32 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui(new Ui::LogbookWidget)
 {
     ui->setupUi(this);
+    refreshView();
+}
+
+LogbookWidget::~LogbookWidget()
+{
+    delete ui;
+}
+
+void LogbookWidget::setSelectedFlight(const qint32 &value)
+{
+    selectedFlight = value;
+}
+
+void LogbookWidget::tableView_selectionChanged(const QItemSelection &index,
+                                               const QItemSelection &)// TO DO
+{
+    setSelectedFlight(index.indexes()[0].data().toInt());
+    DEB("Selected flight with ID#: " << selectedFlight);
+}
+
+void LogbookWidget::refreshView()
+{
     ui->filterDateEdit->setDate(QDate::currentDate());
     ui->filterDateEdit_2->setDate(QDate::currentDate());
     ui->newFlightButton->setFocus();
-
-    auto start = std::chrono::high_resolution_clock::now(); // timer for performance testing
+    //auto start = std::chrono::high_resolution_clock::now(); // timer for performance testing
 
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("Logbook");
@@ -57,31 +78,13 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     view->setAlternatingRowColors(true);
     view->hideColumn(0);
     view->show();
-
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    DEB("Time taken for lookup and rendering: " << duration.count() << " microseconds");
+    //auto stop = std::chrono::high_resolution_clock::now();
+    //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    //DEB("Time taken for lookup and rendering: " << duration.count() << " microseconds");
 
     connect(ui->tableView->selectionModel(),
             SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-}
-
-LogbookWidget::~LogbookWidget()
-{
-    delete ui;
-}
-
-void LogbookWidget::setSelectedFlight(const qint32 &value)
-{
-    selectedFlight = value;
-}
-
-void LogbookWidget::tableView_selectionChanged(const QItemSelection &index,
-                                               const QItemSelection &)// TO DO
-{
-    setSelectedFlight(index.indexes()[0].data().toInt());
-    DEB("Selected flight with ID#: " << selectedFlight);
 }
 
 
@@ -126,14 +129,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             DEB("Deleting flight with ID# " << selectedFlight);
             auto en = new Flight("flights", selectedFlight);
             en->remove();
-
-            QSqlTableModel *ShowAllModel = new QSqlTableModel; //refresh view
-            ShowAllModel->setTable("Logbook");
-            ShowAllModel->select();
-            ui->tableView->setModel(ShowAllModel);
-            connect(ui->tableView->selectionModel(),
-                    SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                    SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+            refreshView();
         }
     } else {
         QMessageBox NoFlight;

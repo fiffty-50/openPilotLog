@@ -16,7 +16,9 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "calc.h"
-//#include "dbman.cpp"
+// Debug Makro
+#define DEB(expr) \
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 /*!
  * \brief Calc::blocktime Calculates Block Time for a given departure and arrival time
  * \param tofb QTime Time Off Blocks
@@ -408,4 +410,40 @@ QString Calc::formatTimeInput(QString userinput)
         qDebug() << "Time input is invalid.";
     }
     return output;
+}
+
+/*!
+ * \brief Calc::updateAutoTimes When the details of an aircraft are changed,
+ * this function recalculates deductable times for this aircraft and updates
+ * the database accordingly.
+ * \param acft An aircraft object.
+ * \return
+ */
+void Calc::updateAutoTimes(int acft_id)
+{
+    //find all flights for aircraft
+    auto flightList = Db::multiSelect(QVector<QString>{"id"},"flights","acft",
+                                      QString::number(acft_id),Db::exactMatch);
+    auto acft = Aircraft("tails",acft_id);
+    for (const auto& item : flightList) {
+        auto flt = Flight("flights",item.toInt());
+
+        if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1") {
+            DEB("SPSE");
+            flt.data.insert("tSPSE",flt.data.value("tblk"));
+            flt.data.insert("tSPME","");
+            flt.data.insert("tMP","");
+        } else if ((acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1")) {
+            DEB("SPME");
+            flt.data.insert("tSPME",flt.data.value("tblk"));
+            flt.data.insert("tSPSE","");
+            flt.data.insert("tMP","");
+        } else if ((acft.data.value("multipilot") == "1")) {
+            DEB("MPME");
+            flt.data.insert("tMP",flt.data.value("tblk"));
+            flt.data.insert("tSPSE","");
+            flt.data.insert("tSPME","");
+        }
+        flt.commit();
+    }
 }

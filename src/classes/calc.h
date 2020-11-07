@@ -20,6 +20,8 @@
 #define CALC_H
 
 #include "src/database/db.h"
+#include "src/classes/aircraft.h"
+#include "src/classes/flight.h"
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>
@@ -61,6 +63,10 @@ public:
     static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk);
 
     static QString formatTimeInput(QString userinput);
+
+    static void updateAutoTimes(int acft_id);
+
+    static void autoTimes(Flight, Aircraft);
 };
 
 

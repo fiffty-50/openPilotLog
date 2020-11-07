@@ -27,6 +27,8 @@
 class Flight : public Entry
 {
     using Entry::Entry;
+public:
+    Flight(int flight_id);
 };
 
 #endif // FLIGHT_H

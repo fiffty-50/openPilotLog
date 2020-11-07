@@ -27,6 +27,8 @@
 class Aircraft : public Entry
 {
     using Entry::Entry;
+public:
+    Aircraft(int acft_id);
 };
 
 #endif // AIRCRAFT_H

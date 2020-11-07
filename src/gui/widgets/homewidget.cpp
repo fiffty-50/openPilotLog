@@ -38,8 +38,14 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    FirstRunDialog dialog;
-    dialog.exec();
+    //FirstRunDialog dialog;
+    //dialog.exec();
+    //for (int i=1;i<25;i++) {
+    //    Calc::updateAutoTimes(i);
+    //}
+    DEB(Aircraft(1));
+    DEB(Flight(1));
+
 }
 
 void HomeWidget::showTotals()

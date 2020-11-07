@@ -62,6 +62,8 @@ private slots:
 private:
     Ui::LogbookWidget *ui;
 
+    void refreshView();
+
 };
 
 #endif // LOGBOOKWIDGET_H
