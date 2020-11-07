@@ -110,8 +110,8 @@ void PilotsWidget::refreshView()
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->setColumnWidth(0, 60);
-    view->setColumnWidth(1, 240);
-    view->setColumnWidth(2, 180);
+    view->setColumnWidth(1, 180);
+    view->setColumnWidth(2, 120);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);

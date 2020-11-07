@@ -57,21 +57,21 @@ void FirstRunDialog::on_finishButton_clicked()
         settings.setValue("flightlogging/function", ui->functionComboBox->currentText());
         settings.setValue("flightlogging/rules", ui->rulesComboBox->currentText());
         settings.setValue("flightlogging/approach", ui->approachComboBox->currentText());
-        settings.setValue("flightlogging/nightlogging", ui->functionComboBox->currentIndex());
+        settings.setValue("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
         settings.setValue("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
 
         QMap<QString,QString> data;
         switch (ui->aliasComboBox->currentIndex()) {
         case 0:
-            settings.setValue("userdata/displayselfas","self");
+            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","self");
             break;
         case 1:
-            settings.setValue("userdata/displayselfas","SELF");
+            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","SELF");
             break;
         case 2:{
-            settings.setValue("userdata/displayselfas","Last,F.");
+            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             QString name;
             name.append(ui->piclastnameLineEdit->text());
             name.append(QLatin1String(", "));
@@ -89,7 +89,7 @@ void FirstRunDialog::on_finishButton_clicked()
         data.insert("phone",ui->phoneLineEdit->text());
         data.insert("email",ui->emailLineEdit->text());
 
-        Pilot pic("pilots",1);
+        Pilot pic(1);
         pic.setData(data);
         pic.commit();
         accept();

@@ -41,7 +41,6 @@ public:
     ~SettingsWidget();
 
 private slots:
-    void on_flightNumberPrefixLineEdit_textEdited(const QString &arg1);
 
     void themeGroup_toggled(int id);
 
@@ -51,9 +50,36 @@ private slots:
 
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
 
+    void on_prefixLineEdit_textChanged(const QString &arg1);
+
+    void on_piclastnameLineEdit_editingFinished();
+
+    void on_picfirstnameLineEdit_editingFinished();
+
+    void on_employeeidLineEdit_editingFinished();
+
+    void on_emailLineEdit_editingFinished();
+
+    void on_phoneLineEdit_editingFinished();
+
+    void on_aliasComboBox_currentIndexChanged(int index);
+
+    void on_functionComboBox_currentIndexChanged(const QString &arg1);
+
+    void on_rulesComboBox_currentIndexChanged(const QString &arg1);
+
+    void on_approachComboBox_currentIndexChanged(const QString &arg1);
+
+    void on_nightComboBox_currentIndexChanged(int index);
+
+    void on_pilotSortComboBox_currentIndexChanged(int index);
+
 private:
     Ui::SettingsWidget *ui;
 
+    void fillSettings();
+
+    void setupValidators();
 };
 
 #endif // SETTINGSWIDGET_H

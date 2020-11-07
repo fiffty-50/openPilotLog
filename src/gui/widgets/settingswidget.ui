@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>731</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,355 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="generalTab">
+     <widget class="QWidget" name="personalTab">
       <attribute name="title">
-       <string>General</string>
+       <string>Personal</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="phoneLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="piclastnameLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>required</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="emailLabel">
+         <property name="text">
+          <string>eMail</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="phoneLabel">
+         <property name="text">
+          <string>Phone</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lastNameLabel">
+         <property name="text">
+          <string>Last Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="employeeLabel">
+         <property name="text">
+          <string>Employee ID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="picfirstnameLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>required</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="employeeidLineEdit">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="firstNameLabel">
+         <property name="text">
+          <string>First Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="emailLineEdit">
+         <property name="maxLength">
+          <number>40</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="flightLoggingTab">
+      <attribute name="title">
+       <string>Flight Logging</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="aliasLabel">
+         <property name="text">
+          <string>Show own name as</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="aliasComboBox">
+         <item>
+          <property name="text">
+           <string>self</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SELF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Lastname, Firstname</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="functionLabel">
+         <property name="text">
+          <string>Function</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="functionComboBox">
+         <item>
+          <property name="text">
+           <string>PIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DUAL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>INSTRUCTOR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="rulesLabel">
+         <property name="text">
+          <string>Flight Rules</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="rulesComboBox">
+         <item>
+          <property name="text">
+           <string>VFR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>IFR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="approachLabel">
+         <property name="text">
+          <string>Approach</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="approachComboBox">
+         <item>
+          <property name="text">
+           <string>VISUAL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT I</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT II</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ILS CAT III</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MLS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LOC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LOC/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LNAV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LNAV/VNAV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (LPV)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RNAV (RNP-AR)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VOR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VOR/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NDB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NDB/DME</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TACAN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SRA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PAR</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="nightLabel">
+         <property name="text">
+          <string>Night Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="nightComboBox">
+         <item>
+          <property name="text">
+           <string>NO</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>YES (EASA)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>YES (SR/SS)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="prefixLabel">
+         <property name="text">
+          <string>Airline Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="prefixLineEdit">
+         <property name="maxLength">
+          <number>10</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="miscTab">
+      <attribute name="title">
+       <string>Misc</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
         <widget class="QLabel" name="themeLabel">
          <property name="text">
@@ -52,93 +394,88 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="flightLoggingTab">
-      <attribute name="title">
-       <string>Flight Logging</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="flightNumberPrefixLabel">
-           <property name="text">
-            <string>Flight Number Prefix</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="flightNumberPrefixLineEdit">
-           <property name="placeholderText">
-            <string>optional</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="3" column="0">
+        <widget class="QLabel" name="pilotSortLabel">
+         <property name="text">
+          <string>Sort Pilots by</string>
+         </property>
+        </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="aircraftTab">
-      <attribute name="title">
-       <string>Aircraft</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <widget class="QLabel" name="acSortLabel">
-           <property name="text">
-            <string>Sort by</string>
-           </property>
-          </widget>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="pilotSortComboBox">
+         <item>
+          <property name="text">
+           <string>ID</string>
+          </property>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="acSortComboBox">
-           <item>
-            <property name="text">
-             <string>ID</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Registration</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Type</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Company</string>
-            </property>
-           </item>
-          </widget>
+         <item>
+          <property name="text">
+           <string>Last Name</string>
+          </property>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="acAllowIncompleteLabel">
-           <property name="text">
-            <string>Allow incomplete</string>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>First Name</string>
+          </property>
          </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="acAllowIncompleteComboBox">
-           <item>
-            <property name="text">
-             <string>No</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Yes</string>
-            </property>
-           </item>
-          </widget>
+         <item>
+          <property name="text">
+           <string>Company</string>
+          </property>
          </item>
-        </layout>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="acSortLabel">
+         <property name="text">
+          <string>Sort Aircraft by</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="acSortComboBox">
+         <item>
+          <property name="text">
+           <string>ID</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Registration</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Company</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="acAllowIncompleteLabel">
+         <property name="text">
+          <string>Allow incomplete Entries</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="acAllowIncompleteComboBox">
+         <item>
+          <property name="text">
+           <string>No</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yes</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>
