@@ -29,6 +29,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->filterDateEdit->setDate(QDate::currentDate());
     ui->filterDateEdit_2->setDate(QDate::currentDate());
+    ui->newFlightButton->setFocus();
 
     auto start = std::chrono::high_resolution_clock::now(); // timer for performance testing
 

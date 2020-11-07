@@ -27,18 +27,6 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     ui(new Ui::AircraftWidget)
 {
     ui->setupUi(this);
-
-    QString welcomeMessage = "Select an Aircraft to show or edit details.";
-    QWidget *start = new QWidget();
-    start->setObjectName("welcomeAC");
-    QLabel *label = new QLabel(welcomeMessage);
-    label->setAlignment(Qt::AlignCenter);
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(label);
-    start->setLayout(layout);
-    ui->stackedWidget->addWidget(start);
-    ui->stackedWidget->setCurrentWidget(start);
-
     refreshView();
 }
 
@@ -58,10 +46,9 @@ void AircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
     auto nt = new NewTail(Aircraft("tails", selectedAircraft), Db::editExisting, this);
+    connect(nt, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
+    connect(nt, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
 
-    connect(nt,
-            SIGNAL(accepted()), this,
-            SLOT(on_widget_accepted()));
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
     ui->stackedWidget->setCurrentWidget(nt);
@@ -99,6 +86,17 @@ void AircraftWidget::on_widget_accepted()
 
 void AircraftWidget::refreshView()
 {
+    QString welcomeMessage = "Select an Aircraft to show or edit details.";
+    QWidget *start = new QWidget();
+    start->setObjectName("welcomeAC");
+    QLabel *label = new QLabel(welcomeMessage);
+    label->setAlignment(Qt::AlignCenter);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(label);
+    start->setLayout(layout);
+    ui->stackedWidget->addWidget(start);
+    ui->stackedWidget->setCurrentWidget(start);
+
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("viewTails");
     model->select();

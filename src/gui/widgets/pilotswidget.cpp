@@ -27,18 +27,6 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
-
-    QString welcomeMessage = "Select a Pilot to show or edit details.";
-    QWidget *start = new QWidget();
-    start->setObjectName("welcomePL");
-    QLabel *label = new QLabel(welcomeMessage);
-    label->setAlignment(Qt::AlignCenter);
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(label);
-    start->setLayout(layout);
-    ui->stackedWidget->addWidget(start);
-    ui->stackedWidget->setCurrentWidget(start);
-
     refreshView();
 }
 
@@ -53,9 +41,8 @@ void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     DEB("Selected Pilot with ID#: " << selectedPilot);
 
     auto np = new NewPilot(Pilot("pilots", selectedPilot), Db::editExisting, this);
-    connect(np,
-            SIGNAL(accepted()), this,
-            SLOT(on_widget_accepted()));
+    connect(np, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
+    connect(np, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
 
     np->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(np);
@@ -100,6 +87,17 @@ void PilotsWidget::on_widget_accepted()
 
 void PilotsWidget::refreshView()
 {
+    QString welcomeMessage = "Select a Pilot to show or edit details.";
+    QWidget *start = new QWidget();
+    start->setObjectName("welcomePL");
+    QLabel *label = new QLabel(welcomeMessage);
+    label->setAlignment(Qt::AlignCenter);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(label);
+    start->setLayout(layout);
+    ui->stackedWidget->addWidget(start);
+    ui->stackedWidget->setCurrentWidget(start);
+
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("viewPilots");
     model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
