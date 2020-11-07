@@ -48,7 +48,7 @@ private slots:
 
     void on_deletePushButton_clicked();
 
-    void on_widget_accepted();
+    void widget_accepted();
 
 private:
     Ui::PilotsWidget *ui;

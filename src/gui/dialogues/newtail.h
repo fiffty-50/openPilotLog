@@ -63,6 +63,8 @@ private slots:
 
     void on_weightComboBox_currentIndexChanged(int index);
 
+    void on_registrationLineEdit_textChanged(const QString &arg1);
+
 private:
 
     Ui::NewTail *ui;

@@ -11,7 +11,7 @@ TotalsWidget::TotalsWidget(QWidget *parent) :
     ui->setupUi(this);
     auto data = Stat::totals();
     DEB("Filling Totals Line Edits...");
-    DEB("data: " << data);
+    //DEB("data: " << data);
     for (const auto &field : data) {
         auto line_edit = parent->findChild<QLineEdit *>(field.first + "LineEdit");
         line_edit->setText(field.second);

@@ -22,13 +22,15 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__<< "\t" << expr
 
-const auto MAKE_VALID = QPair<QString, QRegularExpression> {
-    "makeLineEdit", QRegularExpression("[a-zA-Z]+")};
-const auto MODEL_VALID = QPair<QString, QRegularExpression> {
-    "modelLineEdit", QRegularExpression("\\w+")};
-const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
-    "variantLineEdit", QRegularExpression("\\w+")};
-const auto LINE_EDIT_VALIDATORS = QVector({MAKE_VALID, MODEL_VALID, VARIANT_VALID});
+static const auto REG_VALID = QPair<QString, QRegularExpression> {
+    "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
+static const auto MAKE_VALID = QPair<QString, QRegularExpression> {
+    "makeLineEdit", QRegularExpression("[-a-zA-Z\\s]+")};
+static const auto MODEL_VALID = QPair<QString, QRegularExpression> {
+    "modelLineEdit", QRegularExpression("[\\s\\w-]+")};
+static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
+    "variantLineEdit", QRegularExpression("[\\s\\w-]+")};
+static const auto LINE_EDIT_VALIDATORS = QVector({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
 
 
 //Dialog to be used to create a new tail
@@ -317,4 +319,9 @@ void NewTail::on_buttonBox_accepted()
             }
         }
     }
+}
+
+void NewTail::on_registrationLineEdit_textChanged(const QString &arg1)
+{
+    ui->registrationLineEdit->setText(arg1.toUpper());
 }

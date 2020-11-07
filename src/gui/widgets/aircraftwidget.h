@@ -51,7 +51,7 @@ private slots:
 
     void on_newButton_clicked();
 
-    void on_widget_accepted();
+    void acft_accepted();
 
 private:
     Ui::AircraftWidget *ui;

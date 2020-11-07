@@ -46,8 +46,8 @@ void AircraftWidget::tableView_selectionChanged(const QItemSelection &index, con
     DEB("Selected aircraft with ID#: " << selectedAircraft);
 
     auto nt = new NewTail(Aircraft(selectedAircraft), Db::editExisting, this);
-    connect(nt, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
-    connect(nt, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
+    connect(nt, SIGNAL(accepted()), this, SLOT(acft_accepted()));
+    connect(nt, SIGNAL(rejected()), this, SLOT(acft_accepted()));
 
     nt->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(nt);
@@ -74,11 +74,11 @@ void AircraftWidget::on_newButton_clicked()
     auto nt = new NewTail(QString(), Db::createNew, this);
     connect(nt,
             SIGNAL(accepted()), this,
-            SLOT(on_widget_accepted()));
+            SLOT(acft_accepted()));
     nt->show();
 }
 
-void AircraftWidget::on_widget_accepted()
+void AircraftWidget::acft_accepted()
 {
     DEB("Refreshing View...");
     refreshView();

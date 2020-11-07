@@ -41,8 +41,8 @@ void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const
     DEB("Selected Pilot with ID#: " << selectedPilot);
 
     auto np = new NewPilot(Pilot(selectedPilot), Db::editExisting, this);
-    connect(np, SIGNAL(accepted()), this, SLOT(on_widget_accepted()));
-    connect(np, SIGNAL(rejected()), this, SLOT(on_widget_accepted()));
+    connect(np, SIGNAL(accepted()), this, SLOT(widget_accepted()));
+    connect(np, SIGNAL(rejected()), this, SLOT(widget_accepted()));
 
     np->setWindowFlag(Qt::Widget);
     ui->stackedWidget->addWidget(np);
@@ -60,7 +60,7 @@ void PilotsWidget::on_newButton_clicked()
     auto np = new NewPilot(Db::createNew, this);
     connect(np,
             SIGNAL(accepted()), this,
-            SLOT(on_widget_accepted()));
+            SLOT(widget_accepted()));
     np->show();
 }
 
@@ -79,7 +79,7 @@ void PilotsWidget::on_deletePushButton_clicked()
     }
 }
 
-void PilotsWidget::on_widget_accepted()
+void PilotsWidget::widget_accepted()
 {
     DEB("Refreshing View...");
     refreshView();
