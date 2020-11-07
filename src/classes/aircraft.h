@@ -26,9 +26,11 @@
  */
 class Aircraft : public Entry
 {
-    using Entry::Entry;
+//    using Entry::Entry;
 public:
+    Aircraft();
     Aircraft(int acft_id);
+    Aircraft(QMap<QString, QString> newData);
 };
 
 #endif // AIRCRAFT_H

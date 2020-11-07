@@ -44,8 +44,8 @@ void HomeWidget::on_pushButton_clicked()
     //    Calc::updateAutoTimes(i);
     //}
     DEB(Aircraft(14));
-    DEB(Flight(23));
-    DEB(Pilot(2));
+    //DEB(Flight(23));
+    //DEB(Pilot(2));
 
 }
 

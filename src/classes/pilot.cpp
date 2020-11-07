@@ -23,6 +23,11 @@
 
 
 
+Pilot::Pilot()
+{
+
+}
+
 Pilot::Pilot(int pilot_id)
 {
     //retreive database layout
@@ -60,4 +65,29 @@ Pilot::Pilot(int pilot_id)
             position.first = "pilots";
         }
     }
+}
+
+Pilot::Pilot(QMap<QString, QString> newData)
+{
+    QString table = "pilots";
+
+    //retreive database layout
+    const auto dbContent = DbInfo();
+    columns = dbContent.format.value(table);
+
+    //Check validity of newData
+    QVector<QString> badkeys;
+    QMap<QString, QString>::iterator i;
+    for (i = newData.begin(); i != newData.end(); ++i) {
+        if (!columns.contains(i.key())) {
+            DEB(i.key() << "Not in column list for table " << table << ". Discarding.");
+            badkeys << i.key();
+        }
+    }
+    for (const auto &var : badkeys) {
+        newData.remove(var);
+    }
+    data = newData;
+    position.first = table;
+    position.second = 0;
 }

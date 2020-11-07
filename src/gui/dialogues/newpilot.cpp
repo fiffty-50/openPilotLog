@@ -131,7 +131,7 @@ void NewPilot::submitForm()
     //create db object
     switch (role) {
     case Db::createNew: {
-        auto newEntry = Pilot("pilots", newData);;
+        auto newEntry = Pilot(newData);;
         DEB("New Object: ");
         newEntry.commit();
         break;

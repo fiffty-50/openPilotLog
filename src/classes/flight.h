@@ -26,9 +26,11 @@
 
 class Flight : public Entry
 {
-    using Entry::Entry;
+//    using Entry::Entry;
 public:
+    Flight();
     Flight(int flight_id);
+    Flight(QMap<QString, QString> newData);
 };
 
 #endif // FLIGHT_H

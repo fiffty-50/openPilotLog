@@ -224,7 +224,7 @@ void NewTail::submitForm(Db::editRole edRole)
     //create db object
     switch (edRole) {
     case Db::createNew: {
-        auto newEntry = Aircraft("tails", newData);;
+        auto newEntry = Aircraft(newData);;
         newEntry.commit();
         break;
     }
@@ -245,7 +245,7 @@ void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(Aircraft("aircraft", idMap.value(arg1)));
+        formFiller(Aircraft(idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     } else {
         //for example, editing finished without selecting a result from Qcompleter

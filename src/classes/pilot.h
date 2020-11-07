@@ -22,9 +22,11 @@
 
 class Pilot : public Entry
 {
-    using Entry::Entry;
+//    using Entry::Entry;
 public:
+    Pilot();
     Pilot(int pilot_id);
+    Pilot(QMap<QString, QString> newData);
 };
 
 #endif // PILOT_H
