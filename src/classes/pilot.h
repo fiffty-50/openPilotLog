@@ -23,6 +23,8 @@
 class Pilot : public Entry
 {
     using Entry::Entry;
+public:
+    Pilot(int pilot_id);
 };
 
 #endif // PILOT_H

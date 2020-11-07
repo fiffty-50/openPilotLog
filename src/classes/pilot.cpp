@@ -17,4 +17,47 @@
  */
 #include "pilot.h"
 
+// Debug Makro
+#define DEB(expr) \
+    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
+
+
+Pilot::Pilot(int pilot_id)
+{
+    //retreive database layout
+    const auto dbContent = DbInfo();
+    auto table = QLatin1String("pilots");
+
+    //Check database for row id
+    QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_=" + QString::number(pilot_id);
+    QSqlQuery q(statement);
+    q.next();
+    int rows = q.value(0).toInt();
+    if (rows == 0) {
+        DEB("No Entry found for row id: " << pilot_id );
+        position.second = 0;
+    } else {
+        DEB("Retreiving data for row id: " << pilot_id);
+        QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(pilot_id);
+        DEB("Executing SQL...");
+        DEB(statement);
+
+        QSqlQuery q(statement);
+        q.exec();
+        q.next();
+        for (int i = 0; i < dbContent.format.value(table).length(); i++) {
+            data.insert(dbContent.format.value(table)[i], q.value(i).toString());
+        }
+
+        QString error = q.lastError().text();
+        if (error.length() > 2) {
+            DEB("Error: " << q.lastError().text());
+            position.second = 0;
+            position.first = "invalid";
+        } else {
+            position.second = pilot_id;
+            position.first = "pilots";
+        }
+    }
+}

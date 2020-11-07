@@ -26,8 +26,10 @@ Aircraft::Aircraft(int tail_id)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
+    auto table = QLatin1String("tails");
+
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM tails WHERE _rowid_=" + QString::number(tail_id);
+    QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_=" + QString::number(tail_id);
     QSqlQuery q(statement);
     q.next();
     int rows = q.value(0).toInt();
@@ -36,15 +38,15 @@ Aircraft::Aircraft(int tail_id)
         position.second = 0;
     } else {
         DEB("Retreiving data for row id: " << tail_id);
-        QString statement = "SELECT * FROM tails WHERE _rowid_=" + QString::number(tail_id);
+        QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(tail_id);
         DEB("Executing SQL...");
         DEB(statement);
 
         QSqlQuery q(statement);
         q.exec();
         q.next();
-        for (int i = 0; i < dbContent.format.value("tails").length(); i++) {
-            data.insert(dbContent.format.value("tails")[i], q.value(i).toString());
+        for (int i = 0; i < dbContent.format.value(table).length(); i++) {
+            data.insert(dbContent.format.value(table)[i], q.value(i).toString());
         }
 
         QString error = q.lastError().text();
