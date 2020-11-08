@@ -16,6 +16,12 @@ TotalsWidget::TotalsWidget(QWidget *parent) :
         auto line_edit = parent->findChild<QLineEdit *>(field.first + "LineEdit");
         line_edit->setText(field.second);
     }
+    QSettings settings;
+    QString name = settings.value("userdata/picfirstname").toString();
+    if(!name.isEmpty()) {
+        QString salutation = "Welcome to openPilotLog, " + name + QLatin1Char('!');
+        ui->welcomeLabel->setText(salutation);
+    }
 }
 
 TotalsWidget::~TotalsWidget()
