@@ -33,9 +33,7 @@ public:
     Entry(QString table, int row);
     Entry(QString table, QMap<QString, QString> newData);
 
-
-
-    QPair   <QString, int>       position = QPair<QString, int>();   // Position within the database, i.e. <table,row>
+    QPair   <QString, int>       position = QPair<QString, int>();    // Position within the database, i.e. <table,row>
     QVector <QString>            columns  = QVector<QString>();       // The columns within the table
     QMap    <QString, QString>   data     = QMap<QString, QString>(); // Tha data to fill that table, <column,value>
 
@@ -54,7 +52,6 @@ public:
     }
 
 private:
-
     bool insert();
     bool update();
 };

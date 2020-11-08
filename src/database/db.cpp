@@ -39,6 +39,8 @@ void Db::iconnect()
             DEB("DatabaseConnect - ERROR: " << db.lastError().text());
         } else {
             DEB("Database connection established.");
+            //Enable foreign key restrictions
+            QSqlQuery query("PRAGMA foreign_keys = ON;");
         }
     } else {
         DEB("DatabaseConnect - ERROR: no driver " << driver << " available");
