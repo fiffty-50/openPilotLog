@@ -45,8 +45,6 @@ Pilot::Pilot(int pilot_id)
     } else {
         DEB("Retreiving data for row id: " << pilot_id);
         QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(pilot_id);
-        DEB("Executing SQL...");
-        DEB(statement);
 
         QSqlQuery q(statement);
         q.exec();

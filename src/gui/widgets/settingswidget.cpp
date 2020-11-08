@@ -74,6 +74,7 @@ void SettingsWidget::fillSettings()
      */
     ui->piclastnameLineEdit->setText(settings.value("userdata/piclastname").toString());
     ui->picfirstnameLineEdit->setText(settings.value("userdata/picfirstname").toString());
+    ui->companyLineEdit->setText(settings.value("userdata/company").toString());
     ui->employeeidLineEdit->setText(settings.value("userdata/employeeid").toString());
     ui->phoneLineEdit->setText(settings.value("userdata/phone").toString());
     ui->emailLineEdit->setText(settings.value("userdata/email").toString());

@@ -49,8 +49,6 @@ Entry::Entry(QString table, int row)
     } else {
         DEB("Retreiving data for row id: " << row);
         QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(row);
-        DEB("Executing SQL...");
-        DEB(statement);
 
         QSqlQuery q(statement);
         q.exec();

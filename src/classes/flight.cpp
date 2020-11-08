@@ -45,8 +45,6 @@ Flight::Flight(int flight_id)
     } else {
         DEB("Retreiving data for row id: " << flight_id);
         QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(flight_id);
-        DEB("Executing SQL...");
-        DEB(statement);
 
         QSqlQuery q(statement);
         q.exec();
