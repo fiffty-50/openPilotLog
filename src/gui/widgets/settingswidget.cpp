@@ -227,7 +227,11 @@ void SettingsWidget::themeGroup_toggled(int id)
         info->exec();
     }
 }
-
+void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
+{
+    QSettings settings;
+    settings.setValue("logbook/view", index);
+}
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
     QSettings settings;

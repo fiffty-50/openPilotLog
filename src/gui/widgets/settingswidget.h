@@ -74,6 +74,8 @@ private slots:
 
     void on_pilotSortComboBox_currentIndexChanged(int index);
 
+    void on_logbookViewComboBox_currentIndexChanged(int index);
+
 private:
     Ui::SettingsWidget *ui;
 

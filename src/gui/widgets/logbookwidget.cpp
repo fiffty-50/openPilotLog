@@ -121,11 +121,6 @@ void LogbookWidget::on_showAllButton_clicked()
 {
     QSettings settings;
     refreshView(settings.value("logbook/view").toInt());
-    /*QSqlTableModel *ShowAllModel = new QSqlTableModel;
-    ShowAllModel->setTable("Logbook");
-    ShowAllModel->select();
-
-    ui->tableView->setModel(ShowAllModel);*/
 }
 
 void LogbookWidget::refreshView(int view_id)
