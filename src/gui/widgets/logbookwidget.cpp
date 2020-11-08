@@ -27,7 +27,11 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui(new Ui::LogbookWidget)
 {
     ui->setupUi(this);
-    refreshView();
+    ui->filterDateEdit->setDate(QDate::currentDate());
+    ui->filterDateEdit_2->setDate(QDate::currentDate());
+    ui->newFlightButton->setFocus();
+    QSettings settings;
+    refreshView(settings.value("logbook/view").toInt());
 }
 
 LogbookWidget::~LogbookWidget()
@@ -46,48 +50,6 @@ void LogbookWidget::tableView_selectionChanged(const QItemSelection &index,
     setSelectedFlight(index.indexes()[0].data().toInt());
     DEB("Selected flight with ID#: " << selectedFlight);
 }
-
-void LogbookWidget::refreshView()
-{
-    ui->filterDateEdit->setDate(QDate::currentDate());
-    ui->filterDateEdit_2->setDate(QDate::currentDate());
-    ui->newFlightButton->setFocus();
-    //auto start = std::chrono::high_resolution_clock::now(); // timer for performance testing
-
-    QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("Logbook");
-    model->select();
-
-    QTableView *view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setColumnWidth(1, 120);
-    view->setColumnWidth(2, 60);
-    view->setColumnWidth(3, 60);
-    view->setColumnWidth(4, 60);
-    view->setColumnWidth(5, 60);
-    view->setColumnWidth(6, 60);
-    view->setColumnWidth(7, 120);
-    view->setColumnWidth(8, 180);
-    view->setColumnWidth(9, 120);
-    view->setColumnWidth(10, 90);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-    view->show();
-    //auto stop = std::chrono::high_resolution_clock::now();
-    //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    //DEB("Time taken for lookup and rendering: " << duration.count() << " microseconds");
-
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-}
-
-
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
@@ -129,7 +91,8 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             DEB("Deleting flight with ID# " << selectedFlight);
             auto en = new Flight(selectedFlight);
             en->remove();
-            refreshView();
+            QSettings settings;
+            refreshView(settings.value("logbook/view").toInt());
         }
     } else {
         QMessageBox NoFlight;
@@ -156,9 +119,107 @@ void LogbookWidget::on_filterFlightsByDateButton_clicked()
 
 void LogbookWidget::on_showAllButton_clicked()
 {
-    QSqlTableModel *ShowAllModel = new QSqlTableModel;
+    QSettings settings;
+    refreshView(settings.value("logbook/view").toInt());
+    /*QSqlTableModel *ShowAllModel = new QSqlTableModel;
     ShowAllModel->setTable("Logbook");
     ShowAllModel->select();
 
-    ui->tableView->setModel(ShowAllModel);
+    ui->tableView->setModel(ShowAllModel);*/
 }
+
+void LogbookWidget::refreshView(int view_id)
+{
+    switch (view_id) {
+    case 0:
+        defaultView();
+        break;
+    case 1:
+        easaView();
+        break;
+    default:
+        defaultView();
+    }
+
+}
+
+void LogbookWidget::defaultView()
+{
+    DEB("Loading Default View...");
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable("Logbook");
+    model->select();
+
+    QTableView *view = ui->tableView;
+    view->setModel(model);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setColumnWidth(1, 120);
+    view->setColumnWidth(2, 60);
+    view->setColumnWidth(3, 60);
+    view->setColumnWidth(4, 60);
+    view->setColumnWidth(5, 60);
+    view->setColumnWidth(6, 60);
+    view->setColumnWidth(7, 180);
+    view->setColumnWidth(8, 180);
+    view->setColumnWidth(9, 120);
+    view->setColumnWidth(10, 90);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+    view->show();
+
+    connect(ui->tableView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+}
+
+void LogbookWidget::easaView()
+{
+    DEB("Loading EASA View...");
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable("viewEASA");
+    model->select();
+
+    QTableView *view = ui->tableView;
+    view->setModel(model);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+
+    view->setColumnWidth(1,120);
+    view->setColumnWidth(2,60);
+    view->setColumnWidth(3,60);
+    view->setColumnWidth(4,60);
+    view->setColumnWidth(5,60);
+    view->setColumnWidth(6,180);
+    view->setColumnWidth(7,120);
+    view->setColumnWidth(8,30);
+    view->setColumnWidth(9,30);
+    view->setColumnWidth(10,30);
+    view->setColumnWidth(11,30);
+    view->setColumnWidth(12,120);
+    view->setColumnWidth(13,15);
+    view->setColumnWidth(14,15);
+    view->setColumnWidth(15,60);
+    view->setColumnWidth(16,60);
+    view->setColumnWidth(17,60);
+    view->setColumnWidth(18,60);
+    view->setColumnWidth(19,60);
+    view->setColumnWidth(20,60);
+    view->setColumnWidth(21,120);
+
+
+    view->show();
+
+    connect(ui->tableView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+}
+

@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <chrono>
 #include <QDebug>
+#include <QSettings>
 
 #include "src/database/db.h"
 #include "src/classes/flight.h"
@@ -62,7 +63,11 @@ private slots:
 private:
     Ui::LogbookWidget *ui;
 
-    void refreshView();
+    void refreshView(int view_id);
+
+    void defaultView();
+
+    void easaView();
 
 };
 
