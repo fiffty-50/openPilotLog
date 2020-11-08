@@ -43,7 +43,7 @@ void HomeWidget::on_pushButton_clicked()
     //for (int i=1;i<25;i++) {
     //    Calc::updateAutoTimes(i);
     //}
-    DEB(Aircraft(14));
+    Calc::updateNightTimes();
     //DEB(Flight(23));
     //DEB(Pilot(2));
 

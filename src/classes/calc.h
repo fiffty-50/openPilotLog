@@ -67,6 +67,8 @@ public:
     static void updateAutoTimes(int acft_id);
 
     static void autoTimes(Flight, Aircraft);
+
+    static void updateNightTimes();
 };
 
 
