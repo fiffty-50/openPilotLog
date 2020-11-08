@@ -37,31 +37,65 @@
  */
 class Db
 {
-public:
-    /*!
-     * \brief The editRole enum {createNew, editExisting} is used to differentiate
-     * between creating a new entry in the database vs editing an existing one
-     */
-    enum editRole {createNew, editExisting};
-    /*!
-     * \brief The matchType enum {exactMatch, partialMatch} is used to determine the
-     * matching when using a WHERE sql statement. exactMatch results in a "=" operator,
-     * whereas partiasMatch results in a "LIKE" operator
-     */
-    enum matchType {exactMatch, partialMatch};
+    public:
+        static Db& get()
+        {
+            static Db instance;
 
-    static void             connect();
-    static bool             exists(QString column, QString table, QString checkColumn,
-                                   QString value, Db::matchType match);
-    static bool             singleUpdate(QString table, QString column, QString value,
-                                         QString checkColumn, QString checkvalue, Db::matchType match);
-    static QString          singleSelect(QString column, QString table, QString checkColumn,
-                                         QString value, Db::matchType match);
-    static QVector<QString> multiSelect(QVector<QString> columns, QString table,
-                                        QString checkColumn, QString value, Db::matchType match);
-    static QVector<QString> multiSelect(QVector<QString> columns, QString table);
-    static QVector<QString> customQuery(QString query, int returnValues);
+            return instance;
+        }
+        /*!
+         * \brief The editRole enum {createNew, editExisting} is used to differentiate
+         * between creating a new entry in the database vs editing an existing one
+         */
+        enum editRole {createNew, editExisting};
+        /*!
+         * \brief The matchType enum {exactMatch, partialMatch} is used to determine the
+         * matching when using a WHERE sql statement. exactMatch results in a "=" operator,
+         * whereas partiasMatch results in a "LIKE" operator
+         */
+        enum matchType {exactMatch, partialMatch};
+        
+        static void             connect(){get().iconnect();}
+        static bool             exists(QString column, QString table, QString checkColumn,
+                                       QString value, Db::matchType match){
+            return get().iexists(column, table, checkColumn, value, match);
+        }
+        static bool             singleUpdate(QString table, QString column, QString value,
+                                             QString checkColumn, QString checkvalue, Db::matchType match){
+            return get().isingleUpdate(table,column,value,checkColumn,checkvalue,match);
+        }
+        static QString          singleSelect(QString column, QString table, QString checkColumn,
+                                             QString value, Db::matchType match){
+            return get().isingleSelect(column,table,checkColumn,value,match);
+        }
+        static QVector<QString> multiSelect(QVector<QString> columns, QString table,
+                                            QString checkColumn, QString value, Db::matchType match){
+            return get().imultiSelect(columns,table,checkColumn,value,match);
+        }
+        static QVector<QString> multiSelect(QVector<QString> columns, QString table){
+            return get().imultiSelect(columns, table);
+        }
+        static QVector<QString> customQuery(QString query, int returnValues){
+            return get().icustomQuery(query, returnValues);
+        }
+    private:
+        Db() {}
+        void             iconnect();
+        bool             iexists(QString column, QString table, QString checkColumn,
+                                       QString value, Db::matchType match);
+        bool             isingleUpdate(QString table, QString column, QString value,
+                                             QString checkColumn, QString checkvalue, Db::matchType match);
+        QString          isingleSelect(QString column, QString table, QString checkColumn,
+                                             QString value, Db::matchType match);
+        QVector<QString> imultiSelect(QVector<QString> columns, QString table,
+                                            QString checkColumn, QString value, Db::matchType match);
+        QVector<QString> imultiSelect(QVector<QString> columns, QString table);
+        QVector<QString> icustomQuery(QString query, int returnValues);
 
+    public:
+        Db(Db const&)              = delete;
+        void operator=(Db const&)  = delete;
 };
 
 #endif // DB_H

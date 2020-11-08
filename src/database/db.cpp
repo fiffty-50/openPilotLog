@@ -22,7 +22,7 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-void Db::connect()
+void Db::iconnect()
 {
     const QString driver("QSQLITE");
 
@@ -49,7 +49,7 @@ void Db::connect()
  * \param value - The value to be checked
  * \return
  */
-bool Db::exists(QString column, QString table, QString checkColumn, QString value,
+bool Db::iexists(QString column, QString table, QString checkColumn, QString value,
                 Db::matchType match)
 {
     bool output = false;
@@ -99,7 +99,7 @@ bool Db::exists(QString column, QString table, QString checkColumn, QString valu
  * \param match - enum Db::exactMatch or Db::partialMatch
  * \return QString
  */
-QString Db::singleSelect(QString column, QString table, QString checkColumn, QString value,
+QString Db::isingleSelect(QString column, QString table, QString checkColumn, QString value,
                          Db::matchType match)
 {
     QString statement = "SELECT " + column + " FROM " + table + " WHERE " + checkColumn;
@@ -144,7 +144,7 @@ QString Db::singleSelect(QString column, QString table, QString checkColumn, QSt
  * \param match - enum Db::exactMatch or Db::partialMatch
  * \return QVector<QString>
  */
-QVector<QString> Db::multiSelect(QVector<QString> columns, QString table, QString checkColumn,
+QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table, QString checkColumn,
                                  QString value, Db::matchType match)
 {
     QString statement = "SELECT ";
@@ -194,7 +194,7 @@ QVector<QString> Db::multiSelect(QVector<QString> columns, QString table, QStrin
  * \param table
  * \return
  */
-QVector<QString> Db::multiSelect(QVector<QString> columns, QString table)
+QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table)
 {
     QString statement = "SELECT ";
     for (const auto &column : columns) {
@@ -238,7 +238,7 @@ QVector<QString> Db::multiSelect(QVector<QString> columns, QString table)
  * \param match enum Db::exactMatch or Db::partialMatch
  * \return true on success, otherwise error messages in debug out
  */
-bool Db::singleUpdate(QString table, QString column, QString value, QString checkColumn,
+bool Db::isingleUpdate(QString table, QString column, QString value, QString checkColumn,
                       QString checkvalue, Db::matchType match)
 {
     QString statement = "UPDATE " + table;
@@ -276,7 +276,7 @@ bool Db::singleUpdate(QString table, QString column, QString value, QString chec
  * \param returnValues - the number of expected return values
  * \return QVector<QString> of results
  */
-QVector<QString> Db::customQuery(QString query, int returnValues)
+QVector<QString> Db::icustomQuery(QString query, int returnValues)
 {
     QSqlQuery q(query);
     DEB(query);

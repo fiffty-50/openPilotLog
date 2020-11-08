@@ -424,9 +424,9 @@ void Calc::updateAutoTimes(int acft_id)
     //find all flights for aircraft
     auto flightList = Db::multiSelect(QVector<QString>{"id"},"flights","acft",
                                       QString::number(acft_id),Db::exactMatch);
-    auto acft = Aircraft("tails",acft_id);
+    auto acft = Aircraft(acft_id);
     for (const auto& item : flightList) {
-        auto flt = Flight("flights",item.toInt());
+        auto flt = Flight(item.toInt());
 
         if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1") {
             DEB("SPSE");
