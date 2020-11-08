@@ -21,25 +21,25 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
-const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
     "piclastnameLineEdit", QRegularExpression("\\w+")};
-const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-const auto ALIAS_VALID = QPair<QString, QRegularExpression> {
-    "aliasLineEdit", QRegularExpression("\\w+")};
-const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
+    "companyLineEdit", QRegularExpression("\\w+")};
+static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
 
 
-const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
+static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
                                            PHONE_VALID,     EMAIL_VALID,
-                                           ALIAS_VALID,     EMPLOYEENR_VALID});
+                                           COMPANY_VALID,     EMPLOYEENR_VALID});
 
 NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),

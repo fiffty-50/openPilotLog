@@ -26,7 +26,9 @@
 #include <QProcess>
 #include <QDebug>
 #include <QSettings>
+#include <QCloseEvent>
 #include "src/database/db.h"
+#include "src/classes/pilot.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -76,12 +78,16 @@ private slots:
 
     void on_logbookViewComboBox_currentIndexChanged(int index);
 
+    void on_companyLineEdit_editingFinished();
+
 private:
     Ui::SettingsWidget *ui;
 
     void fillSettings();
 
     void setupValidators();
+
+    void updatePersonalDetails();
 };
 
 #endif // SETTINGSWIDGET_H

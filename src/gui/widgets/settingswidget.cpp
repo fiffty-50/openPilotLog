@@ -23,7 +23,26 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
+static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+    "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
+static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+    "piclastnameLineEdit", QRegularExpression("\\w+")};
+static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+    "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+    "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+                                        "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
+static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
+    "companyLineEdit", QRegularExpression("\\w+")};
+static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+    "employeeidLineEdit", QRegularExpression("\\w+")};
+static const auto PREFIX_VALID = QPair<QString, QRegularExpression> {
+    "prefixLineEdit", QRegularExpression("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]")};
 
+static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
+                                           PHONE_VALID,     EMAIL_VALID,
+                                           COMPANY_VALID,     EMPLOYEENR_VALID,
+                                           PREFIX_VALID});
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -40,7 +59,6 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     fillSettings();
     setupValidators();
-
 }
 
 SettingsWidget::~SettingsWidget()
@@ -91,9 +109,47 @@ void SettingsWidget::fillSettings()
 
 void SettingsWidget::setupValidators()
 {
-    QRegExp flightNumberPrefix_rx("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]"); // allow max 3 letters (upper and lower) and numbers
-    QValidator *flightNumberPrefixValidator = new QRegExpValidator(flightNumberPrefix_rx, this);
-    ui->prefixLineEdit->setValidator(flightNumberPrefixValidator);
+    DEB("Setting up Validators...");
+    for(const auto& pair : LINE_EDIT_VALIDATORS){
+        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
+        auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+        line_edit->setValidator(validator);
+    }
+}
+
+void SettingsWidget::updatePersonalDetails()
+{
+    QSettings settings;
+    QMap<QString,QString> data;
+    switch (ui->aliasComboBox->currentIndex()) {
+    case 0:
+        data.insert("displayname","self");
+        break;
+    case 1:
+        data.insert("displayname","SELF");
+        break;
+    case 2:{
+        QString name;
+        name.append(ui->piclastnameLineEdit->text());
+        name.append(QLatin1String(", "));
+        name.append(ui->picfirstnameLineEdit->text().left(1));
+        name.append(QLatin1Char('.'));
+        data.insert("displayname",name);
+    }
+        break;
+    default:
+        break;
+    }
+    data.insert("piclastname",ui->piclastnameLineEdit->text());
+    data.insert("picfirstname",ui->picfirstnameLineEdit->text());
+    data.insert("company",ui->companyLineEdit->text());
+    data.insert("employeeid",ui->employeeidLineEdit->text());
+    data.insert("phone",ui->phoneLineEdit->text());
+    data.insert("email",ui->emailLineEdit->text());
+
+    Pilot pic(1);
+    pic.setData(data);
+    pic.commit();
 }
 
 /*
@@ -113,6 +169,7 @@ void SettingsWidget::on_piclastnameLineEdit_editingFinished()
         ui->piclastnameLineEdit->setFocus();
     } else {
         settings.setValue("userdata/piclastname",ui->piclastnameLineEdit->text());
+        updatePersonalDetails();
     }
 }
 
@@ -124,25 +181,36 @@ void SettingsWidget::on_picfirstnameLineEdit_editingFinished()
         ui->picfirstnameLineEdit->setFocus();
     } else {
         settings.setValue("userdata/picfirstname",ui->picfirstnameLineEdit->text());
+        updatePersonalDetails();
     }
+}
+
+void SettingsWidget::on_companyLineEdit_editingFinished()
+{
+    QSettings settings;
+    settings.setValue("userdata/company",ui->companyLineEdit->text());
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_employeeidLineEdit_editingFinished()
 {
     QSettings settings;
     settings.setValue("userdata/employeeid",ui->employeeidLineEdit->text());
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_emailLineEdit_editingFinished()
 {
     QSettings settings;
     settings.setValue("userdata/email",ui->emailLineEdit->text());
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_phoneLineEdit_editingFinished()
 {
     QSettings settings;
     settings.setValue("userdata/phone",ui->phoneLineEdit->text());
+    updatePersonalDetails();
 }
 
 /*
@@ -153,17 +221,7 @@ void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
 {
     QSettings settings;
     settings.setValue("userdata/displayselfas",index);
-    /*QSettings settings;
-    switch (index) {
-    case 0:
-        settings.setValue("userdata/displayselfas","self");
-        break;
-    case 1:
-        settings.setValue("userdata/displayselfas","SELF");
-        break;
-    default:
-        settings.setValue("userdata/displayselfas","Last,F.");
-    }*/
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_functionComboBox_currentIndexChanged(const QString &arg1)
@@ -253,7 +311,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
         reply = QMessageBox::warning(this, "Warning",
                                       "Enabling incomplete logging will enable you to add aircraft with incomplete data.\n\n"
                                       "If you do not fill out the aircraft details, "
-                                      "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
+                                      "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time. "
                                       "This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.\n\n"
                                       "It is highly recommended to keep this option off unless you have a specific reason not to.\n\n"
                                       "Are you sure you want to proceed?",
