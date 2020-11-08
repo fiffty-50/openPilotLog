@@ -36,6 +36,7 @@ public:
     QPair   <QString, int>       position = QPair<QString, int>();    // Position within the database, i.e. <table,row>
     QVector <QString>            columns  = QVector<QString>();       // The columns within the table
     QMap    <QString, QString>   data     = QMap<QString, QString>(); // Tha data to fill that table, <column,value>
+    QString                      error    = QString();                // holds sql errors (if they ocurred)
 
     void setData(const QMap<QString, QString> &value);
 

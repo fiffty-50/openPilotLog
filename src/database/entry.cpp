@@ -59,7 +59,7 @@ Entry::Entry(QString table, int row)
             data.insert(dbContent.format.value(table)[i], q.value(i).toString());
         }
 
-        QString error = q.lastError().text();
+        error = q.lastError().text();
         if (error.length() > 2) {
             DEB("Error: " << q.lastError().text());
             position.second = 0;
@@ -117,7 +117,7 @@ bool Entry::remove()
         QString statement = "DELETE FROM " + position.first +
                             " WHERE _rowid_=" + QString::number(position.second);
         QSqlQuery q(statement);
-        QString error = q.lastError().text();
+        error = q.lastError().text();
 
         if (error.length() > 1) {
             DEB("Errors have occured: " << error);
@@ -171,7 +171,7 @@ bool Entry::insert()
     statement += QLatin1String(")");
 
     QSqlQuery q(statement);
-    QString error = q.lastError().text();
+    error = q.lastError().text();
     if (error.length() < 2) {
         DEB("Entry successfully committed.");
         return true;
@@ -200,7 +200,7 @@ bool Entry::update()
     //execute query
     QSqlQuery q(statement);
     //check result. Upon success, error should be " "
-    QString error = q.lastError().text();
+    error = q.lastError().text();
     if (error.length() < 2) {
         DEB("Object successfully updated.");
         return true;

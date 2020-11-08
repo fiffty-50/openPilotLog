@@ -54,7 +54,7 @@ Aircraft::Aircraft(int tail_id)
             data.insert(dbContent.format.value(table)[i], q.value(i).toString());
         }
 
-        QString error = q.lastError().text();
+        error = q.lastError().text();
         if (error.length() > 2) {
             DEB("Error: " << q.lastError().text());
             position.second = 0;
