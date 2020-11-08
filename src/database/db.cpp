@@ -21,7 +21,9 @@
 // Debug Makro
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
-
+/*!
+ * \brief Db::iconnect - see Db::connect
+ */
 void Db::iconnect()
 {
     const QString driver("QSQLITE");
@@ -43,11 +45,7 @@ void Db::iconnect()
     }
 }
 /*!
- * \brief Db::exists checks if a certain value exists in the database with a sqlite WHERE statement
- * \param table - Name of the table
- * \param column - Name of the column
- * \param value - The value to be checked
- * \return
+ * \brief Db::iexists - see Db::exists
  */
 bool Db::iexists(QString column, QString table, QString checkColumn, QString value,
                 Db::matchType match)
@@ -92,12 +90,7 @@ bool Db::iexists(QString column, QString table, QString checkColumn, QString val
 }
 
 /*!
- * \brief singleSelect Returns a single value from the database with a sqlite WHERE statement
- * \param table - Name of the table
- * \param column - Name of the column
- * \param value - Identifier for WHERE statement
- * \param match - enum Db::exactMatch or Db::partialMatch
- * \return QString
+ * \brief Db::isingleSelect - see Db::singleSelect
  */
 QString Db::isingleSelect(QString column, QString table, QString checkColumn, QString value,
                          Db::matchType match)
@@ -136,13 +129,7 @@ QString Db::isingleSelect(QString column, QString table, QString checkColumn, QS
 }
 
 /*!
- * \brief Db::multiSelect Returns multiple values from the database with a sqlite WHERE statement
- * \param table - Name of the table
- * \param columns - QVector<QString> Names of the columns to be queried
- * \param value - Identifier for WHERE statement
- * \param checkColumn - column to match value to
- * \param match - enum Db::exactMatch or Db::partialMatch
- * \return QVector<QString>
+ * \brief Db::imultiSelect - see Db::multiSelect
  */
 QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table, QString checkColumn,
                                  QString value, Db::matchType match)
@@ -188,11 +175,9 @@ QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table, QStri
         return result;
     }
 }
+
 /*!
- * \brief Db::multiSelect Returns a complete column(s) for a given table.
- * \param column
- * \param table
- * \return
+ * \brief Db::imultiSelect - see Db::multiSelect
  */
 QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table)
 {
@@ -228,15 +213,7 @@ QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table)
 }
 
 /*!
- * \brief Db::singleUpdate Updates a single value in the database.
- * Query format: UPDATE table SET column = value WHERE checkcolumn =/LIKE checkvalue
- * \param table Name of the table to be updated
- * \param column Name of the column to be updated
- * \param checkColumn Name of the column for WHERE statement
- * \param value The value to be set
- * \param checkvalue The value for the WHERE statement
- * \param match enum Db::exactMatch or Db::partialMatch
- * \return true on success, otherwise error messages in debug out
+ * \brief Db::isingleUpdate - see Db::singleUpdate
  */
 bool Db::isingleUpdate(QString table, QString column, QString value, QString checkColumn,
                       QString checkvalue, Db::matchType match)
@@ -271,10 +248,7 @@ bool Db::isingleUpdate(QString table, QString column, QString value, QString che
     }
 }
 /*!
- * \brief Db::customQuery Can be used to send a complex query to the database.
- * \param query - the full sql query statement
- * \param returnValues - the number of expected return values
- * \return QVector<QString> of results
+ * \brief Db::icustomQuery - see Db::customQuery
  */
 QVector<QString> Db::icustomQuery(QString query, int returnValues)
 {
