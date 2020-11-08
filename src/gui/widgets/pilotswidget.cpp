@@ -69,7 +69,29 @@ void PilotsWidget::on_deletePushButton_clicked()
     if (selectedPilot > 0) {
 
         auto pil = new Pilot(selectedPilot);
-        pil->remove();
+        if(!pil->remove()) {
+            QVector<QString> columns = {"doft","dept","dest"};
+            QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
+                                                       QString::number(selectedPilot), Db::exactMatch);
+            auto mb = new QMessageBox(this);
+            QString message = "\nUnable to delete. The following error has ocurred:\n\n";
+            if(!details.isEmpty()){
+                message += pil->error + QLatin1String("\n\n");
+                message += "This is most likely the case because a flight exists with the Pilot "
+                           "you are trying to delete. You have to change or remove this flight "
+                           "before being able to remove this pilot from the database.\n\n"
+                           "The following flight(s) with this pilot have been found:\n\n";
+                auto space = QLatin1Char(' ');
+                for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
+                    message += details[i] + space
+                             + details[i+1] + space
+                             + details[i+2] + QLatin1String("\n");
+                }
+            }
+            mb->setText(message);
+            mb->setIcon(QMessageBox::Critical);
+            mb->show();
+        }
         refreshView();
 
     } else {
