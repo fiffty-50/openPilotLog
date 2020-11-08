@@ -215,9 +215,7 @@ void LogbookWidget::easaView()
     view->setColumnWidth(20,60);
     view->setColumnWidth(21,120);
 
-
     view->show();
-
     connect(ui->tableView->selectionModel(),
             SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
