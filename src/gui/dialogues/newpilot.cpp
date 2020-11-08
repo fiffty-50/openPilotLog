@@ -36,11 +36,10 @@ static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
 
-
 static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
                                            PHONE_VALID,     EMAIL_VALID,
                                            COMPANY_VALID,     EMPLOYEENR_VALID});
-
+// For creating a new entry
 NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
@@ -49,7 +48,7 @@ NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     ui->setupUi(this);
     setupValidators();
 }
-
+// For editing an existing entry
 NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
@@ -58,6 +57,7 @@ NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     role = edRole;
     ui->setupUi(this);
     setupValidators();
+
     formFiller();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -69,7 +69,6 @@ NewPilot::~NewPilot()
 
 void NewPilot::on_buttonBox_accepted()
 {
-    DEB("accepted.");
     if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
         auto mb = new QMessageBox(this);
         mb->setText("Last Name and First Name are required.");
@@ -126,13 +125,11 @@ void NewPilot::submitForm()
     displayName.append(ui->picfirstnameLineEdit->text().left(1));
     displayName.append(QLatin1Char('.'));
     newData.insert("displayname",displayName);
-    DEB("New Data: " << newData);
-    DEB("Role: " << role);
     //create db object
     switch (role) {
     case Db::createNew: {
         auto newEntry = Pilot(newData);;
-        DEB("New Object: ");
+        DEB("New Object: " << newEntry);
         newEntry.commit();
         break;
     }

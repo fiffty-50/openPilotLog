@@ -130,6 +130,7 @@
  <tabstops>
   <tabstop>picfirstnameLineEdit</tabstop>
   <tabstop>piclastnameLineEdit</tabstop>
+  <tabstop>companyLineEdit</tabstop>
   <tabstop>aliasLineEdit</tabstop>
   <tabstop>employeeidLineEdit</tabstop>
   <tabstop>phoneLineEdit</tabstop>
@@ -144,8 +145,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>315</x>
-     <y>410</y>
+     <x>324</x>
+     <y>442</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
