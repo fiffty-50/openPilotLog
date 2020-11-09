@@ -23,7 +23,7 @@
 #include <QSqlTableModel>
 #include <QDebug>
 #include <QLabel>
-#include <QSettings>
+#include "src/classes/settings.h"
 #include "src/classes/pilot.h"
 #include "src/gui/dialogues/newpilot.h"
 

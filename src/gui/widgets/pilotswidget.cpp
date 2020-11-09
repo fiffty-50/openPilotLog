@@ -137,9 +137,8 @@ void PilotsWidget::refreshView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    QSettings settings;
 
-    view->sortByColumn(settings.value("userdata/pilSortColumn").toInt(), Qt::AscendingOrder);
+    view->sortByColumn(Settings::read("userdata/pilSortColumn").toInt(), Qt::AscendingOrder);
 
     view->show();
 

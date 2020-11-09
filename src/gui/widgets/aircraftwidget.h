@@ -23,10 +23,12 @@
 #include <QSqlTableModel>
 #include <QDebug>
 #include <QLabel>
-#include <QSettings>
+
+#include "src/classes/settings.h"
 #include "src/gui/dialogues/newtail.h"
 #include "src/classes/aircraft.h"
 #include "src/database/db.h"
+
 
 namespace Ui {
 class AircraftWidget;

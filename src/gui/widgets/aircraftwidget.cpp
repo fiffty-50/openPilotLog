@@ -136,8 +136,7 @@ void AircraftWidget::refreshView()
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
 
-    QSettings settings;
-    view->sortByColumn(settings.value("userdata/acSortColumn").toInt(), Qt::AscendingOrder);
+    view->sortByColumn(Settings::read("userdata/acSortColumn").toInt(), Qt::AscendingOrder);
 
     view->show();
 

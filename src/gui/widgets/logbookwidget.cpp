@@ -30,8 +30,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui->filterDateEdit->setDate(QDate::currentDate());
     ui->filterDateEdit_2->setDate(QDate::currentDate());
     ui->newFlightButton->setFocus();
-    QSettings settings;
-    refreshView(settings.value("logbook/view").toInt());
+    refreshView(Settings::read("logbook/view").toInt());
 }
 
 LogbookWidget::~LogbookWidget()
@@ -91,8 +90,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             DEB("Deleting flight with ID# " << selectedFlight);
             auto en = new Flight(selectedFlight);
             en->remove();
-            QSettings settings;
-            refreshView(settings.value("logbook/view").toInt());
+            refreshView(Settings::read("logbook/view").toInt());
         }
     } else {
         QMessageBox NoFlight;
@@ -119,8 +117,7 @@ void LogbookWidget::on_filterFlightsByDateButton_clicked()
 
 void LogbookWidget::on_showAllButton_clicked()
 {
-    QSettings settings;
-    refreshView(settings.value("logbook/view").toInt());
+    refreshView(Settings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::refreshView(int view_id)

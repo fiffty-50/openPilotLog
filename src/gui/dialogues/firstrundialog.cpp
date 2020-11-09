@@ -36,8 +36,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 void FirstRunDialog::themeGroup_toggled(int id)
 {
-    QSettings settings;
-    settings.setValue("main/theme", id);
+    Settings::write("main/theme", id);
 }
 
 void FirstRunDialog::on_finishButton_clicked()
@@ -47,31 +46,30 @@ void FirstRunDialog::on_finishButton_clicked()
         mb->setText("You have to enter a valid first and last name for the logbook.");
         mb->show();
     } else {
-        QSettings settings;
-        settings.setValue("userdata/piclastname",ui->piclastnameLineEdit->text());
-        settings.setValue("userdata/picfirstname",ui->picfirstnameLineEdit->text());
-        settings.setValue("userdata/employeeid",ui->employeeidLineEdit->text());
-        settings.setValue("userdata/phone",ui->phoneLineEdit->text());
-        settings.setValue("userdata/email",ui->emailLineEdit->text());
+        Settings::write("userdata/piclastname",ui->piclastnameLineEdit->text());
+        Settings::write("userdata/picfirstname",ui->picfirstnameLineEdit->text());
+        Settings::write("userdata/employeeid",ui->employeeidLineEdit->text());
+        Settings::write("userdata/phone",ui->phoneLineEdit->text());
+        Settings::write("userdata/email",ui->emailLineEdit->text());
 
-        settings.setValue("flightlogging/function", ui->functionComboBox->currentText());
-        settings.setValue("flightlogging/rules", ui->rulesComboBox->currentText());
-        settings.setValue("flightlogging/approach", ui->approachComboBox->currentText());
-        settings.setValue("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
-        settings.setValue("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
+        Settings::write("flightlogging/function", ui->functionComboBox->currentText());
+        Settings::write("flightlogging/rules", ui->rulesComboBox->currentText());
+        Settings::write("flightlogging/approach", ui->approachComboBox->currentText());
+        Settings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
+        Settings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
 
         QMap<QString,QString> data;
         switch (ui->aliasComboBox->currentIndex()) {
         case 0:
-            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","self");
             break;
         case 1:
-            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","SELF");
             break;
         case 2:{
-            settings.setValue("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             QString name;
             name.append(ui->piclastnameLineEdit->text());
             name.append(QLatin1String(", "));

@@ -21,8 +21,9 @@
 #include <QDialog>
 #include <QCompleter>
 #include <QMessageBox>
-#include <QSettings>
 #include <QRegularExpression>
+
+#include "src/classes/settings.h"
 #include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"

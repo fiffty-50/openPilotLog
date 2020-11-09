@@ -23,6 +23,7 @@ SOURCES += \
     src/classes/completionlist.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
+    src/classes/settings.cpp \
     src/classes/stat.cpp \
     src/classes/strictrxvalidator.cpp \
     src/database/db.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     src/classes/completionlist.h \
     src/classes/flight.h \
     src/classes/pilot.h \
+    src/classes/settings.h \
     src/classes/stat.h \
     src/classes/strictrxvalidator.h \
     src/database/db.h \

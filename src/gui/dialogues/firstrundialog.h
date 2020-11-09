@@ -3,9 +3,9 @@
 
 #include <QDialog>
 #include <QButtonGroup>
-#include <QSettings>
 #include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include "src/classes/settings.h"
 #include "src/classes/pilot.h"
 
 namespace Ui {

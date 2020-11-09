@@ -456,20 +456,20 @@ void Calc::updateAutoTimes(int acft_id)
  */
 void Calc::updateNightTimes()
 {
-    QSettings settings;
-    int nightAngle = settings.value("flightlogging/nightangle").toInt();
-    QVector<QString> columns = {"id"};
+    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const QVector<QString> columns = {"id"};
     auto flights = Db::multiSelect(columns,"flights");
     for (const auto& item : flights) {
         auto flt = new Flight(item.toInt());
         auto dateTime = QDateTime(QDate::fromString(flt->data.value("doft"),Qt::ISODate),
                                   QTime().addSecs(flt->data.value("tofb").toInt() * 60),
                                   Qt::UTC);
-        flt->data.insert("tNIGHT", QString::number(calculateNightTime(flt->data.value("dept"),
-                                                                      flt->data.value("dest"),
-                                                                      dateTime,
-                                                                      flt->data.value("tblk").toInt(),
-                                                                      nightAngle)));
+        flt->data.insert("tNIGHT", QString::number(
+                             calculateNightTime(flt->data.value("dept"),
+                             flt->data.value("dest"),
+                             dateTime,
+                             flt->data.value("tblk").toInt(),
+                             nightAngle)));
         flt->commit();
     }
 }

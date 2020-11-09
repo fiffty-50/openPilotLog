@@ -24,8 +24,8 @@
 #include <QMessageBox>
 #include <chrono>
 #include <QDebug>
-#include <QSettings>
 
+#include "src/classes/settings.h"
 #include "src/database/db.h"
 #include "src/classes/flight.h"
 

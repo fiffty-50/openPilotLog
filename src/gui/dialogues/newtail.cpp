@@ -296,8 +296,7 @@ void NewTail::on_buttonBox_accepted()
             submitForm(role);
             accept();
         } else {
-            QSettings setting;
-            if (!setting.value("userdata/acAllowIncomplete").toInt()) {
+            if (!Settings::read("userdata/acAllowIncomplete").toInt()) {
                 auto nope = new QMessageBox(this);
                 nope->setText("Some or all fields are empty.\nPlease go back and "
                               "complete the form.\n\nYou can allow logging incomplete entries on the settings page.");

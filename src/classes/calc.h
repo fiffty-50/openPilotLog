@@ -22,10 +22,10 @@
 #include "src/database/db.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/flight.h"
+#include "src/classes/settings.h"
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>
-#include <QSettings>
 /*!
  * \brief The calc class provides functionality for various calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
