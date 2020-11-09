@@ -245,16 +245,18 @@ void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1
 
 void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
 {
-    if(index == 2){
-        auto mb = new QMessageBox(this);
-        mb->setText("This option is not yet available.");
-        mb->show();
-        ui->nightComboBox->setCurrentIndex(0);
-    } else {
-        QSettings settings;
-        settings.setValue("flightlogging/nightlogging", index);
+    QSettings settings;
+    settings.setValue("flightlogging/nightlogging", index);
+    switch (index) {
+    case 1:
+        settings.setValue("flightlogging/nightangle",-6);
+        break;
+    case 2:
+        settings.setValue("flightlogging/nightangle",0);
+        break;
+    default:
+        settings.setValue("flightlogging/nightangle",-6);
     }
-
 }
 
 void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)

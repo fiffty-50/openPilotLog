@@ -19,6 +19,7 @@
 // Debug Makro
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+
 /*!
  * \brief Calc::blocktime Calculates Block Time for a given departure and arrival time
  * \param tofb QTime Time Off Blocks
@@ -337,9 +338,11 @@ double Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
  * \param dest - ICAO 4-letter Code of Destination Airport
  * \param departureTime - QDateTime of Departure (UTC)
  * \param tblk - Total block time in minutes
+ * \param nightAngle - the solar elevation angle where night conditons exist.
+ * Default -6 (end of civil evening twilight)
  * \return Total number of minutes under night flying conditions
  */
-int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk)
+int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk, int nightAngle)
 {
     QVector<QString> columns = {"lat", "long"};
     QVector<QString> deptCoordinates = Db::multiSelect(columns, "airports", "icao", dept,
@@ -369,11 +372,12 @@ int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     int nightTime = 0;
     for (int i = 0; i < tblk ; i++) {
         if (solarElevation(departureTime.addSecs(60 * i), radToDeg(route[i][0]),
-                           radToDeg(route[i][1])) < -0.6) {
+                           radToDeg(route[i][1])) < nightAngle) {
             nightTime ++;
         }
     }
-    qDebug() << "Calc::CalculateNightTime result: " << nightTime << " minutes night flying time.";
+    qDebug() << "Calc::CalculateNightTime result for angle: "<< nightAngle
+             << " :" << nightTime << " minutes night flying time.";
     return nightTime;
 }
 
@@ -452,6 +456,8 @@ void Calc::updateAutoTimes(int acft_id)
  */
 void Calc::updateNightTimes()
 {
+    QSettings settings;
+    int nightAngle = settings.value("flightlogging/nightangle").toInt();
     QVector<QString> columns = {"id"};
     auto flights = Db::multiSelect(columns,"flights");
     for (const auto& item : flights) {
@@ -462,7 +468,8 @@ void Calc::updateNightTimes()
         flt->data.insert("tNIGHT", QString::number(calculateNightTime(flt->data.value("dept"),
                                                                       flt->data.value("dest"),
                                                                       dateTime,
-                                                                      flt->data.value("tblk").toInt())));
+                                                                      flt->data.value("tblk").toInt(),
+                                                                      nightAngle)));
         flt->commit();
     }
 }

@@ -25,6 +25,7 @@
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>
+#include <QSettings>
 /*!
  * \brief The calc class provides functionality for various calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
@@ -60,7 +61,7 @@ public:
 
     static double solarElevation(QDateTime utc_time_point, double lat, double lon);
 
-    static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk);
+    static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk, int nightAngle);
 
     static QString formatTimeInput(QString userinput);
 

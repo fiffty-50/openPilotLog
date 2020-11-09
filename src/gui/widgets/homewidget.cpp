@@ -43,9 +43,21 @@ void HomeWidget::on_pushButton_clicked()
     //for (int i=1;i<25;i++) {
     //    Calc::updateAutoTimes(i);
     //}
-    //Calc::updateNightTimes();
+    Calc::updateNightTimes();
     //DEB(Flight(23));
     //DEB(Pilot(2));
+    /*QSettings settings;
+    int nightAngle = settings.value("flightlogging/nightangle").toInt();
+    auto flt = new Flight(10);
+    auto dateTime = QDateTime(QDate::fromString(flt->data.value("doft"),Qt::ISODate),
+                              QTime().addSecs(flt->data.value("tofb").toInt() * 60),
+                              Qt::UTC);
+    DEB(QString::number(Calc::calculateNightTime(flt->data.value("dept"),
+                                                                  flt->data.value("dest"),
+                                                                  dateTime,
+                                                                  flt->data.value("tblk").toInt(),
+                                                                  nightAngle)));*/
+    //DEB(Calc::solarElevation(datetime,60.121,11.0502));
 
 }
 

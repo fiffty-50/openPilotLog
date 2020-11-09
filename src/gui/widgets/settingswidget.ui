@@ -17,7 +17,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="personalTab">
       <attribute name="title">
@@ -173,6 +173,9 @@
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="1">
         <widget class="QLabel" name="aliasLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How your own name is displayed in your logbook&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Show own name as</string>
          </property>
@@ -199,6 +202,9 @@
        </item>
        <item row="1" column="1">
         <widget class="QLabel" name="functionLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default function for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Function</string>
          </property>
@@ -230,6 +236,9 @@
        </item>
        <item row="2" column="1">
         <widget class="QLabel" name="rulesLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default Flight Rules for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Flight Rules</string>
          </property>
@@ -264,6 +273,9 @@
        </item>
        <item row="3" column="1">
         <widget class="QLabel" name="approachLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default approach for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Approach</string>
          </property>
@@ -393,6 +405,12 @@
        </item>
        <item row="4" column="1">
         <widget class="QLabel" name="nightLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how (if) night time is automatically calculated. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Night Time</string>
          </property>
@@ -400,6 +418,12 @@
        </item>
        <item row="4" column="2">
         <widget class="QComboBox" name="nightComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;EASA: End of civil evening twilight until beginning of civil morning twilight&lt;/p&gt;&lt;p&gt;SR/SS: From sunrise to sunset.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;EASA: End of civil evening twilight until beginning of civil morning twilight&lt;/p&gt;&lt;p&gt;SR/SS: From sunrise to sunset.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <item>
           <property name="text">
            <string>NO</string>
@@ -419,6 +443,9 @@
        </item>
        <item row="5" column="1">
         <widget class="QLabel" name="prefixLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter you airline Prefix to speed up logging of flight numbers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Airline Prefix</string>
          </property>
