@@ -22,7 +22,9 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QCompleter>
 #include "src/classes/pilot.h"
+#include "src/classes/completionlist.h"
 
 namespace Ui {
 class NewPilot;
@@ -48,6 +50,8 @@ private:
     Pilot oldEntry;
 
     void setupValidators();
+
+    void setupCompleter();
 
     void formFiller();
 

@@ -34,10 +34,6 @@ CompletionList::CompletionList(CompleterTarget::targets type)
     QVector<QString> result;
 
     switch (type) {
-    case CompleterTarget::pilots:
-        query.append("SELECT piclastname||', '||picfirstname FROM pilots");
-        result = Db::customQuery(query, 1);
-        break;
     case CompleterTarget::airports:
         columns.append("icao");
         columns.append("iata");
@@ -47,12 +43,21 @@ CompletionList::CompletionList(CompleterTarget::targets type)
         columns.append("registration");
         result = Db::multiSelect(columns, "tails");
         break;
+    case CompleterTarget::companies:
+        columns.append("company");
+        result = Db::multiSelect(columns, "pilots");
+        break;
+    case CompleterTarget::pilots:
+        query.append("SELECT piclastname||', '||picfirstname FROM pilots");
+        result = Db::customQuery(query, 1);
+        break;
     case CompleterTarget::aircraft:
         query.append("SELECT make||' '||model||'-'||variant FROM aircraft");
         result = Db::customQuery(query, 1);
         break;
     }
 
-    CompletionList::list = result.toList();
-    CompletionList::list.removeAll(QString(""));
+    list = result.toList();
+    list.removeAll(QString(""));
+    list.removeDuplicates();
 }

@@ -47,6 +47,7 @@ NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     role = edRole;
     ui->setupUi(this);
     setupValidators();
+    setupCompleter();
 }
 // For editing an existing entry
 NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
@@ -57,6 +58,7 @@ NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     role = edRole;
     ui->setupUi(this);
     setupValidators();
+    setupCompleter();
 
     formFiller();
     ui->piclastnameLineEdit->setFocus();
@@ -91,6 +93,18 @@ void NewPilot::setupValidators()
             DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
         }
     }
+}
+
+void NewPilot::setupCompleter()
+{
+    DEB("Setting up completer...");
+
+    auto companies = new CompletionList(CompleterTarget::companies);
+    auto completer = new QCompleter(companies->list, ui->companyLineEdit);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+
+    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilot::formFiller()

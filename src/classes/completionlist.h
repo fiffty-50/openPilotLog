@@ -24,7 +24,7 @@
 class CompleterTarget
 {
 public:
-    enum targets {airports, pilots, registrations, aircraft};
+    enum targets {airports, pilots, registrations, aircraft, companies};
 };
 
 
