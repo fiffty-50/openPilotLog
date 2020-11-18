@@ -92,6 +92,7 @@ int Calc::stringToMinutes(QString timestring)
     return minutes;
 }
 
+
 /*!
  * The purpose of the following functions is to provide functionality enabling the Calculation of
  * night flying time. EASA defines night as follows:
@@ -379,6 +380,26 @@ int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     qDebug() << "Calc::CalculateNightTime result for angle: "<< nightAngle
              << " :" << nightTime << " minutes night flying time.";
     return nightTime;
+}
+
+bool Calc::isNight(QString icao, QDateTime eventTime, int nightAngle)
+{
+    QVector<QString> columns = {"lat", "long"};
+    QVector<QString> coordinates = Db::multiSelect(columns, "airports", "icao", icao,
+                                                       Db::exactMatch);
+    if (coordinates.isEmpty()) {
+        DEB("invalid input. aborting.");
+        return false;
+    }
+
+    double lat = degToRad(coordinates[0].toDouble());
+    double lon = degToRad(coordinates[1].toDouble());
+
+    if(solarElevation(eventTime, lat, lon) < nightAngle){
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*!

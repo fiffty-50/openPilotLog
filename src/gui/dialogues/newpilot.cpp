@@ -21,17 +21,32 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
+/* Examples for names around the world:
+ * José Eduardo Santos Tavares Melo Silva
+ * María José Carreño Quiñones
+ * 毛泽东先生 (Mao Ze Dong xiān shēng)
+ * Борис Николаевич Ельцин (Boris Nikolayevich Yeltsin)
+ * John Q. Public
+ * Abu Karim Muhammad al-Jamil ibn Nidal ibn Abdulaziz al-Filistini
+ * Nguyễn Tấn Dũng
+ * 東海林賢蔵
+ * Chris van de Hoopen
+ * Karl-Gustav von Meiershausen
+ * Mathias d'Arras
+ * Martin Luther King, Jr.
+ */
+static const auto name = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
+    "picfirstnameLineEdit", QRegularExpression(name + name + name)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "piclastnameLineEdit", QRegularExpression("\\w+")};
+    "piclastnameLineEdit", QRegularExpression(name + name + name)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-    "companyLineEdit", QRegularExpression("\\w+")};
+    "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 

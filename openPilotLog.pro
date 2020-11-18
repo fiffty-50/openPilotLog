@@ -23,6 +23,7 @@ SOURCES += \
     src/classes/completionlist.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
+    src/classes/runguard.cpp \
     src/classes/settings.cpp \
     src/classes/stat.cpp \
     src/classes/strictrxvalidator.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     src/database/dbinfo.cpp \
     src/database/entry.cpp \
     src/gui/dialogues/firstrundialog.cpp \
+    src/gui/dialogues/newflight.cpp \
     src/gui/dialogues/newpilot.cpp \
     src/gui/dialogues/newtail.cpp \
     src/gui/widgets/aircraftwidget.cpp \
@@ -46,6 +48,7 @@ HEADERS += \
     src/classes/completionlist.h \
     src/classes/flight.h \
     src/classes/pilot.h \
+    src/classes/runguard.h \
     src/classes/settings.h \
     src/classes/stat.h \
     src/classes/strictrxvalidator.h \
@@ -53,6 +56,7 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/entry.h \
     src/gui/dialogues/firstrundialog.h \
+    src/gui/dialogues/newflight.h \
     src/gui/dialogues/newpilot.h \
     src/gui/dialogues/newtail.h \
     src/gui/widgets/aircraftwidget.h \
@@ -65,6 +69,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     src/gui/dialogues/firstrundialog.ui \
+    src/gui/dialogues/newflight.ui \
     src/gui/dialogues/newpilot.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/aircraftwidget.ui \

@@ -63,6 +63,8 @@ public:
 
     static int calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk, int nightAngle);
 
+    static bool isNight(QString icao, QDateTime eventTime, int nightAngle);
+
     static QString formatTimeInput(QString userinput);
 
     static void updateAutoTimes(int acft_id);

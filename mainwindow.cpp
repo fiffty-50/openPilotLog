@@ -100,17 +100,8 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    /*
-       QVector<QStringList> lineEdit_completionLists = {
-           QStringList(),//empty dummy list for TimeLineEdits
-           dbAirport::retreiveIataIcaoList(),
-           dbAircraft::retreiveRegistrationList(),
-           dbPilots::retreivePilotList()
-       };
-
-       NewFlight nf(this, lineEdit_completionLists);
-       nf.exec();
-       */
+    NewFlight nf(this);
+    nf.exec();
 }
 
 void MainWindow::on_actionAircraft_triggered()

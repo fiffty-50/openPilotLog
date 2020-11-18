@@ -32,6 +32,7 @@
 #include "src/database/entry.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
+#include "src/gui/dialogues/newflight.h"
 
 
 namespace Ui {
