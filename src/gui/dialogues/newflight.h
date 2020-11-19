@@ -89,7 +89,7 @@ private:
 
     void setup();
 
-    void formFiller();
+    void formFiller(Flight oldFlight);
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 
@@ -124,26 +124,26 @@ private slots:
     void on_deptTZ_currentTextChanged(const QString &arg1);
     void on_destTZ_currentIndexChanged(const QString &arg1);
 
-    void on_newDeptTimeLineEdit_editingFinished();
-    void on_newDestTimeLineEdit_editingFinished();
-    void on_newDeptTimeLineEdit_inputRejected();
-    void on_newDestTimeLineEdit_inputRejected();
+    void on_tofbTimeLineEdit_editingFinished();
+    void on_tonbTimeLineEdit_editingFinished();
+    void on_tofbTimeLineEdit_inputRejected();
+    void on_tonbTimeLineEdit_inputRejected();
 
-    void on_newDeptLocLineEdit_editingFinished();
-    void on_newDestLocLineEdit_editingFinished();
-    void on_newDestLocLineEdit_inputRejected();
-    void on_newDeptLocLineEdit_inputRejected();
+    void on_deptLocLineEdit_editingFinished();
+    void on_destLocLineEdit_editingFinished();
+    void on_destLocLineEdit_inputRejected();
+    void on_deptLocLineEdit_inputRejected();
 
-    void on_newDeptLocLineEdit_textEdited(const QString &arg1);
-    void on_newDestLocLineEdit_textEdited(const QString &arg1);
+    void on_deptLocLineEdit_textEdited(const QString &arg1);
+    void on_destLocLineEdit_textEdited(const QString &arg1);
 
     void on_newDoft_editingFinished();
 
-    void on_newAcft_inputRejected();
-    void on_newAcft_editingFinished();
+    void on_acftLineEdit_inputRejected();
+    void on_acftLineEdit_editingFinished();
 
-    void on_newPicNameLineEdit_inputRejected();
-    void on_newPicNameLineEdit_editingFinished();
+    void on_picNameLineEdit_inputRejected();
+    void on_picNameLineEdit_editingFinished();
     void on_secondPilotNameLineEdit_editingFinished();
     void on_secondPilotNameLineEdit_inputRejected();
     void on_thirdPilotNameLineEdit_editingFinished();
@@ -159,18 +159,18 @@ private slots:
 
     void on_ApproachComboBox_currentTextChanged(const QString &arg1);
 
-    void on_spseTimeLineEdit_editingFinished();
-    void on_spmeTimeLineEdit_editingFinished();
+    void on_tSPSETimeLineEdit_editingFinished();
+    void on_tSPMETimeLineEdit_editingFinished();
 
-    void on_mpTimeLineEdit_editingFinished();
+    void on_tMPTimeLineEdit_editingFinished();
 
-    void on_ifrTimeLineEdit_editingFinished();
-    void on_nightTimeLineEdit_editingFinished();
+    void on_tIFRTimeLineEdit_editingFinished();
+    void on_tNIGHTTimeLineEdit_editingFinished();
     //void on_xcTimeLineEdit_editingFinished();
-    void on_picTimeLineEdit_editingFinished();
-    void on_copTimeLineEdit_editingFinished();
-    void on_dualTimeLineEdit_editingFinished();
-    void on_fiTimeLineEdit_editingFinished();
+    void on_tPICTimeLineEdit_editingFinished();
+    void on_tSICTimeLineEdit_editingFinished();
+    void on_tDualTimeLineEdit_editingFinished();
+    void on_tFITimeLineEdit_editingFinished();
     //void on_simTimeLineEdit_editingFinished();
     void on_FlightNumberLineEdit_editingFinished();
 

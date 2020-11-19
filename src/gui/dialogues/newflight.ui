@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>625</width>
-    <height>619</height>
+    <width>588</width>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,61 +24,45 @@
        <string>Flight Data</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="3" column="3">
-        <widget class="QLabel" name="picLabel">
-         <property name="text">
-          <string>Name PIC</string>
+       <item row="6" column="2">
+        <widget class="QLineEdit" name="acftLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="acftLabel">
-         <property name="text">
-          <string>Aircraft</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLineEdit" name="newDestLocLineEdit">
-         <property name="toolTip">
-          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
-         </property>
-         <property name="inputMethodHints">
-          <set>Qt::ImhNone</set>
-         </property>
-         <property name="maxLength">
-          <number>4</number>
-         </property>
-         <property name="placeholderText">
-          <string>EDDF</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="5">
-        <widget class="QLineEdit" name="thirdPilotNameLineEdit">
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="destLabel">
-         <property name="text">
-          <string>Destination</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLineEdit" name="newAcft">
          <property name="placeholderText">
           <string>D-LMAO</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="deptLabel">
+       <item row="1" column="5">
+        <widget class="QLineEdit" name="tofbTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="maxLength">
+          <number>5</number>
+         </property>
+         <property name="placeholderText">
+          <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="4">
+        <widget class="QLabel" name="tonbLabel">
          <property name="text">
-          <string>Departure</string>
+          <string>Time</string>
          </property>
         </widget>
        </item>
@@ -89,8 +73,87 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="destLabel">
+         <property name="text">
+          <string>Destination</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="placeLabel1">
+         <property name="text">
+          <string>Place</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QLabel" name="RemarksLabel">
+         <property name="text">
+          <string>Remarks</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLabel" name="flightNumberPrefixLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Can bet changed in Settings&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="placeLabel2">
+         <property name="text">
+          <string>Place</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2" colspan="2">
+        <widget class="QLabel" name="destNameLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QLineEdit" name="FlightNumberLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="2">
-        <widget class="QLineEdit" name="newDeptLocLineEdit">
+        <widget class="QLineEdit" name="deptLocLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Enter the ICAO 4-letter Identifier of the Airport</string>
          </property>
@@ -105,31 +168,131 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="placeLabel2">
+       <item row="10" column="0">
+        <widget class="QLabel" name="totalTimeLabel">
          <property name="text">
-          <string>Place</string>
+          <string>Total Time</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="FlightNumberLabel">
+       <item row="1" column="0">
+        <widget class="QLabel" name="deptLabel">
          <property name="text">
-          <string>Flight number</string>
+          <string>Departure</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <widget class="QLineEdit" name="FlightNumberLineEdit">
+       <item row="2" column="2" colspan="2">
+        <widget class="QLabel" name="deptNameLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
+        <widget class="QLineEdit" name="tonbTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="placeholderText">
+          <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QDateEdit" name="newDoft">
+         <property name="dateTime">
+          <datetime>
+           <hour>23</hour>
+           <minute>0</minute>
+           <second>0</second>
+           <year>2019</year>
+           <month>12</month>
+           <day>6</day>
+          </datetime>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy/MM/dd</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="picLabel_2">
+         <property name="text">
+          <string>Second Pilot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="5">
+        <widget class="QLineEdit" name="RemarksLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="placeholderText">
           <string>optional</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="4">
-        <widget class="QLabel" name="tonbLabel">
+       <item row="8" column="5">
+        <widget class="QLineEdit" name="thirdPilotNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="5">
+        <widget class="QLineEdit" name="picNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>self</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="acftLabel">
          <property name="text">
-          <string>Time</string>
+          <string>Aircraft</string>
          </property>
         </widget>
        </item>
@@ -150,7 +313,7 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="3">
+       <item row="4" column="3">
         <widget class="QComboBox" name="destTZ">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -167,80 +330,26 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="5">
-        <widget class="QLineEdit" name="newPicNameLineEdit">
-         <property name="placeholderText">
-          <string>self</string>
+       <item row="10" column="2">
+        <widget class="QLineEdit" name="tblkTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="5" column="5">
-        <widget class="QLineEdit" name="RemarksLineEdit">
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QLineEdit" name="secondPilotNameLineEdit">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QDateEdit" name="newDoft">
-         <property name="dateTime">
-          <datetime>
-           <hour>23</hour>
-           <minute>0</minute>
-           <second>0</second>
-           <year>2019</year>
-           <month>12</month>
-           <day>7</day>
-          </datetime>
-         </property>
-         <property name="displayFormat">
-          <string>yyyy/MM/dd</string>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
-         <property name="timeSpec">
-          <enum>Qt::UTC</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="5">
-        <widget class="QLineEdit" name="newDeptTimeLineEdit">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="maxLength">
-          <number>5</number>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="placeholderText">
           <string>00:00</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="placeLabel1">
+       <item row="6" column="3">
+        <widget class="QLabel" name="picLabel">
          <property name="text">
-          <string>Place</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="3">
-        <widget class="QLabel" name="thirdPilotLabel">
-         <property name="text">
-          <string>Third Pilot</string>
+          <string>Name PIC</string>
          </property>
         </widget>
        </item>
@@ -251,43 +360,74 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="3">
-        <widget class="QLabel" name="RemarksLabel">
+       <item row="9" column="0">
+        <widget class="QLabel" name="FlightNumberLabel">
          <property name="text">
-          <string>Remarks</string>
+          <string>Flight number</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="picLabel_2">
-         <property name="text">
-          <string>Second Pilot</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="5">
-        <widget class="QLineEdit" name="newDestTimeLineEdit">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="placeholderText">
-          <string>00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="flightNumberPrefixLabel">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Can bet changed in Settings&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <item row="8" column="2">
+        <widget class="QLineEdit" name="secondPilotNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
          <property name="text">
           <string/>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="thirdPilotLabel">
+         <property name="text">
+          <string>Third Pilot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="destLocLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
+         </property>
+         <property name="inputMethodHints">
+          <set>Qt::ImhNone</set>
+         </property>
+         <property name="maxLength">
+          <number>4</number>
+         </property>
+         <property name="placeholderText">
+          <string>EDDF</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLabel" name="acftTypeLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
@@ -581,17 +721,31 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="spseTimeLineEdit"/>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="nightLabel">
-         <property name="text">
-          <string>Night</string>
+        <widget class="QLineEdit" name="tSPSETimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item row="0" column="4">
-        <widget class="QLineEdit" name="nightTimeLineEdit"/>
+       <item row="0" column="2">
+        <widget class="QLabel" name="picTimeLabel">
+         <property name="text">
+          <string>PIC</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLineEdit" name="tPICTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="spmeLabel">
@@ -601,17 +755,31 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="spmeTimeLineEdit"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="xcLabel">
-         <property name="text">
-          <string>XC</string>
+        <widget class="QLineEdit" name="tSPMETimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item row="1" column="4">
-        <widget class="QLineEdit" name="xcTimeLineEdit"/>
+       <item row="1" column="2">
+        <widget class="QLabel" name="picTimeLabel_2">
+         <property name="text">
+          <string>PICus</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="tPICUSTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="mpLabel">
@@ -621,81 +789,99 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="mpTimeLineEdit"/>
+        <widget class="QLineEdit" name="tMPTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QLabel" name="picTimeLabel">
-         <property name="text">
-          <string>PIC</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="4" rowspan="2">
-        <widget class="QLineEdit" name="picTimeLineEdit"/>
-       </item>
-       <item row="3" column="0" rowspan="2">
-        <widget class="QLabel" name="totalTimeLabel">
-         <property name="text">
-          <string>TOTAL</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" rowspan="2">
-        <widget class="QLineEdit" name="totalTimeLineEdit">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2" colspan="2">
         <widget class="QLabel" name="coPilotTimeLabel">
          <property name="text">
           <string>Co-Pilot</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="4" rowspan="2">
-        <widget class="QLineEdit" name="copTimeLineEdit"/>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="tSICTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
-       <item row="5" column="0" rowspan="2">
+       <item row="3" column="0">
         <widget class="QLabel" name="ifrLabel">
          <property name="text">
           <string>IFR</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1" rowspan="2">
-        <widget class="QLineEdit" name="ifrTimeLineEdit"/>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="tIFRTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
-       <item row="6" column="2">
+       <item row="3" column="2">
         <widget class="QLabel" name="dualTimeLabel">
          <property name="text">
           <string>Dual</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="4" rowspan="2">
-        <widget class="QLineEdit" name="dualTimeLineEdit"/>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="tDualTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
        </item>
-       <item row="8" column="2">
+       <item row="4" column="0">
+        <widget class="QLabel" name="nightLabel">
+         <property name="text">
+          <string>Night</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="tNIGHTTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
         <widget class="QLabel" name="fiTimeLabel">
          <property name="text">
           <string>FI</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="4">
-        <widget class="QLineEdit" name="fiTimeLineEdit"/>
-       </item>
-       <item row="9" column="2">
-        <widget class="QLabel" name="simTimeLabel">
-         <property name="text">
-          <string>SIM</string>
+       <item row="4" column="3">
+        <widget class="QLineEdit" name="tFITimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
-       </item>
-       <item row="9" column="3" colspan="2">
-        <widget class="QLineEdit" name="simTimeLineEdit"/>
        </item>
       </layout>
      </widget>
@@ -704,30 +890,24 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>newDeptLocLineEdit</tabstop>
-  <tabstop>newDeptTimeLineEdit</tabstop>
-  <tabstop>newDestLocLineEdit</tabstop>
-  <tabstop>newDestTimeLineEdit</tabstop>
-  <tabstop>newAcft</tabstop>
-  <tabstop>newPicNameLineEdit</tabstop>
+  <tabstop>deptLocLineEdit</tabstop>
+  <tabstop>tofbTimeLineEdit</tabstop>
+  <tabstop>destLocLineEdit</tabstop>
+  <tabstop>tonbTimeLineEdit</tabstop>
+  <tabstop>acftLineEdit</tabstop>
+  <tabstop>picNameLineEdit</tabstop>
   <tabstop>secondPilotNameLineEdit</tabstop>
   <tabstop>thirdPilotNameLineEdit</tabstop>
   <tabstop>FlightNumberLineEdit</tabstop>
   <tabstop>RemarksLineEdit</tabstop>
   <tabstop>setAsDefaultButton</tabstop>
   <tabstop>restoreDefaultButton</tabstop>
-  <tabstop>spseTimeLineEdit</tabstop>
-  <tabstop>spmeTimeLineEdit</tabstop>
-  <tabstop>mpTimeLineEdit</tabstop>
-  <tabstop>totalTimeLineEdit</tabstop>
-  <tabstop>ifrTimeLineEdit</tabstop>
-  <tabstop>nightTimeLineEdit</tabstop>
-  <tabstop>xcTimeLineEdit</tabstop>
-  <tabstop>picTimeLineEdit</tabstop>
-  <tabstop>copTimeLineEdit</tabstop>
-  <tabstop>dualTimeLineEdit</tabstop>
-  <tabstop>fiTimeLineEdit</tabstop>
-  <tabstop>simTimeLineEdit</tabstop>
+  <tabstop>tSPSETimeLineEdit</tabstop>
+  <tabstop>tSPMETimeLineEdit</tabstop>
+  <tabstop>tMPTimeLineEdit</tabstop>
+  <tabstop>tblkTimeLineEdit</tabstop>
+  <tabstop>tIFRTimeLineEdit</tabstop>
+  <tabstop>tNIGHTTimeLineEdit</tabstop>
   <tabstop>destTZ</tabstop>
   <tabstop>verifyButton</tabstop>
   <tabstop>verifyEdit</tabstop>

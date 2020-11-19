@@ -87,8 +87,7 @@ NewFlight::NewFlight(QWidget *parent, Flight oldFlight) :
 {
     ui->setupUi(this);
     setup();
-    DEBUG("Work in progress");
-    formFiller();
+    formFiller(oldFlight);
 }
 
 NewFlight::~NewFlight()
@@ -118,12 +117,12 @@ void NewFlight::setup(){
     }
     this->allOkBits.resize(line_edits.size());
     this->mandatoryLineEdits = {
-        ui->newDeptLocLineEdit,
-        ui->newDestLocLineEdit,
-        ui->newDeptTimeLineEdit,
-        ui->newDestTimeLineEdit,
-        ui->newPicNameLineEdit,
-        ui->newAcft,
+        ui->deptLocLineEdit,
+        ui->destLocLineEdit,
+        ui->tofbTimeLineEdit,
+        ui->tonbTimeLineEdit,
+        ui->picNameLineEdit,
+        ui->acftLineEdit,
     };
 
     for(auto line_edit : line_edits)
@@ -136,7 +135,7 @@ void NewFlight::setup(){
         {
             setupLineEdit(line_edit, time_settings);
         }
-        else if (QRegularExpression("Acft").match(le_name).hasMatch())
+        else if (QRegularExpression("acft").match(le_name).hasMatch())
         {
             setupLineEdit(line_edit, aircraft_settings);
         }
@@ -171,21 +170,34 @@ void NewFlight::setup(){
     ui->newDoft->setDate(date);
 
     // Visually mark mandatory fields
-    ui->newDeptLocLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->newDestLocLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->newDeptTimeLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->newDestTimeLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->newPicNameLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->newAcft->setStyleSheet("border: 1px solid orange");
+    ui->deptLocLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->destLocLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->tofbTimeLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->tonbTimeLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->picNameLineEdit->setStyleSheet("border: 1px solid orange");
+    ui->acftLineEdit->setStyleSheet("border: 1px solid orange");
 
     readSettings();
     ui->tabWidget->setCurrentIndex(0);
-    ui->newDeptLocLineEdit->setFocus();
+    ui->deptLocLineEdit->setFocus();
 }
 
-void NewFlight::formFiller()
+void NewFlight::formFiller(Flight oldFlight)
 {
-
+    auto line_edits = parent()->findChildren<QLineEdit *>();
+    QStringList line_edits_names;
+    for(const auto& le : line_edits){
+        line_edits_names << le->objectName();
+    }
+    for(const auto& key : oldFlight.data.keys()){
+        auto rx = QRegularExpression(key + "\\w+?");
+        for(const auto& leName : line_edits_names){
+            if(rx.match(leName).hasMatch())  {
+                DEBUG("Match found: " << key << " - " << rx.match(leName).captured(0));
+                break;
+            }
+        }
+    }
 }
 
 /*
@@ -271,10 +283,10 @@ void NewFlight::readSettings()
     ui->flightNumberPrefixLabel->setText(Settings::read("userdata/flightnumberPrefix").toString() + QLatin1Char('-'));
 
     if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
-        ui->newPicNameLineEdit->setText("self");
+        ui->picNameLineEdit->setText("self");
         ui->secondPilotNameLineEdit->setText("");
     }else if (Settings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
-        ui->newPicNameLineEdit->setText("");
+        ui->picNameLineEdit->setText("");
         ui->secondPilotNameLineEdit->setText("self");
     }
 }
@@ -334,35 +346,35 @@ void NewFlight::collectBasicData()
     auto doft = date.toString(Qt::ISODate);
     newData.insert("doft",doft);
     // Departure Loc
-    newData.insert("dept",ui->newDeptLocLineEdit->text());
+    newData.insert("dept",ui->deptLocLineEdit->text());
     // Time Off Blocks
-    auto timeOff = QTime::fromString(ui->newDeptTimeLineEdit->text(),"hh:mm");
+    auto timeOff = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
     if(timeOff.isValid()){
         int tofb = timeOff.hour() * 60 + timeOff.minute();
         newData.insert("tofb",QString::number(tofb));
     }
     // Destination Loc
-    newData.insert("dest",ui->newDestLocLineEdit->text());
+    newData.insert("dest",ui->destLocLineEdit->text());
     // Time On Blocks
-    auto timeOn = QTime::fromString(ui->newDestTimeLineEdit->text(),"hh:mm");
+    auto timeOn = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
     if(timeOn.isValid()){
         int tonb = timeOn.hour() * 60 + timeOn.minute();
         newData.insert("tonb",QString::number(tonb));
     }
 
     // Aircraft
-    QString reg = ui->newAcft->text();
+    QString reg = ui->acftLineEdit->text();
     QString acft = Db::singleSelect("tail_id","tails","registration",reg,Db::exactMatch);
     if(!acft.isEmpty()){
         newData.insert("acft",acft);
     } else {
-        emit ui->newAcft->inputRejected();
+        emit ui->acftLineEdit->inputRejected();
     }
     // Pilot
-    if(ui->newPicNameLineEdit->text() == "self" || ui->newPicNameLineEdit->text() == "self"){
+    if(ui->picNameLineEdit->text() == "self" || ui->picNameLineEdit->text() == "self"){
         newData.insert("pic","1");
     } else {
-        QString name = ui->newPicNameLineEdit->text();
+        QString name = ui->picNameLineEdit->text();
         QStringList names = name.split(',');
         if(names.length()==2){
             QString firstNames = names[1].simplified();
@@ -373,7 +385,7 @@ void NewFlight::collectBasicData()
             if(!pic.isEmpty()){
                 newData.insert("pic",pic.first());
             }else {
-                emit ui->newPicNameLineEdit->inputRejected();
+                emit ui->picNameLineEdit->inputRejected();
             }
         }
     }
@@ -428,8 +440,8 @@ void NewFlight::collectAdditionalData()
     }
 
     // Extra Times
-    auto tofb = QTime::fromString(ui->newDeptTimeLineEdit->text(),"hh:mm");
-    auto tonb = QTime::fromString(ui->newDestTimeLineEdit->text(),"hh:mm");
+    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
+    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
     QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
     QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
     DEBUG("Blocktime: " << blockTime << " (" << blockMinutes << " minutes)");
@@ -503,7 +515,7 @@ void NewFlight::collectAdditionalData()
         newData.insert("toDay", "0");
         newData.insert("ldgDay", "0");
     } else {
-        if(Calc::isNight(ui->newDeptLocLineEdit->text(), deptDateTime,  nightAngle)){
+        if(Calc::isNight(ui->deptLocLineEdit->text(), deptDateTime,  nightAngle)){
             newData.insert("toNight", QString::number(ui->TakeoffSpinBox->value()));
             newData.insert("toDay", "0");
         }else{
@@ -512,7 +524,7 @@ void NewFlight::collectAdditionalData()
         }
         QString destDate = ui->newDoft->date().toString(Qt::ISODate) + 'T' + tonb.toString("hh:mm");
         QDateTime destDateTime = QDateTime::fromString(destDate,"yyyy-MM-ddThh:mm");
-        if(Calc::isNight(ui->newDestLocLineEdit->text(), destDateTime,  nightAngle)){
+        if(Calc::isNight(ui->destLocLineEdit->text(), destDateTime,  nightAngle)){
             newData.insert("ldgNight", QString::number(ui->LandingSpinBox->value()));
             newData.insert("ldgDay", "0");
         }else{
@@ -535,8 +547,8 @@ void NewFlight::collectAdditionalData()
 void NewFlight::fillExtras()
 {
     //Times
-    auto tofb = QTime::fromString(ui->newDeptTimeLineEdit->text(),"hh:mm");
-    auto tonb = QTime::fromString(ui->newDestTimeLineEdit->text(),"hh:mm");
+    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
+    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
     QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
     QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
     DEBUG("Blocktime: " << blockTime << " (" << blockMinutes << " minutes)");
@@ -546,23 +558,23 @@ void NewFlight::fillExtras()
     if(!acft.data.isEmpty()){// valid aircraft
         // SP SE
         if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1"){
-            ui->spseTimeLineEdit->setText(blockTime);
+            ui->tSPSETimeLineEdit->setText(blockTime);
         }
         // SP ME
         if(acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1"){
-            ui->spmeTimeLineEdit->setText(blockTime);
+            ui->tSPMETimeLineEdit->setText(blockTime);
         }
         // MP
         if(acft.data.value("multipilot") == "1"){
-            ui->mpTimeLineEdit->setText(blockTime);
+            ui->tMPTimeLineEdit->setText(blockTime);
         }
     }else{DEBUG("Aircraft Details Empty");}//invalid aircraft
 
     // TOTAL
-    ui->totalTimeLineEdit->setText(blockTime);
+    ui->tblkTimeLineEdit->setText(blockTime);
     // IFR
     if(ui->IfrCheckBox->isChecked()){
-        ui->ifrTimeLineEdit->setText(blockTime);
+        ui->tIFRTimeLineEdit->setText(blockTime);
     }
     // Night
     QString deptDate = ui->newDoft->date().toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
@@ -574,32 +586,32 @@ void NewFlight::fillExtras()
                         Calc::calculateNightTime(
                         newData.value("dept"), newData.value("dest"),
                         deptDateTime, tblk, nightAngle));
-    ui->nightTimeLineEdit->setText(Calc::minutesToString(nightTime));
+    ui->tNIGHTTimeLineEdit->setText(Calc::minutesToString(nightTime));
     // Function times
     switch (ui->FunctionComboBox->currentIndex()) {
     case 0://PIC
-        ui->picTimeLineEdit->setText(blockTime);
-        ui->copTimeLineEdit->setText("");
-        ui->dualTimeLineEdit->setText("");
-        ui->fiTimeLineEdit->setText("");
+        ui->tPICTimeLineEdit->setText(blockTime);
+        ui->tSICTimeLineEdit->setText("");
+        ui->tDualTimeLineEdit->setText("");
+        ui->tFITimeLineEdit->setText("");
         break;
     case 1://Co-Pilot
-        ui->picTimeLineEdit->setText("");
-        ui->copTimeLineEdit->setText(blockTime);
-        ui->dualTimeLineEdit->setText("");
-        ui->fiTimeLineEdit->setText("");
+        ui->tPICTimeLineEdit->setText("");
+        ui->tSICTimeLineEdit->setText(blockTime);
+        ui->tDualTimeLineEdit->setText("");
+        ui->tFITimeLineEdit->setText("");
         break;
     case 2://Dual
-        ui->picTimeLineEdit->setText("");
-        ui->copTimeLineEdit->setText("");
-        ui->dualTimeLineEdit->setText(blockTime);
-        ui->fiTimeLineEdit->setText("");
+        ui->tPICTimeLineEdit->setText("");
+        ui->tSICTimeLineEdit->setText("");
+        ui->tDualTimeLineEdit->setText(blockTime);
+        ui->tFITimeLineEdit->setText("");
         break;
     case 3://Instructor
-        ui->picTimeLineEdit->setText("");
-        ui->copTimeLineEdit->setText("");
-        ui->dualTimeLineEdit->setText("");
-        ui->fiTimeLineEdit->setText(blockTime);
+        ui->tPICTimeLineEdit->setText("");
+        ui->tSICTimeLineEdit->setText("");
+        ui->tDualTimeLineEdit->setText("");
+        ui->tFITimeLineEdit->setText(blockTime);
     }
 }
 
@@ -705,23 +717,23 @@ void NewFlight::on_destTZ_currentIndexChanged(const QString &arg1)
 
 /// Departure
 
-void NewFlight::on_newDeptLocLineEdit_inputRejected()
+void NewFlight::on_deptLocLineEdit_inputRejected()
 {
     DEBUG("SENDER --->" << sender());
-    ui->newDeptLocLineEdit->setText(ui->newDeptLocLineEdit->text().toUpper());
-    onInputRejected(ui->newDeptLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
+    ui->deptLocLineEdit->setText(ui->deptLocLineEdit->text().toUpper());
+    onInputRejected(ui->deptLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
 }
 
-void NewFlight::on_newDeptLocLineEdit_textEdited(const QString &arg1)
+void NewFlight::on_deptLocLineEdit_textEdited(const QString &arg1)
 {
-    ui->newDeptLocLineEdit->setText(arg1.toUpper());
+    ui->deptLocLineEdit->setText(arg1.toUpper());
 }
 
-void NewFlight::on_newDeptLocLineEdit_editingFinished()
+void NewFlight::on_deptLocLineEdit_editingFinished()
 {
     DEBUG(sender()->objectName() << "EDITING FINISHED");
-    auto line_edit = ui->newDeptLocLineEdit;
-    auto text = ui->newDeptLocLineEdit->text();
+    auto line_edit = ui->deptLocLineEdit;
+    auto text = ui->deptLocLineEdit->text();
 
     // check if iata exists, replace with icao code if it does.
     if(text.length() == 3){
@@ -736,21 +748,22 @@ void NewFlight::on_newDeptLocLineEdit_editingFinished()
         DEBUG("Departure accepted: " << text);
         line_edit->setText(text);
         onEditingFinishedCleanup(line_edit); //reset style sheet
+        ui->deptNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
         update();
     }
 }
 
-void NewFlight::on_newDeptTimeLineEdit_inputRejected()
+void NewFlight::on_tofbTimeLineEdit_inputRejected()
 {
-    onInputRejected(ui->newDeptTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
+    onInputRejected(ui->tofbTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
 }
 
-void NewFlight::on_newDeptTimeLineEdit_editingFinished()
+void NewFlight::on_tofbTimeLineEdit_editingFinished()
 {
-    ui->newDeptTimeLineEdit->setText(Calc::formatTimeInput(ui->newDeptTimeLineEdit->text()));
-    const auto time = QTime::fromString(ui->newDeptTimeLineEdit->text(),"hh:mm");
+    ui->tofbTimeLineEdit->setText(Calc::formatTimeInput(ui->tofbTimeLineEdit->text()));
+    const auto time = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
 
-    auto line_edit = ui->newDeptTimeLineEdit;
+    auto line_edit = ui->tofbTimeLineEdit;
     onEditingFinishedCleanup(line_edit);
 
     if(time.isValid()){
@@ -766,22 +779,22 @@ void NewFlight::on_newDeptTimeLineEdit_editingFinished()
 
 /// Destination
 
-void NewFlight::on_newDestLocLineEdit_inputRejected()
+void NewFlight::on_destLocLineEdit_inputRejected()
 {
-    ui->newDestLocLineEdit->setText(ui->newDestLocLineEdit->text().toUpper());
-    onInputRejected(ui->newDestLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
+    ui->destLocLineEdit->setText(ui->destLocLineEdit->text().toUpper());
+    onInputRejected(ui->destLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
 }
 
-void NewFlight::on_newDestLocLineEdit_textEdited(const QString &arg1)
+void NewFlight::on_destLocLineEdit_textEdited(const QString &arg1)
 {
-    ui->newDestLocLineEdit->setText(arg1.toUpper());
+    ui->destLocLineEdit->setText(arg1.toUpper());
 }
 
-void NewFlight::on_newDestLocLineEdit_editingFinished()
+void NewFlight::on_destLocLineEdit_editingFinished()
 {
     DEBUG(sender()->objectName() << "EDITING FINISHED");
-    auto line_edit = ui->newDestLocLineEdit;
-    auto text = ui->newDestLocLineEdit->text();
+    auto line_edit = ui->destLocLineEdit;
+    auto text = ui->destLocLineEdit->text();
 
     // check if iata exists, replace with icao code if it does.
     if(text.length() == 3){
@@ -796,20 +809,21 @@ void NewFlight::on_newDestLocLineEdit_editingFinished()
         DEBUG("Destination accepted: " << text);
         line_edit->setText(text);
         onEditingFinishedCleanup(line_edit); //reset style sheet
+        ui->destNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
         update();
     }
 }
 
-void NewFlight::on_newDestTimeLineEdit_inputRejected()
+void NewFlight::on_tonbTimeLineEdit_inputRejected()
 {
-    onInputRejected(ui->newDestTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
+    onInputRejected(ui->tonbTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
 }
 
-void NewFlight::on_newDestTimeLineEdit_editingFinished()
+void NewFlight::on_tonbTimeLineEdit_editingFinished()
 {
-    ui->newDestTimeLineEdit->setText(Calc::formatTimeInput(ui->newDestTimeLineEdit->text()));
-    auto line_edit = ui->newDestTimeLineEdit;
-    const auto time = QTime::fromString(ui->newDestTimeLineEdit->text(),"hh:mm");
+    ui->tonbTimeLineEdit->setText(Calc::formatTimeInput(ui->tonbTimeLineEdit->text()));
+    auto line_edit = ui->tonbTimeLineEdit;
+    const auto time = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
     if(time.isValid()){
         int minutes = time.hour() * 60 + time.minute();
         QString tonb = QString::number(minutes);
@@ -831,17 +845,17 @@ void NewFlight::on_newDoft_editingFinished()
 
 /// Aircraft
 
-void NewFlight::on_newAcft_inputRejected()
+void NewFlight::on_acftLineEdit_inputRejected()
 {
-    ui->newAcft->setText(ui->newAcft->text().toUpper());
-    onInputRejected(ui->newAcft, QRegularExpression(AIRCRAFT_INVALID_RGX));
+    ui->acftLineEdit->setText(ui->acftLineEdit->text().toUpper());
+    onInputRejected(ui->acftLineEdit, QRegularExpression(AIRCRAFT_INVALID_RGX));
 }
 
-void NewFlight::on_newAcft_editingFinished()
+void NewFlight::on_acftLineEdit_editingFinished()
 {
     auto registrationList = CompletionList(CompleterTarget::registrations).list;
-    auto line_edit = ui->newAcft;
-    auto text = ui->newAcft->text();
+    auto line_edit = ui->acftLineEdit;
+    auto text = ui->acftLineEdit->text();
 
     QStringList match = registrationList.filter(line_edit->text(), Qt::CaseInsensitive);
     DEBUG("aircraft accepted: " << match);
@@ -849,6 +863,9 @@ void NewFlight::on_newAcft_editingFinished()
         text = match[0];
         line_edit->setText(text.toUpper());
         onEditingFinishedCleanup(line_edit);
+        QString column = "make||' '||model||'-'||variant";
+        ui->acftTypeLabel->setText(
+                    Db::singleSelect(column,"tails","registration",text,Db::exactMatch));
         update();
     }else{
         DEBUG("Registration not in List!");
@@ -858,14 +875,14 @@ void NewFlight::on_newAcft_editingFinished()
 
 /// Pilot(s)
 
-void NewFlight::on_newPicNameLineEdit_inputRejected()
+void NewFlight::on_picNameLineEdit_inputRejected()
 {
-    onInputRejected(ui->newPicNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
+    onInputRejected(ui->picNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
 }
 
-void NewFlight::on_newPicNameLineEdit_editingFinished()
+void NewFlight::on_picNameLineEdit_editingFinished()
 {
-    auto line_edit = ui->newPicNameLineEdit;
+    auto line_edit = ui->picNameLineEdit;
     auto text = line_edit->text();
     if(text == "self" || text == "SELF") // Logbook owner is PIC
     {
@@ -1082,9 +1099,9 @@ inline bool NewFlight::isLessOrEqualToTotalTime(QString timeString)
 
 }
 
-void NewFlight::on_spseTimeLineEdit_editingFinished()
+void NewFlight::on_tSPSETimeLineEdit_editingFinished()
 {
-    const auto &le = ui->spseTimeLineEdit;
+    const auto &le = ui->tSPSETimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1095,9 +1112,9 @@ void NewFlight::on_spseTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_spmeTimeLineEdit_editingFinished()
+void NewFlight::on_tSPMETimeLineEdit_editingFinished()
 {
-    const auto &le = ui->spmeTimeLineEdit;
+    const auto &le = ui->tSPMETimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1108,9 +1125,9 @@ void NewFlight::on_spmeTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_mpTimeLineEdit_editingFinished()
+void NewFlight::on_tMPTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->mpTimeLineEdit;
+    const auto &le = ui->tMPTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1120,9 +1137,9 @@ void NewFlight::on_mpTimeLineEdit_editingFinished()
         le->setText(QString());
     }
 }
-void NewFlight::on_ifrTimeLineEdit_editingFinished()
+void NewFlight::on_tIFRTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->ifrTimeLineEdit;
+    const auto &le = ui->tIFRTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1133,9 +1150,9 @@ void NewFlight::on_ifrTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_nightTimeLineEdit_editingFinished()
+void NewFlight::on_tNIGHTTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->nightTimeLineEdit;
+    const auto &le = ui->tNIGHTTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1146,9 +1163,9 @@ void NewFlight::on_nightTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_picTimeLineEdit_editingFinished()
+void NewFlight::on_tPICTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->picTimeLineEdit;
+    const auto &le = ui->tPICTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1159,9 +1176,9 @@ void NewFlight::on_picTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_copTimeLineEdit_editingFinished()
+void NewFlight::on_tSICTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->copTimeLineEdit;
+    const auto &le = ui->tSICTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1172,9 +1189,9 @@ void NewFlight::on_copTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_dualTimeLineEdit_editingFinished()
+void NewFlight::on_tDualTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->dualTimeLineEdit;
+    const auto &le = ui->tDualTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
@@ -1185,9 +1202,9 @@ void NewFlight::on_dualTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_fiTimeLineEdit_editingFinished()
+void NewFlight::on_tFITimeLineEdit_editingFinished()
 {
-    const auto &le = ui->fiTimeLineEdit;
+    const auto &le = ui->tFITimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
