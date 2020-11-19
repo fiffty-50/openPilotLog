@@ -38,7 +38,7 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    NewFlight nf(this);
+    NewFlight nf(this, Flight(10));
     nf.exec();
 }
 

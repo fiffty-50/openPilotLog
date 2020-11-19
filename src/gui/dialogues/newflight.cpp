@@ -87,8 +87,7 @@ NewFlight::NewFlight(QWidget *parent, Flight oldFlight) :
 {
     ui->setupUi(this);
     setup();
-    DEBUG("Work in progress");
-    formFiller();
+    formFiller(oldFlight);
 }
 
 NewFlight::~NewFlight()
@@ -183,9 +182,23 @@ void NewFlight::setup(){
     ui->newDeptLocLineEdit->setFocus();
 }
 
-void NewFlight::formFiller()
+void NewFlight::formFiller(Flight oldFlight)
 {
-
+    auto line_edits = parent()->findChildren<QLineEdit *>();
+    QStringList line_edits_names;
+    for(const auto& le : line_edits){
+        line_edits_names << le->objectName();
+    }
+    for(const auto& key : oldFlight.data.keys()){
+        auto rx = QRegularExpression(key + "\\w+?");
+        for(const auto& leName : line_edits_names){
+            DEBUG(leName << rx);
+            if(rx.match(leName).hasMatch())  {
+                DEBUG("Match found: " << key << " - " << rx.match(leName).captured(0));
+                break;
+            }
+        }
+    }
 }
 
 /*

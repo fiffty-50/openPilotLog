@@ -89,7 +89,7 @@ private:
 
     void setup();
 
-    void formFiller();
+    void formFiller(Flight oldFlight);
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 
