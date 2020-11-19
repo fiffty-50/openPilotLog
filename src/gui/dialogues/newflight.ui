@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>588</width>
-    <height>708</height>
+    <width>719</width>
+    <height>816</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -229,7 +229,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>6</day>
+           <day>5</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -298,6 +298,9 @@
        </item>
        <item row="1" column="3">
         <widget class="QComboBox" name="deptTZ">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -315,6 +318,9 @@
        </item>
        <item row="4" column="3">
         <widget class="QComboBox" name="destTZ">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>

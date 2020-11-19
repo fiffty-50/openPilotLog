@@ -45,7 +45,8 @@ void NewFlight::nope()
 
 static const auto IATA = QLatin1String("[a-zA-Z0-9]{3}");
 static const auto ICAO = QLatin1String("[a-zA-Z0-9]{4}");
-static const auto name = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
+static const auto name_rx = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
+static const auto name_add_rx = QLatin1String("\\s?(\\p{L}+('|\\-)?)");
 static const auto self = QLatin1String("(self|SELF)");
 
 /// Raw Input validation
@@ -53,8 +54,8 @@ const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5]
 const auto LOC_VALID_RGX        = QRegularExpression(IATA + "|" + ICAO);
 const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+-?[A-Z0-9]+");
 const auto PILOT_NAME_VALID_RGX = QRegularExpression(self + QLatin1Char('|')
-                                                     + name + name + name + name + ",\\s+" // up to 4 first names
-                                                     + name + name + name + name);// up to 4 last names
+                                                     + name_rx + name_add_rx + ",\\s+" // up to 4 first names
+                                                     + name_rx + name_add_rx );// up to 4 last names
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
 const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
@@ -163,8 +164,6 @@ void NewFlight::setup(){
     PilotTaskGroup->addButton(ui->PilotFlyingCheckBox);
     PilotTaskGroup->addButton(ui->PilotMonitoringCheckBox);
 
-    ui->deptTZ->setFocusPolicy(Qt::NoFocus);
-    ui->destTZ->setFocusPolicy(Qt::NoFocus);
     //set date for new object
     auto date = QDate::currentDate();
     ui->newDoft->setDate(date);
@@ -184,16 +183,62 @@ void NewFlight::setup(){
 
 void NewFlight::formFiller(Flight oldFlight)
 {
+    DEBUG("Filling Line Edits...");
     auto line_edits = parent()->findChildren<QLineEdit *>();
     QStringList line_edits_names;
     for(const auto& le : line_edits){
         line_edits_names << le->objectName();
     }
     for(const auto& key : oldFlight.data.keys()){
-        auto rx = QRegularExpression(key + "\\w+?");
+        auto rx = QRegularExpression(key + "LineEdit");//acftLineEdit
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
-                DEBUG("Match found: " << key << " - " << rx.match(leName).captured(0));
+                //DEBUG("Loc Match found: " << key << " - " << leName);
+                auto le = parent()->findChild<QLineEdit *>(leName);
+                if(le != nullptr){
+                    const QString& acft = Db::singleSelect("registration", "tails", "tail_id",
+                                                    oldFlight.data.value(key),
+                                                    Db::exactMatch);
+                    le->setText(acft);
+                }
+                break;
+            }
+        }
+        rx = QRegularExpression(key + "Loc\\w+?");
+        for(const auto& leName : line_edits_names){
+            if(rx.match(leName).hasMatch())  {
+                //DEBUG("Loc Match found: " << key << " - " << leName);
+                auto le = parent()->findChild<QLineEdit *>(leName);
+                if(le != nullptr){
+                    le->setText(oldFlight.data.value(key));
+                }
+                break;
+            }
+        }
+        rx = QRegularExpression(key + "Time\\w+?");
+        for(const auto& leName : line_edits_names){
+            if(rx.match(leName).hasMatch())  {
+                //DEBUG("Time Match found: " << key << " - " << leName);
+                auto le = parent()->findChild<QLineEdit *>(leName);
+                if(le != nullptr){
+                    le->setText(Calc::minutesToString(
+                                oldFlight.data.value(key)));
+                }
+                break;
+            }
+        }
+        rx = QRegularExpression(key + "Name\\w+?");
+        for(const auto& leName : line_edits_names){
+            if(rx.match(leName).hasMatch())  {
+                //DEBUG("Time Match found: " << key << " - " << leName);
+                auto le = parent()->findChild<QLineEdit *>(leName);
+                if(le != nullptr){
+                    const QString& column = "piclastname||', '||picfirstname";
+                    const QString& name = Db::singleSelect(column, "pilots", "pilot_id",
+                                                    oldFlight.data.value(key),
+                                                    Db::exactMatch);
+                    le->setText(name);
+                }
                 break;
             }
         }

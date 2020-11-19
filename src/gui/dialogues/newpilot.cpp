@@ -35,11 +35,11 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
-static const auto name = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
+static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "picfirstnameLineEdit", QRegularExpression(name + name + name)};
+    "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "piclastnameLineEdit", QRegularExpression(name + name + name)};
+    "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
