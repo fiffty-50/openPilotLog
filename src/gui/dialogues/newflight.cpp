@@ -725,7 +725,8 @@ void NewFlight::on_buttonBox_rejected()
 }
 /*!
  * \brief onInputRejected Set `line_edit`'s border to red and check if `rgx` matches
- * in order to keep text on line. Ensures corresponding LineEdit bit is 0.
+ * in order to keep text on line. Ensures corresponding LineEdit bit is 0. Only
+ * valid characters are kept on the line edit.
  */
 void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
     DEBUG("Input rejected" << line_edit->text());
@@ -735,7 +736,6 @@ void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
     if(rgx.match(text).hasMatch())
     {
         text.chop(1);
-        //line_edit->setText(line_edit->text());
         line_edit->setText(text);
     }
 }
