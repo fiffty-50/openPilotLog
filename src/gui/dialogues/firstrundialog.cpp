@@ -30,8 +30,12 @@ void FirstRunDialog::on_previousPushButton_clicked()
 
 void FirstRunDialog::on_nextPushButton_clicked()
 {
-    if(ui->tabWidget->currentIndex()<2)
+    if(ui->tabWidget->currentIndex()<2){
         ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex()+1);
+    } else {
+        emit ui->finishButton->clicked();
+    }
+
 }
 
 void FirstRunDialog::themeGroup_toggled(int id)
