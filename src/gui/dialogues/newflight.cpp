@@ -43,19 +43,19 @@ void NewFlight::nope()
 }
 
 
-static const auto IATA = QLatin1String("[a-zA-Z0-9]{3}");
-static const auto ICAO = QLatin1String("[a-zA-Z0-9]{4}");
-static const auto name_rx = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
-static const auto name_add_rx = QLatin1String("\\s?(\\p{L}+('|\\-)?)");
-static const auto self = QLatin1String("(self|SELF)");
+static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
+static const auto ICAO_RX = QLatin1String("[a-zA-Z0-9]{4}");
+static const auto NAME_RX = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
+static const auto ADD_NAME_RX = QLatin1String("\\s?(\\p{L}+('|\\-)?)");
+static const auto SELF_RX = QLatin1String("(self|SELF)");
 
 /// Raw Input validation
 const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
-const auto LOC_VALID_RGX        = QRegularExpression(IATA + "|" + ICAO);
+const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
 const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+-?[A-Z0-9]+");
-const auto PILOT_NAME_VALID_RGX = QRegularExpression(self + QLatin1Char('|')
-                                                     + name_rx + name_add_rx + ",\\s+" // up to 4 first names
-                                                     + name_rx + name_add_rx );// up to 4 last names
+const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
+                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",\\s+" // up to 4 first names
+                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
 const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
@@ -97,7 +97,7 @@ NewFlight::~NewFlight()
 }
 
 void NewFlight::setup(){
-    auto db = QSqlDatabase::database("qt_sql_default_connection");
+    auto db = Db::Database();//QSqlDatabase::database("qt_sql_default_connection");
 
     const auto location_settings = \
          LineEditSettings(LOC_VALID_RGX, LOC_INVALID_RGX, LOC_SQL_COL);

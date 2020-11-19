@@ -63,6 +63,12 @@ class Db
          */
         static void             connect(){get().iconnect();}
         /*!
+         * \brief Can be used to access the database connection.
+         * \return a pointer to the default database connection
+         */
+        static QSqlDatabase     Database(){return get().iDatabase();}
+
+        /*!
          * \brief Db::exists checks if a certain value exists in the database with a sqlite WHERE statement
          * \param table - Name of the table
          * \param column - Name of the column
@@ -134,6 +140,7 @@ class Db
     private:
         Db() {}
         void             iconnect();
+        QSqlDatabase     iDatabase();
         bool             iexists(QString column, QString table, QString checkColumn,
                                        QString value, Db::matchType match);
         bool             isingleUpdate(QString table, QString column, QString value,

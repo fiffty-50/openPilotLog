@@ -46,6 +46,12 @@ void Db::iconnect()
         DEB("DatabaseConnect - ERROR: no driver " << driver << " available");
     }
 }
+
+QSqlDatabase Db::iDatabase()
+{
+    auto db = QSqlDatabase::database("qt_sql_default_connection");
+    return db;
+}
 /*!
  * \brief Db::iexists - see Db::exists
  */
