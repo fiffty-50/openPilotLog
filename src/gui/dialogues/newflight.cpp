@@ -748,6 +748,7 @@ void NewFlight::on_deptLocLineEdit_editingFinished()
         DEBUG("Departure accepted: " << text);
         line_edit->setText(text);
         onEditingFinishedCleanup(line_edit); //reset style sheet
+        ui->deptNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
         update();
     }
 }
@@ -808,6 +809,7 @@ void NewFlight::on_destLocLineEdit_editingFinished()
         DEBUG("Destination accepted: " << text);
         line_edit->setText(text);
         onEditingFinishedCleanup(line_edit); //reset style sheet
+        ui->destNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
         update();
     }
 }
@@ -861,6 +863,9 @@ void NewFlight::on_acftLineEdit_editingFinished()
         text = match[0];
         line_edit->setText(text.toUpper());
         onEditingFinishedCleanup(line_edit);
+        QString column = "make||' '||model||'-'||variant";
+        ui->acftTypeLabel->setText(
+                    Db::singleSelect(column,"tails","registration",text,Db::exactMatch));
         update();
     }else{
         DEBUG("Registration not in List!");
