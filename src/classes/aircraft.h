@@ -29,7 +29,7 @@ class Aircraft : public Entry
 //    using Entry::Entry;
 public:
     Aircraft();
-    Aircraft(int acft_id);
+    Aircraft(int tail_id);
     Aircraft(QMap<QString, QString> newData);
 };
 
