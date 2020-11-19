@@ -100,7 +100,7 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlight nf(this);
+    NewFlight nf(this, Db::createNew);
     nf.exec();
 }
 

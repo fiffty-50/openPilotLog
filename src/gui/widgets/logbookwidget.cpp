@@ -52,19 +52,16 @@ void LogbookWidget::tableView_selectionChanged(const QItemSelection &index,
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    NewFlight nf(this);
+    NewFlight nf(this, Db::createNew);
     nf.exec();
     refreshView(Settings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::on_editFlightButton_clicked() // To Do: Fix! - use new flight, pre-filled with entry loaded from DB
 {
-    QMessageBox *nope = new QMessageBox(this); // edit widget currently INOP
-    nope->setText("This feature is temporarily INOP.");
-    nope->exec();
-
-    //EditFlight ef(this);
-    //ef.exec();
+    NewFlight ef(this,Flight(selectedFlight), Db::editExisting);
+    ef.exec();
+    refreshView(Settings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::on_deleteFlightPushButton_clicked()

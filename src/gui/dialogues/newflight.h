@@ -79,8 +79,8 @@ class NewFlight : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFlight(QWidget *parent);
-    explicit NewFlight(QWidget *parent, Flight oldFlight);
+    explicit NewFlight(QWidget *parent, Db::editRole edRole);
+    explicit NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole);
     ~NewFlight();
 
     QStringList* getResult();
@@ -166,18 +166,18 @@ private slots:
 
     void on_tIFRTimeLineEdit_editingFinished();
     void on_tNIGHTTimeLineEdit_editingFinished();
-    //void on_xcTimeLineEdit_editingFinished();
     void on_tPICTimeLineEdit_editingFinished();
     void on_tSICTimeLineEdit_editingFinished();
     void on_tDualTimeLineEdit_editingFinished();
     void on_tFITimeLineEdit_editingFinished();
-    //void on_simTimeLineEdit_editingFinished();
-    void on_FlightNumberLineEdit_editingFinished();
+    void on_FlightNumberLineEdit_textChanged(const QString &arg1);
 
 signals:
     void mandatoryFieldsValid(NewFlight* nf);
 
 private:
+    Db::editRole role;
+    Flight oldEntry;
     Ui::NewFlight *ui;
     QMap<QLineEdit*, int> lineEditBitMap;
     QVector<QLineEdit*> mandatoryLineEdits;

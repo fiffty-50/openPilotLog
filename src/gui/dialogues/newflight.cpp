@@ -74,19 +74,22 @@ const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
  * Window Construction
  */
 //For adding a new Flight to the logbook
-NewFlight::NewFlight(QWidget *parent) :
+NewFlight::NewFlight(QWidget *parent, Db::editRole edRole) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
+    role = edRole;
     setup();
 }
 //For editing an existing flight
-NewFlight::NewFlight(QWidget *parent, Flight oldFlight) :
+NewFlight::NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
+    role=edRole;
+    oldEntry = oldFlight;
     setup();
     formFiller(oldFlight);
 }
@@ -177,7 +180,6 @@ void NewFlight::setup(){
     ui->acftLineEdit->setStyleSheet("border: 1px solid orange");
 
     readSettings();
-    ui->tabWidget->setCurrentIndex(0);
     ui->deptLocLineEdit->setFocus();
 }
 
@@ -242,6 +244,9 @@ void NewFlight::formFiller(Flight oldFlight)
                 break;
             }
         }
+    }
+    for(const auto& le : mandatoryLineEdits){
+        emit le->editingFinished();
     }
 }
 
@@ -325,7 +330,7 @@ void NewFlight::readSettings()
     ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toInt());
     ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toInt());
     ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toInt());
-    ui->flightNumberPrefixLabel->setText(Settings::read("userdata/flightnumberPrefix").toString() + QLatin1Char('-'));
+    ui->FlightNumberLineEdit->setText(Settings::read("userdata/flightnumberPrefix").toString() + QLatin1Char('-'));
 
     if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
         ui->picNameLineEdit->setText("self");
@@ -593,6 +598,14 @@ void NewFlight::collectAdditionalData()
  */
 void NewFlight::fillExtras()
 {
+    //reset labels and line edits
+    QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
+                              ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
+                              ui->tDualTimeLineEdit, ui->tFITimeLineEdit,};
+    QList<QLabel*>      LB = {ui->tSPSELabel, ui->tSPMELabel,  ui->tMPLabel,  ui->tIFRLabel,  ui->tNIGHTLabel,
+                              ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDualLabel, ui->tFILabel};
+    for(const auto& widget : LE) {widget->setText("");}
+    for(const auto& widget : LB) {widget->setText("00:00");}
     //Times
     auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
     auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
@@ -606,22 +619,27 @@ void NewFlight::fillExtras()
         // SP SE
         if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1"){
             ui->tSPSETimeLineEdit->setText(blockTime);
+            ui->tSPSELabel->setText(blockTime);
         }
         // SP ME
         if(acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1"){
             ui->tSPMETimeLineEdit->setText(blockTime);
+            ui->tSPMELabel->setText(blockTime);
         }
         // MP
         if(acft.data.value("multipilot") == "1"){
             ui->tMPTimeLineEdit->setText(blockTime);
+            ui->tMPLabel->setText(blockTime);
         }
     }else{DEBUG("Aircraft Details Empty");}//invalid aircraft
 
     // TOTAL
-    ui->tblkTimeLineEdit->setText(blockTime);
+    ui->tblkLabel->setText("<b>" + blockTime + "</b>");
+    ui->tblkLabel->setStyleSheet("color: green;");
     // IFR
     if(ui->IfrCheckBox->isChecked()){
         ui->tIFRTimeLineEdit->setText(blockTime);
+        ui->tIFRLabel->setText(blockTime);
     }
     // Night
     QString deptDate = ui->newDoft->date().toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
@@ -634,31 +652,24 @@ void NewFlight::fillExtras()
                         newData.value("dept"), newData.value("dest"),
                         deptDateTime, tblk, nightAngle));
     ui->tNIGHTTimeLineEdit->setText(Calc::minutesToString(nightTime));
+    ui->tNIGHTLabel->setText(Calc::minutesToString(nightTime));
     // Function times
     switch (ui->FunctionComboBox->currentIndex()) {
     case 0://PIC
         ui->tPICTimeLineEdit->setText(blockTime);
-        ui->tSICTimeLineEdit->setText("");
-        ui->tDualTimeLineEdit->setText("");
-        ui->tFITimeLineEdit->setText("");
+        ui->tPICLabel->setText(blockTime);
         break;
     case 1://Co-Pilot
-        ui->tPICTimeLineEdit->setText("");
         ui->tSICTimeLineEdit->setText(blockTime);
-        ui->tDualTimeLineEdit->setText("");
-        ui->tFITimeLineEdit->setText("");
+        ui->tSICLabel->setText(blockTime);
         break;
     case 2://Dual
-        ui->tPICTimeLineEdit->setText("");
-        ui->tSICTimeLineEdit->setText("");
         ui->tDualTimeLineEdit->setText(blockTime);
-        ui->tFITimeLineEdit->setText("");
+        ui->tDualLabel->setText(blockTime);
         break;
     case 3://Instructor
-        ui->tPICTimeLineEdit->setText("");
-        ui->tSICTimeLineEdit->setText("");
-        ui->tDualTimeLineEdit->setText("");
         ui->tFITimeLineEdit->setText(blockTime);
+        ui->tFILabel->setText(blockTime);
     }
 }
 
@@ -704,17 +715,39 @@ void NewFlight::on_buttonBox_accepted()
         DEBUG("Input verified");
         collectBasicData();
         collectAdditionalData();
-        auto newFlight = Flight(newData);
-        if(newFlight.commit()){
-            accept();
-        } else {
-            auto mb = new QMessageBox(this);
-            auto errorMsg = QString("Unable to commit Flight to Logbook."
-                                    "The following error has ocurred:\n\n");
-            errorMsg.append(newFlight.error);
-            mb->setText(errorMsg);
-            mb->show();
+
+        switch (role) {
+        case Db::createNew: {
+            auto newEntry = Flight(newData);;
+            if(newEntry.commit()){
+                accept();
+            } else {
+                auto mb = new QMessageBox(this);
+                auto errorMsg = QString("Unable to commit Flight to Logbook."
+                                        "The following error has ocurred:\n\n");
+                errorMsg.append(newEntry.error);
+                mb->setText(errorMsg);
+                mb->show();
+            }
         }
+        case Db::editExisting:
+            oldEntry.setData(newData);
+            if(oldEntry.commit()){
+                accept();
+            }else{
+                auto mb = new QMessageBox(this);
+                auto errorMsg = QString("Unable to commit Flight to Logbook."
+                                        "The following error has ocurred:\n\n");
+                errorMsg.append(oldEntry.error);
+                mb->setText(errorMsg);
+                mb->show();
+            }
+            break;
+        }
+
+
+
+
     }
 }
 
@@ -1039,12 +1072,11 @@ void NewFlight::on_thirdPilotNameLineEdit_editingFinished()
     }
 }
 
-void NewFlight::on_FlightNumberLineEdit_editingFinished()
+void NewFlight::on_FlightNumberLineEdit_textChanged(const QString &arg1)
 {
-    qDebug() << "tbd: FlightNumber slot";
-
-    // Setting for optional Prefix (e.g. LH, LX etc.)
+    ui->FlightNumberLineEdit->setText(arg1.toUpper());
 }
+
 
 /*
  * ============================================================================
