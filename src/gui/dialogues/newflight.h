@@ -80,11 +80,16 @@ class NewFlight : public QDialog
 
 public:
     explicit NewFlight(QWidget *parent);
+    explicit NewFlight(QWidget *parent, Flight oldFlight);
     ~NewFlight();
 
     QStringList* getResult();
 
 private:
+
+    void setup();
+
+    void formFiller();
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 

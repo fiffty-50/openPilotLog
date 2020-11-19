@@ -72,11 +72,31 @@ const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
 /*
  * Window Construction
  */
+//For adding a new Flight to the logbook
 NewFlight::NewFlight(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
+    setup();
+}
+//For editing an existing flight
+NewFlight::NewFlight(QWidget *parent, Flight oldFlight) :
+    QDialog(parent),
+    ui(new Ui::NewFlight)
+{
+    ui->setupUi(this);
+    setup();
+    DEBUG("Work in progress");
+    formFiller();
+}
+
+NewFlight::~NewFlight()
+{
+    delete ui;
+}
+
+void NewFlight::setup(){
     auto db = QSqlDatabase::database("qt_sql_default_connection");
 
     const auto location_settings = \
@@ -163,9 +183,9 @@ NewFlight::NewFlight(QWidget *parent) :
     ui->newDeptLocLineEdit->setFocus();
 }
 
-NewFlight::~NewFlight()
+void NewFlight::formFiller()
 {
-    delete ui;
+
 }
 
 /*
