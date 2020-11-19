@@ -46,21 +46,21 @@ void NewFlight::nope()
 static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
 static const auto ICAO_RX = QLatin1String("[a-zA-Z0-9]{4}");
 static const auto NAME_RX = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
-static const auto ADD_NAME_RX = QLatin1String("\\s?(\\p{L}+('|\\-)?)");
+static const auto ADD_NAME_RX = QLatin1String("(\\s?(\\p{L}+('|\\-)?))?");
 static const auto SELF_RX = QLatin1String("(self|SELF)");
 
 /// Raw Input validation
 const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
 const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
-const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+-?[A-Z0-9]+");
+const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-9]+");
 const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
-                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",\\s+" // up to 4 first names
+                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",\\s?" // up to 4 first names
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
 const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
-const auto LOC_INVALID_RGX        = QRegularExpression("[^a-zA-Z0-9]");
-const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9-]");
+const auto LOC_INVALID_RGX        = QRegularExpression("[^A-Z0-9]");
+const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9\\-]");
 const auto PILOT_NAME_INVALID_RGX = QRegularExpression("[^\\p{L}|\\s|,]");
 
 /// Sql columns
@@ -97,7 +97,7 @@ NewFlight::~NewFlight()
 }
 
 void NewFlight::setup(){
-    auto db = Db::Database();//QSqlDatabase::database("qt_sql_default_connection");
+    auto db = Db::Database();
 
     const auto location_settings = \
          LineEditSettings(LOC_VALID_RGX, LOC_INVALID_RGX, LOC_SQL_COL);
@@ -343,15 +343,17 @@ void NewFlight::addNewPilotMessageBox()
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "No Pilot found",
-                                  "No pilot found.\n Would you like to add a new pilot to the database?",
+                                  "No pilot found.<br>Please enter the Name as"
+                                  "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+                                  "If this is the first time you log a flight with this pilot, you have to "
+                                  "add the name to the database first.<br><br>Would you like to add a new pilot to the database?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes)
     {
         qDebug() << "Add new pilot selected";
-        DEBUG("This feature is not yet available.");
         // create and open new pilot dialog
         auto np = NewPilot(Db::createNew, this);
-        np.open();
+        np.exec();
     }
 }
 
@@ -730,9 +732,11 @@ void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
     line_edit->setStyleSheet("border: 1px solid red");
     this->allOkBits.setBit(this->lineEditBitMap[line_edit], false);
     auto text = line_edit->text();
-    if(!rgx.match(text).hasMatch())
+    if(rgx.match(text).hasMatch())
     {
-        line_edit->setText(line_edit->text());
+        text.chop(1);
+        //line_edit->setText(line_edit->text());
+        line_edit->setText(text);
     }
 }
 
@@ -939,12 +943,12 @@ void NewFlight::on_picNameLineEdit_editingFinished()
     }else //check if entry is in pilotList
     {
         QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
         {
             QString pic = match[0];
-            line_edit->setText(pic);
+            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
             DEBUG("Pilot selected: " << pic);
             onEditingFinishedCleanup(line_edit);
             update();
@@ -984,12 +988,12 @@ void NewFlight::on_secondPilotNameLineEdit_editingFinished()
     }else //check if entry is in pilotList
     {
         QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
         {
             QString pic = match[0];
-            line_edit->setText(pic);
+            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
             DEBUG("Pilot selected: " << pic);
             onEditingFinishedCleanup(line_edit);
         }else
@@ -1018,12 +1022,12 @@ void NewFlight::on_thirdPilotNameLineEdit_editingFinished()
     }else //check if entry is in pilotList
     {
         QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text(), Qt::CaseInsensitive);
+        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
         {
             QString pic = match[0];
-            line_edit->setText(pic);
+            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
             DEBUG("Pilot selected: " << pic);
             onEditingFinishedCleanup(line_edit);
         }else

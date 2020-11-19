@@ -48,7 +48,7 @@ CompletionList::CompletionList(CompleterTarget::targets type)
         result = Db::multiSelect(columns, "pilots");
         break;
     case CompleterTarget::pilots:
-        query.append("SELECT piclastname||', '||picfirstname FROM pilots");
+        query.append("SELECT piclastname||','||picfirstname FROM pilots");
         result = Db::customQuery(query, 1);
         break;
     case CompleterTarget::aircraft:
