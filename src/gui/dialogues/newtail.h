@@ -28,6 +28,7 @@
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/calc.h"
+#include "src/database/entry.h"
 
 namespace Ui {
 class NewTail;
@@ -84,7 +85,7 @@ private:
 
     void setupValidators();
 
-    void formFiller(Aircraft);
+    void formFiller(Entry);
 
     bool verify();
 };

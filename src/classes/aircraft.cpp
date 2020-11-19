@@ -64,49 +64,6 @@ Aircraft::Aircraft(int tail_id)
     }
 }
 
-Aircraft::Aircraft(int acft_id, bool isTemplate)
-{
-    if(isTemplate){
-        //retreive database layout
-        const auto dbContent = DbInfo();
-        auto table = QLatin1String("aircraft");
-
-        //Check database for row id
-        QString statement = "SELECT COUNT(*) FROM " + table + " WHERE _rowid_=" + QString::number(acft_id);
-        QSqlQuery q(statement);
-        q.next();
-        int rows = q.value(0).toInt();
-        if (rows == 0) {
-            DEB("No Entry found for row id: " << acft_id );
-            position.second = 0;
-        } else {
-            DEB("Retreiving data for row id: " << acft_id);
-            QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(acft_id);
-
-            QSqlQuery q(statement);
-            q.exec();
-            q.next();
-            for (int i = 0; i < dbContent.format.value(table).length(); i++) {
-                data.insert(dbContent.format.value(table)[i], q.value(i).toString());
-            }
-
-            error = q.lastError().text();
-            if (error.length() > 2) {
-                DEB("Error: " << q.lastError().text());
-                position.second = 0;
-                position.first = "invalid";
-            } else {
-                position.second = acft_id;
-                position.first = "aircraft";
-            }
-        }
-    } else {
-        DEB("This constructor is for use with templates only. To create an object from the tails table use"
-            "the tail_id only in the constructor.");
-    }
-
-}
-
 Aircraft::Aircraft(QMap<QString, QString> newData)
 {
     QString table = "tails";

@@ -30,7 +30,6 @@ class Aircraft : public Entry
 public:
     Aircraft();
     Aircraft(int tail_id);
-    Aircraft(int acft_id, bool isTemplate);
     Aircraft(QMap<QString, QString> newData);
 };
 
