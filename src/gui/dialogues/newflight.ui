@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="3">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -32,7 +32,7 @@
         </widget>
        </item>
        <item row="7" column="0">
-        <widget class="QLabel" name="picLabel_2">
+        <widget class="QLabel" name="secondPilotLabel">
          <property name="text">
           <string>Second Pilot</string>
          </property>
@@ -201,7 +201,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>5</day>
+           <day>4</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -832,13 +832,6 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="4">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
@@ -1122,7 +1115,7 @@
         </widget>
        </item>
        <item row="7" column="1">
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="manualEditingCheckBox">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -1155,6 +1148,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="8" column="2">
@@ -1171,6 +1167,9 @@
            <width>0</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
         </widget>
        </item>
@@ -1189,6 +1188,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="9" column="2">
@@ -1205,6 +1207,9 @@
            <width>0</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
         </widget>
        </item>
@@ -1223,6 +1228,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="10" column="2">
@@ -1239,6 +1247,9 @@
            <width>0</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
         </widget>
        </item>
@@ -1257,6 +1268,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="11" column="2">
@@ -1273,6 +1287,9 @@
            <width>0</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
         </widget>
        </item>
@@ -1291,6 +1308,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
         </widget>
        </item>
        <item row="12" column="2">
@@ -1307,6 +1327,9 @@
            <width>0</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
         </widget>
        </item>

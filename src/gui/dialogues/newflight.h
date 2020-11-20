@@ -93,8 +93,6 @@ private:
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 
-    void nope();//error box
-
     void addNewPilotMessageBox();
 
     void readSettings();
@@ -172,12 +170,17 @@ private slots:
     void on_tFITimeLineEdit_editingFinished();
     void on_FlightNumberLineEdit_textChanged(const QString &arg1);
 
+
+    void on_manualEditingCheckBox_stateChanged(int arg1);
+
+    void on_FunctionComboBox_currentTextChanged();
+
 signals:
     void mandatoryFieldsValid(NewFlight* nf);
 
 private:
     Db::editRole role;
-    Flight oldEntry;
+    Flight entry;
     Ui::NewFlight *ui;
     QMap<QLineEdit*, int> lineEditBitMap;
     QVector<QLineEdit*> mandatoryLineEdits;

@@ -32,15 +32,6 @@ void NewFlight::on_verifyButton_clicked()//debug button
     collectBasicData();
     collectAdditionalData();
 }
-/*!
- * \brief NewFlight::nope for features that are not yet implemented
- */
-void NewFlight::nope()
-{
-    QMessageBox nope(this); //error box
-    nope.setText("This feature is not yet available!");
-    nope.exec();
-}
 
 
 static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
@@ -50,23 +41,24 @@ static const auto ADD_NAME_RX = QLatin1String("(\\s?(\\p{L}+('|\\-)?))?");
 static const auto SELF_RX = QLatin1String("(self|SELF)");
 
 /// Raw Input validation
-const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
-const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
-const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-9]+");
-const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
+static const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
+static const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
+static const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-9]+");
+static const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",\\s?" // up to 4 first names
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
-const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
-const auto LOC_INVALID_RGX        = QRegularExpression("[^A-Z0-9]");
-const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9\\-]");
-const auto PILOT_NAME_INVALID_RGX = QRegularExpression("[^\\p{L}|\\s|,]");
+static const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
+static const auto LOC_INVALID_RGX        = QRegularExpression("[^A-Z0-9]");
+static const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9\\-]");
+static const auto PILOT_NAME_INVALID_RGX = QRegularExpression("[^\\p{L}|\\s|,]");
+static const auto INVALID_CHARS_RGX      = QRegularExpression("[^\\p{L}|\\s|,|\\-|']");
 
 /// Sql columns
-const auto LOC_SQL_COL        = SqlColumnNum(1);  // TODO: locations are iata/icao so 1,2 merge columns in sql?
-const auto AIRCRAFT_SQL_COL   = SqlColumnNum(4);
-const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
+static const auto LOC_SQL_COL        = SqlColumnNum(1);  // TODO: locations are iata/icao so 1,2 merge columns in sql?
+static const auto AIRCRAFT_SQL_COL   = SqlColumnNum(4);
+static const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
 
 
 
@@ -89,7 +81,7 @@ NewFlight::NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole) :
 {
     ui->setupUi(this);
     role=edRole;
-    oldEntry = oldFlight;
+    entry = oldFlight;
     setup();
     formFiller(oldFlight);
 }
@@ -180,17 +172,25 @@ void NewFlight::setup(){
     ui->acftLineEdit->setStyleSheet("border: 1px solid orange");
 
     readSettings();
+    ui->flightDataTabWidget->setCurrentIndex(0);
     ui->deptLocLineEdit->setFocus();
 }
 
 void NewFlight::formFiller(Flight oldFlight)
 {
     DEBUG("Filling Line Edits...");
+    QStringList filled;
     auto line_edits = parent()->findChildren<QLineEdit *>();
     QStringList line_edits_names;
     for(const auto& le : line_edits){
         line_edits_names << le->objectName();
     }
+    const QString& acft = Db::singleSelect("registration", "tails", "tail_id",
+                                    oldFlight.data.value("acft"),
+                                    Db::exactMatch);
+    ui->acftLineEdit->setText(acft);
+    line_edits_names.removeOne("acftLineEdit");
+
     for(const auto& key : oldFlight.data.keys()){
         auto rx = QRegularExpression(key + "LineEdit");//acftLineEdit
         for(const auto& leName : line_edits_names){
@@ -198,10 +198,9 @@ void NewFlight::formFiller(Flight oldFlight)
                 //DEBUG("Loc Match found: " << key << " - " << leName);
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
-                    const QString& acft = Db::singleSelect("registration", "tails", "tail_id",
-                                                    oldFlight.data.value(key),
-                                                    Db::exactMatch);
-                    le->setText(acft);
+                    le->setText(oldFlight.data.value(key));
+                    filled << leName;
+                    line_edits_names.removeOne(leName);
                 }
                 break;
             }
@@ -213,6 +212,8 @@ void NewFlight::formFiller(Flight oldFlight)
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
                     le->setText(oldFlight.data.value(key));
+                    filled << leName;
+                    line_edits_names.removeOne(leName);
                 }
                 break;
             }
@@ -225,6 +226,8 @@ void NewFlight::formFiller(Flight oldFlight)
                 if(le != nullptr){
                     le->setText(Calc::minutesToString(
                                 oldFlight.data.value(key)));
+                    filled << leName;
+                    line_edits_names.removeOne(leName);
                 }
                 break;
             }
@@ -240,6 +243,8 @@ void NewFlight::formFiller(Flight oldFlight)
                                                     oldFlight.data.value(key),
                                                     Db::exactMatch);
                     le->setText(name);
+                    filled << leName;
+                    line_edits_names.removeOne(leName);
                 }
                 break;
             }
@@ -248,6 +253,10 @@ void NewFlight::formFiller(Flight oldFlight)
     for(const auto& le : mandatoryLineEdits){
         emit le->editingFinished();
     }
+    DEBUG("Filled: ");
+    DEBUG(filled);
+    DEBUG("Unfilled: ");
+    DEBUG(line_edits_names);
 }
 
 /*
@@ -413,6 +422,12 @@ void NewFlight::collectBasicData()
         int tonb = timeOn.hour() * 60 + timeOn.minute();
         newData.insert("tonb",QString::number(tonb));
     }
+    //Block Time
+    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
+    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
+    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
+    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
+    newData.insert("tblk",blockMinutes);
 
     // Aircraft
     QString reg = ui->acftLineEdit->text();
@@ -598,7 +613,7 @@ void NewFlight::collectAdditionalData()
  */
 void NewFlight::fillExtras()
 {
-    //reset labels and line edits
+    //zero labels and line edits
     QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
                               ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
                               ui->tDualTimeLineEdit, ui->tFITimeLineEdit,};
@@ -717,37 +732,24 @@ void NewFlight::on_buttonBox_accepted()
         collectAdditionalData();
 
         switch (role) {
-        case Db::createNew: {
-            auto newEntry = Flight(newData);;
-            if(newEntry.commit()){
-                accept();
-            } else {
-                auto mb = new QMessageBox(this);
-                auto errorMsg = QString("Unable to commit Flight to Logbook."
-                                        "The following error has ocurred:\n\n");
-                errorMsg.append(newEntry.error);
-                mb->setText(errorMsg);
-                mb->show();
-            }
-        }
         case Db::editExisting:
-            oldEntry.setData(newData);
-            if(oldEntry.commit()){
-                accept();
-            }else{
-                auto mb = new QMessageBox(this);
-                auto errorMsg = QString("Unable to commit Flight to Logbook."
-                                        "The following error has ocurred:\n\n");
-                errorMsg.append(oldEntry.error);
-                mb->setText(errorMsg);
-                mb->show();
-            }
+            entry.setData(newData);
+            break;
+        case Db::createNew:
+            entry = Flight(newData);
             break;
         }
 
-
-
-
+        if(entry.commit()){
+            accept();
+        }else{
+            auto mb = new QMessageBox(this);
+            auto errorMsg = QString("Unable to commit Flight to Logbook."
+                                    "The following error has ocurred:\n\n");
+            errorMsg.append(entry.error);
+            mb->setText(errorMsg);
+            mb->show();
+        }
     }
 }
 
@@ -766,8 +768,13 @@ void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
     line_edit->setStyleSheet("border: 1px solid red");
     this->allOkBits.setBit(this->lineEditBitMap[line_edit], false);
     auto text = line_edit->text();
-    if(rgx.match(text).hasMatch())
+    if(!rgx.match(text).hasMatch())
     {
+        DEBUG("1");
+        line_edit->setText(text);
+    }
+    if(INVALID_CHARS_RGX.match(text).hasMatch()){//remove globaly inacceptable chars
+        DEBUG("invalid char");
         text.chop(1);
         line_edit->setText(text);
     }
@@ -787,13 +794,15 @@ QStringList* NewFlight::getResult() { return &this->result; }
 
 void NewFlight::on_deptTZ_currentTextChanged(const QString &arg1)
 {
-    if(arg1 == "Local"){nope();}  // currently only UTC time logging is supported
+    DEBUG(arg1);
+    // currently only UTC time logging is supported
     ui->deptTZ->setCurrentIndex(0);
 }
 
 void NewFlight::on_destTZ_currentIndexChanged(const QString &arg1)
 {
-    if(arg1 == "Local"){nope();}  // currently only UTC time logging is supported
+    DEBUG(arg1);
+    // currently only UTC time logging is supported
     ui->destTZ->setCurrentIndex(0);
 }
 
@@ -1165,6 +1174,10 @@ inline bool NewFlight::isLessOrEqualToTotalTime(QString timeString)
 {
     if(newData.value("tblk").isEmpty()){
         DEBUG("Total Time not set.");
+        auto mb = new QMessageBox(this);
+        mb->setText("Please fill out Departure and Arrival Time\n"
+                    "before manually editing these times.");
+        mb->show();
         return false;
     } else {
         int minutes = Calc::stringToMinutes(timeString);
@@ -1172,7 +1185,9 @@ inline bool NewFlight::isLessOrEqualToTotalTime(QString timeString)
             return true;
         } else {
             auto mb = new QMessageBox(this);
-            mb->setText("Cannot be more than Total Time of Flight (" + Calc::minutesToString(newData.value("tblk")) + ')');
+            mb->setText("Cannot be more than Total Time of Flight:<br><br><center><b>"
+                        + Calc::minutesToString(newData.value("tblk"))
+                        + "</b></center><br>");
             mb->show();
             return false;
         }
@@ -1294,4 +1309,31 @@ void NewFlight::on_tFITimeLineEdit_editingFinished()
     } else {
         le->setText(QString());
     }
+}
+
+
+void NewFlight::on_manualEditingCheckBox_stateChanged(int arg1)
+{
+    QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
+                              ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
+                              ui->tDualTimeLineEdit, ui->tFITimeLineEdit,};
+    switch (arg1) {
+    case 0:
+        for(const auto& le : LE){
+            le->setFocusPolicy(Qt::NoFocus);
+        }
+        break;
+    case 2:
+        for(const auto& le : LE){
+            le->setFocusPolicy(Qt::StrongFocus);
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void NewFlight::on_FunctionComboBox_currentTextChanged()
+{
+    update();
 }
