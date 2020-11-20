@@ -255,6 +255,7 @@ void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 {
     Settings::write("flightlogging/flightnumberPrefix", arg1);
+
 }
 
 /*

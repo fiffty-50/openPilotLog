@@ -193,7 +193,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QDateEdit" name="newDoft">
+        <widget class="QDateEdit" name="doftDateEdit">
          <property name="dateTime">
           <datetime>
            <hour>23</hour>
@@ -201,7 +201,7 @@
            <second>0</second>
            <year>2019</year>
            <month>12</month>
-           <day>4</day>
+           <day>3</day>
           </datetime>
          </property>
          <property name="displayFormat">
@@ -861,7 +861,12 @@
          </item>
          <item>
           <property name="text">
-           <string>Co-Pilot</string>
+           <string>PICUS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SIC</string>
           </property>
          </item>
          <item>
@@ -1196,7 +1201,7 @@
        <item row="9" column="2">
         <widget class="QLabel" name="picTimeLabel_2">
          <property name="text">
-          <string>PICus</string>
+          <string>PICUS</string>
          </property>
         </widget>
        </item>
@@ -1332,6 +1337,16 @@
           <enum>Qt::NoFocus</enum>
          </property>
         </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLabel" name="tblkLabel_2">
+         <property name="text">
+          <string>Total</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="4">
+        <widget class="QLineEdit" name="tblkTimeLineEdit"/>
        </item>
       </layout>
      </widget>

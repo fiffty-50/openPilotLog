@@ -42,7 +42,7 @@ Aircraft::Aircraft(int tail_id)
         DEB("No Entry found for row id: " << tail_id );
         position.second = 0;
     } else {
-        DEB("Retreiving data for row id: " << tail_id);
+        //DEB("Retreiving data for row id: " << tail_id);
         QString statement = "SELECT * FROM " + table + " WHERE _rowid_=" + QString::number(tail_id);
 
         QSqlQuery q(statement);

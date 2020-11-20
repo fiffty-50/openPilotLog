@@ -196,6 +196,7 @@ bool Entry::update()
     statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(position.second));
 
     //execute query
+    DEB("UPDATE QUERY: " << statement);
     QSqlQuery q(statement);
     //check result. Upon success, error should be " "
     error = q.lastError().text();

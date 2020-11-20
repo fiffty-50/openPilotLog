@@ -72,7 +72,6 @@ bool Db::iexists(QString column, QString table, QString checkColumn, QString val
         break;
     }
 
-    DEB(statement);
 
     QSqlQuery q(statement);
     q.exec();
@@ -81,7 +80,6 @@ bool Db::iexists(QString column, QString table, QString checkColumn, QString val
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << q.lastError().text());
     } else {
-        DEB("Success. Found a result.");
         output = true;
         if (q.next()) {
             DEB("More than one result in Database for your query");
@@ -117,8 +115,6 @@ QString Db::isingleSelect(QString column, QString table, QString checkColumn, QS
         break;
     }
 
-    DEB(statement);
-
     QSqlQuery q(statement);
     q.exec();
 
@@ -127,7 +123,6 @@ QString Db::isingleSelect(QString column, QString table, QString checkColumn, QS
         DEB("Error: " << q.lastError().text());
         return QString();
     } else {
-        DEB("Success. Found a result.");
         result.append(q.value(0).toString());
         if (q.next()) {
             DEB("More than one result in Database for your query");
@@ -162,8 +157,6 @@ QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table, QStri
         break;
     }
 
-    DEB(statement);
-
     QSqlQuery q(statement);
     q.exec();
 
@@ -197,8 +190,6 @@ QVector<QString> Db::imultiSelect(QVector<QString> columns, QString table)
         }
     }
     statement.append(" FROM " + table);
-
-    DEB(statement);
 
     QSqlQuery q(statement);
     q.exec();
@@ -241,8 +232,6 @@ bool Db::isingleUpdate(QString table, QString column, QString value, QString che
         break;
     }
 
-    DEB(statement);
-
     QSqlQuery q(statement);
     q.exec();
     QString error = q.lastError().text();
@@ -261,7 +250,6 @@ bool Db::isingleUpdate(QString table, QString column, QString value, QString che
 QVector<QString> Db::icustomQuery(QString query, int returnValues)
 {
     QSqlQuery q(query);
-    DEB(query);
     q.exec();
 
     if (!q.first()) {

@@ -361,12 +361,12 @@ int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
     double deptLon = degToRad(deptCoordinates[1].toDouble());
     double destLat = degToRad(destCoordinates[0].toDouble());
     double destLon = degToRad(destCoordinates[1].toDouble());
-
+/*
     qDebug() << "Calc::CalculateNightTime deptLat = " << deptLat;
     qDebug() << "Calc::CalculateNightTime deptLon = " << deptLon;
     qDebug() << "Calc::CalculateNightTime destLat = " << destLat;
     qDebug() << "Calc::CalculateNightTime destLon = " << destLon;
-
+*/
     QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon,
                                                                      tblk);
 
@@ -377,8 +377,8 @@ int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime
             nightTime ++;
         }
     }
-    qDebug() << "Calc::CalculateNightTime result for angle: "<< nightAngle
-             << " :" << nightTime << " minutes night flying time.";
+    //qDebug() << "Calc::CalculateNightTime result for angle: "<< nightAngle
+    //         << " :" << nightTime << " minutes night flying time.";
     return nightTime;
 }
 

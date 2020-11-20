@@ -175,12 +175,29 @@ private slots:
 
     void on_FunctionComboBox_currentTextChanged();
 
+    void on_tblkTimeLineEdit_editingFinished();
+
+    void on_IfrCheckBox_stateChanged();
+
+    void on_TakeoffSpinBox_valueChanged(int arg1);
+
+    void on_LandingSpinBox_valueChanged(int arg1);
+
+    void on_AutolandSpinBox_valueChanged(int arg1);
+
+    void on_TakeoffCheckBox_stateChanged(int arg1);
+
+    void on_LandingCheckBox_stateChanged(int arg1);
+
+    void on_AutolandCheckBox_stateChanged(int arg1);
+
 signals:
     void mandatoryFieldsValid(NewFlight* nf);
 
 private:
     Db::editRole role;
     Flight entry;
+    bool doUpdate;
     Ui::NewFlight *ui;
     QMap<QLineEdit*, int> lineEditBitMap;
     QVector<QLineEdit*> mandatoryLineEdits;
