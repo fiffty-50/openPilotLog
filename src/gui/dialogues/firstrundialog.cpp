@@ -94,6 +94,22 @@ void FirstRunDialog::on_finishButton_clicked()
         Pilot pic(1);
         pic.setData(data);
         pic.commit();
-        accept();
+
+        switch(Settings::read("main/theme").toInt()){
+        case 0:
+            accept();
+            break;
+        case 1:
+            qApp->quit();
+            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+            break;
+        case 2:
+            qApp->quit();
+            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+            break;
+        default:
+            Settings::write("main/theme", 0);
+            accept();
+        }
     }
 }
