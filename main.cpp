@@ -42,13 +42,6 @@ bool setup()
 
 int main(int argc, char *argv[])
 {
-    //sqlite does not deal well with multiple connections, ensure only one instance is running
-    RunGuard guard("opl_single_key");
-        if ( !guard.tryToRun() ){
-            qDebug() << "Another Instance is already running. Exiting.";
-            return 0;
-        }
-
     QCoreApplication::setOrganizationName("openPilotLog");
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openPilotLog");
@@ -88,6 +81,13 @@ int main(int argc, char *argv[])
         break;
     }
 
+
+    //sqlite does not deal well with multiple connections, ensure only one instance is running
+    RunGuard guard("opl_single_key");
+        if ( !guard.tryToRun() ){
+            qDebug() << "Another Instance is already running. Exiting.";
+            return 0;
+        }
 
     MainWindow w;
     //w.showMaximized();

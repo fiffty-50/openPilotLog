@@ -34,6 +34,7 @@
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/dialogues/newtail.h"
 #include "src/gui/dialogues/newpilot.h"
+#include "src/classes/runguard.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
