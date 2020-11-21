@@ -45,7 +45,7 @@ static const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3])
 static const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
 static const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-9]+");
 static const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
-                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",\\s?" // up to 4 first names
+                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",?\\s?" // up to 4 first names
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
@@ -415,7 +415,7 @@ void NewFlight::readSettings()
  * \brief NewFlight::addNewPilotMessageBox If the user input is not in the pilotNameList, the user
  * is prompted if he wants to add a new entry to the database
  */
-void NewFlight::addNewPilotMessageBox()
+void NewFlight::addNewPilotMessageBox(QLineEdit *parent)
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "No Pilot found",
@@ -430,9 +430,38 @@ void NewFlight::addNewPilotMessageBox()
         // create and open new pilot dialog
         auto np = NewPilot(Db::createNew, this);
         np.exec();
+        QString statement = "SELECT MAX(pilot_id)  FROM pilots";
+        QString id = Db::customQuery(statement,1).first();
+        Pilot newPilot = Pilot(id.toInt());
+        parent->setText(newPilot.data.value("displayname"));
+        emit parent->editingFinished();
     }
 }
-
+/*!
+ * \brief NewFlight::addNewAircraftMessageBox If the user input is not in the aircraftList, the user
+ * is prompted if he wants to add a new entry to the database
+ */
+void NewFlight::addNewAircraftMessageBox(QLineEdit *parent)
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "No Aircraft found",
+                                  "No aircraft with this registration found.<br>"
+                                  "If this is the first time you log a flight with this aircraft, you have to "
+                                  "add the registration to the database first.<br><br>Would you like to add a new aircraft to the database?",
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes)
+    {
+        DEBUG("Add new aircraft selected");
+        // create and open new aircraft dialog
+        auto na = NewTail(ui->acftLineEdit->text(), Db::createNew, this);
+        na.exec();
+        QString statement = "SELECT MAX(tail_id)  FROM tails";
+        QString id = Db::customQuery(statement,1).first();
+        auto newAcft = Aircraft(id.toInt());
+        parent->setText(newAcft.data.value("registration"));
+        emit parent->editingFinished();
+    }
+}
 /// Input Verification and Collection
 
 /*!
@@ -821,11 +850,15 @@ bool NewFlight::verifyInput()
         return true;
     }
 }
+
 /*!
+ * ============================================================================
  * ============================================================================
  * Slots
  * ============================================================================
+ * ============================================================================
  */
+
 void NewFlight::on_buttonBox_accepted()
 {
     DEBUG("OK pressed");
@@ -1036,7 +1069,7 @@ void NewFlight::on_tonbTimeLineEdit_editingFinished()
 
 /// Date
 
-void NewFlight::on_newDoft_editingFinished()
+void NewFlight::on_doftTimeEdit_editingFinished()
 {
     update();
 }
@@ -1066,8 +1099,8 @@ void NewFlight::on_acftLineEdit_editingFinished()
                     Db::singleSelect(column,"tails","registration",text,Db::exactMatch));
         update();
     }else{
-        DEBUG("Registration not in List!");
         emit line_edit->inputRejected();
+        addNewAircraftMessageBox(line_edit);
     }
 }
 
@@ -1105,7 +1138,7 @@ void NewFlight::on_picNameLineEdit_editingFinished()
         {
             DEBUG("Pilot not found.");
             emit line_edit->inputRejected();
-            addNewPilotMessageBox();
+            addNewPilotMessageBox(line_edit);
         }
     }
 }
@@ -1149,7 +1182,7 @@ void NewFlight::on_secondPilotNameLineEdit_editingFinished()
         {
             DEBUG("Pilot not found.");
             emit line_edit->inputRejected();
-            addNewPilotMessageBox();
+            addNewPilotMessageBox(line_edit);
         }
     }
 }
@@ -1183,7 +1216,7 @@ void NewFlight::on_thirdPilotNameLineEdit_editingFinished()
         {
             DEBUG("Pilot not found.");
             emit line_edit->inputRejected();
-            addNewPilotMessageBox();
+            addNewPilotMessageBox(line_edit);
         }
     }
 }

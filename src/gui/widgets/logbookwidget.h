@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <chrono>
 #include <QDebug>
+#include <QMenu>
 
 #include "src/classes/settings.h"
 #include "src/database/db.h"
@@ -45,8 +46,7 @@ public:
     explicit LogbookWidget(QWidget *parent = nullptr);
     ~LogbookWidget();
 
-    qint32 selectedFlight = 0;
-    void setSelectedFlight(const qint32 &value);
+    QVector<qint32> selectedFlights = {0};
 
 private slots:
     void on_newFlightButton_clicked();
@@ -61,14 +61,25 @@ private slots:
 
     void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
 
+    void on_tableView_customContextMenuRequested(const QPoint &pos);
+
+    void on_actionDelete_Flight_triggered();
+
+    void on_actionEdit_Flight_triggered();
+
+    void on_tableView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::LogbookWidget *ui;
+
+    QMenu* menu = new QMenu(this);
 
     void refreshView(int view_id);
 
     void defaultView();
 
     void easaView();
+
 
 };
 

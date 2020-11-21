@@ -41,6 +41,7 @@
 #include "src/classes/calc.h"
 
 #include "src/gui/dialogues/newpilot.h"
+#include "src/gui/dialogues/newtail.h"
 
 class SqlColumnNum{
 public:
@@ -93,7 +94,9 @@ private:
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 
-    void addNewPilotMessageBox();
+    void addNewPilotMessageBox(QLineEdit *parent);
+
+    void addNewAircraftMessageBox(QLineEdit *parent);
 
     void readSettings();
 
@@ -135,7 +138,7 @@ private slots:
     void on_deptLocLineEdit_textEdited(const QString &arg1);
     void on_destLocLineEdit_textEdited(const QString &arg1);
 
-    void on_newDoft_editingFinished();
+    void on_doftTimeEdit_editingFinished();
 
     void on_acftLineEdit_inputRejected();
     void on_acftLineEdit_editingFinished();

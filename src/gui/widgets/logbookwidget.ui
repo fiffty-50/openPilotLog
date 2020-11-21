@@ -67,7 +67,7 @@
        <second>0</second>
        <year>2019</year>
        <month>12</month>
-       <day>14</day>
+       <day>13</day>
       </datetime>
      </property>
      <property name="displayFormat">
@@ -121,6 +121,16 @@
     </widget>
    </item>
   </layout>
+  <action name="actionEdit_Flight">
+   <property name="text">
+    <string>Edit Flight</string>
+   </property>
+  </action>
+  <action name="actionDelete_Flight">
+   <property name="text">
+    <string>Delete Flight</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
