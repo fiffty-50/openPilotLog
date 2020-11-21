@@ -43,7 +43,6 @@ NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
     setupCompleter();
     setupValidators();
 
-    ui->editLabel->hide();
     ui->registrationLineEdit->setText(newreg);
     ui->searchLineEdit->setStyleSheet("border: 1px solid blue");
     ui->searchLineEdit->setFocus();
