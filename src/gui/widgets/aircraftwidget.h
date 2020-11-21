@@ -23,6 +23,7 @@
 #include <QSqlTableModel>
 #include <QDebug>
 #include <QLabel>
+#include <QHBoxLayout>
 
 #include "src/classes/settings.h"
 #include "src/gui/dialogues/newtail.h"
@@ -42,23 +43,29 @@ public:
     explicit AircraftWidget(QWidget *parent = nullptr);
     ~AircraftWidget();
 
-    qint32 selectedAircraft = 0;
-
-    void setSelectedAircraft(const qint32 &value);
-
 private slots:
-    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
+    void tableView_selectionChanged();
+
+    void tableView_headerClicked(int column);
 
     void on_deleteButton_clicked();
 
     void on_newButton_clicked();
 
-    void acft_accepted();
+    void acft_editing_finished();
+
+    void on_searchLineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::AircraftWidget *ui;
 
-    void refreshView();
+    QSqlTableModel *model = new QSqlTableModel;
+
+    qint32 sortColumn;
+
+    QVector<qint32> selectedTails;
+
+    void refreshModelAndView();
 };
 
 #endif // AIRCRAFTWIDGET_H
