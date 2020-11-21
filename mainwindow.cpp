@@ -33,12 +33,13 @@ MainWindow::MainWindow(QWidget *parent)
         button->setMinimumWidth(128);
     }
 
-    ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
-    ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
+    ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
+    ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
 
     // Adds space between toolbar items
     auto *spacer = new QWidget();

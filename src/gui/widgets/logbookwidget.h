@@ -46,7 +46,7 @@ public:
     explicit LogbookWidget(QWidget *parent = nullptr);
     ~LogbookWidget();
 
-    QVector<qint32> selectedFlights = {0};
+    QVector<qint32> selectedFlights;
 
 private slots:
     void on_newFlightButton_clicked();
@@ -59,7 +59,7 @@ private slots:
 
     void on_showAllButton_clicked();
 
-    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
+    void tableView_selectionChanged();
 
     void on_tableView_customContextMenuRequested(const QPoint &pos);
 
@@ -67,7 +67,7 @@ private slots:
 
     void on_actionEdit_Flight_triggered();
 
-    void on_tableView_doubleClicked(const QModelIndex &index);
+    void on_tableView_doubleClicked();
 
 private:
     Ui::LogbookWidget *ui;

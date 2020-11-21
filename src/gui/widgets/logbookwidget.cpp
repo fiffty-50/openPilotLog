@@ -31,7 +31,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui->filterDateEdit_2->setDate(QDate::currentDate());
     ui->newFlightButton->setFocus();
 
-
+    //customContextMenu for tablewidget
     menu->addAction(ui->actionEdit_Flight);
     menu->addAction(ui->actionDelete_Flight);
 
@@ -43,21 +43,108 @@ LogbookWidget::~LogbookWidget()
     delete ui;
 }
 
-void LogbookWidget::tableView_selectionChanged(const QItemSelection &,
-                                               const QItemSelection &)// TO DO
+/*
+ * Functions
+ */
+
+void LogbookWidget::refreshView(int view_id)
+{
+    switch (view_id) {
+    case 0:
+        defaultView();
+        break;
+    case 1:
+        easaView();
+        break;
+    default:
+        defaultView();
+    }
+    QTableView *view = ui->tableView;
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+    connect(ui->tableView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(tableView_selectionChanged()));
+}
+
+void LogbookWidget::defaultView()
+{
+    DEB("Loading Default View...");
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable("Logbook");
+    model->select();
+
+    QTableView *view = ui->tableView;
+    view->setModel(model);
+
+    view->setColumnWidth(1, 120);
+    view->setColumnWidth(2, 60);
+    view->setColumnWidth(3, 60);
+    view->setColumnWidth(4, 60);
+    view->setColumnWidth(5, 60);
+    view->setColumnWidth(6, 60);
+    view->setColumnWidth(7, 180);
+    view->setColumnWidth(8, 180);
+    view->setColumnWidth(9, 120);
+    view->setColumnWidth(10, 90);
+
+    view->show();
+}
+
+void LogbookWidget::easaView()
+{
+    DEB("Loading EASA View...");
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable("viewEASA");
+    model->select();
+
+    QTableView *view = ui->tableView;
+    view->setModel(model);
+
+    view->setColumnWidth(1,120);
+    view->setColumnWidth(2,60);
+    view->setColumnWidth(3,60);
+    view->setColumnWidth(4,60);
+    view->setColumnWidth(5,60);
+    view->setColumnWidth(6,180);
+    view->setColumnWidth(7,120);
+    view->setColumnWidth(8,30);
+    view->setColumnWidth(9,30);
+    view->setColumnWidth(10,30);
+    view->setColumnWidth(11,30);
+    view->setColumnWidth(12,120);
+    view->setColumnWidth(13,15);
+    view->setColumnWidth(14,15);
+    view->setColumnWidth(15,60);
+    view->setColumnWidth(16,60);
+    view->setColumnWidth(17,60);
+    view->setColumnWidth(18,60);
+    view->setColumnWidth(19,60);
+    view->setColumnWidth(20,60);
+    view->setColumnWidth(21,120);
+
+    view->show();
+}
+
+/*
+ * Slots
+ */
+
+void LogbookWidget::tableView_selectionChanged()//
 {
     auto *selection = ui->tableView->selectionModel();
-    if(selection->hasSelection()){
-        selectedFlights.clear();
-        for(const auto& row : selection->selectedRows()){
-            selectedFlights << row.data().toInt();
-            DEB("Selected Flight(s) with ID: " << selectedFlights);
-        }
-    }else {
-        selectedFlights = {0};
-        DEB("No Flights selected.");
-    }
 
+    selectedFlights.clear();
+    for (const auto& row : selection->selectedRows()) {
+        selectedFlights << row.data().toInt();
+        DEB("Selected Flight(s) with ID: " << selectedFlights);
+    }
 }
 
 void LogbookWidget::on_newFlightButton_clicked()
@@ -82,26 +169,32 @@ void LogbookWidget::on_editFlightButton_clicked()
 
 void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
+    DEB("Flights selected: " << selectedFlights.length());
     if (selectedFlights.length() > 0 && selectedFlights.length() < 11) {
         QVector<QString> columns = {
             "doft", "dept", "dest"
         };
         QVector<QString> details;
-        QString detailsstring = "The following flight(s) will be deleted:\n\n";
+        QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";
         for(const auto& selectedFlight : selectedFlights){
             details = Db::multiSelect(columns, "flights", "id",
                                        QString::number(selectedFlight), Db::exactMatch);
             for (const auto &item : details) {
-                detailsstring.append(item);
-                detailsstring.append(QLatin1Char(' '));
+                warningMsg.append(item);
+                warningMsg.append(' ');
             }
-            detailsstring.append("\n");
+            warningMsg.append("<br>");
         }
-        detailsstring.append("\n\nAre you sure?");
+        warningMsg.append("</b></tt><br>Deleting Flights is irreversible."
+                          "<br>Do you want to proceed?");
 
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Delete Flight", detailsstring,
-                                      QMessageBox::Yes | QMessageBox::No);
+        QMessageBox confirm;
+        confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        confirm.setDefaultButton(QMessageBox::No);
+        confirm.setIcon(QMessageBox::Question);
+        confirm.setWindowTitle("Delete Flight");
+        confirm.setText(warningMsg);
+        int reply = confirm.exec();
         if (reply == QMessageBox::Yes) {
             for (const auto& selectedFlight : selectedFlights) {
                 DEB("Deleting flight with ID# " << selectedFlight);
@@ -112,11 +205,13 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         }
     } else if (selectedFlights.length() == 0) {
         QMessageBox nope(this);
+        nope.setIcon(QMessageBox::Information);
         nope.setText("No Flight Selected.");
         nope.exec();
     } else if (selectedFlights.length() > 10) {
-        auto& warningMsg = "You have selected " + QString::number(selectedFlights.length()) + " flights.\n\n"
-                                                                                              "Deleting these flights is irreversible.\n\nAre you sure you want to proceed?";
+        auto& warningMsg = "You have selected " + QString::number(selectedFlights.length())
+                         + " flights.\n\n Deleting these flights is irreversible.\n\n"
+                           "Are you sure you want to proceed?";
         QMessageBox confirm;
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
@@ -156,103 +251,6 @@ void LogbookWidget::on_showAllButton_clicked()
     refreshView(Settings::read("logbook/view").toInt());
 }
 
-void LogbookWidget::refreshView(int view_id)
-{
-    switch (view_id) {
-    case 0:
-        defaultView();
-        break;
-    case 1:
-        easaView();
-        break;
-    default:
-        defaultView();
-    }
-
-}
-
-void LogbookWidget::defaultView()
-{
-    DEB("Loading Default View...");
-    QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("Logbook");
-    model->select();
-
-    QTableView *view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setColumnWidth(1, 120);
-    view->setColumnWidth(2, 60);
-    view->setColumnWidth(3, 60);
-    view->setColumnWidth(4, 60);
-    view->setColumnWidth(5, 60);
-    view->setColumnWidth(6, 60);
-    view->setColumnWidth(7, 180);
-    view->setColumnWidth(8, 180);
-    view->setColumnWidth(9, 120);
-    view->setColumnWidth(10, 90);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-    view->show();
-
-    ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-}
-
-void LogbookWidget::easaView()
-{
-    DEB("Loading EASA View...");
-    QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("viewEASA");
-    model->select();
-
-    QTableView *view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-
-    view->setColumnWidth(1,120);
-    view->setColumnWidth(2,60);
-    view->setColumnWidth(3,60);
-    view->setColumnWidth(4,60);
-    view->setColumnWidth(5,60);
-    view->setColumnWidth(6,180);
-    view->setColumnWidth(7,120);
-    view->setColumnWidth(8,30);
-    view->setColumnWidth(9,30);
-    view->setColumnWidth(10,30);
-    view->setColumnWidth(11,30);
-    view->setColumnWidth(12,120);
-    view->setColumnWidth(13,15);
-    view->setColumnWidth(14,15);
-    view->setColumnWidth(15,60);
-    view->setColumnWidth(16,60);
-    view->setColumnWidth(17,60);
-    view->setColumnWidth(18,60);
-    view->setColumnWidth(19,60);
-    view->setColumnWidth(20,60);
-    view->setColumnWidth(21,120);
-
-    view->show();
-    ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
-}
-
-
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
 {
     menu->popup(ui->tableView->viewport()->mapToGlobal(pos));
@@ -268,7 +266,7 @@ void LogbookWidget::on_actionEdit_Flight_triggered()
     emit ui->editFlightButton->clicked();
 }
 
-void LogbookWidget::on_tableView_doubleClicked(const QModelIndex &index)
+void LogbookWidget::on_tableView_doubleClicked()
 {
     emit ui->editFlightButton->clicked();
 }
