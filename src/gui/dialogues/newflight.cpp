@@ -391,16 +391,16 @@ void NewFlight::readSettings()
 
     ui->FunctionComboBox->setCurrentText(Settings::read("NewFlight/FunctionComboBox").toString());
     ui->ApproachComboBox->setCurrentText(Settings::read("NewFlight/ApproachComboBox").toString());
-    ui->PilotFlyingCheckBox->setChecked(Settings::read("NewFlight/PilotFlyingCheckBox").toInt());
-    ui->PilotMonitoringCheckBox->setChecked(Settings::read("NewFlight/PilotMonitoringCheckBox").toInt());
+    ui->PilotFlyingCheckBox->setChecked(Settings::read("NewFlight/PilotFlyingCheckBox").toBool());
+    ui->PilotMonitoringCheckBox->setChecked(Settings::read("NewFlight/PilotMonitoringCheckBox").toBool());
     ui->TakeoffSpinBox->setValue(Settings::read("NewFlight/TakeoffSpinBox").toInt());
-    ui->TakeoffCheckBox->setChecked(Settings::read("NewFlight/TakeoffCheckBox").toInt());
+    ui->TakeoffCheckBox->setChecked(Settings::read("NewFlight/TakeoffCheckBox").toBool());
     ui->LandingSpinBox->setValue(Settings::read("NewFlight/LandingSpinBox").toInt());
-    ui->LandingCheckBox->setChecked(Settings::read("NewFlight/LandingCheckBox").toInt());
+    ui->LandingCheckBox->setChecked(Settings::read("NewFlight/LandingCheckBox").toBool());
     ui->AutolandSpinBox->setValue(Settings::read("NewFlight/AutolandSpinBox").toInt());
-    ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toInt());
-    ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toInt());
-    ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toInt());
+    ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toBool());
+    ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toBool());
+    ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toBool());
     ui->FlightNumberLineEdit->setText(Settings::read("flightlogging/flightnumberPrefix").toString());
 
     if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
