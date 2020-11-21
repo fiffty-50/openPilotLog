@@ -17,7 +17,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="personalTab">
       <attribute name="title">
@@ -584,11 +584,6 @@
          </property>
          <item>
           <property name="text">
-           <string>ID</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Last Name</string>
           </property>
          </item>
@@ -622,11 +617,6 @@
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <item>
-          <property name="text">
-           <string>ID</string>
-          </property>
-         </item>
          <item>
           <property name="text">
            <string>Registration</string>

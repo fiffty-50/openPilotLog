@@ -39,23 +39,29 @@ public:
     explicit PilotsWidget(QWidget *parent = nullptr);
     ~PilotsWidget();
 
-    void setSelectedPilot(const qint32 &value);
-
 private slots:
-    void tableView_selectionChanged(const QItemSelection &index, const QItemSelection &);
+    void tableView_selectionChanged();
+
+    void tableView_headerClicked(int);
 
     void on_newButton_clicked();
 
     void on_deletePushButton_clicked();
 
-    void widget_accepted();
+    void pilot_editing_finished();
+
+    void on_searchLineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::PilotsWidget *ui;
 
-    qint32 selectedPilot = 0;
+    QSqlTableModel *model = new QSqlTableModel;
 
-    void refreshView();
+    qint32 sortColumn;
+
+    QVector<qint32> selectedPilots;
+
+    void refreshModelAndView();
 };
 
 #endif // PILOTSWIDGET_H

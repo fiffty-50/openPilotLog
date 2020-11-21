@@ -27,7 +27,8 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
-    refreshView();
+    sortColumn = Settings::read("userdata/pilSortColumn").toInt();
+    refreshModelAndView();         
 }
 
 PilotsWidget::~PilotsWidget()
@@ -35,24 +36,30 @@ PilotsWidget::~PilotsWidget()
     delete ui;
 }
 
-void PilotsWidget::tableView_selectionChanged(const QItemSelection &index, const QItemSelection &)
-{
-    setSelectedPilot(index.indexes()[0].data().toInt());
-    DEB("Selected Pilot with ID#: " << selectedPilot);
+void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
+{   
+    auto *selection = ui->tableView->selectionModel();
+    selectedPilots.clear();
 
-    auto np = new NewPilot(Pilot(selectedPilot), Db::editExisting, this);
-    connect(np, SIGNAL(accepted()), this, SLOT(widget_accepted()));
-    connect(np, SIGNAL(rejected()), this, SLOT(widget_accepted()));
-
-    np->setWindowFlag(Qt::Widget);
-    ui->stackedWidget->addWidget(np);
-    ui->stackedWidget->setCurrentWidget(np);
+    for (const auto& row : selection->selectedRows()) {
+        selectedPilots << row.data().toInt();
+        DEB("Selected Tails(s) with ID: " << selectedPilots);
+    }
+    if(selectedPilots.length() == 1) {
+        auto nt = new NewPilot(Pilot(selectedPilots.first()), Db::editExisting, this);
+        connect(nt, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
+        connect(nt, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
+        nt->setWindowFlag(Qt::Widget);
+        ui->stackedWidget->addWidget(nt);
+        ui->stackedWidget->setCurrentWidget(nt);
+    }
 
 }
 
-void PilotsWidget::setSelectedPilot(const qint32 &value)
+void PilotsWidget::tableView_headerClicked(int column)
 {
-    selectedPilot = value;
+    sortColumn = column;
+    Settings::write("userdata/pilSortColumn", column);
 }
 
 void PilotsWidget::on_newButton_clicked()
@@ -60,40 +67,42 @@ void PilotsWidget::on_newButton_clicked()
     auto np = new NewPilot(Db::createNew, this);
     connect(np,
             SIGNAL(accepted()), this,
-            SLOT(widget_accepted()));
+            SLOT(pilot_editing_finished()));
     np->show();
 }
 
 void PilotsWidget::on_deletePushButton_clicked()
 {
-    if (selectedPilot > 0) {
-
-        auto pil = new Pilot(selectedPilot);
-        if(!pil->remove()) {
-            QVector<QString> columns = {"doft","dept","dest"};
-            QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
-                                                       QString::number(selectedPilot), Db::exactMatch);
-            auto mb = new QMessageBox(this);
-            QString message = "\nUnable to delete. The following error has ocurred:\n\n";
-            if(!details.isEmpty()){
-                message += pil->error + QLatin1String("\n\n");
-                message += "This is most likely the case because a flight exists with the Pilot "
-                           "you are trying to delete. You have to change or remove this flight "
-                           "before being able to remove this pilot from the database.\n\n"
-                           "The following flight(s) with this pilot have been found:\n\n";
-                auto space = QLatin1Char(' ');
-                for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
-                    message += details[i] + space
-                             + details[i+1] + space
-                             + details[i+2] + QLatin1String("\n");
+    if(selectedPilots.length() == 1){
+        for(const auto& selectedPilot : selectedPilots){
+            if (selectedPilot > 0) {
+                auto pil = new Pilot(selectedPilot);
+                if(!pil->remove()) {
+                    QVector<QString> columns = {"doft","dept","dest"};
+                    QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
+                                                               QString::number(selectedPilot), Db::exactMatch);
+                    auto mb = new QMessageBox(this);
+                    QString message = "\nUnable to delete. The following error has ocurred:\n\n";
+                    if(!details.isEmpty()){
+                        message += pil->error + QLatin1String("\n\n");
+                        message += "This is most likely the case because a flight exists with the Pilot "
+                                   "you are trying to delete. You have to change or remove this flight "
+                                   "before being able to remove this pilot from the database.\n\n"
+                                   "The following flight(s) with this pilot have been found:\n\n";
+                        auto space = QLatin1Char(' ');
+                        for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
+                            message += details[i] + space
+                                    + details[i+1] + space
+                                    + details[i+2] + QLatin1String("\n");
+                        }
+                    }
+                    mb->setText(message);
+                    mb->setIcon(QMessageBox::Critical);
+                    mb->show();
                 }
             }
-            mb->setText(message);
-            mb->setIcon(QMessageBox::Critical);
-            mb->show();
         }
-        refreshView();
-
+        refreshModelAndView();
     } else {
         auto mb = new QMessageBox(this);
         mb->setText("No Pilot selected.");
@@ -101,26 +110,15 @@ void PilotsWidget::on_deletePushButton_clicked()
     }
 }
 
-void PilotsWidget::widget_accepted()
+void PilotsWidget::pilot_editing_finished()
 {
-    DEB("Refreshing View...");
-    refreshView();
+    refreshModelAndView();
 }
 
-void PilotsWidget::refreshView()
+void PilotsWidget::refreshModelAndView()
 {
-    QString welcomeMessage = "Select a Pilot to show or edit details.";
-    QWidget *start = new QWidget();
-    start->setObjectName("welcomePL");
-    QLabel *label = new QLabel(welcomeMessage);
-    label->setAlignment(Qt::AlignCenter);
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(label);
-    start->setLayout(layout);
-    ui->stackedWidget->addWidget(start);
-    ui->stackedWidget->setCurrentWidget(start);
+    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePage"));
 
-    QSqlTableModel *model = new QSqlTableModel;
     model->setTable("viewPilots");
     model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
     model->select();
@@ -131,18 +129,28 @@ void PilotsWidget::refreshView()
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->setColumnWidth(0, 60);
+    view->hideColumn(0);
     view->setColumnWidth(1, 180);
-    view->setColumnWidth(2, 120);
+    view->setColumnWidth(2, 180);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
 
-    view->sortByColumn(Settings::read("userdata/pilSortColumn").toInt(), Qt::AscendingOrder);
+    view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
 
     connect(ui->tableView->selectionModel(),
             SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged(const QItemSelection &, const QItemSelection &)));
+            this,
+            SLOT(tableView_selectionChanged()));
+    connect(ui->tableView->horizontalHeader(),
+            SIGNAL(sectionClicked(int)),
+            this,
+            SLOT(tableView_headerClicked(int)));
+}
+
+void PilotsWidget::on_searchLineEdit_textChanged(const QString &arg1)
+{
+    model->setFilter("\"" + ui->searchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
 }

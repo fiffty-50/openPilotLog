@@ -163,6 +163,7 @@ void AircraftWidget::tableView_selectionChanged()
 void AircraftWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
+    Settings::write("userdata/acSortColumn", column);
 }
 
 void AircraftWidget::acft_editing_finished()
