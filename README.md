@@ -28,9 +28,6 @@ These are the guidelines for this project:
 
 Clear answer for the time being - Don't use it. This is an early development stage and functionality, layout of the GUI etc. might change drastically. For this reason, I am not providing a release for now. If you would like to test it, you'll have to compile the project yourself.
 
-# 'x' is a terrible idea, don't do that!
-
-As mentioned before, feedback is welcome and invited! If you know of a better way of doing something, this is an open project so feel free to contribute!
 
 # How does it look like?
 
