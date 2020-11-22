@@ -38,7 +38,7 @@ public:
     QMap    <QString, QString>   data     = QMap<QString, QString>(); // Tha data to fill that table, <column,value>
     QString                      error    = QString();                // holds sql errors (if they ocurred)
 
-    void setData(const QMap<QString, QString> &value);
+    void setData(QMap<QString, QString> &value);
 
     bool commit();
     bool remove();

@@ -95,8 +95,24 @@ Entry::Entry(QString table, QMap<QString, QString> newData)
     data = newData;
 }
 
-void Entry::setData(const QMap<QString, QString> &value)
+void Entry::setData(QMap<QString, QString> &value)
 {
+    //retreive database layout
+    const auto dbContent = DbInfo();
+    columns = dbContent.format.value(position.first);
+
+    //Check validity of newData
+    QVector<QString> badkeys;
+    QMap<QString, QString>::iterator i;
+    for (i = value.begin(); i != value.end(); ++i) {
+        if (!columns.contains(i.key())) {
+            DEB(i.key() << "Not in column list for table " << position.first << ". Discarding.");
+            badkeys << i.key();
+        }
+    }
+    for (const auto &var : badkeys) {
+        value.remove(var);
+    }
     data = value;
 }
 

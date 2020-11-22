@@ -24,133 +24,23 @@
        <string>Flight Data</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="4">
-        <widget class="QLabel" name="tofbLabel">
-         <property name="text">
-          <string>Time</string>
+       <item row="9" column="0" colspan="6">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="secondPilotLabel">
-         <property name="text">
-          <string>Second Pilot</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="deptLabel">
-         <property name="text">
-          <string>Departure</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="3">
-        <widget class="QLabel" name="autoDualLabel">
-         <property name="text">
-          <string>Dual</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="4" colspan="2">
-        <widget class="QLabel" name="tDualLabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="text">
-          <string> 00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="QLabel" name="acftTypeLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+       <item row="8" column="5">
+        <widget class="QLineEdit" name="RemarksLineEdit">
          <property name="minimumSize">
           <size>
            <width>200</width>
            <height>20</height>
           </size>
          </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="4" colspan="2">
-        <widget class="QLabel" name="tPICLabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="text">
-          <string> 00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3">
-        <widget class="QLabel" name="autoPICLabel">
-         <property name="text">
-          <string>PIC</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="4">
-        <widget class="QLabel" name="tonbLabel">
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="placeLabel1">
-         <property name="text">
-          <string>Place</string>
+         <property name="placeholderText">
+          <string>optional</string>
          </property>
         </widget>
        </item>
@@ -161,8 +51,22 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="4" colspan="2">
-        <widget class="QLabel" name="tSICLabel">
+       <item row="3" column="4">
+        <widget class="QLabel" name="tonbLabel">
+         <property name="text">
+          <string>Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="3">
+        <widget class="QLabel" name="autoFILabel">
+         <property name="text">
+          <string>Instructor</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="2">
+        <widget class="QLabel" name="tSPMELabel">
          <property name="minimumSize">
           <size>
            <width>80</width>
@@ -192,26 +96,132 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QDateEdit" name="doftDateEdit">
-         <property name="dateTime">
-          <datetime>
-           <hour>23</hour>
-           <minute>0</minute>
-           <second>0</second>
-           <year>2019</year>
-           <month>12</month>
-           <day>2</day>
-          </datetime>
+       <item row="12" column="0">
+        <widget class="QLabel" name="autoSPMELabel">
+         <property name="text">
+          <string>SP / ME</string>
          </property>
-         <property name="displayFormat">
-          <string>yyyy/MM/dd</string>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="autoTotalLabel">
+         <property name="text">
+          <string>Total Time</string>
          </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="placeLabel2">
+         <property name="text">
+          <string>Place</string>
          </property>
-         <property name="timeSpec">
-          <enum>Qt::UTC</enum>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="FlightNumberLabel">
+         <property name="text">
+          <string>Flight number</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="4" colspan="2">
+        <widget class="QLabel" name="tFILabel">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string> 00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QLabel" name="picLabel">
+         <property name="text">
+          <string>Name PIC</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="acftLabel">
+         <property name="text">
+          <string>Aircraft</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="doftLabel">
+         <property name="text">
+          <string>Date of Flight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QComboBox" name="deptTZ">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>UTC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Local</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="QLineEdit" name="tofbTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="maxLength">
+          <number>5</number>
+         </property>
+         <property name="placeholderText">
+          <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLabel" name="autoMPLabel">
+         <property name="text">
+          <string>Multi Pilot</string>
          </property>
         </widget>
        </item>
@@ -259,53 +269,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
-        <widget class="QComboBox" name="deptTZ">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>UTC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Local</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QLineEdit" name="destLocLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
-         </property>
-         <property name="inputMethodHints">
-          <set>Qt::ImhNone</set>
-         </property>
-         <property name="inputMask">
-          <string/>
-         </property>
-         <property name="maxLength">
-          <number>4</number>
-         </property>
-         <property name="placeholderText">
-          <string>EDDF</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="2">
-        <widget class="QLabel" name="tSPSELabel">
+       <item row="14" column="4" colspan="2">
+        <widget class="QLabel" name="tDualLabel">
          <property name="minimumSize">
           <size>
            <width>80</width>
@@ -335,23 +300,42 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="5">
-        <widget class="QLineEdit" name="RemarksLineEdit">
+       <item row="1" column="1">
+        <widget class="QLabel" name="placeLabel1">
+         <property name="text">
+          <string>Place</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="destLabel">
+         <property name="text">
+          <string>Destination</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="destLocLineEdit">
          <property name="minimumSize">
           <size>
            <width>200</width>
            <height>20</height>
           </size>
          </property>
-         <property name="placeholderText">
-          <string>optional</string>
+         <property name="toolTip">
+          <string>Enter the ICAO 4-letter Identifier of the Airport</string>
          </property>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QLabel" name="picLabel">
-         <property name="text">
-          <string>Name PIC</string>
+         <property name="inputMethodHints">
+          <set>Qt::ImhNone</set>
+         </property>
+         <property name="inputMask">
+          <string/>
+         </property>
+         <property name="maxLength">
+          <number>4</number>
+         </property>
+         <property name="placeholderText">
+          <string>EDDF</string>
          </property>
         </widget>
        </item>
@@ -380,8 +364,82 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="2">
-        <widget class="QLabel" name="tSPMELabel">
+       <item row="7" column="0">
+        <widget class="QLabel" name="secondPilotLabel">
+         <property name="text">
+          <string>Second Pilot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="autoSPSELabel">
+         <property name="text">
+          <string>SP / SE</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QComboBox" name="destTZ">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>UTC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Local</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLabel" name="acftTypeLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="3">
+        <widget class="QLabel" name="autoPICLabel">
+         <property name="text">
+          <string>PIC</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="deptLabel">
+         <property name="text">
+          <string>Departure</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="3">
+        <widget class="QLabel" name="autoDualLabel">
+         <property name="text">
+          <string>Dual</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="4" colspan="2">
+        <widget class="QLabel" name="tPICLabel">
          <property name="minimumSize">
           <size>
            <width>80</width>
@@ -411,32 +469,53 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="0">
-        <widget class="QLabel" name="autoSPMELabel">
-         <property name="text">
-          <string>SP / ME</string>
+       <item row="2" column="2">
+        <widget class="QLabel" name="deptNameLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="5">
-        <widget class="QLineEdit" name="tofbTimeLineEdit">
          <property name="minimumSize">
           <size>
            <width>200</width>
            <height>20</height>
           </size>
          </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="2">
+        <widget class="QLabel" name="tMPLabel">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
-         <property name="maxLength">
-          <number>5</number>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="placeholderText">
-          <string>00:00</string>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string> 00:00</string>
          </property>
         </widget>
        </item>
@@ -471,15 +550,37 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="doftLabel">
+       <item row="7" column="2">
+        <widget class="QLineEdit" name="secondPilotNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Date of Flight</string>
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
          </property>
         </widget>
        </item>
-       <item row="13" column="2">
-        <widget class="QLabel" name="tMPLabel">
+       <item row="8" column="2">
+        <widget class="QLineEdit" name="FlightNumberLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="4" colspan="2">
+        <widget class="QLabel" name="tSICLabel">
          <property name="minimumSize">
           <size>
            <width>80</width>
@@ -506,6 +607,151 @@
          </property>
          <property name="text">
           <string> 00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QLabel" name="thirdPilotLabel">
+         <property name="text">
+          <string>Third Pilot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="4" colspan="2">
+        <widget class="QLabel" name="tPICUSLabel">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string> 00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5">
+        <widget class="QLineEdit" name="tonbTimeLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="placeholderText">
+          <string>00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="5">
+        <widget class="QLineEdit" name="picNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>self</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLabel" name="tofbLabel">
+         <property name="text">
+          <string>Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="5">
+        <widget class="QLineEdit" name="thirdPilotNameLineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
+        <widget class="QLabel" name="autoNightLabel">
+         <property name="text">
+          <string>Night</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0">
+        <widget class="QLabel" name="autoIFRLabel">
+         <property name="text">
+          <string>IFR</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QLabel" name="tSPSELabel">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string> 00:00</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLineEdit" name="doftLineEdit"/>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="RemarksLabel">
+         <property name="text">
+          <string>Remarks</string>
          </property>
         </widget>
        </item>
@@ -559,265 +805,6 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="autoSPSELabel">
-         <property name="text">
-          <string>SP / SE</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="deptNameLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="5">
-        <widget class="QLineEdit" name="tonbTimeLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;Enter a valid time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#a8abb0;&quot;&gt;e.g.: 845 0845 8:45 08:45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="placeholderText">
-          <string>00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="3">
-        <widget class="QLabel" name="thirdPilotLabel">
-         <property name="text">
-          <string>Third Pilot</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="2">
-        <widget class="QLineEdit" name="secondPilotNameLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="5">
-        <widget class="QLineEdit" name="thirdPilotNameLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="autoMPLabel">
-         <property name="text">
-          <string>Multi Pilot</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="acftLabel">
-         <property name="text">
-          <string>Aircraft</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="placeLabel2">
-         <property name="text">
-          <string>Place</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="5">
-        <widget class="QLineEdit" name="picNameLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>self</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QComboBox" name="destTZ">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;UTC - Universal Time Coordinated&lt;/p&gt;&lt;p&gt;LOCAL - Local time at Airfield&lt;/p&gt;&lt;p&gt;BASE - Local time at Home Base&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>UTC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Local</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="8" column="3">
-        <widget class="QLabel" name="RemarksLabel">
-         <property name="text">
-          <string>Remarks</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="4" colspan="2">
-        <widget class="QLabel" name="tPICUSLabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="text">
-          <string> 00:00</string>
-         </property>
-        </widget>
-       </item>
-       <item row="15" column="0">
-        <widget class="QLabel" name="autoNightLabel">
-         <property name="text">
-          <string>Night</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="2">
-        <widget class="QLineEdit" name="FlightNumberLineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>optional</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLabel" name="autoIFRLabel">
-         <property name="text">
-          <string>IFR</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0" colspan="6">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="destLabel">
-         <property name="text">
-          <string>Destination</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="autoTotalLabel">
-         <property name="text">
-          <string>Total Time</string>
-         </property>
-        </widget>
-       </item>
-       <item row="15" column="3">
-        <widget class="QLabel" name="autoFILabel">
-         <property name="text">
-          <string>Instructor</string>
-         </property>
-        </widget>
-       </item>
-       <item row="15" column="4" colspan="2">
-        <widget class="QLabel" name="tFILabel">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="text">
-          <string> 00:00</string>
-         </property>
-        </widget>
-       </item>
        <item row="13" column="3">
         <widget class="QLabel" name="autoSICLabel">
          <property name="text">
@@ -825,14 +812,67 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="FlightNumberLabel">
+       <item row="0" column="5">
+        <widget class="QLabel" name="doftDisplayLabel">
          <property name="text">
-          <string>Flight number</string>
+          <string/>
          </property>
         </widget>
        </item>
       </layout>
+      <zorder>placeLabel2</zorder>
+      <zorder>deptLocLineEdit</zorder>
+      <zorder>deptNameLabel</zorder>
+      <zorder>acftLineEdit</zorder>
+      <zorder>destLocLineEdit</zorder>
+      <zorder>acftTypeLabel</zorder>
+      <zorder>destNameLabel</zorder>
+      <zorder>doftLineEdit</zorder>
+      <zorder>tofbLabel</zorder>
+      <zorder>secondPilotLabel</zorder>
+      <zorder>deptLabel</zorder>
+      <zorder>autoDualLabel</zorder>
+      <zorder>tDualLabel</zorder>
+      <zorder>tPICLabel</zorder>
+      <zorder>autoPICLabel</zorder>
+      <zorder>tonbLabel</zorder>
+      <zorder>placeLabel1</zorder>
+      <zorder>autoPicusLabel</zorder>
+      <zorder>tSICLabel</zorder>
+      <zorder>tIFRLabel</zorder>
+      <zorder>deptTZ</zorder>
+      <zorder>tSPSELabel</zorder>
+      <zorder>RemarksLineEdit</zorder>
+      <zorder>picLabel</zorder>
+      <zorder>tSPMELabel</zorder>
+      <zorder>autoSPMELabel</zorder>
+      <zorder>tofbTimeLineEdit</zorder>
+      <zorder>tNIGHTLabel</zorder>
+      <zorder>doftLabel</zorder>
+      <zorder>tMPLabel</zorder>
+      <zorder>tblkLabel</zorder>
+      <zorder>autoSPSELabel</zorder>
+      <zorder>tonbTimeLineEdit</zorder>
+      <zorder>thirdPilotLabel</zorder>
+      <zorder>secondPilotNameLineEdit</zorder>
+      <zorder>thirdPilotNameLineEdit</zorder>
+      <zorder>autoMPLabel</zorder>
+      <zorder>acftLabel</zorder>
+      <zorder>picNameLineEdit</zorder>
+      <zorder>destTZ</zorder>
+      <zorder>RemarksLabel</zorder>
+      <zorder>tPICUSLabel</zorder>
+      <zorder>autoNightLabel</zorder>
+      <zorder>FlightNumberLineEdit</zorder>
+      <zorder>autoIFRLabel</zorder>
+      <zorder>line</zorder>
+      <zorder>destLabel</zorder>
+      <zorder>autoTotalLabel</zorder>
+      <zorder>autoFILabel</zorder>
+      <zorder>tFILabel</zorder>
+      <zorder>autoSICLabel</zorder>
+      <zorder>FlightNumberLabel</zorder>
+      <zorder>doftDisplayLabel</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">
@@ -1347,6 +1387,16 @@
        </item>
        <item row="7" column="4">
         <widget class="QLineEdit" name="tblkTimeLineEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="calendarTab">
+      <attribute name="title">
+       <string>Calendar</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QCalendarWidget" name="calendarWidget"/>
        </item>
       </layout>
      </widget>

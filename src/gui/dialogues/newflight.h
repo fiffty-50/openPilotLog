@@ -30,6 +30,8 @@
 #include <QButtonGroup>
 #include <QBitArray>
 #include <QLineEdit>
+#include <QCalendarWidget>
+#include <QTabWidget>
 
 
 #include "src/database/db.h"
@@ -84,9 +86,11 @@ public:
     explicit NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole);
     ~NewFlight();
 
-    QStringList* getResult();
+    //QStringList* getResult();
 
 private:
+
+    bool eventFilter(QObject* object, QEvent* event);
 
     void setup();
 
@@ -194,6 +198,18 @@ private slots:
 
     void on_AutolandCheckBox_stateChanged(int arg1);
 
+    //void on_doftToolButton_clicked();
+
+    void date_clicked(const QDate &date);
+
+    void date_selected(const QDate &date);
+
+    void on_doftLineEdit_inputRejected();
+
+    void on_doftLineEdit_editingFinished();
+
+    void on_doftLineEditEntered();
+
 signals:
     void mandatoryFieldsValid(NewFlight* nf);
 
@@ -206,7 +222,7 @@ private:
     QVector<QLineEdit*> mandatoryLineEdits;
     QBitArray allOkBits;
     QMessageBox messageBox;
-    QStringList result;
+    QDate clickedDate;
     // For Flight Object
     QMap<QString, QString> airportMap;
     QStringList airports;

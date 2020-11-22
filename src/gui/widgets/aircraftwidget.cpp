@@ -42,7 +42,8 @@ AircraftWidget::~AircraftWidget()
 
 void AircraftWidget::refreshModelAndView()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePage"));
+    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePage"));
 
     model->setTable("viewTails");
     model->select();

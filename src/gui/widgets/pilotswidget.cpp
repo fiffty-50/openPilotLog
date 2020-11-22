@@ -117,6 +117,7 @@ void PilotsWidget::pilot_editing_finished()
 
 void PilotsWidget::refreshModelAndView()
 {
+    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePage"));
     ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePage"));
 
     model->setTable("viewPilots");

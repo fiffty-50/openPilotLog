@@ -34,6 +34,9 @@
      </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="welcomePage">
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">

@@ -33,6 +33,21 @@ void NewFlight::on_verifyButton_clicked()//debug button
     collectAdditionalData();
 }
 
+bool NewFlight::eventFilter(QObject* object, QEvent* event)
+{
+    if(object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
+        on_doftLineEditEntered();
+        return false; // lets the event continue to the edit
+    } else if (object == ui->calendarWidget && event->type() == QEvent::Leave) {
+        ui->doftLineEdit->blockSignals(false);
+        ui->calendarWidget->hide();
+        ui->placeLabel1->resize(ui->placeLabel2->size());
+        ui->doftLineEdit->setFocus();
+        return false;
+    }
+    return false;
+}
+
 
 static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
 static const auto ICAO_RX = QLatin1String("[a-zA-Z0-9]{4}");
@@ -47,13 +62,15 @@ static const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-
 static const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",?\\s?" // up to 4 first names
                                                      + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
+static const auto DATE_VALID_RGX       = QRegularExpression("^([1-9][0-9]{3}).?(1[0-2]|0[1-9]).?(3[01]|0[1-9]|[12][0-9])?$");// . allows all seperators, still allows for 2020-02-31, additional verification via QDate::isValid()
 
 /// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
 static const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
 static const auto LOC_INVALID_RGX        = QRegularExpression("[^A-Z0-9]");
 static const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9\\-]");
 static const auto PILOT_NAME_INVALID_RGX = QRegularExpression("[^\\p{L}|\\s|,]");
-static const auto INVALID_CHARS_RGX      = QRegularExpression("[^\\p{L}|\\s|,|\\-|'|0-9|:]");
+static const auto DATE_INVALID_RGX       = QRegularExpression("[^0-9|:|\\.|/|-]");
+static const auto INVALID_CHARS_RGX      = QRegularExpression("[^\\p{L}|\\s|,|\\-|'|0-9|:|\\.]");
 
 /// Sql columns
 static const auto LOC_SQL_COL        = SqlColumnNum(1);  // TODO: locations are iata/icao so 1,2 merge columns in sql?
@@ -74,9 +91,11 @@ NewFlight::NewFlight(QWidget *parent, Db::editRole edRole) :
     role = edRole;
     doUpdate = true;
     setup();
-    //set date for new object
+    //set date
     auto date = QDate::currentDate();
-    ui->doftDateEdit->setDate(date);
+    ui->doftLineEdit->setText(date.toString(Qt::ISODate));
+    emit ui->doftLineEdit->editingFinished();
+
 
     // Visually mark mandatory fields
     ui->deptLocLineEdit->setStyleSheet("border: 1px solid orange");
@@ -117,6 +136,8 @@ void NewFlight::setup(){
          LineEditSettings(PILOT_NAME_VALID_RGX, PILOT_NAME_INVALID_RGX, PILOT_NAME_SQL_COL);
     const auto time_settings = \
          LineEditSettings(TIME_VALID_RGX, TIME_INVALID_RGX, SqlColumnNum());
+    const auto doft_settings = \
+         LineEditSettings(DATE_VALID_RGX, DATE_INVALID_RGX, SqlColumnNum());
 
 //     Set up Line Edits with QValidators, QCompleters
     auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>();
@@ -128,6 +149,7 @@ void NewFlight::setup(){
     }
     this->allOkBits.resize(line_edits.size());
     this->mandatoryLineEdits = {
+        ui->doftLineEdit,
         ui->deptLocLineEdit,
         ui->destLocLineEdit,
         ui->tofbTimeLineEdit,
@@ -142,17 +164,17 @@ void NewFlight::setup(){
         if(QRegularExpression("Loc").match(le_name).hasMatch()){
             setupLineEdit(line_edit, location_settings);
         }
-        else if (QRegularExpression("Time").match(le_name).hasMatch())
-        {
+        else if (QRegularExpression("Time").match(le_name).hasMatch()) {
             setupLineEdit(line_edit, time_settings);
         }
-        else if (QRegularExpression("acft").match(le_name).hasMatch())
-        {
+        else if (QRegularExpression("acft").match(le_name).hasMatch()) {
             setupLineEdit(line_edit, aircraft_settings);
         }
-        else if (QRegularExpression("Name").match(le_name).hasMatch())
-        {
+        else if (QRegularExpression("Name").match(le_name).hasMatch()) {
             setupLineEdit(line_edit, pilot_name_settings);
+        }
+        else if(QRegularExpression("doft").match(le_name).hasMatch()) {
+            setupLineEdit(line_edit, doft_settings);
         }
     }
     //fill Lists
@@ -175,7 +197,14 @@ void NewFlight::setup(){
     PilotTaskGroup->addButton(ui->PilotMonitoringCheckBox);
 
     ui->flightDataTabWidget->setCurrentIndex(0);
+    ui->flightDataTabWidget->removeTab(2); // hide calendar widget
+    ui->calendarWidget->installEventFilter(this);
+    ui->placeLabel1->installEventFilter(this);
+    ui->doftLineEdit->installEventFilter(this);
     ui->deptLocLineEdit->setFocus();
+
+    connect(ui->calendarWidget, SIGNAL(clicked(const QDate &)), this, SLOT(date_clicked(const QDate &)));
+    connect(ui->calendarWidget, SIGNAL(activated(const QDate &)), this, SLOT(date_selected(const QDate &)));
 }
 
 void NewFlight::formFiller(Flight oldFlight)
@@ -183,7 +212,7 @@ void NewFlight::formFiller(Flight oldFlight)
     DEBUG("Filling Line Edits...");
     DEBUG("With Data: " << oldFlight.data);
     // Date
-    ui->doftDateEdit->setDate(QDate::fromString(oldFlight.data.value("doft"), Qt::ISODate));
+    //ui->doftLineEdit->setDate(QDate::fromString(oldFlight.data.value("doft"), Qt::ISODate));
     QStringList filled;
 
     // Line Edits
@@ -498,9 +527,11 @@ void NewFlight::collectBasicData()
     newData.clear();
     DEBUG("Collecting Basic Input...");
     // Date of Flight
-    auto date = ui->doftDateEdit->date();
-    auto doft = date.toString(Qt::ISODate);
-    newData.insert("doft",doft);
+    if(QDate::fromString(ui->doftLineEdit->text(),Qt::ISODate).isValid()) {
+        auto doft = ui->doftLineEdit->text();
+        newData.insert("doft",doft);
+    }
+
     // Departure Loc
     newData.insert("dept",ui->deptLocLineEdit->text());
     // Time Off Blocks
@@ -635,7 +666,7 @@ void NewFlight::collectAdditionalData()
         newData.insert("tIFR","");
     }
     // Night
-    QString deptDate = ui->doftDateEdit->date().toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
+    QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
     const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
@@ -714,7 +745,7 @@ void NewFlight::collectAdditionalData()
             newData.insert("ldgDay", "0");
             newData.insert("ldgNight", QString::number(ui->LandingSpinBox->value()));
         } else { //check
-            QString destDate = ui->doftDateEdit->date().toString(Qt::ISODate) + 'T' + tonb.toString("hh:mm");
+            QString destDate = ui->doftLineEdit->text() + 'T' + tonb.toString("hh:mm");
             QDateTime destDateTime = QDateTime::fromString(destDate,"yyyy-MM-ddThh:mm");
             if(Calc::isNight(ui->destLocLineEdit->text(), destDateTime,  nightAngle)){
                 newData.insert("ldgDay", "0");
@@ -785,7 +816,7 @@ void NewFlight::fillExtras()
         ui->tIFRLabel->setText(blockTime);
     }
     // Night
-    QString deptDate = ui->doftDateEdit->date().toString(Qt::ISODate) + 'T' + tofb.toString("hh:mm");
+    QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
     const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
@@ -845,7 +876,6 @@ bool NewFlight::verifyInput()
         {
             lineEditText.push_back(line_edit->text());
         }
-        this->result = lineEditText;
         emit mandatoryFieldsValid(this);
         return true;
     }
@@ -906,7 +936,7 @@ void NewFlight::on_buttonBox_rejected()
  * valid characters are kept on the line edit.
  */
 void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
-    //DEBUG("Input rejected" << line_edit->text());
+    DEBUG("Input rejected" << line_edit->text());
     line_edit->setStyleSheet("border: 1px solid red");
     this->allOkBits.setBit(this->lineEditBitMap[line_edit], false);
     auto text = line_edit->text();
@@ -915,6 +945,7 @@ void NewFlight::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
         line_edit->setText(text);
     }
     if(INVALID_CHARS_RGX.match(text).hasMatch()){//remove globaly inacceptable chars
+        DEBUG("Removing invalid char: " << text[text.length()-1]);
         text.chop(1);
         line_edit->setText(text);
     }
@@ -930,7 +961,108 @@ void NewFlight::onEditingFinishedCleanup(QLineEdit* line_edit)
     this->allOkBits.setBit(this->lineEditBitMap[line_edit], true);
 }
 
-QStringList* NewFlight::getResult() { return &this->result; }
+/// Date
+
+void NewFlight::on_doftLineEditEntered()
+{
+    const auto& cw = ui->calendarWidget;
+    const auto& le = ui->doftLineEdit;
+    const auto& label = ui->placeLabel1;
+
+    if(cw->isVisible()){
+        le->blockSignals(false);
+        DEBUG("Enabling line edit signals for: " << le->objectName());
+        cw->hide();
+        label->resize(ui->placeLabel2->size());
+        le->setFocus();
+    } else {
+        le->blockSignals(true);
+        DEBUG("Disabling line edit signals for: " << le->objectName());
+        // Determine size based on layout coordinates
+        int c1 = label->pos().rx();
+        int c2 = le->pos().rx();
+        int z  = le->size().rwidth();
+        int x = (c2 - c1) + z;
+        c1 = label->pos().ry();
+        c2 = ui->acftLineEdit->pos().ry();
+        z  = ui->acftLineEdit->size().height();
+        int y = (c2 - c1) + z;
+        //Re-size calendar and parent label accordingly
+        label->resize(x, y);
+        cw->setParent(ui->placeLabel1);
+        cw->setGeometry(QRect(0, 0, x, y));
+        cw->show();
+        cw->setFocus();
+    }
+}
+
+void NewFlight::date_clicked(const QDate &date)
+{
+    DEBUG("Date clicked: " << date);
+
+    const auto& le = ui->doftLineEdit;
+    le->blockSignals(false);
+    ui->calendarWidget->hide();
+    ui->placeLabel1->resize(ui->placeLabel2->size());
+    le->setText(date.toString(Qt::ISODate));
+    le->setFocus();
+
+    //const auto& le = ui->doftLineEdit;
+    //le->setText(date.toString(Qt::ISODate));
+    //le->setFocus();
+}
+
+void NewFlight::date_selected(const QDate &date)
+{
+    ui->calendarWidget->hide();
+    ui->placeLabel1->resize(ui->placeLabel2->size());
+    ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
+    DEBUG("Date selected: " << date);
+    const auto& le = ui->doftLineEdit;
+    le->setText(date.toString(Qt::ISODate));
+    le->setFocus();
+    le->blockSignals(false);
+    DEBUG("Enabling line edit signals for: " << le->objectName());
+}
+
+void NewFlight::on_doftLineEdit_inputRejected()
+{
+    onInputRejected(ui->doftLineEdit, DATE_INVALID_RGX);
+    ui->placeLabel1->resize(ui->placeLabel2->size());
+    ui->calendarWidget->hide();
+}
+
+void NewFlight::on_doftLineEdit_editingFinished()
+{
+    DEBUG(sender()->objectName() << "EDITING FINISHED.");
+    auto line_edit = ui->doftLineEdit;
+    auto text = ui->doftLineEdit->text();
+
+    {//try to correct input if only numbers are entered
+        const QSignalBlocker blocker(line_edit);
+        if(text.length() == 8) {
+            text.insert(4,'-');
+            text.insert(7,'-');
+            DEBUG("editet text: " << text);
+            auto date = QDate::fromString(text, Qt::ISODate);
+            if(date.isValid()) {
+                line_edit->setText(date.toString(Qt::ISODate));
+                ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
+            }
+        }
+    }
+
+    auto date = QDate::fromString(text, Qt::ISODate);
+    // check input
+    if(date.isValid()){
+        onEditingFinishedCleanup(line_edit);
+        const QSignalBlocker blocker(line_edit);
+        ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
+    } else {
+        ui->doftDisplayLabel->setText("Invalid Date");
+        emit line_edit->inputRejected();
+    }
+}
 
 void NewFlight::on_deptTZ_currentTextChanged(const QString &arg1)
 {
