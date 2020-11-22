@@ -74,5 +74,22 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    HomeWidget* hw = new HomeWidget(this);
+
+    LogbookWidget* lw = new LogbookWidget(this);
+
+    SettingsWidget* sw = new SettingsWidget(this);
+
+    AircraftWidget* aw = new AircraftWidget(this);
+
+    PilotsWidget* pw = new PilotsWidget(this);
+
+
+
+
+
+
+
 };
 #endif // MAINWINDOW_H

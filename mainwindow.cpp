@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    Db::connect();
 
     // Set up Toolbar
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -79,54 +78,54 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionHome_triggered()
 {
-    auto hw = new HomeWidget(this);
     ui->stackedWidget->addWidget(hw);
     ui->stackedWidget->setCurrentWidget(hw);
 }
 
 void MainWindow::on_actionLogbook_triggered()
 {
-    auto lw = new LogbookWidget(this);
     ui->stackedWidget->addWidget(lw);
     ui->stackedWidget->setCurrentWidget(lw);
 }
 
 void MainWindow::on_actionSettings_triggered()
 {
-    //nope();
-    auto sw = new SettingsWidget(this);
     ui->stackedWidget->addWidget(sw);
     ui->stackedWidget->setCurrentWidget(sw);
 }
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlight nf(this, Db::createNew);
-    nf.exec();
-}
-
-void MainWindow::on_actionAircraft_triggered()
-{
-    auto aw = new AircraftWidget(this);
-    ui->stackedWidget->addWidget(aw);
-    ui->stackedWidget->setCurrentWidget(aw);
+    NewFlight* nf = new NewFlight(this, Db::createNew);
+    if(nf->exec() == QDialog::Accepted || QDialog::Rejected) {
+        delete nf;
+    }
 }
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    auto nt = new NewTail(QString(), Db::createNew, this);
-    nt->show();
-}
-
-void MainWindow::on_actionPilots_triggered()
-{
-    auto pw = new PilotsWidget(this);
-    ui->stackedWidget->addWidget(pw);
-    ui->stackedWidget->setCurrentWidget(pw);
+    NewTail* nt = new NewTail(QString(), Db::createNew, this);
+    if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
+        delete nt;
+    }
 }
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    auto np = new NewPilot(Db::createNew, this);
-    np->show();
+    NewPilot* np = new NewPilot(Db::createNew, this);
+    if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
+        delete np;
+    }
+}
+
+void MainWindow::on_actionPilots_triggered()
+{
+    ui->stackedWidget->addWidget(pw);
+    ui->stackedWidget->setCurrentWidget(pw);
+}
+
+void MainWindow::on_actionAircraft_triggered()
+{
+    ui->stackedWidget->addWidget(aw);
+    ui->stackedWidget->setCurrentWidget(aw);
 }
