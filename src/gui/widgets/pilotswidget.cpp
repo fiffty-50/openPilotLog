@@ -147,14 +147,10 @@ void PilotsWidget::refreshModelAndView()
 
     view->show();
 
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this,
-            SLOT(tableView_selectionChanged()));
-    connect(ui->tableView->horizontalHeader(),
-            SIGNAL(sectionClicked(int)),
-            this,
-            SLOT(tableView_headerClicked(int)));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this, SLOT(tableView_selectionChanged()));
+    connect(ui->tableView->horizontalHeader(), SIGNAL(sectionClicked(int)),
+            this, SLOT(tableView_headerClicked(int)));
 }
 
 void PilotsWidget::on_searchLineEdit_textChanged(const QString &arg1)

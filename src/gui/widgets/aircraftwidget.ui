@@ -51,7 +51,7 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="welcomePage">
+       <widget class="QWidget" name="welcomePageTails">
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="1">
           <spacer name="verticalSpacer">

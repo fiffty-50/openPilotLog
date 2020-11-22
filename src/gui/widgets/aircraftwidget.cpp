@@ -42,8 +42,9 @@ AircraftWidget::~AircraftWidget()
 
 void AircraftWidget::refreshModelAndView()
 {
-    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePage"));
-    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePage"));
+    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePageTails"));
+    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePageTails"));
+    DEB("wp" << parent()->findChild<QWidget*>("welcomePageTails"));
 
     model->setTable("viewTails");
     model->select();
@@ -64,14 +65,10 @@ void AircraftWidget::refreshModelAndView()
 
     view->show();
 
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this,
-            SLOT(tableView_selectionChanged()));
-    connect(ui->tableView->horizontalHeader(),
-            SIGNAL(sectionClicked(int)),
-            this,
-            SLOT(tableView_headerClicked(int)));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this, SLOT(tableView_selectionChanged()));
+    connect(ui->tableView->horizontalHeader(), SIGNAL(sectionClicked(int)),
+            this, SLOT(tableView_headerClicked(int)));
 }
 
 /*
@@ -97,7 +94,7 @@ void AircraftWidget::on_deleteButton_clicked()
                     QVector<QString> columns = {"doft","dept","dest"};
                     QVector<QString> details = Db::multiSelect(columns, "flights", "acft",
                                                                QString::number(selectedTail), Db::exactMatch);
-                    auto mb = new QMessageBox(this);
+                    auto mb = QMessageBox(this);
                     QString message = "\nUnable to delete. The following error has ocurred:\n\n";
                     if(!details.isEmpty()){
                         message += ac.error + QLatin1String("\n\n");
@@ -112,17 +109,17 @@ void AircraftWidget::on_deleteButton_clicked()
                                      + details[i+2] + QLatin1String("\n");
                         }
                     }
-                    mb->setText(message);
-                    mb->setIcon(QMessageBox::Critical);
-                    mb->show();
+                    mb.setText(message);
+                    mb.setIcon(QMessageBox::Critical);
+                    mb.show();
                 }
             }
         }
         refreshModelAndView();
     } else {
-        auto mb = new QMessageBox(this);
-        mb->setText("No aircraft selected.");
-        mb->show();
+        auto mb = QMessageBox(this);
+        mb.setText("No aircraft selected.");
+        mb.show();
     }
 }
 
@@ -131,7 +128,9 @@ void AircraftWidget::on_newButton_clicked()
     auto nt = new NewTailDialog(QString(), Db::createNew, this);
     connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
     connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-    nt->show();
+    if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
+        delete nt;
+    }
 }
 
 void AircraftWidget::on_searchLineEdit_textChanged(const QString &arg1)
@@ -158,6 +157,9 @@ void AircraftWidget::tableView_selectionChanged()
         nt->setWindowFlag(Qt::Widget);
         ui->stackedWidget->addWidget(nt);
         ui->stackedWidget->setCurrentWidget(nt);
+        if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
+            delete nt;
+        }
     }
 }
 
