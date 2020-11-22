@@ -46,12 +46,17 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
         DEB("Selected Tails(s) with ID: " << selectedPilots);
     }
     if(selectedPilots.length() == 1) {
-        auto nt = new NewPilotDialog(Pilot(selectedPilots.first()), Db::editExisting, this);
-        connect(nt, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
-        connect(nt, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
-        nt->setWindowFlag(Qt::Widget);
-        ui->stackedWidget->addWidget(nt);
-        ui->stackedWidget->setCurrentWidget(nt);
+
+        NewPilotDialog* np = new NewPilotDialog(Pilot(selectedPilots.first()), Db::editExisting, this);
+        connect(np, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
+        connect(np, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
+        np->setWindowFlag(Qt::Widget);
+        ui->stackedWidget->addWidget(np);
+        ui->stackedWidget->setCurrentWidget(np);
+
+        if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
+            delete np;
+        }
     }
 
 }
@@ -64,11 +69,13 @@ void PilotsWidget::tableView_headerClicked(int column)
 
 void PilotsWidget::on_newButton_clicked()
 {
-    auto np = new NewPilotDialog(Db::createNew, this);
+    NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
     connect(np,
             SIGNAL(accepted()), this,
             SLOT(pilot_editing_finished()));
-    np->show();
+    if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
+        delete np;
+    }
 }
 
 void PilotsWidget::on_deletePushButton_clicked()
