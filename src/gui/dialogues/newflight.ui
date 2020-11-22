@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="3">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -822,21 +822,22 @@
       </layout>
       <zorder>placeLabel2</zorder>
       <zorder>deptLocLineEdit</zorder>
+      <zorder>destLabel</zorder>
       <zorder>deptNameLabel</zorder>
       <zorder>acftLineEdit</zorder>
+      <zorder>deptLabel</zorder>
       <zorder>destLocLineEdit</zorder>
-      <zorder>acftTypeLabel</zorder>
+      <zorder>acftLabel</zorder>
       <zorder>destNameLabel</zorder>
+      <zorder>acftTypeLabel</zorder>
       <zorder>doftLineEdit</zorder>
       <zorder>tofbLabel</zorder>
       <zorder>secondPilotLabel</zorder>
-      <zorder>deptLabel</zorder>
       <zorder>autoDualLabel</zorder>
       <zorder>tDualLabel</zorder>
       <zorder>tPICLabel</zorder>
       <zorder>autoPICLabel</zorder>
       <zorder>tonbLabel</zorder>
-      <zorder>placeLabel1</zorder>
       <zorder>autoPicusLabel</zorder>
       <zorder>tSICLabel</zorder>
       <zorder>tIFRLabel</zorder>
@@ -857,7 +858,6 @@
       <zorder>secondPilotNameLineEdit</zorder>
       <zorder>thirdPilotNameLineEdit</zorder>
       <zorder>autoMPLabel</zorder>
-      <zorder>acftLabel</zorder>
       <zorder>picNameLineEdit</zorder>
       <zorder>destTZ</zorder>
       <zorder>RemarksLabel</zorder>
@@ -866,13 +866,13 @@
       <zorder>FlightNumberLineEdit</zorder>
       <zorder>autoIFRLabel</zorder>
       <zorder>line</zorder>
-      <zorder>destLabel</zorder>
       <zorder>autoTotalLabel</zorder>
       <zorder>autoFILabel</zorder>
       <zorder>tFILabel</zorder>
       <zorder>autoSICLabel</zorder>
       <zorder>FlightNumberLabel</zorder>
       <zorder>doftDisplayLabel</zorder>
+      <zorder>placeLabel1</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">
@@ -1396,7 +1396,17 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="QCalendarWidget" name="calendarWidget"/>
+        <widget class="QCalendarWidget" name="calendarWidget">
+         <property name="gridVisible">
+          <bool>false</bool>
+         </property>
+         <property name="horizontalHeaderFormat">
+          <enum>QCalendarWidget::SingleLetterDayNames</enum>
+         </property>
+         <property name="verticalHeaderFormat">
+          <enum>QCalendarWidget::NoVerticalHeader</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1429,6 +1439,7 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>doftLineEdit</tabstop>
   <tabstop>deptLocLineEdit</tabstop>
   <tabstop>tofbTimeLineEdit</tabstop>
   <tabstop>destLocLineEdit</tabstop>
@@ -1439,10 +1450,26 @@
   <tabstop>thirdPilotNameLineEdit</tabstop>
   <tabstop>FlightNumberLineEdit</tabstop>
   <tabstop>RemarksLineEdit</tabstop>
-  <tabstop>destTZ</tabstop>
+  <tabstop>FunctionComboBox</tabstop>
+  <tabstop>ApproachComboBox</tabstop>
+  <tabstop>TakeoffCheckBox</tabstop>
+  <tabstop>TakeoffSpinBox</tabstop>
+  <tabstop>LandingCheckBox</tabstop>
+  <tabstop>LandingSpinBox</tabstop>
+  <tabstop>AutolandCheckBox</tabstop>
+  <tabstop>AutolandSpinBox</tabstop>
+  <tabstop>PilotFlyingCheckBox</tabstop>
+  <tabstop>PilotMonitoringCheckBox</tabstop>
+  <tabstop>VfrCheckBox</tabstop>
+  <tabstop>IfrCheckBox</tabstop>
+  <tabstop>setAsDefaultButton</tabstop>
+  <tabstop>restoreDefaultButton</tabstop>
+  <tabstop>manualEditingCheckBox</tabstop>
+  <tabstop>tblkTimeLineEdit</tabstop>
   <tabstop>verifyButton</tabstop>
   <tabstop>verifyEdit</tabstop>
-  <tabstop>deptTZ</tabstop>
+  <tabstop>calendarWidget</tabstop>
+  <tabstop>flightDataTabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

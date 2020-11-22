@@ -33,22 +33,6 @@ void NewFlight::on_verifyButton_clicked()//debug button
     collectAdditionalData();
 }
 
-bool NewFlight::eventFilter(QObject* object, QEvent* event)
-{
-    if(object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
-        on_doftLineEditEntered();
-        return false; // lets the event continue to the edit
-    } else if (object == ui->calendarWidget && event->type() == QEvent::Leave) {
-        ui->doftLineEdit->blockSignals(false);
-        ui->calendarWidget->hide();
-        ui->placeLabel1->resize(ui->placeLabel2->size());
-        ui->doftLineEdit->setFocus();
-        return false;
-    }
-    return false;
-}
-
-
 static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
 static const auto ICAO_RX = QLatin1String("[a-zA-Z0-9]{4}");
 static const auto NAME_RX = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
@@ -123,6 +107,22 @@ NewFlight::NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole) :
 NewFlight::~NewFlight()
 {
     delete ui;
+}
+
+bool NewFlight::eventFilter(QObject* object, QEvent* event)
+{
+    if(object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
+        on_doftLineEditEntered();
+        return false; // let the event continue to the edit
+    } /*else if (object == this && event->type() == QEvent::Leave) {
+        DEBUG("calendarWidget left.");
+        //ui->doftLineEdit->blockSignals(false);
+        //ui->calendarWidget->hide();
+        //ui->placeLabel1->resize(ui->placeLabel2->size());
+        //ui->doftLineEdit->setFocus();
+        return false;
+    }*/
+    return false;
 }
 
 void NewFlight::setup(){
@@ -344,10 +344,6 @@ void NewFlight::formFiller(Flight oldFlight)
     for(const auto& le : mandatoryLineEdits){
         emit le->editingFinished();
     }
-    //DEBUG("Filled: ");
-    //DEBUG(filled);
-    //DEBUG("Unfilled: ");
-    //DEBUG(line_edits_names);
 }
 
 /*
@@ -379,9 +375,8 @@ inline void NewFlight::setupLineEdit(QLineEdit* line_edit, LineEditSettings sett
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setCompletionColumn(sql_col.column());
     completer->setFilterMode(Qt::MatchContains);
-    /*if(QRegularExpression("\\w+Loc").match(line_edit_objectName).hasMatch()) { completer->setFilterMode(Qt::MatchContains); }
-    if(QRegularExpression("\\w+Acft").match(line_edit_objectName).hasMatch()) { completer->setFilterMode(Qt::MatchContains); }
-    if(QRegularExpression("\\w+Name").match(line_edit_objectName).hasMatch()) { completer->setFilterMode(Qt::MatchContains); }*/
+    //if(QRegularExpression("\\w+Loc").match(line_edit_objectName).hasMatch()) { completer->setFilterMode(Qt::MatchContains); }
+
 
     line_edit->setValidator(validator);
     line_edit->setCompleter(completer);
@@ -967,28 +962,28 @@ void NewFlight::on_doftLineEditEntered()
 {
     const auto& cw = ui->calendarWidget;
     const auto& le = ui->doftLineEdit;
-    const auto& label = ui->placeLabel1;
+    const auto& anchor = ui->placeLabel1;
 
     if(cw->isVisible()){
         le->blockSignals(false);
-        DEBUG("Enabling line edit signals for: " << le->objectName());
+        DEBUG("cw visible. Enabling line edit signals for: " << le->objectName());
         cw->hide();
-        label->resize(ui->placeLabel2->size());
+        anchor->resize(ui->placeLabel2->size());
         le->setFocus();
     } else {
         le->blockSignals(true);
         DEBUG("Disabling line edit signals for: " << le->objectName());
         // Determine size based on layout coordinates
-        int c1 = label->pos().rx();
+        int c1 = anchor->pos().rx();
         int c2 = le->pos().rx();
         int z  = le->size().rwidth();
-        int x = (c2 - c1) + z;
-        c1 = label->pos().ry();
+        int x = (c2 - c1)+ z;
+        c1 = anchor->pos().ry();
         c2 = ui->acftLineEdit->pos().ry();
         z  = ui->acftLineEdit->size().height();
         int y = (c2 - c1) + z;
         //Re-size calendar and parent label accordingly
-        label->resize(x, y);
+        anchor->resize(x, y);
         cw->setParent(ui->placeLabel1);
         cw->setGeometry(QRect(0, 0, x, y));
         cw->show();
@@ -999,17 +994,12 @@ void NewFlight::on_doftLineEditEntered()
 void NewFlight::date_clicked(const QDate &date)
 {
     DEBUG("Date clicked: " << date);
-
     const auto& le = ui->doftLineEdit;
     le->blockSignals(false);
     ui->calendarWidget->hide();
     ui->placeLabel1->resize(ui->placeLabel2->size());
     le->setText(date.toString(Qt::ISODate));
     le->setFocus();
-
-    //const auto& le = ui->doftLineEdit;
-    //le->setText(date.toString(Qt::ISODate));
-    //le->setFocus();
 }
 
 void NewFlight::date_selected(const QDate &date)
@@ -1038,7 +1028,7 @@ void NewFlight::on_doftLineEdit_editingFinished()
     auto line_edit = ui->doftLineEdit;
     auto text = ui->doftLineEdit->text();
 
-    {//try to correct input if only numbers are entered
+    {//try to correct input if only numbers are entered, eg 20200101
         const QSignalBlocker blocker(line_edit);
         if(text.length() == 8) {
             text.insert(4,'-');
@@ -1051,9 +1041,7 @@ void NewFlight::on_doftLineEdit_editingFinished()
             }
         }
     }
-
     auto date = QDate::fromString(text, Qt::ISODate);
-    // check input
     if(date.isValid()){
         onEditingFinishedCleanup(line_edit);
         const QSignalBlocker blocker(line_edit);
