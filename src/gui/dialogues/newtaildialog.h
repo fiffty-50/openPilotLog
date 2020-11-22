@@ -40,17 +40,17 @@ class NewTail;
  * For a new tail, construct using QString reg.
  * For editing an existing tail, provide the aircraft object.
  */
-class NewTail : public QDialog
+class NewTailDialog : public QDialog
 {
     Q_OBJECT
 
 public:
     //to create new tail from scratch
-    explicit NewTail(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
+    explicit NewTailDialog(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
     //to edit existing tail
-    explicit NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
+    explicit NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
 
-    ~NewTail();
+    ~NewTailDialog();
 private slots:
 
     void on_searchLineEdit_textChanged(const QString &arg1);

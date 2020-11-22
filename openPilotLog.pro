@@ -31,9 +31,9 @@ SOURCES += \
     src/database/dbinfo.cpp \
     src/database/entry.cpp \
     src/gui/dialogues/firstrundialog.cpp \
-    src/gui/dialogues/newflight.cpp \
-    src/gui/dialogues/newpilot.cpp \
-    src/gui/dialogues/newtail.cpp \
+    src/gui/dialogues/newflightdialog.cpp \
+    src/gui/dialogues/newpilotdialog.cpp \
+    src/gui/dialogues/newtaildialog.cpp \
     src/gui/widgets/aircraftwidget.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
@@ -56,9 +56,9 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/entry.h \
     src/gui/dialogues/firstrundialog.h \
-    src/gui/dialogues/newflight.h \
-    src/gui/dialogues/newpilot.h \
-    src/gui/dialogues/newtail.h \
+    src/gui/dialogues/newflightdialog.h \
+    src/gui/dialogues/newpilotdialog.h \
+    src/gui/dialogues/newtaildialog.h \
     src/gui/widgets/aircraftwidget.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \

@@ -96,7 +96,7 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlight* nf = new NewFlight(this, Db::createNew);
+    NewFlightDialog* nf = new NewFlightDialog(this, Db::createNew);
     if(nf->exec() == QDialog::Accepted || QDialog::Rejected) {
         delete nf;
     }
@@ -104,7 +104,7 @@ void MainWindow::on_actionNewFlight_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    NewTail* nt = new NewTail(QString(), Db::createNew, this);
+    NewTailDialog* nt = new NewTailDialog(QString(), Db::createNew, this);
     if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
         delete nt;
     }
@@ -112,7 +112,7 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilot* np = new NewPilot(Db::createNew, this);
+    NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
     if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
         delete np;
     }

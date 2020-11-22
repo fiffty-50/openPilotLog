@@ -42,8 +42,8 @@
 #include "src/classes/completionlist.h"
 #include "src/classes/calc.h"
 
-#include "src/gui/dialogues/newpilot.h"
-#include "src/gui/dialogues/newtail.h"
+#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/newtaildialog.h"
 
 class SqlColumnNum{
 public:
@@ -77,14 +77,14 @@ namespace Ui {
 class NewFlight;
 }
 
-class NewFlight : public QDialog
+class NewFlightDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit NewFlight(QWidget *parent, Db::editRole edRole);
-    explicit NewFlight(QWidget *parent, Flight oldFlight, Db::editRole edRole);
-    ~NewFlight();
+    explicit NewFlightDialog(QWidget *parent, Db::editRole edRole);
+    explicit NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole);
+    ~NewFlightDialog();
 
     //QStringList* getResult();
 
@@ -211,7 +211,7 @@ private slots:
     void on_doftLineEditEntered();
 
 signals:
-    void mandatoryFieldsValid(NewFlight* nf);
+    void mandatoryFieldsValid(NewFlightDialog* nf);
 
 private:
     Db::editRole role;

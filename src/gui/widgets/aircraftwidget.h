@@ -26,7 +26,7 @@
 #include <QHBoxLayout>
 
 #include "src/classes/settings.h"
-#include "src/gui/dialogues/newtail.h"
+#include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"
 #include "src/database/db.h"
 

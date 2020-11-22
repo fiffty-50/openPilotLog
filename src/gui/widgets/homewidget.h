@@ -26,13 +26,13 @@
 #include "src/classes/stat.h"
 #include "src/classes/calc.h"
 #include "src/classes/completionlist.h"
-#include "src/gui/dialogues/newtail.h"
+#include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"
-#include "src/gui/dialogues/newpilot.h"
+#include "src/gui/dialogues/newpilotdialog.h"
 #include "src/database/entry.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflight.h"
+#include "src/gui/dialogues/newflightdialog.h"
 
 
 namespace Ui {

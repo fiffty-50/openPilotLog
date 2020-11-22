@@ -128,7 +128,7 @@ void AircraftWidget::on_deleteButton_clicked()
 
 void AircraftWidget::on_newButton_clicked()
 {
-    auto nt = new NewTail(QString(), Db::createNew, this);
+    auto nt = new NewTailDialog(QString(), Db::createNew, this);
     connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
     connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
     nt->show();
@@ -152,7 +152,7 @@ void AircraftWidget::tableView_selectionChanged()
         DEB("Selected Tails(s) with ID: " << selectedTails);
     }
     if(selectedTails.length() == 1) {
-        auto nt = new NewTail(Aircraft(selectedTails.first()), Db::editExisting, this);
+        auto nt = new NewTailDialog(Aircraft(selectedTails.first()), Db::editExisting, this);
         connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
         connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
         nt->setWindowFlag(Qt::Widget);

@@ -29,7 +29,7 @@
 #include "src/classes/settings.h"
 #include "src/database/db.h"
 #include "src/classes/flight.h"
-#include "src/gui/dialogues/newflight.h"
+#include "src/gui/dialogues/newflightdialog.h"
 
 namespace Ui {
 class LogbookWidget;

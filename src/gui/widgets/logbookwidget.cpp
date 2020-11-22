@@ -149,7 +149,7 @@ void LogbookWidget::tableView_selectionChanged()//
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    NewFlight nf(this, Db::createNew);
+    NewFlightDialog nf(this, Db::createNew);
     nf.exec();
     refreshView(Settings::read("logbook/view").toInt());
 }
@@ -157,7 +157,7 @@ void LogbookWidget::on_newFlightButton_clicked()
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
-        NewFlight ef(this,Flight(selectedFlights.first()), Db::editExisting);
+        NewFlightDialog ef(this,Flight(selectedFlights.first()), Db::editExisting);
         ef.exec();
         refreshView(Settings::read("logbook/view").toInt());
     } else {

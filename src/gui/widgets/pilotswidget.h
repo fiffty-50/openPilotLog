@@ -25,7 +25,7 @@
 #include <QLabel>
 #include "src/classes/settings.h"
 #include "src/classes/pilot.h"
-#include "src/gui/dialogues/newpilot.h"
+#include "src/gui/dialogues/newpilotdialog.h"
 
 namespace Ui {
 class PilotsWidget;

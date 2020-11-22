@@ -15,7 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "newpilot.h"
+#include "newpilotdialog.h"
 #include "ui_newpilot.h"
 // Debug Makro
 #define DEB(expr) \
@@ -55,7 +55,7 @@ static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALI
                                            PHONE_VALID,     EMAIL_VALID,
                                            COMPANY_VALID,     EMPLOYEENR_VALID});
 // For creating a new entry
-NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
@@ -65,7 +65,7 @@ NewPilot::NewPilot(Db::editRole edRole, QWidget *parent) :
     setupCompleter();
 }
 // For editing an existing entry
-NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
@@ -79,12 +79,12 @@ NewPilot::NewPilot(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
     ui->piclastnameLineEdit->setFocus();
 }
 
-NewPilot::~NewPilot()
+NewPilotDialog::~NewPilotDialog()
 {
     delete ui;
 }
 
-void NewPilot::on_buttonBox_accepted()
+void NewPilotDialog::on_buttonBox_accepted()
 {
     if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
         auto mb = new QMessageBox(this);
@@ -96,7 +96,7 @@ void NewPilot::on_buttonBox_accepted()
     }
 }
 
-void NewPilot::setupValidators()
+void NewPilotDialog::setupValidators()
 {
     DEB("Setting up Validators...");
     for(const auto& pair : LINE_EDIT_VALIDATORS){
@@ -110,7 +110,7 @@ void NewPilot::setupValidators()
     }
 }
 
-void NewPilot::setupCompleter()
+void NewPilotDialog::setupCompleter()
 {
     DEB("Setting up completer...");
 
@@ -122,7 +122,7 @@ void NewPilot::setupCompleter()
     ui->companyLineEdit->setCompleter(completer);
 }
 
-void NewPilot::formFiller()
+void NewPilotDialog::formFiller()
 {
     DEB("Filling Form...");
     DEB(oldEntry);
@@ -138,7 +138,7 @@ void NewPilot::formFiller()
     }
 }
 
-void NewPilot::submitForm()
+void NewPilotDialog::submitForm()
 {
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;

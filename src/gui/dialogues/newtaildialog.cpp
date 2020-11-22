@@ -15,7 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "newtail.h"
+#include "newtaildialog.h"
 #include "ui_newtail.h"
 
 // Debug Makro
@@ -34,7 +34,7 @@ static const auto LINE_EDIT_VALIDATORS = QVector({REG_VALID, MAKE_VALID, MODEL_V
 
 
 //Dialog to be used to create a new tail
-NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
+NewTailDialog::NewTailDialog(QString newreg, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -49,7 +49,7 @@ NewTail::NewTail(QString newreg, Db::editRole edRole, QWidget *parent) :
 }
 
 //Dialog to be used to edit an existing tail
-NewTail::NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
+NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
@@ -64,7 +64,7 @@ NewTail::NewTail(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
     formFiller(oldEntry);
 }
 
-NewTail::~NewTail()
+NewTailDialog::~NewTailDialog()
 {
     delete ui;
 }
@@ -74,7 +74,7 @@ NewTail::~NewTail()
  * \brief NewTail::setupCompleter creates a QMap<aircaft_id,searchstring> for auto completion,
  * obtains a QStringList for QCompleter and sets up search line edit accordingly
  */
-void NewTail::setupCompleter()
+void NewTailDialog::setupCompleter()
 {
     auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
     auto vector = Db::customQuery(query, 2);
@@ -98,7 +98,7 @@ void NewTail::setupCompleter()
     ui->searchLineEdit->setCompleter(completer);
 }
 
-void NewTail::setupValidators()
+void NewTailDialog::setupValidators()
 {
     for(const auto& pair : LINE_EDIT_VALIDATORS){
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
@@ -111,7 +111,7 @@ void NewTail::setupValidators()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTail::formFiller(Entry entry)
+void NewTailDialog::formFiller(Entry entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
@@ -144,7 +144,7 @@ void NewTail::formFiller(Entry entry)
  * \brief NewTail::verify A simple check for empty recommended fields in the form
  * \return true if all reconmmended fields are populated
  */
-bool NewTail::verify()
+bool NewTailDialog::verify()
 {
     auto recommended_line_edits = parent()->findChildren<QLineEdit *>("registrationLineEdit");
     recommended_line_edits.append(parent()->findChild<QLineEdit *>("makeLineEdit"));
@@ -186,7 +186,7 @@ bool NewTail::verify()
  * or updates a database entry and commits or updates the database
  * \param edRole editExisting or createNew
  */
-void NewTail::submitForm(Db::editRole edRole)
+void NewTailDialog::submitForm(Db::editRole edRole)
 {
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;
@@ -239,7 +239,7 @@ void NewTail::submitForm(Db::editRole edRole)
 
 /// Slots
 
-void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
+void NewTailDialog::on_searchLineEdit_textChanged(const QString &arg1)
 {
     if (aircraftlist.contains(
                 arg1)) { //equivalent to editing finished for this purpose. todo: consider connecing qcompleter activated signal with editing finished slot.
@@ -254,35 +254,35 @@ void NewTail::on_searchLineEdit_textChanged(const QString &arg1)
     }
 }
 
-void NewTail::on_operationComboBox_currentIndexChanged(int index)
+void NewTailDialog::on_operationComboBox_currentIndexChanged(int index)
 {
     if (index != 0) {
         ui->operationComboBox->setStyleSheet("");
     }
 }
 
-void NewTail::on_ppTypeComboBox_currentIndexChanged(int index)
+void NewTailDialog::on_ppTypeComboBox_currentIndexChanged(int index)
 {
     if (index != 0) {
         ui->ppTypeComboBox->setStyleSheet("");
     }
 }
 
-void NewTail::on_ppNumberComboBox_currentIndexChanged(int index)
+void NewTailDialog::on_ppNumberComboBox_currentIndexChanged(int index)
 {
     if (index != 0) {
         ui->ppNumberComboBox->setStyleSheet("");
     }
 }
 
-void NewTail::on_weightComboBox_currentIndexChanged(int index)
+void NewTailDialog::on_weightComboBox_currentIndexChanged(int index)
 {
     if (index != 0) {
         ui->weightComboBox->setStyleSheet("");
     }
 }
 
-void NewTail::on_buttonBox_accepted()
+void NewTailDialog::on_buttonBox_accepted()
 {
     DEB("Button Box Accepted.");
     if (ui->registrationLineEdit->text().isEmpty()) {
@@ -319,7 +319,7 @@ void NewTail::on_buttonBox_accepted()
     }
 }
 
-void NewTail::on_registrationLineEdit_textChanged(const QString &arg1)
+void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
 {
     ui->registrationLineEdit->setText(arg1.toUpper());
 }

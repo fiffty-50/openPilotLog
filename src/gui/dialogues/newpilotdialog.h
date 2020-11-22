@@ -30,14 +30,14 @@ namespace Ui {
 class NewPilot;
 }
 
-class NewPilot : public QDialog
+class NewPilotDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit NewPilot(Db::editRole, QWidget *parent = nullptr);
-    explicit NewPilot(Pilot, Db::editRole, QWidget *parent = nullptr);
-    ~NewPilot();
+    explicit NewPilotDialog(Db::editRole, QWidget *parent = nullptr);
+    explicit NewPilotDialog(Pilot, Db::editRole, QWidget *parent = nullptr);
+    ~NewPilotDialog();
 
 private slots:
     void on_buttonBox_accepted();

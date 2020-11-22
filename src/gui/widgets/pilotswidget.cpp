@@ -46,7 +46,7 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
         DEB("Selected Tails(s) with ID: " << selectedPilots);
     }
     if(selectedPilots.length() == 1) {
-        auto nt = new NewPilot(Pilot(selectedPilots.first()), Db::editExisting, this);
+        auto nt = new NewPilotDialog(Pilot(selectedPilots.first()), Db::editExisting, this);
         connect(nt, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
         connect(nt, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
         nt->setWindowFlag(Qt::Widget);
@@ -64,7 +64,7 @@ void PilotsWidget::tableView_headerClicked(int column)
 
 void PilotsWidget::on_newButton_clicked()
 {
-    auto np = new NewPilot(Db::createNew, this);
+    auto np = new NewPilotDialog(Db::createNew, this);
     connect(np,
             SIGNAL(accepted()), this,
             SLOT(pilot_editing_finished()));
