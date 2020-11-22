@@ -58,7 +58,6 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
             delete np;
         }
     }
-
 }
 
 void PilotsWidget::tableView_headerClicked(int column)
@@ -83,15 +82,15 @@ void PilotsWidget::on_deletePushButton_clicked()
     if(selectedPilots.length() == 1){
         for(const auto& selectedPilot : selectedPilots){
             if (selectedPilot > 0) {
-                auto pil = new Pilot(selectedPilot);
-                if(!pil->remove()) {
+                auto pil = Pilot(selectedPilot);
+                if(!pil.remove()) {
                     QVector<QString> columns = {"doft","dept","dest"};
                     QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
                                                                QString::number(selectedPilot), Db::exactMatch);
-                    auto mb = new QMessageBox(this);
+                    auto mb = QMessageBox(this);
                     QString message = "\nUnable to delete. The following error has ocurred:\n\n";
                     if(!details.isEmpty()){
-                        message += pil->error + QLatin1String("\n\n");
+                        message += pil.error + QLatin1String("\n\n");
                         message += "This is most likely the case because a flight exists with the Pilot "
                                    "you are trying to delete. You have to change or remove this flight "
                                    "before being able to remove this pilot from the database.\n\n"
@@ -103,17 +102,17 @@ void PilotsWidget::on_deletePushButton_clicked()
                                     + details[i+2] + QLatin1String("\n");
                         }
                     }
-                    mb->setText(message);
-                    mb->setIcon(QMessageBox::Critical);
-                    mb->show();
+                    mb.setText(message);
+                    mb.setIcon(QMessageBox::Critical);
+                    mb.exec();
                 }
             }
         }
         refreshModelAndView();
     } else {
-        auto mb = new QMessageBox(this);
-        mb->setText("No Pilot selected.");
-        mb->show();
+        auto mb = QMessageBox(this);
+        mb.setText("No Pilot selected.");
+        mb.show();
     }
 }
 
