@@ -128,9 +128,8 @@ void AircraftWidget::on_newButton_clicked()
     auto nt = new NewTailDialog(QString(), Db::createNew, this);
     connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
     connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-    if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
-        delete nt;
-    }
+    nt->setAttribute(Qt::WA_DeleteOnClose);
+    nt->exec();
 }
 
 void AircraftWidget::on_searchLineEdit_textChanged(const QString &arg1)
@@ -155,11 +154,10 @@ void AircraftWidget::tableView_selectionChanged()
         connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
         connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
         nt->setWindowFlag(Qt::Widget);
+        nt->setAttribute(Qt::WA_DeleteOnClose);
         ui->stackedWidget->addWidget(nt);
         ui->stackedWidget->setCurrentWidget(nt);
-        if(nt->exec() == QDialog::Accepted || QDialog::Rejected) {
-            delete nt;
-        }
+        nt->exec();
     }
 }
 

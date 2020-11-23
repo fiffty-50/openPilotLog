@@ -51,12 +51,11 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
         connect(np, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
         connect(np, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
         np->setWindowFlag(Qt::Widget);
+        np->setAttribute(Qt::WA_DeleteOnClose);
         ui->stackedWidget->addWidget(np);
         ui->stackedWidget->setCurrentWidget(np);
 
-        if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
-            delete np;
-        }
+        np->exec();
     }
 }
 
@@ -69,12 +68,10 @@ void PilotsWidget::tableView_headerClicked(int column)
 void PilotsWidget::on_newButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
-    connect(np,
-            SIGNAL(accepted()), this,
-            SLOT(pilot_editing_finished()));
-    if(np->exec() == QDialog::Accepted || QDialog::Rejected) {
-        delete np;
-    }
+    connect(np, SIGNAL(accepted()),
+            this, SLOT(pilot_editing_finished()));
+    np->setAttribute(Qt::WA_DeleteOnClose);
+    np->exec();
 }
 
 void PilotsWidget::on_deletePushButton_clicked()

@@ -68,9 +68,8 @@ void LogbookWidget::refreshView(int view_id)
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->hideColumn(0);
-    connect(ui->tableView->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            SLOT(tableView_selectionChanged()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this, SLOT(tableView_selectionChanged()));
 }
 
 void LogbookWidget::defaultView()
@@ -150,6 +149,7 @@ void LogbookWidget::tableView_selectionChanged()//
 void LogbookWidget::on_newFlightButton_clicked()
 {
     NewFlightDialog nf(this, Db::createNew);
+    nf.setAttribute(Qt::WA_DeleteOnClose);
     nf.exec();
     refreshView(Settings::read("logbook/view").toInt());
 }
