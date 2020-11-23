@@ -74,6 +74,8 @@ private:
 
     QMenu* menu = new QMenu(this);
 
+    QMessageBox* nope = new QMessageBox(this);
+
     void refreshView(int view_id);
 
     void defaultView();

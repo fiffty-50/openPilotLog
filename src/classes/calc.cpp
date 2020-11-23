@@ -447,7 +447,7 @@ QString Calc::formatTimeInput(QString userinput)
 void Calc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
-    auto flightList = Db::multiSelect(QVector<QString>{"id"},"flights","acft",
+    auto flightList = Db::multiSelect(QVector<QString>{"flight_id"},"flights","acft",
                                       QString::number(acft_id),Db::exactMatch);
     auto acft = Aircraft(acft_id);
     for (const auto& item : flightList) {
@@ -478,7 +478,7 @@ void Calc::updateAutoTimes(int acft_id)
 void Calc::updateNightTimes()
 {
     const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
-    const QVector<QString> columns = {"id"};
+    const QVector<QString> columns = {"flight_id"};
     auto flights = Db::multiSelect(columns,"flights");
     for (const auto& item : flights) {
         auto flt = new Flight(item.toInt());

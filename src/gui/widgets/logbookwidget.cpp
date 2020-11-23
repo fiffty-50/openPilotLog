@@ -160,10 +160,12 @@ void LogbookWidget::on_editFlightButton_clicked()
         NewFlightDialog ef(this,Flight(selectedFlights.first()), Db::editExisting);
         ef.exec();
         refreshView(Settings::read("logbook/view").toInt());
+    } else if (selectedFlights.isEmpty()) {
+        nope->setText("No flight selected.\n");
+        nope->exec();
     } else {
-        QMessageBox nope(this);
-        nope.setText("More than one flight selected.\n\nEditing multiple entries is not yet supported.");
-        nope.exec();
+        nope->setText("More than one flight selected.\n\nEditing multiple entries is not yet supported.");
+        nope->exec();
     }
 }
 
@@ -177,7 +179,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         QVector<QString> details;
         QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";
         for(const auto& selectedFlight : selectedFlights){
-            details = Db::multiSelect(columns, "flights", "id",
+            details = Db::multiSelect(columns, "flights", "flight_id",
                                        QString::number(selectedFlight), Db::exactMatch);
             for (const auto &item : details) {
                 warningMsg.append(item);
@@ -204,10 +206,9 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             refreshView(Settings::read("logbook/view").toInt());
         }
     } else if (selectedFlights.length() == 0) {
-        QMessageBox nope(this);
-        nope.setIcon(QMessageBox::Information);
-        nope.setText("No Flight Selected.");
-        nope.exec();
+        nope->setIcon(QMessageBox::Information);
+        nope->setText("No Flight Selected.");
+        nope->exec();
     } else if (selectedFlights.length() > 10) {
         auto& warningMsg = "You have selected " + QString::number(selectedFlights.length())
                          + " flights.\n\n Deleting these flights is irreversible.\n\n"
