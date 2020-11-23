@@ -173,7 +173,7 @@ private slots:
     void on_tNIGHTTimeLineEdit_editingFinished();
     void on_tPICTimeLineEdit_editingFinished();
     void on_tSICTimeLineEdit_editingFinished();
-    void on_tDualTimeLineEdit_editingFinished();
+    void on_tDUALTimeLineEdit_editingFinished();
     void on_tFITimeLineEdit_editingFinished();
     void on_FlightNumberLineEdit_textChanged(const QString &arg1);
 
