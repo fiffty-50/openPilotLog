@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="3">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -270,7 +270,7 @@
         </widget>
        </item>
        <item row="14" column="4" colspan="2">
-        <widget class="QLabel" name="tDualLabel">
+        <widget class="QLabel" name="tDUALLabel">
          <property name="minimumSize">
           <size>
            <width>80</width>
@@ -834,7 +834,7 @@
       <zorder>tofbLabel</zorder>
       <zorder>secondPilotLabel</zorder>
       <zorder>autoDualLabel</zorder>
-      <zorder>tDualLabel</zorder>
+      <zorder>tDUALLabel</zorder>
       <zorder>tPICLabel</zorder>
       <zorder>autoPICLabel</zorder>
       <zorder>tonbLabel</zorder>
@@ -1326,7 +1326,7 @@
         </widget>
        </item>
        <item row="11" column="4">
-        <widget class="QLineEdit" name="tDualTimeLineEdit">
+        <widget class="QLineEdit" name="tDUALTimeLineEdit">
          <property name="minimumSize">
           <size>
            <width>0</width>

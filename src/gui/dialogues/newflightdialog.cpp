@@ -289,7 +289,7 @@ void NewFlightDialog::formFiller(Flight oldFlight)
     }
     //FunctionComboBox
     QList<QLineEdit*> FCB = {ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                             ui->tDualTimeLineEdit, ui->tFITimeLineEdit};
+                             ui->tDUALTimeLineEdit, ui->tFITimeLineEdit};
     for(const auto& le : FCB){
         if(le->text() != "00:00"){
             QString name = le->objectName();
@@ -677,35 +677,35 @@ void NewFlightDialog::collectAdditionalData()
         newData.insert("tPIC", blockMinutes);
         newData.insert("tPICUS", "");
         newData.insert("tSIC", "");
-        newData.insert("tDual", "");
+        newData.insert("tDUAL", "");
         newData.insert("tFI", "");
         break;
     case 1://PICUS
         newData.insert("tPIC", "");
         newData.insert("tPICUS", blockMinutes);
         newData.insert("tSIC", "");
-        newData.insert("tDual", "");
+        newData.insert("tDUAL", "");
         newData.insert("tFI", "");
         break;
     case 2://Co-Pilot
         newData.insert("tPIC", "");
         newData.insert("tPICUS", "");
         newData.insert("tSIC", blockMinutes);
-        newData.insert("tDual", "");
+        newData.insert("tDUAL", "");
         newData.insert("tFI", "");
         break;
     case 3://Dual
         newData.insert("tPIC", "");
         newData.insert("tPICUS", "");
         newData.insert("tSIC", "");
-        newData.insert("tDual", blockMinutes);
+        newData.insert("tDUAL", blockMinutes);
         newData.insert("tFI", "");
         break;
     case 4://Instructor
         newData.insert("tPIC", "");
         newData.insert("tPICUS", "");
         newData.insert("tSIC", "");
-        newData.insert("tDual", "");
+        newData.insert("tDUAL", "");
         newData.insert("tFI", blockMinutes);
     }
     // Pilot Flying
@@ -771,9 +771,9 @@ void NewFlightDialog::fillExtras()
     //zero labels and line edits
     QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
                               ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                              ui->tDualTimeLineEdit, ui->tFITimeLineEdit,};
+                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
     QList<QLabel*>      LB = {ui->tSPSELabel, ui->tSPMELabel,  ui->tMPLabel,  ui->tIFRLabel,  ui->tNIGHTLabel,
-                              ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDualLabel, ui->tFILabel};
+                              ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDUALLabel, ui->tFILabel};
     for(const auto& widget : LE) {widget->setText("");}
     for(const auto& widget : LB) {widget->setText("00:00");}
     //Times
@@ -837,8 +837,8 @@ void NewFlightDialog::fillExtras()
         ui->tSICLabel->setText(blockTime);
         break;
     case 3://Dual
-        ui->tDualTimeLineEdit->setText(blockTime);
-        ui->tDualLabel->setText(blockTime);
+        ui->tDUALTimeLineEdit->setText(blockTime);
+        ui->tDUALLabel->setText(blockTime);
         break;
     case 4://Instructor
         ui->tFITimeLineEdit->setText(blockTime);
@@ -898,7 +898,7 @@ void NewFlightDialog::on_buttonBox_accepted()
             DEBUG("Editing entry: " << entry.position.first << " - " << entry.position.second);
             DEBUG("with Data: " << newData);
             DEBUG("Function Times: " << newData.value("tPIC") << newData.value("tPICus") << newData.value("tSIC")
-                  << newData.value("tDual") << newData.value("tFI"));
+                  << newData.value("tDUAL") << newData.value("tFI"));
             break;
         case Db::createNew:
             entry = Flight(newData);
@@ -1561,14 +1561,14 @@ void NewFlightDialog::on_tSICTimeLineEdit_editingFinished()
     }
 }
 
-void NewFlightDialog::on_tDualTimeLineEdit_editingFinished()
+void NewFlightDialog::on_tDUALTimeLineEdit_editingFinished()
 {
-    const auto &le = ui->tDualTimeLineEdit;
+    const auto &le = ui->tDUALTimeLineEdit;
     le->setText(Calc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tDual",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tDUAL",QString::number(Calc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1592,7 +1592,7 @@ void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
     QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
                               ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                              ui->tDualTimeLineEdit, ui->tFITimeLineEdit,};
+                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
     switch (arg1) {
     case 0:
         for(const auto& le : LE){
