@@ -1,8 +1,6 @@
 #include "totalswidget.h"
 #include "ui_totalswidget.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 TotalsWidget::TotalsWidget(QWidget *parent) :
     QWidget(parent),

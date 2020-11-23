@@ -17,6 +17,7 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "debug.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -47,10 +48,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->insertWidget(ui->actionSettings, spacer);
 
 
-    // create and show HomeWidget
-    auto hw = new HomeWidget(this);
-    ui->stackedWidget->addWidget(hw);
-    ui->stackedWidget->setCurrentWidget(hw);
+    DEB("Construction MainWindow Widgets\n");
+    // Construct Widgets
+    homeWidget = new HomeWidget(this);
+    ui->stackedWidget->addWidget(homeWidget);
+    pilotsWidget = new PilotsWidget(this);
+    ui->stackedWidget->addWidget(pilotsWidget);
+    logbookWidget = new LogbookWidget(this);
+    ui->stackedWidget->addWidget(logbookWidget);
+    settingsWidget = new SettingsWidget(this);
+    ui->stackedWidget->addWidget(settingsWidget);
+    aircraftWidget = new AircraftWidget(this);
+    ui->stackedWidget->addWidget(aircraftWidget);
+
+    // Startup Screen (Home Screen)
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 
 }
 
@@ -78,26 +90,32 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionHome_triggered()
 {
-    ui->stackedWidget->addWidget(hw);
-    ui->stackedWidget->setCurrentWidget(hw);
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 void MainWindow::on_actionLogbook_triggered()
 {
-    ui->stackedWidget->addWidget(lw);
-    ui->stackedWidget->setCurrentWidget(lw);
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
 void MainWindow::on_actionSettings_triggered()
 {
-    ui->stackedWidget->addWidget(sw);
-    ui->stackedWidget->setCurrentWidget(sw);
+    ui->stackedWidget->setCurrentWidget(settingsWidget);
+}
+
+void MainWindow::on_actionPilots_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(pilotsWidget);
+}
+
+void MainWindow::on_actionAircraft_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(aircraftWidget);
 }
 
 void MainWindow::on_actionNewFlight_triggered()
 {
     NewFlightDialog* nf = new NewFlightDialog(this, Db::createNew);
-    nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
 
 }
@@ -105,25 +123,11 @@ void MainWindow::on_actionNewFlight_triggered()
 void MainWindow::on_actionNewAircraft_triggered()
 {
     NewTailDialog* nt = new NewTailDialog(QString(), Db::createNew, this);
-    nt->setAttribute(Qt::WA_DeleteOnClose);
     nt->exec();
 }
 
 void MainWindow::on_actionNewPilot_triggered()
 {
     NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
-    np->setAttribute(Qt::WA_DeleteOnClose);
     np->exec();
-}
-
-void MainWindow::on_actionPilots_triggered()
-{
-    ui->stackedWidget->addWidget(pw);
-    ui->stackedWidget->setCurrentWidget(pw);
-}
-
-void MainWindow::on_actionAircraft_triggered()
-{
-    ui->stackedWidget->addWidget(aw);
-    ui->stackedWidget->setCurrentWidget(aw);
 }

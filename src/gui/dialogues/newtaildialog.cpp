@@ -17,10 +17,7 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__<< "\t" << expr
+#include "debug.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -39,6 +36,7 @@ NewTailDialog::NewTailDialog(QString newreg, Db::editRole edRole, QWidget *paren
     ui(new Ui::NewTail)
 {
     ui->setupUi(this);
+
     role = edRole;
     setupCompleter();
     setupValidators();
@@ -56,6 +54,7 @@ NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *par
     oldEntry = dbentry;
     role = edRole;
     ui->setupUi(this);
+
     ui->searchLabel->hide();
     ui->searchLineEdit->hide();
     ui->line->hide();

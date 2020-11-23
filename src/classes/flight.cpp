@@ -16,10 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flight.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
-
+#include "debug.h"
 
 Flight::Flight()
 {

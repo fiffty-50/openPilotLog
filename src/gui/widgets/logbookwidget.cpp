@@ -17,10 +17,7 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,8 +29,12 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui->newFlightButton->setFocus();
 
     //customContextMenu for tablewidget
+    menu  = new QMenu(this);
     menu->addAction(ui->actionEdit_Flight);
     menu->addAction(ui->actionDelete_Flight);
+
+    //message Box
+    nope = new QMessageBox(this);
 
     refreshView(Settings::read("logbook/view").toInt());
 }
@@ -148,17 +149,18 @@ void LogbookWidget::tableView_selectionChanged()//
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    NewFlightDialog nf(this, Db::createNew);
-    nf.setAttribute(Qt::WA_DeleteOnClose);
-    nf.exec();
+    auto nf = new NewFlightDialog(this, Db::createNew);
+    nf->setAttribute(Qt::WA_DeleteOnClose);
+    nf->exec();
     refreshView(Settings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
-        NewFlightDialog ef(this,Flight(selectedFlights.first()), Db::editExisting);
-        ef.exec();
+        auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
+        ef->setAttribute(Qt::WA_DeleteOnClose);
+        ef->exec();
         refreshView(Settings::read("logbook/view").toInt());
     } else if (selectedFlights.isEmpty()) {
         nope->setText("No flight selected.\n");
@@ -200,8 +202,8 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         if (reply == QMessageBox::Yes) {
             for (const auto& selectedFlight : selectedFlights) {
                 DEB("Deleting flight with ID# " << selectedFlight);
-                auto entry = new Flight(selectedFlight);
-                entry->remove();
+                auto entry = Flight(selectedFlight);
+                entry.remove();
             }
             refreshView(Settings::read("logbook/view").toInt());
         }
@@ -223,8 +225,8 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         if(reply == QMessageBox::Yes) {
             for (const auto& selectedFlight : selectedFlights) {
                 DEB("Deleting flight with ID# " << selectedFlight);
-                auto entry = new Flight(selectedFlight);
-                entry->remove();
+                auto entry = Flight(selectedFlight);
+                entry.remove();
             }
             refreshView(Settings::read("logbook/view").toInt());
         }

@@ -16,9 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "calc.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 /*!
  * \brief Calc::blocktime Calculates Block Time for a given departure and arrival time

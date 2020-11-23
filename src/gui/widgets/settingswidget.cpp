@@ -18,10 +18,7 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 #include "src/database/dbinfo.h"
-
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};

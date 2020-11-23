@@ -17,9 +17,7 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
@@ -59,8 +57,10 @@ NewPilotDialog::NewPilotDialog(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
+    DEB("New NewPilotDialog\n");
     role = edRole;
     ui->setupUi(this);
+
     setupValidators();
     setupCompleter();
 }
@@ -69,9 +69,11 @@ NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
+    DEB("New NewPilotDialog\n");
     oldEntry = existingEntry;
     role = edRole;
     ui->setupUi(this);
+
     setupValidators();
     setupCompleter();
 
@@ -81,15 +83,16 @@ NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget
 
 NewPilotDialog::~NewPilotDialog()
 {
+    DEB("Deleting New NewPilotDialog\n");
     delete ui;
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
 {
     if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
-        auto mb = new QMessageBox(this);
-        mb->setText("Last Name and First Name are required.");
-        mb->show();
+        auto mb = QMessageBox(this);
+        mb.setText("Last Name and First Name are required.");
+        mb.show();
     } else {
         submitForm();
         accept();

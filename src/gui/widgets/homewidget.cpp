@@ -17,10 +17,7 @@
  */
 #include "homewidget.h"
 #include "ui_homewidget.h"
-
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 
 HomeWidget::HomeWidget(QWidget *parent) :
@@ -28,7 +25,10 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
-    showTotals();
+    totalsWidget = new TotalsWidget(this);
+    ui->stackedWidget->addWidget(totalsWidget);
+    ui->stackedWidget->setCurrentWidget(totalsWidget);
+    ui->stackedWidget->show();
 }
 
 HomeWidget::~HomeWidget()
@@ -40,13 +40,4 @@ void HomeWidget::on_pushButton_clicked()
 {
     NewFlightDialog nf(this, Flight(11), Db::editExisting);
     nf.exec();
-}
-
-void HomeWidget::showTotals()
-{
-    auto tw = new TotalsWidget(this);
-    ui->stackedWidget->addWidget(tw);
-    ui->stackedWidget->setCurrentWidget(tw);
-    ui->stackedWidget->show();
-
 }

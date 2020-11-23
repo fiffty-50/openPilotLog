@@ -32,6 +32,7 @@
 #include <QLineEdit>
 #include <QCalendarWidget>
 #include <QTabWidget>
+#include <QSqlRelationalTableModel>
 
 
 #include "src/database/db.h"

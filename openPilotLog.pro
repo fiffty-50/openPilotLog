@@ -42,6 +42,7 @@ SOURCES += \
     src/gui/widgets/totalswidget.cpp
 
 HEADERS += \
+    debug.h \
     mainwindow.h \
     src/classes/aircraft.h \
     src/classes/calc.h \

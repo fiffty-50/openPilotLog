@@ -53,7 +53,7 @@ private slots:
 private:
     Ui::HomeWidget *ui;
 
-    void showTotals();
+    TotalsWidget* totalsWidget;
 };
 
 #endif // HOMEWIDGET_H

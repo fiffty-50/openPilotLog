@@ -17,10 +17,8 @@
  */
 #include "db.h"
 #include "dbinfo.h"
+#include "debug.h"
 
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 /*!
  * \brief Db::iconnect - see Db::connect
  */

@@ -75,15 +75,15 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    HomeWidget* hw = new HomeWidget(this);
+    HomeWidget* homeWidget;
 
-    LogbookWidget* lw = new LogbookWidget(this);
+    LogbookWidget* logbookWidget;
 
-    SettingsWidget* sw = new SettingsWidget(this);
+    SettingsWidget* settingsWidget;
 
-    AircraftWidget* aw = new AircraftWidget(this);
+    AircraftWidget* aircraftWidget ;
 
-    PilotsWidget* pw = new PilotsWidget(this);
+    PilotsWidget* pilotsWidget;
 
 
 

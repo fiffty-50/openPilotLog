@@ -72,9 +72,9 @@ private slots:
 private:
     Ui::LogbookWidget *ui;
 
-    QMenu* menu = new QMenu(this);
+    QMenu* menu;
 
-    QMessageBox* nope = new QMessageBox(this);
+    QMessageBox* nope;
 
     void refreshView(int view_id);
 

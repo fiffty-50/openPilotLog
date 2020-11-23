@@ -17,10 +17,7 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
-
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -54,7 +51,6 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
         np->setAttribute(Qt::WA_DeleteOnClose);
         ui->stackedWidget->addWidget(np);
         ui->stackedWidget->setCurrentWidget(np);
-
         np->exec();
     }
 }
@@ -68,9 +64,9 @@ void PilotsWidget::tableView_headerClicked(int column)
 void PilotsWidget::on_newButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
+    np->setAttribute(Qt::WA_DeleteOnClose);
     connect(np, SIGNAL(accepted()),
             this, SLOT(pilot_editing_finished()));
-    np->setAttribute(Qt::WA_DeleteOnClose);
     np->exec();
 }
 

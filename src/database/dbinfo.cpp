@@ -16,9 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbinfo.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "debug.h"
+
 DbInfo::DbInfo()
 {
     QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
