@@ -285,9 +285,9 @@ void NewTailDialog::on_buttonBox_accepted()
 {
     DEB("Button Box Accepted.");
     if (ui->registrationLineEdit->text().isEmpty()) {
-        auto nope = new QMessageBox(this);
-        nope->setText("Registration cannot be empty.");
-        nope->show();
+        auto nope = QMessageBox(this);
+        nope.setText("Registration cannot be empty.");
+        nope.exec();
     } else {
         if (verify()) {
             DEB("Form verified");
@@ -295,10 +295,10 @@ void NewTailDialog::on_buttonBox_accepted()
             accept();
         } else {
             if (!Settings::read("userdata/acAllowIncomplete").toInt()) {
-                auto nope = new QMessageBox(this);
-                nope->setText("Some or all fields are empty.\nPlease go back and "
+                auto nope = QMessageBox(this);
+                nope.setText("Some or all fields are empty.\nPlease go back and "
                               "complete the form.\n\nYou can allow logging incomplete entries on the settings page.");
-                nope->show();
+                nope.exec();
             } else {
                 QMessageBox::StandardButton reply;
                 reply = QMessageBox::question(this, "Warning",
