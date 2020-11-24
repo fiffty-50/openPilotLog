@@ -35,6 +35,7 @@ NewTailDialog::NewTailDialog(QString newreg, Db::editRole edRole, QWidget *paren
     QDialog(parent),
     ui(new Ui::NewTail)
 {
+    DEB("new NewTailDialog\n");
     ui->setupUi(this);
 
     role = edRole;
@@ -51,6 +52,7 @@ NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *par
     QDialog(parent),
     ui(new Ui::NewTail)
 {
+    DEB("new NewTailDialog\n");
     oldEntry = dbentry;
     role = edRole;
     ui->setupUi(this);
@@ -65,6 +67,7 @@ NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *par
 
 NewTailDialog::~NewTailDialog()
 {
+    DEB("Deleting NewTailDialog\n");
     delete ui;
 }
 /// Functions

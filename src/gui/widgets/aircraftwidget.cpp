@@ -26,6 +26,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AircraftWidget)
 {
+    DEB("New AircraftWidet");
     ui->setupUi(this);
     sortColumn = Settings::read("userdata/acSortColumn").toInt();
     refreshModelAndView();
@@ -33,6 +34,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
 AircraftWidget::~AircraftWidget()
 {
+    DEB("Deleting NewAircraftWidget");
     delete ui;
 }
 
@@ -44,7 +46,6 @@ void AircraftWidget::refreshModelAndView()
 {
     ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePageTails"));
     ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePageTails"));
-    DEB("wp" << parent()->findChild<QWidget*>("welcomePageTails"));
 
     model->setTable("viewTails");
     model->select();
@@ -61,7 +62,7 @@ void AircraftWidget::refreshModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    view->sortByColumn(sortColumn);
+    view->sortByColumn(sortColumn, Qt::DescendingOrder);
 
     view->show();
 
@@ -125,11 +126,10 @@ void AircraftWidget::on_deleteButton_clicked()
 
 void AircraftWidget::on_newButton_clicked()
 {
-    auto nt = new NewTailDialog(QString(), Db::createNew, this);
-    connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
-    connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-    nt->setAttribute(Qt::WA_DeleteOnClose);
-    nt->exec();
+    auto nt = NewTailDialog(QString(), Db::createNew, this);
+    connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
+    connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
+    nt.exec();
 }
 
 void AircraftWidget::on_searchLineEdit_textChanged(const QString &arg1)
@@ -150,14 +150,13 @@ void AircraftWidget::tableView_selectionChanged()
         DEB("Selected Tails(s) with ID: " << selectedTails);
     }
     if(selectedTails.length() == 1) {
-        auto nt = new NewTailDialog(Aircraft(selectedTails.first()), Db::editExisting, this);
-        connect(nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
-        connect(nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-        nt->setWindowFlag(Qt::Widget);
-        nt->setAttribute(Qt::WA_DeleteOnClose);
-        ui->stackedWidget->addWidget(nt);
-        ui->stackedWidget->setCurrentWidget(nt);
-        nt->exec();
+        auto nt = NewTailDialog(Aircraft(selectedTails.first()), Db::editExisting, this);
+        connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
+        connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
+        ui->stackedWidget->addWidget(&nt);
+        ui->stackedWidget->setCurrentWidget(&nt);
+        nt.setWindowFlag(Qt::Widget);
+        nt.exec();
     }
 }
 

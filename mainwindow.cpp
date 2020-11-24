@@ -115,19 +115,19 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlightDialog* nf = new NewFlightDialog(this, Db::createNew);
-    nf->exec();
+    NewFlightDialog nf = NewFlightDialog(this, Db::createNew);
+    nf.exec();
 
 }
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    NewTailDialog* nt = new NewTailDialog(QString(), Db::createNew, this);
-    nt->exec();
+    NewTailDialog nt = NewTailDialog(QString(), Db::createNew, this);
+    nt.exec();
 }
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
-    np->exec();
+    NewPilotDialog np =NewPilotDialog(Db::createNew, this);
+    np.exec();
 }
