@@ -39,6 +39,7 @@
    <addaction name="actionLogbook"/>
    <addaction name="actionAircraft"/>
    <addaction name="actionPilots"/>
+   <addaction name="actionDebug"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
@@ -118,6 +119,14 @@
    </property>
    <property name="toolTip">
     <string>Add a new Pilot to the database</string>
+   </property>
+  </action>
+  <action name="actionDebug">
+   <property name="text">
+    <string>Debug</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

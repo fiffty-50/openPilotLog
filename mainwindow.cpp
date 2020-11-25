@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionDebug->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
 
@@ -45,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(10);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionSettings, spacer);
+    ui->toolBar->insertWidget(ui->actionDebug, spacer);
 
 
     DEB("Construction MainWindow Widgets\n");
@@ -62,7 +63,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(aircraftWidget);
 
     // Startup Screen (Home Screen)
-    ui->stackedWidget->setCurrentWidget(homeWidget);
+    // ui->stackedWidget->setCurrentWidget(homeWidget);
+    // Debup Widget for now
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
+    ui->stackedWidget->setCurrentWidget(debugWidget);
 
 }
 
@@ -96,6 +101,11 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionLogbook_triggered()
 {
     ui->stackedWidget->setCurrentWidget(logbookWidget);
+}
+
+void MainWindow::on_actionDebug_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
 void MainWindow::on_actionSettings_triggered()

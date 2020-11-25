@@ -32,6 +32,7 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
+#include "src/gui/widgets/debugwidget.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/classes/runguard.h"
@@ -72,6 +73,8 @@ private slots:
 
     void on_actionNewPilot_triggered();
 
+    void on_actionDebug_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -84,6 +87,8 @@ private:
     AircraftWidget* aircraftWidget ;
 
     PilotsWidget* pilotsWidget;
+
+    DebugWidget* debugWidget;
 
 
 

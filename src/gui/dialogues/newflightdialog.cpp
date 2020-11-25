@@ -372,7 +372,7 @@ inline void NewFlightDialog::setupLineEdit(QLineEdit* line_edit, LineEditSetting
 
     auto comp_model = new QSqlRelationalTableModel(line_edit, db);
     comp_model->database().open();
-    comp_model->setTable("QCompleterView");
+    comp_model->setTable("ViewQCompleter");
     comp_model->select();
 
     auto completer = new QCompleter(comp_model, line_edit);

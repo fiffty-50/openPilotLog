@@ -77,7 +77,7 @@ void LogbookWidget::defaultView()
 {
     DEB("Loading Default View...");
     QSqlTableModel *model = new QSqlTableModel;
-    model->setTable("Logbook");
+    model->setTable("viewDefault");
     model->select();
 
     QTableView *view = ui->tableView;

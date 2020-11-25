@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,6 +21,8 @@ SOURCES += \
     src/classes/aircraft.cpp \
     src/classes/calc.cpp \
     src/classes/completionlist.cpp \
+    src/classes/csv.cpp \
+    src/classes/download.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
     src/classes/runguard.cpp \
@@ -29,12 +31,14 @@ SOURCES += \
     src/classes/strictrxvalidator.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
+    src/database/dbsetup.cpp \
     src/database/entry.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
     src/gui/dialogues/newtaildialog.cpp \
     src/gui/widgets/aircraftwidget.cpp \
+    src/gui/widgets/debugwidget.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
@@ -47,6 +51,8 @@ HEADERS += \
     src/classes/aircraft.h \
     src/classes/calc.h \
     src/classes/completionlist.h \
+    src/classes/csv.h \
+    src/classes/download.h \
     src/classes/flight.h \
     src/classes/pilot.h \
     src/classes/runguard.h \
@@ -55,12 +61,14 @@ HEADERS += \
     src/classes/strictrxvalidator.h \
     src/database/db.h \
     src/database/dbinfo.h \
+    src/database/dbsetup.h \
     src/database/entry.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \
     src/gui/dialogues/newtaildialog.h \
     src/gui/widgets/aircraftwidget.h \
+    src/gui/widgets/debugwidget.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
@@ -74,6 +82,7 @@ FORMS += \
     src/gui/dialogues/newpilot.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/aircraftwidget.ui \
+    src/gui/widgets/debugwidget.ui \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
