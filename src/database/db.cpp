@@ -45,6 +45,14 @@ void Db::iconnect()
     }
 }
 
+void Db::idisconnect()
+{
+    auto db = Db::Database();
+    db.close();
+    db.removeDatabase(db.connectionName());
+    DEB("Database connection closed.");
+}
+
 QSqlDatabase Db::iDatabase()
 {
     auto db = QSqlDatabase::database("qt_sql_default_connection");

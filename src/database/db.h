@@ -63,6 +63,11 @@ class Db
          */
         static void             connect(){get().iconnect();}
         /*!
+         * \brief disconnect Closes and removes the default database connection.
+         */
+        static void             disconnect(){get().idisconnect();}
+
+        /*!
          * \brief Can be used to access the database connection.
          * \return a pointer to the default database connection
          */
@@ -140,6 +145,7 @@ class Db
     private:
         Db() {}
         void             iconnect();
+        void             idisconnect();
         QSqlDatabase     iDatabase();
         bool             iexists(QString column, QString table, QString checkColumn,
                                        QString value, Db::matchType match);

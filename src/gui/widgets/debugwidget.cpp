@@ -57,10 +57,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         dl->deleteLater();
     }
     //close database connection
-    auto db = Db::Database();
-    db.close();
-    db.removeDatabase(db.connectionName());
-    DEB("Closing database connection.");
+    Db::disconnect();
 
     // back up old database
     auto oldDatabase = QFile("data/logbook.db");
