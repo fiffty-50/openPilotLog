@@ -67,7 +67,7 @@ static const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
  * Window Construction
  */
 //For adding a new Flight to the logbook
-NewFlightDialog::NewFlightDialog(QWidget *parent, Db::editRole edRole) :
+NewFlightDialog::NewFlightDialog(Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
@@ -94,18 +94,18 @@ NewFlightDialog::NewFlightDialog(QWidget *parent, Db::editRole edRole) :
     readSettings();
 }
 //For editing an existing flight
-NewFlightDialog::NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole) :
+NewFlightDialog::NewFlightDialog(qint32 rowId, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     DEB("new NewFlight\n");
     ui->setupUi(this);
 
-    role=edRole;
-    entry = oldFlight;
+    role = edRole;
+    oldRowId = rowId;
     doUpdate = true;
     setup();
-    formFiller(oldFlight);
+    formFiller(rowId);
 }
 
 NewFlightDialog::~NewFlightDialog()
@@ -212,14 +212,13 @@ void NewFlightDialog::setup(){
     connect(ui->calendarWidget, SIGNAL(activated(const QDate &)), this, SLOT(date_selected(const QDate &)));
 }
 
-void NewFlightDialog::formFiller(Flight oldFlight)
+void NewFlightDialog::formFiller(qint32 rowId)
 {
+    Entry oldEntry(Db::flights, rowId, this);
     DEB("Filling Line Edits...");
-    DEB("With Data: " << oldFlight.data);
-    // Date
-    //ui->doftLineEdit->setDate(QDate::fromString(oldFlight.data.value("doft"), Qt::ISODate));
-    QStringList filled;
+    DEB("With Data: " << oldEntry.data);
 
+    QStringList filled;
     // Line Edits
     auto line_edits = parent()->findChildren<QLineEdit *>();
     QStringList line_edits_names;
@@ -227,19 +226,19 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         line_edits_names << le->objectName();
     }
     const QString& acft = Db::singleSelect("registration", "tails", "tail_id",
-                                    oldFlight.data.value("acft"),
+                                    oldEntry.data.value("acft"),
                                     Db::exactMatch);
     ui->acftLineEdit->setText(acft);
     line_edits_names.removeOne("acftLineEdit");
 
-    for(const auto& key : oldFlight.data.keys()){
+    for(const auto& key : oldEntry.data.keys()){
         auto rx = QRegularExpression(key + "LineEdit");//acftLineEdit
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB("Loc Match found: " << key << " - " << leName);
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
-                    le->setText(oldFlight.data.value(key));
+                    le->setText(oldEntry.data.value(key));
                     filled << leName;
                     line_edits_names.removeOne(leName);
                 }
@@ -252,7 +251,7 @@ void NewFlightDialog::formFiller(Flight oldFlight)
                 //DEB("Loc Match found: " << key << " - " << leName);
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
-                    le->setText(oldFlight.data.value(key));
+                    le->setText(oldEntry.data.value(key));
                     filled << leName;
                     line_edits_names.removeOne(leName);
                 }
@@ -265,9 +264,9 @@ void NewFlightDialog::formFiller(Flight oldFlight)
                 //DEB("Time Match found: " << key << " - " << leName);
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
-                    DEB("Setting " << le->objectName() << " to " << Calc::minutesToString(oldFlight.data.value(key)));
+                    DEB("Setting " << le->objectName() << " to " << Calc::minutesToString(oldEntry.data.value(key)));
                     le->setText(Calc::minutesToString(
-                                oldFlight.data.value(key)));
+                                oldEntry.data.value(key)));
                     filled << leName;
                     line_edits_names.removeOne(leName);
                 }
@@ -282,7 +281,7 @@ void NewFlightDialog::formFiller(Flight oldFlight)
                 if(le != nullptr){
                     const QString& column = "piclastname||', '||picfirstname";
                     const QString& name = Db::singleSelect(column, "pilots", "pilot_id",
-                                                    oldFlight.data.value(key),
+                                                    oldEntry.data.value(key),
                                                     Db::exactMatch);
                     le->setText(name);
                     filled << leName;
@@ -304,18 +303,18 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         }
     }
     // Approach Combo Box
-    const QString& app = oldFlight.data.value("ApproachType");
+    const QString& app = oldEntry.data.value("ApproachType");
     if(app != " "){
         ui->ApproachComboBox->setCurrentText(app);
     }
     // Task and Rules
-    qint8 PF = oldFlight.data.value("pilotFlying").toInt();
+    qint8 PF = oldEntry.data.value("pilotFlying").toInt();
     if (PF > 0) {
         ui->PilotFlyingCheckBox->setChecked(true);
     } else {
         ui->PilotMonitoringCheckBox->setChecked(true);
     }
-    qint8 FR = oldFlight.data.value("tIFR").toInt();
+    qint8 FR = oldEntry.data.value("tIFR").toInt();
     if (FR > 0) {
         ui->IfrCheckBox->setChecked(true);
     } else {
@@ -323,8 +322,8 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         ui->VfrCheckBox->setChecked(true);
     }
     // Take Off and Landing
-    qint8 TO = oldFlight.data.value("toDay").toInt() + oldFlight.data.value("toNight").toInt();
-    qint8 LDG = oldFlight.data.value("ldgDay").toInt() + oldFlight.data.value("ldgNight").toInt();
+    qint8 TO = oldEntry.data.value("toDay").toInt() + oldEntry.data.value("toNight").toInt();
+    qint8 LDG = oldEntry.data.value("ldgDay").toInt() + oldEntry.data.value("ldgNight").toInt();
     DEB("TO and LDG:" << TO << LDG);
     if(TO > 0) {
         ui->TakeoffCheckBox->setChecked(true);
@@ -340,7 +339,7 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         ui->LandingCheckBox->setChecked(false);
         ui->LandingSpinBox->setValue(0);
     }
-    qint8 AL = oldFlight.data.value("autoland").toInt();
+    qint8 AL = oldEntry.data.value("autoland").toInt();
     if(AL > 0) {
         ui->AutolandCheckBox->setChecked(true);
         ui->AutolandSpinBox->setValue(AL);
@@ -897,28 +896,23 @@ void NewFlightDialog::on_buttonBox_accepted()
         collectBasicData();
         collectAdditionalData();
 
-        switch (role) {
-        case Db::editExisting:
-            entry.setData(newData);
-            DEB("Editing entry: " << entry.position.first << " - " << entry.position.second);
-            DEB("with Data: " << newData);
-            DEB("Function Times: " << newData.value("tPIC") << newData.value("tPICus") << newData.value("tSIC")
-                  << newData.value("tDUAL") << newData.value("tFI"));
-            break;
-        case Db::createNew:
-            entry = Flight(newData);
-            DEB("Creating New entry: " << entry.position.first << " - " << entry.position.second);
-            DEB("with Data: " << newData);
-            break;
+        QPair<QString, int> position = {"flights", 0};
+
+        if (role == Db::editExisting) {
+            position = {"flights", oldRowId};
         }
 
-        if(entry.commit()){
+        Entry newEntry;
+        newEntry.setPosition(position);
+        newEntry.setData(newData);
+
+        if(newEntry.commit()){
             accept();
         }else{
             auto mb = new QMessageBox(this);
             auto errorMsg = QString("Unable to commit Flight to Logbook."
                                     "The following error has ocurred:\n\n");
-            errorMsg.append(entry.error);
+            errorMsg.append(newEntry.error);
             mb->setText(errorMsg);
             mb->show();
         }

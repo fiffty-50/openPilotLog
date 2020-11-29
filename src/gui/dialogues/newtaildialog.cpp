@@ -48,12 +48,11 @@ NewTailDialog::NewTailDialog(QString newreg, Db::editRole edRole, QWidget *paren
 }
 
 //Dialog to be used to edit an existing tail
-NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
+NewTailDialog::NewTailDialog(int rowId, Db::editRole edRole, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB("new NewTailDialog\n");
-    oldEntry = dbentry;
+    DEB("new NewTailDialog. Editing entry with rowId: " << rowId);
     role = edRole;
     ui->setupUi(this);
 
@@ -62,7 +61,8 @@ NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *par
     ui->line->hide();
 
     setupValidators();
-    formFiller(oldEntry);
+    this->rowId = rowId;
+    formFiller(Db::tails, rowId);
 }
 
 NewTailDialog::~NewTailDialog()
@@ -113,27 +113,43 @@ void NewTailDialog::setupValidators()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTailDialog::formFiller(Entry entry)
+void NewTailDialog::formFiller(Db::table table, int rowId)
 {
-    DEB("Filling Form for a/c" << entry);
+    QPair<QString, int> pos;
+
+    switch (table) {
+    case Db::tails: {
+        pos = {"tails", rowId};
+        break; }
+    case Db::aircraft: {
+        pos = {"aircraft", rowId};
+        break; }
+    default:
+        DEB("Invalid table for this context.");
+        break;
+    }
+
+    Entry oldEntry(pos.first, pos.second);
+
+    DEB("Filling Form for a/c" << oldEntry);
     //fill Line Edits
     auto line_edits = parent()->findChildren<QLineEdit *>();
     for (const auto &le : line_edits) {
         QString name = le->objectName();
         name.chop(8);//remove "LineEdit"
-        QString value = entry.data.value(name);
+        QString value = oldEntry.data.value(name);
         if (!value.isEmpty()) {
             le->setText(value);
         };
     }
     //select comboboxes
-    QVector<QString> operation = {entry.data.value("singleengine"), entry.data.value("multiengine")};
-    QVector<QString> ppNumber =  {entry.data.value("singlepilot"), entry.data.value("multipilot")};
-    QVector<QString> ppType =    {entry.data.value("unpowered"), entry.data.value("piston"),
-                                  entry.data.value("turboprop"), entry.data.value("jet")
+    QVector<QString> operation = {oldEntry.data.value("singleengine"), oldEntry.data.value("multiengine")};
+    QVector<QString> ppNumber =  {oldEntry.data.value("singlepilot"), oldEntry.data.value("multipilot")};
+    QVector<QString> ppType =    {oldEntry.data.value("unpowered"), oldEntry.data.value("piston"),
+                                  oldEntry.data.value("turboprop"), oldEntry.data.value("jet")
                                  };
-    QVector<QString> weight =    {entry.data.value("light"), entry.data.value("medium"),
-                                  entry.data.value("heavy"), entry.data.value("super")
+    QVector<QString> weight =    {oldEntry.data.value("light"), oldEntry.data.value("medium"),
+                                  oldEntry.data.value("heavy"), oldEntry.data.value("super")
                                  };
 
 
@@ -225,17 +241,19 @@ void NewTailDialog::submitForm(Db::editRole edRole)
         newData.insert(weight[ui->weightComboBox->currentIndex() - 1], QLatin1String("1"));
     }
     //create db object
-    switch (edRole) {
-    case Db::createNew: {
-        auto newEntry = Aircraft(newData);;
-        newEntry.commit();
-        break;
+    QPair<QString, int> pos = {"tails", 0};
+
+    if (edRole == Db::editExisting) {
+        pos.second = rowId;
     }
-    case Db::editExisting:
-        oldEntry.setData(newData);
-        oldEntry.commit();
-        Calc::updateAutoTimes(oldEntry.position.second);
-        break;
+    Entry newEntry;
+    newEntry.setPosition(pos);
+    newEntry.setData(newData);
+    if (newEntry.commit())
+    {
+        if(edRole == Db::editExisting){
+            Calc::updateAutoTimes(pos.second);
+        }
     }
 }
 
@@ -248,7 +266,7 @@ void NewTailDialog::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(Entry("aircraft",idMap.value(arg1)));
+        formFiller(Db::aircraft, idMap.value(arg1));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     } else {
         //for example, editing finished without selecting a result from Qcompleter

@@ -149,7 +149,7 @@ void LogbookWidget::tableView_selectionChanged()//
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    auto nf = new NewFlightDialog(this, Db::createNew);
+    auto nf = new NewFlightDialog(Db::createNew, this);
     nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
     refreshView(Settings::read("logbook/view").toInt());
@@ -158,7 +158,7 @@ void LogbookWidget::on_newFlightButton_clicked()
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
-        auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
+        auto ef = new NewFlightDialog(selectedFlights.first(), Db::editExisting, this);
         ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
         refreshView(Settings::read("logbook/view").toInt());

@@ -19,13 +19,14 @@
 #include "debug.h"
 
 
-Aircraft::Aircraft()
+Aircraft::Aircraft(QObject *parent)
 {
-
+    this->setParent(parent);
 }
 
-Aircraft::Aircraft(int tail_id)
+Aircraft::Aircraft(int tail_id, QObject *parent)
 {
+    this->setParent(parent);
     //retreive database layout
     const auto dbContent = DbInfo();
     auto table = QLatin1String("tails");
@@ -61,13 +62,14 @@ Aircraft::Aircraft(int tail_id)
     }
 }
 
-Aircraft::Aircraft(QMap<QString, QString> newData)
+Aircraft::Aircraft(QMap<QString, QString> newData, QObject *parent)
 {
+    this->setParent(parent);
     QString table = "tails";
 
     //retreive database layout
     const auto dbContent = DbInfo();
-    columns = dbContent.format.value(table);
+    auto columns = dbContent.format.value(table);
     //Check validity of newData
     QVector<QString> badkeys;
     QMap<QString, QString>::iterator i;

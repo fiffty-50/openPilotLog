@@ -83,8 +83,8 @@ class NewFlightDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFlightDialog(QWidget *parent, Db::editRole edRole);
-    explicit NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole);
+    explicit NewFlightDialog(Db::editRole edRole, QWidget *parent);
+    explicit NewFlightDialog(qint32 rowId, Db::editRole edRole, QWidget *parent);
     ~NewFlightDialog();
 
     //QStringList* getResult();
@@ -95,7 +95,7 @@ private:
 
     void setup();
 
-    void formFiller(Flight oldFlight);
+    void formFiller(qint32 rowId);
 
     void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
 
@@ -216,7 +216,8 @@ signals:
 
 private:
     Db::editRole role;
-    Flight entry;
+    //Flight entry;
+    qint32 oldRowId;
     bool doUpdate;
     Ui::NewFlight *ui;
     QMap<QLineEdit*, int> lineEditBitMap;

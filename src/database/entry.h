@@ -26,19 +26,26 @@
  * It can be seen as a row in a table within the database.
  *
  */
-class Entry
+class Entry : public QObject
 {
+    Q_OBJECT
 public:
-    Entry();
-    Entry(QString table, int row);
-    Entry(QString table, QMap<QString, QString> newData);
+    Entry(QObject* parent = nullptr);
+    Entry(QString table, int row, QObject* parent = nullptr); // deprecated
+    Entry(QString table, QMap<QString, QString> newData, QObject* parent = nullptr); // deprecated
+
+    Entry(Db::table table, int row, QObject* parent = nullptr);
+    Entry(Db::table table, QMap<QString, QString> newData, QObject* parent = nullptr);
+
+    QMap<QString, QString> getData() const;
+    void setData(QMap<QString, QString> &value);
+
+    QPair<QString, int> getPosition() const;
+    void setPosition(const QPair<QString, int> &value);
 
     QPair   <QString, int>       position = QPair<QString, int>();    // Position within the database, i.e. <table,row>
-    QVector <QString>            columns  = QVector<QString>();       // The columns within the table
     QMap    <QString, QString>   data     = QMap<QString, QString>(); // Tha data to fill that table, <column,value>
     QString                      error    = QString();                // holds sql errors (if they ocurred)
-
-    void setData(QMap<QString, QString> &value);
 
     bool commit();
     bool remove();
@@ -55,6 +62,11 @@ public:
 private:
     bool insert();
     bool update();
+    QString tableName(Db::table);
+
+signals:
+    void commitSuccessful();
+    void sqlError(QString &errorString);
 };
 
 #endif // ENTRY_H

@@ -18,19 +18,76 @@
 #include "entry.h"
 #include "debug.h"
 
-Entry::Entry()
+Entry::Entry(QObject *parent) : QObject(parent)
 {
-
+    // after creating an empty object, you can use setData and setPosition to make it ready for commit()
 }
 
-Entry::Entry(QString table, int row)
+Entry::Entry(Db::table table, int row, QObject *parent)  : QObject(parent)
+{
+    position.first = tableName(table);
+    //retreive database layout
+    const auto dbContent = DbInfo();
+    //Check database for row id
+    QString statement = "SELECT COUNT(*) FROM " + position.first + " WHERE _rowid_=" + QString::number(row);
+    QSqlQuery q(statement);
+    DEB(statement);
+    q.next();
+    int count = q.value(0).toInt();
+    if (count == 0) {
+        DEB("No Entry found for row id: " << row );
+        position.second = 0;
+    } else {
+        DEB("Retreiving data for row id: " << row);
+        QString statement = "SELECT * FROM " +  position.first + " WHERE _rowid_=" + QString::number(row);
+
+        QSqlQuery q(statement);
+        q.next();
+        for (int i = 0; i < dbContent.format.value(position.first).length(); i++) {
+            data.insert(dbContent.format.value(position.first)[i], q.value(i).toString());
+        }
+
+        error = q.lastError().text();
+        if (error.length() > 2) {
+            DEB("Error: " << q.lastError().text());
+            position.second = 0;
+        } else {
+            position.second = row;
+        }
+    }
+}
+
+Entry::Entry(Db::table table, QMap<QString, QString> newData, QObject *parent) : QObject(parent)
+{
+    position.first = tableName(table);
+    position.second = 0; // new entry
+    //retreive database layout
+    const auto dbContent = DbInfo();
+    QVector<QString> columns;
+
+    //Check validity of newData
+    QVector<QString> badkeys;
+    QMap<QString, QString>::iterator i;
+    for (i = newData.begin(); i != newData.end(); ++i) {
+        if (!columns.contains(i.key())) {
+            DEB(i.key() << "Not in column list for table " << table << ". Discarding.");
+            badkeys << i.key();
+        }
+    }
+    for (const auto &var : badkeys) {
+        newData.remove(var);
+    }
+    this->setData(newData);
+}
+
+Entry::Entry(QString table, int row, QObject *parent)  : QObject(parent)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
 
     if (dbContent.tables.contains(table)) {
         position.first = table;
-        columns = dbContent.format.value(table);
+        auto columns = dbContent.format.value(table);
     } else {
         DEB(table << " not a table in database. Unable to create Entry object.");
         position.first = QString();
@@ -65,15 +122,16 @@ Entry::Entry(QString table, int row)
     }
 }
 
-Entry::Entry(QString table, QMap<QString, QString> newData)
+Entry::Entry(QString table, QMap<QString, QString> newData, QObject *parent)  : QObject(parent)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
+    QVector<QString> columns;
 
     if (dbContent.tables.contains(table)) {
         position.first = table;
         position.second = 0;
-        columns = dbContent.format.value(table);
+        columns << dbContent.format.value(table);
     } else {
         DEB(table << " not a table in database. Unable to create Entry object.");
         position.first = QString();
@@ -93,11 +151,26 @@ Entry::Entry(QString table, QMap<QString, QString> newData)
     data = newData;
 }
 
+QMap<QString, QString> Entry::getData() const
+{
+    return data;
+}
+
+QPair<QString, int> Entry::getPosition() const
+{
+    return position;
+}
+
+void Entry::setPosition(const QPair<QString, int> &value)
+{
+    position = value;
+}
+
 void Entry::setData(QMap<QString, QString> &value)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
-    columns = dbContent.format.value(position.first);
+    auto columns = dbContent.format.value(position.first);
 
     //Check validity of newData
     QVector<QString> badkeys;
@@ -166,7 +239,9 @@ bool Entry::insert()
     //check prerequisites
 
     if (data.isEmpty()) {
-        DEB("Object Contains no data. Aborting.");
+        QString errorMsg = "Error Preparing Query: Object Contains no data. Aborting.";
+        DEB(errorMsg);
+        emit sqlError(errorMsg);
         return false;
     }
     QString statement = "INSERT INTO " + position.first + QLatin1String(" (");
@@ -186,15 +261,25 @@ bool Entry::insert()
     error = q.lastError().text();
     if (error.length() < 2) {
         DEB("Entry successfully committed.");
+        emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit. Query Error: " << q.lastError().text());
+        emit sqlError(error);
         return false;
     }
 }
 
 bool Entry::update()
 {
+    //check prerequisites
+
+    if (data.isEmpty()) {
+        QString errorMsg = "Error Preparing Query: Object Contains no data. Aborting.";
+        DEB(errorMsg);
+        emit sqlError(errorMsg);
+        return false;
+    }
     //create query
     QString statement = "UPDATE " + position.first + " SET ";
 
@@ -216,10 +301,39 @@ bool Entry::update()
     error = q.lastError().text();
     if (error.length() < 2) {
         DEB("Object successfully updated.");
+        emit commitSuccessful();
         return true;
     } else {
-        DEB("Query Error: " << q.lastError().text());
+        DEB("Query Error: " << error);
+        emit sqlError(error);
         return false;
+    }
+}
+
+inline QString Entry::tableName(Db::table table)
+{
+    switch (table) {
+    case Db::pilots:
+        return "pilots";
+        break;
+    case Db::tails:
+        return "tails";
+        break;
+    case Db::aircraft:
+        return "aircraft";
+        break;
+    case Db::flights:
+        return "flights";
+        break;
+    case Db::airports:
+        return "airports";
+        break;
+    case Db::changelog:
+        return "changelog";
+        break;
+    default:
+        return "INVALID";
+        break;
     }
 }
 

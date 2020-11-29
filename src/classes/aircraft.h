@@ -26,11 +26,11 @@
  */
 class Aircraft : public Entry
 {
-//    using Entry::Entry;
+Q_OBJECT
 public:
-    Aircraft();
-    Aircraft(int tail_id);
-    Aircraft(QMap<QString, QString> newData);
+    Aircraft(QObject* parent = nullptr);
+    Aircraft(int tail_id, QObject* parent = nullptr);
+    Aircraft(QMap<QString, QString> newData, QObject* parent = nullptr);
 };
 
 #endif // AIRCRAFT_H

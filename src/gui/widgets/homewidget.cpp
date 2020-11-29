@@ -38,6 +38,6 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    NewFlightDialog nf(this, Flight(11), Db::editExisting);
+    NewFlightDialog nf(11, Db::editExisting, this);
     nf.exec();
 }

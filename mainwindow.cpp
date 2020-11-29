@@ -125,7 +125,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlightDialog nf = NewFlightDialog(this, Db::createNew);
+    NewFlightDialog nf = NewFlightDialog(Db::createNew, this);
     nf.exec();
 
 }

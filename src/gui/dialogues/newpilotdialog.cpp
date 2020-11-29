@@ -70,7 +70,7 @@ NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget
     ui(new Ui::NewPilot)
 {
     DEB("New NewPilotDialog\n");
-    oldEntry = existingEntry;
+    oldEntry.position = existingEntry.position;
     role = edRole;
     ui->setupUi(this);
 

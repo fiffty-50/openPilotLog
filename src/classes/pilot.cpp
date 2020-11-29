@@ -20,13 +20,14 @@
 
 
 
-Pilot::Pilot()
+Pilot::Pilot(QObject* parent)
 {
-
+    this->setParent(parent);
 }
 
-Pilot::Pilot(int pilot_id)
+Pilot::Pilot(int pilot_id, QObject *parent)
 {
+    this->setParent(parent);
     //retreive database layout
     const auto dbContent = DbInfo();
     auto table = QLatin1String("pilots");
@@ -62,13 +63,14 @@ Pilot::Pilot(int pilot_id)
     }
 }
 
-Pilot::Pilot(QMap<QString, QString> newData)
+Pilot::Pilot(QMap<QString, QString> newData, QObject *parent)
 {
+    this->setParent(parent);
     QString table = "pilots";
 
     //retreive database layout
     const auto dbContent = DbInfo();
-    columns = dbContent.format.value(table);
+    auto columns = dbContent.format.value(table);
 
     //Check validity of newData
     QVector<QString> badkeys;

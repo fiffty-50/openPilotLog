@@ -18,13 +18,14 @@
 #include "flight.h"
 #include "debug.h"
 
-Flight::Flight()
+Flight::Flight(QObject *parent)
 {
-
+    this->setParent(parent);
 }
 
-Flight::Flight(int flight_id)
+Flight::Flight(int flight_id, QObject *parent)
 {
+    this->setParent(parent);
     //retreive database layout
     const auto dbContent = DbInfo();
 
@@ -62,13 +63,14 @@ Flight::Flight(int flight_id)
     }
 }
 
-Flight::Flight(QMap<QString, QString> newData)
+Flight::Flight(QMap<QString, QString> newData, QObject *parent)
 {
+    this->setParent(parent);
     QString table = "flights";
 
     //retreive database layout
     const auto dbContent = DbInfo();
-    columns = dbContent.format.value(table);
+    auto columns = dbContent.format.value(table);
 
     //Check validity of newData
     QVector<QString> badkeys;

@@ -48,7 +48,7 @@ public:
     //to create new tail from scratch
     explicit NewTailDialog(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
     //to edit existing tail
-    explicit NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
+    explicit NewTailDialog(int rowId, Db::editRole edRole, QWidget *parent = nullptr);
 
     ~NewTailDialog();
 private slots:
@@ -73,7 +73,7 @@ private:
 
     Db::editRole role;
 
-    Aircraft oldEntry;
+    qint32 rowId;
 
     QStringList aircraftlist;
 
@@ -85,7 +85,7 @@ private:
 
     void setupValidators();
 
-    void formFiller(Entry);
+    void formFiller(Db::table table, int rowId);
 
     bool verify();
 };

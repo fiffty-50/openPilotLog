@@ -49,13 +49,17 @@ class Db
          * \brief The editRole enum {createNew, editExisting} is used to differentiate
          * between creating a new entry in the database vs editing an existing one
          */
-        enum editRole {createNew, editExisting};
+        enum editRole { createNew, editExisting };
         /*!
          * \brief The matchType enum {exactMatch, partialMatch} is used to determine the
          * matching when using a WHERE sql statement. exactMatch results in a "=" operator,
          * whereas partiasMatch results in a "LIKE" operator
          */
-        enum matchType {exactMatch, partialMatch};       
+        enum matchType { exactMatch, partialMatch };
+        /*!
+         * \brief The table enum contains the tables accessible in the database
+         */
+        enum table { pilots, tails, flights, aircraft, airports, changelog };
         /*!
          * \brief connect establishes the database connection. Only needs to be called once
          * within the application. Database is available thereafter, objects can be

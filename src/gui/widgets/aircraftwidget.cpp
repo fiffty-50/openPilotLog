@@ -150,7 +150,7 @@ void AircraftWidget::tableView_selectionChanged()
         DEB("Selected Tails(s) with ID: " << selectedTails);
     }
     if(selectedTails.length() == 1) {
-        auto nt = NewTailDialog(Aircraft(selectedTails.first()), Db::editExisting, this);
+        auto nt = NewTailDialog(selectedTails.first(), Db::editExisting, this);
         connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
         connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
         ui->stackedWidget->addWidget(&nt);
