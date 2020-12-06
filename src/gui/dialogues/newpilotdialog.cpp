@@ -19,6 +19,9 @@
 #include "ui_newpilot.h"
 #include "debug.h"
 
+#include "src/experimental/Db.h"
+#include "src/experimental/UserInput.h"
+
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
  * María José Carreño Quiñones
@@ -162,18 +165,20 @@ void NewPilotDialog::submitForm()
     displayName.append(ui->picfirstnameLineEdit->text().left(1));
     displayName.append(QLatin1Char('.'));
     newData.insert("displayname",displayName);
-    //create db object
+
+    using namespace experimental;
+    auto uin = newPilotInput(newData);
+
     switch (role) {
-    case Db::createNew: {
-        auto newEntry = Pilot(newData);;
-        DEB("New Object: " << newEntry);
-        newEntry.commit();
+    case Db::createNew:
+        DEB("New Object: " << newData);
+        /// [George]: we should check if db operation was succesful
+        /// if not i assume we should just emit inputRejected or smth?
+        if(!DB::commit(uin)) emit QDialog::rejected();
         break;
-    }
     case Db::editExisting:
-        oldEntry.setData(newData);
-        DEB("updated entry: " << oldEntry);
-        oldEntry.commit();
+        DEB("updating entry with: " << newData);
+        if(!DB::update(uin)) emit QDialog::rejected();
         break;
     }
 }

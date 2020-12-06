@@ -248,6 +248,9 @@ const QStringList templateTables= {
 
 bool DbSetup::createDatabase()
 {
+    /// [George]: Not necessary to heap allocate for such a trivial task
+    /// TODO: Since you want to be fancy well do it with some cheeky bit operations
+    /// for the lolz.
     QVector<bool> returnValues;
 
     DEB("Creating tables...");
@@ -258,14 +261,12 @@ bool DbSetup::createDatabase()
     returnValues << importDefaultData();
 
     for (const auto& allGood : returnValues) {
-        if (!allGood) {
+        if (!allGood){
             return false;
-        } else {
-            DEB("Database successfully created!");
-            return true;
         }
     }
-    return false;
+    DEB("Database successfully created!");
+    return true;
 }
 
 

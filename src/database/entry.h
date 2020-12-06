@@ -19,8 +19,8 @@
 #define ENTRY_H
 
 #include <QCoreApplication>
-#include "src/database/db.h"
-#include "src/database/dbinfo.h"
+#include "db.h"
+#include "dbinfo.h"
 /*!
  * \brief The Entry class is the base class for database entries.
  * It can be seen as a row in a table within the database.
