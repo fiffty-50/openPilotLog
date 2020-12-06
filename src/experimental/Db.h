@@ -91,7 +91,8 @@ bool insertPilot(UserInput& uin)
  */
 class DB {
 private:
-    static QVector<QString> columns;
+    static QMap<QString, QStringList> database_layout; // contains the column names for all tables.
+    static QStringList tables; //contains the table names
 public:
     /*!
      * \brief Initialise DB class and populate columns.
@@ -159,16 +160,14 @@ public:
     static
     bool verify(Entry entry)
     {
-        //retreive database layout
-        const auto dbContent = DbInfo();
-        columns = dbContent.format.value(entry.position.first);
         TableData data = entry.data();
         auto position = entry.position;
+        auto good_columns = database_layout.value(entry.position.first);
 
         //Check validity of newData
-        QVector<QString> badkeys;
+        QStringList badkeys;
         for (auto i = data.cbegin(); i != data.cend(); ++i) {
-            if (!columns.contains(i.key())) {
+            if (!good_columns.contains(i.key())) {
                 DEB(i.key() << "Not in column list for table " << position.first << ". Discarding.");
                 badkeys << i.key();
             }
@@ -178,6 +177,7 @@ public:
         }
         entry.populate_data(data);
         return update(entry);
+        ///[F] maybe this should be the other way around, i.e. update calls verify instead of verify calling update?
     }
 
 };
