@@ -174,7 +174,7 @@ void NewPilotDialog::submitForm()
         DEB("New Object: " << newData);
         /// [George]: we should check if db operation was succesful
         /// if not i assume we should just emit inputRejected or smth?
-        if(!DB::commit(uin)) emit QDialog::rejected();
+        if(!DB::insert(uin)) emit QDialog::rejected();
         break;
     case Db::editExisting:
         DEB("updating entry with: " << newData);
