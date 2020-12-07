@@ -13,26 +13,8 @@
 
 namespace experimental {
 
-/// [F] Just to put it somewhere planned DB member functions:
-/// static bool init()                  -   maybe call it connect()?
-/// static bool disconnect()            -   close the database connection
-/// static bool commit(Entry entry)     -   upload to database, calls either INSERT or UPDATE
-/// bool insert(Entry entry)            -   (INSERT INTO tablename VALUES...)
-/// bool update(Entry entry)            -   (UPDATE tablename SET...)
-/// static bool delete(Entry entry)     -   (DELETE FROM tableName WHERE ...)
-/// static bool exists(Entry entry)     -   Check if entry exists in DB
-///
-/// So a user input would pass the following stages:
-/// 1) Create UserInput object from Line Edits
-/// 2) process UserInput to obtain Entry object
-/// 3) Db operates on entry object (commit, delete, whatever)
-///
-/// Idea for processing:
-/// static Entry processUserInput(UserInput userInput) - check the user input, perform matching of foreign keys and return an entry object ready for submission
-/// ColumnData matchForeignKey (ColName, ColData) - matches a user input to a foreign key, i.e. a registration to a tail_id or a Pilot Name to a pilot_id
-/// Entry prepareDataForCommit(Entry entry) - checks data is ready for submission
-///
-///
+/// [F] ideas for functions of db class:
+/// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming    
 
 /// SELF DOCUMENTING CODE
 using ColName = QString;
