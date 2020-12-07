@@ -13,6 +13,27 @@
 
 namespace experimental {
 
+/// [F] Just to put it somewhere planned DB member functions:
+/// static bool init()                  -   maybe call it connect()?
+/// static bool disconnect()            -   close the database connection
+/// static bool commit(Entry entry)     -   upload to database, calls either INSERT or UPDATE
+/// bool insert(Entry entry)            -   (INSERT INTO tablename VALUES...)
+/// bool update(Entry entry)            -   (UPDATE tablename SET...)
+/// static bool delete(Entry entry)     -   (DELETE FROM tableName WHERE ...)
+/// static bool exists(Entry entry)     -   Check if entry exists in DB
+///
+/// So a user input would pass the following stages:
+/// 1) Create UserInput object from Line Edits
+/// 2) process UserInput to obtain Entry object
+/// 3) Db operates on entry object (commit, delete, whatever)
+///
+/// Idea for processing:
+/// static Entry processUserInput(UserInput userInput) - check the user input, perform matching of foreign keys and return an entry object ready for submission
+/// ColumnData matchForeignKey (ColName, ColData) - matches a user input to a foreign key, i.e. a registration to a tail_id or a Pilot Name to a pilot_id
+/// Entry prepareDataForCommit(Entry entry) - checks data is ready for submission
+///
+///
+
 /// SELF DOCUMENTING CODE
 using ColName = QString;
 using ColData = QString;
@@ -20,6 +41,7 @@ using TableName = QString;
 using RowId = int;
 using DataPosition = QPair<TableName, RowId>;
 using TableData = QMap<ColName, ColData>;
+using ColumnData = QPair<ColName, ColData>;
 
 // DEFAULTS
 auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
@@ -91,8 +113,8 @@ bool insertPilot(UserInput& uin)
  */
 class DB {
 private:
-    static QMap<QString, QStringList> database_layout; // contains the column names for all tables.
-    static QStringList tables; //contains the table names
+    static QStringList tableNames;
+    static QMap<TableName, QStringList> tableColumns;
 public:
     /*!
      * \brief Initialise DB class and populate columns.
@@ -158,11 +180,13 @@ public:
      * \brief Verify entry data is sane for the database.
      */
     static
-    bool verify(Entry entry)
+    Entry prepareDataForCommit(Entry entry)
+    /// [F] this function does not really verify data, it just removes bad entries,
+    /// maybe returning the 'cleaned up' entry would be better?
     {
         TableData data = entry.data();
         auto position = entry.position;
-        auto good_columns = database_layout.value(entry.position.first);
+        auto good_columns = tableColumns.value(entry.position.first);
 
         //Check validity of newData
         QStringList badkeys;
@@ -176,7 +200,7 @@ public:
             data.remove(var);
         }
         entry.populate_data(data);
-        return update(entry);
+        return entry;
         ///[F] maybe this should be the other way around, i.e. update calls verify instead of verify calling update?
     }
 
