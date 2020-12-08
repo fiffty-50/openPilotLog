@@ -157,35 +157,6 @@ public:
             return false;
         }
     }
-
-    /*!
-     * \brief Verify entry data is sane for the database.
-     */
-    static
-    Entry prepareDataForCommit(Entry entry)
-    /// [F] this function does not really verify data, it just removes bad entries,
-    /// maybe returning the 'cleaned up' entry would be better?
-    {
-        TableData data = entry.data();
-        auto position = entry.position;
-        auto good_columns = tableColumns.value(entry.position.first);
-
-        //Check validity of newData
-        QStringList badkeys;
-        for (auto i = data.cbegin(); i != data.cend(); ++i) {
-            if (!good_columns.contains(i.key())) {
-                DEB(i.key() << "Not in column list for table " << position.first << ". Discarding.");
-                badkeys << i.key();
-            }
-        }
-        for (const auto &var : badkeys) {
-            data.remove(var);
-        }
-        entry.populate_data(data);
-        return entry;
-        ///[F] maybe this should be the other way around, i.e. update calls verify instead of verify calling update?
-    }
-
 };
 
 }  // namespace experimental
