@@ -33,7 +33,8 @@ SOURCES += \
     src/database/dbinfo.cpp \
     src/database/dbsetup.cpp \
     src/database/entry.cpp \
-    src/experimental/UserInput.cpp \
+    src/experimental/DataBase.cpp \
+    src/experimental/Entry.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -44,8 +45,7 @@ SOURCES += \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/totalswidget.cpp \
-    src/experimental/Db.cpp
+    src/gui/widgets/totalswidget.cpp
 
 HEADERS += \
     debug.h \
@@ -65,6 +65,9 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/dbsetup.h \
     src/database/entry.h \
+    src/experimental/DataBase.h \
+    src/experimental/Decl.h \
+    src/experimental/Entry.h \
     src/experimental/UserInput.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
@@ -76,8 +79,7 @@ HEADERS += \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/gui/widgets/totalswidget.h \
-    src/experimental/Db.h
+    src/gui/widgets/totalswidget.h
 
 FORMS += \
     mainwindow.ui \

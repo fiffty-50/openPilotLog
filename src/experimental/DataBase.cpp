@@ -1,8 +1,17 @@
-#include "Db.h"
+#include "DataBase.h"
 
-using namespace experimental;
+namespace experimental {
 
-bool DB::connect()
+DataBase* DataBase::instance = nullptr;
+
+DataBase* DataBase::getInstance()
+{
+    return instance ?: new DataBase();
+//    if(!instance)
+//    return instance;
+}
+
+bool DataBase::connect()
 {
     const QString driver("QSQLITE");
 
@@ -33,7 +42,7 @@ bool DB::connect()
     return true;
 }
 
-bool DB::commit(Entry entry)
+bool DataBase::commit(Entry entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -42,7 +51,7 @@ bool DB::commit(Entry entry)
     }
 }
 
-bool DB::remove(Entry entry)
+bool DataBase::remove(Entry entry)
 {
     if (!exists(entry)) {
         DEB("Error: Entry does not exist.");
@@ -65,9 +74,9 @@ bool DB::remove(Entry entry)
     }
 }
 
-bool DB::exists(Entry entry)
+bool DataBase::exists(Entry entry)
 {
-    if (entry.position.second == 0)
+    if(entry.position == DEFAULT_PILOT_POSITION)
         return false;
 
     //Check database for row id
@@ -87,7 +96,7 @@ bool DB::exists(Entry entry)
 }
 
 
-bool DB::update(Entry updated_entry)
+bool DataBase::update(Entry updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.position.first + " SET ";
@@ -116,7 +125,7 @@ bool DB::update(Entry updated_entry)
     }
 }
 
-bool DB::insert(Entry newEntry)
+bool DataBase::insert(Entry newEntry)
 {
     auto data = newEntry.getData();
     DEB("Inserting...");
@@ -145,4 +154,9 @@ bool DB::insert(Entry newEntry)
         DEB("Query Error: " << q.lastError().text());
         return false;
     }
+
+}
+
+DataBase* DB() { return DataBase::getInstance(); }
+
 }

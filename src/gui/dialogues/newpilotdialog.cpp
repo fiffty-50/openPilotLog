@@ -19,7 +19,7 @@
 #include "ui_newpilot.h"
 #include "debug.h"
 
-#include "src/experimental/Db.h"
+#include "src/experimental/DataBase.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
@@ -87,6 +87,9 @@ NewPilotDialog::NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, 
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
+    using namespace experimental;
+    connect(DB(), &DataBase::commitUnsuccessful,
+            this, &NewPilotDialog::onCommitUnsuccessful);
     oldPilotEntry = oldEntry;
     //to do
 }
@@ -176,12 +179,12 @@ void NewPilotDialog::submitForm()
     switch (role) {
     case Db::editExisting:
         oldEntry.setData(newData);
-        DB::commit(oldPilotEntry);
+        DataBase::commit(oldPilotEntry);
         // to do: handle unsuccessful commit
         break;
     case Db::createNew:
         auto newEntry = PilotEntry(newData);
-        DB::commit(newEntry);
+        DataBase::commit(newEntry);
         // to do: handle unsuccessful commit
         break;
     }
