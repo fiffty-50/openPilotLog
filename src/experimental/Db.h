@@ -13,6 +13,9 @@
 
 namespace experimental {
 
+/// [F] ideas for functions of db class:
+/// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming    
+
 /// SELF DOCUMENTING CODE
 using ColName = QString;
 using ColData = QString;
@@ -20,6 +23,7 @@ using TableName = QString;
 using RowId = int;
 using DataPosition = QPair<TableName, RowId>;
 using TableData = QMap<ColName, ColData>;
+using ColumnData = QPair<ColName, ColData>;
 
 // DEFAULTS
 auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
@@ -91,7 +95,8 @@ bool insertPilot(UserInput& uin)
  */
 class DB {
 private:
-    static QVector<QString> columns;
+    static QStringList tableNames;
+    static QMap<TableName, QStringList> tableColumns;
 public:
     /*!
      * \brief Initialise DB class and populate columns.
@@ -152,34 +157,6 @@ public:
             return false;
         }
     }
-
-    /*!
-     * \brief Verify entry data is sane for the database.
-     */
-    static
-    bool verify(Entry entry)
-    {
-        //retreive database layout
-        const auto dbContent = DbInfo();
-        columns = dbContent.format.value(entry.position.first);
-        TableData data = entry.data();
-        auto position = entry.position;
-
-        //Check validity of newData
-        QVector<QString> badkeys;
-        for (auto i = data.cbegin(); i != data.cend(); ++i) {
-            if (!columns.contains(i.key())) {
-                DEB(i.key() << "Not in column list for table " << position.first << ". Discarding.");
-                badkeys << i.key();
-            }
-        }
-        for (const auto &var : badkeys) {
-            data.remove(var);
-        }
-        entry.populate_data(data);
-        return update(entry);
-    }
-
 };
 
 }  // namespace experimental
