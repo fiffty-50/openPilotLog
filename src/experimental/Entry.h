@@ -16,16 +16,16 @@ namespace experimental {
  */
 class Entry {
 public:
-    QPair<QString, int> position;
+    DataPosition position;
 protected:
-    QMap<QString, QString> tableData;
+    TableData tableData;
 public:
     Entry() = default;
     Entry(const Entry&) = default;
     void operator=(const Entry&);
-    Entry(QPair<QString, int> position_);
-    void setData(QMap<QString, QString> data);
-    const QMap<QString, QString>& getData();
+    Entry(DataPosition position_);
+    void setData(TableData table_data);
+    const TableData& getData();
 
 };
 
@@ -35,7 +35,7 @@ public:
     PilotEntry(const PilotEntry& pe);
     void operator=(const PilotEntry& pe);
     PilotEntry(int row_id);
-    PilotEntry(QMap<QString, QString> fromNewPilotDialog);
+    PilotEntry(TableData fromNewPilotDialog);
 };
 
 }

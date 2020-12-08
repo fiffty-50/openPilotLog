@@ -2,7 +2,7 @@
 
 namespace experimental {
 
-DataBase* DataBase::instance = nullptr;
+DataBase* const DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
 {

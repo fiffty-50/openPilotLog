@@ -2,22 +2,22 @@
 
 namespace experimental {
 
-Entry::Entry(QPair<QString, int> position_)
+Entry::Entry(DataPosition position_)
     : position(position_)
 {}
 
-void Entry::operator=(const Entry& e)
+void Entry::operator=(const Entry& other)
 {
-    position = e.position;
-    tableData = e.tableData;
+    position = other.position;
+    tableData = other.tableData;
 }
 
-void Entry::setData(QMap<QString, QString> data)
+void Entry::setData(TableData table_data)
 {
-    tableData = data;
+    tableData = table_data;
 }
 
-const QMap<QString, QString>& Entry::getData()
+const TableData& Entry::getData()
 {
     return tableData;
 }
@@ -33,10 +33,10 @@ void PilotEntry::operator=(const PilotEntry& pe)
 }
 
 PilotEntry::PilotEntry(int row_id)
-    : Entry::Entry(QPair<QString, int>("pilots", row_id))
+    : Entry::Entry(DataPosition("pilots", row_id))
 {}
 
-PilotEntry::PilotEntry(QMap<QString, QString> fromNewPilotDialog)
+PilotEntry::PilotEntry(TableData fromNewPilotDialog)
     : Entry::Entry(DEFAULT_PILOT_POSITION)
 {
     setData(fromNewPilotDialog);

@@ -24,9 +24,9 @@ namespace experimental {
 
 class DataBase {
 private:
-    QStringList tableNames;
-    QMap<QString, QStringList> tableColumns;
-    static DataBase* instance;
+    TableNames tableNames;
+    TableColumns tableColumns;
+    static DataBase* const instance;
     DataBase() = default;
 public:
     // Ensure DB is not copiable or assignable
@@ -77,7 +77,7 @@ public:
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
- * DB().commit(...)
+ * DB()->commit(...)
  */
 DataBase* DB();
 
