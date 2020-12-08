@@ -9,28 +9,25 @@
 #include "src/database/dbinfo.h"
 #include "debug.h"
 
-#include "src/experimental/UserInput.h"
-//#include "Decl.h"
 #include "Entry.h"
 
 namespace experimental {
 
-/// [F] ideas for functions of db class:
-/// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming    
+// [F] ideas for functions of db class:
+// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming
 
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
+
+
 class DataBase {
 private:
     QStringList tableNames;
     QMap<QString, QStringList> tableColumns;
     static DataBase* instance;
     DataBase() = default;
-signals:
-    void commitSuccessful();
-    void commitUnsuccessful(QString message);
 public:
     // Ensure DB is not copiable or assignable
     DataBase(const DataBase&) = delete;

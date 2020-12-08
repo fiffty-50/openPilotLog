@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ENTRY_H
-#define ENTRY_H
+#ifndef ENTRY1_H
+#define ENTRY1_H
 
 #include <QCoreApplication>
 #include "db.h"

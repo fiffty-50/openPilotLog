@@ -20,7 +20,7 @@
 #include "debug.h"
 
 #include "src/experimental/DataBase.h"
-
+#include "src/experimental/Entry.h"
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
  * María José Carreño Quiñones
@@ -88,8 +88,8 @@ NewPilotDialog::NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, 
     ui(new Ui::NewPilot)
 {
     using namespace experimental;
-    connect(DB(), &DataBase::commitUnsuccessful,
-            this, &NewPilotDialog::onCommitUnsuccessful);
+//    connect(DB(), &DataBase::commitUnsuccessful,
+//            this, &NewPilotDialog::onCommitUnsuccessful);
     oldPilotEntry = oldEntry;
     //to do
 }
@@ -179,12 +179,12 @@ void NewPilotDialog::submitForm()
     switch (role) {
     case Db::editExisting:
         oldEntry.setData(newData);
-        DataBase::commit(oldPilotEntry);
+        DB()->commit(oldPilotEntry);
         // to do: handle unsuccessful commit
         break;
     case Db::createNew:
         auto newEntry = PilotEntry(newData);
-        DataBase::commit(newEntry);
+        experimental::DB()->commit(oldPilotEntry);
         // to do: handle unsuccessful commit
         break;
     }

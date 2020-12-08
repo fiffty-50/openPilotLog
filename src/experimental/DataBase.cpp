@@ -7,8 +7,6 @@ DataBase* DataBase::instance = nullptr;
 DataBase* DataBase::getInstance()
 {
     return instance ?: new DataBase();
-//    if(!instance)
-//    return instance;
 }
 
 bool DataBase::connect()

@@ -25,7 +25,10 @@
 #include <QCompleter>
 #include "src/classes/pilot.h"
 #include "src/classes/completionlist.h"
-#include "src/experimental/Entry.h"
+
+#include "src/experimental/DataBase.h"
+//#include "src/experimental/Entry.h"
+//#include "src/experimental/Decl.h"
 
 namespace Ui {
 class NewPilot;
@@ -34,7 +37,6 @@ class NewPilot;
 class NewPilotDialog : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit NewPilotDialog(Db::editRole, QWidget *parent = nullptr);
     explicit NewPilotDialog(Pilot, Db::editRole, QWidget *parent = nullptr);
@@ -42,7 +44,6 @@ public:
     ~NewPilotDialog();
 private slots:
     void on_buttonBox_accepted();
-    void onCommitUnsuccessful();
 private:
     Ui::NewPilot *ui;
 

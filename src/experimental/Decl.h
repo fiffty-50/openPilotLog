@@ -22,14 +22,15 @@ struct DataPosition : QPair<QString, int> {
     QString& tableName;
     int& rowId;
     DataPosition()
-        : QPair<QString, int>(), tableName(first), rowId(second)
+        : QPair<QString, int>::QPair(), tableName(first), rowId(second)
     {}
     DataPosition(QString tn, int ri)
-        : QPair<QString, int>(tn, ri), tableName(first), rowId(second)
+        : QPair<QString, int>::QPair(tn, ri), tableName(first), rowId(second)
     {}
 };
 
-auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
+auto const DEFAULT_PILOT_POSITION = QPair<QString, int>("pilots", 0);
+
 }
 
 #endif // DECL_H
