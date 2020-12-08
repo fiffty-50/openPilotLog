@@ -20,7 +20,6 @@
 #include "debug.h"
 
 #include "src/experimental/Db.h"
-#include "src/experimental/UserInput.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
@@ -82,6 +81,14 @@ NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget
 
     formFiller();
     ui->piclastnameLineEdit->setFocus();
+}
+
+NewPilotDialog::NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewPilot)
+{
+    oldPilotEntry = oldEntry;
+    //to do
 }
 
 NewPilotDialog::~NewPilotDialog()
@@ -165,12 +172,11 @@ void NewPilotDialog::submitForm()
     newData.insert("displayname",displayName);
 
     using namespace experimental;
-    //auto uin = newPilotInput(newData);
 
     switch (role) {
     case Db::editExisting:
         oldEntry.setData(newData);
-        DB::commit(oldEntry); // to do: make oldEntry experimental::PilotEntry at the moment
+        DB::commit(oldPilotEntry);
         // to do: handle unsuccessful commit
         break;
     case Db::createNew:
@@ -179,5 +185,4 @@ void NewPilotDialog::submitForm()
         // to do: handle unsuccessful commit
         break;
     }
-
 }

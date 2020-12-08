@@ -34,11 +34,12 @@ auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
  */
 class Entry {
 public:
-    const DataPosition position;
+    DataPosition position;
 protected:
     TableData tableData;
 public:
-    Entry() = delete;
+    Entry() {};
+    Entry(const Entry&) = default;
     Entry(DataPosition position_) : position(position_) {}
     void setData(TableData data) { tableData = data; }
     const TableData& getData() { return tableData; }
@@ -50,8 +51,9 @@ public:
 // the only difference will be that we will subclass Entry to have specialised
 // constructor
 class PilotEntry : public Entry {
-    PilotEntry() = delete;
 public:
+    PilotEntry() {};
+    PilotEntry(const PilotEntry&) = default;
     PilotEntry(int row_id) : Entry::Entry(DataPosition("pilots", row_id)) {}
     PilotEntry(TableData fromNewPilotDialog) : Entry::Entry(DataPosition("pilots", 0)) {
         setData(fromNewPilotDialog);
