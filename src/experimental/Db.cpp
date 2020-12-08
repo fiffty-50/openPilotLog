@@ -2,7 +2,7 @@
 
 using namespace experimental;
 
-bool DB::init()
+bool DB::connect()
 {
     const QString driver("QSQLITE");
 
@@ -31,4 +31,118 @@ bool DB::init()
         }
     }
     return true;
+}
+
+bool DB::commit(Entry entry)
+{
+    if (exists(entry)) {
+        return update(entry);
+    } else {
+        return insert(entry);
+    }
+}
+
+bool DB::remove(Entry entry)
+{
+    if (!exists(entry)) {
+        DEB("Error: Entry does not exist.");
+        return false;
+    }
+
+    QString statement = "DELETE FROM " + entry.position.first +
+            " WHERE _rowid_=" + QString::number(entry.position.second);
+    QSqlQuery q(statement);
+    //check result.
+    if (q.lastError().type() == QSqlError::NoError)
+    {
+        DEB("Entry " << entry.position.first << entry.position.second << " removed.");
+        return true;
+    } else {
+        DEB("Unable to delete.");
+        DEB("Query: " << statement);
+        DEB("Query Error: " << q.lastError().text());
+        return false;
+    }
+}
+
+bool DB::exists(Entry entry)
+{
+    if (entry.position.second == 0)
+        return false;
+
+    //Check database for row id
+    QString statement = "SELECT COUNT(*) FROM " + entry.position.first +
+            " WHERE _rowid_=" + QString::number(entry.position.second);
+    //this returns either 1 or 0 since row ids are unique
+    QSqlQuery q(statement);
+    q.next();
+    int rowId = q.value(0).toInt();
+    if (rowId) {
+        DEB("Entry exists with row ID: " << rowId);
+        return true;
+    } else {
+        DEB("Entry does not exist.");
+        return false;
+    }
+}
+
+
+bool DB::update(Entry updated_entry)
+{
+    auto data = updated_entry.getData();
+    QString statement = "UPDATE " + updated_entry.position.first + " SET ";
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.key() != QString()) {
+            statement += i.key() + QLatin1String("='") + i.value() + QLatin1String("', ");
+        } else {
+            DEB(i.key() << "is empty key. skipping.");
+        }
+    }
+    statement.chop(2); // Remove last comma
+    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(updated_entry.position.second));
+
+    DEB("UPDATE QUERY: " << statement);
+    QSqlQuery q(statement);
+    //check result.
+    if (q.lastError().type() == QSqlError::NoError)
+    {
+        DEB("Entry successfully committed.");
+        return true;
+    } else {
+        DEB("Unable to commit.");
+        DEB("Query: " << statement);
+        DEB("Query Error: " << q.lastError().text());
+        return false;
+    }
+}
+
+bool DB::insert(Entry newEntry)
+{
+    auto data = newEntry.getData();
+    DEB("Inserting...");
+    QString statement = "INSERT INTO " + newEntry.position.first + QLatin1String(" (");
+    QMap<QString, QString>::iterator i;
+    for (i = data.begin(); i != data.end(); ++i) {
+        statement += i.key() + QLatin1String(", ");
+    }
+    statement.chop(2);
+    statement += QLatin1String(") VALUES (");
+    for (i = data.begin(); i != data.end(); ++i) {
+        statement += QLatin1String("'") + i.value() + QLatin1String("', ");
+    }
+    statement.chop(2);
+    statement += QLatin1String(")");
+
+    QSqlQuery q(statement);
+    //check result.
+    if (q.lastError().type() == QSqlError::NoError)
+    {
+        DEB("Entry successfully committed.");
+        return true;
+    } else {
+        DEB("Unable to commit.");
+        DEB("Query: " << statement);
+        DEB("Query Error: " << q.lastError().text());
+        return false;
+    }
 }

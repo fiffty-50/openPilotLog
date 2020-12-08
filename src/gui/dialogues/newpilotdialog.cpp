@@ -149,7 +149,7 @@ void NewPilotDialog::submitForm()
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;
 
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
         QString key = le->objectName();
@@ -167,18 +167,20 @@ void NewPilotDialog::submitForm()
     newData.insert("displayname",displayName);
 
     using namespace experimental;
-    auto uin = newPilotInput(newData);
+    //auto uin = newPilotInput(newData);
+    auto entry = PilotEntry(newData);
 
-    switch (role) {
-    case Db::createNew:
-        DEB("New Object: " << newData);
+    if (role == Db::editExisting)
+        //entry.setPosition = oldEntry.position; //needs implementation in Entry class
+
+    if (!DB::commit(entry))
+    {
         /// [George]: we should check if db operation was succesful
         /// if not i assume we should just emit inputRejected or smth?
-        if(!DB::insert(uin)) emit QDialog::rejected();
-        break;
-    case Db::editExisting:
-        DEB("updating entry with: " << newData);
-        if(!DB::update(uin)) emit QDialog::rejected();
-        break;
+        /// [F] We should do something, emitting reject might not be the best
+        /// option since it closes the dialog. Maybe showing a QMessageBox with
+        /// what has gone wrong?
+        DEB("Commit unsucessful.");
     }
+
 }

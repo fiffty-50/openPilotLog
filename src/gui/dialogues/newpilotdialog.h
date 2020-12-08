@@ -49,6 +49,8 @@ private:
 
     Pilot oldEntry;
 
+    QPair<QString, int> oldPosition;
+
     void setupValidators();
 
     void setupCompleter();
