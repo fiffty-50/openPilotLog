@@ -151,14 +151,12 @@ void NewPilotDialog::submitForm()
 
     auto line_edits = this->findChildren<QLineEdit *>();
 
-    for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = le->text();
-        if (!key.isEmpty()) {
-            newData.insert(key, value);
-        }
+    for(auto& le : line_edits) {
+        auto key = le->objectName().remove("LineEdit");
+        auto value = le->text();
+        newData.insert(key, value);
     }
+
     QString displayName;
     displayName.append(ui->piclastnameLineEdit->text());
     displayName.append(QLatin1String(", "));
@@ -168,19 +166,18 @@ void NewPilotDialog::submitForm()
 
     using namespace experimental;
     //auto uin = newPilotInput(newData);
-    auto entry = PilotEntry(newData);
 
-    if (role == Db::editExisting)
-        //entry.setPosition = oldEntry.position; //needs implementation in Entry class
-
-    if (!DB::commit(entry))
-    {
-        /// [George]: we should check if db operation was succesful
-        /// if not i assume we should just emit inputRejected or smth?
-        /// [F] We should do something, emitting reject might not be the best
-        /// option since it closes the dialog. Maybe showing a QMessageBox with
-        /// what has gone wrong?
-        DEB("Commit unsucessful.");
+    switch (role) {
+    case Db::editExisting:
+        oldEntry.setData(newData);
+        DB::commit(oldEntry); // to do: make oldEntry experimental::PilotEntry at the moment
+        // to do: handle unsuccessful commit
+        break;
+    case Db::createNew:
+        auto newEntry = PilotEntry(newData);
+        DB::commit(newEntry);
+        // to do: handle unsuccessful commit
+        break;
     }
 
 }
