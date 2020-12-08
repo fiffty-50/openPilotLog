@@ -25,6 +25,7 @@
 #include <QCompleter>
 #include "src/classes/pilot.h"
 #include "src/classes/completionlist.h"
+#include "src/experimental/Db.h"
 
 namespace Ui {
 class NewPilot;
@@ -37,6 +38,7 @@ class NewPilotDialog : public QDialog
 public:
     explicit NewPilotDialog(Db::editRole, QWidget *parent = nullptr);
     explicit NewPilotDialog(Pilot, Db::editRole, QWidget *parent = nullptr);
+    explicit NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, QWidget *parent = nullptr);
     ~NewPilotDialog();
 
 private slots:
@@ -48,6 +50,8 @@ private:
     Db::editRole role;
 
     Pilot oldEntry;
+
+    experimental::PilotEntry oldPilotEntry;
 
     void setupValidators();
 

@@ -20,7 +20,6 @@
 #include "debug.h"
 
 #include "src/experimental/Db.h"
-#include "src/experimental/UserInput.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
@@ -82,6 +81,14 @@ NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget
 
     formFiller();
     ui->piclastnameLineEdit->setFocus();
+}
+
+NewPilotDialog::NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewPilot)
+{
+    oldPilotEntry = oldEntry;
+    //to do
 }
 
 NewPilotDialog::~NewPilotDialog()
@@ -149,16 +156,14 @@ void NewPilotDialog::submitForm()
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;
 
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
 
-    for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = le->text();
-        if (!key.isEmpty()) {
-            newData.insert(key, value);
-        }
+    for(auto& le : line_edits) {
+        auto key = le->objectName().remove("LineEdit");
+        auto value = le->text();
+        newData.insert(key, value);
     }
+
     QString displayName;
     displayName.append(ui->piclastnameLineEdit->text());
     displayName.append(QLatin1String(", "));
@@ -167,18 +172,17 @@ void NewPilotDialog::submitForm()
     newData.insert("displayname",displayName);
 
     using namespace experimental;
-    auto uin = newPilotInput(newData);
 
     switch (role) {
-    case Db::createNew:
-        DEB("New Object: " << newData);
-        /// [George]: we should check if db operation was succesful
-        /// if not i assume we should just emit inputRejected or smth?
-        if(!DB::insert(uin)) emit QDialog::rejected();
-        break;
     case Db::editExisting:
-        DEB("updating entry with: " << newData);
-        if(!DB::update(uin)) emit QDialog::rejected();
+        oldEntry.setData(newData);
+        DB::commit(oldPilotEntry);
+        // to do: handle unsuccessful commit
+        break;
+    case Db::createNew:
+        auto newEntry = PilotEntry(newData);
+        DB::commit(newEntry);
+        // to do: handle unsuccessful commit
         break;
     }
 }
