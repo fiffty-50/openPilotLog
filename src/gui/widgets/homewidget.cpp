@@ -38,6 +38,26 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    NewFlightDialog nf(this, Flight(11), Db::editExisting);
-    nf.exec();
+    using namespace experimental;
+    DB()->connect();
+    DataPosition dp = {"pilots", 7};
+    DEB(DB()->getEntryData(dp));
+    /*long intloop = 0;
+    long rangeloop = 0;
+    for (int i = 10; i < 100; i++) {
+        DataPosition dp = {"pilots", i};
+
+        auto start = std::chrono::system_clock::now();
+        DB()->getEntryData(dp);
+        auto stop = std::chrono::system_clock::now();
+        auto duration = stop - start;
+        intloop += duration.count();
+        auto start2 = std::chrono::system_clock::now();
+        DB()->getEntryDataFor(dp);
+        auto stop2 = std::chrono::system_clock::now();
+        auto duration2 = stop2 - start2;
+        rangeloop += duration2.count();
+    }
+    DEB("Average execution time: (int loop)   " << intloop/10000);
+    DEB("Average execution time: (range loop) " << rangeloop/10000);*/
 }

@@ -26,7 +26,7 @@ class DataBase {
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static DataBase* const instance;
+    static DataBase* instance;
     DataBase() = default;
 public:
     // Ensure DB is not copiable or assignable
@@ -69,6 +69,11 @@ public:
      * \brief deletes an entry from the database.
      */
     bool remove(Entry entry);
+
+    /*!
+     * \brief retreive entry data from the database to create an entry object
+     */
+    TableData getEntryData(DataPosition);
 
 };
 

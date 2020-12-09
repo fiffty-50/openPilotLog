@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;
 
-    Db::connect();
+//    Db::connect();
 
     QApplication openPilotLog(argc, argv);
     if(!setup()){

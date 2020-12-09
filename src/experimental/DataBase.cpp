@@ -2,11 +2,12 @@
 
 namespace experimental {
 
-DataBase* const DataBase::instance = nullptr;
+DataBase* DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
 {
-    return instance ?: new DataBase();
+    if (!instance) instance = new DataBase();
+    return instance;
 }
 
 bool DataBase::connect()
@@ -37,6 +38,7 @@ bool DataBase::connect()
             tableColumns.insert(table, columnNames);
         }
     }
+    DEB("Database Tables: " << tableNames);
     return true;
 }
 
@@ -153,6 +155,56 @@ bool DataBase::insert(Entry newEntry)
         return false;
     }
 
+}
+
+TableData DataBase::getEntryData(DataPosition dataPosition)
+{
+    // check table exists
+    if (!tableNames.contains(dataPosition.first)) {
+        DEB(dataPosition.first << " not a table in the database. Unable to retreive Entry data.");
+        // emit databaseError
+        return TableData();
+    }
+
+    //Check Database for rowId
+    QString statement = "SELECT COUNT(*) FROM " + dataPosition.first
+                      + " WHERE _rowid_=" + QString::number(dataPosition.second);
+    QSqlQuery checkQuery(statement);
+
+    if (checkQuery.lastError().type() != QSqlError::NoError) {
+        DEB("SQL error: " << checkQuery.lastError().text());
+        DEB("Statement: " << statement);
+        // emit sqlError(selectQuery.lastError().text(), statement)
+        return TableData();
+    }
+
+    checkQuery.next();
+    if (checkQuery.value(0).toInt() == 0) {
+        DEB("No Entry found for row id: " << dataPosition.second );
+        // emit databaseError("No Entry found for row id: " + dataPosition.second)
+        return TableData();
+    }
+
+    // Retreive TableData
+    DEB("Retreiving data for row id: " << dataPosition.second);
+    statement = "SELECT * FROM " + dataPosition.first
+              + " WHERE _rowid_=" + QString::number(dataPosition.second);
+
+    QSqlQuery selectQuery(statement);
+    if (selectQuery.lastError().type() != QSqlError::NoError) {
+        DEB("SQL error: " << selectQuery.lastError().text());
+        DEB("Statement: " << statement);
+        // emit sqlError(selectQuery.lastError().text(), statement)
+        return TableData();
+    }
+
+    selectQuery.next();
+    TableData entryData;
+
+    for (const auto &column : tableColumns.value(dataPosition.first)) {
+        entryData.insert(column, selectQuery.value(column).toString());
+    }
+    return entryData;
 }
 
 DataBase* DB() { return DataBase::getInstance(); }
