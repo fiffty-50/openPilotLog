@@ -6,6 +6,7 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlTableModel>
 #include "src/database/dbinfo.h"
 #include "debug.h"
 
@@ -74,6 +75,8 @@ public:
      * \brief retreive entry data from the database to create an entry object
      */
     TableData getEntryData(DataPosition);
+
+    TableData getEntryDataNew(DataPosition);
 
 };
 

@@ -207,6 +207,37 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
     return entryData;
 }
 
+TableData DataBase::getEntryDataNew(DataPosition dataPosition)
+{
+    // check table exists
+    if (!tableNames.contains(dataPosition.first)) {
+        DEB(dataPosition.first << " not a table in the database. Unable to retreive Entry data.");
+        // emit databaseError
+        return TableData();
+    }
+
+    QSqlTableModel model;
+    model.setTable(dataPosition.first);
+    model.setFilter("_rowid_=" + QString::number(dataPosition.second));
+    model.select();
+
+    if (model.rowCount() == 0) {
+        DEB("No Entry found for row id: " << dataPosition.second );
+        // emit databaseError("No Entry found for row id: " + dataPosition.second)
+        return TableData();
+    } else if (model.lastError().type() != QSqlError::NoError) {
+        DEB("SQL error: " << model.lastError().text());
+        // emit sqlError(selectQuery.lastError().text(), statement)
+        return TableData();
+    }
+
+    TableData entryData;
+    for (const auto column : tableColumns.value(dataPosition.first)) {
+        entryData.insert(column, model.record(0).value(column).toString());
+    }
+    return entryData;
+}
+
 DataBase* DB() { return DataBase::getInstance(); }
 
 }

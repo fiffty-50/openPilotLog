@@ -40,24 +40,24 @@ void HomeWidget::on_pushButton_clicked()
 {
     using namespace experimental;
     DB()->connect();
-    DataPosition dp = {"pilots", 7};
-    DEB(DB()->getEntryData(dp));
-    /*long intloop = 0;
-    long rangeloop = 0;
+    //DataPosition dp = {"pilots", 7};
+    //DEB(DB()->getEntryDataNew(dp));
+    long customFunc = 0;
+    long qSqlTableModelFunc = 0;
     for (int i = 10; i < 100; i++) {
-        DataPosition dp = {"pilots", i};
+        DataPosition dp = {"flights", i};
 
         auto start = std::chrono::system_clock::now();
         DB()->getEntryData(dp);
         auto stop = std::chrono::system_clock::now();
         auto duration = stop - start;
-        intloop += duration.count();
+        customFunc += duration.count();
         auto start2 = std::chrono::system_clock::now();
-        DB()->getEntryDataFor(dp);
+        DB()->getEntryDataNew(dp);
         auto stop2 = std::chrono::system_clock::now();
         auto duration2 = stop2 - start2;
-        rangeloop += duration2.count();
+        qSqlTableModelFunc += duration2.count();
     }
-    DEB("Average execution time: (int loop)   " << intloop/10000);
-    DEB("Average execution time: (range loop) " << rangeloop/10000);*/
+    DEB("Average execution time: (custom Func)        " << customFunc/10000 << "ms");
+    DEB("Average execution time: (qSqlTableModelFunc) " << qSqlTableModelFunc/10000 << "ms");
 }
