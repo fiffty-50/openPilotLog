@@ -16,10 +16,6 @@ const TableData& Entry::getData()
     return tableData;
 }
 
-PilotEntry::PilotEntry(const PilotEntry& pe)
-    : Entry::Entry(pe)
-{}
-
 PilotEntry::PilotEntry(int row_id)
     : Entry::Entry(DataPosition("pilots", row_id))
 {}

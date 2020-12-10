@@ -32,10 +32,10 @@ public:
 class PilotEntry : public Entry {
 public:
     PilotEntry() = default;
-    PilotEntry(const PilotEntry& pe);
+    PilotEntry(const PilotEntry& pe) = default;
     PilotEntry& operator=(const PilotEntry& pe) = default;
     PilotEntry(int row_id);
-    PilotEntry(TableData fromNewPilotDialog);
+    PilotEntry(TableData newPilotData);
 };
 
 }

@@ -14,6 +14,8 @@ using TableName = QString;
 using RowId = int;
 
 using TableNames = QStringList;
+/// [G]: May lead to some confusion. TableData suggest data for the entire table.
+/// but in reallity it is data per column *of single row* (unless i misunderstand)
 using TableData = QMap<ColName, ColData>;
 using ColumnData = QPair<ColName, ColData>;
 using ColumnNames = QStringList;
