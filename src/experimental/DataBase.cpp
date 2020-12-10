@@ -6,7 +6,7 @@ DataBase* DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
 {
-    if (!instance) instance = new DataBase();
+    if(!instance) instance = new DataBase();
     return instance;
 }
 
@@ -58,13 +58,13 @@ bool DataBase::remove(Entry entry)
         return false;
     }
 
-    QString statement = "DELETE FROM " + entry.position.first +
-            " WHERE _rowid_=" + QString::number(entry.position.second);
+    QString statement = "DELETE FROM " + entry.position.tableName +
+            " WHERE _rowid_=" + QString::number(entry.position.rowId);
     QSqlQuery q(statement);
     //check result.
     if (q.lastError().type() == QSqlError::NoError)
     {
-        DEB("Entry " << entry.position.first << entry.position.second << " removed.");
+        DEB("Entry " << entry.position.tableName << entry.position.rowId << " removed.");
         return true;
     } else {
         DEB("Unable to delete.");
@@ -80,8 +80,8 @@ bool DataBase::exists(Entry entry)
         return false;
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + entry.position.first +
-            " WHERE _rowid_=" + QString::number(entry.position.second);
+    QString statement = "SELECT COUNT(*) FROM " + entry.position.tableName +
+            " WHERE _rowid_=" + QString::number(entry.position.rowId);
     //this returns either 1 or 0 since row ids are unique
     QSqlQuery q(statement);
     q.next();
@@ -99,7 +99,7 @@ bool DataBase::exists(Entry entry)
 bool DataBase::update(Entry updated_entry)
 {
     auto data = updated_entry.getData();
-    QString statement = "UPDATE " + updated_entry.position.first + " SET ";
+    QString statement = "UPDATE " + updated_entry.position.tableName + " SET ";
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
         if (i.key() != QString()) {
             statement += i.key() + QLatin1String("='") + i.value() + QLatin1String("', ");
@@ -108,7 +108,7 @@ bool DataBase::update(Entry updated_entry)
         }
     }
     statement.chop(2); // Remove last comma
-    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(updated_entry.position.second));
+    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(updated_entry.position.rowId));
 
     DEB("UPDATE QUERY: " << statement);
     QSqlQuery q(statement);
@@ -129,7 +129,7 @@ bool DataBase::insert(Entry newEntry)
 {
     auto data = newEntry.getData();
     DEB("Inserting...");
-    QString statement = "INSERT INTO " + newEntry.position.first + QLatin1String(" (");
+    QString statement = "INSERT INTO " + newEntry.position.tableName + QLatin1String(" (");
     QMap<QString, QString>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement += i.key() + QLatin1String(", ");

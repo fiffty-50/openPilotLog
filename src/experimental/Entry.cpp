@@ -6,12 +6,6 @@ Entry::Entry(DataPosition position_)
     : position(position_)
 {}
 
-void Entry::operator=(const Entry& other)
-{
-    position = other.position;
-    tableData = other.tableData;
-}
-
 void Entry::setData(TableData table_data)
 {
     tableData = table_data;
@@ -20,16 +14,6 @@ void Entry::setData(TableData table_data)
 const TableData& Entry::getData()
 {
     return tableData;
-}
-
-PilotEntry::PilotEntry(const PilotEntry& pe)
-    : Entry::Entry(pe)
-{}
-
-void PilotEntry::operator=(const PilotEntry& pe)
-{
-    position = pe.position;
-    tableData = pe.tableData;
 }
 
 PilotEntry::PilotEntry(int row_id)
