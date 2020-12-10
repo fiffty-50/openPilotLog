@@ -22,7 +22,7 @@ protected:
 public:
     Entry() = default;
     Entry(const Entry&) = default;
-    void operator=(const Entry&);
+    Entry& operator=(const Entry&) = default;
     Entry(DataPosition position_);
     void setData(TableData table_data);
     const TableData& getData();
@@ -33,7 +33,7 @@ class PilotEntry : public Entry {
 public:
     PilotEntry() = default;
     PilotEntry(const PilotEntry& pe);
-    void operator=(const PilotEntry& pe);
+    PilotEntry& operator=(const PilotEntry& pe) = default;
     PilotEntry(int row_id);
     PilotEntry(TableData fromNewPilotDialog);
 };

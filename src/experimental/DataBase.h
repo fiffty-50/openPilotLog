@@ -26,7 +26,7 @@ class DataBase {
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static DataBase* const instance;
+    static DataBase* instance;
     DataBase() = default;
 public:
     // Ensure DB is not copiable or assignable
