@@ -36,6 +36,7 @@
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/classes/runguard.h"
+#include "src/experimental/DataBase.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

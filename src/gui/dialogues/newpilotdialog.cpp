@@ -65,12 +65,6 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     setupCompleter();
 
     using namespace experimental;
-
-    QObject::connect(DB(), &DataBase::commitSuccessful,
-            this, &NewPilotDialog::onCommitSuccessful);
-    QObject::connect(DB(), &DataBase::commitUnsuccessful,
-            this, &NewPilotDialog::onCommitUnsuccessful);
-
     pilotEntry = PilotEntry();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -84,12 +78,6 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     setupCompleter();
 
     using namespace experimental;
-
-    QObject::connect(DB(), &DataBase::commitSuccessful,
-            this, &NewPilotDialog::onCommitSuccessful);
-    QObject::connect(DB(), &DataBase::commitUnsuccessful,
-            this, &NewPilotDialog::onCommitUnsuccessful);
-
     pilotEntry = DB()->getPilotEntry(rowId);
     DEB("Pilot Entry position: " << pilotEntry.position);
     formFiller();

@@ -44,6 +44,8 @@ public:
 private slots:
     void on_buttonBox_accepted();
 
+public slots:
+
     void onCommitSuccessful();
 
     void onCommitUnsuccessful(const QString &sqlError, const QString &);
