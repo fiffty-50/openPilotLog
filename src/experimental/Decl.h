@@ -37,7 +37,6 @@ struct DataPosition : QPair<TableName, RowId> {
     DataPosition(const DataPosition& other) = default;
     DataPosition& operator=(const DataPosition& other) = default;
 };
-
 auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
 
 }

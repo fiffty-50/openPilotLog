@@ -18,27 +18,32 @@ namespace experimental {
  *  and data for new and existing entries in the database to operate on.
  */
 class Entry {
-public:
-    DataPosition position;
 protected:
+    DataPosition position;
     TableData tableData;
 public:
-    Entry() = default;
+    Entry() = delete; // Demand specificity from default constructor
     Entry(const Entry&) = default;
     Entry& operator=(const Entry&) = default;
     Entry(DataPosition position_);
+    Entry(TableData table_data);
+    Entry(DataPosition position_, TableData table_data);
+
     void setData(TableData table_data);
+    void setPosition(DataPosition position_);
+
+    const DataPosition& getPosition();
     const TableData& getData();
 
 };
 
-class PilotEntry : public Entry {
+struct PilotEntry : public Entry {
 public:
-    PilotEntry() = default;
+    PilotEntry();
     PilotEntry(const PilotEntry& pe) = default;
     PilotEntry& operator=(const PilotEntry& pe) = default;
     PilotEntry(int row_id);
-    PilotEntry(TableData newPilotData);
+    PilotEntry(TableData table_data);
 };
 
 }

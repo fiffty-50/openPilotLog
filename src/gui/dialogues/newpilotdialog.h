@@ -54,9 +54,7 @@ private:
 
     experimental::PilotEntry pilotEntry;
 
-    void setupValidators();
-
-    void setupCompleter();
+    inline void setup();
 
     void formFiller();
 

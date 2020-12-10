@@ -11,7 +11,8 @@ DataBase* DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
 {
-    if(!instance) instance = new DataBase();
+    if(!instance)
+        instance = new DataBase();
     return instance;
 }
 
@@ -19,19 +20,20 @@ bool DataBase::connect()
 {
     const QString driver("QSQLITE");
 
-    if (!QSqlDatabase::isDriverAvailable(driver)) return false;
+    if (!QSqlDatabase::isDriverAvailable(driver))
+        return false;
 
     QDir directory("data");
     QString databaseLocation = directory.filePath("logbook.db");
     QSqlDatabase db = QSqlDatabase::addDatabase(driver);
     db.setDatabaseName(databaseLocation);
 
-    if (!db.open()) return false;
+    if (!db.open())
+        return false;
 
     DEB("Database connection established.");
     // Enable foreign key restrictions
     QSqlQuery query("PRAGMA foreign_keys = ON;");
-    // Retreive database layout and store in member variables
     tableNames = db.tables();
 
     QStringList columnNames;
@@ -76,13 +78,13 @@ bool DataBase::remove(Entry entry)
         return false;
     }
 
-    QString statement = "DELETE FROM " + entry.position.tableName +
-            " WHERE _rowid_=" + QString::number(entry.position.rowId);
+    QString statement = "DELETE FROM " + entry.getPosition().tableName +
+            " WHERE _rowid_=" + QString::number(entry.getPosition().rowId);
     QSqlQuery q(statement);
-    //check result.
+
     if (q.lastError().type() == QSqlError::NoError)
     {
-        DEB("Entry " << entry.position.tableName << entry.position.rowId << " removed.");
+        DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
         return true;
     } else {
         DEB("Unable to delete.");
@@ -94,18 +96,18 @@ bool DataBase::remove(Entry entry)
 
 bool DataBase::exists(Entry entry)
 {
-    if(entry.position == DEFAULT_PILOT_POSITION)
+    if(entry.getPosition() == DEFAULT_PILOT_POSITION)
         return false;
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + entry.position.tableName +
-            " WHERE _rowid_=" + QString::number(entry.position.rowId);
+    QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
+            " WHERE _rowid_=" + QString::number(entry.getPosition().rowId);
     //this returns either 1 or 0 since row ids are unique
     QSqlQuery q(statement);
     q.next();
     int rowId = q.value(0).toInt();
     if (rowId) {
-        DEB("Entry " << entry.position << " exists.");
+        DEB("Entry " << entry.getPosition() << " exists.");
         return true;
     } else {
         DEB("Entry does not exist.");
@@ -117,7 +119,7 @@ bool DataBase::exists(Entry entry)
 bool DataBase::update(Entry updated_entry)
 {
     auto data = updated_entry.getData();
-    QString statement = "UPDATE " + updated_entry.position.tableName + " SET ";
+    QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
         if (i.key() != QString()) {
             statement += i.key() + QLatin1String("='") + i.value() + QLatin1String("', ");
@@ -126,23 +128,21 @@ bool DataBase::update(Entry updated_entry)
         }
     }
     statement.chop(2); // Remove last comma
-    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(updated_entry.position.rowId));
+    statement.append(QLatin1String(" WHERE _rowid_=") + QString::number(updated_entry.getPosition().rowId));
 
     DEB("UPDATE QUERY: " << statement);
     QSqlQuery q(statement);
-    //check result.
+
     if (q.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
         emit commitSuccessful();
-        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
         emit commitUnsuccessful(q.lastError().text(), statement);
-        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return false;
     }
 }
@@ -151,7 +151,7 @@ bool DataBase::insert(Entry newEntry)
 {
     auto data = newEntry.getData();
     DEB("Inserting...");
-    QString statement = "INSERT INTO " + newEntry.position.tableName + QLatin1String(" (");
+    QString statement = "INSERT INTO " + newEntry.getPosition().tableName + QLatin1String(" (");
     QMap<QString, QString>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement += i.key() + QLatin1String(", ");
@@ -170,14 +170,12 @@ bool DataBase::insert(Entry newEntry)
     {
         DEB("Entry successfully committed.");
         emit commitSuccessful();
-        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
         emit commitUnsuccessful(q.lastError().text(), statement);
-        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return false;
     }
 
@@ -230,6 +228,7 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
 }
 
 /// does the same as geteEntryData, but slower
+/// [G]: so delete?
 /*TableData DataBase::getEntryDataQsqlTableModel(DataPosition dataPosition)
 {
     // check table exists
@@ -264,14 +263,14 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
 Entry DataBase::getEntry(DataPosition dataPosition)
 {
     Entry entry(dataPosition);
-    entry.setData(DataBase::getEntryData(dataPosition));
+    entry.setData(getEntryData(dataPosition));
     return entry;
 }
 
 PilotEntry DataBase::getPilotEntry(RowId rowId)
 {
     PilotEntry pilotEntry(rowId);
-    pilotEntry.setData(DataBase::getEntryData(pilotEntry.position));
+    pilotEntry.setData(getEntryData(pilotEntry.getPosition()));
     return pilotEntry;
 }
 

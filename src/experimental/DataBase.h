@@ -45,7 +45,8 @@ public:
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static QSqlDatabase database();
+    static
+    QSqlDatabase database();
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -92,10 +93,14 @@ public:
      * with only the RowId required as input.
      */
     PilotEntry getPilotEntry(RowId);
-    ///[F] the same can easily be implemented for tails/flights
+    // [G] TODO: Ensure PilotDialog works great and slowly move to
+    // other dialogs
 signals:
     void commitSuccessful();
 
+    // [G] small nitpick but i believe we should return the error in its pure SqlError form.
+    // its better for the interested object to do get any relevant data from the error itself.
+    // The database doesnt know what part of the error is "interesting", just that it happened.
     void commitUnsuccessful(const QString &sqlError, const QString &sqlStatement);
 
 };

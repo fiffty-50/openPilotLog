@@ -35,34 +35,45 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
-static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
-static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+static
+const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
+static
+const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+static
+const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+static
+const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+static
+const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
+static
+const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
-static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+static
+const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
+static
+const auto LINE_EDIT_VALIDATORS = QVector{
+        FIRSTNAME_VALID,
+        LASTNAME_VALID,
+        PHONE_VALID,
+        EMAIL_VALID,
+        COMPANY_VALID,
+        EMPLOYEENR_VALID
+};
 
-static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
-                                           PHONE_VALID,     EMAIL_VALID,
-                                           COMPANY_VALID,     EMPLOYEENR_VALID});
 // For creating a new entry
 NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
     DEB("New NewPilotDialog\n");
-    ui->setupUi(this);
-    setupValidators();
-    setupCompleter();
+    setup();
 
     using namespace experimental;
     pilotEntry = PilotEntry();
@@ -73,13 +84,11 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    ui->setupUi(this);
-    setupValidators();
-    setupCompleter();
+    setup();
 
     using namespace experimental;
     pilotEntry = DB()->getPilotEntry(rowId);
-    DEB("Pilot Entry position: " << pilotEntry.position);
+    DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -88,6 +97,31 @@ NewPilotDialog::~NewPilotDialog()
 {
     DEB("Deleting New NewPilotDialog\n");
     delete ui;
+}
+
+// [G]: Mover the two setup functions in one. The debug explains what happens
+// and we avoid 2 function calls with 1 potentially inlined one.
+void NewPilotDialog::setup()
+{
+    ui->setupUi(this);
+
+    DEB("Setting up Validators...");
+    for(const auto& pair : LINE_EDIT_VALIDATORS){
+        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
+        if(line_edit != nullptr){
+            auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+            line_edit->setValidator(validator);
+        }else{
+            DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
+        }
+    }
+
+    DEB("Setting up completer...");
+    auto companies = new CompletionList(CompleterTarget::companies);
+    auto completer = new QCompleter(companies->list, ui->companyLineEdit);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
@@ -111,32 +145,6 @@ void NewPilotDialog::onCommitUnsuccessful(const QString &sqlError, const QString
     auto mb = QMessageBox(this);
     mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
                + sqlError);
-}
-
-void NewPilotDialog::setupValidators()
-{
-    DEB("Setting up Validators...");
-    for(const auto& pair : LINE_EDIT_VALIDATORS){
-        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
-        if(line_edit != nullptr){
-            auto validator = new QRegularExpressionValidator(pair.second,line_edit);
-            line_edit->setValidator(validator);
-        }else{
-            DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
-        }
-    }
-}
-
-void NewPilotDialog::setupCompleter()
-{
-    DEB("Setting up completer...");
-
-    auto companies = new CompletionList(CompleterTarget::companies);
-    auto completer = new QCompleter(companies->list, ui->companyLineEdit);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
-    completer->setCaseSensitivity(Qt::CaseSensitive);
-
-    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::formFiller()
@@ -164,6 +172,8 @@ void NewPilotDialog::submitForm()
         newData.insert(key, value);
     }
 
+    // [G]: If this formating is Entry-Subclass specific
+    // shouldnt PilotEntry know what to do with the database-centric pilot name?
     QString displayName;
     displayName.append(ui->piclastnameLineEdit->text());
     displayName.append(QLatin1String(", "));
@@ -174,7 +184,7 @@ void NewPilotDialog::submitForm()
     using namespace experimental;
 
     pilotEntry.setData(newData);
-    DEB("Pilot entry position: " << pilotEntry.position);
+    DEB("Pilot entry position: " << pilotEntry.getPosition());
     DEB("Pilot entry data: " << pilotEntry.getData());
     DB()->commit(pilotEntry);
 }
