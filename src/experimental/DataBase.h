@@ -14,15 +14,10 @@
 
 namespace experimental {
 
-// [F] ideas for functions of db class:
-// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming
-
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-
-
 class DataBase {
 private:
     TableNames tableNames;
@@ -43,7 +38,13 @@ public:
     /*!
      * \brief closes the database connection.
      */
-    bool disconnect();
+    void disconnect();
+
+    /*!
+     * \brief Can be used to access the database connection.
+     * \return The QSqlDatabase object pertaining to the connection.
+     */
+    QSqlDatabase database();
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -76,7 +77,22 @@ public:
      */
     TableData getEntryData(DataPosition);
 
-    TableData getEntryDataNew(DataPosition);
+    /*!
+     * \brief retreive an Entry from the database.
+     */
+    Entry getEntry(DataPosition);
+
+    /*!
+     * \brief retreives a PilotEntry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns a PilotEntry
+     * instead of an Entry. It allows for easy access to a pilot entry
+     * with only the RowId required as input.
+     */
+    PilotEntry getPilotEntry(RowId);
+    ///[F] the same can easily be implemented for tails/flights
+
 
 };
 

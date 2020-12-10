@@ -55,43 +55,37 @@ static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALI
                                            PHONE_VALID,     EMAIL_VALID,
                                            COMPANY_VALID,     EMPLOYEENR_VALID});
 // For creating a new entry
-NewPilotDialog::NewPilotDialog(Db::editRole edRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
     DEB("New NewPilotDialog\n");
-    role = edRole;
     ui->setupUi(this);
-
-    setupValidators();
-    setupCompleter();
-}
-// For editing an existing entry
-NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewPilot)
-{
-    DEB("New NewPilotDialog\n");
-    oldEntry = existingEntry;
-    role = edRole;
-    ui->setupUi(this);
-
     setupValidators();
     setupCompleter();
 
-    formFiller();
+    using namespace experimental;
+    //    connect(DB(), &DataBase::commitUnsuccessful,
+    //            this, &NewPilotDialog::onCommitUnsuccessful);
+    pilotEntry = PilotEntry();
     ui->piclastnameLineEdit->setFocus();
 }
 
-NewPilotDialog::NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
+    ui->setupUi(this);
+    setupValidators();
+    setupCompleter();
+
     using namespace experimental;
 //    connect(DB(), &DataBase::commitUnsuccessful,
 //            this, &NewPilotDialog::onCommitUnsuccessful);
-    oldPilotEntry = oldEntry;
-    //to do
+    pilotEntry = DB()->getPilotEntry(rowId);
+    DEB("Pilot Entry position: " << pilotEntry.position);
+    formFiller();
+    ui->piclastnameLineEdit->setFocus();
 }
 
 NewPilotDialog::~NewPilotDialog()
@@ -141,16 +135,12 @@ void NewPilotDialog::setupCompleter()
 void NewPilotDialog::formFiller()
 {
     DEB("Filling Form...");
-    DEB(oldEntry);
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = oldEntry.data.value(key);
-        if (!value.isEmpty()) {
-            le->setText(value);
-        }
+        QString key = le->objectName().remove("LineEdit");
+        QString value = pilotEntry.getData().value(key);
+        le->setText(value);
     }
 }
 
@@ -172,20 +162,15 @@ void NewPilotDialog::submitForm()
     displayName.append(QLatin1String(", "));
     displayName.append(ui->picfirstnameLineEdit->text().left(1));
     displayName.append(QLatin1Char('.'));
-    newData.insert("displayname",displayName);
+    newData.insert("displayname", displayName);
 
     using namespace experimental;
 
-    switch (role) {
-    case Db::editExisting:
-        oldEntry.setData(newData);
-        DB()->commit(oldPilotEntry);
-        // to do: handle unsuccessful commit
-        break;
-    case Db::createNew:
-        auto newEntry = PilotEntry(newData);
-        experimental::DB()->commit(oldPilotEntry);
-        // to do: handle unsuccessful commit
-        break;
-    }
+    pilotEntry.setData(newData);
+    DEB("Pilot entry position: " << pilotEntry.position);
+    DEB("Pilot entry data: " << pilotEntry.getData());
+    DB()->commit(pilotEntry);
+    // to do: create signals and slots to handle unsuccessful commit
+    // onSuccessfulCommit, accept();
+    // onError, show QMessageBox and prompt for user Input
 }

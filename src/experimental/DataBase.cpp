@@ -42,6 +42,20 @@ bool DataBase::connect()
     return true;
 }
 
+void DataBase::disconnect()
+{
+    auto db = DataBase::database();
+    db.close();
+    db.removeDatabase(db.connectionName());
+    DEB("Database connection closed.");
+}
+
+QSqlDatabase DataBase::database()
+{
+    auto db = QSqlDatabase::database("qt_sql_default_connection");
+    return db;
+}
+
 bool DataBase::commit(Entry entry)
 {
     if (exists(entry)) {
@@ -87,7 +101,7 @@ bool DataBase::exists(Entry entry)
     q.next();
     int rowId = q.value(0).toInt();
     if (rowId) {
-        DEB("Entry exists with row ID: " << rowId);
+        DEB("Entry " << entry.position << " exists.");
         return true;
     } else {
         DEB("Entry does not exist.");
@@ -207,7 +221,8 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
     return entryData;
 }
 
-TableData DataBase::getEntryDataNew(DataPosition dataPosition)
+/// does the same as geteEntryData, but slower
+/*TableData DataBase::getEntryDataQsqlTableModel(DataPosition dataPosition)
 {
     // check table exists
     if (!tableNames.contains(dataPosition.first)) {
@@ -236,6 +251,20 @@ TableData DataBase::getEntryDataNew(DataPosition dataPosition)
         entryData.insert(column, model.record(0).value(column).toString());
     }
     return entryData;
+}*/
+
+Entry DataBase::getEntry(DataPosition dataPosition)
+{
+    Entry entry(dataPosition);
+    entry.setData(DataBase::getEntryData(dataPosition));
+    return entry;
+}
+
+PilotEntry DataBase::getPilotEntry(RowId rowId)
+{
+    PilotEntry pilotEntry(rowId);
+    pilotEntry.setData(DataBase::getEntryData(pilotEntry.position));
+    return pilotEntry;
 }
 
 DataBase* DB() { return DataBase::getInstance(); }

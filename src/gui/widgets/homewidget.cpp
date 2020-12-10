@@ -40,9 +40,17 @@ void HomeWidget::on_pushButton_clicked()
 {
     using namespace experimental;
     DB()->connect();
-    //DataPosition dp = {"pilots", 7};
-    //DEB(DB()->getEntryDataNew(dp));
-    long customFunc = 0;
+
+    auto entry = DB()->getPilotEntry(7);
+    DEB(entry.position);
+    DEB(entry.getData());
+
+    PilotEntry copiedEntry;
+    copiedEntry = entry;
+    DEB(copiedEntry.position);
+    DEB(copiedEntry.getData());
+
+    /*long customFunc = 0;
     long qSqlTableModelFunc = 0;
     for (int i = 10; i < 100; i++) {
         DataPosition dp = {"flights", i};
@@ -59,5 +67,5 @@ void HomeWidget::on_pushButton_clicked()
         qSqlTableModelFunc += duration2.count();
     }
     DEB("Average execution time: (custom Func)        " << customFunc/10000 << "ms");
-    DEB("Average execution time: (qSqlTableModelFunc) " << qSqlTableModelFunc/10000 << "ms");
+    DEB("Average execution time: (qSqlTableModelFunc) " << qSqlTableModelFunc/10000 << "ms");*/
 }
