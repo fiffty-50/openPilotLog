@@ -102,8 +102,20 @@ void NewPilotDialog::on_buttonBox_accepted()
         mb.show();
     } else {
         submitForm();
-        accept();
+        accept(); /// [F] once the signals and slots are in place this line goes away as it is called in the slot below
     }
+}
+
+void NewPilotDialog::onCommitSuccessful()
+{
+    accept();
+}
+
+void NewPilotDialog::onCommitUnsuccessful(QString &sqlError, QString&)
+{
+    auto mb = QMessageBox(this);
+    mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
+               + sqlError);
 }
 
 void NewPilotDialog::setupValidators()
@@ -170,7 +182,7 @@ void NewPilotDialog::submitForm()
     DEB("Pilot entry position: " << pilotEntry.position);
     DEB("Pilot entry data: " << pilotEntry.getData());
     DB()->commit(pilotEntry);
-    // to do: create signals and slots to handle unsuccessful commit
+    // to do: connect signals and slots to handle unsuccessful commit
     // onSuccessfulCommit, accept();
     // onError, show QMessageBox and prompt for user Input
 }

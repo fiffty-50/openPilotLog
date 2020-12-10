@@ -43,6 +43,10 @@ public:
     ~NewPilotDialog();
 private slots:
     void on_buttonBox_accepted();
+
+    void onCommitSuccessful();
+
+    void onCommitUnsuccessful(QString &sqlError, QString &);
 private:
     Ui::NewPilot *ui;
 

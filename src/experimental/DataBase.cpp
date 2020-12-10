@@ -2,6 +2,11 @@
 
 namespace experimental {
 
+/// [F] suggestions for signals:
+///
+/// commitSuccessful()
+/// commitUnSuccessful(QString sqlError, QString statement)
+
 DataBase* DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
@@ -130,11 +135,13 @@ bool DataBase::update(Entry updated_entry)
     if (q.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
+        /// [F] emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
+        /// [F] emit commitUnsuccessful(q.lastError().type(), statement);
         return false;
     }
 }
@@ -161,11 +168,13 @@ bool DataBase::insert(Entry newEntry)
     if (q.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
+        /// [F] emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
+        /// [F] emit commitUnsuccessful(q.lastError().type(), statement);
         return false;
     }
 
@@ -176,7 +185,6 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
     // check table exists
     if (!tableNames.contains(dataPosition.first)) {
         DEB(dataPosition.first << " not a table in the database. Unable to retreive Entry data.");
-        // emit databaseError
         return TableData();
     }
 
@@ -188,14 +196,12 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
     if (checkQuery.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << checkQuery.lastError().text());
         DEB("Statement: " << statement);
-        // emit sqlError(selectQuery.lastError().text(), statement)
         return TableData();
     }
 
     checkQuery.next();
     if (checkQuery.value(0).toInt() == 0) {
         DEB("No Entry found for row id: " << dataPosition.second );
-        // emit databaseError("No Entry found for row id: " + dataPosition.second)
         return TableData();
     }
 
@@ -208,7 +214,6 @@ TableData DataBase::getEntryData(DataPosition dataPosition)
     if (selectQuery.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << selectQuery.lastError().text());
         DEB("Statement: " << statement);
-        // emit sqlError(selectQuery.lastError().text(), statement)
         return TableData();
     }
 
