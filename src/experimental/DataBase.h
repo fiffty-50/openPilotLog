@@ -18,7 +18,8 @@ namespace experimental {
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class DataBase {
+class DataBase : public QObject {
+    Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
@@ -92,7 +93,10 @@ public:
      */
     PilotEntry getPilotEntry(RowId);
     ///[F] the same can easily be implemented for tails/flights
+signals:
+    void commitSuccessful();
 
+    void commitUnsuccessful(const QString &sqlError, const QString &sqlStatement);
 
 };
 

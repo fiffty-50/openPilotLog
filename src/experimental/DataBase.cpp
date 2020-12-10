@@ -57,8 +57,7 @@ void DataBase::disconnect()
 
 QSqlDatabase DataBase::database()
 {
-    auto db = QSqlDatabase::database("qt_sql_default_connection");
-    return db;
+    return QSqlDatabase::database("qt_sql_default_connection");
 }
 
 bool DataBase::commit(Entry entry)
@@ -135,13 +134,15 @@ bool DataBase::update(Entry updated_entry)
     if (q.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        /// [F] emit commitSuccessful();
+        emit commitSuccessful();
+        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
-        /// [F] emit commitUnsuccessful(q.lastError().type(), statement);
+        emit commitUnsuccessful(q.lastError().text(), statement);
+        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return false;
     }
 }
@@ -168,13 +169,15 @@ bool DataBase::insert(Entry newEntry)
     if (q.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        /// [F] emit commitSuccessful();
+        emit commitSuccessful();
+        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
-        /// [F] emit commitUnsuccessful(q.lastError().type(), statement);
+        emit commitUnsuccessful(q.lastError().text(), statement);
+        /// [F] emit DB(), &DataBase::commitSuccessful, NewPilotDialog, &NewPilotDialog::onCommitSuccessful);
         return false;
     }
 

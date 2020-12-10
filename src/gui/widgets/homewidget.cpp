@@ -38,34 +38,5 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    using namespace experimental;
-    DB()->connect();
-
-    auto entry = DB()->getPilotEntry(7);
-    DEB(entry.position);
-    DEB(entry.getData());
-
-    PilotEntry copiedEntry;
-    copiedEntry = entry;
-    DEB(copiedEntry.position);
-    DEB(copiedEntry.getData());
-
-    /*long customFunc = 0;
-    long qSqlTableModelFunc = 0;
-    for (int i = 10; i < 100; i++) {
-        DataPosition dp = {"flights", i};
-
-        auto start = std::chrono::system_clock::now();
-        DB()->getEntryData(dp);
-        auto stop = std::chrono::system_clock::now();
-        auto duration = stop - start;
-        customFunc += duration.count();
-        auto start2 = std::chrono::system_clock::now();
-        DB()->getEntryDataNew(dp);
-        auto stop2 = std::chrono::system_clock::now();
-        auto duration2 = stop2 - start2;
-        qSqlTableModelFunc += duration2.count();
-    }
-    DEB("Average execution time: (custom Func)        " << customFunc/10000 << "ms");
-    DEB("Average execution time: (qSqlTableModelFunc) " << qSqlTableModelFunc/10000 << "ms");*/
+    // do debug stuff
 }
