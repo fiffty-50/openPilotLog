@@ -10,6 +10,9 @@
 
 namespace experimental {
 
+/// [G]: Define what data is public and what not. For objects such as
+/// DataPosition which are consumable its no biggy. Are entries the same?
+/// If so we could avoid getters and setters
 /*!
  * \brief The Entry class encapsulates table metadata(table name, row id)
  *  and data for new and existing entries in the database to operate on.
