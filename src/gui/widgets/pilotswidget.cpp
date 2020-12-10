@@ -39,12 +39,17 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
     selectedPilots.clear();
 
     for (const auto& row : selection->selectedRows()) {
-        selectedPilots << row.data().toInt();
+        selectedPilots.append(row.data().toInt());
         DEB("Selected Tails(s) with ID: " << selectedPilots);
     }
     if(selectedPilots.length() == 1) {
 
-        NewPilotDialog* np = new NewPilotDialog(Pilot(selectedPilots.first()), Db::editExisting, this);
+        NewPilotDialog* np = new NewPilotDialog(selectedPilots.first(), this);
+        using namespace experimental;
+        QObject::connect(DB(), &DataBase::commitSuccessful,
+                         np,   &NewPilotDialog::onCommitSuccessful);
+        QObject::connect(DB(), &DataBase::commitUnsuccessful,
+                         np,   &NewPilotDialog::onCommitUnsuccessful);
         connect(np, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
         connect(np, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
         np->setWindowFlag(Qt::Widget);
@@ -63,10 +68,15 @@ void PilotsWidget::tableView_headerClicked(int column)
 
 void PilotsWidget::on_newButton_clicked()
 {
-    NewPilotDialog* np = new NewPilotDialog(Db::createNew, this);
+    NewPilotDialog* np = new NewPilotDialog(this);
     np->setAttribute(Qt::WA_DeleteOnClose);
-    connect(np, SIGNAL(accepted()),
-            this, SLOT(pilot_editing_finished()));
+    connect(np, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
+    connect(np, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
+    using namespace experimental;
+    QObject::connect(DB(), &DataBase::commitSuccessful,
+                     np,   &NewPilotDialog::onCommitSuccessful);
+    QObject::connect(DB(), &DataBase::commitUnsuccessful,
+                     np,   &NewPilotDialog::onCommitUnsuccessful);
     np->exec();
 }
 

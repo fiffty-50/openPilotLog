@@ -27,8 +27,8 @@
 #include "src/classes/completionlist.h"
 
 #include "src/experimental/DataBase.h"
-//#include "src/experimental/Entry.h"
-//#include "src/experimental/Decl.h"
+#include "src/experimental/Entry.h"
+#include "src/experimental/Decl.h"
 
 namespace Ui {
 class NewPilot;
@@ -38,19 +38,21 @@ class NewPilotDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit NewPilotDialog(Db::editRole, QWidget *parent = nullptr);
-    explicit NewPilotDialog(Pilot, Db::editRole, QWidget *parent = nullptr);
-    explicit NewPilotDialog(experimental::PilotEntry oldEntry, Db::editRole, QWidget *parent = nullptr);
+    explicit NewPilotDialog(QWidget *parent = nullptr);
+    explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
     ~NewPilotDialog();
 private slots:
     void on_buttonBox_accepted();
+
+public slots:
+
+    void onCommitSuccessful();
+
+    void onCommitUnsuccessful(const QString &sqlError, const QString &);
 private:
     Ui::NewPilot *ui;
 
-    Db::editRole role;
-    Pilot oldEntry;
-
-    experimental::PilotEntry oldPilotEntry;
+    experimental::PilotEntry pilotEntry;
 
     void setupValidators();
 

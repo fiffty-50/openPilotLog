@@ -34,6 +34,8 @@
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 
+#include "src/experimental/DataBase.h"
+#include "src/experimental/Decl.h"
 
 namespace Ui {
 class HomeWidget;

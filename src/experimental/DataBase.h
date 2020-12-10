@@ -6,6 +6,7 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlTableModel>
 #include "src/database/dbinfo.h"
 #include "debug.h"
 
@@ -13,16 +14,12 @@
 
 namespace experimental {
 
-// [F] ideas for functions of db class:
-// https://github.com/fiffty-50/openpilotlog/wiki/New-DB-class-brainstorming
-
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-
-
-class DataBase {
+class DataBase : public QObject {
+    Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
@@ -42,7 +39,13 @@ public:
     /*!
      * \brief closes the database connection.
      */
-    bool disconnect();
+    void disconnect();
+
+    /*!
+     * \brief Can be used to access the database connection.
+     * \return The QSqlDatabase object pertaining to the connection.
+     */
+    static QSqlDatabase database();
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -69,6 +72,31 @@ public:
      * \brief deletes an entry from the database.
      */
     bool remove(Entry entry);
+
+    /*!
+     * \brief retreive entry data from the database to create an entry object
+     */
+    TableData getEntryData(DataPosition);
+
+    /*!
+     * \brief retreive an Entry from the database.
+     */
+    Entry getEntry(DataPosition);
+
+    /*!
+     * \brief retreives a PilotEntry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns a PilotEntry
+     * instead of an Entry. It allows for easy access to a pilot entry
+     * with only the RowId required as input.
+     */
+    PilotEntry getPilotEntry(RowId);
+    ///[F] the same can easily be implemented for tails/flights
+signals:
+    void commitSuccessful();
+
+    void commitUnsuccessful(const QString &sqlError, const QString &sqlStatement);
 
 };
 
