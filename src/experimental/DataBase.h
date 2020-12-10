@@ -45,7 +45,7 @@ public:
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    QSqlDatabase database();
+    static QSqlDatabase database();
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
