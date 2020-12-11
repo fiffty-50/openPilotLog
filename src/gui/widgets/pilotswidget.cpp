@@ -35,6 +35,14 @@ PilotsWidget::~PilotsWidget()
 
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
 {   
+    if (this->findChild<NewPilotDialog*>("NewPilot") != nullptr) {
+        DEB("Selection changed. Deleting orphaned dialog.");
+        delete this->findChild<NewPilotDialog*>("NewPilot");
+        /// [F] if the user changes the selection without making any changes,
+        /// if(selectedPilots.length() == 1) spawns a new dialog without the
+        /// old one being deleted, since neither accept() nor reject() was emitted.
+        /// Is this a reasonable way of avoiding pollution?
+    }
     auto *selection = ui->tableView->selectionModel();
     selectedPilots.clear();
 
@@ -45,6 +53,7 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
     if(selectedPilots.length() == 1) {
 
         NewPilotDialog* np = new NewPilotDialog(selectedPilots.first(), this);
+        DEB("new dialog: " << np->objectName());
         using namespace experimental;
         QObject::connect(DB(), &DataBase::commitSuccessful,
                          np,   &NewPilotDialog::onCommitSuccessful);
@@ -82,41 +91,47 @@ void PilotsWidget::on_newButton_clicked()
 
 void PilotsWidget::on_deletePushButton_clicked()
 {
-    if(selectedPilots.length() == 1){
-        for(const auto& selectedPilot : selectedPilots){
-            if (selectedPilot > 0) {
-                auto pil = Pilot(selectedPilot);
-                if(!pil.remove()) {
-                    QVector<QString> columns = {"doft","dept","dest"};
-                    QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
-                                                               QString::number(selectedPilot), Db::exactMatch);
-                    auto mb = QMessageBox(this);
-                    QString message = "\nUnable to delete. The following error has ocurred:\n\n";
-                    if(!details.isEmpty()){
-                        message += pil.error + QLatin1String("\n\n");
-                        message += "This is most likely the case because a flight exists with the Pilot "
-                                   "you are trying to delete. You have to change or remove this flight "
-                                   "before being able to remove this pilot from the database.\n\n"
-                                   "The following flight(s) with this pilot have been found:\n\n";
-                        auto space = QLatin1Char(' ');
-                        for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
-                            message += details[i] + space
-                                    + details[i+1] + space
-                                    + details[i+2] + QLatin1String("\n");
-                        }
-                    }
-                    mb.setText(message);
-                    mb.setIcon(QMessageBox::Critical);
-                    mb.exec();
-                }
-            }
-        }
-        refreshModelAndView();
-    } else {
+    if (selectedPilots.length() == 0) {
         auto mb = QMessageBox(this);
         mb.setText("No Pilot selected.");
-        mb.show();
+        mb.exec();
+
+    } else if (selectedPilots.length() > 1) {
+        auto mb = QMessageBox(this);
+        mb.setText("Deleting multiple entries is currently not supported");
+        mb.exec();
+        // to do: for (const auto& selectedPilot : selectedPilots) { do batchDelete }
+
+    } else if (selectedPilots.length() == 1) {
+        using namespace experimental;
+        auto entry = DB()->getPilotEntry(selectedPilots.first());
+        if (!DB()->remove(entry)) {
+            QVector<QString> columns = {"doft","dept","dest"};
+            QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
+                                                       QString::number(selectedPilots.first()), Db::exactMatch);
+            auto mb = QMessageBox(this);
+            QString message = "\nUnable to delete.\n\n";
+            // [F] to do: create unsuccessful delete signal and include error info
+            if(!details.isEmpty()){
+                message += "This is most likely the case because a flight exists with the Pilot "
+                           "you are trying to delete. You have to change or remove this flight "
+                           "before being able to remove this pilot from the database.\n\n"
+                           "The following flight(s) with this pilot have been found:\n\n";
+                auto space = QLatin1Char(' ');
+                for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
+                    message += details[i] + space
+                            + details[i+1] + space
+                            + details[i+2] + QLatin1String("\n");
+                }
+            }
+            mb.setText(message);
+            mb.setIcon(QMessageBox::Critical);
+            mb.exec();
+        }
     }
+
+    refreshModelAndView();
+
 }
 
 void PilotsWidget::pilot_editing_finished()
@@ -126,8 +141,7 @@ void PilotsWidget::pilot_editing_finished()
 
 void PilotsWidget::refreshModelAndView()
 {
-    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePage"));
-    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePage"));
+    ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePage"));
 
     model->setTable("viewPilots");
     model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
