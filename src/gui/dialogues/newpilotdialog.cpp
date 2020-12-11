@@ -36,22 +36,26 @@
  * Martin Luther King, Jr.
  */
 // [F] I think we don't even need static here at all, as it should be implicitly static anyway?
-const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
-const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+// [G] Thats not how it works. Its such a leap of assumption to make them static.
+// in this context static declare that the variables will only be used by this cpp file (translation unit)
+// which is where they are used anyway so we should keep the static and be explicit.
+// The same thing happens to static functions (outside of classes). They are "local" functions.
+static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
+static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
+static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
-const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
-const auto LINE_EDIT_VALIDATORS = QVector{
+static const auto LINE_EDIT_VALIDATORS = QVector{
         FIRSTNAME_VALID,
         LASTNAME_VALID,
         PHONE_VALID,
@@ -92,8 +96,6 @@ NewPilotDialog::~NewPilotDialog()
     delete ui;
 }
 
-// [G]: Mover the two setup functions in one. The debug explains what happens
-// and we avoid 2 function calls with 1 potentially inlined one.
 void NewPilotDialog::setup()
 {
     ui->setupUi(this);
@@ -165,11 +167,18 @@ void NewPilotDialog::submitForm()
         newData.insert(key, value);
     }
 
-    /// [G]: If this formating is Entry-Subclass specific
-    /// shouldnt PilotEntry know what to do with the database-centric pilot name?
-    /// [F]: That's one way of looking at it - I see it more as something derived
-    /// from a QLineEdit included in the 'package' of data the entry gets from the
-    /// Dialo. Where in the PilotEntry would you see it as more appropriate?
+    // [G]: If this formating is Entry-Subclass specific
+    // shouldnt PilotEntry know what to do with the database-centric pilot name?
+    // [F]: That's one way of looking at it - I see it more as something derived
+    // from a QLineEdit included in the 'package' of data the entry gets from the
+    // Dialo. Where in the PilotEntry would you see it as more appropriate?
+    // [G]: Not sure i get exactly what you mean but my point is that we have leak of 
+    // logic again. I see two alternatives. encapsulate the displayname "creation" in the PilotEntry,
+    // or remove it from the database all together. In my eyes displayname doesnt provide anything intersting
+    // for the database. It might aswell just be the output of the function that takes the actual interesting
+    // data that is the picfirst and piclast names. I suggest we go for the second. 
+    // TL;DR displayname is useless, remove it even from the database. Any "display name" required
+    // will be the output of a function/method that takes the actual data picfirst piclast name.
     QString display_name;
     display_name.append(ui->piclastnameLineEdit->text());
     display_name.append(QLatin1String(", "));
