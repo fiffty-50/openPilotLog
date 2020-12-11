@@ -17,10 +17,10 @@
  */
 #include "entry.h"
 #include "debug.h"
+#include "db.h"
 
 Entry::Entry()
 {
-
 }
 
 Entry::Entry(QString table, int row)

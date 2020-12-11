@@ -38,6 +38,5 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::on_pushButton_clicked()
 {
-    NewFlightDialog nf(this, Flight(11), Db::editExisting);
-    nf.exec();
+    // do debug stuff
 }

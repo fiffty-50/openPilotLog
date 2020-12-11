@@ -81,7 +81,8 @@ class Db
          * \return
          */
         static bool             exists(QString column, QString table, QString checkColumn,
-                                       QString value, Db::matchType match){
+                                       QString value, Db::matchType match)
+        {
             return get().iexists(column, table, checkColumn, value, match);
         }
         /*!
@@ -142,6 +143,7 @@ class Db
         static QVector<QString> customQuery(QString query, int returnValues){
             return get().icustomQuery(query, returnValues);
         }
+
     private:
         Db() {}
         void             iconnect();
@@ -159,6 +161,7 @@ class Db
         QVector<QString> icustomQuery(QString query, int returnValues);
 
     public:
+        /// [George]: Why delete these in particular?
         Db(Db const&)              = delete;
         void operator=(Db const&)  = delete;
 };

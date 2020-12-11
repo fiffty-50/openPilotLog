@@ -19,6 +19,8 @@
 #include "ui_newpilot.h"
 #include "debug.h"
 
+#include "src/experimental/DataBase.h"
+#include "src/experimental/Entry.h"
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
  * María José Carreño Quiñones
@@ -33,50 +35,53 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
-static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
-static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
+// [F] I think we don't even need static here at all, as it should be implicitly static anyway?
+const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
+const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
+const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
+const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
+const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
+const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
-static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
+const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
+const auto LINE_EDIT_VALIDATORS = QVector{
+        FIRSTNAME_VALID,
+        LASTNAME_VALID,
+        PHONE_VALID,
+        EMAIL_VALID,
+        COMPANY_VALID,
+        EMPLOYEENR_VALID
+};
 
-static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
-                                           PHONE_VALID,     EMAIL_VALID,
-                                           COMPANY_VALID,     EMPLOYEENR_VALID});
 // For creating a new entry
-NewPilotDialog::NewPilotDialog(Db::editRole edRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
     DEB("New NewPilotDialog\n");
-    role = edRole;
-    ui->setupUi(this);
+    setup();
 
-    setupValidators();
-    setupCompleter();
+    using namespace experimental;
+    pilotEntry = PilotEntry();
+    ui->piclastnameLineEdit->setFocus();
 }
-// For editing an existing entry
-NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
+
+NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    DEB("New NewPilotDialog\n");
-    oldEntry = existingEntry;
-    role = edRole;
-    ui->setupUi(this);
+    setup();
 
-    setupValidators();
-    setupCompleter();
-
+    using namespace experimental;
+    pilotEntry = DB()->getPilotEntry(rowId);
+    DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -87,20 +92,12 @@ NewPilotDialog::~NewPilotDialog()
     delete ui;
 }
 
-void NewPilotDialog::on_buttonBox_accepted()
+// [G]: Mover the two setup functions in one. The debug explains what happens
+// and we avoid 2 function calls with 1 potentially inlined one.
+void NewPilotDialog::setup()
 {
-    if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
-        auto mb = QMessageBox(this);
-        mb.setText("Last Name and First Name are required.");
-        mb.show();
-    } else {
-        submitForm();
-        accept();
-    }
-}
+    ui->setupUi(this);
 
-void NewPilotDialog::setupValidators()
-{
     DEB("Setting up Validators...");
     for(const auto& pair : LINE_EDIT_VALIDATORS){
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
@@ -111,33 +108,47 @@ void NewPilotDialog::setupValidators()
             DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
         }
     }
-}
 
-void NewPilotDialog::setupCompleter()
-{
     DEB("Setting up completer...");
-
     auto companies = new CompletionList(CompleterTarget::companies);
     auto completer = new QCompleter(companies->list, ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
-
     ui->companyLineEdit->setCompleter(completer);
+}
+
+void NewPilotDialog::on_buttonBox_accepted()
+{
+    if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
+        auto mb = QMessageBox(this);
+        mb.setText("Last Name and First Name are required.");
+        mb.show();
+    } else {
+        submitForm();
+    }
+}
+
+void NewPilotDialog::onCommitSuccessful()
+{
+    accept();
+}
+
+void NewPilotDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
+{
+    auto mb = QMessageBox(this);
+    mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
+               + sqlError.text());
 }
 
 void NewPilotDialog::formFiller()
 {
     DEB("Filling Form...");
-    DEB(oldEntry);
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = oldEntry.data.value(key);
-        if (!value.isEmpty()) {
-            le->setText(value);
-        }
+        QString key = le->objectName().remove("LineEdit");
+        QString value = pilotEntry.getData().value(key);
+        le->setText(value);
     }
 }
 
@@ -146,34 +157,30 @@ void NewPilotDialog::submitForm()
     DEB("Creating Database Object...");
     QMap<QString, QString> newData;
 
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
 
-    for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = le->text();
-        if (!key.isEmpty()) {
-            newData.insert(key, value);
-        }
+    for(auto& le : line_edits) {
+        auto key = le->objectName().remove("LineEdit");
+        auto value = le->text();
+        newData.insert(key, value);
     }
-    QString displayName;
-    displayName.append(ui->piclastnameLineEdit->text());
-    displayName.append(QLatin1String(", "));
-    displayName.append(ui->picfirstnameLineEdit->text().left(1));
-    displayName.append(QLatin1Char('.'));
-    newData.insert("displayname",displayName);
-    //create db object
-    switch (role) {
-    case Db::createNew: {
-        auto newEntry = Pilot(newData);;
-        DEB("New Object: " << newEntry);
-        newEntry.commit();
-        break;
-    }
-    case Db::editExisting:
-        oldEntry.setData(newData);
-        DEB("updated entry: " << oldEntry);
-        oldEntry.commit();
-        break;
-    }
+
+    /// [G]: If this formating is Entry-Subclass specific
+    /// shouldnt PilotEntry know what to do with the database-centric pilot name?
+    /// [F]: That's one way of looking at it - I see it more as something derived
+    /// from a QLineEdit included in the 'package' of data the entry gets from the
+    /// Dialo. Where in the PilotEntry would you see it as more appropriate?
+    QString display_name;
+    display_name.append(ui->piclastnameLineEdit->text());
+    display_name.append(QLatin1String(", "));
+    display_name.append(ui->picfirstnameLineEdit->text().left(1));
+    display_name.append(QLatin1Char('.'));
+    newData.insert("displayname", display_name);
+
+    using namespace experimental;
+
+    pilotEntry.setData(newData);
+    DEB("Pilot entry position: " << pilotEntry.getPosition());
+    DEB("Pilot entry data: " << pilotEntry.getData());
+    DB()->commit(pilotEntry);
 }

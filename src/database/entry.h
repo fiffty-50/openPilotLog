@@ -15,12 +15,12 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ENTRY_H
-#define ENTRY_H
+#ifndef ENTRY1_H
+#define ENTRY1_H
 
 #include <QCoreApplication>
-#include "src/database/db.h"
-#include "src/database/dbinfo.h"
+#include "db.h"
+#include "dbinfo.h"
 /*!
  * \brief The Entry class is the base class for database entries.
  * It can be seen as a row in a table within the database.
