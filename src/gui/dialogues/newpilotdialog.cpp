@@ -35,29 +35,22 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
-static
+// [F] I think we don't even need static here at all, as it should be implicitly static anyway?
 const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
-static
 const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static
 const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
-static
 const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-static
 const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-static
 const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
-static
 const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
     "employeeidLineEdit", QRegularExpression("\\w+")};
 
-static
 const auto LINE_EDIT_VALIDATORS = QVector{
         FIRSTNAME_VALID,
         LASTNAME_VALID,
@@ -172,14 +165,17 @@ void NewPilotDialog::submitForm()
         newData.insert(key, value);
     }
 
-    // [G]: If this formating is Entry-Subclass specific
-    // shouldnt PilotEntry know what to do with the database-centric pilot name?
-    QString displayName;
-    displayName.append(ui->piclastnameLineEdit->text());
-    displayName.append(QLatin1String(", "));
-    displayName.append(ui->picfirstnameLineEdit->text().left(1));
-    displayName.append(QLatin1Char('.'));
-    newData.insert("displayname", displayName);
+    /// [G]: If this formating is Entry-Subclass specific
+    /// shouldnt PilotEntry know what to do with the database-centric pilot name?
+    /// [F]: That's one way of looking at it - I see it more as something derived
+    /// from a QLineEdit included in the 'package' of data the entry gets from the
+    /// Dialo. Where in the PilotEntry would you see it as more appropriate?
+    QString display_name;
+    display_name.append(ui->piclastnameLineEdit->text());
+    display_name.append(QLatin1String(", "));
+    display_name.append(ui->picfirstnameLineEdit->text().left(1));
+    display_name.append(QLatin1Char('.'));
+    newData.insert("displayname", display_name);
 
     using namespace experimental;
 
