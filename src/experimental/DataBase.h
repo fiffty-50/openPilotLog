@@ -62,7 +62,7 @@ public:
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(Entry newEntry);
+    bool insert(Entry new_entry);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
@@ -77,12 +77,12 @@ public:
     /*!
      * \brief retreive entry data from the database to create an entry object
      */
-    TableData getEntryData(DataPosition);
+    TableData getEntryData(DataPosition data_position);
 
     /*!
      * \brief retreive an Entry from the database.
      */
-    Entry getEntry(DataPosition);
+    Entry getEntry(DataPosition data_position);
 
     /*!
      * \brief retreives a PilotEntry from the database.
@@ -92,7 +92,7 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    PilotEntry getPilotEntry(RowId);
+    PilotEntry getPilotEntry(RowId row_id);
     // [G] TODO: Ensure PilotDialog works great and slowly move to
     // other dialogs
 signals:
@@ -101,7 +101,7 @@ signals:
     // [G] small nitpick but i believe we should return the error in its pure SqlError form.
     // its better for the interested object to do get any relevant data from the error itself.
     // The database doesnt know what part of the error is "interesting", just that it happened.
-    void commitUnsuccessful(const QString &sqlError, const QString &sqlStatement);
+    void commitUnsuccessful(const QSqlError &sqlError, const QString &sqlStatement);
 
 };
 

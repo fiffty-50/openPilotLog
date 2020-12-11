@@ -2,11 +2,6 @@
 
 namespace experimental {
 
-/// [F] suggestions for signals:
-///
-/// commitSuccessful()
-/// commitUnSuccessful(QString sqlError, QString statement)
-
 DataBase* DataBase::instance = nullptr;
 
 DataBase* DataBase::getInstance()
@@ -142,16 +137,16 @@ bool DataBase::update(Entry updated_entry)
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
-        emit commitUnsuccessful(q.lastError().text(), statement);
+        emit commitUnsuccessful(q.lastError(), statement);
         return false;
     }
 }
 
-bool DataBase::insert(Entry newEntry)
+bool DataBase::insert(Entry new_entry)
 {
-    auto data = newEntry.getData();
+    auto data = new_entry.getData();
     DEB("Inserting...");
-    QString statement = "INSERT INTO " + newEntry.getPosition().tableName + QLatin1String(" (");
+    QString statement = "INSERT INTO " + new_entry.getPosition().tableName + QLatin1String(" (");
     QMap<QString, QString>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement += i.key() + QLatin1String(", ");
@@ -175,101 +170,68 @@ bool DataBase::insert(Entry newEntry)
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << q.lastError().text());
-        emit commitUnsuccessful(q.lastError().text(), statement);
+        emit commitUnsuccessful(q.lastError(), statement);
         return false;
     }
 
 }
 
-TableData DataBase::getEntryData(DataPosition dataPosition)
+TableData DataBase::getEntryData(DataPosition data_position)
 {
     // check table exists
-    if (!tableNames.contains(dataPosition.first)) {
-        DEB(dataPosition.first << " not a table in the database. Unable to retreive Entry data.");
+    if (!tableNames.contains(data_position.first)) {
+        DEB(data_position.first << " not a table in the database. Unable to retreive Entry data.");
         return TableData();
     }
 
     //Check Database for rowId
-    QString statement = "SELECT COUNT(*) FROM " + dataPosition.first
-                      + " WHERE _rowid_=" + QString::number(dataPosition.second);
-    QSqlQuery checkQuery(statement);
+    QString statement = "SELECT COUNT(*) FROM " + data_position.first
+                      + " WHERE _rowid_=" + QString::number(data_position.second);
+    QSqlQuery check_query(statement);
 
-    if (checkQuery.lastError().type() != QSqlError::NoError) {
-        DEB("SQL error: " << checkQuery.lastError().text());
+    if (check_query.lastError().type() != QSqlError::NoError) {
+        DEB("SQL error: " << check_query.lastError().text());
         DEB("Statement: " << statement);
         return TableData();
     }
 
-    checkQuery.next();
-    if (checkQuery.value(0).toInt() == 0) {
-        DEB("No Entry found for row id: " << dataPosition.second );
+    check_query.next();
+    if (check_query.value(0).toInt() == 0) {
+        DEB("No Entry found for row id: " << data_position.second );
         return TableData();
     }
 
     // Retreive TableData
-    DEB("Retreiving data for row id: " << dataPosition.second);
-    statement = "SELECT * FROM " + dataPosition.first
-              + " WHERE _rowid_=" + QString::number(dataPosition.second);
+    DEB("Retreiving data for row id: " << data_position.second);
+    statement = "SELECT * FROM " + data_position.first
+              + " WHERE _rowid_=" + QString::number(data_position.second);
 
-    QSqlQuery selectQuery(statement);
-    if (selectQuery.lastError().type() != QSqlError::NoError) {
-        DEB("SQL error: " << selectQuery.lastError().text());
+    QSqlQuery select_query(statement);
+    if (select_query.lastError().type() != QSqlError::NoError) {
+        DEB("SQL error: " << select_query.lastError().text());
         DEB("Statement: " << statement);
         return TableData();
     }
 
-    selectQuery.next();
-    TableData entryData;
+    select_query.next();
+    TableData entry_data;
 
-    for (const auto &column : tableColumns.value(dataPosition.first)) {
-        entryData.insert(column, selectQuery.value(column).toString());
+    for (const auto &column : tableColumns.value(data_position.first)) {
+        entry_data.insert(column, select_query.value(column).toString());
     }
-    return entryData;
+    return entry_data;
 }
 
-/// does the same as geteEntryData, but slower
-/// [G]: so delete?
-/*TableData DataBase::getEntryDataQsqlTableModel(DataPosition dataPosition)
+Entry DataBase::getEntry(DataPosition data_position)
 {
-    // check table exists
-    if (!tableNames.contains(dataPosition.first)) {
-        DEB(dataPosition.first << " not a table in the database. Unable to retreive Entry data.");
-        // emit databaseError
-        return TableData();
-    }
-
-    QSqlTableModel model;
-    model.setTable(dataPosition.first);
-    model.setFilter("_rowid_=" + QString::number(dataPosition.second));
-    model.select();
-
-    if (model.rowCount() == 0) {
-        DEB("No Entry found for row id: " << dataPosition.second );
-        // emit databaseError("No Entry found for row id: " + dataPosition.second)
-        return TableData();
-    } else if (model.lastError().type() != QSqlError::NoError) {
-        DEB("SQL error: " << model.lastError().text());
-        // emit sqlError(selectQuery.lastError().text(), statement)
-        return TableData();
-    }
-
-    TableData entryData;
-    for (const auto column : tableColumns.value(dataPosition.first)) {
-        entryData.insert(column, model.record(0).value(column).toString());
-    }
-    return entryData;
-}*/
-
-Entry DataBase::getEntry(DataPosition dataPosition)
-{
-    Entry entry(dataPosition);
-    entry.setData(getEntryData(dataPosition));
+    Entry entry(data_position);
+    entry.setData(getEntryData(data_position));
     return entry;
 }
 
-PilotEntry DataBase::getPilotEntry(RowId rowId)
+PilotEntry DataBase::getPilotEntry(RowId row_id)
 {
-    PilotEntry pilotEntry(rowId);
+    PilotEntry pilotEntry(row_id);
     pilotEntry.setData(getEntryData(pilotEntry.getPosition()));
     return pilotEntry;
 }

@@ -48,7 +48,7 @@ public slots:
 
     void onCommitSuccessful();
 
-    void onCommitUnsuccessful(const QString &sqlError, const QString &);
+    void onCommitUnsuccessful(const QSqlError &sqlError, const QString &);
 private:
     Ui::NewPilot *ui;
 

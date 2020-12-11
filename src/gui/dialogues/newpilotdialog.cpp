@@ -140,11 +140,11 @@ void NewPilotDialog::onCommitSuccessful()
     accept();
 }
 
-void NewPilotDialog::onCommitUnsuccessful(const QString &sqlError, const QString &)
+void NewPilotDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
 {
     auto mb = QMessageBox(this);
     mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
-               + sqlError);
+               + sqlError.text());
 }
 
 void NewPilotDialog::formFiller()
