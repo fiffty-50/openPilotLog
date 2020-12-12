@@ -139,10 +139,5 @@ void MainWindow::on_actionNewAircraft_triggered()
 void MainWindow::on_actionNewPilot_triggered()
 {
     NewPilotDialog np =NewPilotDialog(Db::createNew, this);
-    using namespace experimental;
-    QObject::connect(DB(), &DataBase::commitSuccessful,
-                     &np, &NewPilotDialog::onCommitSuccessful);
-    QObject::connect(DB(), &DataBase::commitUnsuccessful,
-                     &np, &NewPilotDialog::onCommitUnsuccessful);
     np.exec();
 }

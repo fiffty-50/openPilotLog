@@ -41,10 +41,11 @@ public:
     explicit NewPilotDialog(QWidget *parent = nullptr);
     explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
     ~NewPilotDialog();
+
 private slots:
     void on_buttonBox_accepted();
 
-public slots:
+//public slots:
 
     void onCommitSuccessful();
 

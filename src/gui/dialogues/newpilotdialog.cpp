@@ -35,25 +35,22 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
-// [F] I think we don't even need static here at all, as it should be implicitly static anyway?
-// [G] Thats not how it works. Its such a leap of assumption to make them static.
-// in this context static declare that the variables will only be used by this cpp file (translation unit)
-// which is where they are used anyway so we should keep the static and be explicit.
-// The same thing happens to static functions (outside of classes). They are "local" functions.
+
 static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
-    "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-    "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
-                                        "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
+     "emailLineEdit", QRegularExpression(
+                "\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+                "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-    "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
+     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
-    "employeeidLineEdit", QRegularExpression("\\w+")};
+     "employeeidLineEdit", QRegularExpression("\\w+")};
 
 static const auto LINE_EDIT_VALIDATORS = QVector{
         FIRSTNAME_VALID,
@@ -64,15 +61,16 @@ static const auto LINE_EDIT_VALIDATORS = QVector{
         EMPLOYEENR_VALID
 };
 
+using namespace experimental;
+
 // For creating a new entry
 NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    DEB("New NewPilotDialog\n");
+    DEB("New NewPilotDialog (newEntry)");
     setup();
 
-    using namespace experimental;
     pilotEntry = PilotEntry();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -81,9 +79,9 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
+    DEB("New NewPilotDialog (editEntry)");
     setup();
 
-    using namespace experimental;
     pilotEntry = DB()->getPilotEntry(rowId);
     DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
@@ -92,7 +90,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
 
 NewPilotDialog::~NewPilotDialog()
 {
-    DEB("Deleting New NewPilotDialog\n");
+    DEB("Deleting New NewPilotDialog");
     delete ui;
 }
 
@@ -101,12 +99,12 @@ void NewPilotDialog::setup()
     ui->setupUi(this);
 
     DEB("Setting up Validators...");
-    for(const auto& pair : LINE_EDIT_VALIDATORS){
+    for (const auto& pair : LINE_EDIT_VALIDATORS) {
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
-        if(line_edit != nullptr){
+        if (line_edit != nullptr) {
             auto validator = new QRegularExpressionValidator(pair.second,line_edit);
             line_edit->setValidator(validator);
-        }else{
+        } else {
             DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
         }
     }
@@ -117,6 +115,17 @@ void NewPilotDialog::setup()
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
+
+    ///[F] moved connecting the slots here because
+    /// - no need to declare the slots public as would be the case if connected in mainwindow
+    /// - only one place where slots are connected vs. several places (mainwindow, pilotswidget),
+    ///   makes it easier to maintain.
+    /// - these signals and slots are specific to this dialog, for communication with
+    ///   other widgets we have the QDialog::accepted() and QDialog::rejected signals.
+    QObject::connect(DB(), &DataBase::commitSuccessful,
+                     this, &NewPilotDialog::onCommitSuccessful);
+    QObject::connect(DB(), &DataBase::sqlError,
+                     this, &NewPilotDialog::onCommitUnsuccessful);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
@@ -138,8 +147,11 @@ void NewPilotDialog::onCommitSuccessful()
 void NewPilotDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
 {
     auto mb = QMessageBox(this);
-    mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
-               + sqlError.text());
+    mb.setIcon(QMessageBox::Critical);
+    mb.setText("The following error has ocurred.\n\n"
+               + sqlError.text()
+               + "\n\nYour entry has not been saved.");
+    mb.exec();
 }
 
 void NewPilotDialog::formFiller()
@@ -156,39 +168,17 @@ void NewPilotDialog::formFiller()
 
 void NewPilotDialog::submitForm()
 {
-    DEB("Creating Database Object...");
-    QMap<QString, QString> newData;
+    DEB("Collecting User Input...");
 
+    TableData new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
-
     for(auto& le : line_edits) {
         auto key = le->objectName().remove("LineEdit");
         auto value = le->text();
-        newData.insert(key, value);
+        new_data.insert(key, value);
     }
 
-    // [G]: If this formating is Entry-Subclass specific
-    // shouldnt PilotEntry know what to do with the database-centric pilot name?
-    // [F]: That's one way of looking at it - I see it more as something derived
-    // from a QLineEdit included in the 'package' of data the entry gets from the
-    // Dialo. Where in the PilotEntry would you see it as more appropriate?
-    // [G]: Not sure i get exactly what you mean but my point is that we have leak of 
-    // logic again. I see two alternatives. encapsulate the displayname "creation" in the PilotEntry,
-    // or remove it from the database all together. In my eyes displayname doesnt provide anything intersting
-    // for the database. It might aswell just be the output of the function that takes the actual interesting
-    // data that is the picfirst and piclast names. I suggest we go for the second. 
-    // TL;DR displayname is useless, remove it even from the database. Any "display name" required
-    // will be the output of a function/method that takes the actual data picfirst piclast name.
-    QString display_name;
-    display_name.append(ui->piclastnameLineEdit->text());
-    display_name.append(QLatin1String(", "));
-    display_name.append(ui->picfirstnameLineEdit->text().left(1));
-    display_name.append(QLatin1Char('.'));
-    newData.insert("displayname", display_name);
-
-    using namespace experimental;
-
-    pilotEntry.setData(newData);
+    pilotEntry.setData(new_data);
     DEB("Pilot entry position: " << pilotEntry.getPosition());
     DEB("Pilot entry data: " << pilotEntry.getData());
     DB()->commit(pilotEntry);

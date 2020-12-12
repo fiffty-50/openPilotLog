@@ -23,6 +23,7 @@
 #include <QSqlTableModel>
 #include <QDebug>
 #include <QLabel>
+#include <QTableView>
 #include "src/classes/settings.h"
 #include "src/classes/pilot.h"
 #include "src/gui/dialogues/newpilotdialog.h"
@@ -48,6 +49,8 @@ private slots:
 
     void on_deletePushButton_clicked();
 
+    void on_deleteUnsuccessful();
+
     void pilot_editing_finished();
 
     void on_searchLineEdit_textChanged(const QString &arg1);
@@ -55,11 +58,15 @@ private slots:
 private:
     Ui::PilotsWidget *ui;
 
-    QSqlTableModel *model = new QSqlTableModel;
+    QSqlTableModel *model = new QSqlTableModel(this);
+
+    QTableView *view = new QTableView(this);
 
     qint32 sortColumn;
 
     QVector<qint32> selectedPilots;
+
+    void setupModelAndView();
 
     void refreshModelAndView();
 };
