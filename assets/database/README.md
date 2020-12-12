@@ -7,3 +7,5 @@ is executed in.
 # Changelog
 
 When making changes to the database layout, schemas or pragmas make a comment in the changelog table detailing the changes you have made.
+
+Current Revision: 12
