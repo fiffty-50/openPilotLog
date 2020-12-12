@@ -45,7 +45,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         dir.mkpath(".");
     // download latest csv
     QStringList templateTables = {"aircraft", "airports", "changelog"};
-    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/devel/assets/database/templates/";
+    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/";
     for (const auto& table : templateTables) {
         QEventLoop loop;
         Download* dl = new Download;
@@ -96,7 +96,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         dir.mkpath(".");
     // download latest csv
     QStringList userTables = {"pilots", "tails", "flights"};
-    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/devel/assets/database/templates/sample_";
+    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/sample_";
     for (const auto& table : userTables) {
         QEventLoop loop;
         Download* dl = new Download;

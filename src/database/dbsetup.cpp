@@ -29,7 +29,6 @@ const QString createTablePilots = "CREATE TABLE \"pilots\" ( "
             "\"employeeid\"     TEXT, "
             "\"phone\"          TEXT, "
             "\"email\"          TEXT, "
-            "\"displayname\"	TEXT, "
             "PRIMARY KEY(\"pilot_id\" AUTOINCREMENT)"
             ")";
 

@@ -44,8 +44,9 @@ static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
      "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-     "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
-                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
+     "emailLineEdit", QRegularExpression(
+                "\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+                "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
      "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
@@ -60,6 +61,8 @@ static const auto LINE_EDIT_VALIDATORS = QVector{
         EMPLOYEENR_VALID
 };
 
+using namespace experimental;
+
 // For creating a new entry
 NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
@@ -68,7 +71,6 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     DEB("New NewPilotDialog (newEntry)");
     setup();
 
-    using namespace experimental;
     pilotEntry = PilotEntry();
     ui->piclastnameLineEdit->setFocus();
 }
@@ -80,7 +82,6 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     DEB("New NewPilotDialog (editEntry)");
     setup();
 
-    using namespace experimental;
     pilotEntry = DB()->getPilotEntry(rowId);
     DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
@@ -114,6 +115,17 @@ void NewPilotDialog::setup()
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
+
+    ///[F] moved connecting the slots here because
+    /// - no need to declare the slots public as would be the case if connected in mainwindow
+    /// - only one place where slots are connected vs. several places (mainwindow, pilotswidget),
+    ///   makes it easier to maintain.
+    /// - these signals and slots are specific to this dialog, for communication with
+    ///   other widgets we have the QDialog::accepted() and QDialog::rejected signals.
+    QObject::connect(DB(), &DataBase::commitSuccessful,
+                     this, &NewPilotDialog::onCommitSuccessful);
+    QObject::connect(DB(), &DataBase::sqlError,
+                     this, &NewPilotDialog::onCommitUnsuccessful);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
@@ -135,8 +147,11 @@ void NewPilotDialog::onCommitSuccessful()
 void NewPilotDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
 {
     auto mb = QMessageBox(this);
-    mb.setText("The following error has ocurred. Your entry has not been saved./n/n"
-               + sqlError.text());
+    mb.setIcon(QMessageBox::Critical);
+    mb.setText("The following error has ocurred.\n\n"
+               + sqlError.text()
+               + "\n\nYour entry has not been saved.");
+    mb.exec();
 }
 
 void NewPilotDialog::formFiller()
@@ -154,9 +169,8 @@ void NewPilotDialog::formFiller()
 void NewPilotDialog::submitForm()
 {
     DEB("Collecting User Input...");
-    using namespace experimental;
-    TableData new_data;
 
+    TableData new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove("LineEdit");

@@ -15,28 +15,28 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="picfirstnameLabel">
-     <property name="text">
-      <string>First Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="picfirstnameLineEdit">
-     <property name="maxLength">
-      <number>40</number>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
     <widget class="QLabel" name="piclastnameLabel">
      <property name="text">
       <string>Last Name</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="0" column="1">
     <widget class="QLineEdit" name="piclastnameLineEdit">
+     <property name="maxLength">
+      <number>40</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="picfirstnameLabel">
+     <property name="text">
+      <string>First Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="picfirstnameLineEdit">
      <property name="maxLength">
       <number>40</number>
      </property>

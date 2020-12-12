@@ -98,10 +98,7 @@ public:
 signals:
     void commitSuccessful();
 
-    // [G] small nitpick but i believe we should return the error in its pure SqlError form.
-    // its better for the interested object to do get any relevant data from the error itself.
-    // The database doesnt know what part of the error is "interesting", just that it happened.
-    void commitUnsuccessful(const QSqlError &sqlError, const QString &sqlStatement);
+    void sqlError(const QSqlError &sqlError, const QString &sqlStatement);
 
 };
 
