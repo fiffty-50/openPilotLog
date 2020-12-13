@@ -183,9 +183,10 @@ void NewFlightDialog::setup(){
         }
     }
     //fill Lists
-    pilots = CompletionList(CompleterTarget::pilots).list;
-    tails = CompletionList(CompleterTarget::registrations).list;
-    airports = CompletionList(CompleterTarget::airports).list;
+    pilots   = experimental::DB()->getCompletionList(experimental::DataBase::pilots);
+    tails    = experimental::DB()->getCompletionList(experimental::DataBase::registrations);
+    airports = experimental::DB()->getCompletionList(experimental::DataBase::airports);
+
     QString statement = "SELECT iata, icao FROM airports";
     auto result = Db::customQuery(statement,2);
     for(int i=0; i<result.length()-2; i += 2){
@@ -1209,7 +1210,7 @@ void NewFlightDialog::on_acftLineEdit_inputRejected()
 
 void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
-    auto registrationList = CompletionList(CompleterTarget::registrations).list;
+    auto registrationList = experimental::DB()->getCompletionList(experimental::DataBase::registrations);
     auto line_edit = ui->acftLineEdit;
     auto text = ui->acftLineEdit->text();
 
@@ -1249,7 +1250,7 @@ void NewFlightDialog::on_picNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::DB()->getCompletionList(experimental::DataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
@@ -1294,7 +1295,7 @@ void NewFlightDialog::on_secondPilotNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::DB()->getCompletionList(experimental::DataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
@@ -1328,7 +1329,7 @@ void NewFlightDialog::on_thirdPilotNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::DB()->getCompletionList(experimental::DataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)

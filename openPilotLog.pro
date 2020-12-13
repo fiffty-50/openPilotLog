@@ -20,7 +20,6 @@ SOURCES += \
     mainwindow.cpp \
     src/classes/acalc.cpp \
     src/classes/aircraft.cpp \
-    src/classes/completionlist.cpp \
     src/classes/csv.cpp \
     src/classes/download.cpp \
     src/classes/flight.cpp \
@@ -52,7 +51,6 @@ HEADERS += \
     mainwindow.h \
     src/classes/acalc.h \
     src/classes/aircraft.h \
-    src/classes/completionlist.h \
     src/classes/csv.h \
     src/classes/download.h \
     src/classes/flight.h \

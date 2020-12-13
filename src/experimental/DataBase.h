@@ -32,6 +32,12 @@ public:
     static DataBase* getInstance();
 
     /*!
+     * \brief The CompleterTarget enum provides the items for which QCompleter
+     * completion lists are provided from the database.
+     */
+    enum CompleterTarget {airports, pilots, registrations, aircraft, companies};
+
+    /*!
      * \brief Connect to the database and populate database information.
      */
     bool connect();
@@ -95,6 +101,13 @@ public:
     PilotEntry getPilotEntry(RowId row_id);
     // [G] TODO: Ensure PilotDialog works great and slowly move to
     // other dialogs
+
+    /*!
+     * \brief getCompletionList returns a QStringList of values for a
+     * QCompleter based on database values
+     * \return
+     */
+    QStringList getCompletionList(CompleterTarget);
 signals:
     void commitSuccessful();
 

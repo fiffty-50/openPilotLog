@@ -88,11 +88,10 @@ void NewTailDialog::setupCompleter()
     }
     //creating QStringlist for QCompleter. This list is identical to a list of map<key>,
     //but creating it like this is faster.
-    auto cl = new CompletionList(CompleterTarget::aircraft);
 
-    aircraftlist = cl->list;
+
+    auto aircraftlist = experimental::DB()->getCompletionList(experimental::DataBase::aircraft);
     idMap = map;
-
     QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);

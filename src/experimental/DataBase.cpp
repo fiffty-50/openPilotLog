@@ -238,6 +238,46 @@ PilotEntry DataBase::getPilotEntry(RowId row_id)
     return pilotEntry;
 }
 
+QStringList DataBase::getCompletionList(DataBase::CompleterTarget target)
+{
+    QString statement;
+
+    switch (target) {
+    case pilots:
+        statement.append("SELECT piclastname||\",\"||picfirstname FROM pilots");
+        break;
+    case aircraft:
+        statement.append("SELECT make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
+                         "UNION "
+                         "SELECT make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+        break;
+    case airports:
+        statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
+        break;
+    case registrations:
+        statement.append("SELECT registration FROM tails");
+        break;
+    case companies:
+        statement.append("SELECT company FROM pilots");
+        break;
+    }
+
+    QSqlQuery query(statement);
+    if(!query.first())
+        emit sqlError(query.lastError(), statement);
+
+    query.previous();
+    QStringList completer_list;
+    while (query.next())
+        completer_list.append(query.value(0).toString());
+
+    completer_list.sort();
+    completer_list.removeAll(QString(""));
+    completer_list.removeDuplicates();
+
+    return completer_list;
+}
+
 DataBase* DB() { return DataBase::getInstance(); }
 
 }

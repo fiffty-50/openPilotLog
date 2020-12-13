@@ -25,7 +25,6 @@
 #include "src/database/db.h"
 #include "src/classes/stat.h"
 #include "src/classes/acalc.h"
-#include "src/classes/completionlist.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"
 #include "src/gui/dialogues/newpilotdialog.h"

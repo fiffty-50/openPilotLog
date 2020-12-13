@@ -19,8 +19,6 @@
 #include "ui_newpilot.h"
 #include "debug.h"
 
-#include "src/experimental/DataBase.h"
-#include "src/experimental/Entry.h"
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
  * María José Carreño Quiñones
@@ -110,8 +108,7 @@ void NewPilotDialog::setup()
     }
 
     DEB("Setting up completer...");
-    auto companies = new CompletionList(CompleterTarget::companies);
-    auto completer = new QCompleter(companies->list, ui->companyLineEdit);
+    auto completer = new QCompleter(DB()->getCompletionList(DataBase::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);

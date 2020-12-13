@@ -24,11 +24,11 @@
 #include <QRegularExpression>
 
 #include "src/classes/settings.h"
-#include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/acalc.h"
 #include "src/database/entry.h"
+#include "src/experimental/DataBase.h"
 
 namespace Ui {
 class NewTail;

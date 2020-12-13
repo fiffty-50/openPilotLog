@@ -24,7 +24,6 @@
 #include <QRegularExpressionValidator>
 #include <QCompleter>
 #include "src/classes/pilot.h"
-#include "src/classes/completionlist.h"
 
 #include "src/experimental/DataBase.h"
 #include "src/experimental/Entry.h"
