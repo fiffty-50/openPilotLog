@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QPair>
 
-#include "Decl.h"
+#include "decl.h"
 
 namespace experimental {
 
@@ -35,15 +35,6 @@ public:
     const DataPosition& getPosition();
     const TableData& getData();
 
-};
-
-struct APilotEntry : public AEntry {
-public:
-    APilotEntry();
-    APilotEntry(const APilotEntry& pe) = default;
-    APilotEntry& operator=(const APilotEntry& pe) = default;
-    APilotEntry(int row_id);
-    APilotEntry(TableData table_data);
 };
 
 }

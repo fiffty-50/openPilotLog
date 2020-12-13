@@ -11,6 +11,7 @@
 #include "debug.h"
 
 #include "aentry.h"
+#include "apilotentry.h"
 
 namespace experimental {
 

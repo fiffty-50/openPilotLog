@@ -27,7 +27,8 @@
 
 #include "src/experimental/adatabase.h"
 #include "src/experimental/aentry.h"
-#include "src/experimental/Decl.h"
+#include "src/experimental/apilotentry.h"
+#include "src/experimental/decl.h"
 
 namespace Ui {
 class NewPilot;

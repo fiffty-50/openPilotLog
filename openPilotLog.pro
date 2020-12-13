@@ -31,6 +31,7 @@ SOURCES += \
     src/database/entry_deprecated.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
+    src/experimental/apilotentry.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
@@ -60,10 +61,11 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/dbsetup.h \
     src/database/entry_deprecated.h \
-    src/experimental/Decl.h \
     src/experimental/UserInput.h \
     src/experimental/adatabase.h \
     src/experimental/aentry.h \
+    src/experimental/apilotentry.h \
+    src/experimental/decl.h \
     src/functions/acalc.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
