@@ -17,7 +17,7 @@
  */
 #include "mainwindow.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/classes/runguard.h"
+#include "src/classes/arunguard.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
-    RunGuard guard("opl_single_key");
+    ARunGuard guard("opl_single_key");
         if ( !guard.tryToRun() ){
             qDebug() << "Another Instance is already running. Exiting.";
             return 0;
