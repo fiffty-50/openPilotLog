@@ -369,7 +369,7 @@ inline void NewFlightDialog::setupLineEdit(QLineEdit* line_edit, LineEditSetting
     DEB("Setting validators for " << line_edit_objectName);
     auto [valid_rgx, invalid_rgx, sql_col] = settings.getAll();
 
-    auto validator = new StrictRxValidator(valid_rgx, line_edit);
+    auto validator = new AStrictRxValidator(valid_rgx, line_edit);
 
     auto comp_model = new QSqlRelationalTableModel(line_edit, db);
     comp_model->database().open();

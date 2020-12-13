@@ -22,9 +22,9 @@
 #include <QValidator>
 
 /*!
- * \brief The StrictRegularExpressionValidator class only returns Invalid or Acceptable
+ * \brief The AStrictRxValidator class only returns Invalid or Acceptable
  */
-class StrictRxValidator : public QRegularExpressionValidator
+class AStrictRxValidator : public QRegularExpressionValidator
 {
     using QRegularExpressionValidator::QRegularExpressionValidator;
 public:

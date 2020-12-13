@@ -22,9 +22,9 @@ SOURCES += \
     src/classes/aircraft.cpp \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
+    src/classes/astrictrxvalidator.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
-    src/classes/strictrxvalidator.cpp \
     src/database/adatabasesetup.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
@@ -54,9 +54,9 @@ HEADERS += \
     src/classes/aircraft.h \
     src/classes/arunguard.h \
     src/classes/asettings.h \
+    src/classes/astrictrxvalidator.h \
     src/classes/flight.h \
     src/classes/pilot.h \
-    src/classes/strictrxvalidator.h \
     src/database/adatabasesetup.h \
     src/database/db.h \
     src/database/dbinfo.h \
