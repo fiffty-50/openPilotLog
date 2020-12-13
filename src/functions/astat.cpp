@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "astat.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 using namespace experimental;
 

@@ -17,7 +17,7 @@
  */
 #include "newflightdialog.h"
 #include "ui_newflight.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 
 

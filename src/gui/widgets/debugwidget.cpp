@@ -1,6 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 
 DebugWidget::DebugWidget(QWidget *parent) :

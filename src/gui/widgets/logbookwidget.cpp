@@ -17,7 +17,7 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),

@@ -8,7 +8,7 @@
 #include <QSqlError>
 #include <QSqlTableModel>
 #include "src/database/dbinfo.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 #include "aentry.h"
 #include "apilotentry.h"

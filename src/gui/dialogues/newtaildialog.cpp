@@ -17,7 +17,7 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};

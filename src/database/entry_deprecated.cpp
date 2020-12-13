@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "entry_deprecated.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 #include "db.h"
 
 Entry_deprecated::Entry_deprecated()

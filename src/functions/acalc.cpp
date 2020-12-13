@@ -1,5 +1,5 @@
 #include "acalc.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 using namespace ACalc;
 

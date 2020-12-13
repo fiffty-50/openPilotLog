@@ -48,7 +48,6 @@ SOURCES += \
     src/gui/widgets/totalswidget.cpp
 
 HEADERS += \
-    debug.h \
     mainwindow.h \
     src/classes/adownload.h \
     src/classes/aircraft.h \
@@ -67,6 +66,7 @@ HEADERS += \
     src/experimental/apilotentry.h \
     src/experimental/decl.h \
     src/functions/acalc.h \
+    src/functions/src/functions/adebug.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
     src/gui/dialogues/firstrundialog.h \
