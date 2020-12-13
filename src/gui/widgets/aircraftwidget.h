@@ -25,7 +25,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"
 #include "src/database/db.h"

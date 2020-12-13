@@ -17,7 +17,7 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -88,11 +88,10 @@ void NewTailDialog::setupCompleter()
     }
     //creating QStringlist for QCompleter. This list is identical to a list of map<key>,
     //but creating it like this is faster.
-    auto cl = new CompletionList(CompleterTarget::aircraft);
 
-    aircraftlist = cl->list;
+
+    auto aircraftlist = experimental::aDB()->getCompletionList(experimental::ADataBase::aircraft);
     idMap = map;
-
     QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -113,7 +112,7 @@ void NewTailDialog::setupValidators()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTailDialog::formFiller(Entry entry)
+void NewTailDialog::formFiller(Entry_deprecated entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
@@ -234,7 +233,7 @@ void NewTailDialog::submitForm(Db::editRole edRole)
     case Db::editExisting:
         oldEntry.setData(newData);
         oldEntry.commit();
-        Calc::updateAutoTimes(oldEntry.position.second);
+        ACalc::updateAutoTimes(oldEntry.position.second);
         break;
     }
 }
@@ -248,7 +247,7 @@ void NewTailDialog::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(Entry("aircraft",idMap.value(arg1)));
+        formFiller(Entry_deprecated("aircraft",idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     } else {
         //for example, editing finished without selecting a result from Qcompleter
@@ -297,7 +296,7 @@ void NewTailDialog::on_buttonBox_accepted()
             submitForm(role);
             accept();
         } else {
-            if (!Settings::read("userdata/acAllowIncomplete").toInt()) {
+            if (!ASettings::read("userdata/acAllowIncomplete").toInt()) {
                 auto nope = QMessageBox(this);
                 nope.setText("Some or all fields are empty.\nPlease go back and "
                               "complete the form.\n\nYou can allow logging incomplete entries on the settings page.");

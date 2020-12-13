@@ -15,43 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef DOWNLOAD_H
-#define DOWNLOAD_H
+#include "asettings.h"
 
-#include <QObject>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QUrl>
-#include <QFile>
-#include <QDebug>
+QVariant ASettings::read(const QString &key)
+{
+    QSettings settings;
+    return settings.value(key);
+}
 
-
-class Download : public QObject {
-    Q_OBJECT
-public:
-    explicit Download();
-
-    ~Download();
-
-    void setTarget(const QUrl &value);
-
-    void setFileName(const QString &value);
-
-    void download();
-
-private:
-
-    QNetworkAccessManager manager;
-    QUrl target;
-    QString fileName;
-
-signals:
-    void done();
-
-public slots:
-    void downloadFinished(QNetworkReply* data);
-    void downloadProgress(qint64 recieved, qint64 total);
-};
-
-#endif // DOWNLOAD_H
+void ASettings::write(const QString &key, const QVariant &val)
+{
+    QSettings settings;
+    settings.setValue(key, val);
+}

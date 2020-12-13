@@ -17,7 +17,7 @@
  */
 #include "homewidget.h"
 #include "ui_homewidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 
 HomeWidget::HomeWidget(QWidget *parent) :

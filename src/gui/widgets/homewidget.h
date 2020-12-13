@@ -23,19 +23,18 @@
 #include <QLabel>
 #include <QLineEdit>
 #include "src/database/db.h"
-#include "src/classes/stat.h"
-#include "src/classes/calc.h"
-#include "src/classes/completionlist.h"
+#include "src/functions/astat.h"
+#include "src/functions/acalc.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"
 #include "src/gui/dialogues/newpilotdialog.h"
-#include "src/database/entry.h"
+#include "src/database/entry_deprecated.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 
-#include "src/experimental/DataBase.h"
-#include "src/experimental/Decl.h"
+#include "src/experimental/adatabase.h"
+#include "src/experimental/decl.h"
 
 namespace Ui {
 class HomeWidget;

@@ -15,30 +15,13 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef COMPLETIONLIST_H
-#define COMPLETIONLIST_H
+#include "astrictrxvalidator.h"
 
-#include <QCoreApplication>
-#include "src/database/db.h"
-
-class CompleterTarget
+QValidator::State AStrictRxValidator::validate(QString &txt, int &pos) const
 {
-public:
-    enum targets {airports, pilots, registrations, aircraft, companies};
-};
-
-
-/*!
- * \brief The completionList class provides QStringLists to be used by a QCompleter
- */
-class CompletionList
-{
-public:
-    QStringList list;
-
-    CompletionList();
-
-    CompletionList(CompleterTarget::targets);
-};
-
-#endif // COMPLETIONLIST_H
+    auto validation = QRegularExpressionValidator::validate(txt, pos);
+    if (validation == QValidator::Intermediate) {
+        return QValidator::Invalid;
+    }
+    return validation;
+}

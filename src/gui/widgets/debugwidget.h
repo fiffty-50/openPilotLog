@@ -7,10 +7,12 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProcess>
 #include "src/database/db.h"
-#include "src/database/dbsetup.h"
+#include "src/database/adatabasesetup.h"
 #include "src/database/dbinfo.h"
-#include "src/classes/download.h"
+#include "src/classes/adownload.h"
+#include "src/functions/areadcsv.h"
 
 namespace Ui {
 class DebugWidget;

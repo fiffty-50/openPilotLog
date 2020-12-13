@@ -23,12 +23,12 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
-#include "src/classes/settings.h"
-#include "src/classes/completionlist.h"
+#include "src/classes/asettings.h"
 #include "src/classes/aircraft.h"
-#include "src/classes/strictrxvalidator.h"
-#include "src/classes/calc.h"
-#include "src/database/entry.h"
+#include "src/classes/astrictrxvalidator.h"
+#include "src/functions/acalc.h"
+#include "src/database/entry_deprecated.h"
+#include "src/experimental/adatabase.h"
 
 namespace Ui {
 class NewTail;
@@ -85,7 +85,7 @@ private:
 
     void setupValidators();
 
-    void formFiller(Entry);
+    void formFiller(Entry_deprecated);
 
     bool verify();
 };

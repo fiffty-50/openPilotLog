@@ -17,7 +17,7 @@
  */
 #include "newflightdialog.h"
 #include "ui_newflight.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 
 
@@ -183,9 +183,10 @@ void NewFlightDialog::setup(){
         }
     }
     //fill Lists
-    pilots = CompletionList(CompleterTarget::pilots).list;
-    tails = CompletionList(CompleterTarget::registrations).list;
-    airports = CompletionList(CompleterTarget::airports).list;
+    pilots   = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
+    tails    = experimental::aDB()->getCompletionList(experimental::ADataBase::registrations);
+    airports = experimental::aDB()->getCompletionList(experimental::ADataBase::airports);
+
     QString statement = "SELECT iata, icao FROM airports";
     auto result = Db::customQuery(statement,2);
     for(int i=0; i<result.length()-2; i += 2){
@@ -265,8 +266,8 @@ void NewFlightDialog::formFiller(Flight oldFlight)
                 //DEB("Time Match found: " << key << " - " << leName);
                 auto le = parent()->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
-                    DEB("Setting " << le->objectName() << " to " << Calc::minutesToString(oldFlight.data.value(key)));
-                    le->setText(Calc::minutesToString(
+                    DEB("Setting " << le->objectName() << " to " << ACalc::minutesToString(oldFlight.data.value(key)));
+                    le->setText(ACalc::minutesToString(
                                 oldFlight.data.value(key)));
                     filled << leName;
                     line_edits_names.removeOne(leName);
@@ -368,7 +369,7 @@ inline void NewFlightDialog::setupLineEdit(QLineEdit* line_edit, LineEditSetting
     DEB("Setting validators for " << line_edit_objectName);
     auto [valid_rgx, invalid_rgx, sql_col] = settings.getAll();
 
-    auto validator = new StrictRxValidator(valid_rgx, line_edit);
+    auto validator = new AStrictRxValidator(valid_rgx, line_edit);
 
     auto comp_model = new QSqlRelationalTableModel(line_edit, db);
     comp_model->database().open();
@@ -395,18 +396,18 @@ void NewFlightDialog::writeSettings()
 {
     DEB("Writing Settings...");
 
-    Settings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
-    Settings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
-    Settings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
-    Settings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
-    Settings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
-    Settings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
-    Settings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
-    Settings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
-    Settings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
-    Settings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
-    Settings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
-    Settings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
+    ASettings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
+    ASettings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
+    ASettings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
+    ASettings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
+    ASettings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
+    ASettings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
+    ASettings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
+    ASettings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
+    ASettings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
+    ASettings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
+    ASettings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
+    ASettings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
 }
 
 /*!
@@ -418,24 +419,24 @@ void NewFlightDialog::readSettings()
     DEB("Reading Settings...");
     QSettings settings;
 
-    ui->FunctionComboBox->setCurrentText(Settings::read("NewFlight/FunctionComboBox").toString());
-    ui->ApproachComboBox->setCurrentText(Settings::read("NewFlight/ApproachComboBox").toString());
-    ui->PilotFlyingCheckBox->setChecked(Settings::read("NewFlight/PilotFlyingCheckBox").toBool());
-    ui->PilotMonitoringCheckBox->setChecked(Settings::read("NewFlight/PilotMonitoringCheckBox").toBool());
-    ui->TakeoffSpinBox->setValue(Settings::read("NewFlight/TakeoffSpinBox").toInt());
-    ui->TakeoffCheckBox->setChecked(Settings::read("NewFlight/TakeoffCheckBox").toBool());
-    ui->LandingSpinBox->setValue(Settings::read("NewFlight/LandingSpinBox").toInt());
-    ui->LandingCheckBox->setChecked(Settings::read("NewFlight/LandingCheckBox").toBool());
-    ui->AutolandSpinBox->setValue(Settings::read("NewFlight/AutolandSpinBox").toInt());
-    ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toBool());
-    ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toBool());
-    ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toBool());
-    ui->FlightNumberLineEdit->setText(Settings::read("flightlogging/flightnumberPrefix").toString());
+    ui->FunctionComboBox->setCurrentText(ASettings::read("NewFlight/FunctionComboBox").toString());
+    ui->ApproachComboBox->setCurrentText(ASettings::read("NewFlight/ApproachComboBox").toString());
+    ui->PilotFlyingCheckBox->setChecked(ASettings::read("NewFlight/PilotFlyingCheckBox").toBool());
+    ui->PilotMonitoringCheckBox->setChecked(ASettings::read("NewFlight/PilotMonitoringCheckBox").toBool());
+    ui->TakeoffSpinBox->setValue(ASettings::read("NewFlight/TakeoffSpinBox").toInt());
+    ui->TakeoffCheckBox->setChecked(ASettings::read("NewFlight/TakeoffCheckBox").toBool());
+    ui->LandingSpinBox->setValue(ASettings::read("NewFlight/LandingSpinBox").toInt());
+    ui->LandingCheckBox->setChecked(ASettings::read("NewFlight/LandingCheckBox").toBool());
+    ui->AutolandSpinBox->setValue(ASettings::read("NewFlight/AutolandSpinBox").toInt());
+    ui->AutolandCheckBox->setChecked(ASettings::read("NewFlight/AutolandCheckBox").toBool());
+    ui->IfrCheckBox->setChecked(ASettings::read("NewFlight/IfrCheckBox").toBool());
+    ui->VfrCheckBox->setChecked(ASettings::read("NewFlight/VfrCheckBox").toBool());
+    ui->FlightNumberLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
 
-    if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
+    if(ASettings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
         ui->picNameLineEdit->setText("self");
         ui->secondPilotNameLineEdit->setText("");
-    }else if (Settings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
+    }else if (ASettings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
         ui->picNameLineEdit->setText("");
         ui->secondPilotNameLineEdit->setText("self");
     }
@@ -551,8 +552,8 @@ void NewFlightDialog::collectBasicData()
     //Block Time
     auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
     auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
+    QString blockTime = ACalc::blocktime(tofb, tonb).toString("hh:mm");
+    QString blockMinutes = QString::number(ACalc::stringToMinutes(blockTime));
     newData.insert("tblk",blockMinutes);
 
     // Aircraft
@@ -633,8 +634,8 @@ void NewFlightDialog::collectAdditionalData()
     // Extra Times
     auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
     auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
+    QString blockTime = ACalc::blocktime(tofb, tonb).toString("hh:mm");
+    QString blockMinutes = QString::number(ACalc::stringToMinutes(blockTime));
 
     auto acft = Aircraft(newData.value("acft").toInt());
 
@@ -669,10 +670,10 @@ void NewFlightDialog::collectAdditionalData()
     QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
 
     QString nightTime = QString::number(
-                        Calc::calculateNightTime(
+                        ACalc::calculateNightTime(
                         newData.value("dept"), newData.value("dest"),
                         deptDateTime, tblk, nightAngle));
     newData.insert("tNIGHT", nightTime);
@@ -724,7 +725,7 @@ void NewFlightDialog::collectAdditionalData()
             newData.insert("toDay", "0");
             newData.insert("toNight", QString::number(ui->TakeoffSpinBox->value()));
         } else { //check
-            if(Calc::isNight(ui->deptLocLineEdit->text(), deptDateTime,  nightAngle)){
+            if(ACalc::isNight(ui->deptLocLineEdit->text(), deptDateTime,  nightAngle)){
                 newData.insert("toDay", "0");
                 newData.insert("toNight", QString::number(ui->TakeoffSpinBox->value()));
             }else{
@@ -747,7 +748,7 @@ void NewFlightDialog::collectAdditionalData()
         } else { //check
             QString destDate = ui->doftLineEdit->text() + 'T' + tonb.toString("hh:mm");
             QDateTime destDateTime = QDateTime::fromString(destDate,"yyyy-MM-ddThh:mm");
-            if(Calc::isNight(ui->destLocLineEdit->text(), destDateTime,  nightAngle)){
+            if(ACalc::isNight(ui->destLocLineEdit->text(), destDateTime,  nightAngle)){
                 newData.insert("ldgDay", "0");
                 newData.insert("ldgNight", QString::number(ui->LandingSpinBox->value()));
             }else{
@@ -784,8 +785,8 @@ void NewFlightDialog::fillExtras()
     //Times
     auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
     auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
+    QString blockTime = ACalc::blocktime(tofb, tonb).toString("hh:mm");
+    QString blockMinutes = QString::number(ACalc::stringToMinutes(blockTime));
     ui->tblkTimeLineEdit->setText(blockTime);
     auto acft = Aircraft(newData.value("acft").toInt());
 
@@ -819,14 +820,14 @@ void NewFlightDialog::fillExtras()
     QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
 
     QString nightTime = QString::number(
-                        Calc::calculateNightTime(
+                        ACalc::calculateNightTime(
                         newData.value("dept"), newData.value("dest"),
                         deptDateTime, tblk, nightAngle));
-    ui->tNIGHTTimeLineEdit->setText(Calc::minutesToString(nightTime));
-    ui->tNIGHTLabel->setText(Calc::minutesToString(nightTime));
+    ui->tNIGHTTimeLineEdit->setText(ACalc::minutesToString(nightTime));
+    ui->tNIGHTLabel->setText(ACalc::minutesToString(nightTime));
     // Function times
     switch (ui->FunctionComboBox->currentIndex()) {
     case 0://PIC
@@ -1116,7 +1117,7 @@ void NewFlightDialog::on_tofbTimeLineEdit_inputRejected()
 
 void NewFlightDialog::on_tofbTimeLineEdit_editingFinished()
 {
-    ui->tofbTimeLineEdit->setText(Calc::formatTimeInput(ui->tofbTimeLineEdit->text()));
+    ui->tofbTimeLineEdit->setText(ACalc::formatTimeInput(ui->tofbTimeLineEdit->text()));
     const auto time = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
 
     auto line_edit = ui->tofbTimeLineEdit;
@@ -1177,7 +1178,7 @@ void NewFlightDialog::on_tonbTimeLineEdit_inputRejected()
 
 void NewFlightDialog::on_tonbTimeLineEdit_editingFinished()
 {
-    ui->tonbTimeLineEdit->setText(Calc::formatTimeInput(ui->tonbTimeLineEdit->text()));
+    ui->tonbTimeLineEdit->setText(ACalc::formatTimeInput(ui->tonbTimeLineEdit->text()));
     auto line_edit = ui->tonbTimeLineEdit;
     const auto time = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
     if(time.isValid()){
@@ -1209,7 +1210,7 @@ void NewFlightDialog::on_acftLineEdit_inputRejected()
 
 void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
-    auto registrationList = CompletionList(CompleterTarget::registrations).list;
+    auto registrationList = experimental::aDB()->getCompletionList(experimental::ADataBase::registrations);
     auto line_edit = ui->acftLineEdit;
     auto text = ui->acftLineEdit->text();
 
@@ -1249,7 +1250,7 @@ void NewFlightDialog::on_picNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
@@ -1294,7 +1295,7 @@ void NewFlightDialog::on_secondPilotNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
@@ -1328,7 +1329,7 @@ void NewFlightDialog::on_thirdPilotNameLineEdit_editingFinished()
         return;
     }else //check if entry is in pilotList
     {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
+        QStringList pilotList = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
         QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
 
         if(match.length()!= 0)
@@ -1451,13 +1452,13 @@ inline bool NewFlightDialog::isLessOrEqualToTotalTime(QString timeString)
         mb->show();
         return false;
     } else {
-        int minutes = Calc::stringToMinutes(timeString);
+        int minutes = ACalc::stringToMinutes(timeString);
         if (minutes <= newData.value("tblk").toInt()) {
             return true;
         } else {
             auto mb = new QMessageBox(this);
             mb->setText("Cannot be more than Total Time of Flight:<br><br><center><b>"
-                        + Calc::minutesToString(newData.value("tblk"))
+                        + ACalc::minutesToString(newData.value("tblk"))
                         + "</b></center><br>");
             mb->show();
             return false;
@@ -1469,21 +1470,21 @@ inline bool NewFlightDialog::isLessOrEqualToTotalTime(QString timeString)
 void NewFlightDialog::on_tblkTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tblkTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
-    newData.insert("tblk",QString::number(Calc::stringToMinutes(text)));
+    newData.insert("tblk",QString::number(ACalc::stringToMinutes(text)));
     le->setText(QString());
 }
 
 void NewFlightDialog::on_tSPSETimeLineEdit_editingFinished()
 {
     const auto &le = ui->tSPSETimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSPSE",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tSPSE",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1492,11 +1493,11 @@ void NewFlightDialog::on_tSPSETimeLineEdit_editingFinished()
 void NewFlightDialog::on_tSPMETimeLineEdit_editingFinished()
 {
     const auto &le = ui->tSPMETimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSPME",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tSPME",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1505,11 +1506,11 @@ void NewFlightDialog::on_tSPMETimeLineEdit_editingFinished()
 void NewFlightDialog::on_tMPTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tMPTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tMP",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tMP",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1517,11 +1518,11 @@ void NewFlightDialog::on_tMPTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tIFRTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tIFRTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tIFR",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tIFR",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1530,11 +1531,11 @@ void NewFlightDialog::on_tIFRTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tNIGHTTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tNIGHTTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tNIGHT",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tNIGHT",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1543,11 +1544,11 @@ void NewFlightDialog::on_tNIGHTTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tPICTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tPICTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tPIC",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tPIC",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1556,11 +1557,11 @@ void NewFlightDialog::on_tPICTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tSICTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tSICTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSIC",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tSIC",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1569,11 +1570,11 @@ void NewFlightDialog::on_tSICTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tDUALTimeLineEdit_editingFinished()
 {
     const auto &le = ui->tDUALTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tDUAL",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tDUAL",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }
@@ -1582,11 +1583,11 @@ void NewFlightDialog::on_tDUALTimeLineEdit_editingFinished()
 void NewFlightDialog::on_tFITimeLineEdit_editingFinished()
 {
     const auto &le = ui->tFITimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
+    le->setText(ACalc::formatTimeInput(le->text()));
     const auto &text = le->text();
 
     if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tFI",QString::number(Calc::stringToMinutes(text)));
+        newData.insert("tFI",QString::number(ACalc::stringToMinutes(text)));
     } else {
         le->setText(QString());
     }

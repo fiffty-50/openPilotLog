@@ -7,7 +7,7 @@
 #include <QLineEdit>
 #include <QSettings>
 #include "src/database/db.h"
-#include "src/classes/stat.h"
+#include "src/functions/astat.h"
 
 namespace Ui {
 class TotalsWidget;

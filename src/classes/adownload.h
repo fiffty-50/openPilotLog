@@ -15,22 +15,43 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AIRCRAFT_H
-#define AIRCRAFT_H
-#include <QCoreApplication>
-#include "src/database/entry_deprecated.h"
+#ifndef ADOWNLOAD_H
+#define ADOWNLOAD_H
 
-/*!
- * \brief The aircraft class
- *
- */
-class Aircraft : public Entry_deprecated
-{
-//    using Entry::Entry;
+#include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QFile>
+#include <QDebug>
+
+
+class ADownload : public QObject {
+    Q_OBJECT
 public:
-    Aircraft();
-    Aircraft(int tail_id);
-    Aircraft(QMap<QString, QString> newData);
+    explicit ADownload();
+
+    ~ADownload();
+
+    void setTarget(const QUrl &value);
+
+    void setFileName(const QString &value);
+
+    void download();
+
+private:
+
+    QNetworkAccessManager manager;
+    QUrl target;
+    QString fileName;
+
+signals:
+    void done();
+
+public slots:
+    void downloadFinished(QNetworkReply* data);
+    //void downloadProgress(qint64 received, qint64 total); //not needed for now
 };
 
-#endif // AIRCRAFT_H
+#endif // ADOWNLOAD_H

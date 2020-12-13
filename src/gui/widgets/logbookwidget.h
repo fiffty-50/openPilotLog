@@ -26,7 +26,7 @@
 #include <QDebug>
 #include <QMenu>
 
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/database/db.h"
 #include "src/classes/flight.h"
 #include "src/gui/dialogues/newflightdialog.h"

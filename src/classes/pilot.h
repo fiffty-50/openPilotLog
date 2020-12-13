@@ -17,10 +17,10 @@
  */
 #ifndef PILOT_H
 #define PILOT_H
-#include "src/database/entry.h"
+#include "src/database/entry_deprecated.h"
 
 
-class Pilot : public Entry
+class Pilot : public Entry_deprecated
 {
 //    using Entry::Entry;
 public:

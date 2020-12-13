@@ -17,7 +17,7 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
@@ -36,7 +36,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     //message Box
     nope = new QMessageBox(this);
 
-    refreshView(Settings::read("logbook/view").toInt());
+    refreshView(ASettings::read("logbook/view").toInt());
 }
 
 LogbookWidget::~LogbookWidget()
@@ -152,7 +152,7 @@ void LogbookWidget::on_newFlightButton_clicked()
     auto nf = new NewFlightDialog(this, Db::createNew);
     nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
-    refreshView(Settings::read("logbook/view").toInt());
+    refreshView(ASettings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::on_editFlightButton_clicked()
@@ -161,7 +161,7 @@ void LogbookWidget::on_editFlightButton_clicked()
         auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
         ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
-        refreshView(Settings::read("logbook/view").toInt());
+        refreshView(ASettings::read("logbook/view").toInt());
     } else if (selectedFlights.isEmpty()) {
         nope->setText("No flight selected.\n");
         nope->exec();
@@ -205,7 +205,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                 auto entry = Flight(selectedFlight);
                 entry.remove();
             }
-            refreshView(Settings::read("logbook/view").toInt());
+            refreshView(ASettings::read("logbook/view").toInt());
         }
     } else if (selectedFlights.length() == 0) {
         nope->setIcon(QMessageBox::Information);
@@ -228,7 +228,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                 auto entry = Flight(selectedFlight);
                 entry.remove();
             }
-            refreshView(Settings::read("logbook/view").toInt());
+            refreshView(ASettings::read("logbook/view").toInt());
         }
     }
 }
@@ -251,7 +251,7 @@ void LogbookWidget::on_filterFlightsByDateButton_clicked()
 
 void LogbookWidget::on_showAllButton_clicked()
 {
-    refreshView(Settings::read("logbook/view").toInt());
+    refreshView(ASettings::read("logbook/view").toInt());
 }
 
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)

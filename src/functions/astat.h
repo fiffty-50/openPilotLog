@@ -15,21 +15,31 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef ASTAT_H
+#define ASTAT_H
 #include <QtCore>
-#include <QSettings>
+#include <QSqlQuery>
+#include <QSqlError>
+#include "src/experimental/adatabase.h"
+
+namespace AStat {
+
 
 /*!
- * \brief The Settings class is a thin wrapper for the QSettings class,
- * simplifying reading and writing of settings.
+ * \brief The AStat namespace provides functionality for retreiving various statistics
+ * from the database, such as total times or recency. In general, most values are
+ * provided as either QString or QVector<QString>.
  */
-class Settings
-{
-public:
-    static QVariant read(const QString& key);
 
-    static void write(const QString& key, const QVariant& val);
-};
 
-#endif // SETTINGS_H
+    enum yearType {allYears, calendarYear, rollingYear};
+
+    QString totalTime(yearType);
+
+    QVector<QString> currencyTakeOffLanding(int days);
+
+    QVector<QPair<QString, QString>> totals();
+
+} // namespace AStat
+
+#endif // ASTAT_H

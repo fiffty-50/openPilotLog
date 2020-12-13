@@ -1,6 +1,7 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
+
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,7 +24,7 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     QMessageBox result;
-    if (DbSetup::resetToDefault()){
+    if (ADataBaseSetup::resetToDefault()){
         result.setText("Database successfully reset.\n\nRestarting app.");
         result.exec();
         qApp->quit();
@@ -48,8 +49,8 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/";
     for (const auto& table : templateTables) {
         QEventLoop loop;
-        Download* dl = new Download;
-        connect(dl, &Download::done, &loop, &QEventLoop::quit );
+        ADownload* dl = new ADownload;
+        connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
         dl->setFileName("data/templates/" + table + ".csv");
         dl->download();
@@ -71,7 +72,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // re-connct and create new database
     Db::connect();
 
-    if (DbSetup::createDatabase()) {
+    if (ADataBaseSetup::createDatabase()) {
         mb.setText("Database has been successfully reset.\n\nRestarting application.");
         mb.exec();
         qApp->quit();
@@ -99,8 +100,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/sample_";
     for (const auto& table : userTables) {
         QEventLoop loop;
-        Download* dl = new Download;
-        connect(dl, &Download::done, &loop, &QEventLoop::quit );
+        ADownload* dl = new ADownload;
+        connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
         dl->setFileName("data/templates/sample_" + table + ".csv");
         dl->download();
@@ -109,8 +110,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     }
     QVector<bool> allGood;
     for (const auto& table : userTables) {
-        auto data = Csv::read("data/templates/sample_" + table + ".csv");
-        allGood.append(DbSetup::commitData(data, table));
+        auto data = aReadCsv("data/templates/sample_" + table + ".csv");
+        allGood.append(ADataBaseSetup::commitData(data, table));
     }
 
     for (const auto& item : allGood) {
@@ -142,7 +143,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
     if (file.exists() && file.isFile()) {
 
-        if (DbSetup::commitData(Csv::read(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
+        if (ADataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
             auto mb = QMessageBox(this);
             mb.setText("Data inserted successfully.");
             mb.exec();

@@ -15,15 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "dbsetup.h"
-#include "debug.h"
+#include "adatabasesetup.h"
+#include "src/functions/adebug.h"
 
-// Statements for creation of database tables, Revision 10
+
+// Statements for creation of database tables, Revision 12
 
 const QString createTablePilots = "CREATE TABLE \"pilots\" ( "
             "\"pilot_id\"       INTEGER NOT NULL, "
-            "\"piclastname\"	TEXT    NOT NULL, "
-            "\"picfirstname\"	TEXT, "
+            "\"piclastname\"    TEXT    NOT NULL, "
+            "\"picfirstname\"   TEXT, "
             "\"alias\"          TEXT, "
             "\"company\"        TEXT, "
             "\"employeeid\"     TEXT, "
@@ -34,15 +35,15 @@ const QString createTablePilots = "CREATE TABLE \"pilots\" ( "
 
 const QString createTableTails = "CREATE TABLE \"tails\" ( "
             "\"tail_id\"        INTEGER NOT NULL, "
-            "\"registration\"	TEXT NOT NULL, "
+            "\"registration\"   TEXT NOT NULL, "
             "\"company\"        TEXT, "
             "\"make\"           TEXT, "
             "\"model\"          TEXT, "
             "\"variant\"        TEXT, "
-            "\"singlepilot\"	INTEGER, "
+            "\"singlepilot\"    INTEGER, "
             "\"multipilot\"     INTEGER, "
-            "\"singleengine\"	INTEGER, "
-            "\"multiengine\"	INTEGER, "
+            "\"singleengine\"   INTEGER, "
+            "\"multiengine\"    INTEGER, "
             "\"unpowered\"      INTEGER, "
             "\"piston\"         INTEGER, "
             "\"turboprop\"      INTEGER, "
@@ -75,16 +76,16 @@ const QString createTableFlights = "CREATE TABLE \"flights\" ("
             "\"tDUAL\"          INTEGER, "
             "\"tFI\"            INTEGER, "
             "\"tSIM\"           INTEGER, "
-            "\"pilotFlying\"	INTEGER, "
+            "\"pilotFlying\"    INTEGER, "
             "\"toDay\"          INTEGER, "
             "\"toNight\"        INTEGER, "
             "\"ldgDay\"         INTEGER, "
             "\"ldgNight\"       INTEGER, "
             "\"autoland\"       INTEGER, "
-            "\"secondPilot\"	INTEGER, "
+            "\"secondPilot\"    INTEGER, "
             "\"thirdPilot\"     INTEGER, "
-            "\"ApproachType\"	TEXT, "
-            "\"FlightNumber\"	TEXT, "
+            "\"ApproachType\"   TEXT, "
+            "\"FlightNumber\"   TEXT, "
             "\"Remarks\"        TEXT, "
             "FOREIGN KEY(\"pic\")  REFERENCES \"pilots\"(\"pilot_id\") ON DELETE RESTRICT, "
             "FOREIGN KEY(\"acft\") REFERENCES \"tails\"(\"tail_id\")   ON DELETE RESTRICT, "
@@ -106,17 +107,17 @@ const QString createTableAirports = "CREATE TABLE \"airports\" ( "
             ")";
 
 const QString createTableAircraft = "CREATE TABLE \"aircraft\" ( "
-            "\"aircraft_id\"	INTEGER NOT NULL, "
+            "\"aircraft_id\"    INTEGER NOT NULL, "
             "\"make\"           TEXT, "
             "\"model\"          TEXT, "
             "\"variant\"        TEXT, "
             "\"name\"           TEXT, "
             "\"iata\"           TEXT, "
             "\"icao\"           TEXT, "
-            "\"singlepilot\"	INTEGER, "
+            "\"singlepilot\"    INTEGER, "
             "\"multipilot\"     INTEGER, "
-            "\"singleengine\"	INTEGER, "
-            "\"multiengine\"	INTEGER, "
+            "\"singleengine\"   INTEGER, "
+            "\"multiengine\"    INTEGER, "
             "\"unpowered\"      INTEGER, "
             "\"piston\"         INTEGER, "
             "\"turboprop\"      INTEGER, "
@@ -129,9 +130,9 @@ const QString createTableAircraft = "CREATE TABLE \"aircraft\" ( "
             ")";
 
 const QString createTableChangelog = "CREATE TABLE \"changelog\" ( "
-            "\"revision\"	INTEGER NOT NULL, "
-            "\"comment\"	TEXT, "
-            "\"date\"	NUMERIC, "
+            "\"revision\"   INTEGER NOT NULL, "
+            "\"comment\"    TEXT, "
+            "\"date\"       NUMERIC, "
             "PRIMARY KEY(\"revision\") "
             ")";
 
@@ -141,7 +142,7 @@ const QString createViewDefault = "CREATE VIEW viewDefault AS "
         "dept AS 'Dept', "
         "printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time', "
         "dest AS 'Dest', printf('%02d',(tonb/60))||':'||printf('%02d',(tonb%60)) AS 'Time ', "
-        "printf('%02d',(tblk/60))||':'||printf('%02d',(tblk%60)) AS 'Total', " 
+        "printf('%02d',(tblk/60))||':'||printf('%02d',(tblk%60)) AS 'Total', "
         "CASE "
         "WHEN pilot_id = 1 THEN alias "
         "ELSE piclastname||', '||substr(picfirstname, 1, 1)||'.' "
@@ -255,31 +256,32 @@ const QStringList templateTables= {
 };
 
 
-bool DbSetup::createDatabase()
+bool ADataBaseSetup::createDatabase()
 {
-    /// [George]: Not necessary to heap allocate for such a trivial task
-    /// TODO: Since you want to be fancy well do it with some cheeky bit operations
-    /// for the lolz.
-    QVector<bool> returnValues;
-
     DEB("Creating tables...");
-    returnValues << createSchemata(tables);
-    DEB("Creating views...");
-    returnValues << createSchemata(views);
-    DEB("Populating tables...");
-    returnValues << importDefaultData();
-
-    for (const auto& allGood : returnValues) {
-        if (!allGood){
-            return false;
-        }
+    if (!createSchemata(tables)) {
+        DEB("Creating tables has failed.");
+        return false;
     }
+
+    DEB("Creating views...");
+    if (!createSchemata(views)) {
+        DEB("Creating views failed.");
+        return false;
+    }
+
+    DEB("Populating tables...");
+    if (!importDefaultData()) {
+        DEB("Populating tables failed.");
+        return false;
+    }
+
     DEB("Database successfully created!");
     return true;
 }
 
 
-bool DbSetup::importDefaultData()
+bool ADataBaseSetup::importDefaultData()
 {
     QSqlQuery query;
     // reset template tables
@@ -290,7 +292,7 @@ bool DbSetup::importDefaultData()
             DEB("Error: " << query.lastError().text());
         }
         //fill with data from csv
-        if (!commitData(Csv::read("data/templates/" + table + ".csv"), table)) {
+        if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
             DEB("Error importing data.");
             return false;
         }
@@ -302,7 +304,7 @@ bool DbSetup::importDefaultData()
  * \brief DbSetup::resetToDefault Empties all user-generated content in the database.
  * \return true on success
  */
-bool DbSetup::resetToDefault()
+bool ADataBaseSetup::resetToDefault()
 {
     QSqlQuery query;
 
@@ -319,7 +321,7 @@ bool DbSetup::resetToDefault()
 /*!
  * \brief dbSetup::debug prints Database Layout
  */
-void DbSetup::debug()
+void ADataBaseSetup::debug()
 {
     DEB("Database tables and views: ");
     QSqlQuery query;
@@ -341,7 +343,7 @@ void DbSetup::debug()
  * \brief dbSetup::createTables Create the required tables for the database
  * \return true on success
  */
-bool DbSetup::createSchemata(const QStringList &statements)
+bool ADataBaseSetup::createSchemata(const QStringList &statements)
 {
     QSqlQuery query;
     QStringList errors;
@@ -375,7 +377,7 @@ bool DbSetup::createSchemata(const QStringList &statements)
  * \param tableName as in the database
  * \return
  */
-bool DbSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
+bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
     DEB("Importing Data to" << tableName);
     auto dbLayout = DbInfo();

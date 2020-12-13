@@ -15,13 +15,38 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "strictrxvalidator.h"
+#ifndef ARUNGUARD_H
+#define ARUNGUARD_H
 
-QValidator::State StrictRxValidator::validate(QString &txt, int &pos) const
+#include <QObject>
+#include <QSharedMemory>
+#include <QSystemSemaphore>
+
+/*!
+ * \brief The RunGuard class ensures only a single instance of the application
+ * is running simultaneously.
+ */
+class ARunGuard
 {
-    auto validation = QRegularExpressionValidator::validate(txt, pos);
-    if (validation == QValidator::Intermediate) {
-        return QValidator::Invalid;
-    }
-    return validation;
-}
+
+public:
+    ARunGuard(const QString &key);
+    ~ARunGuard();
+
+    bool isAnotherRunning();
+    bool tryToRun();
+    void release();
+
+private:
+    const QString key;
+    const QString memLockKey;
+    const QString sharedmemKey;
+
+    QSharedMemory sharedMem;
+    QSystemSemaphore memLock;
+
+    Q_DISABLE_COPY(ARunGuard)
+};
+
+
+#endif // ARUNGUARD_H

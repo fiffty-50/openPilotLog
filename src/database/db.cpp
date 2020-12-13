@@ -17,7 +17,7 @@
  */
 #include "db.h"
 #include "dbinfo.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 /*!
  * \brief Db::iconnect - see Db::connect

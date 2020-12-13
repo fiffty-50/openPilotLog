@@ -40,7 +40,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 void FirstRunDialog::themeGroup_toggled(int id)
 {
-    Settings::write("main/theme", id);
+    ASettings::write("main/theme", id);
 }
 
 void FirstRunDialog::on_finishButton_clicked()
@@ -50,30 +50,30 @@ void FirstRunDialog::on_finishButton_clicked()
         mb->setText("You have to enter a valid first and last name for the logbook.");
         mb->show();
     } else {
-        Settings::write("userdata/piclastname",ui->piclastnameLineEdit->text());
-        Settings::write("userdata/picfirstname",ui->picfirstnameLineEdit->text());
-        Settings::write("userdata/employeeid",ui->employeeidLineEdit->text());
-        Settings::write("userdata/phone",ui->phoneLineEdit->text());
-        Settings::write("userdata/email",ui->emailLineEdit->text());
+        ASettings::write("userdata/piclastname",ui->piclastnameLineEdit->text());
+        ASettings::write("userdata/picfirstname",ui->picfirstnameLineEdit->text());
+        ASettings::write("userdata/employeeid",ui->employeeidLineEdit->text());
+        ASettings::write("userdata/phone",ui->phoneLineEdit->text());
+        ASettings::write("userdata/email",ui->emailLineEdit->text());
 
-        Settings::write("flightlogging/function", ui->functionComboBox->currentText());
-        Settings::write("flightlogging/rules", ui->rulesComboBox->currentText());
-        Settings::write("flightlogging/approach", ui->approachComboBox->currentText());
-        Settings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
-        Settings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
+        ASettings::write("flightlogging/function", ui->functionComboBox->currentText());
+        ASettings::write("flightlogging/rules", ui->rulesComboBox->currentText());
+        ASettings::write("flightlogging/approach", ui->approachComboBox->currentText());
+        ASettings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
+        ASettings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
 
         QMap<QString,QString> data;
         switch (ui->aliasComboBox->currentIndex()) {
         case 0:
-            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            ASettings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","self");
             break;
         case 1:
-            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            ASettings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             data.insert("displayname","SELF");
             break;
         case 2:{
-            Settings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
+            ASettings::write("userdata/displayselfas",ui->aliasComboBox->currentIndex());
             QString name;
             name.append(ui->piclastnameLineEdit->text());
             name.append(QLatin1String(", "));
@@ -87,6 +87,7 @@ void FirstRunDialog::on_finishButton_clicked()
         }
         data.insert("piclastname",ui->piclastnameLineEdit->text());
         data.insert("picfirstname",ui->picfirstnameLineEdit->text());
+        data.insert("alias", ASettings::read("userdata/displayselfas").toString());
         data.insert("employeeid",ui->employeeidLineEdit->text());
         data.insert("phone",ui->phoneLineEdit->text());
         data.insert("email",ui->emailLineEdit->text());
@@ -95,7 +96,7 @@ void FirstRunDialog::on_finishButton_clicked()
         pic.setData(data);
         pic.commit();
 
-        switch(Settings::read("main/theme").toInt()){
+        switch(ASettings::read("main/theme").toInt()){
         case 0:
             accept();
             break;
@@ -108,7 +109,7 @@ void FirstRunDialog::on_finishButton_clicked()
             QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
             break;
         default:
-            Settings::write("main/theme", 0);
+            ASettings::write("main/theme", 0);
             accept();
         }
     }

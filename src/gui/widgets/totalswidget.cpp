@@ -1,13 +1,13 @@
 #include "totalswidget.h"
 #include "ui_totalswidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 TotalsWidget::TotalsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TotalsWidget)
 {
     ui->setupUi(this);
-    auto data = Stat::totals();
+    auto data = AStat::totals();
     DEB("Filling Totals Line Edits...");
     //DEB("data: " << data);
     for (const auto &field : data) {

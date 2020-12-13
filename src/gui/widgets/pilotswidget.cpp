@@ -17,7 +17,7 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 using namespace experimental;
 PilotsWidget::PilotsWidget(QWidget *parent) :
@@ -25,7 +25,7 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
-    sortColumn = Settings::read("userdata/pilSortColumn").toInt();
+    sortColumn = ASettings::read("userdata/pilSortColumn").toInt();
 
     setupModelAndView();
     refreshModelAndView();
@@ -110,7 +110,7 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
 void PilotsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    Settings::write("userdata/pilSortColumn", column);
+    ASettings::write("userdata/pilSortColumn", column);
 }
 
 void PilotsWidget::on_newButton_clicked()
@@ -142,8 +142,8 @@ void PilotsWidget::on_deletePushButton_clicked()
         /// flights table (see on_delete_unsuccessful) below
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = DB()->getPilotEntry(selectedPilots.first());
-        DB()->remove(entry);
+        auto entry = aDB()->getPilotEntry(selectedPilots.first());
+        aDB()->remove(entry);
         }
     refreshModelAndView();
 

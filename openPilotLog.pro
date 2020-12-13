@@ -18,23 +18,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/classes/adownload.cpp \
     src/classes/aircraft.cpp \
-    src/classes/calc.cpp \
-    src/classes/completionlist.cpp \
-    src/classes/csv.cpp \
-    src/classes/download.cpp \
+    src/classes/arunguard.cpp \
+    src/classes/asettings.cpp \
+    src/classes/astrictrxvalidator.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
-    src/classes/runguard.cpp \
-    src/classes/settings.cpp \
-    src/classes/stat.cpp \
-    src/classes/strictrxvalidator.cpp \
+    src/database/adatabasesetup.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
-    src/database/dbsetup.cpp \
-    src/database/entry.cpp \
-    src/experimental/DataBase.cpp \
-    src/experimental/Entry.cpp \
+    src/database/entry_deprecated.cpp \
+    src/experimental/adatabase.cpp \
+    src/experimental/aentry.cpp \
+    src/experimental/apilotentry.cpp \
+    src/functions/acalc.cpp \
+    src/functions/areadcsv.cpp \
+    src/functions/astat.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -48,27 +48,27 @@ SOURCES += \
     src/gui/widgets/totalswidget.cpp
 
 HEADERS += \
-    debug.h \
     mainwindow.h \
+    src/classes/adownload.h \
     src/classes/aircraft.h \
-    src/classes/calc.h \
-    src/classes/completionlist.h \
-    src/classes/csv.h \
-    src/classes/download.h \
+    src/classes/arunguard.h \
+    src/classes/asettings.h \
+    src/classes/astrictrxvalidator.h \
     src/classes/flight.h \
     src/classes/pilot.h \
-    src/classes/runguard.h \
-    src/classes/settings.h \
-    src/classes/stat.h \
-    src/classes/strictrxvalidator.h \
+    src/database/adatabasesetup.h \
     src/database/db.h \
     src/database/dbinfo.h \
-    src/database/dbsetup.h \
-    src/database/entry.h \
-    src/experimental/DataBase.h \
-    src/experimental/Decl.h \
-    src/experimental/Entry.h \
+    src/database/entry_deprecated.h \
     src/experimental/UserInput.h \
+    src/experimental/adatabase.h \
+    src/experimental/aentry.h \
+    src/experimental/apilotentry.h \
+    src/experimental/decl.h \
+    src/functions/acalc.h \
+    src/functions/src/functions/adebug.h \
+    src/functions/areadcsv.h \
+    src/functions/astat.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \

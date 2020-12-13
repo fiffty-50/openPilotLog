@@ -15,16 +15,21 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "settings.h"
+#ifndef ASETTINGS_H
+#define ASETTINGS_H
+#include <QtCore>
+#include <QSettings>
 
-QVariant Settings::read(const QString &key)
+/*!
+ * \brief The Settings class is a thin wrapper for the QSettings class,
+ * simplifying reading and writing of settings.
+ */
+class ASettings
 {
-    QSettings settings;
-    return settings.value(key);
-}
+public:
+    static QVariant read(const QString &key);
 
-void Settings::write(const QString& key, const QVariant& val)
-{
-    QSettings settings;
-    settings.setValue(key, val);
-}
+    static void write(const QString &key, const QVariant &val);
+};
+
+#endif // ASETTINGS_H

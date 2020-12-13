@@ -8,9 +8,10 @@
 #include <QSqlError>
 #include <QSqlTableModel>
 #include "src/database/dbinfo.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
-#include "Entry.h"
+#include "aentry.h"
+#include "apilotentry.h"
 
 namespace experimental {
 
@@ -18,18 +19,24 @@ namespace experimental {
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class DataBase : public QObject {
+class ADataBase : public QObject {
     Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static DataBase* instance;
-    DataBase() = default;
+    static ADataBase* instance;
+    ADataBase() = default;
 public:
     // Ensure DB is not copiable or assignable
-    DataBase(const DataBase&) = delete;
-    void operator=(const DataBase&) = delete;
-    static DataBase* getInstance();
+    ADataBase(const ADataBase&) = delete;
+    void operator=(const ADataBase&) = delete;
+    static ADataBase* getInstance();
+
+    /*!
+     * \brief The CompleterTarget enum provides the items for which QCompleter
+     * completion lists are provided from the database.
+     */
+    enum CompleterTarget {airports, pilots, registrations, aircraft, companies};
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -45,34 +52,40 @@ public:
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static
-    QSqlDatabase database();
+    static QSqlDatabase database();
+
+    /*!
+     * \brief Can be used to send a complex query to the database.
+     * \param query - the full sql query statement
+     * \param returnValues - the number of return values
+     */
+    QVector<QString> customQuery(QString statement, int return_values);
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(Entry entry);
+    bool exists(AEntry entry);
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(Entry entry);
+    bool commit(AEntry entry);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(Entry new_entry);
+    bool insert(AEntry new_entry);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    bool update(Entry updated_entry);
+    bool update(AEntry updated_entry);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    bool remove(Entry entry);
+    bool remove(AEntry entry);
 
     /*!
      * \brief retreive entry data from the database to create an entry object
@@ -82,7 +95,7 @@ public:
     /*!
      * \brief retreive an Entry from the database.
      */
-    Entry getEntry(DataPosition data_position);
+    AEntry getEntry(DataPosition data_position);
 
     /*!
      * \brief retreives a PilotEntry from the database.
@@ -92,11 +105,18 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    PilotEntry getPilotEntry(RowId row_id);
+    APilotEntry getPilotEntry(RowId row_id);
     // [G] TODO: Ensure PilotDialog works great and slowly move to
     // other dialogs
+
+    /*!
+     * \brief getCompletionList returns a QStringList of values for a
+     * QCompleter based on database values
+     * \return
+     */
+    QStringList getCompletionList(CompleterTarget);
 signals:
-    void commitSuccessful();
+    void sqlSuccessful();
 
     void sqlError(const QSqlError &sqlError, const QString &sqlStatement);
 
@@ -107,9 +127,9 @@ signals:
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
- * DB()->commit(...)
+ * aDB()->commit(...)
  */
-DataBase* DB();
+ADataBase* aDB();
 
 }  // namespace experimental
 

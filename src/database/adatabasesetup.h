@@ -15,29 +15,40 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef STAT_H
-#define STAT_H
+#ifndef DBSETUP_H
+#define DBSETUP_H
 
+#include <QCoreApplication>
 #include "src/database/db.h"
-#include <QDateTime>
+#include "src/database/dbinfo.h"
+#include "src/functions/areadcsv.h"
 
 /*!
- * \brief The stat class provides functionality for retreiving various statistics
- * from the database, such as total times or recency. In general, most values are
- * provided as either QString or QVector<QString>.
+ * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
+ * the application is first launched. It creates the database in the specified default
+ * location and creates all required tables and views. It can also be used to reset the
+ * database currently used
  */
-class Stat
+class ADataBaseSetup
 {
 public:
+    static void debug();
 
-    enum yearType {allYears, calendarYear, rollingYear};
+    static bool createDatabase();
 
-    static QString totalTime(yearType);
+    static bool fillTemplates();
 
-    static QVector<QString> currencyTakeOffLanding(int days);
+    static bool importDefaultData();
 
-    static QVector<QPair<QString, QString>> totals();
+    static bool resetToDefault();
+
+    static bool commitData(QVector<QStringList> fromCSV, const QString &tableName);
+
+private:
+
+    static bool createSchemata(const QStringList &statements);
+
 
 };
 
-#endif // STAT_H
+#endif // DBSETUP_H

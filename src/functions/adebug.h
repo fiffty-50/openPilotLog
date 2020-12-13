@@ -1,5 +1,5 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef ADEBUG_H
+#define ADEBUG_H
 
 #include <QDebug>
 
@@ -7,4 +7,4 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
-#endif // DEBUG_H
+#endif // ADEBUG_H

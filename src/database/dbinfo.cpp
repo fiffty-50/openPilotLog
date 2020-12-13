@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbinfo.h"
-#include "debug.h"
+#include "src/functions/adebug.h"
 
 DbInfo::DbInfo()
 {

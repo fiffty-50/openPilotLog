@@ -24,7 +24,7 @@
 #include <QDebug>
 #include <QLabel>
 #include <QTableView>
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/classes/pilot.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 
