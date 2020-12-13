@@ -1,17 +1,17 @@
-#include "DataBase.h"
+#include "adatabase.h"
 
 namespace experimental {
 
-DataBase* DataBase::instance = nullptr;
+ADataBase* ADataBase::instance = nullptr;
 
-DataBase* DataBase::getInstance()
+ADataBase* ADataBase::getInstance()
 {
     if(!instance)
-        instance = new DataBase();
+        instance = new ADataBase();
     return instance;
 }
 
-bool DataBase::connect()
+bool ADataBase::connect()
 {
     const QString driver("QSQLITE");
 
@@ -44,20 +44,20 @@ bool DataBase::connect()
     return true;
 }
 
-void DataBase::disconnect()
+void ADataBase::disconnect()
 {
-    auto db = DataBase::database();
+    auto db = ADataBase::database();
     db.close();
     db.removeDatabase(db.connectionName());
     DEB("Database connection closed.");
 }
 
-QSqlDatabase DataBase::database()
+QSqlDatabase ADataBase::database()
 {
     return QSqlDatabase::database("qt_sql_default_connection");
 }
 
-bool DataBase::commit(Entry entry)
+bool ADataBase::commit(Entry entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -66,7 +66,7 @@ bool DataBase::commit(Entry entry)
     }
 }
 
-bool DataBase::remove(Entry entry)
+bool ADataBase::remove(Entry entry)
 {
     if (!exists(entry)) {
         DEB("Error: Entry does not exist.");
@@ -91,7 +91,7 @@ bool DataBase::remove(Entry entry)
     }
 }
 
-bool DataBase::exists(Entry entry)
+bool ADataBase::exists(Entry entry)
 {
     if(entry.getPosition() == DEFAULT_PILOT_POSITION)
         return false;
@@ -113,7 +113,7 @@ bool DataBase::exists(Entry entry)
 }
 
 
-bool DataBase::update(Entry updated_entry)
+bool ADataBase::update(Entry updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
@@ -144,7 +144,7 @@ bool DataBase::update(Entry updated_entry)
     }
 }
 
-bool DataBase::insert(Entry new_entry)
+bool ADataBase::insert(Entry new_entry)
 {
     auto data = new_entry.getData();
     DEB("Inserting...");
@@ -178,7 +178,7 @@ bool DataBase::insert(Entry new_entry)
 
 }
 
-TableData DataBase::getEntryData(DataPosition data_position)
+TableData ADataBase::getEntryData(DataPosition data_position)
 {
     // check table exists
     if (!tableNames.contains(data_position.first)) {
@@ -224,21 +224,21 @@ TableData DataBase::getEntryData(DataPosition data_position)
     return entry_data;
 }
 
-Entry DataBase::getEntry(DataPosition data_position)
+Entry ADataBase::getEntry(DataPosition data_position)
 {
     Entry entry(data_position);
     entry.setData(getEntryData(data_position));
     return entry;
 }
 
-PilotEntry DataBase::getPilotEntry(RowId row_id)
+PilotEntry ADataBase::getPilotEntry(RowId row_id)
 {
     PilotEntry pilotEntry(row_id);
     pilotEntry.setData(getEntryData(pilotEntry.getPosition()));
     return pilotEntry;
 }
 
-QStringList DataBase::getCompletionList(DataBase::CompleterTarget target)
+QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
 {
     QString statement;
 
@@ -278,6 +278,6 @@ QStringList DataBase::getCompletionList(DataBase::CompleterTarget target)
     return completer_list;
 }
 
-DataBase* DB() { return DataBase::getInstance(); }
+ADataBase* aDB() { return ADataBase::getInstance(); }
 
 }

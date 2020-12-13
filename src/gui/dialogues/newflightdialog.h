@@ -41,7 +41,7 @@
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/settings.h"
 #include "src/classes/acalc.h"
-#include "src/experimental/DataBase.h"
+#include "src/experimental/adatabase.h"
 
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newtaildialog.h"

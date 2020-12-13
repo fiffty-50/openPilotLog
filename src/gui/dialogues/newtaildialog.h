@@ -28,7 +28,7 @@
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/acalc.h"
 #include "src/database/entry.h"
-#include "src/experimental/DataBase.h"
+#include "src/experimental/adatabase.h"
 
 namespace Ui {
 class NewTail;

@@ -90,7 +90,7 @@ void NewTailDialog::setupCompleter()
     //but creating it like this is faster.
 
 
-    auto aircraftlist = experimental::DB()->getCompletionList(experimental::DataBase::aircraft);
+    auto aircraftlist = experimental::aDB()->getCompletionList(experimental::ADataBase::aircraft);
     idMap = map;
     QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);

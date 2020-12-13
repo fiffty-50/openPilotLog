@@ -142,8 +142,8 @@ void PilotsWidget::on_deletePushButton_clicked()
         /// flights table (see on_delete_unsuccessful) below
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = DB()->getPilotEntry(selectedPilots.first());
-        DB()->remove(entry);
+        auto entry = aDB()->getPilotEntry(selectedPilots.first());
+        aDB()->remove(entry);
         }
     refreshModelAndView();
 

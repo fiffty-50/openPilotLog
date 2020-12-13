@@ -22,7 +22,7 @@
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
-#include "src/experimental/DataBase.h"
+#include "src/experimental/adatabase.h"
 
 const auto DATA_DIR = QLatin1String("data");
 /*!
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     QSettings settings;
 
 //    Db::connect();
-    experimental::DB()->connect();
+    experimental::aDB()->connect();
 
     QApplication openPilotLog(argc, argv);
     if(!setup()){

@@ -32,8 +32,8 @@ SOURCES += \
     src/database/dbinfo.cpp \
     src/database/dbsetup.cpp \
     src/database/entry.cpp \
-    src/experimental/DataBase.cpp \
     src/experimental/Entry.cpp \
+    src/experimental/adatabase.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -63,10 +63,10 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/dbsetup.h \
     src/database/entry.h \
-    src/experimental/DataBase.h \
     src/experimental/Decl.h \
     src/experimental/Entry.h \
     src/experimental/UserInput.h \
+    src/experimental/adatabase.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \

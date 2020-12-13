@@ -80,7 +80,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     DEB("New NewPilotDialog (editEntry)");
     setup();
 
-    pilotEntry = DB()->getPilotEntry(rowId);
+    pilotEntry = aDB()->getPilotEntry(rowId);
     DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
     ui->piclastnameLineEdit->setFocus();
@@ -108,7 +108,7 @@ void NewPilotDialog::setup()
     }
 
     DEB("Setting up completer...");
-    auto completer = new QCompleter(DB()->getCompletionList(DataBase::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(aDB()->getCompletionList(ADataBase::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
@@ -119,9 +119,9 @@ void NewPilotDialog::setup()
     ///   makes it easier to maintain.
     /// - these signals and slots are specific to this dialog, for communication with
     ///   other widgets we have the QDialog::accepted() and QDialog::rejected signals.
-    QObject::connect(DB(), &DataBase::commitSuccessful,
+    QObject::connect(aDB(), &ADataBase::commitSuccessful,
                      this, &NewPilotDialog::onCommitSuccessful);
-    QObject::connect(DB(), &DataBase::sqlError,
+    QObject::connect(aDB(), &ADataBase::sqlError,
                      this, &NewPilotDialog::onCommitUnsuccessful);
 }
 
@@ -178,5 +178,5 @@ void NewPilotDialog::submitForm()
     pilotEntry.setData(new_data);
     DEB("Pilot entry position: " << pilotEntry.getPosition());
     DEB("Pilot entry data: " << pilotEntry.getData());
-    DB()->commit(pilotEntry);
+    aDB()->commit(pilotEntry);
 }

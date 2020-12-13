@@ -18,18 +18,18 @@ namespace experimental {
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class DataBase : public QObject {
+class ADataBase : public QObject {
     Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static DataBase* instance;
-    DataBase() = default;
+    static ADataBase* instance;
+    ADataBase() = default;
 public:
     // Ensure DB is not copiable or assignable
-    DataBase(const DataBase&) = delete;
-    void operator=(const DataBase&) = delete;
-    static DataBase* getInstance();
+    ADataBase(const ADataBase&) = delete;
+    void operator=(const ADataBase&) = delete;
+    static ADataBase* getInstance();
 
     /*!
      * \brief The CompleterTarget enum provides the items for which QCompleter
@@ -120,9 +120,9 @@ signals:
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
- * DB()->commit(...)
+ * aDB()->commit(...)
  */
-DataBase* DB();
+ADataBase* aDB();
 
 }  // namespace experimental
 
