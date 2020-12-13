@@ -87,6 +87,7 @@ void FirstRunDialog::on_finishButton_clicked()
         }
         data.insert("piclastname",ui->piclastnameLineEdit->text());
         data.insert("picfirstname",ui->picfirstnameLineEdit->text());
+        data.insert("alias", Settings::read("userdata/displayselfas").toString());
         data.insert("employeeid",ui->employeeidLineEdit->text());
         data.insert("phone",ui->phoneLineEdit->text());
         data.insert("email",ui->emailLineEdit->text());

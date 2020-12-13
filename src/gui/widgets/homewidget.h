@@ -24,7 +24,7 @@
 #include <QLineEdit>
 #include "src/database/db.h"
 #include "src/classes/stat.h"
-#include "src/classes/calc.h"
+#include "src/classes/acalc.h"
 #include "src/classes/completionlist.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"

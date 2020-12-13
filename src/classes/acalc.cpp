@@ -15,41 +15,41 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "calc.h"
+#include "acalc.h"
 #include "debug.h"
 
+using namespace ACalc;
+
 /*!
- * \brief Calc::blocktime Calculates Block Time for a given departure and arrival time
+ * \brief ACalc::blocktime Calculates Block Time for a given departure and arrival time
  * \param tofb QTime Time Off Blocks
  * \param tonb QTime Time On Blocks
  * \return Block Time in minutes
  */
-QTime Calc::blocktime(QTime tofb, QTime tonb)
+QTime ACalc::blocktime(QTime tofb, QTime tonb)
 {
-    if (tonb > tofb) { // landing same day
-        QTime blocktimeout(0, 0); // initialise return value at midnight
-        int blockseconds = tofb.secsTo(tonb); // returns seconds between 2 time objects
-        blocktimeout = blocktimeout.addSecs(blockseconds);
-        return blocktimeout;
+    QTime blocktime_out(0, 0); // initialise return value at midnight
 
+    if (tonb > tofb) { // landing same day
+        int blockseconds = tofb.secsTo(tonb);
+        blocktime_out = blocktime_out.addSecs(blockseconds);
     } else { // landing next day
         QTime midnight(0, 0);
-        QTime blocktimeout(0, 0); // initialise return value at midnight
-        int blockseconds = tofb.secsTo(midnight); // returns seconds passed until midnight
-        blocktimeout = blocktimeout.addSecs(blockseconds);
-        blockseconds = midnight.secsTo(tonb); // returns seconds passed after midnight
-        blocktimeout = blocktimeout.addSecs(blockseconds);
-        return blocktimeout;
+        int blockseconds = tofb.secsTo(midnight);
+        blocktime_out = blocktime_out.addSecs(blockseconds);
+        blockseconds = midnight.secsTo(tonb);
+        blocktime_out = blocktime_out.addSecs(blockseconds);
     }
+    return blocktime_out;
 }
 
 
 /*!
- * \brief Calc::minutes_to_string Converts database time to String Time
- * \param blockminutes int from database
+ * \brief ACalc::minutes_to_string Converts database time to String Time
+ * \param blockminutes from database
  * \return String hh:mm
  */
-QString Calc::minutesToString(QString blockminutes)
+QString ACalc::minutesToString(QString blockminutes)
 {
     int minutes = blockminutes.toInt();
     QString hour = QString::number(minutes / 60);
@@ -65,11 +65,11 @@ QString Calc::minutesToString(QString blockminutes)
 };
 
 /*!
- * \brief Calc::time_to_minutes converts QTime to int minutes
+ * \brief ACalc::time_to_minutes converts QTime to int minutes
  * \param time QTime
  * \return int time as number of minutes
  */
-int Calc::qTimeToMinutes(QTime time)
+int ACalc::QTimeToMinutes(QTime time)
 {
     QString timestring = time.toString("hh:mm");
     int minutes = (timestring.left(2).toInt()) * 60;
@@ -78,11 +78,11 @@ int Calc::qTimeToMinutes(QTime time)
 }
 
 /*!
- * \brief Calc::string_to_minutes Converts String Time to String Number of Minutes
+ * \brief ACalc::string_to_minutes Converts String Time to String Number of Minutes
  * \param timestring "hh:mm"
  * \return String number of minutes
  */
-int Calc::stringToMinutes(QString timestring)
+int ACalc::stringToMinutes(QString timestring)
 {
     int minutes = (timestring.left(2).toInt()) * 60;
     minutes += timestring.right(2).toInt();
@@ -120,7 +120,7 @@ int Calc::stringToMinutes(QString timestring)
  * \param rad
  * \return degrees
  */
-double Calc::radToDeg(double rad)
+double ACalc::radToDeg(double rad)
 {
     double deg = rad * (180 / M_PI);
     return deg;
@@ -131,7 +131,7 @@ double Calc::radToDeg(double rad)
  * \param deg
  * \return radians
  */
-double Calc::degToRad(double deg)
+double ACalc::degToRad(double deg)
 {
     double rad = deg * (M_PI / 180);
     return rad;
@@ -142,7 +142,7 @@ double Calc::degToRad(double deg)
  * \param rad
  * \return nautical miles
  */
-double Calc::radToNauticalMiles(double rad)
+double ACalc::radToNauticalMiles(double rad)
 {
     double nm = rad * 3440.06479482;
     return nm;
@@ -156,7 +156,7 @@ double Calc::radToNauticalMiles(double rad)
  * \param lon2 Location Longitude in degrees -180:180 W(-) E(+)
  * \return
  */
-double Calc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
+double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
 {
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
@@ -165,53 +165,46 @@ double Calc::greatCircleDistance(double lat1, double lon1, double lat2, double l
     lon2 = degToRad(lon2);
 
     // Haversine Formula
-    double deltalon = lon2 - lon1;
-    double deltalat = lat2 - lat1;
+    double delta_lon = lon2 - lon1;
+    double delta_lat = lat2 - lat1;
 
-    double result = pow(sin(deltalat / 2), 2) +
-                    cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
+    double result = pow(sin(delta_lat / 2), 2) +
+                    cos(lat1) * cos(lat2) * pow(sin(delta_lon / 2), 2);
     result = 2 * asin(sqrt(result));
     return result;
 }
 
 /*!
- * \brief Calc::greatCircleDistanceBetweenAirports Calculates Great
+ * \brief ACalc::greatCircleDistanceBetweenAirports Calculates Great
  * Circle distance between two coordinates, return in nautical miles.
  * \param dept ICAO 4-letter Airport Identifier
  * \param dest ICAO 4-letter Airport Identifier
  * \return Nautical Miles From Departure to Destination
  */
-double Calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
+double ACalc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
 {
-    //db::multiSelect("airports", columns, "EDDF", "icao", db::exactMatch);
-    /*if(dbAirport::retreiveIcaoCoordinates(dept).isEmpty() || dbAirport::retreiveIcaoCoordinates(dest).isEmpty()){
-        qWarning() << "greatCircleDistance - invalid input. aborting.";
-        return 0;
-    }*/
-
-    QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = Db::multiSelect(columns, "airports", "icao", dept,
+    QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
                                                        Db::exactMatch);
-    QVector<QString> destCoordinates = Db::multiSelect(columns, "airports", "icao", dest,
+    QVector<QString> dest_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dest,
                                                        Db::exactMatch);
 
-    if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
+    if (dept_coordinates.isEmpty() || dest_coordinates.isEmpty()
        ) {
-        qDebug() << "greatCircleDistance - invalid input. aborting.";
+        DEB("invalid input. aborting.");
         return 0;
     }
 
-    double lat1 = degToRad(deptCoordinates[0].toDouble());
-    double lon1 = degToRad(deptCoordinates[1].toDouble());
-    double lat2 = degToRad(destCoordinates[0].toDouble());
-    double lon2 = degToRad(destCoordinates[1].toDouble());
+    double lat1 = degToRad(dept_coordinates[0].toDouble());
+    double lon1 = degToRad(dept_coordinates[1].toDouble());
+    double lat2 = degToRad(dest_coordinates[0].toDouble());
+    double lon2 = degToRad(dest_coordinates[1].toDouble());
 
     // Haversine Formula
-    double deltalon = lon2 - lon1;
-    double deltalat = lat2 - lat1;
+    double delta_lon = lon2 - lon1;
+    double delta_lat = lat2 - lat1;
 
-    double result = pow(sin(deltalat / 2), 2) +
-                    cos(lat1) * cos(lat2) * pow(sin(deltalon / 2), 2);
+    double result = pow(sin(delta_lat / 2), 2) +
+                    cos(lat1) * cos(lat2) * pow(sin(delta_lon / 2), 2);
     result = 2 * asin(sqrt(result));
     return radToNauticalMiles(result);
 }
@@ -226,7 +219,7 @@ double Calc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
  * \param tblk Total Blocktime in minutes
  * \return coordinates {lat,lon} along the Great Circle Track
  */
-QVector<QVector<double>> Calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
+QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, double lon1,
                                                                double lat2, double lon2, int tblk)
 {
     double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (radians)
@@ -272,7 +265,7 @@ QVector<QVector<double>> Calc::intermediatePointsOnGreatCircle(double lat1, doub
  * \param lon - Location Longitude in degrees -180:180 W(-) E(+)
  * \return elevation - double of solar elevation in degrees.
  */
-double Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
+double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
     double Alt =
         11; // I am taking 11 kilometers as an average cruising height for a commercial passenger airplane.
@@ -296,29 +289,29 @@ double Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
     double r = sqrt(pow(x, 2) + pow(y, 2));
     double v = atan2(y, x) * (180 / M_PI);
     // find the longitude of the sun
-    double solarlongitude = v + w;
+    double solar_longitude = v + w;
     // compute the ecliptic rectangular coordinates
-    double xeclip = r * cos(solarlongitude * (M_PI / 180));
-    double yeclip = r * sin(solarlongitude * (M_PI / 180));
-    double zeclip = 0.0;
+    double x_eclip = r * cos(solar_longitude * (M_PI / 180));
+    double y_eclip = r * sin(solar_longitude * (M_PI / 180));
+    double z_eclip = 0.0;
     //rotate these coordinates to equitorial rectangular coordinates
-    double xequat = xeclip;
-    double yequat = yeclip * cos(oblecl * (M_PI / 180)) + zeclip * sin(oblecl * (M_PI / 180));
-    double zequat = yeclip * sin(23.4406 * (M_PI / 180)) + zeclip * cos(oblecl * (M_PI / 180));
+    double x_equat = x_eclip;
+    double y_equat = y_eclip * cos(oblecl * (M_PI / 180)) + z_eclip * sin(oblecl * (M_PI / 180));
+    double z_equat = y_eclip * sin(23.4406 * (M_PI / 180)) + z_eclip * cos(oblecl * (M_PI / 180));
     // convert equatorial rectangular coordinates to RA and Decl:
-    r = sqrt(pow(xequat, 2) + pow(yequat, 2) + pow(zequat,
+    r = sqrt(pow(x_equat, 2) + pow(y_equat, 2) + pow(z_equat,
                                                    2)) - (Alt / 149598000); //roll up the altitude correction
-    double RA = atan2(yequat, xequat) * (180 / M_PI);
-    double delta = asin(zequat / r) * (180 / M_PI);
+    double RA = atan2(y_equat, x_equat) * (180 / M_PI);
+    double delta = asin(z_equat / r) * (180 / M_PI);
 
-    // GET UTH time
-    double UTH = utc_time_point.time().hour() + utc_time_point.time().minute() / 60.0 +
+    // GET UT in hours time
+    double uth = utc_time_point.time().hour() + utc_time_point.time().minute() / 60.0 +
                  utc_time_point.time().second() / 3600.0;
     // Calculate local siderial time
-    double GMST0 = fmod(L + 180, 360.0) / 15;
-    double SIDTIME = GMST0 + UTH + lon / 15;
+    double gmst0 = fmod(L + 180, 360.0) / 15;
+    double sid_time = gmst0 + uth + lon / 15;
     // Replace RA with hour angle HA
-    double HA = (SIDTIME * 15 - RA);
+    double HA = (sid_time * 15 - RA);
     // convert to rectangular coordinate system
     x = cos(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
     y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
@@ -341,49 +334,47 @@ double Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
  * Default -6 (end of civil evening twilight)
  * \return Total number of minutes under night flying conditions
  */
-int Calc::calculateNightTime(QString dept, QString dest, QDateTime departureTime, int tblk, int nightAngle)
+int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
-    QVector<QString> columns = {"lat", "long"};
-    QVector<QString> deptCoordinates = Db::multiSelect(columns, "airports", "icao", dept,
+    QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
                                                        Db::exactMatch);
-    QVector<QString> destCoordinates = Db::multiSelect(columns, "airports", "icao", dest,
+    QVector<QString> dest_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dest,
                                                        Db::exactMatch);
 
-    if (deptCoordinates.isEmpty() || destCoordinates.isEmpty()
+    if (dept_coordinates.isEmpty() || dest_coordinates.isEmpty()
        ) {
-        qDebug() << "Calc::CalculateNightTime - invalid input. aborting.";
+        DEB("invalid input. aborting.");
         return 0;
     }
 
-    double deptLat = degToRad(deptCoordinates[0].toDouble());
-    double deptLon = degToRad(deptCoordinates[1].toDouble());
-    double destLat = degToRad(destCoordinates[0].toDouble());
-    double destLon = degToRad(destCoordinates[1].toDouble());
+    double dept_lat = degToRad(dept_coordinates[0].toDouble());
+    double dept_lon = degToRad(dept_coordinates[1].toDouble());
+    double dest_lat = degToRad(dest_coordinates[0].toDouble());
+    double dest_lon = degToRad(dest_coordinates[1].toDouble());
 /*
-    qDebug() << "Calc::CalculateNightTime deptLat = " << deptLat;
-    qDebug() << "Calc::CalculateNightTime deptLon = " << deptLon;
-    qDebug() << "Calc::CalculateNightTime destLat = " << destLat;
-    qDebug() << "Calc::CalculateNightTime destLon = " << destLon;
+    qDebug() << "ACalc::CalculateNightTime deptLat = " << deptLat;
+    qDebug() << "ACalc::CalculateNightTime deptLon = " << deptLon;
+    qDebug() << "ACalc::CalculateNightTime destLat = " << destLat;
+    qDebug() << "ACalc::CalculateNightTime destLon = " << destLon;
 */
-    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(deptLat, deptLon, destLat, destLon,
+    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon, dest_lat, dest_lon,
                                                                      tblk);
 
-    int nightTime = 0;
+    int night_time = 0;
     for (int i = 0; i < tblk ; i++) {
         if (solarElevation(departureTime.addSecs(60 * i), radToDeg(route[i][0]),
                            radToDeg(route[i][1])) < nightAngle) {
-            nightTime ++;
+            night_time ++;
         }
     }
-    //qDebug() << "Calc::CalculateNightTime result for angle: "<< nightAngle
+    //qDebug() << "ACalc::CalculateNightTime result for angle: "<< nightAngle
     //         << " :" << nightTime << " minutes night flying time.";
-    return nightTime;
+    return night_time;
 }
 
-bool Calc::isNight(QString icao, QDateTime eventTime, int nightAngle)
+bool ACalc::isNight(QString icao, QDateTime event_time, int nightAngle)
 {
-    QVector<QString> columns = {"lat", "long"};
-    QVector<QString> coordinates = Db::multiSelect(columns, "airports", "icao", icao,
+    QVector<QString> coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", icao,
                                                        Db::exactMatch);
     if (coordinates.isEmpty()) {
         DEB("invalid input. aborting.");
@@ -393,7 +384,7 @@ bool Calc::isNight(QString icao, QDateTime eventTime, int nightAngle)
     double lat = degToRad(coordinates[0].toDouble());
     double lon = degToRad(coordinates[1].toDouble());
 
-    if(solarElevation(eventTime, lat, lon) < nightAngle){
+    if(solarElevation(event_time, lat, lon) < nightAngle){
         return true;
     } else {
         return false;
@@ -401,34 +392,34 @@ bool Calc::isNight(QString icao, QDateTime eventTime, int nightAngle)
 }
 
 /*!
- * \brief Calc::formatTimeInput verifies user input and formats to hh:mm
+ * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
  * if the output is not a valid time, an empty string is returned. Accepts
  * input as hh:mm, h:mm, hhmm or hmm.
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
  */
-QString Calc::formatTimeInput(QString userinput)
+QString ACalc::formatTimeInput(QString user_input)
 {
     QString output; //
-    QTime temptime; //empty time object is invalid by default
+    QTime temp_time; //empty time object is invalid by default
 
-    bool containsSeperator = userinput.contains(":");
-    if (userinput.length() == 4 && !containsSeperator) {
-        temptime = QTime::fromString(userinput, "hhmm");
-    } else if (userinput.length() == 3 && !containsSeperator) {
-        if (userinput.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
-            QString tempstring = userinput.prepend("0");
-            temptime = QTime::fromString(tempstring, "hhmm");
+    bool contains_seperator = user_input.contains(":");
+    if (user_input.length() == 4 && !contains_seperator) {
+        temp_time = QTime::fromString(user_input, "hhmm");
+    } else if (user_input.length() == 3 && !contains_seperator) {
+        if (user_input.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
+            QString tempstring = user_input.prepend("0");
+            temp_time = QTime::fromString(tempstring, "hhmm");
         } else {
-            temptime = QTime::fromString(userinput, "Hmm");
+            temp_time = QTime::fromString(user_input, "Hmm");
         }
-    } else if (userinput.length() == 4 && containsSeperator) {
-        temptime = QTime::fromString(userinput, "h:mm");
-    } else if (userinput.length() == 5 && containsSeperator) {
-        temptime = QTime::fromString(userinput, "hh:mm");
+    } else if (user_input.length() == 4 && contains_seperator) {
+        temp_time = QTime::fromString(user_input, "h:mm");
+    } else if (user_input.length() == 5 && contains_seperator) {
+        temp_time = QTime::fromString(user_input, "hh:mm");
     }
 
-    output = temptime.toString("hh:mm");
+    output = temp_time.toString("hh:mm");
     if (output.isEmpty()) {
         qDebug() << "Time input is invalid.";
     }
@@ -436,19 +427,19 @@ QString Calc::formatTimeInput(QString userinput)
 }
 
 /*!
- * \brief Calc::updateAutoTimes When the details of an aircraft are changed,
+ * \brief ACalc::updateAutoTimes When the details of an aircraft are changed,
  * this function recalculates deductable times for this aircraft and updates
  * the database accordingly.
  * \param acft An aircraft object.
  * \return
  */
-void Calc::updateAutoTimes(int acft_id)
+void ACalc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
-    auto flightList = Db::multiSelect(QVector<QString>{"flight_id"},"flights","acft",
+    auto flight_list = Db::multiSelect({"flight_id"},"flights","acft",
                                       QString::number(acft_id),Db::exactMatch);
     auto acft = Aircraft(acft_id);
-    for (const auto& item : flightList) {
+    for (const auto& item : flight_list) {
         auto flt = Flight(item.toInt());
 
         if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1") {
@@ -471,13 +462,12 @@ void Calc::updateAutoTimes(int acft_id)
     }
 }
 /*!
- * \brief Calc::updateNightTimes updates the night times in the database
+ * \brief ACalc::updateNightTimes updates the night times in the database
  */
-void Calc::updateNightTimes()
+void ACalc::updateNightTimes()
 {
     const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
-    const QVector<QString> columns = {"flight_id"};
-    auto flights = Db::multiSelect(columns,"flights");
+    auto flights = Db::multiSelect({"flight_id"}, "flights");
     for (const auto& item : flights) {
         auto flt = new Flight(item.toInt());
         auto dateTime = QDateTime(QDate::fromString(flt->data.value("doft"),Qt::ISODate),

@@ -234,7 +234,7 @@ void NewTailDialog::submitForm(Db::editRole edRole)
     case Db::editExisting:
         oldEntry.setData(newData);
         oldEntry.commit();
-        Calc::updateAutoTimes(oldEntry.position.second);
+        ACalc::updateAutoTimes(oldEntry.position.second);
         break;
     }
 }

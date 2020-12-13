@@ -27,7 +27,7 @@
 #include "src/classes/completionlist.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
-#include "src/classes/calc.h"
+#include "src/classes/acalc.h"
 #include "src/database/entry.h"
 
 namespace Ui {

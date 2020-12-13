@@ -41,7 +41,7 @@
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/settings.h"
 #include "src/classes/completionlist.h"
-#include "src/classes/calc.h"
+#include "src/classes/acalc.h"
 
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newtaildialog.h"

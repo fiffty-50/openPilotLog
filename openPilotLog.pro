@@ -18,8 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/classes/acalc.cpp \
     src/classes/aircraft.cpp \
-    src/classes/calc.cpp \
     src/classes/completionlist.cpp \
     src/classes/csv.cpp \
     src/classes/download.cpp \
@@ -50,8 +50,8 @@ SOURCES += \
 HEADERS += \
     debug.h \
     mainwindow.h \
+    src/classes/acalc.h \
     src/classes/aircraft.h \
-    src/classes/calc.h \
     src/classes/completionlist.h \
     src/classes/csv.h \
     src/classes/download.h \
