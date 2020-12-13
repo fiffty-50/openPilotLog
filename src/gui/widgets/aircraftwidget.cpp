@@ -28,7 +28,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 {
     DEB("New AircraftWidet");
     ui->setupUi(this);
-    sortColumn = Settings::read("userdata/acSortColumn").toInt();
+    sortColumn = ASettings::read("userdata/acSortColumn").toInt();
     refreshModelAndView();
 }
 
@@ -163,7 +163,7 @@ void AircraftWidget::tableView_selectionChanged()
 void AircraftWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    Settings::write("userdata/acSortColumn", column);
+    ASettings::write("userdata/acSortColumn", column);
 }
 
 void AircraftWidget::acft_editing_finished()

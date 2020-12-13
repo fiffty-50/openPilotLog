@@ -39,7 +39,7 @@
 #include "src/classes/flight.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
 #include "src/experimental/adatabase.h"
 

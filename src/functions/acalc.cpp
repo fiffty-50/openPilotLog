@@ -449,7 +449,7 @@ void ACalc::updateAutoTimes(int acft_id)
  */
 void ACalc::updateNightTimes()
 {
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
     auto flights = Db::multiSelect({"flight_id"}, "flights");
     for (const auto& item : flights) {
         auto flt = new Flight(item.toInt());

@@ -5,7 +5,7 @@
 #include <QButtonGroup>
 #include <QMessageBox>
 #include <QRegularExpressionValidator>
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/classes/pilot.h"
 
 namespace Ui {

@@ -4,7 +4,7 @@
 #include "src/database/db.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/flight.h"
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>

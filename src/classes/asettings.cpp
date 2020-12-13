@@ -15,15 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "settings.h"
+#include "asettings.h"
 
-QVariant Settings::read(const QString &key)
+QVariant ASettings::read(const QString &key)
 {
     QSettings settings;
     return settings.value(key);
 }
 
-void Settings::write(const QString& key, const QVariant& val)
+void ASettings::write(const QString &key, const QVariant &val)
 {
     QSettings settings;
     settings.setValue(key, val);

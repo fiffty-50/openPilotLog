@@ -20,10 +20,10 @@ SOURCES += \
     mainwindow.cpp \
     src/classes/aircraft.cpp \
     src/classes/arunguard.cpp \
+    src/classes/asettings.cpp \
     src/classes/download.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
-    src/classes/settings.cpp \
     src/classes/stat.cpp \
     src/classes/strictrxvalidator.cpp \
     src/database/db.cpp \
@@ -51,10 +51,10 @@ HEADERS += \
     mainwindow.h \
     src/classes/aircraft.h \
     src/classes/arunguard.h \
+    src/classes/asettings.h \
     src/classes/download.h \
     src/classes/flight.h \
     src/classes/pilot.h \
-    src/classes/settings.h \
     src/classes/stat.h \
     src/classes/strictrxvalidator.h \
     src/database/db.h \

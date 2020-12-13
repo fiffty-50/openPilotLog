@@ -25,7 +25,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
-#include "src/classes/settings.h"
+#include "src/classes/asettings.h"
 #include "src/database/db.h"
 #include "src/classes/pilot.h"
 

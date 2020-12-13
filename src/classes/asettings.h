@@ -24,12 +24,12 @@
  * \brief The Settings class is a thin wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-class Settings
+class ASettings
 {
 public:
-    static QVariant read(const QString& key);
+    static QVariant read(const QString &key);
 
-    static void write(const QString& key, const QVariant& val);
+    static void write(const QString &key, const QVariant &val);
 };
 
 #endif // SETTINGS_H

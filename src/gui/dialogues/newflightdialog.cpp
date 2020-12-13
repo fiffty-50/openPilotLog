@@ -396,18 +396,18 @@ void NewFlightDialog::writeSettings()
 {
     DEB("Writing Settings...");
 
-    Settings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
-    Settings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
-    Settings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
-    Settings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
-    Settings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
-    Settings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
-    Settings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
-    Settings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
-    Settings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
-    Settings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
-    Settings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
-    Settings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
+    ASettings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
+    ASettings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
+    ASettings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
+    ASettings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
+    ASettings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
+    ASettings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
+    ASettings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
+    ASettings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
+    ASettings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
+    ASettings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
+    ASettings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
+    ASettings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
 }
 
 /*!
@@ -419,24 +419,24 @@ void NewFlightDialog::readSettings()
     DEB("Reading Settings...");
     QSettings settings;
 
-    ui->FunctionComboBox->setCurrentText(Settings::read("NewFlight/FunctionComboBox").toString());
-    ui->ApproachComboBox->setCurrentText(Settings::read("NewFlight/ApproachComboBox").toString());
-    ui->PilotFlyingCheckBox->setChecked(Settings::read("NewFlight/PilotFlyingCheckBox").toBool());
-    ui->PilotMonitoringCheckBox->setChecked(Settings::read("NewFlight/PilotMonitoringCheckBox").toBool());
-    ui->TakeoffSpinBox->setValue(Settings::read("NewFlight/TakeoffSpinBox").toInt());
-    ui->TakeoffCheckBox->setChecked(Settings::read("NewFlight/TakeoffCheckBox").toBool());
-    ui->LandingSpinBox->setValue(Settings::read("NewFlight/LandingSpinBox").toInt());
-    ui->LandingCheckBox->setChecked(Settings::read("NewFlight/LandingCheckBox").toBool());
-    ui->AutolandSpinBox->setValue(Settings::read("NewFlight/AutolandSpinBox").toInt());
-    ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toBool());
-    ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toBool());
-    ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toBool());
-    ui->FlightNumberLineEdit->setText(Settings::read("flightlogging/flightnumberPrefix").toString());
+    ui->FunctionComboBox->setCurrentText(ASettings::read("NewFlight/FunctionComboBox").toString());
+    ui->ApproachComboBox->setCurrentText(ASettings::read("NewFlight/ApproachComboBox").toString());
+    ui->PilotFlyingCheckBox->setChecked(ASettings::read("NewFlight/PilotFlyingCheckBox").toBool());
+    ui->PilotMonitoringCheckBox->setChecked(ASettings::read("NewFlight/PilotMonitoringCheckBox").toBool());
+    ui->TakeoffSpinBox->setValue(ASettings::read("NewFlight/TakeoffSpinBox").toInt());
+    ui->TakeoffCheckBox->setChecked(ASettings::read("NewFlight/TakeoffCheckBox").toBool());
+    ui->LandingSpinBox->setValue(ASettings::read("NewFlight/LandingSpinBox").toInt());
+    ui->LandingCheckBox->setChecked(ASettings::read("NewFlight/LandingCheckBox").toBool());
+    ui->AutolandSpinBox->setValue(ASettings::read("NewFlight/AutolandSpinBox").toInt());
+    ui->AutolandCheckBox->setChecked(ASettings::read("NewFlight/AutolandCheckBox").toBool());
+    ui->IfrCheckBox->setChecked(ASettings::read("NewFlight/IfrCheckBox").toBool());
+    ui->VfrCheckBox->setChecked(ASettings::read("NewFlight/VfrCheckBox").toBool());
+    ui->FlightNumberLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
 
-    if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
+    if(ASettings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
         ui->picNameLineEdit->setText("self");
         ui->secondPilotNameLineEdit->setText("");
-    }else if (Settings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
+    }else if (ASettings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
         ui->picNameLineEdit->setText("");
         ui->secondPilotNameLineEdit->setText("self");
     }
@@ -670,7 +670,7 @@ void NewFlightDialog::collectAdditionalData()
     QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
 
     QString nightTime = QString::number(
                         ACalc::calculateNightTime(
@@ -820,7 +820,7 @@ void NewFlightDialog::fillExtras()
     QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
     QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
     int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
+    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
 
     QString nightTime = QString::number(
                         ACalc::calculateNightTime(
