@@ -29,9 +29,11 @@ SOURCES += \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
     src/database/entry_deprecated.cpp \
+    src/experimental/aaircraftentry.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
     src/experimental/apilotentry.cpp \
+    src/experimental/atailentry.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
@@ -61,11 +63,14 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/entry_deprecated.h \
     src/experimental/UserInput.h \
+    src/experimental/aaircraftentry.h \
     src/experimental/adatabase.h \
     src/experimental/aentry.h \
     src/experimental/apilotentry.h \
+    src/experimental/atailentry.h \
     src/experimental/decl.h \
     src/functions/acalc.h \
+    src/functions/adebug.h \
     src/functions/src/functions/adebug.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \

@@ -483,7 +483,7 @@ void NewFlightDialog::addNewAircraftMessageBox(QLineEdit *parent)
     {
         DEB("Add new aircraft selected");
         // create and open new aircraft dialog
-        auto na = NewTailDialog(ui->acftLineEdit->text(), Db::createNew, this);
+        auto na = NewTailDialog(ui->acftLineEdit->text(), this);
         na.exec();
         QString statement = "SELECT MAX(tail_id)  FROM tails";
         QString id = Db::customQuery(statement,1).first();

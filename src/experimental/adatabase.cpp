@@ -1,3 +1,20 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "adatabase.h"
 
 namespace experimental {
@@ -118,10 +135,10 @@ bool ADataBase::update(AEntry updated_entry)
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.key() != QString()) {
-            statement += i.key() + QLatin1String("=\"") + i.value() + QLatin1String("\", ");
+        if (i.value() == QString()) {
+            statement += i.key() + QLatin1String("=NULL") + QLatin1String(", ");
         } else {
-            DEB(i.key() << "is empty key. skipping.");
+            statement += i.key() + QLatin1String("=\"") + i.value() + QLatin1String("\", ");
         }
     }
     statement.chop(2); // Remove last comma
@@ -156,10 +173,15 @@ bool ADataBase::insert(AEntry new_entry)
     statement.chop(2);
     statement += QLatin1String(") VALUES (");
     for (i = data.begin(); i != data.end(); ++i) {
-        statement += QLatin1String("\"") + i.value() + QLatin1String("\", ");
+        if (i.value() == "") {
+            statement += QLatin1String("NULL, ");
+        } else {
+            statement += QLatin1String("\"") + i.value() + QLatin1String("\", ");
+        }
     }
     statement.chop(2);
     statement += QLatin1String(")");
+    DEB(statement);
 
     QSqlQuery query(statement);
     //check result.
@@ -233,12 +255,26 @@ AEntry ADataBase::getEntry(DataPosition data_position)
 
 APilotEntry ADataBase::getPilotEntry(RowId row_id)
 {
-    APilotEntry pilotEntry(row_id);
-    pilotEntry.setData(getEntryData(pilotEntry.getPosition()));
-    return pilotEntry;
+    APilotEntry pilot_entry(row_id);
+    pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
+    return pilot_entry;
 }
 
-QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
+ATailEntry ADataBase::getTailEntry(RowId row_id)
+{
+    ATailEntry tail_entry(row_id);
+    tail_entry.setData(getEntryData(tail_entry.getPosition()));
+    return tail_entry;
+}
+
+AAircraftEntry ADataBase::getAircraftEntry(RowId row_id)
+{
+    AAircraftEntry aircraft_entry(row_id);
+    aircraft_entry.setData(getEntryData(aircraft_entry.getPosition()));
+    return aircraft_entry;
+}
+
+const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
 {
     QString statement;
 
@@ -276,6 +312,43 @@ QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
     completer_list.removeDuplicates();
 
     return completer_list;
+}
+
+const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
+{
+    QString statement;
+
+    switch (target) {
+    case pilots:
+        statement.append("SELECT ROWID, piclastname||\",\"||picfirstname FROM pilots");
+        break;
+    case aircraft:
+        statement.append("SELECT ROWID, make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
+                         "UNION "
+                         "SELECT ROWID, make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+        break;
+    default:
+        DEB("Not a valid completer target for this function.");
+        return QMap<QString, int>();
+    }
+
+    auto id_map = QMap<QString, int>();
+    auto query = QSqlQuery(statement);
+    if (!query.first()) {
+        DEB("No result found. Check Query and Error.");
+        DEB("Query: " << statement);
+        DEB("Error: " << query.lastError().text());
+        emit sqlError(query.lastError(), statement);
+        return QMap<QString, int>();
+    } else {
+        query.first();
+        query.previous();
+        QVector<QString> query_result;
+        while (query.next()) {
+            id_map.insert(query.value(1).toString(), query.value(0).toInt());
+        }
+        return id_map;
+    }
 }
 
 QVector<QString> ADataBase::customQuery(QString statement, int return_values)

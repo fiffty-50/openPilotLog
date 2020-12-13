@@ -51,7 +51,7 @@ signals:
 
 public slots:
     void downloadFinished(QNetworkReply* data);
-    //void downloadProgress(qint64 received, qint64 total); //not needed for now
+    void downloadProgress(qint64 received, qint64 total);
 };
 
 #endif // ADOWNLOAD_H

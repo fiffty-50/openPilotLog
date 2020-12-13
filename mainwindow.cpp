@@ -132,7 +132,7 @@ void MainWindow::on_actionNewFlight_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    NewTailDialog nt = NewTailDialog(QString(), Db::createNew, this);
+    NewTailDialog nt = NewTailDialog(QString(), this);
     nt.exec();
 }
 
