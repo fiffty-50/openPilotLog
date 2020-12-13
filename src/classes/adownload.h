@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef DOWNLOAD_H
-#define DOWNLOAD_H
+#ifndef ADOWNLOAD_H
+#define ADOWNLOAD_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -27,12 +27,12 @@
 #include <QDebug>
 
 
-class Download : public QObject {
+class ADownload : public QObject {
     Q_OBJECT
 public:
-    explicit Download();
+    explicit ADownload();
 
-    ~Download();
+    ~ADownload();
 
     void setTarget(const QUrl &value);
 
@@ -51,7 +51,7 @@ signals:
 
 public slots:
     void downloadFinished(QNetworkReply* data);
-    void downloadProgress(qint64 recieved, qint64 total);
+    //void downloadProgress(qint64 received, qint64 total); //not needed for now
 };
 
-#endif // DOWNLOAD_H
+#endif // ADOWNLOAD_H

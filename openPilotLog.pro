@@ -18,10 +18,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/classes/adownload.cpp \
     src/classes/aircraft.cpp \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
-    src/classes/download.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
     src/classes/stat.cpp \
@@ -49,10 +49,10 @@ SOURCES += \
 HEADERS += \
     debug.h \
     mainwindow.h \
+    src/classes/adownload.h \
     src/classes/aircraft.h \
     src/classes/arunguard.h \
     src/classes/asettings.h \
-    src/classes/download.h \
     src/classes/flight.h \
     src/classes/pilot.h \
     src/classes/stat.h \

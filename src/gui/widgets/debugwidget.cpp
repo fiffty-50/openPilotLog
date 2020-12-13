@@ -49,8 +49,8 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/";
     for (const auto& table : templateTables) {
         QEventLoop loop;
-        Download* dl = new Download;
-        connect(dl, &Download::done, &loop, &QEventLoop::quit );
+        ADownload* dl = new ADownload;
+        connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
         dl->setFileName("data/templates/" + table + ".csv");
         dl->download();
@@ -100,8 +100,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/sample_";
     for (const auto& table : userTables) {
         QEventLoop loop;
-        Download* dl = new Download;
-        connect(dl, &Download::done, &loop, &QEventLoop::quit );
+        ADownload* dl = new ADownload;
+        connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
         dl->setFileName("data/templates/sample_" + table + ".csv");
         dl->download();

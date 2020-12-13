@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef ASETTINGS_H
+#define ASETTINGS_H
 #include <QtCore>
 #include <QSettings>
 
@@ -32,4 +32,4 @@ public:
     static void write(const QString &key, const QVariant &val);
 };
 
-#endif // SETTINGS_H
+#endif // ASETTINGS_H

@@ -15,49 +15,47 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "download.h"
+#include "adownload.h"
 #include "debug.h"
 
 
 
 
-Download::Download() : QObject(nullptr)
+ADownload::ADownload() : QObject(nullptr)
 {
     QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(downloadFinished(QNetworkReply*)));
 }
 
-Download::~Download()
+ADownload::~ADownload()
 {
     DEB("Deleting Download object");
 }
 
-void Download::setTarget(const QUrl &value)
+void ADownload::setTarget(const QUrl &value)
 {
     this->target = value;
 }
 
-void Download::setFileName(const QString &value)
+void ADownload::setFileName(const QString &value)
 {
     this->fileName = value;
 }
 
-void Download::download()
+void ADownload::download()
 {
     QNetworkRequest request(target);
     DEB("Downloading from: " << target.toString());
 
-    QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    //QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
+/* not needed for now
+ * void ADownload::downloadProgress(qint64 received, qint64 total)
+ * {}
+ */
 
-void Download::downloadProgress(qint64 received, qint64 total)
-{
-    auto shutupcompilerwarning = received;
-    shutupcompilerwarning += total;
-    //qDebug() << "Received " << received << " out of " << total;
-}
 
-void Download::downloadFinished(QNetworkReply *data)
+void ADownload::downloadFinished(QNetworkReply *data)
 {
     QFile localFile(fileName);
     if (!localFile.open(QIODevice::WriteOnly))
