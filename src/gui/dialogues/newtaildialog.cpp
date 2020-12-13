@@ -112,7 +112,7 @@ void NewTailDialog::setupValidators()
  * information contained in an aircraft object.
  * \param db - entry retreived from database
  */
-void NewTailDialog::formFiller(Entry entry)
+void NewTailDialog::formFiller(Entry_deprecated entry)
 {
     DEB("Filling Form for a/c" << entry);
     //fill Line Edits
@@ -247,7 +247,7 @@ void NewTailDialog::on_searchLineEdit_textChanged(const QString &arg1)
 
         DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
         //call autofiller for dialog
-        formFiller(Entry("aircraft",idMap.value(arg1)));
+        formFiller(Entry_deprecated("aircraft",idMap.value(arg1)));
         ui->searchLineEdit->setStyleSheet("border: 1px solid green");
     } else {
         //for example, editing finished without selecting a result from Qcompleter

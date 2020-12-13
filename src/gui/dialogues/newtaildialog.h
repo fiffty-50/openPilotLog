@@ -27,7 +27,7 @@
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/acalc.h"
-#include "src/database/entry.h"
+#include "src/database/entry_deprecated.h"
 #include "src/experimental/adatabase.h"
 
 namespace Ui {
@@ -85,7 +85,7 @@ private:
 
     void setupValidators();
 
-    void formFiller(Entry);
+    void formFiller(Entry_deprecated);
 
     bool verify();
 };

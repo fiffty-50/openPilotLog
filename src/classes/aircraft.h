@@ -18,13 +18,13 @@
 #ifndef AIRCRAFT_H
 #define AIRCRAFT_H
 #include <QCoreApplication>
-#include "src/database/entry.h"
+#include "src/database/entry_deprecated.h"
 
 /*!
  * \brief The aircraft class
  *
  */
-class Aircraft : public Entry
+class Aircraft : public Entry_deprecated
 {
 //    using Entry::Entry;
 public:

@@ -26,7 +26,7 @@
 #include "src/classes/pilot.h"
 
 #include "src/experimental/adatabase.h"
-#include "src/experimental/Entry.h"
+#include "src/experimental/entry.h"
 #include "src/experimental/Decl.h"
 
 namespace Ui {

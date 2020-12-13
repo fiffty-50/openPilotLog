@@ -21,10 +21,10 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
-#include "src/database/entry.h"
+#include "src/database/entry_deprecated.h"
 
 
-class Flight : public Entry
+class Flight : public Entry_deprecated
 {
 //    using Entry::Entry;
 public:

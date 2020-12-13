@@ -10,7 +10,7 @@
 #include "src/database/dbinfo.h"
 #include "debug.h"
 
-#include "Entry.h"
+#include "entry.h"
 
 namespace experimental {
 

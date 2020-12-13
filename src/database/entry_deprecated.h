@@ -26,12 +26,12 @@
  * It can be seen as a row in a table within the database.
  *
  */
-class Entry
+class Entry_deprecated
 {
 public:
-    Entry();
-    Entry(QString table, int row);
-    Entry(QString table, QMap<QString, QString> newData);
+    Entry_deprecated();
+    Entry_deprecated(QString table, int row);
+    Entry_deprecated(QString table, QMap<QString, QString> newData);
 
     QPair   <QString, int>       position = QPair<QString, int>();    // Position within the database, i.e. <table,row>
     QVector <QString>            columns  = QVector<QString>();       // The columns within the table

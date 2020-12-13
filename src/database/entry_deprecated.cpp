@@ -15,15 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "entry.h"
+#include "entry_deprecated.h"
 #include "debug.h"
 #include "db.h"
 
-Entry::Entry()
+Entry_deprecated::Entry_deprecated()
 {
 }
 
-Entry::Entry(QString table, int row)
+Entry_deprecated::Entry_deprecated(QString table, int row)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
@@ -65,7 +65,7 @@ Entry::Entry(QString table, int row)
     }
 }
 
-Entry::Entry(QString table, QMap<QString, QString> newData)
+Entry_deprecated::Entry_deprecated(QString table, QMap<QString, QString> newData)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
@@ -93,7 +93,7 @@ Entry::Entry(QString table, QMap<QString, QString> newData)
     data = newData;
 }
 
-void Entry::setData(QMap<QString, QString> &value)
+void Entry_deprecated::setData(QMap<QString, QString> &value)
 {
     //retreive database layout
     const auto dbContent = DbInfo();
@@ -114,7 +114,7 @@ void Entry::setData(QMap<QString, QString> &value)
     data = value;
 }
 
-bool Entry::commit()
+bool Entry_deprecated::commit()
 {
     if (exists()) {
         return update();
@@ -123,7 +123,7 @@ bool Entry::commit()
     }
 }
 
-bool Entry::remove()
+bool Entry_deprecated::remove()
 {
     if (exists()) {
         QString statement = "DELETE FROM " + position.first +
@@ -143,7 +143,7 @@ bool Entry::remove()
     }
 }
 
-bool Entry::exists()
+bool Entry_deprecated::exists()
 {
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + position.first +
@@ -160,7 +160,7 @@ bool Entry::exists()
     }
 }
 
-bool Entry::insert()
+bool Entry_deprecated::insert()
 {
     DEB("Inserting...");
     //check prerequisites
@@ -193,7 +193,7 @@ bool Entry::insert()
     }
 }
 
-bool Entry::update()
+bool Entry_deprecated::update()
 {
     //create query
     QString statement = "UPDATE " + position.first + " SET ";
@@ -224,7 +224,7 @@ bool Entry::update()
 }
 
 //Debug
-void Entry::print()
+void Entry_deprecated::print()
 {
     QString v = "Object status:\t\033[38;2;0;255;0;48;2;0;0;0m VALID \033[0m\n";
     QString nv = "Object status:\t\033[38;2;255;0;0;48;2;0;0;0m INVALID \033[0m\n";
@@ -240,7 +240,7 @@ void Entry::print()
     }
 }
 
-QString Entry::debug()
+QString Entry_deprecated::debug()
 {
     print();
     return QString();
