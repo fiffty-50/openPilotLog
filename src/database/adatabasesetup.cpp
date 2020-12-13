@@ -15,7 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "dbsetup.h"
+#include "adatabasesetup.h"
 #include "debug.h"
 
 
@@ -256,7 +256,7 @@ const QStringList templateTables= {
 };
 
 
-bool DbSetup::createDatabase()
+bool ADataBaseSetup::createDatabase()
 {
     DEB("Creating tables...");
     if (!createSchemata(tables)) {
@@ -281,7 +281,7 @@ bool DbSetup::createDatabase()
 }
 
 
-bool DbSetup::importDefaultData()
+bool ADataBaseSetup::importDefaultData()
 {
     QSqlQuery query;
     // reset template tables
@@ -304,7 +304,7 @@ bool DbSetup::importDefaultData()
  * \brief DbSetup::resetToDefault Empties all user-generated content in the database.
  * \return true on success
  */
-bool DbSetup::resetToDefault()
+bool ADataBaseSetup::resetToDefault()
 {
     QSqlQuery query;
 
@@ -321,7 +321,7 @@ bool DbSetup::resetToDefault()
 /*!
  * \brief dbSetup::debug prints Database Layout
  */
-void DbSetup::debug()
+void ADataBaseSetup::debug()
 {
     DEB("Database tables and views: ");
     QSqlQuery query;
@@ -343,7 +343,7 @@ void DbSetup::debug()
  * \brief dbSetup::createTables Create the required tables for the database
  * \return true on success
  */
-bool DbSetup::createSchemata(const QStringList &statements)
+bool ADataBaseSetup::createSchemata(const QStringList &statements)
 {
     QSqlQuery query;
     QStringList errors;
@@ -377,7 +377,7 @@ bool DbSetup::createSchemata(const QStringList &statements)
  * \param tableName as in the database
  * \return
  */
-bool DbSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
+bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
     DEB("Importing Data to" << tableName);
     auto dbLayout = DbInfo();

@@ -24,7 +24,7 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     QMessageBox result;
-    if (DbSetup::resetToDefault()){
+    if (ADataBaseSetup::resetToDefault()){
         result.setText("Database successfully reset.\n\nRestarting app.");
         result.exec();
         qApp->quit();
@@ -72,7 +72,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // re-connct and create new database
     Db::connect();
 
-    if (DbSetup::createDatabase()) {
+    if (ADataBaseSetup::createDatabase()) {
         mb.setText("Database has been successfully reset.\n\nRestarting application.");
         mb.exec();
         qApp->quit();
@@ -111,7 +111,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     QVector<bool> allGood;
     for (const auto& table : userTables) {
         auto data = aReadCsv("data/templates/sample_" + table + ".csv");
-        allGood.append(DbSetup::commitData(data, table));
+        allGood.append(ADataBaseSetup::commitData(data, table));
     }
 
     for (const auto& item : allGood) {
@@ -143,7 +143,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
     if (file.exists() && file.isFile()) {
 
-        if (DbSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
+        if (ADataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
             auto mb = QMessageBox(this);
             mb.setText("Data inserted successfully.");
             mb.exec();

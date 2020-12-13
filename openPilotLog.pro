@@ -25,9 +25,9 @@ SOURCES += \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
     src/classes/strictrxvalidator.cpp \
+    src/database/adatabasesetup.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
-    src/database/dbsetup.cpp \
     src/database/entry_deprecated.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
@@ -57,9 +57,9 @@ HEADERS += \
     src/classes/flight.h \
     src/classes/pilot.h \
     src/classes/strictrxvalidator.h \
+    src/database/adatabasesetup.h \
     src/database/db.h \
     src/database/dbinfo.h \
-    src/database/dbsetup.h \
     src/database/entry_deprecated.h \
     src/experimental/UserInput.h \
     src/experimental/adatabase.h \

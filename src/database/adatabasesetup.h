@@ -24,12 +24,12 @@
 #include "src/functions/areadcsv.h"
 
 /*!
- * \brief The DbSetup class is responsible for the inital setup of the database when
+ * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
  * the application is first launched. It creates the database in the specified default
  * location and creates all required tables and views. It can also be used to reset the
  * database currently used
  */
-class DbSetup
+class ADataBaseSetup
 {
 public:
     static void debug();
