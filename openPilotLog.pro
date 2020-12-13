@@ -24,7 +24,6 @@ SOURCES += \
     src/classes/asettings.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
-    src/classes/stat.cpp \
     src/classes/strictrxvalidator.cpp \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
@@ -34,6 +33,7 @@ SOURCES += \
     src/experimental/aentry.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
+    src/functions/astat.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -55,7 +55,6 @@ HEADERS += \
     src/classes/asettings.h \
     src/classes/flight.h \
     src/classes/pilot.h \
-    src/classes/stat.h \
     src/classes/strictrxvalidator.h \
     src/database/db.h \
     src/database/dbinfo.h \
@@ -67,6 +66,7 @@ HEADERS += \
     src/experimental/aentry.h \
     src/functions/acalc.h \
     src/functions/areadcsv.h \
+    src/functions/astat.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \

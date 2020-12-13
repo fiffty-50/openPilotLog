@@ -51,8 +51,14 @@ public:
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static
-    QSqlDatabase database();
+    static QSqlDatabase database();
+
+    /*!
+     * \brief Can be used to send a complex query to the database.
+     * \param query - the full sql query statement
+     * \param returnValues - the number of return values
+     */
+    QVector<QString> customQuery(QString statement, int return_values);
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -109,7 +115,7 @@ public:
      */
     QStringList getCompletionList(CompleterTarget);
 signals:
-    void commitSuccessful();
+    void sqlSuccessful();
 
     void sqlError(const QSqlError &sqlError, const QString &sqlStatement);
 

@@ -15,57 +15,63 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "stat.h"
+#include "astat.h"
+#include "debug.h"
 
+using namespace experimental;
 
 /*!
- * \brief Stat::totalTime Looks up Total Blocktime in the flights database
+ * \brief AStat::totalTime Looks up Total Blocktime in the flights database
  * \param yearType - Whether the calculation is based on total time, last
  * calendar year or the last rolling year
  * \return Amount of Total Block Time in minutes
  */
-QString Stat::totalTime(yearType yt)
+QString AStat::totalTime(yearType year_type)
 {
-    QString query;
+    QString statement;
     QDate start;
-    QString startdate;
+    QString start_date;
 
-    switch (yt) {
-    case Stat::allYears:
-        query = "SELECT SUM(tblk) FROM flights";
+    switch (year_type) {
+    case AStat::allYears:
+        statement = "SELECT SUM(tblk) FROM flights";
         break;
-    case Stat::calendarYear:
+    case AStat::calendarYear:
         start.setDate(QDate::currentDate().year(), 1, 1);
-        startdate = start.toString(Qt::ISODate);
-        startdate.append(QLatin1Char('\''));
-        startdate.prepend(QLatin1Char('\''));
-        query = "SELECT SUM(tblk) FROM flights WHERE doft >= " + startdate;
+        start_date = start.toString(Qt::ISODate);
+        start_date.append(QLatin1Char('\''));
+        start_date.prepend(QLatin1Char('\''));
+        statement = "SELECT SUM(tblk) FROM flights WHERE doft >= " + start_date;
         break;
-    case Stat::rollingYear:
+    case AStat::rollingYear:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
-        startdate = start.toString(Qt::ISODate);
-        startdate.append(QLatin1Char('\''));
-        startdate.prepend(QLatin1Char('\''));
-        query = "SELECT SUM(tblk) FROM flights WHERE doft >= " + startdate;
+        start_date = start.toString(Qt::ISODate);
+        start_date.append(QLatin1Char('\''));
+        start_date.prepend(QLatin1Char('\''));
+        statement = "SELECT SUM(tblk) FROM flights WHERE doft >= " + start_date;
         break;
     }
 
-    QVector<QString> result = Db::customQuery(query, 1);
+    //QVector<QString> result = Db::customQuery(query, 1);
+    QSqlQuery query(statement);
 
-    if (!result.isEmpty()) {
-        return result[0];
+    if (!query.first()) {
+        DEB("No result found. Check Query and Error.");
+        DEB("Error: " << query.lastError().text());
+        return "00:00";
     } else {
-        return QString();
+        query.previous();
+        return query.value(0).toString();
     }
 }
 
 /*!
- * \brief Stat::currencyTakeOffLanding Returns the amount of Take Offs and
+ * \brief AStat::currencyTakeOffLanding Returns the amount of Take Offs and
  * Landings performed in the last x days. Normally, 90 would be used. (EASA)
  * \param days Number of days to check
  * \return {TO,LDG}
  */
-QVector<QString> Stat::currencyTakeOffLanding(int days)
+QVector<QString> AStat::currencyTakeOffLanding(int days)
 {
     QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days);
     QString startdate = start.toString(Qt::ISODate);
@@ -73,11 +79,13 @@ QVector<QString> Stat::currencyTakeOffLanding(int days)
     startdate.prepend(QLatin1Char('\''));
 
 
-    QString query = "SELECT SUM(flights.TOday) + SUM(flights.TOnight) AS 'TO', "
-                    "SUM(flights.LDGday) + SUM(flights.LDGnight) AS 'LDG' "
-                    "FROM flights "
-                    "WHERE doft >= " + startdate;
-    QVector<QString> result = Db::customQuery(query, 2);
+    QString statement = "SELECT "
+            "CAST(SUM(flights.TOday) + SUM(flights.TOnight) AS INTEGER) 'TO', "
+            "CAST(SUM(flights.LDGday) + SUM(flights.LDGnight) AS INTEGER) AS 'LDG' "
+            "FROM flights "
+            "WHERE doft >= \"" + startdate + "\"";
+
+    QVector<QString> result = aDB()->customQuery(statement, 2);
 
     if (!result.isEmpty()) {
         return result;
@@ -87,7 +95,7 @@ QVector<QString> Stat::currencyTakeOffLanding(int days)
 
 }
 
-QVector<QPair<QString, QString>> Stat::totals()
+QVector<QPair<QString, QString>> AStat::totals()
 {
     QString statement = "SELECT "
             "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
@@ -109,12 +117,12 @@ QVector<QPair<QString, QString>> Stat::totals()
                                 "pic", "picus", "sic", "dual", "fi", "sim", "multipilot",
                                 "today", "tonight", "ldgday", "ldgnight"
                                };
-    QSqlQuery q(statement);
+    QSqlQuery query(statement);
     QVector<QPair<QString, QString>> output;
     QString value;
-    q.next();
+    query.next();
     for (const auto &column : columns) {
-        value = q.value(columns.indexOf(column)).toString();
+        value = query.value(columns.indexOf(column)).toString();
         if (!value.isEmpty()) {
             output << QPair{column, value};
         } else {

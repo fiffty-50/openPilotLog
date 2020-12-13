@@ -15,29 +15,31 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef STAT_H
-#define STAT_H
+#ifndef ASTAT_H
+#define ASTAT_H
+#include <QtCore>
+#include <QSqlQuery>
+#include <QSqlError>
+#include "src/experimental/adatabase.h"
 
-#include "src/database/db.h"
-#include <QDateTime>
+namespace AStat {
+
 
 /*!
- * \brief The stat class provides functionality for retreiving various statistics
+ * \brief The AStat namespace provides functionality for retreiving various statistics
  * from the database, such as total times or recency. In general, most values are
  * provided as either QString or QVector<QString>.
  */
-class Stat
-{
-public:
+
 
     enum yearType {allYears, calendarYear, rollingYear};
 
-    static QString totalTime(yearType);
+    QString totalTime(yearType);
 
-    static QVector<QString> currencyTakeOffLanding(int days);
+    QVector<QString> currencyTakeOffLanding(int days);
 
-    static QVector<QPair<QString, QString>> totals();
+    QVector<QPair<QString, QString>> totals();
 
-};
+} // namespace AStat
 
-#endif // STAT_H
+#endif // ASTAT_H

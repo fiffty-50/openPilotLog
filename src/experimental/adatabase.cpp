@@ -75,18 +75,18 @@ bool ADataBase::remove(AEntry entry)
 
     QString statement = "DELETE FROM " + entry.getPosition().tableName +
             " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
-    QSqlQuery q(statement);
+    QSqlQuery query(statement);
 
-    if (q.lastError().type() == QSqlError::NoError)
+    if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
-        emit commitSuccessful();
+        emit sqlSuccessful();
         return true;
     } else {
         DEB("Unable to delete.");
         DEB("Query: " << statement);
-        DEB("Query Error: " << q.lastError().text());
-        emit sqlError(q.lastError(), statement);
+        DEB("Query Error: " << query.lastError().text());
+        emit sqlError(query.lastError(), statement);
         return false;
     }
 }
@@ -100,9 +100,9 @@ bool ADataBase::exists(AEntry entry)
     QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
             " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
     //this returns either 1 or 0 since row ids are unique
-    QSqlQuery q(statement);
-    q.next();
-    int rowId = q.value(0).toInt();
+    QSqlQuery query(statement);
+    query.next();
+    int rowId = query.value(0).toInt();
     if (rowId) {
         DEB("Entry " << entry.getPosition() << " exists.");
         return true;
@@ -128,18 +128,18 @@ bool ADataBase::update(AEntry updated_entry)
     statement.append(QLatin1String(" WHERE ROWID=") + QString::number(updated_entry.getPosition().rowId));
 
     DEB("UPDATE QUERY: " << statement);
-    QSqlQuery q(statement);
+    QSqlQuery query(statement);
 
-    if (q.lastError().type() == QSqlError::NoError)
+    if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit commitSuccessful();
+        emit sqlSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
-        DEB("Query Error: " << q.lastError().text());
-        emit sqlError(q.lastError(), statement);
+        DEB("Query Error: " << query.lastError().text());
+        emit sqlError(query.lastError(), statement);
         return false;
     }
 }
@@ -161,18 +161,18 @@ bool ADataBase::insert(AEntry new_entry)
     statement.chop(2);
     statement += QLatin1String(")");
 
-    QSqlQuery q(statement);
+    QSqlQuery query(statement);
     //check result.
-    if (q.lastError().type() == QSqlError::NoError)
+    if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit commitSuccessful();
+        emit sqlSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
-        DEB("Query Error: " << q.lastError().text());
-        emit sqlError(q.lastError(), statement);
+        DEB("Query Error: " << query.lastError().text());
+        emit sqlError(query.lastError(), statement);
         return false;
     }
 
@@ -276,6 +276,30 @@ QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
     completer_list.removeDuplicates();
 
     return completer_list;
+}
+
+QVector<QString> ADataBase::customQuery(QString statement, int return_values)
+{
+    QSqlQuery query(statement);
+    query.exec();
+
+    if (!query.first()) {
+        DEB("No result found. Check Query and Error.");
+        DEB("Error: " << query.lastError().text());
+        emit sqlError(query.lastError(), statement);
+        return QVector<QString>();
+    } else {
+        query.first();
+        query.previous();
+        QVector<QString> result;
+        while (query.next()) {
+            for (int i = 0; i < return_values ; i++) {
+                result.append(query.value(i).toString());
+            }
+        }
+        emit sqlSuccessful();
+        return result;
+    }
 }
 
 ADataBase* aDB() { return ADataBase::getInstance(); }

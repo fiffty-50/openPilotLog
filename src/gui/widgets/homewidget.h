@@ -23,7 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include "src/database/db.h"
-#include "src/classes/stat.h"
+#include "src/functions/astat.h"
 #include "src/functions/acalc.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/aircraft.h"

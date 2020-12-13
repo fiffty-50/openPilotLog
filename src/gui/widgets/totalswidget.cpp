@@ -7,7 +7,7 @@ TotalsWidget::TotalsWidget(QWidget *parent) :
     ui(new Ui::TotalsWidget)
 {
     ui->setupUi(this);
-    auto data = Stat::totals();
+    auto data = AStat::totals();
     DEB("Filling Totals Line Edits...");
     //DEB("data: " << data);
     for (const auto &field : data) {
