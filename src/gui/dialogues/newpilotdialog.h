@@ -26,7 +26,7 @@
 #include "src/classes/pilot.h"
 
 #include "src/experimental/adatabase.h"
-#include "src/experimental/entry.h"
+#include "src/experimental/aentry.h"
 #include "src/experimental/Decl.h"
 
 namespace Ui {
@@ -52,7 +52,7 @@ private slots:
 private:
     Ui::NewPilot *ui;
 
-    experimental::PilotEntry pilotEntry;
+    experimental::APilotEntry pilotEntry;
 
     inline void setup();
 

@@ -2,6 +2,7 @@
 #include "ui_debugwidget.h"
 #include "debug.h"
 
+
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DebugWidget)
@@ -109,7 +110,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     }
     QVector<bool> allGood;
     for (const auto& table : userTables) {
-        auto data = Csv::read("data/templates/sample_" + table + ".csv");
+        auto data = aReadCsv("data/templates/sample_" + table + ".csv");
         allGood.append(DbSetup::commitData(data, table));
     }
 
@@ -142,7 +143,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
     if (file.exists() && file.isFile()) {
 
-        if (DbSetup::commitData(Csv::read(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
+        if (DbSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
             auto mb = QMessageBox(this);
             mb.setText("Data inserted successfully.");
             mb.exec();

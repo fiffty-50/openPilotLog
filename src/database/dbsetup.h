@@ -21,8 +21,7 @@
 #include <QCoreApplication>
 #include "src/database/db.h"
 #include "src/database/dbinfo.h"
-#include "src/classes/csv.h"
-
+#include "src/functions/areadcsv.h"
 
 /*!
  * \brief The DbSetup class is responsible for the inital setup of the database when
@@ -32,7 +31,7 @@
  */
 class DbSetup
 {
-public: 
+public:
     static void debug();
 
     static bool createDatabase();

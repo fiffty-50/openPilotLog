@@ -1,44 +1,44 @@
-#include "entry.h"
+#include "aentry.h"
 
 namespace experimental {
 
-Entry::Entry(DataPosition position_)
+AEntry::AEntry(DataPosition position_)
     : position(position_)
 {}
 
-Entry::Entry(TableData table_data)
+AEntry::AEntry(TableData table_data)
     : tableData(table_data)
 {}
 
-Entry::Entry(DataPosition position_, TableData table_data)
+AEntry::AEntry(DataPosition position_, TableData table_data)
     : position(position_), tableData(table_data)
 {}
 
-void Entry::setData(TableData table_data)
+void AEntry::setData(TableData table_data)
 {
     tableData = table_data;
 }
 
-const DataPosition& Entry::getPosition()
+const DataPosition& AEntry::getPosition()
 {
     return position;
 }
 
-const TableData& Entry::getData()
+const TableData& AEntry::getData()
 {
     return tableData;
 }
 
-PilotEntry::PilotEntry()
-    : Entry::Entry(DEFAULT_PILOT_POSITION)
+APilotEntry::APilotEntry()
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION)
 {}
 
-PilotEntry::PilotEntry(int row_id)
-    : Entry::Entry(DataPosition("pilots", row_id))
+APilotEntry::APilotEntry(int row_id)
+    : AEntry::AEntry(DataPosition("pilots", row_id))
 {}
 
-PilotEntry::PilotEntry(TableData table_data)
-    : Entry::Entry(DEFAULT_PILOT_POSITION, table_data)
+APilotEntry::APilotEntry(TableData table_data)
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
 {}
 
 }  // namespace experimental

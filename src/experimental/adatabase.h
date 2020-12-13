@@ -10,7 +10,7 @@
 #include "src/database/dbinfo.h"
 #include "debug.h"
 
-#include "entry.h"
+#include "aentry.h"
 
 namespace experimental {
 
@@ -57,28 +57,28 @@ public:
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(Entry entry);
+    bool exists(AEntry entry);
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(Entry entry);
+    bool commit(AEntry entry);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(Entry new_entry);
+    bool insert(AEntry new_entry);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    bool update(Entry updated_entry);
+    bool update(AEntry updated_entry);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    bool remove(Entry entry);
+    bool remove(AEntry entry);
 
     /*!
      * \brief retreive entry data from the database to create an entry object
@@ -88,7 +88,7 @@ public:
     /*!
      * \brief retreive an Entry from the database.
      */
-    Entry getEntry(DataPosition data_position);
+    AEntry getEntry(DataPosition data_position);
 
     /*!
      * \brief retreives a PilotEntry from the database.
@@ -98,7 +98,7 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    PilotEntry getPilotEntry(RowId row_id);
+    APilotEntry getPilotEntry(RowId row_id);
     // [G] TODO: Ensure PilotDialog works great and slowly move to
     // other dialogs
 

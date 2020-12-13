@@ -69,7 +69,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     DEB("New NewPilotDialog (newEntry)");
     setup();
 
-    pilotEntry = PilotEntry();
+    pilotEntry = APilotEntry();
     ui->piclastnameLineEdit->setFocus();
 }
 

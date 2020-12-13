@@ -17,17 +17,17 @@ namespace experimental {
  * \brief The Entry class encapsulates table metadata(table name, row id)
  *  and data for new and existing entries in the database to operate on.
  */
-class Entry {
+class AEntry {
 protected:
     DataPosition position;
     TableData tableData;
 public:
-    Entry() = delete; // Demand specificity from default constructor
-    Entry(const Entry&) = default;
-    Entry& operator=(const Entry&) = default;
-    Entry(DataPosition position_);
-    Entry(TableData table_data);
-    Entry(DataPosition position_, TableData table_data);
+    AEntry() = delete; // Demand specificity from default constructor
+    AEntry(const AEntry&) = default;
+    AEntry& operator=(const AEntry&) = default;
+    AEntry(DataPosition position_);
+    AEntry(TableData table_data);
+    AEntry(DataPosition position_, TableData table_data);
 
     void setData(TableData table_data);
     void setPosition(DataPosition position_);
@@ -37,13 +37,13 @@ public:
 
 };
 
-struct PilotEntry : public Entry {
+struct APilotEntry : public AEntry {
 public:
-    PilotEntry();
-    PilotEntry(const PilotEntry& pe) = default;
-    PilotEntry& operator=(const PilotEntry& pe) = default;
-    PilotEntry(int row_id);
-    PilotEntry(TableData table_data);
+    APilotEntry();
+    APilotEntry(const APilotEntry& pe) = default;
+    APilotEntry& operator=(const APilotEntry& pe) = default;
+    APilotEntry(int row_id);
+    APilotEntry(TableData table_data);
 };
 
 }

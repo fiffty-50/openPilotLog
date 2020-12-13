@@ -40,7 +40,7 @@
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
 #include "src/classes/settings.h"
-#include "src/classes/acalc.h"
+#include "src/functions/acalc.h"
 #include "src/experimental/adatabase.h"
 
 #include "src/gui/dialogues/newpilotdialog.h"

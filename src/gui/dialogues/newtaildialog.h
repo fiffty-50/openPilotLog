@@ -26,7 +26,7 @@
 #include "src/classes/settings.h"
 #include "src/classes/aircraft.h"
 #include "src/classes/strictrxvalidator.h"
-#include "src/classes/acalc.h"
+#include "src/functions/acalc.h"
 #include "src/database/entry_deprecated.h"
 #include "src/experimental/adatabase.h"
 

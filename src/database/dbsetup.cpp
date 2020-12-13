@@ -18,6 +18,7 @@
 #include "dbsetup.h"
 #include "debug.h"
 
+
 // Statements for creation of database tables, Revision 12
 
 const QString createTablePilots = "CREATE TABLE \"pilots\" ( "
@@ -291,7 +292,7 @@ bool DbSetup::importDefaultData()
             DEB("Error: " << query.lastError().text());
         }
         //fill with data from csv
-        if (!commitData(Csv::read("data/templates/" + table + ".csv"), table)) {
+        if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
             DEB("Error importing data.");
             return false;
         }

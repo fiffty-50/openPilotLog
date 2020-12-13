@@ -57,7 +57,7 @@ QSqlDatabase ADataBase::database()
     return QSqlDatabase::database("qt_sql_default_connection");
 }
 
-bool ADataBase::commit(Entry entry)
+bool ADataBase::commit(AEntry entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -66,7 +66,7 @@ bool ADataBase::commit(Entry entry)
     }
 }
 
-bool ADataBase::remove(Entry entry)
+bool ADataBase::remove(AEntry entry)
 {
     if (!exists(entry)) {
         DEB("Error: Entry does not exist.");
@@ -91,7 +91,7 @@ bool ADataBase::remove(Entry entry)
     }
 }
 
-bool ADataBase::exists(Entry entry)
+bool ADataBase::exists(AEntry entry)
 {
     if(entry.getPosition() == DEFAULT_PILOT_POSITION)
         return false;
@@ -113,7 +113,7 @@ bool ADataBase::exists(Entry entry)
 }
 
 
-bool ADataBase::update(Entry updated_entry)
+bool ADataBase::update(AEntry updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
@@ -144,7 +144,7 @@ bool ADataBase::update(Entry updated_entry)
     }
 }
 
-bool ADataBase::insert(Entry new_entry)
+bool ADataBase::insert(AEntry new_entry)
 {
     auto data = new_entry.getData();
     DEB("Inserting...");
@@ -224,16 +224,16 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     return entry_data;
 }
 
-Entry ADataBase::getEntry(DataPosition data_position)
+AEntry ADataBase::getEntry(DataPosition data_position)
 {
-    Entry entry(data_position);
+    AEntry entry(data_position);
     entry.setData(getEntryData(data_position));
     return entry;
 }
 
-PilotEntry ADataBase::getPilotEntry(RowId row_id)
+APilotEntry ADataBase::getPilotEntry(RowId row_id)
 {
-    PilotEntry pilotEntry(row_id);
+    APilotEntry pilotEntry(row_id);
     pilotEntry.setData(getEntryData(pilotEntry.getPosition()));
     return pilotEntry;
 }

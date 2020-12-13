@@ -1,15 +1,11 @@
-#include "csv.h"
+#include "areadcsv.h"
 
-Csv::Csv()
-{
-
-}
 /*!
- * \brief Csv::read reads from a CSV file
+ * \brief aReadCSV reads from a CSV file
  * \param filename - QString to csv file.
  * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input file
  */
-QVector<QStringList> Csv::read(QString filename)
+QVector<QStringList> aReadCsv(QString filename)
 {
     QFile csvfile(filename);
     csvfile.open(QIODevice::ReadOnly);

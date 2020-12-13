@@ -18,9 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    src/classes/acalc.cpp \
     src/classes/aircraft.cpp \
-    src/classes/csv.cpp \
     src/classes/download.cpp \
     src/classes/flight.cpp \
     src/classes/pilot.cpp \
@@ -33,7 +31,9 @@ SOURCES += \
     src/database/dbsetup.cpp \
     src/database/entry_deprecated.cpp \
     src/experimental/adatabase.cpp \
-    src/experimental/entry.cpp \
+    src/experimental/aentry.cpp \
+    src/functions/acalc.cpp \
+    src/functions/areadcsv.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -49,9 +49,7 @@ SOURCES += \
 HEADERS += \
     debug.h \
     mainwindow.h \
-    src/classes/acalc.h \
     src/classes/aircraft.h \
-    src/classes/csv.h \
     src/classes/download.h \
     src/classes/flight.h \
     src/classes/pilot.h \
@@ -66,7 +64,9 @@ HEADERS += \
     src/experimental/Decl.h \
     src/experimental/UserInput.h \
     src/experimental/adatabase.h \
-    src/experimental/entry.h \
+    src/experimental/aentry.h \
+    src/functions/acalc.h \
+    src/functions/areadcsv.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \
