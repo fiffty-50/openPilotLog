@@ -25,15 +25,8 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
-    sortColumn = ASettings::read("userdata/pilSortColumn").toInt();
 
     setupModelAndView();
-    refreshModelAndView();
-
-    QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
-                     this, &PilotsWidget::tableView_selectionChanged);
-    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this, &PilotsWidget::tableView_headerClicked);
 }
 
 PilotsWidget::~PilotsWidget()
@@ -43,11 +36,14 @@ PilotsWidget::~PilotsWidget()
 
 void PilotsWidget::setupModelAndView()
 {
+    sortColumn = ASettings::read("userdata/pilSortColumn").toInt();
+
+    model = new QSqlTableModel(this);
     model->setTable("viewPilots");
     model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
     model->select();
 
-    view = ui->tableView;
+    view = ui->pilotsTableView;
     view->setModel(model);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -60,31 +56,31 @@ void PilotsWidget::setupModelAndView()
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
+
+    QObject::connect(ui->pilotsTableView->selectionModel(), &QItemSelectionModel::selectionChanged,
+                     this, &PilotsWidget::tableView_selectionChanged);
+    QObject::connect(ui->pilotsTableView->horizontalHeader(), &QHeaderView::sectionClicked,
+                     this, &PilotsWidget::tableView_headerClicked);
 }
 
-void PilotsWidget::refreshModelAndView()
+void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
 {
-    ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePage"));
-    model->select();
-    view->show();
-}
-
-void PilotsWidget::on_searchLineEdit_textChanged(const QString &arg1)
-{
-    model->setFilter("\"" + ui->searchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
+    model->setFilter("\"" + ui->pilotsSearchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
 }
 
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
-{   
-    if (this->findChild<NewPilotDialog*>("NewPilot") != nullptr) {
+{
+    if (this->findChild<NewPilotDialog*>() != nullptr) {
         DEB("Selection changed. Deleting orphaned dialog.");
         delete this->findChild<NewPilotDialog*>();
         /// [F] if the user changes the selection without making any changes,
         /// if(selectedPilots.length() == 1) spawns a new dialog without the
         /// old one being deleted, since neither accept() nor reject() was emitted.
-        /// Is this a reasonable way of avoiding pollution?
+        /// Is this a reasonable way of avoiding pollution? Creating the widgets on the
+        /// stack does not seem to solve the problem since the Dialog does not get deleted
+        /// until either accept() or reject() is emitted so I went for this solution.
     }
-    auto *selection = ui->tableView->selectionModel();
+    auto *selection = ui->pilotsTableView->selectionModel();
     selectedPilots.clear();
 
     for (const auto& row : selection->selectedRows()) {
@@ -94,7 +90,6 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
     if(selectedPilots.length() == 1) {
 
         NewPilotDialog* np = new NewPilotDialog(selectedPilots.first(), this);
-        DEB("new dialog: " << np->objectName());
         QObject::connect(np, &QDialog::accepted,
                          this, &PilotsWidget::pilot_editing_finished);
         QObject::connect(np, &QDialog::rejected,
@@ -116,9 +111,11 @@ void PilotsWidget::tableView_headerClicked(int column)
 void PilotsWidget::on_newButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(this);
+    QObject::connect(np,   &QDialog::accepted,
+                     this, &PilotsWidget::pilot_editing_finished);
+    QObject::connect(np,   &QDialog::rejected,
+                     this, &PilotsWidget::pilot_editing_finished);
     np->setAttribute(Qt::WA_DeleteOnClose);
-    connect(np, SIGNAL(accepted()), this, SLOT(pilot_editing_finished()));
-    connect(np, SIGNAL(rejected()), this, SLOT(pilot_editing_finished()));
     np->exec();
 }
 
@@ -139,14 +136,14 @@ void PilotsWidget::on_deletePushButton_clicked()
         /// for example, the user has changed airlines and does not want to have his 'old'
         /// colleagues polluting his logbook anymore.
         /// On the other hand we could run into issues with foreign key constraints on the
-        /// flights table (see on_delete_unsuccessful) below
+        /// flights table (see on_delete_unsuccessful) below.
+        /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedPilots.length() == 1) {
         auto entry = aDB()->getPilotEntry(selectedPilots.first());
         aDB()->remove(entry);
         }
-    refreshModelAndView();
-
+    model->select();
 }
 
 void PilotsWidget::on_deleteUnsuccessful()
@@ -183,5 +180,5 @@ void PilotsWidget::on_deleteUnsuccessful()
 
 void PilotsWidget::pilot_editing_finished()
 {
-    refreshModelAndView();
+    model->select();
 }

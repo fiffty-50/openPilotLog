@@ -53,22 +53,20 @@ private slots:
 
     void pilot_editing_finished();
 
-    void on_searchLineEdit_textChanged(const QString &arg1);
+    void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::PilotsWidget *ui;
 
-    QSqlTableModel *model = new QSqlTableModel(this);
+    QSqlTableModel *model;
 
-    QTableView *view = new QTableView(this);
+    QTableView *view;
 
     qint32 sortColumn;
 
     QVector<qint32> selectedPilots;
 
     void setupModelAndView();
-
-    void refreshModelAndView();
 };
 
 #endif // PILOTSWIDGET_H

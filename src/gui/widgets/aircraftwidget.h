@@ -22,8 +22,7 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QDebug>
-#include <QLabel>
-#include <QHBoxLayout>
+#include <QTableView>
 
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newtaildialog.h"
@@ -54,18 +53,20 @@ private slots:
 
     void acft_editing_finished();
 
-    void on_searchLineEdit_textChanged(const QString &arg1);
+    void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::AircraftWidget *ui;
 
-    QSqlTableModel *model = new QSqlTableModel;
+    QSqlTableModel *model;
+
+    QTableView *view;
 
     qint32 sortColumn;
 
     QVector<qint32> selectedTails;
 
-    void refreshModelAndView();
+    void setupModelAndView();
 };
 
 #endif // AIRCRAFTWIDGET_H
