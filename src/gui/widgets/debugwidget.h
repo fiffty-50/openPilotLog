@@ -39,6 +39,8 @@ private slots:
 
     void on_importCsvPushButton_clicked();
 
+    void on_debugPushButton_clicked();
+
 private:
     Ui::DebugWidget *ui;
 

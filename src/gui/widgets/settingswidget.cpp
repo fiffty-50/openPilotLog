@@ -18,7 +18,7 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 #include "src/database/dbinfo.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};

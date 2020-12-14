@@ -17,7 +17,7 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva

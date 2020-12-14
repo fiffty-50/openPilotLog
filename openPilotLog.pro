@@ -47,7 +47,9 @@ SOURCES += \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.cpp \
+    src/testing/abenchmark.cpp \
+    src/testing/atimer.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -70,8 +72,6 @@ HEADERS += \
     src/experimental/atailentry.h \
     src/experimental/decl.h \
     src/functions/acalc.h \
-    src/functions/adebug.h \
-    src/functions/src/functions/adebug.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
     src/gui/dialogues/firstrundialog.h \
@@ -84,7 +84,10 @@ HEADERS += \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.h \
+    src/testing/abenchmark.h \
+    src/testing/adebug.h \
+    src/testing/atimer.h
 
 FORMS += \
     mainwindow.ui \

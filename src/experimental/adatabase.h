@@ -25,7 +25,7 @@
 #include <QSqlError>
 #include <QSqlTableModel>
 #include "src/database/dbinfo.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 #include "aentry.h"
 #include "apilotentry.h"

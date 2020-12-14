@@ -15,23 +15,26 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "homewidget.h"
-#include "ui_homewidget.h"
+#ifndef ABENCHMARK_H
+#define ABENCHMARK_H
+
+#include <QObject>
 #include "src/testing/adebug.h"
 
-
-HomeWidget::HomeWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::HomeWidget)
+/*!
+ * \brief The ABenchmark class provides quick access to benchmarking two functions for
+ * the purpose of performance testing.
+ *
+ */
+class ABenchmark
 {
-    ui->setupUi(this);
-    totalsWidget = new TotalsWidget(this);
-    ui->stackedWidget->addWidget(totalsWidget);
-    ui->stackedWidget->setCurrentWidget(totalsWidget);
-    ui->stackedWidget->show();
-}
+public:
+    ABenchmark();
 
-HomeWidget::~HomeWidget()
-{
-    delete ui;
-}
+    ABenchmark(void (*function_one)(), void (*function_two)(), int number_of_runs);
+
+    ABenchmark(bool (*function_one)(), bool (*function_two)(), int number_of_runs);
+
+};
+
+#endif // ABENCHMARK_H

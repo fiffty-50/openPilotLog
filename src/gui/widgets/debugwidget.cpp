@@ -1,6 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 
 DebugWidget::DebugWidget(QWidget *parent) :
@@ -157,4 +157,9 @@ void DebugWidget::on_importCsvPushButton_clicked()
         mb.setText("Please select a valid file.");
         mb.exec();
     }
+}
+
+void DebugWidget::on_debugPushButton_clicked()
+{
+
 }

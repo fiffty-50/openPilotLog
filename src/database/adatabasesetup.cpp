@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabasesetup.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 
 // Statements for creation of database tables, Revision 12

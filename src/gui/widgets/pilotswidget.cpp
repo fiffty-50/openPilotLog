@@ -17,7 +17,7 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 using namespace experimental;
 PilotsWidget::PilotsWidget(QWidget *parent) :
