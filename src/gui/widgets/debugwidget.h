@@ -14,6 +14,14 @@
 #include "src/classes/adownload.h"
 #include "src/functions/areadcsv.h"
 
+#include "src/experimental/adatabase.h"
+#include "src/experimental/aentry.h"
+#include "src/experimental/apilotentry.h"
+
+#include "src/testing/abenchmark.h"
+#include "src/testing/atimer.h"
+#include "src/testing/adebug.h"
+
 namespace Ui {
 class DebugWidget;
 }

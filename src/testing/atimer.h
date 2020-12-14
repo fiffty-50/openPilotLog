@@ -21,6 +21,7 @@
 #include <QObject>
 #include <chrono>
 #include <QDebug>
+#include "src/testing/adebug.h"
 
 /*!
  * \brief The ATimer class provides an easy to use performance timer.
@@ -38,7 +39,10 @@ public:
     ATimer(QObject* parent = nullptr);
     ~ATimer();
 
-    void timeNow();
+    /*!
+     * \brief timeNow takes an intermediate timing and returns miliseconds elapsed.
+     */
+    long timeNow();
 private:
 
     std::chrono::high_resolution_clock::time_point start;

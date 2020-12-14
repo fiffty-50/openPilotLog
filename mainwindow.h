@@ -37,6 +37,7 @@
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/classes/arunguard.h"
 #include "src/experimental/adatabase.h"
+#include "src/testing/atimer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

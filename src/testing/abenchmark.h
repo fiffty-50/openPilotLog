@@ -20,6 +20,9 @@
 
 #include <QObject>
 #include "src/testing/adebug.h"
+#include "src/experimental/adatabase.h"
+#include "src/experimental/aentry.h"
+#include "src/experimental/decl.h"
 
 /*!
  * \brief The ABenchmark class provides quick access to benchmarking two functions for
@@ -34,6 +37,8 @@ public:
     ABenchmark(void (*function_one)(), void (*function_two)(), int number_of_runs);
 
     ABenchmark(bool (*function_one)(), bool (*function_two)(), int number_of_runs);
+
+    //ABenchmark(experimental::AEntry (*function_one)(experimental::DataPosition), experimental::AEntry (*function_two)(int), int number_of_runs);
 
 };
 

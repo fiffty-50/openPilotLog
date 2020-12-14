@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    ATimer timer(this);
     ui->setupUi(this);
 
     // Set up Toolbar

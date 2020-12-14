@@ -22,9 +22,9 @@ ATimer::ATimer(QObject *parent) : QObject(parent)
 {
      start = std::chrono::high_resolution_clock::now();
      if(parent == nullptr) {
-         qDebug() << "Starting Timer... ";
+         DEB("Starting Timer... ");
      } else {
-         qDebug() << "Starting Timer for: " << parent->objectName();
+         DEB("Starting Timer for: " << parent->objectName());
      }
 
 }
@@ -33,26 +33,27 @@ ATimer::~ATimer()
 {
     stop = std::chrono::high_resolution_clock::now();
     if(parent() == nullptr) {
-        qDebug() << "Execution time: "
+        DEB("Execution time: "
                  << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
-                 << "milliseconds.";
+                 << "milliseconds.");
     } else {
-        qDebug() << "Execution time for: " << parent()->objectName() << ": "
+        DEB("Execution time for: " << parent()->objectName() << ": "
                  << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
-                 << "milliseconds.";
+                 << "milliseconds.");
     }
 }
 
-void ATimer::timeNow()
+long ATimer::timeNow()
 {
     intermediate_point = std::chrono::high_resolution_clock::now();
     if(parent() == nullptr) {
-        qDebug() << "Intermediate time: "
+        DEB("Intermediate time: "
                  << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count()
-                 << "milliseconds.";
+                 << "milliseconds.");
     } else {
-        qDebug() << "Intermediate time for: " << parent()->objectName() << ": "
+        DEB("Intermediate time for: " << parent()->objectName() << ": "
                  << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count()
-                 << "milliseconds.";
+                 << "milliseconds.");
     }
+    return std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count();
 }
