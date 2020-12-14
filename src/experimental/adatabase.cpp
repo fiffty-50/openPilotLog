@@ -110,14 +110,21 @@ bool ADataBase::remove(AEntry entry)
 
 bool ADataBase::exists(AEntry entry)
 {
-    if(entry.getPosition() == DEFAULT_PILOT_POSITION)
+    if(entry.getPosition().second == 0)
         return false;
 
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
             " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
     //this returns either 1 or 0 since row ids are unique
-    QSqlQuery query(statement);
+    QSqlQuery query;
+    query.prepare(statement);
+    query.setForwardOnly(true);
+    query.exec();
+    if (!query.isActive()) {
+        emit sqlError(query.lastError(), statement);
+        DEB("Query Error: " << query.lastError().text() << statement);
+    }
     query.next();
     int rowId = query.value(0).toInt();
     if (rowId) {
@@ -211,7 +218,10 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     //Check Database for rowId
     QString statement = "SELECT COUNT(*) FROM " + data_position.first
                       + " WHERE ROWID=" + QString::number(data_position.second);
-    QSqlQuery check_query(statement);
+    QSqlQuery check_query;
+    check_query.prepare(statement);
+    check_query.setForwardOnly(true);
+    check_query.exec();
 
     if (check_query.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << check_query.lastError().text());
@@ -230,7 +240,11 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     statement = "SELECT * FROM " + data_position.first
               + " WHERE ROWID=" + QString::number(data_position.second);
 
-    QSqlQuery select_query(statement);
+    QSqlQuery select_query;
+    select_query.prepare(statement);
+    select_query.setForwardOnly(true);
+    select_query.exec();
+
     if (select_query.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << select_query.lastError().text());
         DEB("Statement: " << statement);
@@ -298,11 +312,14 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
         break;
     }
 
-    QSqlQuery query(statement);
-    if(!query.first())
+    QSqlQuery query;
+    query.prepare(statement);
+    query.setForwardOnly(true);
+    query.exec();
+
+    if(!query.isActive())
         emit sqlError(query.lastError(), statement);
 
-    query.previous();
     QStringList completer_list;
     while (query.next())
         completer_list.append(query.value(0).toString());
@@ -334,15 +351,13 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
 
     auto id_map = QMap<QString, int>();
     auto query = QSqlQuery(statement);
-    if (!query.first()) {
+    if (!query.isActive()) {
         DEB("No result found. Check Query and Error.");
         DEB("Query: " << statement);
         DEB("Error: " << query.lastError().text());
         emit sqlError(query.lastError(), statement);
         return QMap<QString, int>();
     } else {
-        query.first();
-        query.previous();
         QVector<QString> query_result;
         while (query.next()) {
             id_map.insert(query.value(1).toString(), query.value(0).toInt());
