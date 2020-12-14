@@ -1,5 +1,5 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
+ *openTail Log - A FOSS Tail Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,23 +15,20 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "homewidget.h"
-#include "ui_homewidget.h"
-#include "src/testing/adebug.h"
+#include "atailentry.h"
 
+namespace experimental {
 
-HomeWidget::HomeWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::HomeWidget)
-{
-    ui->setupUi(this);
-    totalsWidget = new TotalsWidget(this);
-    ui->stackedWidget->addWidget(totalsWidget);
-    ui->stackedWidget->setCurrentWidget(totalsWidget);
-    ui->stackedWidget->show();
-}
+ATailEntry::ATailEntry()
+    : AEntry::AEntry(DEFAULT_TAIL_POSITION)
+{}
 
-HomeWidget::~HomeWidget()
-{
-    delete ui;
-}
+ATailEntry::ATailEntry(int row_id)
+    : AEntry::AEntry(DataPosition("tails", row_id))
+{}
+
+ATailEntry::ATailEntry(TableData table_data)
+    : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
+{}
+
+} // namespace experimental

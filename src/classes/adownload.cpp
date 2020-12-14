@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adownload.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 
 
@@ -46,13 +46,15 @@ void ADownload::download()
     QNetworkRequest request(target);
     DEB("Downloading from: " << target.toString());
 
-    //QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
-/* not needed for now
- * void ADownload::downloadProgress(qint64 received, qint64 total)
- * {}
- */
+
+void ADownload::downloadProgress(qint64 received, qint64 total)
+{
+    DEB("Received " << received << " bytes of " << total);
+}
+
 
 
 void ADownload::downloadFinished(QNetworkReply *data)

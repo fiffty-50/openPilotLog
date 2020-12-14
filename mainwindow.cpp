@@ -17,12 +17,13 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    ATimer timer(this);
     ui->setupUi(this);
 
     // Set up Toolbar
@@ -132,7 +133,7 @@ void MainWindow::on_actionNewFlight_triggered()
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    NewTailDialog nt = NewTailDialog(QString(), Db::createNew, this);
+    NewTailDialog nt = NewTailDialog(QString(), this);
     nt.exec();
 }
 

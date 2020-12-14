@@ -1,6 +1,6 @@
 #include "totalswidget.h"
 #include "ui_totalswidget.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 TotalsWidget::TotalsWidget(QWidget *parent) :
     QWidget(parent),

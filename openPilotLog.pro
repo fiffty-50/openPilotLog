@@ -29,9 +29,11 @@ SOURCES += \
     src/database/db.cpp \
     src/database/dbinfo.cpp \
     src/database/entry_deprecated.cpp \
+    src/experimental/aaircraftentry.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
     src/experimental/apilotentry.cpp \
+    src/experimental/atailentry.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
@@ -45,7 +47,9 @@ SOURCES += \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.cpp \
+    src/testing/abenchmark.cpp \
+    src/testing/atimer.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -61,12 +65,13 @@ HEADERS += \
     src/database/dbinfo.h \
     src/database/entry_deprecated.h \
     src/experimental/UserInput.h \
+    src/experimental/aaircraftentry.h \
     src/experimental/adatabase.h \
     src/experimental/aentry.h \
     src/experimental/apilotentry.h \
+    src/experimental/atailentry.h \
     src/experimental/decl.h \
     src/functions/acalc.h \
-    src/functions/src/functions/adebug.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
     src/gui/dialogues/firstrundialog.h \
@@ -79,7 +84,10 @@ HEADERS += \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.h \
+    src/testing/abenchmark.h \
+    src/testing/adebug.h \
+    src/testing/atimer.h
 
 FORMS += \
     mainwindow.ui \

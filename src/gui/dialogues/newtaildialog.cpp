@@ -17,7 +17,7 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -30,39 +30,40 @@ static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
 static const auto LINE_EDIT_VALIDATORS = QVector({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
 
 
-//Dialog to be used to create a new tail
-NewTailDialog::NewTailDialog(QString newreg, Db::editRole edRole, QWidget *parent) :
+NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB("new NewTailDialog\n");
+    DEB("new NewTailDialog (experimental)");
     ui->setupUi(this);
 
-    role = edRole;
+    connectSignals();
     setupCompleter();
     setupValidators();
 
-    ui->registrationLineEdit->setText(newreg);
+    ui->registrationLineEdit->setText(new_registration);
     ui->searchLineEdit->setStyleSheet("border: 1px solid blue");
     ui->searchLineEdit->setFocus();
+
+    entry = experimental::ATailEntry();
 }
 
-//Dialog to be used to edit an existing tail
-NewTailDialog::NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent) :
+NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB("new NewTailDialog\n");
-    oldEntry = dbentry;
-    role = edRole;
+    using namespace experimental;
+    DEB("New experimental New Pilot Dialog (edit existing)");
     ui->setupUi(this);
 
     ui->searchLabel->hide();
     ui->searchLineEdit->hide();
     ui->line->hide();
 
+    connectSignals();
     setupValidators();
-    formFiller(oldEntry);
+    entry = aDB()->getTailEntry(row_id);
+    fillForm(entry);
 }
 
 NewTailDialog::~NewTailDialog()
@@ -73,89 +74,97 @@ NewTailDialog::~NewTailDialog()
 /// Functions
 
 /*!
- * \brief NewTail::setupCompleter creates a QMap<aircaft_id,searchstring> for auto completion,
- * obtains a QStringList for QCompleter and sets up search line edit accordingly
+ * \brief NewTail::setupCompleter obtains a QMap<QString searchstring, int aircaft_id> for auto completion
+ * and obtains a QStringList for QCompleter. This function then sets up the search line edit where
+ * the user can select a template from the aircraft database to pre-fill the form with the details
+ * for the selected type.
  */
 void NewTailDialog::setupCompleter()
 {
-    auto query = QLatin1String("SELECT make||' '||model||'-'||variant, aircraft_id FROM aircraft");
-    auto vector = Db::customQuery(query, 2);
-    QMap<QString, int> map;
-    for (int i = 0; i < vector.length() - 2 ; i += 2) {
-        if (vector[i] != QLatin1String("")) {
-            map.insert(vector[i], vector[i + 1].toInt());
-        }
-    }
-    //creating QStringlist for QCompleter. This list is identical to a list of map<key>,
-    //but creating it like this is faster.
+    using namespace experimental;
+    idMap = aDB()->getIdMap(ADataBase::aircraft);
+    aircraftList = aDB()->getCompletionList(experimental::ADataBase::aircraft);
 
-
-    auto aircraftlist = experimental::aDB()->getCompletionList(experimental::ADataBase::aircraft);
-    idMap = map;
-    QCompleter *completer = new QCompleter(aircraftlist, ui->searchLineEdit);
+    QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
     ui->searchLineEdit->setCompleter(completer);
+
+    QObject::connect(completer, static_cast<void(QCompleter::*)(const QString &)>(&QCompleter::activated),
+                     this, &NewTailDialog::onSearchCompleterActivated);
+    QObject::connect(completer, static_cast<void(QCompleter::*)(const QString &)>(&QCompleter::highlighted),
+                     this, &NewTailDialog::onSearchCompleterActivated);
+
+
 }
 
 void NewTailDialog::setupValidators()
 {
     for(const auto& pair : LINE_EDIT_VALIDATORS){
-        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
-        auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+        auto line_edit = this->findChild<QLineEdit*>(pair.first);
+        auto validator = new QRegularExpressionValidator(pair.second, line_edit);
         line_edit->setValidator(validator);
     }
 }
-/*!
- * \brief NewTail::formFiller populates the Dialog with the
- * information contained in an aircraft object.
- * \param db - entry retreived from database
- */
-void NewTailDialog::formFiller(Entry_deprecated entry)
+
+void NewTailDialog::connectSignals()
 {
-    DEB("Filling Form for a/c" << entry);
+    using namespace experimental;
+    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+                     this,  &NewTailDialog::onCommitSuccessful);
+    QObject::connect(aDB(), &ADataBase::sqlError,
+                     this,  &NewTailDialog::onCommitUnsuccessful);
+}
+
+/*!
+ * \brief NewTailDialog::fillForm populates the Dialog with the
+ * information contained in an entry object. This can be either
+ * a template (AAircraft, used when creating a new entry) or
+ * a tail (ATail, used when editing an existing entry)
+ * \param entry
+ */
+void NewTailDialog::fillForm(experimental::AEntry entry)
+{
+    DEB("Filling Form for (experimental) a/c" << entry.getPosition());
     //fill Line Edits
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
     for (const auto &le : line_edits) {
-        QString name = le->objectName();
-        name.chop(8);//remove "LineEdit"
-        QString value = entry.data.value(name);
-        if (!value.isEmpty()) {
-            le->setText(value);
-        };
+        QString name = le->objectName().remove("LineEdit");
+        QString value = entry.getData().value(name);
+        le->setText(value);
     }
     //select comboboxes
-    QVector<QString> operation = {entry.data.value("singleengine"), entry.data.value("multiengine")};
-    QVector<QString> ppNumber =  {entry.data.value("singlepilot"), entry.data.value("multipilot")};
-    QVector<QString> ppType =    {entry.data.value("unpowered"), entry.data.value("piston"),
-                                  entry.data.value("turboprop"), entry.data.value("jet")
+    QVector<QString> operation = {entry.getData().value("singleengine"), entry.getData().value("multiengine")};
+    QVector<QString> ppNumber =  {entry.getData().value("singlepilot"), entry.getData().value("multipilot")};
+    QVector<QString> ppType =    {entry.getData().value("unpowered"), entry.getData().value("piston"),
+                                  entry.getData().value("turboprop"), entry.getData().value("jet")
                                  };
-    QVector<QString> weight =    {entry.data.value("light"), entry.data.value("medium"),
-                                  entry.data.value("heavy"), entry.data.value("super")
+    QVector<QString> weight =    {entry.getData().value("light"), entry.getData().value("medium"),
+                                  entry.getData().value("heavy"), entry.getData().value("super")
                                  };
-
 
     ui->operationComboBox->setCurrentIndex(operation.indexOf("1") + 1);
     ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1") + 1);
     ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1") + 1);
     ui->weightComboBox->setCurrentIndex(weight.indexOf("1") + 1);
 }
+
 /*!
  * \brief NewTail::verify A simple check for empty recommended fields in the form
  * \return true if all reconmmended fields are populated
  */
 bool NewTailDialog::verify()
 {
-    auto recommended_line_edits = parent()->findChildren<QLineEdit *>("registrationLineEdit");
-    recommended_line_edits.append(parent()->findChild<QLineEdit *>("makeLineEdit"));
-    recommended_line_edits.append(parent()->findChild<QLineEdit *>("modelLineEdit"));
+    auto recommended_line_edits = this->findChildren<QLineEdit *>("registrationLineEdit");
+    recommended_line_edits.append(this->findChild<QLineEdit *>("makeLineEdit"));
+    recommended_line_edits.append(this->findChild<QLineEdit *>("modelLineEdit"));
 
-    auto recommended_combo_boxes = parent()->findChildren<QComboBox *>("operationComboBox");
-    recommended_combo_boxes.append(parent()->findChild<QComboBox *>("ppNumberComboBox"));
-    recommended_combo_boxes.append(parent()->findChild<QComboBox *>("ppTypeComboBox"));
+    auto recommended_combo_boxes = this->findChildren<QComboBox *>("operationComboBox");
+    recommended_combo_boxes.append(this->findChild<QComboBox *>("ppNumberComboBox"));
+    recommended_combo_boxes.append(this->findChild<QComboBox *>("ppTypeComboBox"));
 
-    for (const auto le : recommended_line_edits) {
+    for (const auto &le : recommended_line_edits) {
         if (le->text() != "") {
             DEB("Good: " << le);
             recommended_line_edits.removeOne(le);
@@ -165,7 +174,7 @@ bool NewTailDialog::verify()
             DEB("Not Good: " << le);
         }
     }
-    for (const auto cb : recommended_combo_boxes) {
+    for (const auto &cb : recommended_combo_boxes) {
         if (cb->currentIndex() != 0) {
 
             recommended_combo_boxes.removeOne(cb);
@@ -187,19 +196,18 @@ bool NewTailDialog::verify()
  * or updates a database entry and commits or updates the database
  * \param edRole editExisting or createNew
  */
-void NewTailDialog::submitForm(Db::editRole edRole)
+void NewTailDialog::submitForm()
 {
     DEB("Creating Database Object...");
-    QMap<QString, QString> newData;
+    using namespace experimental;
+    TableData new_data;
     //retreive Line Edits
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    auto line_edits = this->findChildren<QLineEdit *>();
+    line_edits.removeOne(this->findChild<QLineEdit *>("searchLineEdit"));
 
     for (const auto &le : line_edits) {
-        QString name = le->objectName();
-        name.chop(8);//remove "LineEdit"
-        if (!le->text().isEmpty()) {
-            newData.insert(name, le->text());
-        }
+        QString name = le->objectName().remove("LineEdit");
+        new_data.insert(name, le->text());
     }
     //prepare comboboxes
     QVector<QString> operation = {"singlepilot", "multipilot"};
@@ -212,48 +220,25 @@ void NewTailDialog::submitForm(Db::editRole edRole)
                                  };
 
     if (ui->operationComboBox->currentIndex() != 0) {
-        newData.insert(operation[ui->operationComboBox->currentIndex() - 1], QLatin1String("1"));
+        new_data.insert(operation[ui->operationComboBox->currentIndex() - 1], QLatin1String("1"));
     }
     if (ui->ppNumberComboBox->currentIndex() != 0) {
-        newData.insert(ppNumber[ui->ppNumberComboBox->currentIndex() - 1], QLatin1String("1"));
+        new_data.insert(ppNumber[ui->ppNumberComboBox->currentIndex() - 1], QLatin1String("1"));
     }
     if (ui->ppTypeComboBox->currentIndex() != 0) {
-        newData.insert(ppType[ui->ppTypeComboBox->currentIndex() - 1], QLatin1String("1"));
+        new_data.insert(ppType[ui->ppTypeComboBox->currentIndex() - 1], QLatin1String("1"));
     }
     if (ui->weightComboBox->currentIndex() != 0) {
-        newData.insert(weight[ui->weightComboBox->currentIndex() - 1], QLatin1String("1"));
+        new_data.insert(weight[ui->weightComboBox->currentIndex() - 1], QLatin1String("1"));
     }
+
     //create db object
-    switch (edRole) {
-    case Db::createNew: {
-        auto newEntry = Aircraft(newData);;
-        newEntry.commit();
-        break;
-    }
-    case Db::editExisting:
-        oldEntry.setData(newData);
-        oldEntry.commit();
-        ACalc::updateAutoTimes(oldEntry.position.second);
-        break;
-    }
+
+    entry.setData(new_data);
+    aDB()->commit(entry);
 }
 
 /// Slots
-
-void NewTailDialog::on_searchLineEdit_textChanged(const QString &arg1)
-{
-    if (aircraftlist.contains(
-                arg1)) { //equivalent to editing finished for this purpose. todo: consider connecing qcompleter activated signal with editing finished slot.
-
-        DEB("Template Selected. aircraft_id is: " << idMap.value(arg1));
-        //call autofiller for dialog
-        formFiller(Entry_deprecated("aircraft",idMap.value(arg1)));
-        ui->searchLineEdit->setStyleSheet("border: 1px solid green");
-    } else {
-        //for example, editing finished without selecting a result from Qcompleter
-        ui->searchLineEdit->setStyleSheet("border: 1px solid orange");
-    }
-}
 
 void NewTailDialog::on_operationComboBox_currentIndexChanged(int index)
 {
@@ -290,37 +275,71 @@ void NewTailDialog::on_buttonBox_accepted()
         auto nope = QMessageBox(this);
         nope.setText("Registration cannot be empty.");
         nope.exec();
-    } else {
-        if (verify()) {
-            DEB("Form verified");
-            submitForm(role);
-            accept();
+        return;
+    }
+
+    if (!verify()) {
+        if (!ASettings::read("userdata/acAllowIncomplete").toInt()) {
+            auto nope = QMessageBox(this);
+            nope.setIcon(QMessageBox::Warning);
+            nope.setText("Some or all recommended fields are empty.\nPlease go back and "
+                         "complete the form.\n\nYou can allow logging incomplete tail entries on the settings page.");
+            nope.exec();
+            return;
         } else {
-            if (!ASettings::read("userdata/acAllowIncomplete").toInt()) {
-                auto nope = QMessageBox(this);
-                nope.setText("Some or all fields are empty.\nPlease go back and "
-                              "complete the form.\n\nYou can allow logging incomplete entries on the settings page.");
-                nope.exec();
-            } else {
-                QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(this, "Warning",
-                                              "Some recommended fields are empty.\n\n"
-                                              "If you do not fill out the aircraft details, "
-                                              "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
-                                              "This will also impact statistics and auto-logging capabilites.\n\n"
-                                              "It is highly recommended to fill in all the details.\n\n"
-                                              "Are you sure you want to proceed?",
-                                              QMessageBox::Yes | QMessageBox::No);
-                if (reply == QMessageBox::Yes) {
-                    submitForm(role);
-                    accept();
-                }
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Warning",
+                                          "Some recommended fields are empty.\n\n"
+                                          "If you do not fill out the aircraft details, "
+                                          "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
+                                          "This will also impact statistics and auto-logging capabilites.\n\n"
+                                          "It is highly recommended to fill in all the details.\n\n"
+                                          "Are you sure you want to proceed?",
+                                          QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::Yes) {
+                submitForm();
             }
         }
     }
+    DEB("Form verified");
+    submitForm();
+}
+
+void NewTailDialog::onSearchCompleterActivated()
+{
+    DEB("Search completer activated!");
+    const auto &text = ui->searchLineEdit->text();
+    if (aircraftList.contains(text)) {
+
+            DEB("Template Selected. aircraft_id is: " << idMap.value(text));
+            //call autofiller for dialog
+            using namespace experimental;
+            fillForm(aDB()->getAircraftEntry(idMap.value(text)));
+            ui->searchLineEdit->setStyleSheet("border: 1px solid green");
+            ui->searchLabel->setText(text);
+        } else {
+            //for example, editing finished without selecting a result from Qcompleter
+            ui->searchLineEdit->setStyleSheet("border: 1px solid orange");
+        }
 }
 
 void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
 {
     ui->registrationLineEdit->setText(arg1.toUpper());
+}
+
+void NewTailDialog::onCommitSuccessful()
+{
+    ACalc::updateAutoTimes(entry.getPosition().second); // To do: update to use new db architecture with new ATailEntry
+    accept();
+}
+
+void NewTailDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
+{
+    auto mb = QMessageBox(this);
+    mb.setIcon(QMessageBox::Critical);
+    mb.setText("The following error has ocurred.\n\n"
+               + sqlError.text()
+               + "\n\nYour entry has not been saved.");
+    mb.exec();
 }

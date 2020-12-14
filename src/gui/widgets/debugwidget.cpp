@@ -1,6 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "src/functions/adebug.h"
+
 
 
 DebugWidget::DebugWidget(QWidget *parent) :
@@ -23,6 +23,7 @@ DebugWidget::~DebugWidget()
 
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
+    ATimer timer(this);
     QMessageBox result;
     if (ADataBaseSetup::resetToDefault()){
         result.setText("Database successfully reset.\n\nRestarting app.");
@@ -33,11 +34,11 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
         result.setText("Errors have occurred. Check console for Debug output. ");
         result.exec();
     }
-
 }
 
 void DebugWidget::on_resetDatabasePushButton_clicked()
 {
+    ATimer timer(this);
     QMessageBox mb(this);
     //check if template dir exists and create if needed.
     QDir dir("data/templates");
@@ -89,6 +90,7 @@ void DebugWidget::downloadFinished()
 
 void DebugWidget::on_fillUserDataPushButton_clicked()
 {
+    ATimer timer(this);
     QMessageBox mb(this);
     //check if template dir exists and create if needed.
     QDir dir("data/templates");
@@ -138,6 +140,7 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 
 void DebugWidget::on_importCsvPushButton_clicked()
 {
+    ATimer timer(this);
     auto file = QFileInfo(ui->importCsvLineEdit->text());
     DEB("File exists/is file: " << file.exists() << file.isFile() << " Path: " << file.absoluteFilePath());
 
@@ -158,3 +161,57 @@ void DebugWidget::on_importCsvPushButton_clicked()
         mb.exec();
     }
 }
+
+void DebugWidget::on_debugPushButton_clicked()
+{
+    qlonglong number_of_runs = 5000;
+    long time1 = 0;
+    long time2 = 0;
+    using namespace experimental;
+    {
+        ATimer timer;
+        for (int i = 0; i < number_of_runs; i++) {
+            // first block, do stuff here...
+            aDB()->getEntry({"pilots", i});
+        }
+
+        time1 = timer.timeNow();
+    }
+    {
+        ATimer timer;
+        for (int i = 0; i < number_of_runs; i++) {
+            // second block, do stuff here...
+            aDB()->getPilotEntry(i);
+        }
+        time2 = timer.timeNow();
+    }
+
+    DEB("First block executed  " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+    DEB("Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
+}
+
+/*
+    qlonglong number_of_runs = 5000;
+    long time1 = 0;
+    long time2 = 0;
+    using namespace experimental;
+    {
+
+        ATimer timer;
+        for (int i = 0; i < number_of_runs; i++) {
+            // first block, do stuff here...
+        }
+
+        time1 = timer.timeNow();
+    }
+    {
+        ATimer timer;
+        for (int i = 0; i < number_of_runs; i++) {
+            // second block, do stuff here...
+        }
+        time2 = timer.timeNow();
+    }
+
+    DEB("First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+    DEB("Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
+*/

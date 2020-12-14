@@ -29,6 +29,8 @@
 #include "src/functions/acalc.h"
 #include "src/database/entry_deprecated.h"
 #include "src/experimental/adatabase.h"
+#include "src/experimental/atailentry.h"
+#include "src/experimental/aaircraftentry.h"
 
 namespace Ui {
 class NewTail;
@@ -45,17 +47,35 @@ class NewTailDialog : public QDialog
     Q_OBJECT
 
 public:
-    //to create new tail from scratch
-    explicit NewTailDialog(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
-    //to edit existing tail
-    explicit NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
+    // experimental create new tail
+    explicit NewTailDialog(QString new_registration, QWidget *parent = nullptr);
+    // experimental edit existing tail
+    explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();
+private:
+
+    Ui::NewTail *ui;
+
+    experimental::ATailEntry entry;
+
+    QStringList aircraftList;
+
+    QMap<QString, int> idMap;
+
+    void setupCompleter();
+
+    void setupValidators();
+
+    void connectSignals();
+
+    void fillForm(experimental::AEntry entry);
+
+    void submitForm();
+
+    bool verify();
+
 private slots:
-
-    void on_searchLineEdit_textChanged(const QString &arg1);
-
-    void on_buttonBox_accepted();
 
     void on_operationComboBox_currentIndexChanged(int index);
 
@@ -67,27 +87,13 @@ private slots:
 
     void on_registrationLineEdit_textChanged(const QString &arg1);
 
-private:
+    void on_buttonBox_accepted();
 
-    Ui::NewTail *ui;
+    void onSearchCompleterActivated();
 
-    Db::editRole role;
+    void onCommitSuccessful();
 
-    Aircraft oldEntry;
-
-    QStringList aircraftlist;
-
-    QMap<QString, int> idMap;
-
-    void submitForm(Db::editRole edRole);
-
-    void setupCompleter();
-
-    void setupValidators();
-
-    void formFiller(Entry_deprecated);
-
-    bool verify();
+    void onCommitUnsuccessful(const QSqlError &sqlError, const QString &);
 };
 
 #endif // NEWTAIL_H

@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabasesetup.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 
 // Statements for creation of database tables, Revision 12
@@ -157,8 +157,6 @@ const QString createViewDefault = "CREATE VIEW viewDefault AS "
         "INNER JOIN tails on flights.acft = tails.tail_id "
         "ORDER BY date DESC ";
 
-
-
 const QString createViewEASA = "CREATE VIEW viewEASA AS "
         "SELECT "
         "flight_id, doft as 'Date', "
@@ -192,41 +190,49 @@ const QString createViewEASA = "CREATE VIEW viewEASA AS "
 
 const QString createViewTails = "CREATE VIEW viewTails AS "
         "SELECT "
-        "tail_id AS 'ID', registration AS 'Registration', "
-        "make||' '||model||'-'||variant AS 'Type', "
-        "company AS 'Company' "
-        "FROM tails";
+        "tail_id AS \"ID\", "
+        "registration AS \"Registration\", "
+        "make||\" \"||model AS \"Type\", "
+        "company AS \"Company\" "
+        "FROM tails WHERE model IS NOT NULL AND variant IS NULL "
+        "UNION "
+        "SELECT "
+        "tail_id AS \"ID\", "
+        "registration AS \"Registration\", "
+        "make||\" \"||model||\"-\"||variant AS \"Type\", "
+        "company AS \"Company\" "
+        "FROM tails WHERE variant IS NOT NULL";
 
 const QString createViewPilots = "CREATE VIEW viewPilots AS "
         "SELECT "
-        "pilot_id AS 'ID', "
-        "piclastname AS 'Last Name', "
-        "picfirstname AS 'First Name', company AS 'Company' "
+        "pilot_id AS \"ID\", "
+        "piclastname AS \"Last Name\", "
+        "picfirstname AS \"First Name\", company AS \"Company\" "
         "FROM pilots";
 
 const QString createViewQCompleter = "CREATE VIEW viewQCompleter AS "
         "SELECT airport_id, icao, iata, tail_id, registration, pilot_id, "
-        "piclastname||', '||picfirstname AS 'pilot_name', alias "
+        "piclastname||\", \"||picfirstname AS \"pilot_name\", alias "
         "FROM airports "
         "LEFT JOIN tails ON airports.airport_id = tails.tail_id "
         "LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id";
 
 const QString createViewTotals = "CREATE VIEW viewTotals AS "
         "SELECT "
-        "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
-        "printf('%02d',CAST(SUM(tSPSE) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPSE) AS INT)%60) AS 'SP SE', "
-        "printf('%02d',CAST(SUM(tSPME) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPME) AS INT)%60) AS 'SP ME', "
-        "printf('%02d',CAST(SUM(tNIGHT) AS INT)/60)||':'||printf('%02d',CAST(SUM(tNIGHT) AS INT)%60) AS 'NIGHT', "
-        "printf('%02d',CAST(SUM(tIFR) AS INT)/60)||':'||printf('%02d',CAST(SUM(tIFR) AS INT)%60) AS 'IFR', "
-        "printf('%02d',CAST(SUM(tPIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPIC) AS INT)%60) AS 'PIC', "
-        "printf('%02d',CAST(SUM(tPICUS) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPICUS) AS INT)%60) AS 'PICUS', "
-        "printf('%02d',CAST(SUM(tSIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIC) AS INT)%60) AS 'SIC', "
-        "printf('%02d',CAST(SUM(tDual) AS INT)/60)||':'||printf('%02d',CAST(SUM(tDual) AS INT)%60) AS 'DUAL', "
-        "printf('%02d',CAST(SUM(tFI) AS INT)/60)||':'||printf('%02d',CAST(SUM(tFI) AS INT)%60) AS 'INSTRUCTOR', "
-        "printf('%02d',CAST(SUM(tSIM) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIM) AS INT)%60) AS 'SIMULATOR', "
-        "printf('%02d',CAST(SUM(tMP) AS INT)/60)||':'||printf('%02d',CAST(SUM(tMP) AS INT)%60) AS 'MultPilot', "
-        "CAST(SUM(toDay) AS INT) AS 'TO Day', CAST(SUM(toNight) AS INT) AS 'TO Night', "
-        "CAST(SUM(ldgDay) AS INT) AS 'LDG Day', CAST(SUM(ldgNight) AS INT) AS 'LDG Night' "
+        "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) AS \"TOTAL\", "
+        "printf(\"%02d\",CAST(SUM(tSPSE) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSPSE) AS INT)%60) AS \"SP SE\", "
+        "printf(\"%02d\",CAST(SUM(tSPME) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSPME) AS INT)%60) AS \"SP ME\", "
+        "printf(\"%02d\",CAST(SUM(tNIGHT) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tNIGHT) AS INT)%60) AS \"NIGHT\", "
+        "printf(\"%02d\",CAST(SUM(tIFR) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tIFR) AS INT)%60) AS \"IFR\", "
+        "printf(\"%02d\",CAST(SUM(tPIC) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tPIC) AS INT)%60) AS \"PIC\", "
+        "printf(\"%02d\",CAST(SUM(tPICUS) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tPICUS) AS INT)%60) AS \"PICUS\", "
+        "printf(\"%02d\",CAST(SUM(tSIC) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSIC) AS INT)%60) AS \"SIC\", "
+        "printf(\"%02d\",CAST(SUM(tDual) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tDual) AS INT)%60) AS \"DUAL\", "
+        "printf(\"%02d\",CAST(SUM(tFI) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tFI) AS INT)%60) AS \"INSTRUCTOR\", "
+        "printf(\"%02d\",CAST(SUM(tSIM) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSIM) AS INT)%60) AS \"SIMULATOR\", "
+        "printf(\"%02d\",CAST(SUM(tMP) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tMP) AS INT)%60) AS \"MultPilot\", "
+        "CAST(SUM(toDay) AS INT) AS \"TO Day\", CAST(SUM(toNight) AS INT) AS \"TO Night\", "
+        "CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
         "FROM flights";
 const QStringList tables = {
     createTablePilots,

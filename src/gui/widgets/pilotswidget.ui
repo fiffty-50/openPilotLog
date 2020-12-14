@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1080</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,9 +15,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTableView" name="tableView"/>
+    <widget class="QTableView" name="pilotsTableView"/>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="1" rowspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -53,7 +53,7 @@
           </spacer>
          </item>
          <item row="1" column="0">
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="pilotsDiasogGridLayout">
            <item row="0" column="0">
             <widget class="QLabel" name="searchLabel">
              <property name="text">
@@ -62,7 +62,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="searchLineEdit"/>
+            <widget class="QLineEdit" name="pilotSearchLineEdit"/>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="searchInLabel">
@@ -72,7 +72,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QComboBox" name="searchComboBox">
+            <widget class="QComboBox" name="pilotsSearchComboBox">
              <item>
               <property name="text">
                <string>Last Name</string>
@@ -139,14 +139,14 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="newButton">
+    <widget class="QPushButton" name="newPilotPushButton">
      <property name="text">
       <string>New Pilot</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="deletePushButton">
+    <widget class="QPushButton" name="deletPilotButton">
      <property name="text">
       <string>Delete Pilot</string>
      </property>

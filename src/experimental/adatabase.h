@@ -1,3 +1,20 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef __DB_H__
 #define __DB_H__
 
@@ -8,10 +25,12 @@
 #include <QSqlError>
 #include <QSqlTableModel>
 #include "src/database/dbinfo.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 #include "aentry.h"
 #include "apilotentry.h"
+#include "atailentry.h"
+#include "aaircraftentry.h"
 
 namespace experimental {
 
@@ -106,15 +125,40 @@ public:
      * with only the RowId required as input.
      */
     APilotEntry getPilotEntry(RowId row_id);
-    // [G] TODO: Ensure PilotDialog works great and slowly move to
-    // other dialogs
+
+    /*!
+     * \brief retreives a TailEntry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns a TailEntry
+     * instead of an Entry. It allows for easy access to a tail entry
+     * with only the RowId required as input.
+     */
+    ATailEntry getTailEntry(RowId row_id);
+
+    /*!
+     * \brief retreives a TailEntry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns an AAircraftEntry
+     * instead of an AEntry. It allows for easy access to an aircraft entry
+     * with only the RowId required as input.
+     */
+    AAircraftEntry getAircraftEntry(RowId row_id);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a
      * QCompleter based on database values
      * \return
      */
-    QStringList getCompletionList(CompleterTarget);
+    const QStringList getCompletionList(CompleterTarget);
+
+    /*!
+     * \brief getIdMap returns a map of a human-readable database value and
+     * its row id. Used in the Dialogs to map user input to unique database entries.
+     * \return
+     */
+    const QMap<QString, int> getIdMap(CompleterTarget);
 signals:
     void sqlSuccessful();
 

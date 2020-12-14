@@ -48,9 +48,6 @@ public:
     explicit HomeWidget(QWidget *parent = nullptr);
     ~HomeWidget();
 
-private slots:
-    void on_pushButton_clicked();
-
 private:
     Ui::HomeWidget *ui;
 

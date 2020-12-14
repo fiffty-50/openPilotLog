@@ -28,8 +28,10 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 {
     DEB("New AircraftWidet");
     ui->setupUi(this);
-    sortColumn = ASettings::read("userdata/acSortColumn").toInt();
-    refreshModelAndView();
+    ui->stackedWidget->addWidget(this->findChild<QWidget*>("welcomePageTails"));
+    ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePageTails"));
+
+    setupModelAndView();
 }
 
 AircraftWidget::~AircraftWidget()
@@ -42,16 +44,17 @@ AircraftWidget::~AircraftWidget()
  * Functions
  */
 
-void AircraftWidget::refreshModelAndView()
+void AircraftWidget::setupModelAndView()
 {
-    ui->stackedWidget->addWidget(parent()->findChild<QWidget*>("welcomePageTails"));
-    ui->stackedWidget->setCurrentWidget(parent()->findChild<QWidget*>("welcomePageTails"));
+    sortColumn = ASettings::read("userdata/acSortColumn").toInt();
 
+    model = new QSqlTableModel(this);
     model->setTable("viewTails");
     model->select();
 
-    QTableView *view = ui->tableView;
+    view = ui->tableView;
     view->setModel(model);
+
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -66,10 +69,10 @@ void AircraftWidget::refreshModelAndView()
 
     view->show();
 
-    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this, SLOT(tableView_selectionChanged()));
-    connect(ui->tableView->horizontalHeader(), SIGNAL(sectionClicked(int)),
-            this, SLOT(tableView_headerClicked(int)));
+    QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
+                     this, &AircraftWidget::tableView_selectionChanged);
+    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
+                     this, &AircraftWidget::tableView_headerClicked);
 }
 
 /*
@@ -116,7 +119,7 @@ void AircraftWidget::on_deleteButton_clicked()
                 }
             }
         }
-        refreshModelAndView();
+        model->select();
     } else {
         auto mb = QMessageBox(this);
         mb.setText("No aircraft selected.");
@@ -126,22 +129,32 @@ void AircraftWidget::on_deleteButton_clicked()
 
 void AircraftWidget::on_newButton_clicked()
 {
-    auto nt = NewTailDialog(QString(), Db::createNew, this);
+    auto nt = NewTailDialog(QString(), this);
     connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
     connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
     nt.exec();
 }
 
-void AircraftWidget::on_searchLineEdit_textChanged(const QString &arg1)
+void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
 {
-    if(ui->searchComboBox->currentIndex() == 0){
-        ui->searchLineEdit->setText(arg1.toUpper());
+    if(ui->aircraftSearchComboBox->currentIndex() == 0){
+        ui->aircraftSearchLineEdit->setText(arg1.toUpper());
     }
-    model->setFilter(ui->searchComboBox->currentText() + " LIKE \"%" + arg1 + "%\"");
+    model->setFilter(ui->aircraftSearchComboBox->currentText() + " LIKE \"%" + arg1 + "%\"");
 }
 
 void AircraftWidget::tableView_selectionChanged()
 {
+    if (this->findChild<NewTailDialog*>() != nullptr) {
+        DEB("Selection changed. Deleting orphaned dialog.");
+        delete this->findChild<NewTailDialog*>();
+        /// [F] if the user changes the selection without making any changes,
+        /// if(selectedTails.length() == 1) spawns a new dialog without the
+        /// old one being deleted, since neither accept() nor reject() was emitted.
+        /// Is this a reasonable way of avoiding pollution? Creating the widgets on the
+        /// stack does not seem to solve the problem since the Dialog does not get destroyed
+        /// until either accept() or reject() is emitted so I went for this solution.
+    }
     auto *selection = ui->tableView->selectionModel();
     selectedTails.clear();
 
@@ -150,13 +163,16 @@ void AircraftWidget::tableView_selectionChanged()
         DEB("Selected Tails(s) with ID: " << selectedTails);
     }
     if(selectedTails.length() == 1) {
-        auto nt = NewTailDialog(Aircraft(selectedTails.first()), Db::editExisting, this);
-        connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
-        connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-        ui->stackedWidget->addWidget(&nt);
-        ui->stackedWidget->setCurrentWidget(&nt);
-        nt.setWindowFlag(Qt::Widget);
-        nt.exec();
+        auto* nt = new NewTailDialog(selectedTails.first(), this);
+        QObject::connect(nt,   &QDialog::accepted,
+                         this, &AircraftWidget::acft_editing_finished);
+        QObject::connect(nt,   &QDialog::rejected,
+                         this, &AircraftWidget::acft_editing_finished);
+        ui->stackedWidget->addWidget(nt);
+        ui->stackedWidget->setCurrentWidget(nt);
+        nt->setWindowFlag(Qt::Widget);
+        nt->setAttribute(Qt::WA_DeleteOnClose);
+        nt->exec();
     }
 }
 
@@ -168,5 +184,5 @@ void AircraftWidget::tableView_headerClicked(int column)
 
 void AircraftWidget::acft_editing_finished()
 {
-    refreshModelAndView();
+    model->select();
 }

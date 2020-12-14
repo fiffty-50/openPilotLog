@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aircraft.h"
-#include "src/functions/adebug.h"
+#include "src/testing/adebug.h"
 
 
 Aircraft::Aircraft()
