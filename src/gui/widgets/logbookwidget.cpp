@@ -24,8 +24,6 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     ui(new Ui::LogbookWidget)
 {
     ui->setupUi(this);
-    ui->filterDateEdit->setDate(QDate::currentDate());
-    ui->filterDateEdit_2->setDate(QDate::currentDate());
     ui->newFlightButton->setFocus();
 
     //customContextMenu for tablewidget
@@ -33,10 +31,11 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     menu->addAction(ui->actionEdit_Flight);
     menu->addAction(ui->actionDelete_Flight);
 
-    //message Box
+    //Initialise message Box
     nope = new QMessageBox(this);
 
-    refreshView(ASettings::read("logbook/view").toInt());
+    prepareModelAndView(ASettings::read("logbook/view").toInt());
+    connectSignalsAndSlots();
 }
 
 LogbookWidget::~LogbookWidget()
@@ -48,39 +47,35 @@ LogbookWidget::~LogbookWidget()
  * Functions
  */
 
-void LogbookWidget::refreshView(int view_id)
+void LogbookWidget::prepareModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        defaultView();
+        setupDefaultView();
         break;
     case 1:
-        easaView();
+        setupEasaView();
         break;
     default:
-        defaultView();
+        setupDefaultView();
     }
-    QTableView *view = ui->tableView;
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setContextMenuPolicy(Qt::CustomContextMenu);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this, SLOT(tableView_selectionChanged()));
 }
 
-void LogbookWidget::defaultView()
+void LogbookWidget::connectSignalsAndSlots()
+{
+    selection = view->selectionModel();
+    QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
+                     this, &LogbookWidget::flightsTableView_selectionChanged);
+}
+
+void LogbookWidget::setupDefaultView()
 {
     DEB("Loading Default View...");
-    QSqlTableModel *model = new QSqlTableModel;
+    model = new QSqlTableModel;
     model->setTable("viewDefault");
     model->select();
 
-    QTableView *view = ui->tableView;
+    view = ui->tableView;
     view->setModel(model);
 
     view->setColumnWidth(1, 120);
@@ -94,17 +89,26 @@ void LogbookWidget::defaultView()
     view->setColumnWidth(9, 120);
     view->setColumnWidth(10, 90);
 
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+
     view->show();
 }
 
-void LogbookWidget::easaView()
+void LogbookWidget::setupEasaView()
 {
     DEB("Loading EASA View...");
-    QSqlTableModel *model = new QSqlTableModel;
+    model = new QSqlTableModel;
     model->setTable("viewEASA");
     model->select();
 
-    QTableView *view = ui->tableView;
+    view = ui->tableView;
     view->setModel(model);
 
     view->setColumnWidth(1,120);
@@ -129,6 +133,15 @@ void LogbookWidget::easaView()
     view->setColumnWidth(20,60);
     view->setColumnWidth(21,120);
 
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+
     view->show();
 }
 
@@ -136,13 +149,11 @@ void LogbookWidget::easaView()
  * Slots
  */
 
-void LogbookWidget::tableView_selectionChanged()//
+void LogbookWidget::flightsTableView_selectionChanged()//
 {
-    auto *selection = ui->tableView->selectionModel();
-
     selectedFlights.clear();
     for (const auto& row : selection->selectedRows()) {
-        selectedFlights << row.data().toInt();
+        selectedFlights.append(row.data().toInt());
         DEB("Selected Flight(s) with ID: " << selectedFlights);
     }
 }
@@ -152,7 +163,7 @@ void LogbookWidget::on_newFlightButton_clicked()
     auto nf = new NewFlightDialog(this, Db::createNew);
     nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
-    refreshView(ASettings::read("logbook/view").toInt());
+    model->select();
 }
 
 void LogbookWidget::on_editFlightButton_clicked()
@@ -161,7 +172,7 @@ void LogbookWidget::on_editFlightButton_clicked()
         auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
         ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
-        refreshView(ASettings::read("logbook/view").toInt());
+        model->select();
     } else if (selectedFlights.isEmpty()) {
         nope->setText("No flight selected.\n");
         nope->exec();
@@ -205,7 +216,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                 auto entry = Flight(selectedFlight);
                 entry.remove();
             }
-            refreshView(ASettings::read("logbook/view").toInt());
+            prepareModelAndView(ASettings::read("logbook/view").toInt());
         }
     } else if (selectedFlights.length() == 0) {
         nope->setIcon(QMessageBox::Information);
@@ -228,30 +239,16 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                 auto entry = Flight(selectedFlight);
                 entry.remove();
             }
-            refreshView(ASettings::read("logbook/view").toInt());
+            prepareModelAndView(ASettings::read("logbook/view").toInt());
         }
     }
 }
 
-void LogbookWidget::on_filterFlightsByDateButton_clicked()
-{
-    QDate date(ui->filterDateEdit->date());
-    QString startdate = date.toString("yyyy-MM-dd");
-    date = ui->filterDateEdit_2->date();
-    QString enddate = date.toString("yyyy-MM-dd");
-    QString datefilter = "Date BETWEEN '" + startdate + "' AND '" + enddate + QLatin1Char('\'');
-
-    QSqlTableModel *DateFilteredModel = new QSqlTableModel;
-    DateFilteredModel ->setTable("Logbook");
-    DateFilteredModel ->setFilter(datefilter);
-    DateFilteredModel->select();
-
-    ui->tableView->setModel(DateFilteredModel);
-}
-
 void LogbookWidget::on_showAllButton_clicked()
 {
-    refreshView(ASettings::read("logbook/view").toInt());
+    ui->flightSearchLlineEdit->setText(QString());
+    model->setFilter(QString());
+    model->select();
 }
 
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
@@ -272,4 +269,10 @@ void LogbookWidget::on_actionEdit_Flight_triggered()
 void LogbookWidget::on_tableView_doubleClicked()
 {
     emit ui->editFlightButton->clicked();
+}
+
+void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
+{
+    // to do:
+    // model->setFilter(arg1); depending on flightSearchComboBox Selection
 }

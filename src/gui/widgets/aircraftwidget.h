@@ -62,6 +62,8 @@ private:
 
     QTableView *view;
 
+    QItemSelectionModel* selection;
+
     qint32 sortColumn;
 
     QVector<qint32> selectedTails;

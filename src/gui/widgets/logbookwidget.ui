@@ -6,95 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1353</width>
-    <height>613</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QPushButton" name="editFlightButton">
-     <property name="text">
-      <string>Edit Flight</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="deleteFlightPushButton">
-     <property name="text">
-      <string>Delete Flight</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QDateEdit" name="filterDateEdit">
-     <property name="dateTime">
-      <datetime>
-       <hour>23</hour>
-       <minute>0</minute>
-       <second>0</second>
-       <year>1900</year>
-       <month>1</month>
-       <day>1</day>
-      </datetime>
-     </property>
-     <property name="displayFormat">
-      <string>yyyy-MM-dd</string>
-     </property>
-     <property name="calendarPopup">
-      <bool>true</bool>
-     </property>
-     <property name="timeSpec">
-      <enum>Qt::UTC</enum>
-     </property>
-     <property name="date">
-      <date>
-       <year>1900</year>
-       <month>1</month>
-       <day>1</day>
-      </date>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QDateEdit" name="filterDateEdit_2">
-     <property name="dateTime">
-      <datetime>
-       <hour>23</hour>
-       <minute>0</minute>
-       <second>0</second>
-       <year>2019</year>
-       <month>12</month>
-       <day>13</day>
-      </datetime>
-     </property>
-     <property name="displayFormat">
-      <string>yyyy-MM-dd</string>
-     </property>
-     <property name="calendarPopup">
-      <bool>true</bool>
-     </property>
-     <property name="timeSpec">
-      <enum>Qt::UTC</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QPushButton" name="filterFlightsByDateButton">
-     <property name="text">
-      <string>Filter Flights by Date</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="newFlightButton">
-     <property name="text">
-      <string>New Flight</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" colspan="3">
     <widget class="QTableView" name="tableView">
      <property name="font">
@@ -113,7 +32,130 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
+   <item row="1" column="0" rowspan="2">
+    <widget class="QPushButton" name="newFlightButton">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>New Flight</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="flightSearchLabel">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Search Flight</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="flightSearchLlineEdit">
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter the searchterm you want to filter your flights by.&lt;/p&gt;&lt;p&gt;For dates, make sure to use the format YYYY-MM-DD&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" rowspan="2">
+    <widget class="QComboBox" name="flightSearchComboBox">
+     <item>
+      <property name="text">
+       <string>Date of Flight</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Departure Airport</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Destination Airport</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Aircraft Registration</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pilot Name</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="editFlightButton">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Edit Flight</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="flightSearchInLabel">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Search in</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="deleteFlightPushButton">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Delete Flight</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="spacerLabel">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
     <widget class="QPushButton" name="showAllButton">
      <property name="text">
       <string>Show All Flights</string>
