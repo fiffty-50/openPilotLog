@@ -108,6 +108,46 @@ bool ADataBase::remove(AEntry entry)
     }
 }
 
+bool ADataBase::removeMany(QList<DataPosition> data_position_list)
+{
+    int errorCount = 0;
+    QSqlQuery query;
+    query.prepare("BEGIN EXCLUSIVE TRANSACTION");
+    query.exec();
+
+    for (const auto data_position : data_position_list) {
+        if (!exists(data_position)) {
+            DEB("Error: Entry does not exist.");
+            errorCount++;
+        }
+        QString statement = "DELETE FROM " + data_position.first +
+                " WHERE ROWID=" + QString::number(data_position.second);
+
+        query.prepare(statement);
+        query.exec();
+
+        if (!(query.lastError().type() == QSqlError::NoError))
+            errorCount++;
+    }
+
+    if (errorCount == 0) {
+        query.prepare("COMMIT");
+        query.exec();
+        if(query.lastError().type() == QSqlError::NoError) {
+            emit sqlSuccessful();
+            return true;
+        } else {
+            emit sqlError(query.lastError(), "Transaction unsuccessful. Error count: " + QString::number(errorCount));
+            return false;
+        }
+    } else {
+        query.prepare("ROLLBACK");
+        query.exec();
+        emit sqlError(query.lastError(), "Transaction unsuccessful(rolled back). Error count: " + QString::number(errorCount));
+        return false;
+    }
+}
+
 bool ADataBase::exists(AEntry entry)
 {
     if(entry.getPosition().second == 0)
@@ -116,11 +156,11 @@ bool ADataBase::exists(AEntry entry)
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
             " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
-    //this returns either 1 or 0 since row ids are unique
     QSqlQuery query;
     query.prepare(statement);
     query.setForwardOnly(true);
     query.exec();
+    //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
         emit sqlError(query.lastError(), statement);
         DEB("Query Error: " << query.lastError().text() << statement);
@@ -132,6 +172,34 @@ bool ADataBase::exists(AEntry entry)
         return true;
     } else {
         DEB("Entry does not exist.");
+        return false;
+    }
+}
+
+bool ADataBase::exists(DataPosition data_position)
+{
+    if(data_position.second == 0)
+        return false;
+
+    //Check database for row id
+    QString statement = "SELECT COUNT(*) FROM " + data_position.first +
+            " WHERE ROWID=" + QString::number(data_position.second);
+    QSqlQuery query;
+    query.prepare(statement);
+    query.setForwardOnly(true);
+    query.exec();
+    //this returns either 1 or 0 since row ids are unique
+    if (!query.isActive()) {
+        emit sqlError(query.lastError(), statement);
+        DEB("Query Error: " << query.lastError().text() << statement);
+    }
+    query.next();
+    int rowId = query.value(0).toInt();
+    if (rowId) {
+        DEB("Entry exists at DataPosition: " << data_position);
+        return true;
+    } else {
+        DEB("No entry exists at DataPosition: " << data_position);
         return false;
     }
 }

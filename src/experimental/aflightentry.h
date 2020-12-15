@@ -20,18 +20,18 @@ public:
      * \brief Returs a summary of the flight data
      * \return "doft, dept, tofb, dest, tonb"
      */
-    QString summary();
+    const QString summary();
     /*!
      * \brief Returns the tails' registration from the database.
      */
-    QString registration();
+    const QString registration();
     /*!
      * \brief Returns the pilots name from the Database
      *
      * \param pilot_number - 1=pic, 2=second Pilot, 3 = third Pilot
      * \return "Lastname, Firstname"
      */
-    QString pilotName(pilot);
+    const QString pilotName(pilot);
 };
 
 } // namespace experimental

@@ -19,9 +19,12 @@
 #include "ui_logbookwidget.h"
 #include "src/testing/adebug.h"
 
-const QMap<int, QString> filterMap = {
-    {0, "Date LIKE \"%"}, {1, "Dept LIKE \"%"}, {2, "Dest LIKE \"%"},
-    {3, "Registration LIKE \"%"}, {4, "\"Name PIC\" LIKE \"%"}
+const QMap<int, QString> FILTER_MAP = {
+    {0, "Date LIKE \"%"},
+    {1, "Dept LIKE \"%"},
+    {2, "Dest LIKE \"%"},
+    {3, "Registration LIKE \"%"},
+    {4, "\"Name PIC\" LIKE \"%"}
 };
 const auto NON_WORD_CHAR = QRegularExpression("\\W");
 
@@ -38,7 +41,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     menu->addAction(ui->actionDelete_Flight);
 
     //Initialise message Box
-    nope = new QMessageBox(this);
+    messageBox = new QMessageBox(this);
 
     prepareModelAndView(ASettings::read("logbook/view").toInt());
     connectSignalsAndSlots();
@@ -72,6 +75,11 @@ void LogbookWidget::connectSignalsAndSlots()
     selection = view->selectionModel();
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
+    using namespace experimental;
+    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+                     this, &LogbookWidget::onDeletedSuccessfully);
+    QObject::connect(aDB(), &ADataBase::sqlError,
+                     this, &LogbookWidget::onDeleteUnsuccessful);
 }
 
 void LogbookWidget::setupDefaultView()
@@ -180,31 +188,34 @@ void LogbookWidget::on_editFlightButton_clicked()
         ef->exec();
         displayModel->select();
     } else if (selectedFlights.isEmpty()) {
-        nope->setText("No flight selected.\n");
-        nope->exec();
+        messageBox->setText("No flight selected.\n");
+        messageBox->exec();
     } else {
-        nope->setText("More than one flight selected.\n\nEditing multiple entries is not yet supported.");
-        nope->exec();
+        messageBox->setText("More than one flight selected.\n\nEditing multiple entries is not yet supported.");
+        messageBox->exec();
     }
 }
 
 void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
     DEB("Flights selected: " << selectedFlights.length());
-    if (selectedFlights.length() > 0 && selectedFlights.length() < 11) {
-        QVector<QString> columns = {
-            "doft", "dept", "dest"
-        };
-        QVector<QString> details;
+    if (selectedFlights.length() == 0) {
+        messageBox->setIcon(QMessageBox::Information);
+        messageBox->setText("No Flight Selected.");
+        messageBox->exec();
+        return;
+    } else if (selectedFlights.length() > 0 && selectedFlights.length() < 11) {
+        QList<experimental::AFlightEntry> flights_list;
+
+        for (const auto &flight_id : selectedFlights) {
+            flights_list.append(experimental::aDB()->getFlightEntry(flight_id));
+        }
+
         QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";
-        for(const auto& selectedFlight : selectedFlights){
-            details = Db::multiSelect(columns, "flights", "flight_id",
-                                       QString::number(selectedFlight), Db::exactMatch);
-            for (const auto &item : details) {
-                warningMsg.append(item);
-                warningMsg.append(' ');
-            }
-            warningMsg.append("<br>");
+
+        for (auto &flight : flights_list) {
+            warningMsg.append(flight.summary());
+            warningMsg.append(QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
         warningMsg.append("</b></tt><br>Deleting Flights is irreversible."
                           "<br>Do you want to proceed?");
@@ -217,21 +228,16 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         confirm.setText(warningMsg);
         int reply = confirm.exec();
         if (reply == QMessageBox::Yes) {
-            for (const auto& selectedFlight : selectedFlights) {
-                DEB("Deleting flight with ID# " << selectedFlight);
-                auto entry = Flight(selectedFlight);
-                entry.remove();
+            for (auto& flight : flights_list) {
+                DEB("Deleting flight: " << flight.summary());
+                experimental::aDB()->remove(flight);
             }
-            prepareModelAndView(ASettings::read("logbook/view").toInt());
+            displayModel->select();
         }
-    } else if (selectedFlights.length() == 0) {
-        nope->setIcon(QMessageBox::Information);
-        nope->setText("No Flight Selected.");
-        nope->exec();
     } else if (selectedFlights.length() > 10) {
         auto& warningMsg = "You have selected " + QString::number(selectedFlights.length())
-                         + " flights.\n\n Deleting these flights is irreversible.\n\n"
-                           "Are you sure you want to proceed?";
+                + " flights.\n\n Deleting flights is irreversible.\n\n"
+                  "Are you sure you want to proceed?";
         QMessageBox confirm;
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
@@ -240,21 +246,14 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         confirm.setText(warningMsg);
         int reply = confirm.exec();
         if(reply == QMessageBox::Yes) {
-            for (const auto& selectedFlight : selectedFlights) {
-                DEB("Deleting flight with ID# " << selectedFlight);
-                auto entry = Flight(selectedFlight);
-                entry.remove();
+            QList<experimental::DataPosition> selected_flights;
+            for (const auto& flight_id : selectedFlights) {
+                selected_flights.append({"flights", flight_id});
             }
-            prepareModelAndView(ASettings::read("logbook/view").toInt());
+            experimental::aDB()->removeMany(selected_flights);
+            displayModel->select();
         }
     }
-}
-
-void LogbookWidget::on_showAllButton_clicked()
-{
-    ui->flightSearchLlineEdit->setText(QString());
-    displayModel->setFilter(QString());
-    displayModel->select();
 }
 
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
@@ -267,6 +266,19 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
     emit ui->deleteFlightPushButton->clicked();
 }
 
+void LogbookWidget::onDeletedSuccessfully()
+{
+    messageBox->setText(QString::number(selectedFlights.length()) + " flights have been deleted.");
+    messageBox->exec();
+}
+
+void LogbookWidget::onDeleteUnsuccessful(const QSqlError error)
+{
+    messageBox->setText("Error deleting " + QString::number(selectedFlights.length())
+                        + " flights.\n\nThe following error has ocurred:\n\n" + error.text());
+    messageBox->exec();
+}
+
 void LogbookWidget::on_actionEdit_Flight_triggered()
 {
     emit ui->editFlightButton->clicked();
@@ -277,34 +289,37 @@ void LogbookWidget::on_tableView_doubleClicked()
     emit ui->editFlightButton->clicked();
 }
 
+void LogbookWidget::on_flightSearchComboBox_currentIndexChanged()
+{
+    emit ui->showAllButton->clicked();
+}
+
+void LogbookWidget::on_showAllButton_clicked()
+{
+    ui->flightSearchLlineEdit->setText(QString());
+    displayModel->setFilter(QString());
+    displayModel->select();
+}
+
 void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
 {
     if(arg1.length() == 0) {
-        DEB("Resetting filter...");
         displayModel->setFilter("");
         displayModel->select();
         return;
     }
 
     if (ui->flightSearchComboBox->currentIndex() < 3) {
-        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
-                         + arg1 + "%\"");
-        //DEB("display model filter:" << displayModel->filter());
+        displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
+                                + arg1 + "%\"");
         return;
     } else if (ui->flightSearchComboBox->currentIndex() == 3) { // registration
-        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
-                         + arg1 + "%\"");
-        //DEB("display model filter:" << displayModel->filter());
+        displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
+                                + arg1 + "%\"");
         return;
     } else if (ui->flightSearchComboBox->currentIndex() == 4) { // Name Pic
-        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
-                         + arg1 + "%\"");
-        //DEB("display model filter:" << displayModel->filter());
+        displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
+                                + arg1 + "%\"");
         return;
     }
-}
-
-void LogbookWidget::on_flightSearchComboBox_currentIndexChanged()
-{
-    ui->flightSearchLlineEdit->setText(QString());
 }

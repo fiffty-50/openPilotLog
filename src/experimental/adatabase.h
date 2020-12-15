@@ -85,6 +85,7 @@ public:
      * \brief Checks if an entry exists in the database, based on position data
      */
     bool exists(AEntry entry);
+    bool exists(DataPosition data_position);
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
@@ -106,6 +107,12 @@ public:
      * \brief deletes an entry from the database.
      */
     bool remove(AEntry entry);
+
+    /*!
+     * \brief deletes a list of entries from the database. Optimised for speed when
+     * deleting many entries.
+     */
+    bool removeMany(QList<DataPosition>);
 
     /*!
      * \brief retreive entry data from the database to create an entry object

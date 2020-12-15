@@ -15,7 +15,7 @@ AFlightEntry::AFlightEntry(TableData table_data)
     : AEntry::AEntry(DEFAULT_FLIGHT_POSITION, table_data)
 {}
 
-QString AFlightEntry::summary()
+const QString AFlightEntry::summary()
 {
     if(tableData.isEmpty())
         return QString();
@@ -30,7 +30,7 @@ QString AFlightEntry::summary()
     return flight_summary;
 }
 
-QString AFlightEntry::registration()
+const QString AFlightEntry::registration()
 {
     QString tail_id = tableData.value("acft");
     if(tail_id.isEmpty())
@@ -49,7 +49,7 @@ QString AFlightEntry::registration()
     }
 }
 
-QString AFlightEntry::pilotName(pilot pilot_)
+const QString AFlightEntry::pilotName(pilot pilot_)
 {
     QString row_id;
     switch (pilot_) {
