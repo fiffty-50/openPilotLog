@@ -19,6 +19,12 @@
 #include "ui_logbookwidget.h"
 #include "src/testing/adebug.h"
 
+const QMap<int, QString> filterMap = {
+    {0, "Date LIKE \"%"}, {1, "Dept LIKE \"%"}, {2, "Dest LIKE \"%"},
+    {3, "Registration LIKE \"%"}, {4, "\"Name PIC\" LIKE \"%"}
+};
+const auto NON_WORD_CHAR = QRegularExpression("\\W");
+
 LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LogbookWidget)
@@ -71,12 +77,12 @@ void LogbookWidget::connectSignalsAndSlots()
 void LogbookWidget::setupDefaultView()
 {
     DEB("Loading Default View...");
-    model = new QSqlTableModel;
-    model->setTable("viewDefault");
-    model->select();
+    displayModel = new QSqlTableModel;
+    displayModel->setTable("viewDefault");
+    displayModel->select();
 
     view = ui->tableView;
-    view->setModel(model);
+    view->setModel(displayModel);
 
     view->setColumnWidth(1, 120);
     view->setColumnWidth(2, 60);
@@ -104,12 +110,12 @@ void LogbookWidget::setupDefaultView()
 void LogbookWidget::setupEasaView()
 {
     DEB("Loading EASA View...");
-    model = new QSqlTableModel;
-    model->setTable("viewEASA");
-    model->select();
+    displayModel = new QSqlTableModel;
+    displayModel->setTable("viewEASA");
+    displayModel->select();
 
     view = ui->tableView;
-    view->setModel(model);
+    view->setModel(displayModel);
 
     view->setColumnWidth(1,120);
     view->setColumnWidth(2,60);
@@ -163,7 +169,7 @@ void LogbookWidget::on_newFlightButton_clicked()
     auto nf = new NewFlightDialog(this, Db::createNew);
     nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
-    model->select();
+    displayModel->select();
 }
 
 void LogbookWidget::on_editFlightButton_clicked()
@@ -172,7 +178,7 @@ void LogbookWidget::on_editFlightButton_clicked()
         auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
         ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
-        model->select();
+        displayModel->select();
     } else if (selectedFlights.isEmpty()) {
         nope->setText("No flight selected.\n");
         nope->exec();
@@ -247,8 +253,8 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
 void LogbookWidget::on_showAllButton_clicked()
 {
     ui->flightSearchLlineEdit->setText(QString());
-    model->setFilter(QString());
-    model->select();
+    displayModel->setFilter(QString());
+    displayModel->select();
 }
 
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
@@ -273,6 +279,32 @@ void LogbookWidget::on_tableView_doubleClicked()
 
 void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
 {
-    // to do:
-    // model->setFilter(arg1); depending on flightSearchComboBox Selection
+    if(arg1.length() == 0) {
+        DEB("Resetting filter...");
+        displayModel->setFilter("");
+        displayModel->select();
+        return;
+    }
+
+    if (ui->flightSearchComboBox->currentIndex() < 3) {
+        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
+                         + arg1 + "%\"");
+        //DEB("display model filter:" << displayModel->filter());
+        return;
+    } else if (ui->flightSearchComboBox->currentIndex() == 3) { // registration
+        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
+                         + arg1 + "%\"");
+        //DEB("display model filter:" << displayModel->filter());
+        return;
+    } else if (ui->flightSearchComboBox->currentIndex() == 4) { // Name Pic
+        displayModel->setFilter(filterMap.value(ui->flightSearchComboBox->currentIndex())
+                         + arg1 + "%\"");
+        //DEB("display model filter:" << displayModel->filter());
+        return;
+    }
+}
+
+void LogbookWidget::on_flightSearchComboBox_currentIndexChanged()
+{
+    ui->flightSearchLlineEdit->setText(QString());
 }

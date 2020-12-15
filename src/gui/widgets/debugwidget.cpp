@@ -164,12 +164,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    using namespace experimental;
-    auto flight = aDB()->getFlightEntry(775);
-    DEB(flight.getData());
-    DEB(flight.summary());
-    DEB(flight.pilotName(experimental::AFlightEntry::pic));
-    DEB(flight.registration());
+
 }
 
 /* //Comparing two functions template

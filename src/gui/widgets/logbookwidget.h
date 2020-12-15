@@ -31,6 +31,7 @@
 #include "src/database/db.h"
 #include "src/classes/flight.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/experimental/aflightentry.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -65,12 +66,14 @@ private slots:
 
     void on_flightSearchLlineEdit_textChanged(const QString &arg1);
 
+    void on_flightSearchComboBox_currentIndexChanged();
+
 private:
     Ui::LogbookWidget *ui;
 
     QTableView* view;
 
-    QSqlTableModel* model;
+    QSqlTableModel* displayModel;
 
     QItemSelectionModel* selection;
 
