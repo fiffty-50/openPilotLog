@@ -25,28 +25,25 @@
 #include <chrono>
 #include <QDebug>
 #include <QMenu>
+#include <QTableView>
 
 #include "src/classes/asettings.h"
 #include "src/database/db.h"
 #include "src/classes/flight.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/experimental/aflightentry.h"
 
 namespace Ui {
 class LogbookWidget;
 }
 
-
-
 class LogbookWidget : public QWidget
 {
     Q_OBJECT
 
-
 public:
     explicit LogbookWidget(QWidget *parent = nullptr);
     ~LogbookWidget();
-
-    QVector<qint32> selectedFlights;
 
 private slots:
     void on_newFlightButton_clicked();
@@ -55,32 +52,47 @@ private slots:
 
     void on_deleteFlightPushButton_clicked();
 
-    void on_filterFlightsByDateButton_clicked();
-
     void on_showAllButton_clicked();
 
-    void tableView_selectionChanged();
+    void flightsTableView_selectionChanged();
 
     void on_tableView_customContextMenuRequested(const QPoint &pos);
 
     void on_actionDelete_Flight_triggered();
 
+    void onDeletedSuccessfully();
+    void onDeleteUnsuccessful(const QSqlError);
+
     void on_actionEdit_Flight_triggered();
 
     void on_tableView_doubleClicked();
 
+    void on_flightSearchLlineEdit_textChanged(const QString &arg1);
+
+    void on_flightSearchComboBox_currentIndexChanged();
+
 private:
     Ui::LogbookWidget *ui;
 
+    QTableView* view;
+
+    QSqlTableModel* displayModel;
+
+    QItemSelectionModel* selection;
+
     QMenu* menu;
 
-    QMessageBox* nope;
+    QMessageBox* messageBox;
 
-    void refreshView(int view_id);
+    QVector<qint32> selectedFlights;
 
-    void defaultView();
+    void prepareModelAndView(int view_id);
 
-    void easaView();
+    void setupDefaultView();
+
+    void setupEasaView();
+
+    void connectSignalsAndSlots();
 
 
 };

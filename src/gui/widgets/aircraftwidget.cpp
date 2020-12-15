@@ -68,6 +68,7 @@ void AircraftWidget::setupModelAndView()
     view->sortByColumn(sortColumn, Qt::DescendingOrder);
 
     view->show();
+    selection = view->selectionModel();
 
     QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &AircraftWidget::tableView_selectionChanged);
@@ -155,7 +156,6 @@ void AircraftWidget::tableView_selectionChanged()
         /// stack does not seem to solve the problem since the Dialog does not get destroyed
         /// until either accept() or reject() is emitted so I went for this solution.
     }
-    auto *selection = ui->tableView->selectionModel();
     selectedTails.clear();
 
     for (const auto& row : selection->selectedRows()) {

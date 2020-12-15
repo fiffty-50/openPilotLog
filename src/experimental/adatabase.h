@@ -31,6 +31,7 @@
 #include "apilotentry.h"
 #include "atailentry.h"
 #include "aaircraftentry.h"
+#include "aflightentry.h"
 
 namespace experimental {
 
@@ -84,6 +85,7 @@ public:
      * \brief Checks if an entry exists in the database, based on position data
      */
     bool exists(AEntry entry);
+    bool exists(DataPosition data_position);
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
@@ -105,6 +107,12 @@ public:
      * \brief deletes an entry from the database.
      */
     bool remove(AEntry entry);
+
+    /*!
+     * \brief deletes a list of entries from the database. Optimised for speed when
+     * deleting many entries.
+     */
+    bool removeMany(QList<DataPosition>);
 
     /*!
      * \brief retreive entry data from the database to create an entry object
@@ -145,6 +153,16 @@ public:
      * with only the RowId required as input.
      */
     AAircraftEntry getAircraftEntry(RowId row_id);
+
+    /*!
+     * \brief retreives a flight entry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns an AFlightEntry
+     * instead of an AEntry. It allows for easy access to a flight entry
+     * with only the RowId required as input.
+     */
+    AFlightEntry getFlightEntry(RowId row_id);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a

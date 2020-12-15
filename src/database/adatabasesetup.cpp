@@ -234,6 +234,14 @@ const QString createViewTotals = "CREATE VIEW viewTotals AS "
         "CAST(SUM(toDay) AS INT) AS \"TO Day\", CAST(SUM(toNight) AS INT) AS \"TO Night\", "
         "CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
         "FROM flights";
+
+/*const QString createViewPilotsTailsMap = "CREATE VIEW viewPilotsTailsMap AS "
+        "SELECT "
+        "pilot_id, piclastname, picfirstname, tail_id, registration "
+        "FROM pilots "
+        "LEFT JOIN tails "
+        "ON pilots.pilot_id = tails.tail_id";*/
+
 const QStringList tables = {
     createTablePilots,
     createTableTails,
@@ -248,7 +256,7 @@ const QStringList views = {
     createViewTails,
     createViewPilots,
     createViewTotals,
-    createViewQCompleter
+    createViewQCompleter,
 };
 const QStringList userTables = {
     "flights",

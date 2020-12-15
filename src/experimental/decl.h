@@ -40,6 +40,7 @@ struct DataPosition : QPair<TableName, RowId> {
 auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
 auto const DEFAULT_TAIL_POSITION = DataPosition("tails", 0);
 auto const DEFAULT_AIRCRAFT_POSITION = DataPosition("aircraft", 0);
+auto const DEFAULT_FLIGHT_POSITION = DataPosition("flights", 0);
 
 }
 
