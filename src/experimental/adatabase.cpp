@@ -288,6 +288,13 @@ AAircraftEntry ADataBase::getAircraftEntry(RowId row_id)
     return aircraft_entry;
 }
 
+AFlightEntry ADataBase::getFlightEntry(RowId row_id)
+{
+    AFlightEntry flight_entry(row_id);
+    flight_entry.setData(getEntryData(flight_entry.getPosition()));
+    return flight_entry;
+}
+
 const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
 {
     QString statement;
@@ -374,6 +381,7 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
     if (!query.first()) {
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << query.lastError().text());
+        DEB("Statement: " << statement);
         emit sqlError(query.lastError(), statement);
         return QVector<QString>();
     } else {

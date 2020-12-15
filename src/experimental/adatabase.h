@@ -31,6 +31,7 @@
 #include "apilotentry.h"
 #include "atailentry.h"
 #include "aaircraftentry.h"
+#include "aflightentry.h"
 
 namespace experimental {
 
@@ -145,6 +146,16 @@ public:
      * with only the RowId required as input.
      */
     AAircraftEntry getAircraftEntry(RowId row_id);
+
+    /*!
+     * \brief retreives a flight entry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns an AFlightEntry
+     * instead of an AEntry. It allows for easy access to a flight entry
+     * with only the RowId required as input.
+     */
+    AFlightEntry getFlightEntry(RowId row_id);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a

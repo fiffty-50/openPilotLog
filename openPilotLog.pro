@@ -32,6 +32,7 @@ SOURCES += \
     src/experimental/aaircraftentry.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
+    src/experimental/aflightentry.cpp \
     src/experimental/apilotentry.cpp \
     src/experimental/atailentry.cpp \
     src/functions/acalc.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/experimental/aaircraftentry.h \
     src/experimental/adatabase.h \
     src/experimental/aentry.h \
+    src/experimental/aflightentry.h \
     src/experimental/apilotentry.h \
     src/experimental/atailentry.h \
     src/experimental/decl.h \

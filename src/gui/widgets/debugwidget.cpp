@@ -164,33 +164,15 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    qlonglong number_of_runs = 5000;
-    long time1 = 0;
-    long time2 = 0;
     using namespace experimental;
-    {
-        ATimer timer;
-        for (int i = 0; i < number_of_runs; i++) {
-            // first block, do stuff here...
-            aDB()->getEntry({"pilots", i});
-        }
-
-        time1 = timer.timeNow();
-    }
-    {
-        ATimer timer;
-        for (int i = 0; i < number_of_runs; i++) {
-            // second block, do stuff here...
-            aDB()->getPilotEntry(i);
-        }
-        time2 = timer.timeNow();
-    }
-
-    DEB("First block executed  " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-    DEB("Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
+    auto flight = aDB()->getFlightEntry(775);
+    DEB(flight.getData());
+    DEB(flight.summary());
+    DEB(flight.pilotName(experimental::AFlightEntry::pic));
+    DEB(flight.registration());
 }
 
-/*
+/* //Comparing two functions template
     qlonglong number_of_runs = 5000;
     long time1 = 0;
     long time2 = 0;
