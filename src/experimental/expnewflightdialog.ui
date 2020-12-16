@@ -14,7 +14,7 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -178,6 +178,9 @@
        </item>
        <item row="1" column="3">
         <widget class="QComboBox" name="deptTZ_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -380,6 +383,9 @@
        </item>
        <item row="3" column="3">
         <widget class="QComboBox" name="destTZ_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -746,7 +752,11 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QLineEdit" name="doftLineEdit_2"/>
+        <widget class="QLineEdit" name="doftLineEdit_2">
+         <property name="maxLength">
+          <number>10</number>
+         </property>
+        </widget>
        </item>
        <item row="8" column="3">
         <widget class="QLabel" name="RemarksLabel_2">
@@ -819,7 +829,74 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="calendarCheckBox">
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the Pop-Up Calendar when editing the date&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Calendar</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
+      <zorder>destNameLabel_2</zorder>
+      <zorder>destLocLineEdit_2</zorder>
+      <zorder>deptLocLineEdit_2</zorder>
+      <zorder>deptNameLabel_2</zorder>
+      <zorder>acftLineEdit_2</zorder>
+      <zorder>placeLabel2_2</zorder>
+      <zorder>line_2</zorder>
+      <zorder>RemarksLineEdit_2</zorder>
+      <zorder>autoPicusLabel_2</zorder>
+      <zorder>tonbLabel_2</zorder>
+      <zorder>autoFILabel_2</zorder>
+      <zorder>tSPMELabel_2</zorder>
+      <zorder>autoSPMELabel_2</zorder>
+      <zorder>autoTotalLabel_2</zorder>
+      <zorder>FlightNumberLabel_2</zorder>
+      <zorder>tFILabel_2</zorder>
+      <zorder>picLabel_2</zorder>
+      <zorder>acftLabel_2</zorder>
+      <zorder>doftLabel_2</zorder>
+      <zorder>deptTZ_2</zorder>
+      <zorder>tofbTimeLineEdit_2</zorder>
+      <zorder>autoMPLabel_2</zorder>
+      <zorder>tIFRLabel_2</zorder>
+      <zorder>tDUALLabel_2</zorder>
+      <zorder>placeLabel1_2</zorder>
+      <zorder>destLabel_2</zorder>
+      <zorder>secondPilotLabel_2</zorder>
+      <zorder>autoSPSELabel_2</zorder>
+      <zorder>destTZ_2</zorder>
+      <zorder>acftTypeLabel_2</zorder>
+      <zorder>autoPICLabel_2</zorder>
+      <zorder>deptLabel_2</zorder>
+      <zorder>autoDualLabel_2</zorder>
+      <zorder>tPICLabel_2</zorder>
+      <zorder>tMPLabel_2</zorder>
+      <zorder>tNIGHTLabel_2</zorder>
+      <zorder>secondPilotNameLineEdit_2</zorder>
+      <zorder>FlightNumberLineEdit_2</zorder>
+      <zorder>tSICLabel_2</zorder>
+      <zorder>thirdPilotLabel_2</zorder>
+      <zorder>tPICUSLabel_2</zorder>
+      <zorder>tonbTimeLineEdit_2</zorder>
+      <zorder>picNameLineEdit_2</zorder>
+      <zorder>tofbLabel_2</zorder>
+      <zorder>thirdPilotNameLineEdit_2</zorder>
+      <zorder>autoNightLabel_2</zorder>
+      <zorder>autoIFRLabel_2</zorder>
+      <zorder>tSPSELabel_2</zorder>
+      <zorder>doftLineEdit_2</zorder>
+      <zorder>RemarksLabel_2</zorder>
+      <zorder>tblkLabel_3</zorder>
+      <zorder>autoSICLabel_2</zorder>
+      <zorder>doftDisplayLabel_2</zorder>
+      <zorder>calendarCheckBox</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab_2">
       <attribute name="title">
@@ -1360,26 +1437,25 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="verifyButton">
+    <widget class="QPushButton" name="cancelButton">
+     <property name="styleSheet">
+      <string notr="true">color: rgb(164, 0, 0);</string>
+     </property>
      <property name="text">
-      <string>DebugButton</string>
+      <string>Cancel</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="verifyEdit">
-     <property name="placeholderText">
-      <string>Debug Text</string>
+    <widget class="QPushButton" name="submitButton">
+     <property name="enabled">
+      <bool>false</bool>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(78, 154, 6);</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="text">
+      <string>Submit</string>
      </property>
     </widget>
    </item>
@@ -1397,8 +1473,6 @@
   <tabstop>thirdPilotNameLineEdit_2</tabstop>
   <tabstop>FlightNumberLineEdit_2</tabstop>
   <tabstop>RemarksLineEdit_2</tabstop>
-  <tabstop>verifyButton</tabstop>
-  <tabstop>verifyEdit</tabstop>
   <tabstop>flightDataTabWidget</tabstop>
   <tabstop>FunctionComboBox_2</tabstop>
   <tabstop>PilotFlyingCheckBox_2</tabstop>

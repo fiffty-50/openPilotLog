@@ -133,14 +133,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
     if(object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
         on_doftLineEditEntered();
         return false; // let the event continue to the edit
-    } /*else if (object == this && event->type() == QEvent::Leave) {
-        DEB("calendarWidget left.");
-        //ui->doftLineEdit->blockSignals(false);
-        //ui->calendarWidget->hide();
-        //ui->placeLabel1->resize(ui->placeLabel2->size());
-        //ui->doftLineEdit->setFocus();
-        return false;
-    }*/
+    }
     return false;
 }
 

@@ -165,7 +165,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     using namespace experimental;
-    auto nf = new ExpNewFlightDialog(7, this);
+    auto nf = new ExpNewFlightDialog(this);
     nf->exec();
 
 

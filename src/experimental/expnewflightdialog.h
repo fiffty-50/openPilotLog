@@ -43,6 +43,7 @@ signals:
     void badInputReceived(QLineEdit*);
     void locationEditingFinished(QLineEdit*, QLabel*);
     void timeEditingFinished(QLineEdit*);
+    void mandatoryLineEditsFilled();
 
 private slots:
 
@@ -52,6 +53,11 @@ private slots:
     void onPilotLineEdit_editingFinished();
     void onLocLineEdit_editingFinished(QLineEdit*, QLabel*);
     void onTimeLineEdit_editingFinished(QLineEdit*);
+    void onMandatoryLineEditsFilled();
+    void onCompleterHighlighted(const QString&);
+    void onDateClicked(const QDate &date);
+    void onDateSelected(const QDate &date);
+    void onDoftLineEditEntered();
 
     void on_deptLocLineEdit_2_editingFinished();
     void on_destLocLineEdit_2_editingFinished();
@@ -65,6 +71,16 @@ private slots:
     void on_tofbTimeLineEdit_2_editingFinished();
 
     void on_tonbTimeLineEdit_2_editingFinished();
+
+
+
+    void on_calendarCheckBox_stateChanged(int arg1);
+
+    void on_doftLineEdit_2_editingFinished();
+
+    void on_cancelButton_clicked();
+
+    void on_submitButton_clicked();
 
 private:
     Ui::ExpNewFlightDialog *ui;
@@ -85,10 +101,20 @@ private:
     QMap<QString, int> airportIataIdMap;
     QMap<QString, int> airportNameIdMap;
 
+    bool eventFilter(QObject *object, QEvent *event);
+
+    bool updateEnabled;
+
+    void setup();
+    void readSettings();
+    void writeSettings();
+    void setupButtonGroups();
+    void setPopUpCalendarEnabled(bool state);
     void setupRawInputValidation();
     void setupLineEditSignalsAndSlots();
 
-    void setupValidators();
+    void fillDeductibleData();
+
 };
 
 #endif // EXPNEWFLIGHTDIALOG_H
