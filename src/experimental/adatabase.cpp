@@ -97,7 +97,7 @@ bool ADataBase::remove(AEntry entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
-        emit sqlSuccessful();
+        emit deleteSuccessful();
         return true;
     } else {
         DEB("Unable to delete.");
@@ -134,7 +134,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
         query.prepare("COMMIT");
         query.exec();
         if(query.lastError().type() == QSqlError::NoError) {
-            emit sqlSuccessful();
+            emit deleteSuccessful();
             return true;
         } else {
             emit sqlError(query.lastError(), "Transaction unsuccessful. Error count: " + QString::number(errorCount));
@@ -225,7 +225,7 @@ bool ADataBase::update(AEntry updated_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
@@ -263,7 +263,7 @@ bool ADataBase::insert(AEntry new_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
@@ -369,14 +369,14 @@ const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
 
     switch (target) {
     case pilots:
-        statement.append("SELECT piclastname||\",\"||picfirstname FROM pilots");
+        statement.append("SELECT piclastname||\", \"||picfirstname FROM pilots");
         break;
     case aircraft:
         statement.append("SELECT make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airport_identifier:
+    case airport_identifier_all:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
         break;
     case registrations:
@@ -415,17 +415,18 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
 
     switch (target) {
     case pilots:
-        statement.append("SELECT ROWID, piclastname||\",\"||picfirstname FROM pilots");
+        statement.append("SELECT ROWID, piclastname||\", \"||picfirstname FROM pilots");
         break;
     case aircraft:
         statement.append("SELECT ROWID, make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT ROWID, make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airport_identifier:
-        statement.append("SELECT ROWID, icao FROM airports "
-                         "UNION "
-                         "SELECT ROWID, iata FROM airports WHERE iata IS NOT NULL");
+    case airport_identifier_icao:
+        statement.append("SELECT ROWID, icao FROM airports");
+        break;
+    case airport_identifier_iata:
+        statement.append("SELECT ROWID, iata FROM airports WHERE iata NOT NULL");
         break;
     case airport_names:
         statement.append("SELECT ROWID, name FROM airports");
@@ -475,7 +476,7 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
                 result.append(query.value(i).toString());
             }
         }
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return result;
     }
 }

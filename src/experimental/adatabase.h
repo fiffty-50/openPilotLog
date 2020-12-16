@@ -56,7 +56,7 @@ public:
      * \brief The CompleterTarget enum provides the items for which QCompleter
      * completion lists are provided from the database.
      */
-    enum DatabaseTarget {airport_identifier, airport_names, pilots, registrations, aircraft, companies, tails};
+    enum DatabaseTarget {airport_identifier_icao, airport_identifier_iata, airport_identifier_all, airport_names, pilots, registrations, aircraft, companies, tails};
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -178,7 +178,9 @@ public:
      */
     const QMap<QString, int> getIdMap(DatabaseTarget);
 signals:
-    void sqlSuccessful();
+    void commitSuccessful();
+
+    void deleteSuccessful();
 
     void sqlError(const QSqlError &sqlError, const QString &sqlStatement);
 

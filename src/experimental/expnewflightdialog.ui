@@ -1385,6 +1385,39 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>doftLineEdit_2</tabstop>
+  <tabstop>deptLocLineEdit_2</tabstop>
+  <tabstop>tofbTimeLineEdit_2</tabstop>
+  <tabstop>destLocLineEdit_2</tabstop>
+  <tabstop>tonbTimeLineEdit_2</tabstop>
+  <tabstop>acftLineEdit_2</tabstop>
+  <tabstop>picNameLineEdit_2</tabstop>
+  <tabstop>secondPilotNameLineEdit_2</tabstop>
+  <tabstop>thirdPilotNameLineEdit_2</tabstop>
+  <tabstop>FlightNumberLineEdit_2</tabstop>
+  <tabstop>RemarksLineEdit_2</tabstop>
+  <tabstop>verifyButton</tabstop>
+  <tabstop>verifyEdit</tabstop>
+  <tabstop>flightDataTabWidget</tabstop>
+  <tabstop>FunctionComboBox_2</tabstop>
+  <tabstop>PilotFlyingCheckBox_2</tabstop>
+  <tabstop>ApproachComboBox_2</tabstop>
+  <tabstop>PilotMonitoringCheckBox_2</tabstop>
+  <tabstop>TakeoffCheckBox_2</tabstop>
+  <tabstop>TakeoffSpinBox_2</tabstop>
+  <tabstop>VfrCheckBox_2</tabstop>
+  <tabstop>LandingCheckBox_2</tabstop>
+  <tabstop>LandingSpinBox_2</tabstop>
+  <tabstop>IfrCheckBox_2</tabstop>
+  <tabstop>AutolandCheckBox_2</tabstop>
+  <tabstop>AutolandSpinBox_2</tabstop>
+  <tabstop>setAsDefaultButton_2</tabstop>
+  <tabstop>restoreDefaultButton_2</tabstop>
+  <tabstop>manualEditingCheckBox_2</tabstop>
+  <tabstop>tblkTimeLineEdit_2</tabstop>
+  <tabstop>calendarWidget_2</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

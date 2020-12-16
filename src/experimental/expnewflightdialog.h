@@ -16,12 +16,14 @@
 #include <QCalendarWidget>
 #include <QTabWidget>
 
-#include "src/classes/astrictrxvalidator.h"
-
 #include "src/experimental/adatabase.h"
 #include "src/experimental/aflightentry.h"
 #include "src/experimental/apilotentry.h"
 #include "src/experimental/atailentry.h"
+
+#include "src/functions/acalc.h"
+
+#include "src/testing/atimer.h"
 
 namespace Ui {
 class ExpNewFlightDialog;
@@ -39,21 +41,30 @@ public:
 signals:
     void goodInputReceived(QLineEdit*);
     void badInputReceived(QLineEdit*);
+    void locationEditingFinished(QLineEdit*, QLabel*);
+    void timeEditingFinished(QLineEdit*);
 
 private slots:
 
     void onGoodInputReceived(QLineEdit*);
-    void onBadInputReceived(QLineEdit*);
+    void onBadInputReceived(QLineEdit *);
+    void onTextChangedToUpper(const QString&);
+    void onPilotLineEdit_editingFinished();
+    void onLocLineEdit_editingFinished(QLineEdit*, QLabel*);
+    void onTimeLineEdit_editingFinished(QLineEdit*);
 
     void on_deptLocLineEdit_2_editingFinished();
-
-    void onInputRejected();
-
-    void onTextChangedToUpper(const QString&);
-
+    void on_destLocLineEdit_2_editingFinished();
     void on_acftLineEdit_2_editingFinished();
 
-    void on_destLocLineEdit_2_editingFinished();
+
+/////// DEBUG
+    void onInputRejected();
+/////// DEBUG
+
+    void on_tofbTimeLineEdit_2_editingFinished();
+
+    void on_tonbTimeLineEdit_2_editingFinished();
 
 private:
     Ui::ExpNewFlightDialog *ui;
@@ -70,11 +81,12 @@ private:
 
     QMap<QString, int> pilotsIdMap;
     QMap<QString, int> tailsIdMap;
-    QMap<QString, int> airportIdentifierIdMap;
+    QMap<QString, int> airportIcaoIdMap;
+    QMap<QString, int> airportIataIdMap;
     QMap<QString, int> airportNameIdMap;
 
     void setupRawInputValidation();
-    void setupMandatoryLineEdits();
+    void setupLineEditSignalsAndSlots();
 
     void setupValidators();
 };

@@ -76,7 +76,7 @@ void LogbookWidget::connectSignalsAndSlots()
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
     using namespace experimental;
-    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+    QObject::connect(aDB(), &ADataBase::deleteSuccessful,
                      this, &LogbookWidget::onDeletedSuccessfully);
     QObject::connect(aDB(), &ADataBase::sqlError,
                      this, &LogbookWidget::onDeleteUnsuccessful);
@@ -268,7 +268,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
 
 void LogbookWidget::onDeletedSuccessfully()
 {
-    messageBox->setText(QString::number(selectedFlights.length()) + " flights have been deleted.");
+    messageBox->setText(QString::number(selectedFlights.length()) + " entries have been deleted.");
     messageBox->exec();
 }
 

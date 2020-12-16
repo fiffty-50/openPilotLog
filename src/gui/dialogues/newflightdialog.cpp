@@ -199,7 +199,7 @@ void NewFlightDialog::setup(){
     //fill Lists
     pilots   = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
     tails    = experimental::aDB()->getCompletionList(experimental::ADataBase::registrations);
-    airports = experimental::aDB()->getCompletionList(experimental::ADataBase::airport_identifier);
+    airports = experimental::aDB()->getCompletionList(experimental::ADataBase::airport_identifier_icao);
 
     QString statement = "SELECT iata, icao FROM airports";
     auto result = Db::customQuery(statement,2);

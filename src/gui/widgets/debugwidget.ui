@@ -24,6 +24,13 @@
        <string>Database</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Fill a new database with sample entries</string>
+         </property>
+        </widget>
+       </item>
        <item row="3" column="3">
         <widget class="QLineEdit" name="importCsvLineEdit">
          <property name="minimumSize">
@@ -37,8 +44,18 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="4">
-        <widget class="QPushButton" name="selectCsvPushButton">
+       <item row="4" column="3">
+        <widget class="QLineEdit" name="debugLineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="fillUserDataPushButton">
+         <property name="text">
+          <string>Fill User Table with test data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="importCsvPushButton">
          <property name="minimumSize">
           <size>
            <width>110</width>
@@ -46,27 +63,21 @@
           </size>
          </property>
          <property name="text">
-          <string>Select File</string>
+          <string>Import CSV</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="resetDatabasePushButton">
-         <property name="minimumSize">
-          <size>
-           <width>220</width>
-           <height>0</height>
-          </size>
-         </property>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="debugPushButton">
          <property name="text">
-          <string>Reset Database</string>
+          <string>Do Debug Stuff!</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="fillUserDataPushButton">
+       <item row="1" column="3">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Fill User Table with test data</string>
+          <string>Keep current database but delete entries in pilots, aircraft and flights</string>
          </property>
         </widget>
        </item>
@@ -83,6 +94,19 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="4">
+        <widget class="QPushButton" name="selectCsvPushButton">
+         <property name="minimumSize">
+          <size>
+           <width>110</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Select File</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="3">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -90,10 +114,16 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="label_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="resetDatabasePushButton">
+         <property name="minimumSize">
+          <size>
+           <width>220</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Keep current database but delete entries in pilots, aircraft and flights</string>
+          <string>Reset Database</string>
          </property>
         </widget>
        </item>
@@ -112,35 +142,8 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="importCsvPushButton">
-         <property name="minimumSize">
-          <size>
-           <width>110</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Import CSV</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Fill a new database with sample entries</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="debugPushButton">
-         <property name="text">
-          <string>Do Debug Stuff!</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="3">
-        <widget class="QLineEdit" name="debugLineEdit"/>
+       <item row="5" column="3">
+        <widget class="QLineEdit" name="debug2LineEdit"/>
        </item>
       </layout>
      </widget>
