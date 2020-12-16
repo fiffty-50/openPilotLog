@@ -108,6 +108,20 @@ NewFlightDialog::NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole
     formFiller(oldFlight);
 }
 
+NewFlightDialog::NewFlightDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewFlight)
+{
+    DEB("Not implemented atm.");
+}
+
+NewFlightDialog::NewFlightDialog(QWidget *parent, int old_flight) :
+    QDialog(parent),
+    ui(new Ui::NewFlight)
+{
+    DEB("Not implemented atm. old flight: " << old_flight);
+}
+
 NewFlightDialog::~NewFlightDialog()
 {
     DEB("Deleting NewFlight\n");
@@ -185,7 +199,7 @@ void NewFlightDialog::setup(){
     //fill Lists
     pilots   = experimental::aDB()->getCompletionList(experimental::ADataBase::pilots);
     tails    = experimental::aDB()->getCompletionList(experimental::ADataBase::registrations);
-    airports = experimental::aDB()->getCompletionList(experimental::ADataBase::airports);
+    airports = experimental::aDB()->getCompletionList(experimental::ADataBase::airport_identifier);
 
     QString statement = "SELECT iata, icao FROM airports";
     auto result = Db::customQuery(statement,2);

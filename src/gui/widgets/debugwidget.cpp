@@ -164,7 +164,9 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-
+    using namespace experimental;
+    auto nf = new ExpNewFlightDialog(7, this);
+    nf->exec();
 }
 
 /* //Comparing two functions template

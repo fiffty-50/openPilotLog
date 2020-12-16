@@ -139,14 +139,14 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="newPilotPushButton">
+    <widget class="QPushButton" name="newPilotButton">
      <property name="text">
       <string>New Pilot</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="deletPilotButton">
+    <widget class="QPushButton" name="deletePilotButton">
      <property name="text">
       <string>Delete Pilot</string>
      </property>

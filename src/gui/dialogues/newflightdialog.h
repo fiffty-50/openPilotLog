@@ -85,6 +85,8 @@ class NewFlightDialog : public QDialog
 public:
     explicit NewFlightDialog(QWidget *parent, Db::editRole edRole);
     explicit NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole);
+    explicit NewFlightDialog(QWidget *parent);
+    explicit NewFlightDialog(QWidget *parent, int old_flight);
     ~NewFlightDialog();
 
     //QStringList* getResult();

@@ -289,7 +289,7 @@ void LogbookWidget::on_tableView_doubleClicked()
     emit ui->editFlightButton->clicked();
 }
 
-void LogbookWidget::on_flightSearchComboBox_currentIndexChanged()
+void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
 {
     emit ui->showAllButton->clicked();
 }

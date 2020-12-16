@@ -363,7 +363,7 @@ AFlightEntry ADataBase::getFlightEntry(RowId row_id)
     return flight_entry;
 }
 
-const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
+const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
 {
     QString statement;
 
@@ -376,7 +376,7 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
                          "UNION "
                          "SELECT make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airports:
+    case airport_identifier:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
         break;
     case registrations:
@@ -385,6 +385,9 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
     case companies:
         statement.append("SELECT company FROM pilots");
         break;
+    default:
+        DEB("Not a valid completer target for this function.");
+        return QStringList();
     }
 
     QSqlQuery query;
@@ -406,7 +409,7 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
     return completer_list;
 }
 
-const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
+const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
 {
     QString statement;
 
@@ -418,6 +421,17 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
         statement.append("SELECT ROWID, make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT ROWID, make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+        break;
+    case airport_identifier:
+        statement.append("SELECT ROWID, icao FROM airports "
+                         "UNION "
+                         "SELECT ROWID, iata FROM airports WHERE iata IS NOT NULL");
+        break;
+    case airport_names:
+        statement.append("SELECT ROWID, name FROM airports");
+        break;
+    case tails:
+        statement.append("SELECT ROWID, registration FROM tails");
         break;
     default:
         DEB("Not a valid completer target for this function.");

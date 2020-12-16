@@ -128,7 +128,7 @@ void AircraftWidget::on_deleteButton_clicked()
     }
 }
 
-void AircraftWidget::on_newButton_clicked()
+void AircraftWidget::on_newAircraftButton_clicked()
 {
     auto nt = NewTailDialog(QString(), this);
     connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));

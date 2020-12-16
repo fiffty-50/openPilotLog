@@ -111,7 +111,7 @@ void PilotsWidget::tableView_headerClicked(int column)
     ASettings::write("userdata/pilSortColumn", column);
 }
 
-void PilotsWidget::on_newButton_clicked()
+void PilotsWidget::on_newPilotButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(this);
     QObject::connect(np,   &QDialog::accepted,
@@ -122,7 +122,7 @@ void PilotsWidget::on_newButton_clicked()
     np->exec();
 }
 
-void PilotsWidget::on_deletePushButton_clicked()
+void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
         auto mb = QMessageBox(this);
