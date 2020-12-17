@@ -128,8 +128,8 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>picfirstnameLineEdit</tabstop>
   <tabstop>piclastnameLineEdit</tabstop>
+  <tabstop>picfirstnameLineEdit</tabstop>
   <tabstop>companyLineEdit</tabstop>
   <tabstop>aliasLineEdit</tabstop>
   <tabstop>employeeidLineEdit</tabstop>

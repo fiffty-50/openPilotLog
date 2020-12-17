@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -826,6 +826,13 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="5">
+        <widget class="QLabel" name="picCompanyLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
       <zorder>placeLabel2</zorder>
       <zorder>deptLocLineEdit</zorder>
@@ -881,6 +888,7 @@
       <zorder>doftDisplayLabel</zorder>
       <zorder>placeLabel1</zorder>
       <zorder>calendarCheckBox</zorder>
+      <zorder>picCompanyLabel</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">

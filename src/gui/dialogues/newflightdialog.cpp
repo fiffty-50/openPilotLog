@@ -630,7 +630,7 @@ void NewFlightDialog::formFiller()
         line_edits_names << le->objectName();
     }
 
-    ui->acftLineEdit->setText(flightEntry.registration());
+    ui->acftLineEdit->setText(flightEntry.getRegistration());
     line_edits_names.removeOne("acftLineEdit");
 
     for (const auto& data_key : flightEntry.getData().keys()) {
@@ -1077,7 +1077,7 @@ void NewFlightDialog::on_destLocLineEdit_editingFinished()
 void NewFlightDialog::onLocLineEdit_editingFinished(QLineEdit *line_edit, QLabel *name_label)
 {
     const auto &text = line_edit->text();
-    DEB(line_edit->objectName() << " Editing finished. " << text);
+    //DEB(line_edit->objectName() << " Editing finished. " << text);
     int airport_id = 0;
 
     // try to map iata or icao code to airport id;
@@ -1106,7 +1106,7 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
 {
     auto sender_object = sender();
     auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
-    DEB(line_edit->objectName() << "Editing Finished -" << line_edit->text());
+    //DEB(line_edit->objectName() << "Editing Finished -" << line_edit->text());
 
     line_edit->setText(ACalc::formatTimeInput(line_edit->text()));
     const auto time = QTime::fromString(line_edit->text(),TIME_FORMAT);
@@ -1128,11 +1128,12 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
 void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
     auto line_edit = ui->acftLineEdit;
-    DEB(line_edit->objectName() << "Editing Finished!" << line_edit->text());
+    //DEB(line_edit->objectName() << "Editing Finished!" << line_edit->text());
 
     if (tailsIdMap.value(line_edit->text()) != 0) {
         DEB("Mapped: " << line_edit->text() << tailsIdMap.value(line_edit->text()));
-        ui->acftTypeLabel->setText(line_edit->text()); // to do: display ac info
+        auto acft = aDB()->getTailEntry(tailsIdMap.value(line_edit->text()));
+        ui->acftTypeLabel->setText(acft.type());
         emit goodInputReceived(line_edit);
         return;
     }
@@ -1159,16 +1160,21 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinished()
 {
     auto sender_object = sender();
     auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
-    DEB(line_edit->objectName() << "Editing Finished -" << line_edit->text());
+    //DEB(line_edit->objectName() << "Editing Finished -" << line_edit->text());
 
     if(line_edit->text().contains(SELF_RX)) {
         DEB("self recognized.");
         line_edit->setText(pilotsIdMap.key(1));
+        auto pilot = aDB()->getPilotEntry(1);
+        ui->picCompanyLabel->setText(pilot.getData().value("company"));
         emit goodInputReceived(line_edit);
         return;
     }
+
     if(pilotsIdMap.value(line_edit->text()) != 0) {
         DEB("Mapped: " << line_edit->text() << pilotsIdMap.value(line_edit->text()));
+        auto pilot = aDB()->getPilotEntry(pilotsIdMap.value(line_edit->text()));
+        ui->picCompanyLabel->setText(pilot.getData().value("company"));
         emit goodInputReceived(line_edit);
         return;
     }
@@ -1176,7 +1182,6 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinished()
     if (line_edit->text().isEmpty()) {
         return;
     }
-
 
     if (!line_edit->completer()->currentCompletion().isEmpty()) {
         DEB("Trying to fix input...");
@@ -1272,7 +1277,7 @@ void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1
     }
 }
 
-void NewFlightDialog::on_FunctionComboBox_currentIndexChanged(int index)
+void NewFlightDialog::on_FunctionComboBox_currentIndexChanged(int)
 {
     if (updateEnabled)
         fillDeductibleData();

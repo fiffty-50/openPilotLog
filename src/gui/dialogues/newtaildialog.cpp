@@ -63,7 +63,7 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     connectSignals();
     setupValidators();
     entry = aDB()->getTailEntry(row_id);
-    fillForm(entry);
+    fillForm(entry, false);
 }
 
 NewTailDialog::~NewTailDialog()
@@ -124,11 +124,15 @@ void NewTailDialog::connectSignals()
  * a tail (ATail, used when editing an existing entry)
  * \param entry
  */
-void NewTailDialog::fillForm(experimental::AEntry entry)
+void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
 {
     DEB("Filling Form for (experimental) a/c" << entry.getPosition());
     //fill Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
+
+    if (is_template)
+        line_edits.removeOne(ui->registrationLineEdit);
+
     for (const auto &le : line_edits) {
         QString name = le->objectName().remove("LineEdit");
         QString value = entry.getData().value(name);
@@ -314,7 +318,7 @@ void NewTailDialog::onSearchCompleterActivated()
             DEB("Template Selected. aircraft_id is: " << idMap.value(text));
             //call autofiller for dialog
             using namespace experimental;
-            fillForm(aDB()->getAircraftEntry(idMap.value(text)));
+            fillForm(aDB()->getAircraftEntry(idMap.value(text)), true);
             ui->searchLineEdit->setStyleSheet("border: 1px solid green");
             ui->searchLabel->setText(text);
         } else {

@@ -166,11 +166,9 @@ void DebugWidget::on_debugPushButton_clicked()
 {
     using namespace experimental;
 
-    auto pilotsIdMap  = aDB()->getIdMap(ADataBase::pilots);
-    auto pilotList    = aDB()->getCompletionList(ADataBase::pilots);
-
-    DEB(pilotsIdMap.key(aDB()->getLastEntry(ADataBase::pilots)));
-    DEB(pilotList);
+    auto acft = aDB()->getTailEntry(5);
+    DEB(acft.getData().key("make"));
+    DEB(acft.type());
 
 
 }

@@ -31,4 +31,22 @@ ATailEntry::ATailEntry(TableData table_data)
     : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
 {}
 
+const QString ATailEntry::registration()
+{
+    return getData().value("registration");
+}
+
+const QString ATailEntry::type()
+{
+    QString type_string;
+    if (!getData().value("make").isEmpty())
+        type_string.append(getData().value("make") + ' ');
+    if (!getData().value("model").isEmpty())
+        type_string.append(getData().value("model"));
+    if (!getData().value("variant").isEmpty())
+        type_string.append('-' + getData().value("variant") + ' ');
+
+    return type_string;
+}
+
 } // namespace experimental

@@ -69,7 +69,7 @@ private:
 
     void connectSignals();
 
-    void fillForm(experimental::AEntry entry);
+    void fillForm(experimental::AEntry entry, bool is_template);
 
     void submitForm();
 
