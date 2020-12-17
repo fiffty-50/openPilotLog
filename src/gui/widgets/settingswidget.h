@@ -20,7 +20,6 @@
 
 #include <QWidget>
 #include <QButtonGroup>
-#include <QRegExp>
 #include <QValidator>
 #include <QMessageBox>
 #include <QProcess>
@@ -44,39 +43,22 @@ public:
 private slots:
 
     void themeGroup_toggled(int id);
-
     void on_aboutPushButton_clicked();
-
     void on_acSortComboBox_currentIndexChanged(int index);
-
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
-
     void on_prefixLineEdit_textChanged(const QString &arg1);
-
     void on_piclastnameLineEdit_editingFinished();
-
     void on_picfirstnameLineEdit_editingFinished();
-
     void on_employeeidLineEdit_editingFinished();
-
     void on_emailLineEdit_editingFinished();
-
     void on_phoneLineEdit_editingFinished();
-
     void on_aliasComboBox_currentIndexChanged(int index);
-
     void on_functionComboBox_currentIndexChanged(const QString &arg1);
-
     void on_rulesComboBox_currentIndexChanged(const QString &arg1);
-
     void on_approachComboBox_currentIndexChanged(const QString &arg1);
-
     void on_nightComboBox_currentIndexChanged(int index);
-
     void on_pilotSortComboBox_currentIndexChanged(int index);
-
     void on_logbookViewComboBox_currentIndexChanged(int index);
-
     void on_companyLineEdit_editingFinished();
 
 private:
@@ -87,6 +69,8 @@ private:
     void setupValidators();
 
     void updatePersonalDetails();
+signals:
+    void logbookviewSelectionChanged(int view_id);
 };
 
 #endif // SETTINGSWIDGET_H

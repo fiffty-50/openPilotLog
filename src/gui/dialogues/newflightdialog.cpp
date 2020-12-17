@@ -277,11 +277,11 @@ void NewFlightDialog::setupLineEditSignalsAndSlots()
         line_edit->installEventFilter(this);
         if(line_edit->objectName().contains("Loc")){
             QObject::connect(line_edit, &QLineEdit::textChanged,
-                             this, &NewFlightDialog::onTextChangedToUpper);
+                             this, &NewFlightDialog::onToUpperTriggered_textChanged);
         }
         if(line_edit->objectName().contains("acft")){
             QObject::connect(line_edit, &QLineEdit::textChanged,
-                             this, &NewFlightDialog::onTextChangedToUpper);
+                             this, &NewFlightDialog::onToUpperTriggered_textChanged);
         }
         if(line_edit->objectName().contains("Name")){
             QObject::connect(line_edit, &QLineEdit::editingFinished,
@@ -294,9 +294,9 @@ void NewFlightDialog::setupLineEditSignalsAndSlots()
     }
     for (const auto &line_edit : mandatoryLineEdits) {
         QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::highlighted),
-                         this, &NewFlightDialog::onCompleterHighlighted);
+                         this, &NewFlightDialog::onCompleter_highlighted);
         QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::activated),
-                         this, &NewFlightDialog::onCompleterActivated);
+                         this, &NewFlightDialog::onCompleter_activated);
     }
     QObject::connect(this, &NewFlightDialog::goodInputReceived,
                      this, &NewFlightDialog::onGoodInputReceived);
@@ -323,25 +323,25 @@ void NewFlightDialog::setPopUpCalendarEnabled(bool state)
         ui->doftLineEdit->installEventFilter(this);
 
         QObject::connect(ui->calendarWidget, &QCalendarWidget::clicked,
-                         this, &NewFlightDialog::onDateClicked);
+                         this, &NewFlightDialog::onCalendarWidget_clicked);
         QObject::connect(ui->calendarWidget, &QCalendarWidget::activated,
-                         this, &NewFlightDialog::onDateSelected);
+                         this, &NewFlightDialog::onCalendarWidget_selected);
     } else {
         DEB("Disabling pop-up calendar widget...");
         ui->calendarWidget->removeEventFilter(this);
         ui->placeLabel1->removeEventFilter(this);
         ui->doftLineEdit->removeEventFilter(this);
         QObject::disconnect(ui->calendarWidget, &QCalendarWidget::clicked,
-                            this, &NewFlightDialog::onDateClicked);
+                            this, &NewFlightDialog::onCalendarWidget_clicked);
         QObject::disconnect(ui->calendarWidget, &QCalendarWidget::activated,
-                            this, &NewFlightDialog::onDateSelected);
+                            this, &NewFlightDialog::onCalendarWidget_selected);
     }
 }
 
 bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
 {
     if (object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
-        onDoftLineEditEntered();
+        onDoftLineEdit_entered();
         return false; // let the event continue to the edit
     }
 
@@ -387,9 +387,8 @@ void NewFlightDialog::fillDeductibleData()
     ui->tblkTimeLineEdit->setText(block_time);
     // get acft data and fill deductible entries
     auto acft = aDB()->getTailEntry(tailsIdMap.value(ui->acftLineEdit->text()));
-    DEB("Created acft object with data: " << acft.getData());
     if (acft.getData().isEmpty())
-        DEB("No valid aircraft object available.");
+        DEB("Error: No valid aircraft object available, unable to deterime auto times.");
     // SP SE
     if(acft.getData().value("singlepilot") == "1" && acft.getData().value("singleengine") == "1"){
         ui->tSPSETimeLineEdit->setText(block_time);
@@ -606,7 +605,6 @@ TableData NewFlightDialog::collectInput()
         newData.insert("ldgNight", "0");
     }
 
-
     newData.insert("autoland", QString::number(ui->AutolandSpinBox->value()));
     newData.insert("ApproachType", ui->ApproachComboBox->currentText());
     newData.insert("FlightNumber", ui->FlightNumberLineEdit->text());
@@ -618,11 +616,6 @@ TableData NewFlightDialog::collectInput()
 void NewFlightDialog::formFiller()
 {
     DEB("Filling Line Edits...");
-    DEB("With Data: " << flightEntry.getData());
-    // Date
-    //ui->doftLineEdit->setDate(QDate::fromString(flightEntry.getData().value("doft"), Qt::ISODate));
-    QStringList filled;
-
     // get Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     QStringList line_edits_names;
@@ -641,7 +634,6 @@ void NewFlightDialog::formFiller()
                 auto le = this->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
                     le->setText(flightEntry.getData().value(data_key));
-                    filled << leName;
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -654,7 +646,6 @@ void NewFlightDialog::formFiller()
                 auto le = this->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
                     le->setText(flightEntry.getData().value(data_key));
-                    filled << leName;
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -669,7 +660,6 @@ void NewFlightDialog::formFiller()
                     DEB("Setting " << le->objectName() << " to " << ACalc::minutesToString(flightEntry.getData().value(data_key)));
                     le->setText(ACalc::minutesToString(
                                     flightEntry.getData().value(data_key)));
-                    filled << leName;
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -678,13 +668,10 @@ void NewFlightDialog::formFiller()
         rx = QRegularExpression(data_key + "Name\\w+?");
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
-                DEB("Name Match found: " << data_key << " - " << leName);
                 auto le = this->findChild<QLineEdit *>(leName);
                 if(le != nullptr){
                     DEB(pilotsIdMap.key(1));
-                    DEB("Matching name..." << data_key << " to " << flightEntry.getData().value(data_key).toInt());
                     le->setText(pilotsIdMap.key(flightEntry.getData().value(data_key).toInt()));
-                    filled << leName;
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -724,7 +711,6 @@ void NewFlightDialog::formFiller()
     // Take Off and Landing
     qint8 TO = flightEntry.getData().value("toDay").toInt() + flightEntry.getData().value("toNight").toInt();
     qint8 LDG = flightEntry.getData().value("ldgDay").toInt() + flightEntry.getData().value("ldgNight").toInt();
-    DEB("TO and LDG:" << TO << LDG);
     if(TO > 0) {
         ui->TakeoffCheckBox->setChecked(true);
         ui->TakeoffSpinBox->setValue(TO);
@@ -916,7 +902,7 @@ void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 }
 
 // capitalize input for dept, dest and registration input
-void NewFlightDialog::onTextChangedToUpper(const QString &text)
+void NewFlightDialog::onToUpperTriggered_textChanged(const QString &text)
 {
     auto sender_object = sender();
     auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
@@ -944,7 +930,7 @@ void NewFlightDialog::onMandatoryLineEditsFilled()
 }
 
 // make sure that when using keyboard to scroll through completer sugggestions, line edit is up to date
-void NewFlightDialog::onCompleterHighlighted(const QString &completion)
+void NewFlightDialog::onCompleter_highlighted(const QString &completion)
 {
     auto sender_object = sender();
     auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
@@ -952,7 +938,7 @@ void NewFlightDialog::onCompleterHighlighted(const QString &completion)
     line_edit->setText(completion);
 }
 
-void NewFlightDialog::onCompleterActivated(const QString &)
+void NewFlightDialog::onCompleter_activated(const QString &)
 {
     auto sender_object = sender();
     auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
@@ -995,7 +981,7 @@ void NewFlightDialog::on_doftLineEdit_editingFinished()
     emit badInputReceived(line_edit);
 }
 
-void NewFlightDialog::onDateClicked(const QDate &date)
+void NewFlightDialog::onCalendarWidget_clicked(const QDate &date)
 {
     const auto& le = ui->doftLineEdit;
     le->blockSignals(false);
@@ -1005,7 +991,7 @@ void NewFlightDialog::onDateClicked(const QDate &date)
     le->setFocus();
 }
 
-void NewFlightDialog::onDateSelected(const QDate &date)
+void NewFlightDialog::onCalendarWidget_selected(const QDate &date)
 {
     ui->calendarWidget->hide();
     ui->placeLabel1->resize(ui->placeLabel2->size());
@@ -1016,7 +1002,7 @@ void NewFlightDialog::onDateSelected(const QDate &date)
     le->blockSignals(false);
 }
 
-void NewFlightDialog::onDoftLineEditEntered()
+void NewFlightDialog::onDoftLineEdit_entered()
 {
     const auto& cw = ui->calendarWidget;
     const auto& le = ui->doftLineEdit;

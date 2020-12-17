@@ -58,7 +58,7 @@ void PilotsWidget::setupModelAndView()
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
-    selection = view->selectionModel();
+    selectionModel = view->selectionModel();
 
     QObject::connect(ui->pilotsTableView->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &PilotsWidget::tableView_selectionChanged);

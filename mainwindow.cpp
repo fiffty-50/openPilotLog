@@ -134,6 +134,8 @@ void MainWindow::connectWidgets()
 {
     QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
                      logbookWidget, &LogbookWidget::onDatabaseChanged);
+    QObject::connect(settingsWidget, &SettingsWidget::logbookviewSelectionChanged,
+                     logbookWidget, &LogbookWidget::onLogbookviewSelectionChanged);
     QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
                      pilotsWidget, &PilotsWidget::onDatabaseChanged);
     QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,

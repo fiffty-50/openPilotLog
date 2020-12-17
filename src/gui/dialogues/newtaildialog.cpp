@@ -329,12 +329,3 @@ void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
 {
     ui->registrationLineEdit->setText(arg1.toUpper());
 }
-
-/*
-    auto mb = QMessageBox(this);
-    mb.setIcon(QMessageBox::Critical);
-    mb.setText("The following error has ocurred.\n\n"
-               + sqlError.text()
-               + "\n\nYour entry has not been saved.");
-    mb.exec();
-*/
