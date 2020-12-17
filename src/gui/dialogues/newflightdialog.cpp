@@ -866,13 +866,16 @@ void NewFlightDialog::on_submitButton_clicked()
     DEB("Committing...");
     if (!aDB()->commit(flightEntry)) {
         auto message_box = QMessageBox(this);
-        message_box.setText("An error has ocurred. Your entry has not been saved.");
+        message_box.setText("The following error has ocurred:\n\n"
+                            + aDB()->lastError
+                            + "\n\nYour entry has not been saved.");
         message_box.setIcon(QMessageBox::Warning);
         message_box.exec();
         return;
-        /// [F] To do: get error info and display here.
+    } else {
+        QDialog::accept();
     }
-    QDialog::accept();
+
 }
 
 

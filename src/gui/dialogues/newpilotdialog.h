@@ -44,10 +44,6 @@ public:
 
 private slots:
     void on_buttonBox_accepted();
-
-    void onCommitSuccessful();
-
-    void onCommitUnsuccessful(const QSqlError &sqlError, const QString &);
 private:
     Ui::NewPilot *ui;
 

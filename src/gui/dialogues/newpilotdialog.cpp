@@ -112,17 +112,6 @@ void NewPilotDialog::setup()
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
-
-    ///[F] moved connecting the slots here because
-    /// - no need to declare the slots public as would be the case if connected in mainwindow
-    /// - only one place where slots are connected vs. several places (mainwindow, pilotswidget),
-    ///   makes it easier to maintain.
-    /// - these signals and slots are specific to this dialog, for communication with
-    ///   other widgets we have the QDialog::accepted() and QDialog::rejected signals.
-    QObject::connect(aDB(), &ADataBase::commitSuccessful,
-                     this, &NewPilotDialog::onCommitSuccessful);
-    QObject::connect(aDB(), &ADataBase::sqlError,
-                     this, &NewPilotDialog::onCommitUnsuccessful);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
@@ -134,21 +123,6 @@ void NewPilotDialog::on_buttonBox_accepted()
     } else {
         submitForm();
     }
-}
-
-void NewPilotDialog::onCommitSuccessful()
-{
-    accept();
-}
-
-void NewPilotDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
-{
-    auto mb = QMessageBox(this);
-    mb.setIcon(QMessageBox::Critical);
-    mb.setText("The following error has ocurred.\n\n"
-               + sqlError.text()
-               + "\n\nYour entry has not been saved.");
-    mb.exec();
 }
 
 void NewPilotDialog::formFiller()
@@ -178,5 +152,14 @@ void NewPilotDialog::submitForm()
     pilotEntry.setData(new_data);
     DEB("Pilot entry position: " << pilotEntry.getPosition());
     DEB("Pilot entry data: " << pilotEntry.getData());
-    aDB()->commit(pilotEntry);
+    if (!aDB()->commit(pilotEntry)) {
+        auto message_box = QMessageBox(this);
+        message_box.setText("The following error has ocurred:\n\n"
+                            + aDB()->lastError
+                            + "\n\nThe entry has not been saved.");
+        message_box.exec();
+        return;
+    } else {
+        QDialog::accept();
+    }
 }

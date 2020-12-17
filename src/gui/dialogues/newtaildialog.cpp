@@ -37,7 +37,6 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     DEB("new NewTailDialog (experimental)");
     ui->setupUi(this);
 
-    connectSignals();
     setupCompleter();
     setupValidators();
 
@@ -60,7 +59,6 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     ui->searchLineEdit->hide();
     ui->line->hide();
 
-    connectSignals();
     setupValidators();
     entry = aDB()->getTailEntry(row_id);
     fillForm(entry, false);
@@ -106,15 +104,6 @@ void NewTailDialog::setupValidators()
         auto validator = new QRegularExpressionValidator(pair.second, line_edit);
         line_edit->setValidator(validator);
     }
-}
-
-void NewTailDialog::connectSignals()
-{
-    using namespace experimental;
-    QObject::connect(aDB(), &ADataBase::commitSuccessful,
-                     this,  &NewTailDialog::onCommitSuccessful);
-    QObject::connect(aDB(), &ADataBase::sqlError,
-                     this,  &NewTailDialog::onCommitUnsuccessful);
 }
 
 /*!
@@ -239,7 +228,16 @@ void NewTailDialog::submitForm()
     //create db object
 
     entry.setData(new_data);
-    aDB()->commit(entry);
+    if (!aDB()->commit(entry)) {
+        auto message_box = QMessageBox(this);
+        message_box.setText("The following error has ocurred:\n\n"
+                            + aDB()->lastError
+                            + "\n\nThe entry has not been saved.");
+        message_box.exec();
+        return;
+    } else {
+        QDialog::accept();
+    }
 }
 
 /// Slots
@@ -332,18 +330,11 @@ void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
     ui->registrationLineEdit->setText(arg1.toUpper());
 }
 
-void NewTailDialog::onCommitSuccessful()
-{
-    ACalc::updateAutoTimes(entry.getPosition().second); // To do: update to use new db architecture with new ATailEntry
-    accept();
-}
-
-void NewTailDialog::onCommitUnsuccessful(const QSqlError &sqlError, const QString &)
-{
+/*
     auto mb = QMessageBox(this);
     mb.setIcon(QMessageBox::Critical);
     mb.setText("The following error has ocurred.\n\n"
                + sqlError.text()
                + "\n\nYour entry has not been saved.");
     mb.exec();
-}
+*/

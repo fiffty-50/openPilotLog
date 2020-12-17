@@ -132,11 +132,11 @@ void MainWindow::on_actionDebug_triggered()
 
 void MainWindow::connectWidgets()
 {
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
                      logbookWidget, &LogbookWidget::onDatabaseChanged);
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
                      pilotsWidget, &PilotsWidget::onDatabaseChanged);
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
                      aircraftWidget, &AircraftWidget::onDatabaseChanged);
 }
 
