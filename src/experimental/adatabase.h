@@ -51,6 +51,7 @@ public:
     ADataBase(const ADataBase&) = delete;
     void operator=(const ADataBase&) = delete;
     static ADataBase* getInstance();
+    QString lastError;
 
     /*!
      * \brief The CompleterTarget enum provides the items for which QCompleter
@@ -179,13 +180,15 @@ public:
     const QMap<QString, int> getIdMap(DatabaseTarget);
 
     int getLastEntry(DatabaseTarget);
+
 signals:
-    void commitSuccessful();
-
-    void deleteSuccessful();
-
-    void sqlError(const QSqlError &sqlError, const QString &sqlStatement);
-
+    /*!
+     * \brief updated is emitted whenever the database contents have been updated.
+     * This can be either a commit, update or remove. This signal should be used to
+     * trigger an update to the models of the views displaying database contents in
+     * the user interface so that a user is always presented with up-to-date information.
+     */
+    void updated();
 };
 
 /*!

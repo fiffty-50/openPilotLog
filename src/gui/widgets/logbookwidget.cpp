@@ -19,6 +19,8 @@
 #include "ui_logbookwidget.h"
 #include "src/testing/adebug.h"
 
+using namespace experimental;
+
 const QMap<int, QString> FILTER_MAP = {
     {0, "Date LIKE \"%"},
     {1, "Dept LIKE \"%"},
@@ -75,11 +77,6 @@ void LogbookWidget::connectSignalsAndSlots()
     selection = view->selectionModel();
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
-    using namespace experimental;
-    QObject::connect(aDB(), &ADataBase::deleteSuccessful,
-                     this, &LogbookWidget::onDeletedSuccessfully);
-    QObject::connect(aDB(), &ADataBase::sqlError,
-                     this, &LogbookWidget::onDeleteUnsuccessful);
 }
 
 void LogbookWidget::setupDefaultView()
@@ -230,8 +227,14 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         if (reply == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
                 DEB("Deleting flight: " << flight.summary());
-                experimental::aDB()->remove(flight);
+                if(!aDB()->remove(flight)) {
+                    messageBox->setText(" Error "); // [F]: To Do: error info
+                    messageBox->exec();
+                    return;
+                }
             }
+            messageBox->setText(QString::number(selectedFlights.length()) + " flights have been deleted successfully.");
+            messageBox->exec();
             displayModel->select();
         }
     } else if (selectedFlights.length() > 10) {
@@ -246,15 +249,24 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         confirm.setText(warningMsg);
         int reply = confirm.exec();
         if(reply == QMessageBox::Yes) {
-            QList<experimental::DataPosition> selected_flights;
+            QList<DataPosition> selected_flights;
             for (const auto& flight_id : selectedFlights) {
                 selected_flights.append({"flights", flight_id});
             }
-            experimental::aDB()->removeMany(selected_flights);
+            if (!aDB()->removeMany(selected_flights)) {
+
+                messageBox->setText(" Error "); // [F]: To Do: error info
+                messageBox->exec();
+                return;
+            }
+            messageBox->setText(QString::number(selectedFlights.length()) + " flights have been deleted successfully.");
+            messageBox->exec();
             displayModel->select();
         }
+        displayModel->select();
     }
 }
+
 
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
 {
@@ -264,19 +276,6 @@ void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
 void LogbookWidget::on_actionDelete_Flight_triggered()
 {
     emit ui->deleteFlightPushButton->clicked();
-}
-
-void LogbookWidget::onDeletedSuccessfully()
-{
-    messageBox->setText(QString::number(selectedFlights.length()) + " entries have been deleted.");
-    messageBox->exec();
-}
-
-void LogbookWidget::onDeleteUnsuccessful(const QSqlError error)
-{
-    messageBox->setText("Error deleting " + QString::number(selectedFlights.length())
-                        + " flights.\n\nThe following error has ocurred:\n\n" + error.text());
-    messageBox->exec();
 }
 
 void LogbookWidget::on_actionEdit_Flight_triggered()

@@ -86,7 +86,8 @@ bool ADataBase::commit(AEntry entry)
 bool ADataBase::remove(AEntry entry)
 {
     if (!exists(entry)) {
-        DEB("Error: Entry does not exist.");
+        DEB("Error: Database entry not found.");
+        lastError = "Database Error: Database entry not found.";
         return false;
     }
 
@@ -97,13 +98,14 @@ bool ADataBase::remove(AEntry entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
-        emit deleteSuccessful();
+        emit updated();
+        lastError = QString();
         return true;
     } else {
         DEB("Unable to delete.");
         DEB("Query: " << statement);
         DEB("Query Error: " << query.lastError().text());
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         return false;
     }
 }
@@ -117,7 +119,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
 
     for (const auto data_position : data_position_list) {
         if (!exists(data_position)) {
-            DEB("Error: Entry does not exist.");
+            lastError = "Database Error: Database entry not found.";
             errorCount++;
         }
         QString statement = "DELETE FROM " + data_position.first +
@@ -134,16 +136,17 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
         query.prepare("COMMIT");
         query.exec();
         if(query.lastError().type() == QSqlError::NoError) {
-            emit deleteSuccessful();
+            emit updated();
+            lastError = QString();
             return true;
         } else {
-            emit sqlError(query.lastError(), "Transaction unsuccessful. Error count: " + QString::number(errorCount));
+            lastError = "Transaction unsuccessful (Interrupted). Error count: " + QString::number(errorCount);
             return false;
         }
     } else {
         query.prepare("ROLLBACK");
         query.exec();
-        emit sqlError(query.lastError(), "Transaction unsuccessful(rolled back). Error count: " + QString::number(errorCount));
+        lastError = "Transaction unsuccessful (no changes have been made). Error count: " + QString::number(errorCount);
         return false;
     }
 }
@@ -162,8 +165,9 @@ bool ADataBase::exists(AEntry entry)
     query.exec();
     //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         DEB("Query Error: " << query.lastError().text() << statement);
+        return false;
     }
     query.next();
     int rowId = query.value(0).toInt();
@@ -171,7 +175,8 @@ bool ADataBase::exists(AEntry entry)
         DEB("Entry " << entry.getPosition() << " exists.");
         return true;
     } else {
-        DEB("Entry does not exist.");
+        DEB("Database entry not found.");
+        lastError = "Database Error: Database entry not found.";
         return false;
     }
 }
@@ -190,7 +195,7 @@ bool ADataBase::exists(DataPosition data_position)
     query.exec();
     //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         DEB("Query Error: " << query.lastError().text() << statement);
     }
     query.next();
@@ -200,6 +205,7 @@ bool ADataBase::exists(DataPosition data_position)
         return true;
     } else {
         DEB("No entry exists at DataPosition: " << data_position);
+        lastError = "Database Error: Database entry not found.";
         return false;
     }
 }
@@ -225,13 +231,14 @@ bool ADataBase::update(AEntry updated_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit commitSuccessful();
+        emit updated();
+        lastError = QString();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << query.lastError().text());
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         return false;
     }
 }
@@ -263,13 +270,14 @@ bool ADataBase::insert(AEntry new_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit commitSuccessful();
+        emit updated();
+        lastError = QString();
         return true;
     } else {
         DEB("Unable to commit.");
         DEB("Query: " << statement);
         DEB("Query Error: " << query.lastError().text());
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         return false;
     }
 
@@ -294,12 +302,14 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     if (check_query.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << check_query.lastError().text());
         DEB("Statement: " << statement);
+        lastError = check_query.lastError().text();
         return TableData();
     }
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
         DEB("No Entry found for row id: " << data_position.second );
+        lastError = "Database Error: Database entry not found.";
         return TableData();
     }
 
@@ -316,6 +326,7 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     if (select_query.lastError().type() != QSqlError::NoError) {
         DEB("SQL error: " << select_query.lastError().text());
         DEB("Statement: " << statement);
+        lastError = select_query.lastError().text();
         return TableData();
     }
 
@@ -395,8 +406,10 @@ const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
     query.setForwardOnly(true);
     query.exec();
 
-    if(!query.isActive())
-        emit sqlError(query.lastError(), statement);
+    if(!query.isActive()) {
+        lastError = query.lastError().text();
+        return QStringList();
+    }
 
     QStringList completer_list;
     while (query.next())
@@ -445,7 +458,7 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
         DEB("No result found. Check Query and Error.");
         DEB("Query: " << statement);
         DEB("Error: " << query.lastError().text());
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         return QMap<QString, int>();
     } else {
         QVector<QString> query_result;
@@ -478,6 +491,7 @@ int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
     if (query.first()) {
         return query.value(0).toInt();
     } else {
+        lastError = "Database Error: Database entry not found.";
         DEB("No entry found.");
         return 0;
     }
@@ -492,7 +506,7 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
         DEB("No result found. Check Query and Error.");
         DEB("Error: " << query.lastError().text());
         DEB("Statement: " << statement);
-        emit sqlError(query.lastError(), statement);
+        lastError = query.lastError().text();
         return QVector<QString>();
     } else {
         query.first();
@@ -503,7 +517,8 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
                 result.append(query.value(i).toString());
             }
         }
-        emit commitSuccessful();
+        emit updated();
+        lastError = QString();
         return result;
     }
 }

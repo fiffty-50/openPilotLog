@@ -67,9 +67,7 @@ private:
 
     void setupValidators();
 
-    void connectSignals();
-
-    void fillForm(experimental::AEntry entry);
+    void fillForm(experimental::AEntry entry, bool is_template);
 
     void submitForm();
 
@@ -91,9 +89,6 @@ private slots:
 
     void onSearchCompleterActivated();
 
-    void onCommitSuccessful();
-
-    void onCommitUnsuccessful(const QSqlError &sqlError, const QString &);
 };
 
 #endif // NEWTAIL_H

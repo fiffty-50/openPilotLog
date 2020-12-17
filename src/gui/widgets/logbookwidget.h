@@ -60,9 +60,6 @@ private slots:
 
     void on_actionDelete_Flight_triggered();
 
-    void onDeletedSuccessfully();
-    void onDeleteUnsuccessful(const QSqlError);
-
     void on_actionEdit_Flight_triggered();
 
     void on_tableView_doubleClicked();

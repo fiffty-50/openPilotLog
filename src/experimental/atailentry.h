@@ -30,6 +30,10 @@ public:
     ATailEntry& operator=(const ATailEntry& te) = default;
     ATailEntry(int row_id);
     ATailEntry(TableData table_data);
+
+    const QString registration();
+
+    const QString type();
 };
 
 } // namespace experimental
