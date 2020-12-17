@@ -128,7 +128,7 @@ void AircraftWidget::on_deleteButton_clicked()
     }
 }
 
-void AircraftWidget::on_newButton_clicked()
+void AircraftWidget::on_newAircraftButton_clicked()
 {
     auto nt = NewTailDialog(QString(), this);
     connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
@@ -142,6 +142,12 @@ void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
         ui->aircraftSearchLineEdit->setText(arg1.toUpper());
     }
     model->setFilter(ui->aircraftSearchComboBox->currentText() + " LIKE \"%" + arg1 + "%\"");
+}
+
+void AircraftWidget::onDatabaseChanged()
+{
+    //refresh view to reflect changes the user has made via a dialog.
+    model->select();
 }
 
 void AircraftWidget::tableView_selectionChanged()

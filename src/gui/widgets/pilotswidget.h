@@ -45,15 +45,18 @@ private slots:
 
     void tableView_headerClicked(int);
 
-    void on_newButton_clicked();
+    void on_newPilotButton_clicked();
 
-    void on_deletePushButton_clicked();
+    void on_deletePilotButton_clicked();
 
     void on_deleteUnsuccessful();
 
     void pilot_editing_finished();
 
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
+
+public slots:
+    void onDatabaseChanged();
 
 private:
     Ui::PilotsWidget *ui;

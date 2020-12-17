@@ -119,7 +119,7 @@ void NewPilotDialog::setup()
     ///   makes it easier to maintain.
     /// - these signals and slots are specific to this dialog, for communication with
     ///   other widgets we have the QDialog::accepted() and QDialog::rejected signals.
-    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+    QObject::connect(aDB(), &ADataBase::commitSuccessful,
                      this, &NewPilotDialog::onCommitSuccessful);
     QObject::connect(aDB(), &ADataBase::sqlError,
                      this, &NewPilotDialog::onCommitUnsuccessful);

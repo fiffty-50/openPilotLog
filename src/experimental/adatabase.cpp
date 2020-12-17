@@ -97,7 +97,7 @@ bool ADataBase::remove(AEntry entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
-        emit sqlSuccessful();
+        emit deleteSuccessful();
         return true;
     } else {
         DEB("Unable to delete.");
@@ -134,7 +134,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
         query.prepare("COMMIT");
         query.exec();
         if(query.lastError().type() == QSqlError::NoError) {
-            emit sqlSuccessful();
+            emit deleteSuccessful();
             return true;
         } else {
             emit sqlError(query.lastError(), "Transaction unsuccessful. Error count: " + QString::number(errorCount));
@@ -225,7 +225,7 @@ bool ADataBase::update(AEntry updated_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
@@ -263,7 +263,7 @@ bool ADataBase::insert(AEntry new_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return true;
     } else {
         DEB("Unable to commit.");
@@ -363,20 +363,20 @@ AFlightEntry ADataBase::getFlightEntry(RowId row_id)
     return flight_entry;
 }
 
-const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target)
+const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
 {
     QString statement;
 
     switch (target) {
     case pilots:
-        statement.append("SELECT piclastname||\",\"||picfirstname FROM pilots");
+        statement.append("SELECT piclastname||\", \"||picfirstname FROM pilots");
         break;
     case aircraft:
         statement.append("SELECT make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airports:
+    case airport_identifier_all:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
         break;
     case registrations:
@@ -385,6 +385,9 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
     case companies:
         statement.append("SELECT company FROM pilots");
         break;
+    default:
+        DEB("Not a valid completer target for this function.");
+        return QStringList();
     }
 
     QSqlQuery query;
@@ -406,18 +409,30 @@ const QStringList ADataBase::getCompletionList(ADataBase::CompleterTarget target
     return completer_list;
 }
 
-const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
+const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
 {
     QString statement;
 
     switch (target) {
     case pilots:
-        statement.append("SELECT ROWID, piclastname||\",\"||picfirstname FROM pilots");
+        statement.append("SELECT ROWID, piclastname||\", \"||picfirstname FROM pilots");
         break;
     case aircraft:
         statement.append("SELECT ROWID, make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT ROWID, make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+        break;
+    case airport_identifier_icao:
+        statement.append("SELECT ROWID, icao FROM airports");
+        break;
+    case airport_identifier_iata:
+        statement.append("SELECT ROWID, iata FROM airports WHERE iata NOT NULL");
+        break;
+    case airport_names:
+        statement.append("SELECT ROWID, name FROM airports");
+        break;
+    case tails:
+        statement.append("SELECT ROWID, registration FROM tails");
         break;
     default:
         DEB("Not a valid completer target for this function.");
@@ -441,6 +456,33 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::CompleterTarget target)
     }
 }
 
+int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
+{
+    QString statement = "SELECT MAX(ROWID) FROM ";
+
+    switch (target) {
+    case pilots:
+        statement.append("pilots");
+        break;
+    case aircraft:
+        statement.append("aircraft");
+        break;
+    case tails:
+        statement.append("tails");
+        break;
+    default:
+        DEB("Not a valid completer target for this function.");
+        return 0;
+    }
+    auto query = QSqlQuery(statement);
+    if (query.first()) {
+        return query.value(0).toInt();
+    } else {
+        DEB("No entry found.");
+        return 0;
+    }
+}
+
 QVector<QString> ADataBase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);
@@ -461,7 +503,7 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
                 result.append(query.value(i).toString());
             }
         }
-        emit sqlSuccessful();
+        emit commitSuccessful();
         return result;
     }
 }

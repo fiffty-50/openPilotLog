@@ -111,7 +111,7 @@ void NewTailDialog::setupValidators()
 void NewTailDialog::connectSignals()
 {
     using namespace experimental;
-    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+    QObject::connect(aDB(), &ADataBase::commitSuccessful,
                      this,  &NewTailDialog::onCommitSuccessful);
     QObject::connect(aDB(), &ADataBase::sqlError,
                      this,  &NewTailDialog::onCommitUnsuccessful);

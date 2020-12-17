@@ -71,6 +71,12 @@ void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
     model->setFilter("\"" + ui->pilotsSearchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
 }
 
+void PilotsWidget::onDatabaseChanged()
+{
+    //refresh view to reflect changes the user has made via a dialog.
+    model->select();
+}
+
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
 {
     if (this->findChild<NewPilotDialog*>() != nullptr) {
@@ -111,7 +117,7 @@ void PilotsWidget::tableView_headerClicked(int column)
     ASettings::write("userdata/pilSortColumn", column);
 }
 
-void PilotsWidget::on_newButton_clicked()
+void PilotsWidget::on_newPilotButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(this);
     QObject::connect(np,   &QDialog::accepted,
@@ -122,7 +128,7 @@ void PilotsWidget::on_newButton_clicked()
     np->exec();
 }
 
-void PilotsWidget::on_deletePushButton_clicked()
+void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
         auto mb = QMessageBox(this);

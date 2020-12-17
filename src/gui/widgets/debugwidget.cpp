@@ -164,6 +164,14 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
+    using namespace experimental;
+
+    auto pilotsIdMap  = aDB()->getIdMap(ADataBase::pilots);
+    auto pilotList    = aDB()->getCompletionList(ADataBase::pilots);
+
+    DEB(pilotsIdMap.key(aDB()->getLastEntry(ADataBase::pilots)));
+    DEB(pilotList);
+
 
 }
 

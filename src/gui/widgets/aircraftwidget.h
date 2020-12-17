@@ -49,11 +49,14 @@ private slots:
 
     void on_deleteButton_clicked();
 
-    void on_newButton_clicked();
+    void on_newAircraftButton_clicked();
 
     void acft_editing_finished();
 
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
+
+public slots:
+    void onDatabaseChanged();
 
 private:
     Ui::AircraftWidget *ui;

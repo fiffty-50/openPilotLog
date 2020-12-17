@@ -69,7 +69,10 @@ private slots:
 
     void on_flightSearchLlineEdit_textChanged(const QString &arg1);
 
-    void on_flightSearchComboBox_currentIndexChanged();
+    void on_flightSearchComboBox_currentIndexChanged(int);
+
+public slots:
+    void onDatabaseChanged();
 
 private:
     Ui::LogbookWidget *ui;

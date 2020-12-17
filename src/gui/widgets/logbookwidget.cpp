@@ -76,7 +76,7 @@ void LogbookWidget::connectSignalsAndSlots()
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
     using namespace experimental;
-    QObject::connect(aDB(), &ADataBase::sqlSuccessful,
+    QObject::connect(aDB(), &ADataBase::deleteSuccessful,
                      this, &LogbookWidget::onDeletedSuccessfully);
     QObject::connect(aDB(), &ADataBase::sqlError,
                      this, &LogbookWidget::onDeleteUnsuccessful);
@@ -174,7 +174,7 @@ void LogbookWidget::flightsTableView_selectionChanged()//
 
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    auto nf = new NewFlightDialog(this, Db::createNew);
+    auto nf = new NewFlightDialog(this);
     nf->setAttribute(Qt::WA_DeleteOnClose);
     nf->exec();
     displayModel->select();
@@ -183,7 +183,7 @@ void LogbookWidget::on_newFlightButton_clicked()
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
-        auto ef = new NewFlightDialog(this,Flight(selectedFlights.first()), Db::editExisting);
+        auto ef = new NewFlightDialog(selectedFlights.first(), this);
         ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
         displayModel->select();
@@ -268,7 +268,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
 
 void LogbookWidget::onDeletedSuccessfully()
 {
-    messageBox->setText(QString::number(selectedFlights.length()) + " flights have been deleted.");
+    messageBox->setText(QString::number(selectedFlights.length()) + " entries have been deleted.");
     messageBox->exec();
 }
 
@@ -289,9 +289,15 @@ void LogbookWidget::on_tableView_doubleClicked()
     emit ui->editFlightButton->clicked();
 }
 
-void LogbookWidget::on_flightSearchComboBox_currentIndexChanged()
+void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
 {
     emit ui->showAllButton->clicked();
+}
+
+void LogbookWidget::onDatabaseChanged()
+{
+    //refresh view to reflect changes the user has made via a dialog.
+    displayModel->select();
 }
 
 void LogbookWidget::on_showAllButton_clicked()

@@ -63,12 +63,33 @@ MainWindow::MainWindow(QWidget *parent)
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
 
+    connectWidgets();
+
     // Startup Screen (Home Screen)
     // ui->stackedWidget->setCurrentWidget(homeWidget);
     // Debup Widget for now
     debugWidget = new DebugWidget(this);
     ui->stackedWidget->addWidget(debugWidget);
     ui->stackedWidget->setCurrentWidget(debugWidget);
+
+    //// START DEBUG ////
+    /// [F] I understand how it is annoying to not have the database
+    /// working when something has changed. Hopefully this check
+    /// helps to avoid that in the future!
+    const int DATABASE_REVISION_NUMBER = 13;
+    QSqlQuery query;
+    query.prepare("SELECT COUNT (*) FROM changelog");
+    query.exec();
+    query.next();
+    if (query.value(0).toInt() < DATABASE_REVISION_NUMBER) {
+        DEB("##########################################");
+        DEB("Your database is out of date.");
+        DEB("Curren Revision: " << DATABASE_REVISION_NUMBER);
+        DEB("You have revision: " << query.value(0).toInt());
+        DEB("Use of DebugWidget to udpate recommended.");
+        DEB("##########################################");
+    }
+    //// END DEBUG ////
 
 }
 
@@ -109,6 +130,16 @@ void MainWindow::on_actionDebug_triggered()
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
+void MainWindow::connectWidgets()
+{
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     logbookWidget, &LogbookWidget::onDatabaseChanged);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     pilotsWidget, &PilotsWidget::onDatabaseChanged);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     aircraftWidget, &AircraftWidget::onDatabaseChanged);
+}
+
 void MainWindow::on_actionSettings_triggered()
 {
     ui->stackedWidget->setCurrentWidget(settingsWidget);
@@ -126,7 +157,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlightDialog nf = NewFlightDialog(this, Db::createNew);
+    NewFlightDialog nf = NewFlightDialog(this);
     nf.exec();
 
 }
@@ -139,6 +170,6 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np =NewPilotDialog(Db::createNew, this);
+    NewPilotDialog np = NewPilotDialog(Db::createNew, this);
     np.exec();
 }
