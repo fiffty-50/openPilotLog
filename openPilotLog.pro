@@ -35,7 +35,6 @@ SOURCES += \
     src/experimental/aflightentry.cpp \
     src/experimental/apilotentry.cpp \
     src/experimental/atailentry.cpp \
-    src/experimental/expnewflightdialog.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
@@ -74,7 +73,6 @@ HEADERS += \
     src/experimental/apilotentry.h \
     src/experimental/atailentry.h \
     src/experimental/decl.h \
-    src/experimental/expnewflightdialog.h \
     src/functions/acalc.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
@@ -95,7 +93,6 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
-    src/experimental/expnewflightdialog.ui \
     src/gui/dialogues/firstrundialog.ui \
     src/gui/dialogues/newflight.ui \
     src/gui/dialogues/newpilot.ui \

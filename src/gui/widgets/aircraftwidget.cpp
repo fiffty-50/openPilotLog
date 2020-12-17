@@ -144,6 +144,12 @@ void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
     model->setFilter(ui->aircraftSearchComboBox->currentText() + " LIKE \"%" + arg1 + "%\"");
 }
 
+void AircraftWidget::onDatabaseChanged()
+{
+    //refresh view to reflect changes the user has made via a dialog.
+    model->select();
+}
+
 void AircraftWidget::tableView_selectionChanged()
 {
     if (this->findChild<NewTailDialog*>() != nullptr) {

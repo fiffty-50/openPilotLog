@@ -177,6 +177,8 @@ public:
      * \return
      */
     const QMap<QString, int> getIdMap(DatabaseTarget);
+
+    int getLastEntry(DatabaseTarget);
 signals:
     void commitSuccessful();
 

@@ -71,6 +71,9 @@ private slots:
 
     void on_flightSearchComboBox_currentIndexChanged(int);
 
+public slots:
+    void onDatabaseChanged();
+
 private:
     Ui::LogbookWidget *ui;
 

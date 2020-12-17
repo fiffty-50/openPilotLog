@@ -456,6 +456,33 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
     }
 }
 
+int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
+{
+    QString statement = "SELECT MAX(ROWID) FROM ";
+
+    switch (target) {
+    case pilots:
+        statement.append("pilots");
+        break;
+    case aircraft:
+        statement.append("aircraft");
+        break;
+    case tails:
+        statement.append("tails");
+        break;
+    default:
+        DEB("Not a valid completer target for this function.");
+        return 0;
+    }
+    auto query = QSqlQuery(statement);
+    if (query.first()) {
+        return query.value(0).toInt();
+    } else {
+        DEB("No entry found.");
+        return 0;
+    }
+}
+
 QVector<QString> ADataBase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);

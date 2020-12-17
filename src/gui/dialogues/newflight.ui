@@ -14,10 +14,10 @@
    <string>New Flight</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -819,6 +819,13 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="calendarCheckBox">
+         <property name="text">
+          <string>Calendar</string>
+         </property>
+        </widget>
+       </item>
       </layout>
       <zorder>placeLabel2</zorder>
       <zorder>deptLocLineEdit</zorder>
@@ -873,6 +880,7 @@
       <zorder>FlightNumberLabel</zorder>
       <zorder>doftDisplayLabel</zorder>
       <zorder>placeLabel1</zorder>
+      <zorder>calendarCheckBox</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">
@@ -1413,26 +1421,28 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="verifyButton">
+    <widget class="QPushButton" name="cancelButton">
+     <property name="styleSheet">
+      <string notr="true">color: rgb(164, 0, 0);</string>
+     </property>
      <property name="text">
-      <string>DebugButton</string>
+      <string>Cancel</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="verifyEdit">
-     <property name="placeholderText">
-      <string>Debug Text</string>
+    <widget class="QPushButton" name="submitButton">
+     <property name="enabled">
+      <bool>false</bool>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add your flight to the logbook.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You can only perform this action if all of the mandatory fields are filled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(78, 154, 6);</string>
+     </property>
+     <property name="text">
+      <string>Submit</string>
      </property>
     </widget>
    </item>
@@ -1466,8 +1476,6 @@
   <tabstop>restoreDefaultButton</tabstop>
   <tabstop>manualEditingCheckBox</tabstop>
   <tabstop>tblkTimeLineEdit</tabstop>
-  <tabstop>verifyButton</tabstop>
-  <tabstop>verifyEdit</tabstop>
   <tabstop>calendarWidget</tabstop>
   <tabstop>flightDataTabWidget</tabstop>
  </tabstops>

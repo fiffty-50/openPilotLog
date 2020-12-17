@@ -92,6 +92,8 @@ private:
 
     DebugWidget* debugWidget;
 
+    void connectWidgets();
+
 
 
 

@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent)
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
 
+    connectWidgets();
+
     // Startup Screen (Home Screen)
     // ui->stackedWidget->setCurrentWidget(homeWidget);
     // Debup Widget for now
@@ -128,6 +130,16 @@ void MainWindow::on_actionDebug_triggered()
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
+void MainWindow::connectWidgets()
+{
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     logbookWidget, &LogbookWidget::onDatabaseChanged);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     pilotsWidget, &PilotsWidget::onDatabaseChanged);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::commitSuccessful,
+                     aircraftWidget, &AircraftWidget::onDatabaseChanged);
+}
+
 void MainWindow::on_actionSettings_triggered()
 {
     ui->stackedWidget->setCurrentWidget(settingsWidget);
@@ -145,7 +157,7 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlightDialog nf = NewFlightDialog(this, Db::createNew);
+    NewFlightDialog nf = NewFlightDialog(this);
     nf.exec();
 
 }
@@ -158,6 +170,6 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np =NewPilotDialog(Db::createNew, this);
+    NewPilotDialog np = NewPilotDialog(Db::createNew, this);
     np.exec();
 }

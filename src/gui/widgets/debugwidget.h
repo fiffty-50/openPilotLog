@@ -17,7 +17,6 @@
 #include "src/experimental/adatabase.h"
 #include "src/experimental/aentry.h"
 #include "src/experimental/apilotentry.h"
-#include "src/experimental/expnewflightdialog.h"
 
 #include "src/testing/abenchmark.h"
 #include "src/testing/atimer.h"

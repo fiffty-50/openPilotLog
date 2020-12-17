@@ -71,6 +71,12 @@ void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
     model->setFilter("\"" + ui->pilotsSearchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
 }
 
+void PilotsWidget::onDatabaseChanged()
+{
+    //refresh view to reflect changes the user has made via a dialog.
+    model->select();
+}
+
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
 {
     if (this->findChild<NewPilotDialog*>() != nullptr) {
