@@ -74,7 +74,7 @@ void LogbookWidget::prepareModelAndView(int view_id)
 
 void LogbookWidget::connectSignalsAndSlots()
 {
-    selection = view->selectionModel();
+    selectionModel = view->selectionModel();
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
@@ -163,7 +163,7 @@ void LogbookWidget::setupEasaView()
 void LogbookWidget::flightsTableView_selectionChanged()//
 {
     selectedFlights.clear();
-    for (const auto& row : selection->selectedRows()) {
+    for (const auto& row : selectionModel->selectedRows()) {
         selectedFlights.append(row.data().toInt());
         DEB("Selected Flight(s) with ID: " << selectedFlights);
     }
@@ -297,6 +297,11 @@ void LogbookWidget::onDatabaseChanged()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
+}
+
+void LogbookWidget::onLogbookviewSelectionChanged(int view_id)
+{
+    prepareModelAndView(view_id);
 }
 
 void LogbookWidget::on_showAllButton_clicked()

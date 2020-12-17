@@ -22,7 +22,6 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QDebug>
-#include <QLabel>
 #include <QTableView>
 #include "src/classes/asettings.h"
 #include "src/classes/pilot.h"
@@ -42,17 +41,11 @@ public:
 
 private slots:
     void tableView_selectionChanged();
-
     void tableView_headerClicked(int);
-
     void on_newPilotButton_clicked();
-
     void on_deletePilotButton_clicked();
-
     void on_deleteUnsuccessful();
-
     void pilot_editing_finished();
-
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
@@ -65,7 +58,7 @@ private:
 
     QTableView *view;
 
-    QItemSelectionModel* selection;
+    QItemSelectionModel* selectionModel;
 
     qint32 sortColumn;
 

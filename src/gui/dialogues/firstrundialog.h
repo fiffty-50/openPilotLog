@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
-#include <QRegularExpressionValidator>
 #include "src/classes/asettings.h"
 #include "src/classes/pilot.h"
 

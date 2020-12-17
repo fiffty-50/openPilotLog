@@ -25,9 +25,7 @@
 
 #include "src/classes/asettings.h"
 #include "src/classes/aircraft.h"
-#include "src/classes/astrictrxvalidator.h"
 #include "src/functions/acalc.h"
-#include "src/database/entry_deprecated.h"
 #include "src/experimental/adatabase.h"
 #include "src/experimental/atailentry.h"
 #include "src/experimental/aaircraftentry.h"
@@ -64,29 +62,18 @@ private:
     QMap<QString, int> idMap;
 
     void setupCompleter();
-
     void setupValidators();
-
     void fillForm(experimental::AEntry entry, bool is_template);
-
+    bool verify();
     void submitForm();
 
-    bool verify();
-
 private slots:
-
     void on_operationComboBox_currentIndexChanged(int index);
-
     void on_ppTypeComboBox_currentIndexChanged(int index);
-
     void on_ppNumberComboBox_currentIndexChanged(int index);
-
     void on_weightComboBox_currentIndexChanged(int index);
-
     void on_registrationLineEdit_textChanged(const QString &arg1);
-
     void on_buttonBox_accepted();
-
     void onSearchCompleterActivated();
 
 };

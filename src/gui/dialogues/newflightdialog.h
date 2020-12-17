@@ -23,10 +23,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QCompleter>
-#include <QLatin1Char>
 #include <QStringList>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
 #include <QButtonGroup>
 #include <QBitArray>
 #include <QLineEdit>
@@ -65,51 +62,35 @@ signals:
     void mandatoryLineEditsFilled();
 
 private slots:
-
     void onGoodInputReceived(QLineEdit*);
     void onBadInputReceived(QLineEdit *);
-    void onTextChangedToUpper(const QString&);
+    void onToUpperTriggered_textChanged(const QString&);
     void onPilotNameLineEdit_editingFinished();
     void onLocLineEdit_editingFinished(QLineEdit*, QLabel*);
     void onTimeLineEdit_editingFinished();
     void onMandatoryLineEditsFilled();
-    void onCompleterHighlighted(const QString&);
-    void onCompleterActivated(const QString &);
-    void onDateClicked(const QDate &date);
-    void onDateSelected(const QDate &date);
-    void onDoftLineEditEntered();
-
-    void on_deptLocLineEdit_editingFinished();
-    void on_destLocLineEdit_editingFinished();
-    void on_acftLineEdit_editingFinished();
-
-
+    void onCompleter_highlighted(const QString&);
+    void onCompleter_activated(const QString &);
+    void onCalendarWidget_clicked(const QDate &date);
+    void onCalendarWidget_selected(const QDate &date);
+    void onDoftLineEdit_entered();
 /////// DEBUG
     void onInputRejected();
 /////// DEBUG
-
     void on_calendarCheckBox_stateChanged(int arg1);
-
     void on_doftLineEdit_editingFinished();
-
     void on_cancelButton_clicked();
-
     void on_submitButton_clicked();
-
     void on_setAsDefaultButton_clicked();
-
     void on_restoreDefaultButton_clicked();
-
     void on_PilotFlyingCheckBox_stateChanged(int arg1);
-
     void on_IfrCheckBox_stateChanged(int);
-
     void on_manualEditingCheckBox_stateChanged(int arg1);
-
     void on_ApproachComboBox_currentTextChanged(const QString &arg1);
-
-
     void on_FunctionComboBox_currentIndexChanged(int index);
+    void on_deptLocLineEdit_editingFinished();
+    void on_destLocLineEdit_editingFinished();
+    void on_acftLineEdit_editingFinished();
 
 private:
     Ui::NewFlight *ui;
@@ -132,12 +113,6 @@ private:
     QMap<QString, int> airportIataIdMap;
     QMap<QString, int> airportNameIdMap;
 
-    bool eventFilter(QObject *object, QEvent *event);
-
-    bool updateEnabled;
-
-    bool isLessOrEqualThanBlockTime(const QString time_string);
-
     void setup();
     void readSettings();
     void writeSettings();
@@ -145,11 +120,12 @@ private:
     void setPopUpCalendarEnabled(bool state);
     void setupRawInputValidation();
     void setupLineEditSignalsAndSlots();
-
     void formFiller();
-
     void fillDeductibleData();
     experimental::TableData collectInput();
+    bool eventFilter(QObject *object, QEvent *event);
+    bool updateEnabled;
+    bool isLessOrEqualThanBlockTime(const QString time_string);
 
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
