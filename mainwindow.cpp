@@ -70,6 +70,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(debugWidget);
     ui->stackedWidget->setCurrentWidget(debugWidget);
 
+    //// START DEBUG ////
+    /// [F] I understand how it is annoying to not have the database
+    /// working when something has changed. Hopefully this check
+    /// helps to avoid that in the future!
+    const int DATABASE_REVISION_NUMBER = 13;
+    QSqlQuery query;
+    query.prepare("SELECT COUNT (*) FROM changelog");
+    query.exec();
+    query.next();
+    if (query.value(0).toInt() < DATABASE_REVISION_NUMBER) {
+        DEB("##########################################");
+        DEB("Your database is out of date.");
+        DEB("Curren Revision: " << DATABASE_REVISION_NUMBER);
+        DEB("You have revision: " << query.value(0).toInt());
+        DEB("Use of DebugWidget to udpate recommended.");
+        DEB("##########################################");
+    }
+    //// END DEBUG ////
+
 }
 
 MainWindow::~MainWindow()

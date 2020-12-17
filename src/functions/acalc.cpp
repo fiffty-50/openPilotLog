@@ -4,75 +4,39 @@
 using namespace ACalc;
 
 /*!
- * \brief ACalc::blocktime Calculates Block Time for a given departure and arrival time
- * \param tofb QTime Time Off Blocks
- * \param tonb QTime Time On Blocks
- * \return Block Time in minutes
+ * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
+ * if the output is not a valid time, an empty string is returned. Accepts
+ * input as hh:mm, h:mm, hhmm or hmm.
+ * \param userinput from a QLineEdit
+ * \return formatted QString "hh:mm" or Empty String
  */
-QTime ACalc::blocktime(QTime tofb, QTime tonb)
+QString ACalc::formatTimeInput(QString user_input)
 {
-    QTime blocktime_out(0, 0); // initialise return value at midnight
+    QString output; //
+    QTime temp_time; //empty time object is invalid by default
 
-    if (tonb > tofb) { // landing same day
-        int blockseconds = tofb.secsTo(tonb);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
-    } else { // landing next day
-        QTime midnight(0, 0);
-        int blockseconds = tofb.secsTo(midnight);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
-        blockseconds = midnight.secsTo(tonb);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
+    bool contains_seperator = user_input.contains(":");
+    if (user_input.length() == 4 && !contains_seperator) {
+        temp_time = QTime::fromString(user_input, "hhmm");
+    } else if (user_input.length() == 3 && !contains_seperator) {
+        if (user_input.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
+            QString tempstring = user_input.prepend("0");
+            temp_time = QTime::fromString(tempstring, "hhmm");
+        } else {
+            temp_time = QTime::fromString(user_input, "Hmm");
+        }
+    } else if (user_input.length() == 4 && contains_seperator) {
+        temp_time = QTime::fromString(user_input, "h:mm");
+    } else if (user_input.length() == 5 && contains_seperator) {
+        temp_time = QTime::fromString(user_input, "hh:mm");
     }
-    return blocktime_out;
-}
 
-
-/*!
- * \brief ACalc::minutes_to_string Converts database time to String Time
- * \param blockminutes from database
- * \return String hh:mm
- */
-QString ACalc::minutesToString(QString blockminutes)
-{
-    int minutes = blockminutes.toInt();
-    QString hour = QString::number(minutes / 60);
-    if (hour.size() < 2) {
-        hour.prepend("0");
+    output = temp_time.toString("hh:mm");
+    if (output.isEmpty()) {
+        qDebug() << "Time input is invalid.";
     }
-    QString minute = QString::number(minutes % 60);
-    if (minute.size() < 2) {
-        minute.prepend("0");
-    }
-    QString blocktime = hour + ":" + minute;
-    return blocktime;
-};
-
-/*!
- * \brief ACalc::time_to_minutes converts QTime to int minutes
- * \param time QTime
- * \return int time as number of minutes
- */
-int ACalc::QTimeToMinutes(QTime time)
-{
-    QString timestring = time.toString("hh:mm");
-    int minutes = (timestring.left(2).toInt()) * 60;
-    minutes += timestring.right(2).toInt();
-    return minutes;
+    return output;
 }
-
-/*!
- * \brief ACalc::string_to_minutes Converts String Time to String Number of Minutes
- * \param timestring "hh:mm"
- * \return String number of minutes
- */
-int ACalc::stringToMinutes(QString timestring)
-{
-    int minutes = (timestring.left(2).toInt()) * 60;
-    minutes += timestring.right(2).toInt();
-    timestring = QString::number(minutes);
-    return minutes;
-}
-
 
 /*!
  * The purpose of the following functions is to provide functionality enabling the Calculation of
@@ -98,47 +62,7 @@ int ACalc::stringToMinutes(QString timestring)
  * Radians.
  */
 
-/*!
- * \brief radToDeg Converts radians to degrees
- * \param rad
- * \return degrees
- */
-double ACalc::radToDeg(double rad)
-{
-    double deg = rad * (180 / M_PI);
-    return deg;
-}
 
-/*!
- * \brief degToRad Converts degrees to radians
- * \param deg
- * \return radians
- */
-double ACalc::degToRad(double deg)
-{
-    double rad = deg * (M_PI / 180);
-    return rad;
-}
-
-/*!
- * \brief radToNauticalMiles Convert Radians to nautical miles
- * \param rad
- * \return nautical miles
- */
-double ACalc::radToNauticalMiles(double rad)
-{
-    double nm = rad * 3440.06479482;
-    return nm;
-}
-
-/*!
- * \brief greatCircleDistance Calculates Great Circle distance between two coordinates, return in Radians.
- * \param lat1 Location Latitude in degrees -90:90 ;S(-) N(+)
- * \param lon1 Location Longitude in degrees -180:180 W(-) E(+)
- * \param lat2 Location Latitude in degrees -90:90 ;S(-) N(+)
- * \param lon2 Location Longitude in degrees -180:180 W(-) E(+)
- * \return
- */
 double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
 {
     // Converting Latitude and Longitude to Radians
@@ -157,13 +81,7 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
     return result;
 }
 
-/*!
- * \brief ACalc::greatCircleDistanceBetweenAirports Calculates Great
- * Circle distance between two coordinates, return in nautical miles.
- * \param dept ICAO 4-letter Airport Identifier
- * \param dest ICAO 4-letter Airport Identifier
- * \return Nautical Miles From Departure to Destination
- */
+
 double ACalc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
 {
     QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
@@ -192,16 +110,7 @@ double ACalc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
     return radToNauticalMiles(result);
 }
 
-/*!
- * \brief  Calculates a list of points (lat,lon) along the Great Circle between two points.
- * The points are spaced equally, one minute of block time apart.
- * \param lat1 Location Latitude in degrees -90:90 ;S(-) N(+)
- * \param lon1 Location Longitude in degrees -180:180 W(-) E(+)
- * \param lat2 Location Latitude in degrees -90:90 ;S(-) N(+)
- * \param lon2 Location Longitude in degrees -180:180 W(-) E(+)
- * \param tblk Total Blocktime in minutes
- * \return coordinates {lat,lon} along the Great Circle Track
- */
+
 QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, double lon1,
                                                                double lat2, double lon2, int tblk)
 {
@@ -232,22 +141,7 @@ QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, dou
     return coordinates;
 }
 
-/*!
- * \brief Calculates solar elevation angle for a given point in time and latitude/longitude coordinates
- *
- * It is based on the formulas found here: http://stjarnhimlen.se/comp/tutorial.html#5
- *
- * Credit also goes to Darin C. Koblick for his matlab implementation of various of these
- * formulas and to Kevin Godden for porting it to C++.
- *
- * Darin C. Koblock: https://www.mathworks.com/matlabcentral/profile/authors/1284781
- * Kevin Godden: https://www.ridgesolutions.ie/index.php/about-us/
- *
- * \param utc_time_point - QDateTime (UTC) for which the elevation is Calculated
- * \param lat - Location Latitude in degrees -90:90 ;S(-) N(+)
- * \param lon - Location Longitude in degrees -180:180 W(-) E(+)
- * \return elevation - double of solar elevation in degrees.
- */
+
 double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
     double Alt =
@@ -307,16 +201,7 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
     return elevation;
 }
 
-/*!
- * \brief Calculates which portion of a flight was conducted in night conditions.
- * \param dept - ICAO 4-letter code of Departure Airport
- * \param dest - ICAO 4-letter Code of Destination Airport
- * \param departureTime - QDateTime of Departure (UTC)
- * \param tblk - Total block time in minutes
- * \param nightAngle - the solar elevation angle where night conditons exist.
- * Default -6 (end of civil evening twilight)
- * \return Total number of minutes under night flying conditions
- */
+
 int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
     QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
@@ -334,12 +219,7 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
     double dept_lon = degToRad(dept_coordinates[1].toDouble());
     double dest_lat = degToRad(dest_coordinates[0].toDouble());
     double dest_lon = degToRad(dest_coordinates[1].toDouble());
-/*
-    qDebug() << "ACalc::CalculateNightTime deptLat = " << deptLat;
-    qDebug() << "ACalc::CalculateNightTime deptLon = " << deptLon;
-    qDebug() << "ACalc::CalculateNightTime destLat = " << destLat;
-    qDebug() << "ACalc::CalculateNightTime destLon = " << destLon;
-*/
+
     QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon, dest_lat, dest_lon,
                                                                      tblk);
 
@@ -350,8 +230,6 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
             night_time ++;
         }
     }
-    //qDebug() << "ACalc::CalculateNightTime result for angle: "<< nightAngle
-    //         << " :" << nightTime << " minutes night flying time.";
     return night_time;
 }
 
@@ -372,41 +250,6 @@ bool ACalc::isNight(QString icao, QDateTime event_time, int nightAngle)
     } else {
         return false;
     }
-}
-
-/*!
- * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
- * if the output is not a valid time, an empty string is returned. Accepts
- * input as hh:mm, h:mm, hhmm or hmm.
- * \param userinput from a QLineEdit
- * \return formatted QString "hh:mm" or Empty String
- */
-QString ACalc::formatTimeInput(QString user_input)
-{
-    QString output; //
-    QTime temp_time; //empty time object is invalid by default
-
-    bool contains_seperator = user_input.contains(":");
-    if (user_input.length() == 4 && !contains_seperator) {
-        temp_time = QTime::fromString(user_input, "hhmm");
-    } else if (user_input.length() == 3 && !contains_seperator) {
-        if (user_input.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
-            QString tempstring = user_input.prepend("0");
-            temp_time = QTime::fromString(tempstring, "hhmm");
-        } else {
-            temp_time = QTime::fromString(user_input, "Hmm");
-        }
-    } else if (user_input.length() == 4 && contains_seperator) {
-        temp_time = QTime::fromString(user_input, "h:mm");
-    } else if (user_input.length() == 5 && contains_seperator) {
-        temp_time = QTime::fromString(user_input, "hh:mm");
-    }
-
-    output = temp_time.toString("hh:mm");
-    if (output.isEmpty()) {
-        qDebug() << "Time input is invalid.";
-    }
-    return output;
 }
 
 /*!

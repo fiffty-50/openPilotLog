@@ -1410,7 +1410,14 @@
         </widget>
        </item>
        <item row="7" column="4">
-        <widget class="QLineEdit" name="tblkTimeLineEdit_2"/>
+        <widget class="QLineEdit" name="tblkTimeLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1450,6 +1457,9 @@
     <widget class="QPushButton" name="submitButton">
      <property name="enabled">
       <bool>false</bool>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add your flight to the logbook.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You can only perform this action if all of the mandatory fields are filled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(78, 154, 6);</string>

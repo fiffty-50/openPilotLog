@@ -19,7 +19,7 @@
 #include "src/testing/adebug.h"
 
 
-// Statements for creation of database tables, Revision 12
+// Statements for creation of database tables, Revision 13
 
 const QString createTablePilots = "CREATE TABLE \"pilots\" ( "
             "\"pilot_id\"       INTEGER NOT NULL, "
@@ -165,9 +165,9 @@ const QString createViewEASA = "CREATE VIEW viewEASA AS "
         "dest AS 'Dest', printf('%02d',(tonb/60))||':'||printf('%02d',(tonb%60)) AS 'Time ', "
         "make||' '||model||'-'||variant AS 'Type', "
         "registration AS 'Registration', "
-        "(SELECT printf('%02d',(tSPSE/60))||':'||printf('%02d',(tSPSE%60)) WHERE tSPSE IS NOT \"\") AS 'SP SE', "
-        "(SELECT printf('%02d',(tSPME/60))||':'||printf('%02d',(tSPME%60)) WHERE tSPME IS NOT \"\") AS 'SP ME', "
-        "(SELECT printf('%02d',(tMP/60))||':'||printf('%02d',(tMP%60)) WHERE tMP IS NOT \"\") AS 'MP', "
+        "(SELECT printf('%02d',(tSPSE/60))||':'||printf('%02d',(tSPSE%60)) WHERE tSPSE IS NOT NULL) AS 'SP SE', "
+        "(SELECT printf('%02d',(tSPME/60))||':'||printf('%02d',(tSPME%60)) WHERE tSPME IS NOT NULL) AS 'SP ME', "
+        "(SELECT printf('%02d',(tMP/60))||':'||printf('%02d',(tMP%60)) WHERE tMP IS NOT NULL) AS 'MP', "
         "printf('%02d',(tblk/60))||':'||printf('%02d',(tblk%60)) AS 'Total', "
         "CASE "
         "WHEN pilot_id = 1 THEN alias "
@@ -176,12 +176,12 @@ const QString createViewEASA = "CREATE VIEW viewEASA AS "
         "AS 'Name PIC', "
         "ldgDay AS 'L/D', "
         "ldgNight AS 'L/N', "
-        "(SELECT printf('%02d',(tNight/60))||':'||printf('%02d',(tNight%60)) WHERE tNight IS NOT \"\")  AS 'Night', "
-        "(SELECT printf('%02d',(tIFR/60))||':'||printf('%02d',(tIFR%60)) WHERE tIFR IS NOT \"\")  AS 'IFR', "
-        "(SELECT printf('%02d',(tPIC/60))||':'||printf('%02d',(tPIC%60)) WHERE tPIC IS NOT \"\")  AS 'PIC', "
-        "(SELECT printf('%02d',(tSIC/60))||':'||printf('%02d',(tSIC%60)) WHERE tSIC IS NOT \"\")  AS 'SIC', "
-        "(SELECT printf('%02d',(tDual/60))||':'||printf('%02d',(tDual%60)) WHERE tDual IS NOT \"\")  AS 'Dual', "
-        "(SELECT printf('%02d',(tFI/60))||':'||printf('%02d',(tFI%60)) WHERE tFI IS NOT \"\")  AS 'FI', "
+        "(SELECT printf('%02d',(tNight/60))||':'||printf('%02d',(tNight%60)) WHERE tNight IS NOT NULL)  AS 'Night', "
+        "(SELECT printf('%02d',(tIFR/60))||':'||printf('%02d',(tIFR%60)) WHERE tIFR IS NOT NULL)  AS 'IFR', "
+        "(SELECT printf('%02d',(tPIC/60))||':'||printf('%02d',(tPIC%60)) WHERE tPIC IS NOT NULL)  AS 'PIC', "
+        "(SELECT printf('%02d',(tSIC/60))||':'||printf('%02d',(tSIC%60)) WHERE tSIC IS NOT NULL)  AS 'SIC', "
+        "(SELECT printf('%02d',(tDual/60))||':'||printf('%02d',(tDual%60)) WHERE tDual IS NOT NULL)  AS 'Dual', "
+        "(SELECT printf('%02d',(tFI/60))||':'||printf('%02d',(tFI%60)) WHERE tFI IS NOT NULL)  AS 'FI', "
         "Remarks "
         "FROM flights "
         "INNER JOIN pilots on flights.pic = pilots.pilot_id "
@@ -428,8 +428,11 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
     for (int i = 0; i < fromCSV.first().length(); i++){
         query.prepare(statement);
         for(int j = 0; j < fromCSV.length(); j++) {
-            query.addBindValue(fromCSV[j][i]);
-        }
+             fromCSV[j][i] == QString("") ? // make sure NULL is committed for empty values
+                         query.addBindValue(QVariant(QVariant::String))
+                       : query.addBindValue(fromCSV[j][i]);
+             //query.addBindValue(fromCSV[j][i]);
+         }
         query.exec();
     }
 

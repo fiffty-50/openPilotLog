@@ -11,3 +11,4 @@ revision,comment,date
 10,added viewDefault as a copy of Logbook (deprecated),2020-11-23
 11,added viewQCompleter as a copy of QCompleterView (deprecated),2020-11-23
 12,reworked views to display self or picname according CASE,2020-12-11
+13,Reworked viewEASA to incorporate NULL handling,2020-12-17

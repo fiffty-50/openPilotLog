@@ -52,7 +52,7 @@ private slots:
     void onTextChangedToUpper(const QString&);
     void onPilotLineEdit_editingFinished();
     void onLocLineEdit_editingFinished(QLineEdit*, QLabel*);
-    void onTimeLineEdit_editingFinished(QLineEdit*);
+    void onTimeLineEdit_editingFinished();
     void onMandatoryLineEditsFilled();
     void onCompleterHighlighted(const QString&);
     void onDateClicked(const QDate &date);
@@ -68,12 +68,6 @@ private slots:
     void onInputRejected();
 /////// DEBUG
 
-    void on_tofbTimeLineEdit_2_editingFinished();
-
-    void on_tonbTimeLineEdit_2_editingFinished();
-
-
-
     void on_calendarCheckBox_stateChanged(int arg1);
 
     void on_doftLineEdit_2_editingFinished();
@@ -82,12 +76,25 @@ private slots:
 
     void on_submitButton_clicked();
 
+    void on_setAsDefaultButton_2_clicked();
+
+    void on_restoreDefaultButton_2_clicked();
+
+    void on_PilotFlyingCheckBox_2_stateChanged(int arg1);
+
+    void on_IfrCheckBox_2_stateChanged(int);
+
+    void on_manualEditingCheckBox_2_stateChanged(int arg1);
+
+    void on_ApproachComboBox_2_currentTextChanged(const QString &arg1);
+
 private:
     Ui::ExpNewFlightDialog *ui;
 
     experimental::AFlightEntry flightEntry;
 
     QList<QLineEdit*> mandatoryLineEdits;
+    QList<QLineEdit*> primaryTimeLineEdits;
 
     QBitArray mandatoryLineEditsGood;
 
@@ -105,6 +112,8 @@ private:
 
     bool updateEnabled;
 
+    bool isLessOrEqualThanBlockTime(const QString time_string);
+
     void setup();
     void readSettings();
     void writeSettings();
@@ -114,6 +123,7 @@ private:
     void setupLineEditSignalsAndSlots();
 
     void fillDeductibleData();
+    experimental::TableData collectInput();
 
 };
 
