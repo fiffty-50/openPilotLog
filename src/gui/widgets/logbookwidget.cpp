@@ -293,13 +293,13 @@ void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
     emit ui->showAllButton->clicked();
 }
 
-void LogbookWidget::onDatabaseChanged()
+void LogbookWidget::onDisplayModel_dataBaseUpdated()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
 }
 
-void LogbookWidget::onLogbookviewSelectionChanged(int view_id)
+void LogbookWidget::on_logbookViewSelectionChanged(int view_id)
 {
     prepareModelAndView(view_id);
 }

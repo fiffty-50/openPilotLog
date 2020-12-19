@@ -70,7 +70,7 @@ private:
 
     void updatePersonalDetails();
 signals:
-    void logbookviewSelectionChanged(int view_id);
+    void logbookViewSelectionChanged(int view_id);
 };
 
 #endif // SETTINGSWIDGET_H

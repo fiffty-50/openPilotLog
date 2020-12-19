@@ -58,8 +58,8 @@ private slots:
     void on_flightSearchComboBox_currentIndexChanged(int);
 
 public slots:
-    void onDatabaseChanged();
-    void onLogbookviewSelectionChanged(int);
+    void onDisplayModel_dataBaseUpdated();
+    void on_logbookViewSelectionChanged(int);
 
 private:
     Ui::LogbookWidget *ui;

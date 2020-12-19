@@ -98,7 +98,7 @@ bool ADataBase::remove(AEntry entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.");
-        emit updated();
+        emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
@@ -136,7 +136,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
         query.prepare("COMMIT");
         query.exec();
         if(query.lastError().type() == QSqlError::NoError) {
-            emit updated();
+            emit dataBaseUpdated();
             lastError = QString();
             return true;
         } else {
@@ -231,7 +231,7 @@ bool ADataBase::update(AEntry updated_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit updated();
+        emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
@@ -270,7 +270,7 @@ bool ADataBase::insert(AEntry new_entry)
     if (query.lastError().type() == QSqlError::NoError)
     {
         DEB("Entry successfully committed.");
-        emit updated();
+        emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
@@ -517,7 +517,7 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
                 result.append(query.value(i).toString());
             }
         }
-        emit updated();
+        emit dataBaseUpdated();
         lastError = QString();
         return result;
     }

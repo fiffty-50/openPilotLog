@@ -49,7 +49,7 @@ private slots:
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
-    void onDatabaseChanged();
+    void onDisplayModel_dataBaseUpdated();
 
 private:
     Ui::PilotsWidget *ui;

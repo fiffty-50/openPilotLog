@@ -132,14 +132,15 @@ void MainWindow::on_actionDebug_triggered()
 
 void MainWindow::connectWidgets()
 {
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
-                     logbookWidget, &LogbookWidget::onDatabaseChanged);
-    QObject::connect(settingsWidget, &SettingsWidget::logbookviewSelectionChanged,
-                     logbookWidget, &LogbookWidget::onLogbookviewSelectionChanged);
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
-                     pilotsWidget, &PilotsWidget::onDatabaseChanged);
-    QObject::connect(experimental::aDB(), &experimental::ADataBase::updated,
-                     aircraftWidget, &AircraftWidget::onDatabaseChanged);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::dataBaseUpdated,
+                     logbookWidget, &LogbookWidget::onDisplayModel_dataBaseUpdated);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::dataBaseUpdated,
+                     pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
+    QObject::connect(experimental::aDB(), &experimental::ADataBase::dataBaseUpdated,
+                     aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
+
+    QObject::connect(settingsWidget, &SettingsWidget::logbookViewSelectionChanged,
+                     logbookWidget, &LogbookWidget::on_logbookViewSelectionChanged);
 }
 
 void MainWindow::on_actionSettings_triggered()

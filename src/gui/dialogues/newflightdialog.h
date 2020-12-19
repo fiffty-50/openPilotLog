@@ -50,33 +50,31 @@ class NewFlightDialog : public QDialog
     Q_OBJECT
 
 public:
+    /*!
+     * \brief NewFlightDialog create a new flight and add it to the logbook.
+     */
     explicit NewFlightDialog(QWidget *parent = nullptr);
+    /*!
+     * \brief NewFlightDialog Edit an existing logbook entry.
+     */
     explicit NewFlightDialog(int row_id, QWidget *parent = nullptr);
     ~NewFlightDialog();
 
-signals:
-    void goodInputReceived(QLineEdit*);
-    void badInputReceived(QLineEdit*);
-    void locationEditingFinished(QLineEdit*, QLabel*);
-    void timeEditingFinished(QLineEdit*);
-    void mandatoryLineEditsFilled();
-
 private slots:
-    void onGoodInputReceived(QLineEdit*);
-    void onBadInputReceived(QLineEdit *);
+
+    /////// DEBUG
+        void onInputRejected();
+    /////// DEBUG
+
     void onToUpperTriggered_textChanged(const QString&);
     void onPilotNameLineEdit_editingFinished();
-    void onLocLineEdit_editingFinished(QLineEdit*, QLabel*);
+    void onLocationEditingFinished(QLineEdit*, QLabel*);
     void onTimeLineEdit_editingFinished();
-    void onMandatoryLineEditsFilled();
     void onCompleter_highlighted(const QString&);
     void onCompleter_activated(const QString &);
     void onCalendarWidget_clicked(const QDate &date);
     void onCalendarWidget_selected(const QDate &date);
     void onDoftLineEdit_entered();
-/////// DEBUG
-    void onInputRejected();
-/////// DEBUG
     void on_calendarCheckBox_stateChanged(int arg1);
     void on_doftLineEdit_editingFinished();
     void on_cancelButton_clicked();
@@ -95,23 +93,44 @@ private slots:
 private:
     Ui::NewFlight *ui;
 
+    /*!
+     * \brief a AFlightEntry object that is used to store either position data
+     * from an old entry, is used to fill the form for editing an entry, or is
+     * filled with new data for adding a new entry to the logbook.
+     */
     experimental::AFlightEntry flightEntry;
 
     QList<QLineEdit*> mandatoryLineEdits;
     QList<QLineEdit*> primaryTimeLineEdits;
     QList<QLineEdit*> pilotsLineEdits;
 
+    /*!
+     * \brief holds a bit for each mandatory line edit that is flipped
+     * according to its validity state
+     */
     QBitArray mandatoryLineEditsGood;
 
+    /*!
+     * To be used by the QCompleters
+     */
     QStringList pilotList;
     QStringList tailsList;
     QStringList airportList;
 
+    /*!
+     * \brief Used to map user input to database keys
+     */
     QMap<QString, int> pilotsIdMap;
     QMap<QString, int> tailsIdMap;
     QMap<QString, int> airportIcaoIdMap;
     QMap<QString, int> airportIataIdMap;
     QMap<QString, int> airportNameIdMap;
+
+    /*!
+     * \brief If the user elects to manually edit function times, automatic updating
+     * is disabled.
+     */
+    bool updateEnabled;
 
     void setup();
     void readSettings();
@@ -119,16 +138,20 @@ private:
     void setupButtonGroups();
     void setPopUpCalendarEnabled(bool state);
     void setupRawInputValidation();
-    void setupLineEditSignalsAndSlots();
+    void setupSignalsAndSlots();
     void formFiller();
     void fillDeductibleData();
-    experimental::TableData collectInput();
+
+    void onMandatoryLineEditsFilled();
+    void onGoodInputReceived(QLineEdit*);
+    void onBadInputReceived(QLineEdit *);
     bool eventFilter(QObject *object, QEvent *event);
-    bool updateEnabled;
     bool isLessOrEqualThanBlockTime(const QString time_string);
 
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
+
+    experimental::TableData collectInput();
 };
 
 
