@@ -12,4 +12,4 @@ revision,comment,date
 11,added viewQCompleter as a copy of QCompleterView (deprecated),2020-11-23
 12,reworked views to display self or picname according CASE,2020-12-11
 13,Reworked viewEASA to incorporate NULL handling,2020-12-17
-14,Edited tails and aircraft tables, engineClass and weightClass instead of columns for each element,2020-12-19
+14,Edited tails and aircraft tables - engineClass and weightClass instead of columns for each element,2020-12-19
