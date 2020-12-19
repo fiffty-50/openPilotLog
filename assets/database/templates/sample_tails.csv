@@ -1,496 +1,499 @@
-tail_id,registration,company,make,model,variant,singlepilot,multipilot,singleengine,multiengine,unpowered,piston,turboprop,jet,light,medium,heavy,super
-1,D-TEST,PanAm,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-2,LN-NEN,NAS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-3,D-QGOZ,NAS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-4,SE-QGWO,Norwegian,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-5,EI-QHTJ,NAI,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-6,D-QIZP,Lufthansa,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-7,A6-QIZR,Emirates,Piper,PA-28,Cherokee,1,,1,,,1,,,1,1,,
-8,HB-QJJC,SWISS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,1,,
-9,HB-QJML,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-10,HB-QKHO,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-11,HB-QLSB,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-12,HB-QMNR,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-13,HB-QMPF,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-14,HB-QOFK,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-15,HB-QOFR,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-16,HB-QOVY,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-17,HB-QQFR,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-18,HB-QSDT,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-19,HB-QTCQ,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-20,HB-QUPO,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-21,HB-QUVY,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-22,HB-QVXM,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-23,HB-QWJV,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-24,HB-QXBL,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-25,HB-QYDI,SWISS,Airbus,A340,300,,1,,1,,,,1,,,1,
-26,HB-QYPI,SWISS,Airbus,A340,500,,1,,1,,,,1,,,1,
-27,HB-QZCM,SWISS,Airbus,A340,600,,1,,1,,,,1,,,1,
-28,HB-QZVR,SWISS,Airbus,A350,900,,1,,1,,,,1,,,1,
-29,HB-QZWF,SWISS,Airbus,A350,1000,,1,,1,,,,1,,,1,
-30,HB-REHO,SWISS,Airbus,A380,800,,1,,1,,,,1,,,,1
-31,HB-REOD,SWISS,Airbus,A220,300,,1,,1,,,,1,,1,,
-32,HB-REOU,SWISS,Airbus,A300,600,,1,,1,,,,1,,,1,
-33,HB-REPW,SWISS,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-34,HB-RFJF,SWISS,Airbus,A310,200,,1,,1,,,,1,,,1,
-35,HB-RFWM,SWISS,Airbus,A310,300,,1,,1,,,,1,,,1,
-36,HB-RGJZ,SWISS,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-37,HB-RGMJ,SWISS,Airbus,A318,100,,1,,1,,,,1,,1,,
-38,HB-RGPR,SWISS,Airbus,A319,100,,1,,1,,,,1,,1,,
-39,HB-RHTQ,SWISS,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-40,HB-RIHK,SWISS,Airbus,A320,100,,1,,1,,,,1,,1,,
-41,HB-RLJY,SWISS,Airbus,A320,200,,1,,1,,,,1,,1,,
-42,HB-RLMY,SWISS,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-43,HB-RLRB,SWISS,Airbus,A321,100,,1,,1,,,,1,,1,,
-44,HB-RMDX,SWISS,Airbus,A321,200,,1,,1,,,,1,,1,,
-45,HB-RMMO,SWISS,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-46,HB-RMRT,SWISS,Airbus,A321,LR,,1,,1,,,,1,,1,,
-47,HB-RMZR,SWISS,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-48,HB-RNMX,SWISS,Airbus,A330,200,,1,,1,,,,1,,,1,
-49,HB-RNWB,SWISS,Airbus,A330,300,,1,,1,,,,1,,,1,
-50,HB-ROCV,SWISS,Airbus,A330,800,,1,,1,,,,1,,,1,
-51,HB-RODH,SWISS,Airbus,A330,900,,1,,1,,,,1,,,1,
-52,HB-ROYB,SWISS,Airbus,A330,743L,,1,,1,,,,1,,,1,
-53,HB-RPCC,SWISS,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-54,HB-RQFP,SWISS,Airbus,A340,200,,1,,1,,,,1,,,1,
-55,HB-RQHH,SWISS,Airbus,A340,300,,1,,1,,,,1,,,1,
-56,HB-RQHR,SWISS,Airbus,A340,500,,1,,1,,,,1,,,1,
-57,HB-RQOW,SWISS,Airbus,A340,600,,1,,1,,,,1,,,1,
-58,HB-RQQS,SWISS,Airbus,A350,900,,1,,1,,,,1,,,1,
-59,HB-RRMG,SWISS,Airbus,A350,1000,,1,,1,,,,1,,,1,
-60,HB-RSPV,SWISS,Airbus,A380,800,,1,,1,,,,1,,,,1
-61,HB-RUFS,SWISS,Airbus,A220,300,,1,,1,,,,1,,1,,
-62,HB-RULL,SWISS,Airbus,A300,600,,1,,1,,,,1,,,1,
-63,HB-RUWR,SWISS,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-64,HB-RXAD,SWISS,Airbus,A310,200,,1,,1,,,,1,,,1,
-65,HB-RXBJ,SWISS,Airbus,A310,300,,1,,1,,,,1,,,1,
-66,HB-RXCI,SWISS,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-67,HB-RXVR,SWISS,Airbus,A318,100,,1,,1,,,,1,,1,,
-68,HB-RYHF,SWISS,Airbus,A319,100,,1,,1,,,,1,,1,,
-69,HB-RYNY,SWISS,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-70,HB-RZAN,SWISS,Airbus,A320,100,,1,,1,,,,1,,1,,
-71,HB-RZGD,SWISS,Airbus,A320,200,,1,,1,,,,1,,1,,
-72,HB-RZWP,SWISS,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-73,HB-RZZQ,SWISS,Airbus,A321,100,,1,,1,,,,1,,1,,
-74,HB-SACK,SWISS,Airbus,A321,200,,1,,1,,,,1,,1,,
-75,HB-SALW,SWISS,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-76,HB-SCER,SWISS,Airbus,A321,LR,,1,,1,,,,1,,1,,
-77,HB-SEGN,SWISS,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-78,HB-SFJF,SWISS,Airbus,A330,200,,1,,1,,,,1,,,1,
-79,HB-SFRW,SWISS,Airbus,A330,300,,1,,1,,,,1,,,1,
-80,HB-SFZG,SWISS,Airbus,A330,800,,1,,1,,,,1,,,1,
-81,HB-SGHF,SWISS,Airbus,A330,900,,1,,1,,,,1,,,1,
-82,HB-SGJV,SWISS,Airbus,A330,743L,,1,,1,,,,1,,,1,
-83,HB-SHSA,SWISS,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-84,HB-SIAH,SWISS,Airbus,A340,200,,1,,1,,,,1,,,1,
-85,HB-SIAR,SWISS,Airbus,A340,300,,1,,1,,,,1,,,1,
-86,HB-SITH,SWISS,Airbus,A340,500,,1,,1,,,,1,,,1,
-87,HB-SIZG,SWISS,Airbus,A340,600,,1,,1,,,,1,,,1,
-88,HB-SJOB,SWISS,Airbus,A350,900,,1,,1,,,,1,,,1,
-89,HB-SKGM,SWISS,Airbus,A350,1000,,1,,1,,,,1,,,1,
-90,HB-SLFQ,SWISS,Airbus,A380,800,,1,,1,,,,1,,,,1
-91,HB-SLNH,SWISS,Airbus,A220,100,,1,,1,,,,1,,1,,
-92,HB-SMUD,SWISS,Airbus,A300,600,,1,,1,,,,1,,,1,
-93,HB-SMXR,SWISS,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-94,HB-SONA,SWISS,Airbus,A310,200,,1,,1,,,,1,,,1,
-95,HB-SOPY,SWISS,Airbus,A310,300,,1,,1,,,,1,,,1,
-96,HB-SOUB,SWISS,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-97,HB-SOWD,SWISS,Airbus,A318,100,,1,,1,,,,1,,1,,
-98,HB-SQJS,SWISS,Airbus,A319,100,,1,,1,,,,1,,1,,
-99,HB-SRAV,PanAm,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-100,HB-SROQ,NAS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-101,HB-SRVX,NAS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-102,HB-SSUK,Norwegian,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-103,HB-STRC,NAI,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-104,HB-STZY,Lufthansa,Piper,PA-28,Cherokee,1,,1,,,1,,,1,,,
-105,HB-SUWE,Emirates,Piper,PA-28,Cherokee,1,,1,,,1,,,1,1,,
-106,HB-SVKO,SWISS,Piper,PA-28,Cherokee,1,,1,,,1,,,1,1,,
-107,HB-SXOA,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-108,HB-SXQG,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-109,HB-SXRT,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-110,HB-SXXF,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-111,HB-SYLG,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-112,HB-SZLH,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-113,HB-SZWE,SWISS,Diamond,DA-42,MPP,1,,,1,,1,,,1,1,,
-114,HB-TAVD,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-115,HB-TCIQ,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-116,HB-TCPS,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-117,HB-TDKV,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-118,HB-TEJK,SWISS,ATR,42,400,,1,,1,,,1,,,1,,
-119,HB-TFJK,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-120,HB-TFLR,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-121,HB-TFNX,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-122,HB-TFSP,LFT,Cessna,Citation,XLR,1,,,1,,,,1,1,,,
-123,HB-TFZZ,SWISS,Boeing,747,300,,1,,1,,,,1,,,1,
-124,HB-TGLP,SWISS,Boeing,747,400,,1,,1,,,,1,,,1,
-125,HB-TGQW,SWISS,Boeing,747,8,,1,,1,,,,1,,,1,
-126,HB-TIYI,SWISS,Boeing,757,200,,1,,1,,,,1,,1,,
-127,HB-TJYO,SWISS,Boeing,757,300,,1,,1,,,,1,,1,,
-128,HB-TLHD,SWISS,Boeing,767,200,,1,,1,,,,1,,,1,
-129,HB-TLLW,SWISS,Boeing,767,200ER,,1,,1,,,,1,,,1,
-130,HB-TNGD,SWISS,Boeing,767,300,,1,,1,,,,1,,,1,
-131,HB-TNSN,SWISS,Boeing,767,300ER,,1,,1,,,,1,,,1,
-132,HB-TOHL,SWISS,Boeing,767,400ER,,1,,1,,,,1,,,1,
-133,HB-TPHR,SWISS,Boeing,777,200,,1,,1,,,,1,,,1,
-134,HB-TVAM,SWISS,Boeing,777,200ER,,1,,1,,,,1,,,1,
-135,HB-TVKN,SWISS,Boeing,777,300,,1,,1,,,,1,,,1,
-136,HB-TWGG,SWISS,Boeing,777,8,,1,,1,,,,1,,,1,
-137,HB-TWME,SWISS,Boeing,777,9,,1,,1,,,,1,,,1,
-138,HB-TWPY,SWISS,Boeing,777,10X,,1,,1,,,,1,,,1,
-139,HB-TWTE,SWISS,Boeing,787,8,,1,,1,,,,1,,,1,
-140,HB-TWUY,SWISS,Boeing,787,9,,1,,1,,,,1,,,1,
-141,HB-TXYA,SWISS,Boeing,787,10,,1,,1,,,,1,,,1,
-142,HB-TYOW,SWISS,Boeing,767,300ER,,1,,1,,,,1,,,1,
-143,HB-TYQY,SWISS,Boeing,767,400ER,,1,,1,,,,1,,,1,
-144,HB-UAND,SWISS,Boeing,777,200,,1,,1,,,,1,,,1,
-145,HB-UBDJ,SWISS,Boeing,777,200ER,,1,,1,,,,1,,,1,
-146,HB-UBOJ,SWISS,Boeing,777,300,,1,,1,,,,1,,,1,
-147,HB-UBTQ,SWISS,Boeing,777,8,,1,,1,,,,1,,,1,
-148,HB-UBXN,SWISS,Boeing,777,9,,1,,1,,,,1,,,1,
-149,HB-UEHA,SWISS,Boeing,777,10X,,1,,1,,,,1,,,1,
-150,HB-UEPV,SWISS,Boeing,787,8,,1,,1,,,,1,,,1,
-151,HB-UEPY,SWISS,Boeing,787,9,,1,,1,,,,1,,,1,
-152,HB-UGBM,SWISS,Boeing,787,10,,1,,1,,,,1,,,1,
-153,HB-UHBL,SWISS,Boeing,707, ,,1,,1,,,,1,,,1,
-154,HB-UHBZ,SWISS,Boeing,717,200,,1,,1,,,,1,,1,,
-155,HB-UHHT,SWISS,Boeing,720, ,,1,,1,,,,1,,1,,
-156,HB-UHJR,SWISS,Boeing,727,100,,1,,1,,,,1,,1,,
-157,HB-UHMZ,SWISS,Boeing,727,200,,1,,1,,,,1,,1,,
-158,HB-UHWT,SWISS,Boeing,737,100,,1,,1,,,,1,,1,,
-159,HB-UISN,SWISS,Boeing,737,200,,1,,1,,,,1,,1,,
-160,HB-UKZR,SWISS,Boeing,737,300,,1,,1,,,,1,,1,,
-161,HB-ULZD,SWISS,Boeing,737,400,,1,,1,,,,1,,1,,
-162,HB-UMNN,SWISS,Boeing,737,500,,1,,1,,,,1,,1,,
-163,HB-UMOG,SWISS,Boeing,737,600,,1,,1,,,,1,,1,,
-164,HB-UMSZ,SWISS,Boeing,737,700,,1,,1,,,,1,,1,,
-165,HB-UPVM,SWISS,Boeing,737,700ER,,1,,1,,,,1,,1,,
-166,HB-UPZM,SWISS,Boeing,737,800,,1,,1,,,,1,,1,,
-167,HB-UREO,SWISS,Boeing,737,900,,1,,1,,,,1,,1,,
-168,HB-USYM,SWISS,Boeing,737,900ER,,1,,1,,,,1,,1,,
-169,HB-UTCD,SWISS,Boeing,737,7,,1,,1,,,,1,,1,,
-170,HB-UUUE,SWISS,Boeing,737,8,,1,,1,,,,1,,1,,
-171,HB-UUVN,SWISS,Boeing,737,200,,1,,1,,,,1,,1,,
-172,HB-UVAJ,SWISS,Boeing,737,9,,1,,1,,,,1,,1,,
-173,HB-UVLR,SWISS,Boeing,737,10,,1,,1,,,,1,,1,,
-174,HB-UVRB,SWISS,Boeing,747,100,,1,,1,,,,1,,,1,
-175,HB-UXYZ,SWISS,Boeing,747,200,,1,,1,,,,1,,,1,
-176,HB-UYAL,SWISS,Boeing,747,SP,,1,,1,,,,1,,,1,
-177,HB-UYBP,SWISS,Boeing,747,300,,1,,1,,,,1,,,1,
-178,HB-UZBA,SWISS,Boeing,747,400,,1,,1,,,,1,,,1,
-179,HB-UZMR,SWISS,Boeing,747,8,,1,,1,,,,1,,,1,
-180,HB-UZSQ,SWISS,Boeing,757,200,,1,,1,,,,1,,1,,
-181,HB-UZWS,SWISS,Boeing,757,300,,1,,1,,,,1,,1,,
-182,HB-VARS,SWISS,Boeing,767,200,,1,,1,,,,1,,,1,
-183,HB-VASO,SWISS,Boeing,767,200ER,,1,,1,,,,1,,,1,
-184,HB-VBNK,SWISS,Boeing,767,300,,1,,1,,,,1,,,1,
-185,HB-VCWZ,SWISS,Boeing,767,300ER,,1,,1,,,,1,,,1,
-186,HB-VDRJ,SWISS,Boeing,767,400ER,,1,,1,,,,1,,,1,
-187,HB-VDRL,SWISS,Boeing,777,200,,1,,1,,,,1,,,1,
-188,HB-VEXO,SWISS,Boeing,777,200ER,,1,,1,,,,1,,,1,
-189,HB-VFKD,SWISS,Boeing,777,300,,1,,1,,,,1,,,1,
-190,HB-VGLH,SWISS,Boeing,777,8,,1,,1,,,,1,,,1,
-191,HB-VHYS,SWISS,Boeing,777,9,,1,,1,,,,1,,,1,
-192,D-VICJ,Lufthansa,Boeing,777,10X,,1,,1,,,,1,,,1,
-193,D-VINW,Lufthansa,Boeing,787,8,,1,,1,,,,1,,,1,
-194,D-VISR,Lufthansa,Boeing,787,9,,1,,1,,,,1,,,1,
-195,D-VJKC,Lufthansa,Boeing,787,10,,1,,1,,,,1,,,1,
-196,D-VJMV,Lufthansa,Boeing,767,300ER,,1,,1,,,,1,,,1,
-197,D-VJNP,Lufthansa,Boeing,767,400ER,,1,,1,,,,1,,,1,
-198,D-VJSI,Lufthansa,Boeing,777,200,,1,,1,,,,1,,,1,
-199,D-VJSQ,Lufthansa,Airbus,A320,100,,1,,1,,,,1,,1,,
-200,D-VKNE,Lufthansa,Airbus,A320,200,,1,,1,,,,1,,1,,
-201,D-VLOV,Lufthansa,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-202,D-VLUU,Lufthansa,Airbus,A321,100,,1,,1,,,,1,,1,,
-203,D-VMAH,Lufthansa,Airbus,A321,200,,1,,1,,,,1,,1,,
-204,D-VMLI,Lufthansa,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-205,D-VMOH,Lufthansa,Airbus,A321,LR,,1,,1,,,,1,,1,,
-206,D-VNVB,Lufthansa,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-207,D-VOVQ,Lufthansa,Airbus,A330,200,,1,,1,,,,1,,,1,
-208,D-VPCB,Lufthansa,Airbus,A330,300,,1,,1,,,,1,,,1,
-209,D-VPHH,Lufthansa,Airbus,A330,800,,1,,1,,,,1,,,1,
-210,D-VQLD,Lufthansa,Airbus,A330,900,,1,,1,,,,1,,,1,
-211,D-VRGF,Lufthansa,Airbus,A330,743L,,1,,1,,,,1,,,1,
-212,D-VRVR,Lufthansa,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-213,D-VSMF,Lufthansa,Airbus,A321,LR,,1,,1,,,,1,,1,,
-214,D-VTMT,Lufthansa,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-215,D-VTPQ,Lufthansa,Airbus,A330,200,,1,,1,,,,1,,,1,
-216,D-VTRF,Lufthansa,Airbus,A330,300,,1,,1,,,,1,,,1,
-217,D-VTXA,Lufthansa,Airbus,A330,800,,1,,1,,,,1,,,1,
-218,D-VVXB,Lufthansa,Airbus,A330,900,,1,,1,,,,1,,,1,
-219,D-VWET,Lufthansa,Airbus,A330,743L,,1,,1,,,,1,,,1,
-220,D-VYHW,Lufthansa,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-221,D-VYPE,Lufthansa,Airbus,A340,200,,1,,1,,,,1,,,1,
-222,D-VYPM,Lufthansa,Airbus,A340,300,,1,,1,,,,1,,,1,
-223,D-VYVW,Lufthansa,Airbus,A340,500,,1,,1,,,,1,,,1,
-224,D-VYWT,Lufthansa,Airbus,A340,600,,1,,1,,,,1,,,1,
-225,D-VZUJ,Lufthansa,Airbus,A350,900,,1,,1,,,,1,,,1,
-226,D-VZXZ,Lufthansa,Airbus,A350,1000,,1,,1,,,,1,,,1,
-227,D-WAHX,Lufthansa,Airbus,A380,800,,1,,1,,,,1,,,,1
-228,D-WBWO,Lufthansa,Airbus,A220,100,,1,,1,,,,1,,1,,
-229,D-WBZJ,Lufthansa,Airbus,A220,300,,1,,1,,,,1,,1,,
-230,D-WCHC,Lufthansa,Airbus,A300,600,,1,,1,,,,1,,,1,
-231,D-WCRQ,Lufthansa,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-232,D-WECA,Lufthansa,Airbus,A310,200,,1,,1,,,,1,,,1,
-233,D-WFEP,Lufthansa,Airbus,A310,300,,1,,1,,,,1,,,1,
-234,D-WFRM,Lufthansa,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-235,D-WGDN,Lufthansa,Airbus,A318,100,,1,,1,,,,1,,1,,
-236,D-WGWG,Lufthansa,Airbus,A319,100,,1,,1,,,,1,,1,,
-237,D-WHAS,Lufthansa,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-238,D-WHOZ,Lufthansa,Airbus,A320,100,,1,,1,,,,1,,1,,
-239,D-WIJH,Lufthansa,Airbus,A320,200,,1,,1,,,,1,,1,,
-240,D-WIKL,Lufthansa,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-241,D-WJCX,Lufthansa,Airbus,A321,100,,1,,1,,,,1,,1,,
-242,D-WJDB,Lufthansa,Airbus,A321,200,,1,,1,,,,1,,1,,
-243,D-WJHM,Lufthansa,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-244,D-WJNK,Lufthansa,Airbus,A321,LR,,1,,1,,,,1,,1,,
-245,D-WLGW,Lufthansa,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-246,D-WMFZ,Lufthansa,Airbus,A330,200,,1,,1,,,,1,,,1,
-247,D-WMOX,Lufthansa,Airbus,A330,300,,1,,1,,,,1,,,1,
-248,D-WNJC,Lufthansa,Airbus,A330,800,,1,,1,,,,1,,,1,
-249,D-WOFI,Lufthansa,Airbus,A330,900,,1,,1,,,,1,,,1,
-250,D-WOKF,Lufthansa,Airbus,A330,743L,,1,,1,,,,1,,,1,
-251,D-WONO,Lufthansa,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-252,D-WQMI,Lufthansa,Airbus,A340,200,,1,,1,,,,1,,,1,
-253,D-WQOS,Lufthansa,Airbus,A340,300,,1,,1,,,,1,,,1,
-254,D-WRWB,Lufthansa,Airbus,A340,500,,1,,1,,,,1,,,1,
-255,D-WSYC,Lufthansa,Airbus,A340,600,,1,,1,,,,1,,,1,
-256,D-WSZF,Lufthansa,Airbus,A350,900,,1,,1,,,,1,,,1,
-257,D-WTQB,Lufthansa,Airbus,A350,1000,,1,,1,,,,1,,,1,
-258,D-WTSP,Lufthansa,Airbus,A380,800,,1,,1,,,,1,,,,1
-259,D-WUIB,Lufthansa,Airbus,A220,100,,1,,1,,,,1,,1,,
-261,D-WUXP,Lufthansa,Airbus,A300,600,,1,,1,,,,1,,,1,
-262,D-WWEN,Lufthansa,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-263,D-WXNN,Lufthansa,Airbus,A310,200,,1,,1,,,,1,,,1,
-264,D-WYNB,Lufthansa,Airbus,A310,300,,1,,1,,,,1,,,1,
-265,D-XAGX,Lufthansa,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-266,D-XAUW,Lufthansa,Airbus,A318,100,,1,,1,,,,1,,1,,
-267,D-XCKH,Lufthansa,Airbus,A319,100,,1,,1,,,,1,,1,,
-268,D-XESN,Lufthansa,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-269,D-XFFM,Lufthansa,Airbus,A320,100,,1,,1,,,,1,,1,,
-270,D-XFIY,Lufthansa,Airbus,A320,200,,1,,1,,,,1,,1,,
-271,D-XFRX,Lufthansa,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-272,D-XFSL,Lufthansa,Airbus,A321,100,,1,,1,,,,1,,1,,
-273,D-XHOK,Lufthansa,Airbus,A321,200,,1,,1,,,,1,,1,,
-274,D-XITR,Lufthansa,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-275,D-XIZF,Lufthansa,Airbus,A321,LR,,1,,1,,,,1,,1,,
-276,D-XJCE,Lufthansa,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-277,D-XKOI,Lufthansa,Airbus,A330,200,,1,,1,,,,1,,,1,
-278,D-XKZN,Lufthansa,Airbus,A330,300,,1,,1,,,,1,,,1,
-279,D-XMBV,Lufthansa,Airbus,A330,800,,1,,1,,,,1,,,1,
-280,D-XMMJ,Lufthansa,Airbus,A330,900,,1,,1,,,,1,,,1,
-281,D-XNMC,Lufthansa,Airbus,A330,743L,,1,,1,,,,1,,,1,
-282,D-XNRR,Lufthansa,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-283,D-XPEQ,Lufthansa,Airbus,A340,200,,1,,1,,,,1,,,1,
-284,D-XPIQ,Lufthansa,Airbus,A340,300,,1,,1,,,,1,,,1,
-285,D-XPJI,Lufthansa,Airbus,A340,500,,1,,1,,,,1,,,1,
-286,D-XPMT,Lufthansa,Airbus,A340,600,,1,,1,,,,1,,,1,
-287,D-XQIO,Lufthansa,Airbus,A350,900,,1,,1,,,,1,,,1,
-288,D-XRBF,Lufthansa,Airbus,A350,1000,,1,,1,,,,1,,,1,
-289,D-XRKL,Lufthansa,Airbus,A380,800,,1,,1,,,,1,,,,1
-290,D-XRLI,Lufthansa,Airbus,A220,100,,1,,1,,,,1,,1,,
-291,D-XRXE,Lufthansa,Airbus,A220,300,,1,,1,,,,1,,1,,
-292,D-XSJJ,Lufthansa,Airbus,A300,600,,1,,1,,,,1,,,1,
-293,D-XSWH,Lufthansa,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-294,D-XTKC,Lufthansa,Airbus,A310,200,,1,,1,,,,1,,,1,
-295,D-XUAC,Lufthansa,Airbus,A310,300,,1,,1,,,,1,,,1,
-296,D-XUDW,Lufthansa,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-297,D-XUXK,Lufthansa,Airbus,A318,100,,1,,1,,,,1,,1,,
-298,D-XYDQ,Lufthansa,Airbus,A319,100,,1,,1,,,,1,,1,,
-299,D-XYOL,Lufthansa,Boeing,707, ,,1,,1,,,,1,,,1,
-300,D-XZGB,Lufthansa,Boeing,717,200,,1,,1,,,,1,,1,,
-301,D-XZKB,Lufthansa,Boeing,720, ,,1,,1,,,,1,,1,,
-302,D-YAAU,Lufthansa,Boeing,727,100,1,1,1,1,,,,1,,1,,
-303,D-YBHV,Lufthansa,Boeing,727,200,,1,,1,,,,1,,1,,
-304,D-YBNY,Lufthansa,Boeing,737,100,,1,,1,,,,1,,1,,
-305,D-YBUL,Lufthansa,Boeing,737,200,,1,,1,,,,1,,1,,
-306,D-YCAH,Lufthansa,Boeing,737,300,,1,,1,,,,1,,1,,
-307,D-YCLH,Lufthansa,Boeing,737,400,,1,,1,,,,1,,1,,
-308,D-YDFS,Lufthansa,Boeing,737,500,,1,,1,,,,1,,1,,
-309,D-YDIV,Lufthansa,Boeing,737,600,,1,,1,,,,1,,1,,
-310,D-YDYV,Lufthansa,Boeing,737,700,,1,,1,,,,1,,1,,
-311,D-YEVO,Lufthansa,Boeing,737,700ER,,1,,1,,,,1,,1,,
-312,D-YGRW,Lufthansa,Boeing,737,800,,1,,1,,,,1,,1,,
-313,D-YGVP,Lufthansa,Boeing,737,900,,1,,1,,,,1,,1,,
-314,D-YHJF,Lufthansa,Boeing,737,900ER,,1,,1,,,,1,,1,,
-315,D-YHLH,Lufthansa,Boeing,737,7,,1,,1,,,,1,,1,,
-316,D-YJAJ,Lufthansa,Boeing,737,8,,1,,1,,,,1,,1,,
-317,D-YJQS,Lufthansa,Boeing,737,200,,1,,1,,,,1,,1,,
-318,D-YJTJ,Lufthansa,Boeing,737,9,,1,,1,,,,1,,1,,
-319,D-YJYO,Lufthansa,Boeing,737,10,,1,,1,,,,1,,1,,
-320,D-YKBD,Lufthansa,Boeing,747,100,,1,,1,,,,1,,,1,
-321,D-YKKK,Lufthansa,Boeing,747,200,,1,,1,,,,1,,,1,
-322,D-YLKU,Lufthansa,Boeing,747,SP,,1,,1,,,,1,,,1,
-323,D-YLYT,Lufthansa,Boeing,747,300,,1,,1,,,,1,,,1,
-324,D-YNAU,Lufthansa,Boeing,747,400,,1,,1,,,,1,,,1,
-325,D-YNXQ,Lufthansa,Boeing,747,8,,1,,1,,,,1,,,1,
-326,D-YOJE,Lufthansa,Boeing,757,200,,1,,1,,,,1,,1,,
-327,D-YOMT,Lufthansa,Boeing,757,300,,1,,1,,,,1,,1,,
-328,D-YPLW,Lufthansa,Boeing,767,200,,1,,1,,,,1,,,1,
-329,D-YPML,Lufthansa,Boeing,767,200ER,,1,,1,,,,1,,,1,
-330,D-YPQN,Lufthansa,Boeing,767,300,,1,,1,,,,1,,,1,
-331,D-YPVK,Lufthansa,Boeing,767,300ER,,1,,1,,,,1,,,1,
-332,D-YQEH,Lufthansa,Boeing,767,400ER,,1,,1,,,,1,,,1,
-333,D-YQLV,Lufthansa,Boeing,777,200,,1,,1,,,,1,,,1,
-334,D-YQUV,Lufthansa,Boeing,777,200ER,,1,,1,,,,1,,,1,
-335,D-YQVF,Lufthansa,Boeing,777,300,,1,,1,,,,1,,,1,
-336,D-YQVX,Lufthansa,Boeing,777,8,,1,,1,,,,1,,,1,
-337,D-YRRD,Lufthansa,Boeing,777,9,,1,,1,,,,1,,,1,
-338,D-YSGU,Lufthansa,Boeing,777,10X,,1,,1,,,,1,,,1,
-339,D-YTHQ,Lufthansa,Boeing,787,8,,1,,1,,,,1,,,1,
-340,D-YTTJ,Lufthansa,Boeing,787,9,,1,,1,,,,1,,,1,
-341,D-YUMP,Lufthansa,Boeing,787,10,,1,,1,,,,1,,,1,
-342,D-YUYC,Lufthansa,Boeing,767,300ER,,1,,1,,,,1,,,1,
-343,D-YVHD,Lufthansa,Boeing,767,400ER,,1,,1,,,,1,,,1,
-344,D-YVNL,Lufthansa,Boeing,777,200,,1,,1,,,,1,,,1,
-345,D-YYHW,Lufthansa,Boeing,777,200ER,,1,,1,,,,1,,,1,
-346,D-YYZC,Lufthansa,Boeing,777,300,,1,,1,,,,1,,,1,
-347,D-YZMW,Lufthansa,Boeing,777,8,,1,,1,,,,1,,,1,
-348,D-YZPP,Lufthansa,Boeing,777,9,,1,,1,,,,1,,,1,
-349,D-YZUA,Lufthansa,Boeing,777,10X,,1,,1,,,,1,,,1,
-350,D-YZUE,Lufthansa,Boeing,787,8,,1,,1,,,,1,,,1,
-351,D-ZAVK,Lufthansa,Boeing,787,9,,1,,1,,,,1,,,1,
-352,D-ZAWR,Lufthansa,Boeing,787,10,,1,,1,,,,1,,,1,
-353,D-ZBNV,Lufthansa,Boeing,707, ,,1,,1,,,,1,,,1,
-354,D-ZCDX,Lufthansa,Boeing,717,200,,1,,1,,,,1,,1,,
-355,D-ZCQR,Lufthansa,Boeing,720, ,,1,,1,,,,1,,1,,
-356,D-ZCTM,Lufthansa,Boeing,727,100,,1,,1,,,,1,,1,,
-357,D-ZEDJ,Lufthansa,Boeing,727,200,,1,,1,,,,1,,1,,
-358,D-ZEET,Lufthansa,Boeing,737,100,,1,,1,,,,1,,1,,
-359,D-ZEUC,Lufthansa,Boeing,737,200,,1,,1,,,,1,,1,,
-360,D-ZFWT,Lufthansa,Boeing,737,300,,1,,1,,,,1,,1,,
-361,D-ZHJD,Lufthansa,Boeing,737,400,,1,,1,,,,1,,1,,
-362,D-ZHMR,Lufthansa,Boeing,737,500,,1,,1,,,,1,,1,,
-363,D-ZHQM,Lufthansa,Boeing,737,600,,1,,1,,,,1,,1,,
-364,D-ZIAI,Lufthansa,Boeing,737,700,,1,,1,,,,1,,1,,
-365,D-ZIKO,Lufthansa,Boeing,737,700ER,,1,,1,,,,1,,1,,
-366,D-ZIPV,Lufthansa,Boeing,737,800,,1,,1,,,,1,,1,,
-367,D-ZIRG,Lufthansa,Boeing,737,900,,1,,1,,,,1,,1,,
-368,D-ZIXD,Lufthansa,Boeing,737,900ER,,1,,1,,,,1,,1,,
-369,D-ZJBD,Lufthansa,Boeing,737,7,,1,,1,,,,1,,1,,
-370,D-ZJFZ,Lufthansa,Boeing,737,8,,1,,1,,,,1,,1,,
-371,D-ZJIZ,Lufthansa,Boeing,737,200,,1,,1,,,,1,,1,,
-372,D-ZJLF,Lufthansa,Boeing,737,9,,1,,1,,,,1,,1,,
-373,D-ZJTB,Lufthansa,Boeing,737,10,,1,,1,,,,1,,1,,
-374,D-ZKUW,Lufthansa,Boeing,747,100,,1,,1,,,,1,,,1,
-375,D-ZLRB,Lufthansa,Boeing,747,200,,1,,1,,,,1,,,1,
-376,D-ZLRO,Lufthansa,Boeing,747,SP,,1,,1,,,,1,,,1,
-377,D-ZNAX,Lufthansa,Boeing,747,300,,1,,1,,,,1,,,1,
-378,D-ZNUW,Lufthansa,Boeing,747,400,,1,,1,,,,1,,,1,
-379,D-ZOPJ,Lufthansa,Boeing,747,8,,1,,1,,,,1,,,1,
-380,D-ZOWE,Lufthansa,Boeing,757,200,,1,,1,,,,1,,1,,
-381,D-ZPDE,Lufthansa,Boeing,757,300,,1,,1,,,,1,,1,,
-382,D-ZPMO,Lufthansa,Boeing,767,200,,1,,1,,,,1,,,1,
-383,D-ZPSM,Lufthansa,Boeing,767,200ER,,1,,1,,,,1,,,1,
-384,D-ZPYK,Lufthansa,Boeing,767,300,,1,,1,,,,1,,,1,
-385,D-ZQCQ,Lufthansa,Boeing,767,300ER,,1,,1,,,,1,,,1,
-386,D-ZSNL,Lufthansa,Boeing,767,400ER,,1,,1,,,,1,,,1,
-387,D-ZSRU,Lufthansa,Boeing,777,200,,1,,1,,,,1,,,1,
-388,D-ZVIF,Lufthansa,Boeing,777,200ER,,1,,1,,,,1,,,1,
-389,D-ZVMF,Lufthansa,Boeing,777,300,,1,,1,,,,1,,,1,
-390,D-ZWFC,Lufthansa,Boeing,777,8,,1,,1,,,,1,,,1,
-391,D-ZXAF,Lufthansa,Boeing,777,9,,1,,1,,,,1,,,1,
-392,D-ZXDC,Lufthansa,Boeing,777,10X,,1,,1,,,,1,,,1,
-393,D-ZXDO,Lufthansa,Boeing,787,8,,1,,1,,,,1,,,1,
-394,D-ZXLP,Lufthansa,Boeing,787,9,,1,,1,,,,1,,,1,
-395,D-ZYHG,Lufthansa,Boeing,787,10,,1,,1,,,,1,,,1,
-396,D-ZYKW,Lufthansa,Boeing,767,300ER,,1,,1,,,,1,,,1,
-397,D-ZYYL,Lufthansa,Boeing,767,400ER,,1,,1,,,,1,,,1,
-398,D-ZZKQ,Lufthansa,Boeing,777,200,,1,,1,,,,1,,,1,
-399,D-QGH,Lufthansa,Airbus,A320,100,,1,,1,,,,1,,1,,
-400,D-QGH,Lufthansa,Airbus,A320,200,,1,,1,,,,1,,1,,
-401,D-QGV,Lufthansa,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-402,D-QIA,Lufthansa,Airbus,A321,100,,1,,1,,,,1,,1,,
-403,D-QIY,Lufthansa,Airbus,A321,200,,1,,1,,,,1,,1,,
-404,D-QJW,Lufthansa,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-405,D-QJW,Lufthansa,Airbus,A321,LR,,1,,1,,,,1,,1,,
-406,D-QKF,Lufthansa,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-407,SE-QKQ,Norwegian,Airbus,A330,200,,1,,1,,,,1,,,1,
-408,SE-QKV,Norwegian,Airbus,A330,300,,1,,1,,,,1,,,1,
-409,SE-QLE,Norwegian,Airbus,A330,800,,1,,1,,,,1,,,1,
-410,SE-QLG,Norwegian,Airbus,A330,900,,1,,1,,,,1,,,1,
-411,SE-QLY,Norwegian,Airbus,A330,743L,,1,,1,,,,1,,,1,
-412,SE-QMT,Norwegian,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-413,SE-QMY,Norwegian,Airbus,A321,LR,,1,,1,,,,1,,1,,
-414,SE-QNL,Norwegian,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-415,SE-QOB,Norwegian,Airbus,A330,200,,1,,1,,,,1,,,1,
-416,SE-QOG,Norwegian,Airbus,A330,300,,1,,1,,,,1,,,1,
-417,SE-QPG,Norwegian,Airbus,A330,800,,1,,1,,,,1,,,1,
-418,SE-QPU,Norwegian,Airbus,A330,900,,1,,1,,,,1,,,1,
-419,SE-QQO,Norwegian,Airbus,A330,743L,,1,,1,,,,1,,,1,
-420,SE-QQR,Norwegian,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-421,SE-QSS,Norwegian,Airbus,A340,200,,1,,1,,,,1,,,1,
-422,SE-QTA,Norwegian,Airbus,A340,300,,1,,1,,,,1,,,1,
-423,SE-QTO,Norwegian,Airbus,A340,500,,1,,1,,,,1,,,1,
-424,SE-QTP,Norwegian,Airbus,A340,600,,1,,1,,,,1,,,1,
-425,SE-QTY,Norwegian,Airbus,A350,900,,1,,1,,,,1,,,1,
-426,SE-QUD,Norwegian,Airbus,A350,1000,,1,,1,,,,1,,,1,
-427,SE-QUZ,Norwegian,Airbus,A380,800,,1,,1,,,,1,,,,1
-428,SE-QVY,Norwegian,Airbus,A220,300,,1,,1,,,,1,,1,,
-429,SE-QWL,Norwegian,Airbus,A300,600,,1,,1,,,,1,,,1,
-430,SE-QWX,Norwegian,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-431,SE-QWZ,Norwegian,Airbus,A310,200,,1,,1,,,,1,,,1,
-432,SE-QXB,Norwegian,Airbus,A310,300,,1,,1,,,,1,,,1,
-433,SE-QXD,Norwegian,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-434,SE-QXQ,Norwegian,Airbus,A318,100,,1,,1,,,,1,,1,,
-435,SE-QYD,Norwegian,Airbus,A319,100,,1,,1,,,,1,,1,,
-436,SE-QZS,Norwegian,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-437,SE-RAD,Norwegian,Airbus,A320,100,,1,,1,,,,1,,1,,
-438,SE-RAJ,Norwegian,Airbus,A320,200,,1,,1,,,,1,,1,,
-439,SE-RAO,Norwegian,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-440,SE-RCH,Norwegian,Airbus,A321,100,,1,,1,,,,1,,1,,
-441,SE-RDJ,Norwegian,Airbus,A321,200,,1,,1,,,,1,,1,,
-442,SE-RDL,Norwegian,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-443,SE-REH,Norwegian,Airbus,A321,LR,,1,,1,,,,1,,1,,
-444,SE-RER,Norwegian,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-445,SE-RGI,Norwegian,Airbus,A330,200,,1,,1,,,,1,,,1,
-446,SE-RGP,Norwegian,Airbus,A330,300,,1,,1,,,,1,,,1,
-447,SE-RGV,Norwegian,Airbus,A330,800,,1,,1,,,,1,,,1,
-448,SE-RHM,Norwegian,Airbus,A330,900,,1,,1,,,,1,,,1,
-449,SE-RID,Norwegian,Airbus,A330,743L,,1,,1,,,,1,,,1,
-450,SE-RIO,Norwegian,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-451,SE-RJE,Norwegian,Airbus,A340,200,,1,,1,,,,1,,,1,
-452,SE-RJG,Norwegian,Airbus,A340,300,,1,,1,,,,1,,,1,
-453,SE-RJN,Norwegian,Airbus,A340,500,,1,,1,,,,1,,,1,
-454,SE-RJX,Norwegian,Airbus,A340,600,,1,,1,,,,1,,,1,
-455,SE-RJZ,Norwegian,Airbus,A350,900,,1,,1,,,,1,,,1,
-456,SE-RKK,Norwegian,Airbus,A350,1000,,1,,1,,,,1,,,1,
-457,SE-RKP,Norwegian,Airbus,A380,800,,1,,1,,,,1,,,,1
-458,SE-RLL,Norwegian,Airbus,A220,100,,1,,1,,,,1,,1,,
-459,SE-RNU,Norwegian,Airbus,A220,300,,1,,1,,,,1,,1,,
-460,SE-RNZ,Norwegian,Airbus,A300,600,,1,,1,,,,1,,,1,
-461,SE-ROP,Norwegian,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-462,SE-ROR,Norwegian,Airbus,A310,200,,1,,1,,,,1,,,1,
-463,SE-RPK,Norwegian,Airbus,A310,300,,1,,1,,,,1,,,1,
-464,SE-RQB,Norwegian,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-465,SE-RQD,Norwegian,Airbus,A318,100,,1,,1,,,,1,,1,,
-466,SE-RQL,Norwegian,Airbus,A319,100,,1,,1,,,,1,,1,,
-467,SE-RQS,Norwegian,Airbus,A319,NEO,,1,,1,,,,1,,1,,
-468,SE-RQX,Norwegian,Airbus,A320,100,,1,,1,,,,1,,1,,
-469,SE-RSC,Norwegian,Airbus,A320,200,,1,,1,,,,1,,1,,
-470,SE-RWA,Norwegian,Airbus,A320,NEO,,1,,1,,,,1,,1,,
-471,SE-RXY,Norwegian,Airbus,A321,100,,1,,1,,,,1,,1,,
-472,SE-RYF,Norwegian,Airbus,A321,200,,1,,1,,,,1,,1,,
-473,SE-RZH,Norwegian,Airbus,A321,NEO,,1,,1,,,,1,,1,,
-474,SE-SAK,Norwegian,Airbus,A321,LR,,1,,1,,,,1,,1,,
-475,SE-SAV,Norwegian,Airbus,A321,XLR,,1,,1,,,,1,,1,,
-476,SE-SBT,Norwegian,Airbus,A330,200,,1,,1,,,,1,,,1,
-477,SE-SCA,Norwegian,Airbus,A330,300,,1,,1,,,,1,,,1,
-478,SE-SDO,Norwegian,Airbus,A330,800,,1,,1,,,,1,,,1,
-479,SE-SDV,Norwegian,Airbus,A330,900,,1,,1,,,,1,,,1,
-480,SE-SFY,Norwegian,Airbus,A330,743L,,1,,1,,,,1,,,1,
-481,SE-SGE,Norwegian,Airbus,A330,MRTT,,1,,1,,,,1,,,1,
-482,SE-SHN,Norwegian,Airbus,A340,200,,1,,1,,,,1,,,1,
-483,SE-SHU,Norwegian,Airbus,A340,300,,1,,1,,,,1,,,1,
-484,SE-SIQ,Norwegian,Airbus,A340,500,,1,,1,,,,1,,,1,
-485,SE-SIY,Norwegian,Airbus,A340,600,,1,,1,,,,1,,,1,
-486,SE-SJG,Norwegian,Airbus,A350,900,,1,,1,,,,1,,,1,
-487,SE-SJH,Norwegian,Airbus,A350,1000,,1,,1,,,,1,,,1,
-488,SE-SJO,Norwegian,Airbus,A380,800,,1,,1,,,,1,,,,1
-489,SE-SKG,Norwegian,Airbus,A220,300,,1,,1,,,,1,,1,,
-490,SE-SKK,Norwegian,Airbus,A300,600,,1,,1,,,,1,,,1,
-491,SE-SKN,Norwegian,Airbus,A300,600ST,,1,,1,,,,1,,,1,
-492,SE-SKV,Norwegian,Airbus,A310,200,,1,,1,,,,1,,,1,
-493,SE-SLB,Norwegian,Airbus,A310,300,,1,,1,,,,1,,,1,
-494,SE-SLW,Norwegian,Airbus,A310,MRTT,,1,,1,,,,1,,,1,
-495,CL-NEO,SAS,Boeing,737,200,,1,,1,,,,1,,1,,
-496,D-NEUU,PanAm,Airbus,A220,300,,1,,1,,,,1,,1,,
+tail_id,registration,company,make,model,variant,multipilot,multiengine,engineType,weightClass
+1,G-TEST,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+2,G-NENA,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+3,G-AUAA,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+4,G-BOUNCE,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+5,G-DEBT,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+6,G-SOLO,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+7,G-YOLO,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+8,G-RANDOM,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+9,G-ETUO,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+10,G-AUII,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+11,G-UOIU,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+12,G-EUOA,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+13,G-EUO,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+14,G-EUOI,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+15,G-EUOH,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,0
+16,EC-TORO,Regional Airways,ATR,42,400,1,1,2,1
+17,EC-TORB,Regional Airways,ATR,42,400,1,1,2,1
+18,EC-TORH,Regional Airways,ATR,42,400,1,1,2,1
+19,EC-TORD,Regional Airways,ATR,42,400,1,1,2,1
+20,EC-TORR,Regional Airways,ATR,42,400,1,1,2,1
+21,M-CASHT,Executive Air,Cessna,Citation,XLR,0,1,3,0
+22,M-CASHA,Executive Air,Cessna,Citation,XLR,0,1,3,0
+23,M-CASHE,Executive Air,Cessna,Citation,XLR,0,1,3,0
+24,M-CASHO,Executive Air,Cessna,Citation,XLR,0,1,3,0
+25,HB-QYDI,Air Legacy,Airbus,A340,300,1,1,3,2
+26,HB-QYPI,Air Legacy,Airbus,A340,500,1,1,3,2
+27,HB-QZCM,Air Legacy,Airbus,A340,600,1,1,3,2
+28,HB-QZVR,Air Legacy,Airbus,A350,900,1,1,3,2
+29,HB-QZWF,Air Legacy,Airbus,A350,1000,1,1,3,2
+30,HB-REHO,Air Legacy,Airbus,A380,800,1,1,3,3
+31,HB-REOD,Air Legacy,Airbus,A220,300,1,1,3,1
+32,HB-REOU,Air Legacy,Airbus,A300,600,1,1,3,2
+33,HB-REPW,Air Legacy,Airbus,A300,600ST,1,1,3,2
+34,HB-RFJF,Air Legacy,Airbus,A310,200,1,1,3,2
+35,HB-RFWM,Air Legacy,Airbus,A310,300,1,1,3,2
+36,HB-RGJZ,Air Legacy,Airbus,A310,MRTT,1,1,3,2
+37,HB-RGMJ,Air Legacy,Airbus,A318,100,1,1,3,1
+38,HB-RGPR,Air Legacy,Airbus,A319,100,1,1,3,1
+39,HB-RHTQ,Air Legacy,Airbus,A319,NEO,1,1,3,1
+40,HB-RIHK,Air Legacy,Airbus,A320,100,1,1,3,1
+41,HB-RLJY,Air Legacy,Airbus,A320,200,1,1,3,1
+42,HB-RLMY,Air Legacy,Airbus,A320,NEO,1,1,3,1
+43,HB-RLRB,Air Legacy,Airbus,A321,100,1,1,3,1
+44,HB-RMDX,Air Legacy,Airbus,A321,200,1,1,3,1
+45,HB-RMMO,Air Legacy,Airbus,A321,NEO,1,1,3,1
+46,HB-RMRT,Air Legacy,Airbus,A321,LR,1,1,3,1
+47,HB-RMZR,Air Legacy,Airbus,A321,XLR,1,1,3,1
+48,HB-RNMX,Air Legacy,Airbus,A330,200,1,1,3,2
+49,HB-RNWB,Air Legacy,Airbus,A330,300,1,1,3,2
+50,HB-ROCV,Air Legacy,Airbus,A330,800,1,1,3,2
+51,HB-RODH,Air Legacy,Airbus,A330,900,1,1,3,2
+52,HB-ROYB,Air Legacy,Airbus,A330,743L,1,1,3,2
+53,HB-RPCC,Air Legacy,Airbus,A330,MRTT,1,1,3,2
+54,HB-RQFP,Air Legacy,Airbus,A340,200,1,1,3,2
+55,HB-RQHH,Air Legacy,Airbus,A340,300,1,1,3,2
+56,HB-RQHR,Air Legacy,Airbus,A340,500,1,1,3,2
+57,HB-RQOW,Air Legacy,Airbus,A340,600,1,1,3,2
+58,HB-RQQS,Air Legacy,Airbus,A350,900,1,1,3,2
+59,HB-RRMG,Air Legacy,Airbus,A350,1000,1,1,3,2
+60,HB-RSPV,Air Legacy,Airbus,A380,800,1,1,3,3
+61,HB-RUFS,Air Legacy,Airbus,A220,300,1,1,3,1
+62,HB-RULL,Air Legacy,Airbus,A300,600,1,1,3,2
+63,HB-RUWR,Air Legacy,Airbus,A300,600ST,1,1,3,2
+64,HB-RXAD,Air Legacy,Airbus,A310,200,1,1,3,2
+65,HB-RXBJ,Air Legacy,Airbus,A310,300,1,1,3,2
+66,HB-RXCI,Air Legacy,Airbus,A310,MRTT,1,1,3,2
+67,HB-RXVR,Air Legacy,Airbus,A318,100,1,1,3,1
+68,HB-RYHF,Air Legacy,Airbus,A319,100,1,1,3,1
+69,HB-RYNY,Air Legacy,Airbus,A319,NEO,1,1,3,1
+70,HB-RZAN,Air Legacy,Airbus,A320,100,1,1,3,1
+71,HB-RZGD,Air Legacy,Airbus,A320,200,1,1,3,1
+72,HB-RZWP,Air Legacy,Airbus,A320,NEO,1,1,3,1
+73,HB-RZZQ,Air Legacy,Airbus,A321,100,1,1,3,1
+74,HB-SACK,Air Legacy,Airbus,A321,200,1,1,3,1
+75,HB-SALW,Air Legacy,Airbus,A321,NEO,1,1,3,1
+76,HB-SCER,Air Legacy,Airbus,A321,LR,1,1,3,1
+77,HB-SEGN,Air Legacy,Airbus,A321,XLR,1,1,3,1
+78,HB-SFJF,Air Legacy,Airbus,A330,200,1,1,3,2
+79,HB-SFRW,Air Legacy,Airbus,A330,300,1,1,3,2
+80,HB-SFZG,Air Legacy,Airbus,A330,800,1,1,3,2
+81,HB-SGHF,Air Legacy,Airbus,A330,900,1,1,3,2
+82,HB-SGJV,Air Legacy,Airbus,A330,743L,1,1,3,2
+83,HB-SHSA,Air Legacy,Airbus,A330,MRTT,1,1,3,2
+84,HB-SIAH,Air Legacy,Airbus,A340,200,1,1,3,2
+85,HB-SIAR,Air Legacy,Airbus,A340,300,1,1,3,2
+86,HB-SITH,Air Legacy,Airbus,A340,500,1,1,3,2
+87,HB-SIZG,Air Legacy,Airbus,A340,600,1,1,3,2
+88,HB-SJOB,Air Legacy,Airbus,A350,900,1,1,3,2
+89,HB-SKGM,Air Legacy,Airbus,A350,1000,1,1,3,2
+90,HB-SLFQ,Air Legacy,Airbus,A380,800,1,1,3,3
+91,HB-SLNH,Air Legacy,Airbus,A220,100,1,1,3,1
+92,HB-SMUD,Air Legacy,Airbus,A300,600,1,1,3,2
+93,HB-SMXR,Air Legacy,Airbus,A300,600ST,1,1,3,2
+94,HB-SONA,Air Legacy,Airbus,A310,200,1,1,3,2
+95,HB-SOPY,Air Legacy,Airbus,A310,300,1,1,3,2
+96,HB-SOUB,Air Legacy,Airbus,A310,MRTT,1,1,3,2
+97,HB-SOWD,Air Legacy,Airbus,A318,100,1,1,3,1
+98,HB-SQJS,Air Legacy,Airbus,A319,100,1,1,3,1
+99,HB-SRAV,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+100,HB-SROQ,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+101,HB-SRVX,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+102,HB-SSUK,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+103,HB-STRC,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+104,HB-STZY,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,0
+105,HB-SUWE,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,1
+106,HB-SVKO,Shady Aviation Training,Piper,PA-28,Cherokee,0,0,1,1
+107,HB-SXOA,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+108,HB-SXQG,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+109,HB-SXRT,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+110,HB-SXXF,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+111,HB-SYLG,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+112,HB-SZLH,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+113,HB-SZWE,Shady Aviation Training,Diamond,DA-42,MPP,0,1,1,1
+114,HB-TAVD,Regional Airways,ATR,42,400,1,1,2,1
+115,HB-TCIQ,Regional Airways,ATR,42,400,1,1,2,1
+116,HB-TCPS,Regional Airways,ATR,42,400,1,1,2,1
+117,HB-TDKV,Regional Airways,ATR,42,400,1,1,2,1
+118,HB-TEJK,Regional Airways,ATR,42,400,1,1,2,1
+119,HB-TFJK,Air Executive,Cessna,Citation,XLR,0,1,3,0
+120,HB-TFLR,Air Executive,Cessna,Citation,XLR,0,1,3,0
+121,HB-TFNX,Air Executive,Cessna,Citation,XLR,0,1,3,0
+122,HB-TFSP,Air Executive,Cessna,Citation,XLR,0,1,3,0
+123,HB-TFZZ,Air Legacy,Boeing,747,300,1,1,3,2
+124,HB-TGLP,Air Legacy,Boeing,747,400,1,1,3,2
+125,HB-TGQW,Air Legacy,Boeing,747,8,1,1,3,2
+126,HB-TIYI,Air Legacy,Boeing,757,200,1,1,3,1
+127,HB-TJYO,Air Legacy,Boeing,757,300,1,1,3,1
+128,HB-TLHD,Air Legacy,Boeing,767,200,1,1,3,2
+129,HB-TLLW,Air Legacy,Boeing,767,200ER,1,1,3,2
+130,HB-TNGD,Air Legacy,Boeing,767,300,1,1,3,2
+131,HB-TNSN,Air Legacy,Boeing,767,300ER,1,1,3,2
+132,HB-TOHL,Air Legacy,Boeing,767,400ER,1,1,3,2
+133,HB-TPHR,Air Legacy,Boeing,777,200,1,1,3,2
+134,HB-TVAM,Air Legacy,Boeing,777,200ER,1,1,3,2
+135,HB-TVKN,Air Legacy,Boeing,777,300,1,1,3,2
+136,HB-TWGG,Air Legacy,Boeing,777,8,1,1,3,2
+137,HB-TWME,Air Legacy,Boeing,777,9,1,1,3,2
+138,HB-TWPY,Air Legacy,Boeing,777,10X,1,1,3,2
+139,HB-TWTE,Air Legacy,Boeing,787,8,1,1,3,2
+140,HB-TWUY,Air Legacy,Boeing,787,9,1,1,3,2
+141,HB-TXYA,Air Legacy,Boeing,787,10,1,1,3,2
+142,HB-TYOW,Air Legacy,Boeing,767,300ER,1,1,3,2
+143,HB-TYQY,Air Legacy,Boeing,767,400ER,1,1,3,2
+144,HB-UAND,Air Legacy,Boeing,777,200,1,1,3,2
+145,HB-UBDJ,Air Legacy,Boeing,777,200ER,1,1,3,2
+146,HB-UBOJ,Air Legacy,Boeing,777,300,1,1,3,2
+147,HB-UBTQ,Air Legacy,Boeing,777,8,1,1,3,2
+148,HB-UBXN,Air Legacy,Boeing,777,9,1,1,3,2
+149,HB-UEHA,Air Legacy,Boeing,777,10X,1,1,3,2
+150,HB-UEPV,Air Legacy,Boeing,787,8,1,1,3,2
+151,HB-UEPY,Air Legacy,Boeing,787,9,1,1,3,2
+152,HB-UGBM,Air Legacy,Boeing,787,10,1,1,3,2
+153,HB-UHBL,Air Legacy,Boeing,707, ,1,1,3,2
+154,HB-UHBZ,Air Legacy,Boeing,717,200,1,1,3,1
+155,HB-UHHT,Air Legacy,Boeing,720, ,1,1,3,1
+156,HB-UHJR,Air Legacy,Boeing,727,100,1,1,3,1
+157,HB-UHMZ,Air Legacy,Boeing,727,200,1,1,3,1
+158,HB-UHWT,Air Legacy,Boeing,737,100,1,1,3,1
+159,HB-UISN,Air Legacy,Boeing,737,200,1,1,3,1
+160,HB-UKZR,Air Legacy,Boeing,737,300,1,1,3,1
+161,HB-ULZD,Air Legacy,Boeing,737,400,1,1,3,1
+162,HB-UMNN,Air Legacy,Boeing,737,500,1,1,3,1
+163,HB-UMOG,Air Legacy,Boeing,737,600,1,1,3,1
+164,HB-UMSZ,Air Legacy,Boeing,737,700,1,1,3,1
+165,HB-UPVM,Air Legacy,Boeing,737,700ER,1,1,3,1
+166,HB-UPZM,Air Legacy,Boeing,737,800,1,1,3,1
+167,HB-UREO,Air Legacy,Boeing,737,900,1,1,3,1
+168,HB-USYM,Air Legacy,Boeing,737,900ER,1,1,3,1
+169,HB-UTCD,Air Legacy,Boeing,737,7,1,1,3,1
+170,HB-UUUE,Air Legacy,Boeing,737,8,1,1,3,1
+171,HB-UUVN,Air Legacy,Boeing,737,200,1,1,3,1
+172,HB-UVAJ,Air Legacy,Boeing,737,9,1,1,3,1
+173,HB-UVLR,Air Legacy,Boeing,737,10,1,1,3,1
+174,HB-UVRB,Air Legacy,Boeing,747,100,1,1,3,2
+175,HB-UXYZ,Air Legacy,Boeing,747,200,1,1,3,2
+176,HB-UYAL,Air Legacy,Boeing,747,SP,1,1,3,2
+177,HB-UYBP,Air Legacy,Boeing,747,300,1,1,3,2
+178,HB-UZBA,Air Legacy,Boeing,747,400,1,1,3,2
+179,HB-UZMR,Air Legacy,Boeing,747,8,1,1,3,2
+180,HB-UZSQ,Air Legacy,Boeing,757,200,1,1,3,1
+181,HB-UZWS,Air Legacy,Boeing,757,300,1,1,3,1
+182,HB-VARS,Air Legacy,Boeing,767,200,1,1,3,2
+183,HB-VASO,Air Legacy,Boeing,767,200ER,1,1,3,2
+184,HB-VBNK,Air Legacy,Boeing,767,300,1,1,3,2
+185,HB-VCWZ,Air Legacy,Boeing,767,300ER,1,1,3,2
+186,HB-VDRJ,Air Legacy,Boeing,767,400ER,1,1,3,2
+187,HB-VDRL,Air Legacy,Boeing,777,200,1,1,3,2
+188,HB-VEXO,Air Legacy,Boeing,777,200ER,1,1,3,2
+189,HB-VFKD,Air Legacy,Boeing,777,300,1,1,3,2
+190,HB-VGLH,Air Legacy,Boeing,777,8,1,1,3,2
+191,HB-VHYS,Air Legacy,Boeing,777,9,1,1,3,2
+192,D-VICJ,Mainline Airways,Boeing,777,10X,1,1,3,2
+193,D-VINW,Mainline Airways,Boeing,787,8,1,1,3,2
+194,D-VISR,Mainline Airways,Boeing,787,9,1,1,3,2
+195,D-VJKC,Mainline Airways,Boeing,787,10,1,1,3,2
+196,D-VJMV,Mainline Airways,Boeing,767,300ER,1,1,3,2
+197,D-VJNP,Mainline Airways,Boeing,767,400ER,1,1,3,2
+198,D-VJSI,Mainline Airways,Boeing,777,200,1,1,3,2
+199,D-VJSQ,Mainline Airways,Airbus,A320,100,1,1,3,1
+200,D-VKNE,Mainline Airways,Airbus,A320,200,1,1,3,1
+201,D-VLOV,Mainline Airways,Airbus,A320,NEO,1,1,3,1
+202,D-VLUU,Mainline Airways,Airbus,A321,100,1,1,3,1
+203,D-VMAH,Mainline Airways,Airbus,A321,200,1,1,3,1
+204,D-VMLI,Mainline Airways,Airbus,A321,NEO,1,1,3,1
+205,D-VMOH,Mainline Airways,Airbus,A321,LR,1,1,3,1
+206,D-VNVB,Mainline Airways,Airbus,A321,XLR,1,1,3,1
+207,D-VOVQ,Mainline Airways,Airbus,A330,200,1,1,3,2
+208,D-VPCB,Mainline Airways,Airbus,A330,300,1,1,3,2
+209,D-VPHH,Mainline Airways,Airbus,A330,800,1,1,3,2
+210,D-VQLD,Mainline Airways,Airbus,A330,900,1,1,3,2
+211,D-VRGF,Mainline Airways,Airbus,A330,743L,1,1,3,2
+212,D-VRVR,Mainline Airways,Airbus,A321,NEO,1,1,3,1
+213,D-VSMF,Mainline Airways,Airbus,A321,LR,1,1,3,1
+214,D-VTMT,Mainline Airways,Airbus,A321,XLR,1,1,3,1
+215,D-VTPQ,Mainline Airways,Airbus,A330,200,1,1,3,2
+216,D-VTRF,Mainline Airways,Airbus,A330,300,1,1,3,2
+217,D-VTXA,Mainline Airways,Airbus,A330,800,1,1,3,2
+218,D-VVXB,Mainline Airways,Airbus,A330,900,1,1,3,2
+219,D-VWET,Mainline Airways,Airbus,A330,743L,1,1,3,2
+220,D-VYHW,Mainline Airways,Airbus,A330,MRTT,1,1,3,2
+221,D-VYPE,Mainline Airways,Airbus,A340,200,1,1,3,2
+222,D-VYPM,Mainline Airways,Airbus,A340,300,1,1,3,2
+223,D-VYVW,Mainline Airways,Airbus,A340,500,1,1,3,2
+224,D-VYWT,Mainline Airways,Airbus,A340,600,1,1,3,2
+225,D-VZUJ,Mainline Airways,Airbus,A350,900,1,1,3,2
+226,D-VZXZ,Mainline Airways,Airbus,A350,1000,1,1,3,2
+227,D-WAHX,Mainline Airways,Airbus,A380,800,1,1,3,3
+228,D-WBWO,Mainline Airways,Airbus,A220,100,1,1,3,1
+229,D-WBZJ,Mainline Airways,Airbus,A220,300,1,1,3,1
+230,D-WCHC,Mainline Airways,Airbus,A300,600,1,1,3,2
+231,D-WCRQ,Mainline Airways,Airbus,A300,600ST,1,1,3,2
+232,D-WECA,Mainline Airways,Airbus,A310,200,1,1,3,2
+233,D-WFEP,Mainline Airways,Airbus,A310,300,1,1,3,2
+234,D-WFRM,Mainline Airways,Airbus,A310,MRTT,1,1,3,2
+235,D-WGDN,Mainline Airways,Airbus,A318,100,1,1,3,1
+236,D-WGWG,Mainline Airways,Airbus,A319,100,1,1,3,1
+237,D-WHAS,Mainline Airways,Airbus,A319,NEO,1,1,3,1
+238,D-WHOZ,Mainline Airways,Airbus,A320,100,1,1,3,1
+239,D-WIJH,Mainline Airways,Airbus,A320,200,1,1,3,1
+240,D-WIKL,Mainline Airways,Airbus,A320,NEO,1,1,3,1
+241,D-WJCX,Mainline Airways,Airbus,A321,100,1,1,3,1
+242,D-WJDB,Mainline Airways,Airbus,A321,200,1,1,3,1
+243,D-WJHM,Mainline Airways,Airbus,A321,NEO,1,1,3,1
+244,D-WJNK,Mainline Airways,Airbus,A321,LR,1,1,3,1
+245,D-WLGW,Mainline Airways,Airbus,A321,XLR,1,1,3,1
+246,D-WMFZ,Mainline Airways,Airbus,A330,200,1,1,3,2
+247,D-WMOX,Mainline Airways,Airbus,A330,300,1,1,3,2
+248,D-WNJC,Mainline Airways,Airbus,A330,800,1,1,3,2
+249,D-WOFI,Mainline Airways,Airbus,A330,900,1,1,3,2
+250,D-WOKF,Mainline Airways,Airbus,A330,743L,1,1,3,2
+251,D-WONO,Mainline Airways,Airbus,A330,MRTT,1,1,3,2
+252,D-WQMI,Mainline Airways,Airbus,A340,200,1,1,3,2
+253,D-WQOS,Mainline Airways,Airbus,A340,300,1,1,3,2
+254,D-WRWB,Mainline Airways,Airbus,A340,500,1,1,3,2
+255,D-WSYC,Mainline Airways,Airbus,A340,600,1,1,3,2
+256,D-WSZF,Mainline Airways,Airbus,A350,900,1,1,3,2
+257,D-WTQB,Mainline Airways,Airbus,A350,1000,1,1,3,2
+258,D-WTSP,Mainline Airways,Airbus,A380,800,1,1,3,3
+259,D-WUIB,Mainline Airways,Airbus,A220,100,1,1,3,1
+261,D-WUXP,Mainline Airways,Airbus,A300,600,1,1,3,2
+262,D-WWEN,Mainline Airways,Airbus,A300,600ST,1,1,3,2
+263,D-WXNN,Mainline Airways,Airbus,A310,200,1,1,3,2
+264,D-WYNB,Mainline Airways,Airbus,A310,300,1,1,3,2
+265,D-XAGX,Mainline Airways,Airbus,A310,MRTT,1,1,3,2
+266,D-XAUW,Mainline Airways,Airbus,A318,100,1,1,3,1
+267,D-XCKH,Mainline Airways,Airbus,A319,100,1,1,3,1
+268,D-XESN,Mainline Airways,Airbus,A319,NEO,1,1,3,1
+269,D-XFFM,Mainline Airways,Airbus,A320,100,1,1,3,1
+270,D-XFIY,Mainline Airways,Airbus,A320,200,1,1,3,1
+271,D-XFRX,Mainline Airways,Airbus,A320,NEO,1,1,3,1
+272,D-XFSL,Mainline Airways,Airbus,A321,100,1,1,3,1
+273,D-XHOK,Mainline Airways,Airbus,A321,200,1,1,3,1
+274,D-XITR,Mainline Airways,Airbus,A321,NEO,1,1,3,1
+275,D-XIZF,Mainline Airways,Airbus,A321,LR,1,1,3,1
+276,D-XJCE,Mainline Airways,Airbus,A321,XLR,1,1,3,1
+277,D-XKOI,Mainline Airways,Airbus,A330,200,1,1,3,2
+278,D-XKZN,Mainline Airways,Airbus,A330,300,1,1,3,2
+279,D-XMBV,Mainline Airways,Airbus,A330,800,1,1,3,2
+280,D-XMMJ,Mainline Airways,Airbus,A330,900,1,1,3,2
+281,D-XNMC,Mainline Airways,Airbus,A330,743L,1,1,3,2
+282,D-XNRR,Mainline Airways,Airbus,A330,MRTT,1,1,3,2
+283,D-XPEQ,Mainline Airways,Airbus,A340,200,1,1,3,2
+284,D-XPIQ,Mainline Airways,Airbus,A340,300,1,1,3,2
+285,D-XPJI,Mainline Airways,Airbus,A340,500,1,1,3,2
+286,D-XPMT,Mainline Airways,Airbus,A340,600,1,1,3,2
+287,D-XQIO,Mainline Airways,Airbus,A350,900,1,1,3,2
+288,D-XRBF,Mainline Airways,Airbus,A350,1000,1,1,3,2
+289,D-XRKL,Mainline Airways,Airbus,A380,800,1,1,3,3
+290,D-XRLI,Mainline Airways,Airbus,A220,100,1,1,3,1
+291,D-XRXE,Mainline Airways,Airbus,A220,300,1,1,3,1
+292,D-XSJJ,Mainline Airways,Airbus,A300,600,1,1,3,2
+293,D-XSWH,Mainline Airways,Airbus,A300,600ST,1,1,3,2
+294,D-XTKC,Mainline Airways,Airbus,A310,200,1,1,3,2
+295,D-XUAC,Mainline Airways,Airbus,A310,300,1,1,3,2
+296,D-XUDW,Mainline Airways,Airbus,A310,MRTT,1,1,3,2
+297,D-XUXK,Mainline Airways,Airbus,A318,100,1,1,3,1
+298,D-XYDQ,Mainline Airways,Airbus,A319,100,1,1,3,1
+299,D-XYOL,Mainline Airways,Boeing,707, ,1,1,3,2
+300,D-XZGB,Mainline Airways,Boeing,717,200,1,1,3,1
+301,D-XZKB,Mainline Airways,Boeing,720, ,1,1,3,1
+302,D-YAAU,Mainline Airways,Boeing,727,100,0,1,3,1
+303,D-YBHV,Mainline Airways,Boeing,727,200,1,1,3,1
+304,D-YBNY,Mainline Airways,Boeing,737,100,1,1,3,1
+305,D-YBUL,Mainline Airways,Boeing,737,200,1,1,3,1
+306,D-YCAH,Mainline Airways,Boeing,737,300,1,1,3,1
+307,D-YCLH,Mainline Airways,Boeing,737,400,1,1,3,1
+308,D-YDFS,Mainline Airways,Boeing,737,500,1,1,3,1
+309,D-YDIV,Mainline Airways,Boeing,737,600,1,1,3,1
+310,D-YDYV,Mainline Airways,Boeing,737,700,1,1,3,1
+311,D-YEVO,Mainline Airways,Boeing,737,700ER,1,1,3,1
+312,D-YGRW,Mainline Airways,Boeing,737,800,1,1,3,1
+313,D-YGVP,Mainline Airways,Boeing,737,900,1,1,3,1
+314,D-YHJF,Mainline Airways,Boeing,737,900ER,1,1,3,1
+315,D-YHLH,Mainline Airways,Boeing,737,7,1,1,3,1
+316,D-YJAJ,Mainline Airways,Boeing,737,8,1,1,3,1
+317,D-YJQS,Mainline Airways,Boeing,737,200,1,1,3,1
+318,D-YJTJ,Mainline Airways,Boeing,737,9,1,1,3,1
+319,D-YJYO,Mainline Airways,Boeing,737,10,1,1,3,1
+320,D-YKBD,Mainline Airways,Boeing,747,100,1,1,3,2
+321,D-YKKK,Mainline Airways,Boeing,747,200,1,1,3,2
+322,D-YLKU,Mainline Airways,Boeing,747,SP,1,1,3,2
+323,D-YLYT,Mainline Airways,Boeing,747,300,1,1,3,2
+324,D-YNAU,Mainline Airways,Boeing,747,400,1,1,3,2
+325,D-YNXQ,Mainline Airways,Boeing,747,8,1,1,3,2
+326,D-YOJE,Mainline Airways,Boeing,757,200,1,1,3,1
+327,D-YOMT,Mainline Airways,Boeing,757,300,1,1,3,1
+328,D-YPLW,Mainline Airways,Boeing,767,200,1,1,3,2
+329,D-YPML,Mainline Airways,Boeing,767,200ER,1,1,3,2
+330,D-YPQN,Mainline Airways,Boeing,767,300,1,1,3,2
+331,D-YPVK,Mainline Airways,Boeing,767,300ER,1,1,3,2
+332,D-YQEH,Mainline Airways,Boeing,767,400ER,1,1,3,2
+333,D-YQLV,Mainline Airways,Boeing,777,200,1,1,3,2
+334,D-YQUV,Mainline Airways,Boeing,777,200ER,1,1,3,2
+335,D-YQVF,Mainline Airways,Boeing,777,300,1,1,3,2
+336,D-YQVX,Mainline Airways,Boeing,777,8,1,1,3,2
+337,D-YRRD,Mainline Airways,Boeing,777,9,1,1,3,2
+338,D-YSGU,Mainline Airways,Boeing,777,10X,1,1,3,2
+339,D-YTHQ,Mainline Airways,Boeing,787,8,1,1,3,2
+340,D-YTTJ,Mainline Airways,Boeing,787,9,1,1,3,2
+341,D-YUMP,Mainline Airways,Boeing,787,10,1,1,3,2
+342,D-YUYC,Mainline Airways,Boeing,767,300ER,1,1,3,2
+343,D-YVHD,Mainline Airways,Boeing,767,400ER,1,1,3,2
+344,D-YVNL,Mainline Airways,Boeing,777,200,1,1,3,2
+345,D-YYHW,Mainline Airways,Boeing,777,200ER,1,1,3,2
+346,D-YYZC,Mainline Airways,Boeing,777,300,1,1,3,2
+347,D-YZMW,Mainline Airways,Boeing,777,8,1,1,3,2
+348,D-YZPP,Mainline Airways,Boeing,777,9,1,1,3,2
+349,D-YZUA,Mainline Airways,Boeing,777,10X,1,1,3,2
+350,D-YZUE,Mainline Airways,Boeing,787,8,1,1,3,2
+351,D-ZAVK,Mainline Airways,Boeing,787,9,1,1,3,2
+352,D-ZAWR,Mainline Airways,Boeing,787,10,1,1,3,2
+353,D-ZBNV,Mainline Airways,Boeing,707, ,1,1,3,2
+354,D-ZCDX,Mainline Airways,Boeing,717,200,1,1,3,1
+355,D-ZCQR,Mainline Airways,Boeing,720, ,1,1,3,1
+356,D-ZCTM,Mainline Airways,Boeing,727,100,1,1,3,1
+357,D-ZEDJ,Mainline Airways,Boeing,727,200,1,1,3,1
+358,D-ZEET,Mainline Airways,Boeing,737,100,1,1,3,1
+359,D-ZEUC,Mainline Airways,Boeing,737,200,1,1,3,1
+360,D-ZFWT,Mainline Airways,Boeing,737,300,1,1,3,1
+361,D-ZHJD,Mainline Airways,Boeing,737,400,1,1,3,1
+362,D-ZHMR,Mainline Airways,Boeing,737,500,1,1,3,1
+363,D-ZHQM,Mainline Airways,Boeing,737,600,1,1,3,1
+364,D-ZIAI,Mainline Airways,Boeing,737,700,1,1,3,1
+365,D-ZIKO,Mainline Airways,Boeing,737,700ER,1,1,3,1
+366,D-ZIPV,Mainline Airways,Boeing,737,800,1,1,3,1
+367,D-ZIRG,Mainline Airways,Boeing,737,900,1,1,3,1
+368,D-ZIXD,Mainline Airways,Boeing,737,900ER,1,1,3,1
+369,D-ZJBD,Mainline Airways,Boeing,737,7,1,1,3,1
+370,D-ZJFZ,Mainline Airways,Boeing,737,8,1,1,3,1
+371,D-ZJIZ,Mainline Airways,Boeing,737,200,1,1,3,1
+372,D-ZJLF,Mainline Airways,Boeing,737,9,1,1,3,1
+373,D-ZJTB,Mainline Airways,Boeing,737,10,1,1,3,1
+374,D-ZKUW,Mainline Airways,Boeing,747,100,1,1,3,2
+375,D-ZLRB,Mainline Airways,Boeing,747,200,1,1,3,2
+376,D-ZLRO,Mainline Airways,Boeing,747,SP,1,1,3,2
+377,D-ZNAX,Mainline Airways,Boeing,747,300,1,1,3,2
+378,D-ZNUW,Mainline Airways,Boeing,747,400,1,1,3,2
+379,D-ZOPJ,Mainline Airways,Boeing,747,8,1,1,3,2
+380,D-ZOWE,Mainline Airways,Boeing,757,200,1,1,3,1
+381,D-ZPDE,Mainline Airways,Boeing,757,300,1,1,3,1
+382,D-ZPMO,Mainline Airways,Boeing,767,200,1,1,3,2
+383,D-ZPSM,Mainline Airways,Boeing,767,200ER,1,1,3,2
+384,D-ZPYK,Mainline Airways,Boeing,767,300,1,1,3,2
+385,D-ZQCQ,Mainline Airways,Boeing,767,300ER,1,1,3,2
+386,D-ZSNL,Mainline Airways,Boeing,767,400ER,1,1,3,2
+387,D-ZSRU,Mainline Airways,Boeing,777,200,1,1,3,2
+388,D-ZVIF,Mainline Airways,Boeing,777,200ER,1,1,3,2
+389,D-ZVMF,Mainline Airways,Boeing,777,300,1,1,3,2
+390,D-ZWFC,Mainline Airways,Boeing,777,8,1,1,3,2
+391,D-ZXAF,Mainline Airways,Boeing,777,9,1,1,3,2
+392,D-ZXDC,Mainline Airways,Boeing,777,10X,1,1,3,2
+393,D-ZXDO,Mainline Airways,Boeing,787,8,1,1,3,2
+394,D-ZXLP,Mainline Airways,Boeing,787,9,1,1,3,2
+395,D-ZYHG,Mainline Airways,Boeing,787,10,1,1,3,2
+396,D-ZYKW,Mainline Airways,Boeing,767,300ER,1,1,3,2
+397,D-ZYYL,Mainline Airways,Boeing,767,400ER,1,1,3,2
+398,D-ZZKQ,Mainline Airways,Boeing,777,200,1,1,3,2
+399,D-QGH,Mainline Airways,Airbus,A320,100,1,1,3,1
+400,D-QGH,Mainline Airways,Airbus,A320,200,1,1,3,1
+401,D-QGV,Mainline Airways,Airbus,A320,NEO,1,1,3,1
+402,D-QIA,Mainline Airways,Airbus,A321,100,1,1,3,1
+403,D-QIY,Mainline Airways,Airbus,A321,200,1,1,3,1
+404,D-QJW,Mainline Airways,Airbus,A321,NEO,1,1,3,1
+405,D-QJW,Mainline Airways,Airbus,A321,LR,1,1,3,1
+406,D-QKF,Mainline Airways,Airbus,A321,XLR,1,1,3,1
+407,SE-QKQ,Northern Air,Airbus,A330,200,1,1,3,2
+408,SE-QKV,Northern Air,Airbus,A330,300,1,1,3,2
+409,SE-QLE,Northern Air,Airbus,A330,800,1,1,3,2
+410,SE-QLG,Northern Air,Airbus,A330,900,1,1,3,2
+411,SE-QLY,Northern Air,Airbus,A330,743L,1,1,3,2
+412,SE-QMT,Northern Air,Airbus,A321,NEO,1,1,3,1
+413,SE-QMY,Northern Air,Airbus,A321,LR,1,1,3,1
+414,SE-QNL,Northern Air,Airbus,A321,XLR,1,1,3,1
+415,SE-QOB,Northern Air,Airbus,A330,200,1,1,3,2
+416,SE-QOG,Northern Air,Airbus,A330,300,1,1,3,2
+417,SE-QPG,Northern Air,Airbus,A330,800,1,1,3,2
+418,SE-QPU,Northern Air,Airbus,A330,900,1,1,3,2
+419,SE-QQO,Northern Air,Airbus,A330,743L,1,1,3,2
+420,SE-QQR,Northern Air,Airbus,A330,MRTT,1,1,3,2
+421,SE-QSS,Northern Air,Airbus,A340,200,1,1,3,2
+422,SE-QTA,Northern Air,Airbus,A340,300,1,1,3,2
+423,SE-QTO,Northern Air,Airbus,A340,500,1,1,3,2
+424,SE-QTP,Northern Air,Airbus,A340,600,1,1,3,2
+425,SE-QTY,Northern Air,Airbus,A350,900,1,1,3,2
+426,SE-QUD,Northern Air,Airbus,A350,1000,1,1,3,2
+427,SE-QUZ,Northern Air,Airbus,A380,800,1,1,3,3
+428,SE-QVY,Northern Air,Airbus,A220,300,1,1,3,1
+429,SE-QWL,Northern Air,Airbus,A300,600,1,1,3,2
+430,SE-QWX,Northern Air,Airbus,A300,600ST,1,1,3,2
+431,SE-QWZ,Northern Air,Airbus,A310,200,1,1,3,2
+432,SE-QXB,Northern Air,Airbus,A310,300,1,1,3,2
+433,SE-QXD,Northern Air,Airbus,A310,MRTT,1,1,3,2
+434,SE-QXQ,Northern Air,Airbus,A318,100,1,1,3,1
+435,SE-QYD,Northern Air,Airbus,A319,100,1,1,3,1
+436,SE-QZS,Northern Air,Airbus,A319,NEO,1,1,3,1
+437,SE-RAD,Northern Air,Airbus,A320,100,1,1,3,1
+438,SE-RAJ,Northern Air,Airbus,A320,200,1,1,3,1
+439,SE-RAO,Northern Air,Airbus,A320,NEO,1,1,3,1
+440,SE-RCH,Northern Air,Airbus,A321,100,1,1,3,1
+441,SE-RDJ,Northern Air,Airbus,A321,200,1,1,3,1
+442,SE-RDL,Northern Air,Airbus,A321,NEO,1,1,3,1
+443,SE-REH,Northern Air,Airbus,A321,LR,1,1,3,1
+444,SE-RER,Northern Air,Airbus,A321,XLR,1,1,3,1
+445,SE-RGI,Northern Air,Airbus,A330,200,1,1,3,2
+446,SE-RGP,Northern Air,Airbus,A330,300,1,1,3,2
+447,SE-RGV,Northern Air,Airbus,A330,800,1,1,3,2
+448,SE-RHM,Northern Air,Airbus,A330,900,1,1,3,2
+449,SE-RID,Northern Air,Airbus,A330,743L,1,1,3,2
+450,SE-RIO,Northern Air,Airbus,A330,MRTT,1,1,3,2
+451,SE-RJE,Northern Air,Airbus,A340,200,1,1,3,2
+452,SE-RJG,Northern Air,Airbus,A340,300,1,1,3,2
+453,SE-RJN,Northern Air,Airbus,A340,500,1,1,3,2
+454,SE-RJX,Northern Air,Airbus,A340,600,1,1,3,2
+455,SE-RJZ,Northern Air,Airbus,A350,900,1,1,3,2
+456,SE-RKK,Northern Air,Airbus,A350,1000,1,1,3,2
+457,SE-RKP,Northern Air,Airbus,A380,800,1,1,3,3
+458,SE-RLL,Northern Air,Airbus,A220,100,1,1,3,1
+459,SE-RNU,Northern Air,Airbus,A220,300,1,1,3,1
+460,SE-RNZ,Northern Air,Airbus,A300,600,1,1,3,2
+461,SE-ROP,Northern Air,Airbus,A300,600ST,1,1,3,2
+462,SE-ROR,Northern Air,Airbus,A310,200,1,1,3,2
+463,SE-RPK,Northern Air,Airbus,A310,300,1,1,3,2
+464,SE-RQB,Northern Air,Airbus,A310,MRTT,1,1,3,2
+465,SE-RQD,Northern Air,Airbus,A318,100,1,1,3,1
+466,SE-RQL,Northern Air,Airbus,A319,100,1,1,3,1
+467,SE-RQS,Northern Air,Airbus,A319,NEO,1,1,3,1
+468,SE-RQX,Northern Air,Airbus,A320,100,1,1,3,1
+469,SE-RSC,Northern Air,Airbus,A320,200,1,1,3,1
+470,SE-RWA,Northern Air,Airbus,A320,NEO,1,1,3,1
+471,SE-RXY,Northern Air,Airbus,A321,100,1,1,3,1
+472,SE-RYF,Northern Air,Airbus,A321,200,1,1,3,1
+473,SE-RZH,Northern Air,Airbus,A321,NEO,1,1,3,1
+474,SE-SAK,Northern Air,Airbus,A321,LR,1,1,3,1
+475,SE-SAV,Northern Air,Airbus,A321,XLR,1,1,3,1
+476,SE-SBT,Northern Air,Airbus,A330,200,1,1,3,2
+477,SE-SCA,Northern Air,Airbus,A330,300,1,1,3,2
+478,SE-SDO,Northern Air,Airbus,A330,800,1,1,3,2
+479,SE-SDV,Northern Air,Airbus,A330,900,1,1,3,2
+480,SE-SFY,Northern Air,Airbus,A330,743L,1,1,3,2
+481,SE-SGE,Northern Air,Airbus,A330,MRTT,1,1,3,2
+482,SE-SHN,Northern Air,Airbus,A340,200,1,1,3,2
+483,SE-SHU,Northern Air,Airbus,A340,300,1,1,3,2
+484,SE-SIQ,Northern Air,Airbus,A340,500,1,1,3,2
+485,SE-SIY,Northern Air,Airbus,A340,600,1,1,3,2
+486,SE-SJG,Northern Air,Airbus,A350,900,1,1,3,2
+487,SE-SJH,Northern Air,Airbus,A350,1000,1,1,3,2
+488,SE-SJO,Northern Air,Airbus,A380,800,1,1,3,3
+489,SE-SKG,Northern Air,Airbus,A220,300,1,1,3,1
+490,SE-SKK,Northern Air,Airbus,A300,600,1,1,3,2
+491,SE-SKN,Northern Air,Airbus,A300,600ST,1,1,3,2
+492,SE-SKV,Northern Air,Airbus,A310,200,1,1,3,2
+493,SE-SLB,Northern Air,Airbus,A310,,1,1,3,2
+494,SE-SLW,Northern Air,Airbus,A310,MRTT,1,1,3,2
+495,LN-NEU,Northern Air,Boeing,737,800,1,1,3,1
+496,LN-NEH,Northern Air,Boeing,737,800,1,1,3,1
+497,LN-KAK,Northern Air,Boeing,737,800,1,1,3,1
+499,LN-GOG,Northern Air,Boeing,737,800,1,1,3,1
+500,LN-MEM,Northern Air,Boeing,737,800,1,1,3,1
