@@ -188,7 +188,7 @@ signals:
      * trigger an update to the models of the views displaying database contents in
      * the user interface so that a user is always presented with up-to-date information.
      */
-    void updated();
+    void dataBaseUpdated();
 };
 
 /*!

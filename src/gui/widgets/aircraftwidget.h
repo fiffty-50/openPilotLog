@@ -56,7 +56,7 @@ private slots:
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
-    void onDatabaseChanged();
+    void onDisplayModel_dataBaseUpdated();
 
 private:
     Ui::AircraftWidget *ui;

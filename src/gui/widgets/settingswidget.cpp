@@ -279,7 +279,7 @@ void SettingsWidget::themeGroup_toggled(int id)
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
     ASettings::write("logbook/view", index);
-    emit logbookviewSelectionChanged(index);
+    emit logbookViewSelectionChanged(index);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
