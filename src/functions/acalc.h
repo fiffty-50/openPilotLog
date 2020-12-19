@@ -134,7 +134,7 @@ double greatCircleDistance(double lat1, double lon1, double lat2, double lon2);
  * \param dest ICAO 4-letter Airport Identifier
  * \return Nautical Miles From Departure to Destination
  */
-double greatCircleDistanceBetweenAirports(QString dept, QString dest);
+double greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest);
 
 /*!
  * \brief  Calculates a list of points (lat,lon) along the Great Circle between two points.
@@ -181,7 +181,7 @@ double solarElevation(QDateTime utc_time_point, double lat, double lon);
  */
 int calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle);
 
-bool isNight(QString icao, QDateTime event_time, int nightAngle);
+bool isNight(const QString &icao, QDateTime event_time, int night_angle);
 
 QString formatTimeInput(QString user_input);
 

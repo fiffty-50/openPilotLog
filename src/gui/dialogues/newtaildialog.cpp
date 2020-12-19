@@ -122,25 +122,18 @@ void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
     if (is_template)
         line_edits.removeOne(ui->registrationLineEdit);
 
+    auto data = entry.getData();
+
     for (const auto &le : line_edits) {
         QString name = le->objectName().remove("LineEdit");
-        QString value = entry.getData().value(name);
+        QString value = data.value(name);
         le->setText(value);
     }
-    //select comboboxes
-    QVector<QString> operation = {entry.getData().value("singleengine"), entry.getData().value("multiengine")};
-    QVector<QString> ppNumber =  {entry.getData().value("singlepilot"), entry.getData().value("multipilot")};
-    QVector<QString> ppType =    {entry.getData().value("unpowered"), entry.getData().value("piston"),
-                                  entry.getData().value("turboprop"), entry.getData().value("jet")
-                                 };
-    QVector<QString> weight =    {entry.getData().value("light"), entry.getData().value("medium"),
-                                  entry.getData().value("heavy"), entry.getData().value("super")
-                                 };
 
-    ui->operationComboBox->setCurrentIndex(operation.indexOf("1") + 1);
-    ui->ppNumberComboBox->setCurrentIndex(ppNumber.indexOf("1") + 1);
-    ui->ppTypeComboBox->setCurrentIndex(ppType.indexOf("1") + 1);
-    ui->weightComboBox->setCurrentIndex(weight.indexOf("1") + 1);
+    ui->operationComboBox->setCurrentIndex(data.value("multipilot").toInt() + 1);
+    ui->ppNumberComboBox->setCurrentIndex(data.value("multiengine").toInt() + 1);
+    ui->ppTypeComboBox->setCurrentIndex(data.value("engineType").toInt() + 1);
+    ui->weightComboBox->setCurrentIndex(data.value("weightClass").toInt() + 1);
 }
 
 /*!
@@ -202,27 +195,18 @@ void NewTailDialog::submitForm()
         QString name = le->objectName().remove("LineEdit");
         new_data.insert(name, le->text());
     }
-    //prepare comboboxes
-    QVector<QString> operation = {"singlepilot", "multipilot"};
-    QVector<QString> ppNumber  = {"singleengine", "multiengine"};
-    QVector<QString> ppType    = {"unpowered", "piston",
-                                  "turboprop", "jet"
-                                 };
-    QVector<QString> weight    = {"light", "medium",
-                                  "heavy", "super"
-                                 };
 
-    if (ui->operationComboBox->currentIndex() != 0) {
-        new_data.insert(operation[ui->operationComboBox->currentIndex() - 1], QLatin1String("1"));
+    if (ui->operationComboBox->currentIndex() != 0) { // bool Multipilot
+        new_data.insert("multipilot", QString::number(ui->operationComboBox->currentIndex() - 1));
     }
-    if (ui->ppNumberComboBox->currentIndex() != 0) {
-        new_data.insert(ppNumber[ui->ppNumberComboBox->currentIndex() - 1], QLatin1String("1"));
+    if (ui->ppNumberComboBox->currentIndex() != 0) { // bool MultiEngine
+        new_data.insert("multiengine", QString::number(ui->ppNumberComboBox->currentIndex() - 1));
     }
-    if (ui->ppTypeComboBox->currentIndex() != 0) {
-        new_data.insert(ppType[ui->ppTypeComboBox->currentIndex() - 1], QLatin1String("1"));
+    if (ui->ppTypeComboBox->currentIndex() != 0) { // int 0=unpowered,....4=jet
+        new_data.insert("engineType", QString::number(ui->ppTypeComboBox->currentIndex() - 1));
     }
-    if (ui->weightComboBox->currentIndex() != 0) {
-        new_data.insert(weight[ui->weightComboBox->currentIndex() - 1], QLatin1String("1"));
+    if (ui->weightComboBox->currentIndex() != 0) { // int 0=light...3=super
+        new_data.insert("weightClass", QString::number(ui->weightComboBox->currentIndex() - 1));
     }
 
     //create db object
@@ -236,6 +220,7 @@ void NewTailDialog::submitForm()
         message_box.exec();
         return;
     } else {
+        ACalc::updateAutoTimes(entry.getPosition().second);
         QDialog::accept();
     }
 }

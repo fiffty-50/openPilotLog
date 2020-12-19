@@ -1,7 +1,9 @@
 #include "acalc.h"
 #include "src/testing/adebug.h"
+#include "src/experimental/adatabase.h"
 
 using namespace ACalc;
+using namespace experimental;
 
 /*!
  * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
@@ -82,30 +84,28 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
 }
 
 
-double ACalc::greatCircleDistanceBetweenAirports(QString dept, QString dest)
+double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
-    QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
-                                                       Db::exactMatch);
-    QVector<QString> dest_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dest,
-                                                       Db::exactMatch);
+    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept;
+    statement.append("' OR icao = '" + dest + "'");
+    auto lat_lon = aDB()->customQuery(statement, 2);
 
-    if (dept_coordinates.isEmpty() || dest_coordinates.isEmpty()
-       ) {
-        DEB("invalid input. aborting.");
+    if (lat_lon.length() != 4) {
+        DEB("Invalid input. Aborting.");
         return 0;
     }
 
-    double lat1 = degToRad(dept_coordinates[0].toDouble());
-    double lon1 = degToRad(dept_coordinates[1].toDouble());
-    double lat2 = degToRad(dest_coordinates[0].toDouble());
-    double lon2 = degToRad(dest_coordinates[1].toDouble());
+    double dept_lat = degToRad(lat_lon[0].toDouble());
+    double dept_lon = degToRad(lat_lon[1].toDouble());
+    double dest_lat = degToRad(lat_lon[2].toDouble());
+    double dest_lon = degToRad(lat_lon[3].toDouble());
 
     // Haversine Formula
-    double delta_lon = lon2 - lon1;
-    double delta_lat = lat2 - lat1;
+    double delta_lon = dest_lon - dept_lon;
+    double delta_lat = dest_lat - dept_lat;
 
     double result = pow(sin(delta_lat / 2), 2) +
-                    cos(lat1) * cos(lat2) * pow(sin(delta_lon / 2), 2);
+                    cos(dept_lat) * cos(dest_lat) * pow(sin(delta_lon / 2), 2);
     result = 2 * asin(sqrt(result));
     return radToNauticalMiles(result);
 }
@@ -204,25 +204,24 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 
 int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
-    QVector<QString> dept_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dept,
-                                                       Db::exactMatch);
-    QVector<QString> dest_coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", dest,
-                                                       Db::exactMatch);
 
-    if (dept_coordinates.isEmpty() || dest_coordinates.isEmpty()
-       ) {
-        DEB("invalid input. aborting.");
+    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept;
+    statement.append("' OR icao = '" + dest + "'");
+    auto lat_lon = aDB()->customQuery(statement, 2);
+
+    if (lat_lon.length() != 4) {
+        DEB("Invalid input. Aborting.");
         return 0;
     }
 
-    double dept_lat = degToRad(dept_coordinates[0].toDouble());
-    double dept_lon = degToRad(dept_coordinates[1].toDouble());
-    double dest_lat = degToRad(dest_coordinates[0].toDouble());
-    double dest_lon = degToRad(dest_coordinates[1].toDouble());
+    double dept_lat = degToRad(lat_lon[0].toDouble());
+    double dept_lon = degToRad(lat_lon[1].toDouble());
+    double dest_lat = degToRad(lat_lon[2].toDouble());
+    double dest_lon = degToRad(lat_lon[3].toDouble());
 
-    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon, dest_lat, dest_lon,
+    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon,
+                                                                     dest_lat, dest_lon,
                                                                      tblk);
-
     int night_time = 0;
     for (int i = 0; i < tblk ; i++) {
         if (solarElevation(departureTime.addSecs(60 * i), radToDeg(route[i][0]),
@@ -233,19 +232,20 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
     return night_time;
 }
 
-bool ACalc::isNight(QString icao, QDateTime event_time, int nightAngle)
+bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 {
-    QVector<QString> coordinates = Db::multiSelect({"lat", "long"}, "airports", "icao", icao,
-                                                       Db::exactMatch);
-    if (coordinates.isEmpty()) {
-        DEB("invalid input. aborting.");
-        return false;
+    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + icao + "'";
+    auto lat_lon = aDB()->customQuery(statement, 2);
+
+    if (lat_lon.length() != 2) {
+        DEB("Invalid input. Aborting.");
+        return 0;
     }
 
-    double lat = degToRad(coordinates[0].toDouble());
-    double lon = degToRad(coordinates[1].toDouble());
+    double lat = degToRad(lat_lon[0].toDouble());
+    double lon = degToRad(lat_lon[1].toDouble());
 
-    if(solarElevation(event_time, lat, lon) < nightAngle){
+    if(solarElevation(event_time, lat, lon) < night_angle){
         return true;
     } else {
         return false;
@@ -262,50 +262,76 @@ bool ACalc::isNight(QString icao, QDateTime event_time, int nightAngle)
 void ACalc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
-    auto flight_list = Db::multiSelect({"flight_id"},"flights","acft",
-                                      QString::number(acft_id),Db::exactMatch);
-    auto acft = Aircraft(acft_id);
-    for (const auto& item : flight_list) {
-        auto flt = Flight(item.toInt());
+    auto statement = "SELECT flight_id FROM flights WHERE acft = " + QString::number(acft_id);
+    auto flight_list = aDB()->customQuery(statement, 1);
 
-        if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1") {
+    if (flight_list.isEmpty()) {
+        DEB("No flights for this tail found.");
+        return;
+    }
+
+    DEB("Updating " << flight_list.length() << " flights with this aircraft.");
+
+    auto acft = aDB()->getTailEntry(acft_id);
+    auto acft_data = acft.getData();
+    for (const auto& item : flight_list) {
+
+        auto flight = aDB()->getFlightEntry(item.toInt());
+        auto flight_data = flight.getData();
+
+        if(acft_data.value("multipilot") == "0" && acft_data.value("multiengine") == "0") {
             DEB("SPSE");
-            flt.data.insert("tSPSE",flt.data.value("tblk"));
-            flt.data.insert("tSPME","");
-            flt.data.insert("tMP","");
-        } else if ((acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1")) {
+            flight_data.insert("tSPSE", flight_data.value("tblk"));
+            flight_data.insert("tSPME", "");
+            flight_data.insert("tMP", "");
+        } else if ((acft_data.value("multipilot") == "0" && acft.getData().value("multiengine") == "1")) {
             DEB("SPME");
-            flt.data.insert("tSPME",flt.data.value("tblk"));
-            flt.data.insert("tSPSE","");
-            flt.data.insert("tMP","");
-        } else if ((acft.data.value("multipilot") == "1")) {
+            flight_data.insert("tSPME", flight_data.value("tblk"));
+            flight_data.insert("tSPSE", "");
+            flight_data.insert("tMP", "");
+        } else if ((acft_data.value("multipilot") == "1")) {
             DEB("MPME");
-            flt.data.insert("tMP",flt.data.value("tblk"));
-            flt.data.insert("tSPSE","");
-            flt.data.insert("tSPME","");
+            flight_data.insert("tMP", flight_data.value("tblk"));
+            flight_data.insert("tSPSE", "");
+            flight_data.insert("tSPME", "");
         }
-        flt.commit();
+        flight.setData(flight_data);
+        aDB()->commit(flight);
     }
 }
 /*!
- * \brief ACalc::updateNightTimes updates the night times in the database
+ * \brief ACalc::updateNightTimes updates the night times in the database,
+ * used when changing night angle setting for example
  */
 void ACalc::updateNightTimes()
 {
-    const int nightAngle = ASettings::read("flightlogging/nightangle").toInt();
-    auto flights = Db::multiSelect({"flight_id"}, "flights");
-    for (const auto& item : flights) {
-        auto flt = new Flight(item.toInt());
-        auto dateTime = QDateTime(QDate::fromString(flt->data.value("doft"),Qt::ISODate),
-                                  QTime().addSecs(flt->data.value("tofb").toInt() * 60),
+    const int night_angle = ASettings::read("flightlogging/nightangle").toInt();
+
+    //find all flights for aircraft
+    auto statement = "SELECT ROWID FROM flights";
+    auto flight_list = aDB()->customQuery(statement, 1);
+
+    if (flight_list.isEmpty()) {
+        DEB("No flights found.");
+        return;
+    }
+    DEB("Updating " << flight_list.length() << " flights in the database.");
+
+    for (const auto& item : flight_list) {
+
+        auto flt = aDB()->getFlightEntry(item.toInt());
+        auto data = flt.getData();
+        auto dateTime = QDateTime(QDate::fromString(data.value("doft"),Qt::ISODate),
+                                  QTime().addSecs(data.value("tofb").toInt() * 60),
                                   Qt::UTC);
-        flt->data.insert("tNIGHT", QString::number(
-                             calculateNightTime(flt->data.value("dept"),
-                             flt->data.value("dest"),
+        data.insert("tNIGHT", QString::number(
+                             calculateNightTime(data.value("dept"),
+                             data.value("dest"),
                              dateTime,
-                             flt->data.value("tblk").toInt(),
-                             nightAngle)));
-        flt->commit();
+                             data.value("tblk").toInt(),
+                             night_angle)));
+        flt.setData(data);
+        aDB()->commit(flt);
     }
 }
 

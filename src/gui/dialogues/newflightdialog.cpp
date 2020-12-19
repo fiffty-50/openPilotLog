@@ -400,13 +400,15 @@ void NewFlightDialog::fillDeductibleData()
     auto acft = aDB()->getTailEntry(tailsIdMap.value(ui->acftLineEdit->text()));
     if (acft.getData().isEmpty())
         DEB("Error: No valid aircraft object available, unable to deterime auto times.");
+
+
     // SP SE
-    if(acft.getData().value("singlepilot") == "1" && acft.getData().value("singleengine") == "1"){
+    if(acft.getData().value("multipilot") == "0" && acft.getData().value("multiengine") == "0"){
         ui->tSPSETimeLineEdit->setText(block_time);
         ui->tSPSELabel->setText(block_time);
     }
     // SP ME
-    if(acft.getData().value("singlepilot") == "1" && acft.getData().value("multiengine") == "1"){
+    if(acft.getData().value("multipilot") == "0" && acft.getData().value("multiengine") == "1"){
         ui->tSPMETimeLineEdit->setText(block_time);
         ui->tSPMELabel->setText(block_time);
     }
@@ -499,23 +501,19 @@ TableData NewFlightDialog::collectInput()
     newData.insert("thirdPilot", QString::number(pilotsIdMap.value(ui->thirdPilotNameLineEdit->text())));
 
     // Extra Times
-    auto acft = ATailEntry(newData.value("acft").toInt());
-    if (acft.getData().isEmpty())
-        DEB("Invalid Aircraft. Unable to automatically determine extra times.");
+    ui->tSPSETimeLineEdit->text().isEmpty() ?
+                newData.insert("tSPSE", "")
+              : newData.insert("tSPSE", QString::number(
+                                   ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text())));
 
-    if (acft.getData().value("multipilot") == "1") {
-        newData.insert("tSPSE", "");
-        newData.insert("tSPME", "");
-        newData.insert("tMP", block_minutes);
-    } else if (acft.getData().value("singlepilot") == "1" && acft.getData().value("singleengine") == "1") {
-        newData.insert("tSPSE", block_minutes);
-        newData.insert("tSPME", "");
-        newData.insert("tMP", "");
-    } else if (acft.getData().value("singlepilot") == "1" && acft.getData().value("multiengine") == "1") {
-        newData.insert("tSPSE", "");
-        newData.insert("tSPME", block_minutes);
-        newData.insert("tMP", "");
-    }
+    ui->tSPMETimeLineEdit->text().isEmpty() ?
+                newData.insert("tSPME", "")
+              : newData.insert("tSPME", QString::number(
+                                   ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text())));
+    ui->tMPTimeLineEdit->text().isEmpty() ?
+                newData.insert("tMP", "")
+              : newData.insert("tMP", QString::number(
+                                   ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text())));
 
     if (ui->IfrCheckBox->isChecked()) {
         newData.insert("tIFR", block_minutes);
