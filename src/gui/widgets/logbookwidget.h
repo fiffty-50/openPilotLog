@@ -59,7 +59,7 @@ private slots:
 
 public slots:
     void onDisplayModel_dataBaseUpdated();
-    void on_logbookViewSelectionChanged(int);
+    void onLogbookWidget_viewSelectionChanged(int);
 
 private:
     Ui::LogbookWidget *ui;

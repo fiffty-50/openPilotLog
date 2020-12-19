@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     query.prepare("SELECT COUNT (*) FROM changelog");
     query.exec();
     query.next();
-    if (query.value(0).toInt() < DATABASE_REVISION_NUMBER) {
+    if (query.value(0).toInt() != DATABASE_REVISION_NUMBER) {
         DEB("##########################################");
         DEB("Your database is out of date.");
         DEB("Curren Revision: " << DATABASE_REVISION_NUMBER);
@@ -139,8 +139,8 @@ void MainWindow::connectWidgets()
     QObject::connect(experimental::aDB(), &experimental::ADataBase::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
 
-    QObject::connect(settingsWidget, &SettingsWidget::logbookViewSelectionChanged,
-                     logbookWidget, &LogbookWidget::on_logbookViewSelectionChanged);
+    QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
+                     logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 }
 
 void MainWindow::on_actionSettings_triggered()
