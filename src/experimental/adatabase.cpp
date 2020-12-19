@@ -172,7 +172,6 @@ bool ADataBase::exists(AEntry entry)
     query.next();
     int rowId = query.value(0).toInt();
     if (rowId) {
-        DEB("Entry " << entry.getPosition() << " exists.");
         return true;
     } else {
         DEB("Database entry not found.");
@@ -201,7 +200,6 @@ bool ADataBase::exists(DataPosition data_position)
     query.next();
     int rowId = query.value(0).toInt();
     if (rowId) {
-        DEB("Entry exists at DataPosition: " << data_position);
         return true;
     } else {
         DEB("No entry exists at DataPosition: " << data_position);
@@ -216,17 +214,20 @@ bool ADataBase::update(AEntry updated_entry)
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.value() == QString()) {
-            statement += i.key() + QLatin1String("=NULL") + QLatin1String(", ");
+        statement.append(i.key() + "=?,");
+    }
+    statement.chop(1);
+    statement.append(" WHERE ROWID=" + QString::number(updated_entry.getPosition().rowId));
+    QSqlQuery query;
+    query.prepare(statement);
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.value() == QVariant(QVariant::String)) {
+            query.addBindValue(QVariant(QVariant::String));
         } else {
-            statement += i.key() + QLatin1String("=\"") + i.value() + QLatin1String("\", ");
+            query.addBindValue(i.value());
         }
     }
-    statement.chop(2); // Remove last comma
-    statement.append(QLatin1String(" WHERE ROWID=") + QString::number(updated_entry.getPosition().rowId));
-
-    DEB("UPDATE QUERY: " << statement);
-    QSqlQuery query(statement);
+    query.exec();
 
     if (query.lastError().type() == QSqlError::NoError)
     {
@@ -246,26 +247,32 @@ bool ADataBase::update(AEntry updated_entry)
 bool ADataBase::insert(AEntry new_entry)
 {
     auto data = new_entry.getData();
-    DEB("Inserting...");
     QString statement = "INSERT INTO " + new_entry.getPosition().tableName + QLatin1String(" (");
     QMap<QString, QString>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
-        statement += i.key() + QLatin1String(", ");
+        statement.append(i.key() + ',');
     }
-    statement.chop(2);
+    statement.chop(1);
     statement += QLatin1String(") VALUES (");
+
+    for (int i=0; i < data.size(); ++i) {
+        statement += QLatin1String("?,");
+    }
+    statement.chop(1);
+    statement += ')';
+
+    QSqlQuery query;
+    query.prepare(statement);
+
     for (i = data.begin(); i != data.end(); ++i) {
         if (i.value() == "") {
-            statement += QLatin1String("NULL, ");
+            query.addBindValue(QVariant(QVariant::String));
         } else {
-            statement += QLatin1String("\"") + i.value() + QLatin1String("\", ");
+            query.addBindValue(i.value());
         }
     }
-    statement.chop(2);
-    statement += QLatin1String(")");
-    DEB(statement);
 
-    QSqlQuery query(statement);
+    query.exec();
     //check result.
     if (query.lastError().type() == QSqlError::NoError)
     {
@@ -314,7 +321,6 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     }
 
     // Retreive TableData
-    DEB("Retreiving data for row id: " << data_position.second);
     statement = "SELECT * FROM " + data_position.first
               + " WHERE ROWID=" + QString::number(data_position.second);
 
@@ -380,12 +386,12 @@ const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
 
     switch (target) {
     case pilots:
-        statement.append("SELECT piclastname||\", \"||picfirstname FROM pilots");
+        statement.append("SELECT piclastname||', '||picfirstname FROM pilots");
         break;
     case aircraft:
-        statement.append("SELECT make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
-                         "SELECT make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+                         "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
     case airport_identifier_all:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
@@ -428,12 +434,12 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
 
     switch (target) {
     case pilots:
-        statement.append("SELECT ROWID, piclastname||\", \"||picfirstname FROM pilots");
+        statement.append("SELECT ROWID, piclastname||', '||picfirstname FROM pilots");
         break;
     case aircraft:
-        statement.append("SELECT ROWID, make||\" \"||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
-                         "SELECT ROWID, make||\" \"||model||\"-\"||variant FROM aircraft WHERE variant IS NOT NULL");
+                         "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
     case airport_identifier_icao:
         statement.append("SELECT ROWID, icao FROM airports");
@@ -525,4 +531,4 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
 
 ADataBase* aDB() { return ADataBase::getInstance(); }
 
-}
+}// namespace experimental
