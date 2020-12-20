@@ -145,6 +145,23 @@
        <item row="5" column="3">
         <widget class="QLineEdit" name="debug2LineEdit"/>
        </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="branchLabel">
+         <property name="text">
+          <string>branch:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLineEdit" name="branchLineEdit">
+         <property name="text">
+          <string>develop</string>
+         </property>
+         <property name="placeholderText">
+          <string>develop</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>

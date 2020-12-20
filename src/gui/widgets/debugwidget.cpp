@@ -1,7 +1,7 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
 
-
+using namespace experimental;
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +13,6 @@ DebugWidget::DebugWidget(QWidget *parent) :
             ui->tableComboBox->addItem(table);
         }
     }
-
 }
 
 DebugWidget::~DebugWidget()
@@ -47,7 +46,9 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         dir.mkpath(".");
     // download latest csv
     QStringList templateTables = {"aircraft", "airports", "changelog"};
-    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/";
+    QString linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
+    linkStub.append(ui->branchLineEdit->text());
+    linkStub.append("/assets/database/templates/");
     for (const auto& table : templateTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
@@ -59,7 +60,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         dl->deleteLater();
     }
     //close database connection
-    Db::disconnect();
+    aDB()->disconnect();
 
     // back up old database
     auto oldDatabase = QFile("data/logbook.db");
@@ -71,7 +72,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         }
     }
     // re-connct and create new database
-    Db::connect();
+    aDB()->connect();
 
     if (ADataBaseSetup::createDatabase()) {
         mb.setText("Database has been successfully reset.\n\nRestarting application.");
@@ -99,7 +100,10 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         dir.mkpath(".");
     // download latest csv
     QStringList userTables = {"pilots", "tails", "flights"};
-    const auto& linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/sample_";
+    QString linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
+    linkStub.append(ui->branchLineEdit->text());
+    linkStub.append("/assets/database/templates/sample_");
+
     for (const auto& table : userTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
@@ -110,19 +114,18 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
     }
-    QVector<bool> allGood;
+    QBitArray allGood;
+    allGood.resize(userTables.size());
+
     for (const auto& table : userTables) {
         auto data = aReadCsv("data/templates/sample_" + table + ".csv");
-        allGood.append(ADataBaseSetup::commitData(data, table));
+        allGood.setBit(userTables.indexOf(table), ADataBaseSetup::commitData(data, table));
     }
 
-    for (const auto& item : allGood) {
-        if (!item) {
-            mb.setText("Errors have ocurred. Check console for details.");
-            mb.exec();
-            return;
-        }
-
+    if (allGood.count(true) != userTables.size()) {
+        mb.setText("Errors have ocurred. Check console for details.");
+        mb.exec();
+        return;
     }
 
     mb.setText("User tables successfully populated.\n\nRestarting app.");
