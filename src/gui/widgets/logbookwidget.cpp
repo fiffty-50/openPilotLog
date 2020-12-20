@@ -299,7 +299,7 @@ void LogbookWidget::onDisplayModel_dataBaseUpdated()
     displayModel->select();
 }
 
-void LogbookWidget::on_logbookViewSelectionChanged(int view_id)
+void LogbookWidget::onLogbookWidget_viewSelectionChanged(int view_id)
 {
     prepareModelAndView(view_id);
 }

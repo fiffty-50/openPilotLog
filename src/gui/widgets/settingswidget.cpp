@@ -41,6 +41,8 @@ static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALI
                                            COMPANY_VALID,     EMPLOYEENR_VALID,
                                            PREFIX_VALID});
 
+using namespace experimental;
+
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsWidget)
@@ -52,10 +54,12 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     themeGroup->addButton(ui->systemThemeCheckBox, 0);
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
-    connect(themeGroup, SIGNAL(buttonClicked(int)), this, SLOT(themeGroup_toggled(int)));
 
-    fillSettings();
+    readSettings();
     setupValidators();
+
+    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
+                     this, &SettingsWidget::on_themeGroup_buttonClicked);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -63,7 +67,7 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
-void SettingsWidget::fillSettings()
+void SettingsWidget::readSettings()
 {
     /*
      * Personal Tab
@@ -125,10 +129,10 @@ void SettingsWidget::updatePersonalDetails()
     QMap<QString,QString> data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        data.insert("displayname","self");
+        data.insert("alias","self");
         break;
     case 1:
-        data.insert("displayname","SELF");
+        data.insert("alias","SELF");
         break;
     case 2:{
         QString name;
@@ -136,7 +140,7 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->picfirstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
-        data.insert("displayname",name);
+        data.insert("alias", name);
     }
         break;
     default:
@@ -149,9 +153,10 @@ void SettingsWidget::updatePersonalDetails()
     data.insert("phone",ui->phoneLineEdit->text());
     data.insert("email",ui->emailLineEdit->text());
 
-    Pilot pic(1);
+    auto pic = APilotEntry(1);
     pic.setData(data);
-    pic.commit();
+
+    aDB()->commit(pic);
 }
 
 /*
@@ -187,25 +192,25 @@ void SettingsWidget::on_picfirstnameLineEdit_editingFinished()
 
 void SettingsWidget::on_companyLineEdit_editingFinished()
 {
-    ASettings::write("userdata/company",ui->companyLineEdit->text());
+    ASettings::write("userdata/company", ui->companyLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_employeeidLineEdit_editingFinished()
 {
-    ASettings::write("userdata/employeeid",ui->employeeidLineEdit->text());
+    ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_emailLineEdit_editingFinished()
 {
-    ASettings::write("userdata/email",ui->emailLineEdit->text());
+    ASettings::write("userdata/email", ui->emailLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_phoneLineEdit_editingFinished()
 {
-    ASettings::write("userdata/phone",ui->phoneLineEdit->text());
+    ASettings::write("userdata/phone", ui->phoneLineEdit->text());
     updatePersonalDetails();
 }
 
@@ -215,7 +220,7 @@ void SettingsWidget::on_phoneLineEdit_editingFinished()
 
 void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("userdata/displayselfas",index);
+    ASettings::write("userdata/displayselfas", index);
     updatePersonalDetails();
 }
 
@@ -239,13 +244,13 @@ void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
     ASettings::write("flightlogging/nightlogging", index);
     switch (index) {
     case 1:
-        ASettings::write("flightlogging/nightangle",-6);
+        ASettings::write("flightlogging/nightangle", -6);
         break;
     case 2:
-        ASettings::write("flightlogging/nightangle",0);
+        ASettings::write("flightlogging/nightangle", 0);
         break;
     default:
-        ASettings::write("flightlogging/nightangle",-6);
+        ASettings::write("flightlogging/nightangle", -6);
     }
 }
 
@@ -258,9 +263,9 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 /*
  * Misc Tab
  */
-void SettingsWidget::themeGroup_toggled(int id)
+void SettingsWidget::on_themeGroup_buttonClicked(int theme_id)
 {
-    ASettings::write("main/theme", id);
+    ASettings::write("main/theme", theme_id);
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Changing Themes",
@@ -279,7 +284,7 @@ void SettingsWidget::themeGroup_toggled(int id)
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
     ASettings::write("logbook/view", index);
-    emit logbookViewSelectionChanged(index);
+    emit viewSelectionChanged(index);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
@@ -319,7 +324,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 
 void SettingsWidget::on_aboutPushButton_clicked()
 {
-    auto mb = new QMessageBox(this);
+    auto message_box = QMessageBox(this);
     QString SQLITE_VERSION = DbInfo().version;
     QString text = QMessageBox::tr(
 
@@ -352,6 +357,6 @@ void SettingsWidget::on_aboutPushButton_clicked()
                          QLatin1String("qt.io"),
                          QLatin1String(QT_VERSION_STR),
                          QString(SQLITE_VERSION));
-    mb->setText(text);
-    mb->open();
+    message_box.setText(text);
+    message_box.exec();
 }

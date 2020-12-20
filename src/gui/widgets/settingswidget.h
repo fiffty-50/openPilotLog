@@ -25,8 +25,8 @@
 #include <QProcess>
 #include <QDebug>
 #include "src/classes/asettings.h"
-#include "src/database/db.h"
-#include "src/classes/pilot.h"
+#include "src/experimental/adatabase.h"
+#include "src/experimental/apilotentry.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -42,7 +42,7 @@ public:
 
 private slots:
 
-    void themeGroup_toggled(int id);
+    void on_themeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
     void on_acSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
@@ -64,13 +64,13 @@ private slots:
 private:
     Ui::SettingsWidget *ui;
 
-    void fillSettings();
+    void readSettings();
 
     void setupValidators();
 
     void updatePersonalDetails();
 signals:
-    void logbookViewSelectionChanged(int view_id);
+    void viewSelectionChanged(int view_id);
 };
 
 #endif // SETTINGSWIDGET_H
