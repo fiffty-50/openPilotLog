@@ -65,6 +65,7 @@ HEADERS += \
     src/database/db.h \
     src/database/dbinfo.h \
     src/database/entry_deprecated.h \
+    src/database/tablecolumnliterals.h \
     src/experimental/UserInput.h \
     src/experimental/aaircraftentry.h \
     src/experimental/adatabase.h \

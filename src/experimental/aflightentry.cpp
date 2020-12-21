@@ -21,18 +21,18 @@ const QString AFlightEntry::summary()
         return QString();
 
     QString flight_summary;
-    flight_summary.append(tableData.value("doft") + " ");
-    flight_summary.append(tableData.value("dept") + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value("tofb")) + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value("tonb")) + " ");
-    flight_summary.append(tableData.value("dest") + " ");
+    flight_summary.append(tableData.value("doft").toString() + " ");
+    flight_summary.append(tableData.value("dept").toString() + " ");
+    flight_summary.append(ACalc::minutesToString(tableData.value("tofb").toString()) + " ");
+    flight_summary.append(ACalc::minutesToString(tableData.value("tonb").toString()) + " ");
+    flight_summary.append(tableData.value("dest").toString() + " ");
 
     return flight_summary;
 }
 
 const QString AFlightEntry::getRegistration()
 {
-    QString tail_id = tableData.value("acft");
+    QString tail_id = tableData.value(QLatin1String("acft")).toString();
     if(tail_id.isEmpty())
         return QString();
 
@@ -54,13 +54,13 @@ const QString AFlightEntry::getPilotName(pilot pilot_)
     QString row_id;
     switch (pilot_) {
     case pilot::pic:
-        row_id = tableData.value("pic");
+        row_id = tableData.value(QLatin1String("pic")).toString();
         break;
     case pilot::sic:
-        row_id = tableData.value("sic");
+        row_id = tableData.value(QLatin1String("sic")).toString();
         break;
     case pilot::thirdPilot:
-        row_id = tableData.value("thirdPilot");
+        row_id = tableData.value(QLatin1String("thirdPilot")).toString();
         break;
     }
     if(row_id == QString())

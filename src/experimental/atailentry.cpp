@@ -24,7 +24,7 @@ ATailEntry::ATailEntry()
 {}
 
 ATailEntry::ATailEntry(int row_id)
-    : AEntry::AEntry(DataPosition("tails", row_id))
+    : AEntry::AEntry(DataPosition(QLatin1String("tails"), row_id))
 {}
 
 ATailEntry::ATailEntry(TableData table_data)
@@ -33,18 +33,18 @@ ATailEntry::ATailEntry(TableData table_data)
 
 const QString ATailEntry::registration()
 {
-    return getData().value("registration");
+    return getData().value(QLatin1String("registration")).toString();
 }
 
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!getData().value("make").isEmpty())
-        type_string.append(getData().value("make") + ' ');
-    if (!getData().value("model").isEmpty())
-        type_string.append(getData().value("model"));
-    if (!getData().value("variant").isEmpty())
-        type_string.append('-' + getData().value("variant") + ' ');
+    if (!getData().value(QLatin1String("make")).toString().isEmpty())
+        type_string.append(getData().value(QLatin1String("make")).toString() + ' ');
+    if (!getData().value(QLatin1String("model")).toString().isEmpty())
+        type_string.append(getData().value(QLatin1String("model")).toString());
+    if (!getData().value(QLatin1String("variant")).toString().isEmpty())
+        type_string.append('-' + getData().value(QLatin1String("variant")).toString() + ' ');
 
     return type_string;
 }

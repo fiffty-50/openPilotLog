@@ -14,7 +14,9 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     themeGroup->addButton(ui->systemThemeCheckBox, 0);
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
-    connect(themeGroup, SIGNAL(buttonClicked(int)), this, SLOT(themeGroup_toggled(int)));
+
+    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
+                     this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -38,7 +40,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 }
 
-void FirstRunDialog::themeGroup_toggled(int id)
+void FirstRunDialog::on_themeGroup_toggled(int id)
 {
     ASettings::write("main/theme", id);
 }

@@ -43,14 +43,28 @@ inline QTime blocktime(QTime tofb, QTime tonb)
  * \param blockminutes from database
  * \return String hh:mm
  */
-inline QString minutesToString(QString blockminutes)
+inline QString minutesToString(QString block_minutes)
 {
-    int minutes = blockminutes.toInt();
+    int minutes = block_minutes.toInt();
     QString hour = QString::number(minutes / 60);
     if (hour.size() < 2) {
         hour.prepend("0");
     }
     QString minute = QString::number(minutes % 60);
+    if (minute.size() < 2) {
+        minute.prepend("0");
+    }
+    QString block_time = hour + ":" + minute;
+    return block_time;
+};
+
+inline QString minutesToString(int block_minutes)
+{
+    QString hour = QString::number(block_minutes / 60);
+    if (hour.size() < 2) {
+        hour.prepend("0");
+    }
+    QString minute = QString::number(block_minutes % 60);
     if (minute.size() < 2) {
         minute.prepend("0");
     }

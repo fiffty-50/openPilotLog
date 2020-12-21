@@ -24,7 +24,7 @@ AAircraftEntry::AAircraftEntry()
 {}
 
 AAircraftEntry::AAircraftEntry(int row_id)
-    : AEntry::AEntry(DataPosition("aircraft", row_id))
+    : AEntry::AEntry(DataPosition(QLatin1String("aircraft"), row_id))
 {}
 
 AAircraftEntry::AAircraftEntry(TableData table_data)

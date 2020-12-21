@@ -20,6 +20,7 @@
 
 #include "src/experimental/aentry.h"
 #include "src/experimental/decl.h"
+#include <QVariant>
 
 namespace experimental {
 
