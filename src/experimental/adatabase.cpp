@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabase.h"
+#include "src/database/tablecolumnliterals.h"
 
 namespace experimental {
 
@@ -48,16 +49,17 @@ bool ADataBase::connect()
     QSqlQuery query("PRAGMA foreign_keys = ON;");
     tableNames = db.tables();
 
-    QStringList columnNames;
+    QStringList column_names;
     for (const auto &table : tableNames) {
-        columnNames.clear();
+        column_names.clear();
         QSqlRecord fields = db.record(table);
         for (int i = 0; i < fields.count(); i++) {
-            columnNames.append(fields.field(i).name());
-            tableColumns.insert(table, columnNames);
+            column_names.append(fields.field(i).name());
+            tableColumns.insert(table, column_names);
         }
     }
     DEB("Database Tables: " << tableNames);
+    DEB("Tables and Columns: " << tableColumns);
     return true;
 }
 
@@ -92,8 +94,12 @@ bool ADataBase::remove(AEntry entry)
     }
 
     QString statement = "DELETE FROM " + entry.getPosition().tableName +
-            " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
-    QSqlQuery query(statement);
+            " WHERE ROWID?";
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(entry.getPosition().rowId);
+    query.exec();
 
     if (query.lastError().type() == QSqlError::NoError)
     {
@@ -158,9 +164,10 @@ bool ADataBase::exists(AEntry entry)
 
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
-            " WHERE ROWID=" + QString::number(entry.getPosition().rowId);
+            " WHERE ROWID=?";
     QSqlQuery query;
     query.prepare(statement);
+    query.addBindValue(entry.getPosition().rowId);
     query.setForwardOnly(true);
     query.exec();
     //this returns either 1 or 0 since row ids are unique
@@ -187,9 +194,10 @@ bool ADataBase::exists(DataPosition data_position)
 
     //Check database for row id
     QString statement = "SELECT COUNT(*) FROM " + data_position.first +
-            " WHERE ROWID=" + QString::number(data_position.second);
+            " WHERE ROWID=?";
     QSqlQuery query;
     query.prepare(statement);
+    query.addBindValue(data_position.second);
     query.setForwardOnly(true);
     query.exec();
     //this returns either 1 or 0 since row ids are unique
@@ -217,7 +225,7 @@ bool ADataBase::update(AEntry updated_entry)
         statement.append(i.key() + "=?,");
     }
     statement.chop(1);
-    statement.append(" WHERE ROWID=" + QString::number(updated_entry.getPosition().rowId));
+    statement.append(" WHERE ROWID=?");
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
@@ -227,6 +235,7 @@ bool ADataBase::update(AEntry updated_entry)
             query.addBindValue(i.value());
         }
     }
+    query.addBindValue(updated_entry.getPosition().rowId);
     query.exec();
 
     if (query.lastError().type() == QSqlError::NoError)
@@ -248,7 +257,7 @@ bool ADataBase::insert(AEntry new_entry)
 {
     auto data = new_entry.getData();
     QString statement = "INSERT INTO " + new_entry.getPosition().tableName + QLatin1String(" (");
-    QMap<QString, QString>::iterator i;
+    QMap<QString, QVariant>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement.append(i.key() + ',');
     }
@@ -300,9 +309,10 @@ TableData ADataBase::getEntryData(DataPosition data_position)
 
     //Check Database for rowId
     QString statement = "SELECT COUNT(*) FROM " + data_position.first
-                      + " WHERE ROWID=" + QString::number(data_position.second);
+                      + " WHERE ROWID=?";
     QSqlQuery check_query;
     check_query.prepare(statement);
+    check_query.addBindValue(data_position.second);
     check_query.setForwardOnly(true);
     check_query.exec();
 
@@ -322,10 +332,11 @@ TableData ADataBase::getEntryData(DataPosition data_position)
 
     // Retreive TableData
     statement = "SELECT * FROM " + data_position.first
-              + " WHERE ROWID=" + QString::number(data_position.second);
+              + " WHERE ROWID=?";
 
     QSqlQuery select_query;
     select_query.prepare(statement);
+    select_query.addBindValue(data_position.second);
     select_query.setForwardOnly(true);
     select_query.exec();
 
@@ -340,7 +351,7 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     TableData entry_data;
 
     for (const auto &column : tableColumns.value(data_position.first)) {
-        entry_data.insert(column, select_query.value(column).toString());
+        entry_data.insert(column, select_query.value(column));
     }
     return entry_data;
 }
@@ -481,13 +492,13 @@ int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
 
     switch (target) {
     case pilots:
-        statement.append("pilots");
+        statement.append(DB_TABLE_PILOTS);
         break;
     case aircraft:
-        statement.append("aircraft");
+        statement.append(DB_TABLE_AIRCRAFT);
         break;
     case tails:
-        statement.append("tails");
+        statement.append(DB_TABLE_AIRCRAFT);
         break;
     default:
         DEB("Not a valid completer target for this function.");

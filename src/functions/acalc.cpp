@@ -279,17 +279,19 @@ void ACalc::updateAutoTimes(int acft_id)
         auto flight = aDB()->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
 
-        if(acft_data.value("multipilot") == "0" && acft_data.value("multiengine") == "0") {
+        if(acft_data.value("multipilot").toInt() == 0
+                && acft_data.value("multiengine") == 0) {
             DEB("SPSE");
             flight_data.insert("tSPSE", flight_data.value("tblk"));
             flight_data.insert("tSPME", "");
             flight_data.insert("tMP", "");
-        } else if ((acft_data.value("multipilot") == "0" && acft.getData().value("multiengine") == "1")) {
+        } else if ((acft_data.value("multipilot") == 0
+                    && acft.getData().value("multiengine") == 1)) {
             DEB("SPME");
             flight_data.insert("tSPME", flight_data.value("tblk"));
             flight_data.insert("tSPSE", "");
             flight_data.insert("tMP", "");
-        } else if ((acft_data.value("multipilot") == "1")) {
+        } else if ((acft_data.value("multipilot") == 1)) {
             DEB("MPME");
             flight_data.insert("tMP", flight_data.value("tblk"));
             flight_data.insert("tSPSE", "");
@@ -321,14 +323,14 @@ void ACalc::updateNightTimes()
 
         auto flt = aDB()->getFlightEntry(item.toInt());
         auto data = flt.getData();
-        auto dateTime = QDateTime(QDate::fromString(data.value("doft"),Qt::ISODate),
-                                  QTime().addSecs(data.value("tofb").toInt() * 60),
+        auto dateTime = QDateTime(QDate::fromString(data.value(QLatin1String("doft")).toString(), Qt::ISODate),
+                                  QTime().addSecs(data.value(QLatin1String("tofb")).toInt() * 60),
                                   Qt::UTC);
-        data.insert("tNIGHT", QString::number(
-                             calculateNightTime(data.value("dept"),
-                             data.value("dest"),
+        data.insert(QLatin1String("tNIGHT"), QString::number(
+                             calculateNightTime(data.value(QLatin1String("dept")).toString(),
+                             data.value(QLatin1String("dest")).toString(),
                              dateTime,
-                             data.value("tblk").toInt(),
+                             data.value(QLatin1String("tblk")).toInt(),
                              night_angle)));
         flt.setData(data);
         aDB()->commit(flt);

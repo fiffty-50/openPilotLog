@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QMap>
 #include <QPair>
+#include <QVariant>
 
 #include "decl.h"
 

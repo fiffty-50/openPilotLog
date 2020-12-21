@@ -24,7 +24,7 @@ APilotEntry::APilotEntry()
 {}
 
 APilotEntry::APilotEntry(int row_id)
-    : AEntry::AEntry(DataPosition("pilots", row_id))
+    : AEntry::AEntry(DataPosition(QLatin1String("pilots"), row_id))
 {}
 
 APilotEntry::APilotEntry(TableData table_data)

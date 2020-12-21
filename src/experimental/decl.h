@@ -9,7 +9,7 @@
 namespace experimental {
 
 using ColName = QString;
-using ColData = QString;
+using ColData = QVariant;
 using TableName = QString;
 using RowId = int;
 

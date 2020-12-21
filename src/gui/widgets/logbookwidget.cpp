@@ -251,7 +251,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         if(reply == QMessageBox::Yes) {
             QList<DataPosition> selected_flights;
             for (const auto& flight_id : selectedFlights) {
-                selected_flights.append({"flights", flight_id});
+                selected_flights.append({QLatin1String("flights"), flight_id});
             }
             if (!aDB()->removeMany(selected_flights)) {
 

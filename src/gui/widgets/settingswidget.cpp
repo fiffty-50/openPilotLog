@@ -126,10 +126,10 @@ void SettingsWidget::setupValidators()
 
 void SettingsWidget::updatePersonalDetails()
 {
-    QMap<QString,QString> data;
+    QMap<QString, QVariant> data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        data.insert("alias","self");
+        data.insert("alias", "self");
         break;
     case 1:
         data.insert("alias","SELF");
@@ -146,12 +146,12 @@ void SettingsWidget::updatePersonalDetails()
     default:
         break;
     }
-    data.insert("piclastname",ui->piclastnameLineEdit->text());
-    data.insert("picfirstname",ui->picfirstnameLineEdit->text());
-    data.insert("company",ui->companyLineEdit->text());
-    data.insert("employeeid",ui->employeeidLineEdit->text());
-    data.insert("phone",ui->phoneLineEdit->text());
-    data.insert("email",ui->emailLineEdit->text());
+    data.insert("piclastname", ui->piclastnameLineEdit->text());
+    data.insert("picfirstname", ui->picfirstnameLineEdit->text());
+    data.insert("company", ui->companyLineEdit->text());
+    data.insert("employeeid", ui->employeeidLineEdit->text());
+    data.insert("phone", ui->phoneLineEdit->text());
+    data.insert("email", ui->emailLineEdit->text());
 
     auto pic = APilotEntry(1);
     pic.setData(data);

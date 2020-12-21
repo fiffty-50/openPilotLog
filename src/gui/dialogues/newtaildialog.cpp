@@ -18,6 +18,7 @@
 #include "newtaildialog.h"
 #include "ui_newtail.h"
 #include "src/testing/adebug.h"
+#include "src/database/tablecolumnliterals.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -125,15 +126,14 @@ void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
     auto data = entry.getData();
 
     for (const auto &le : line_edits) {
-        QString name = le->objectName().remove("LineEdit");
-        QString value = data.value(name);
-        le->setText(value);
+        auto key = le->objectName().remove("LineEdit");
+        le->setText(data.value(key).toString());
     }
 
-    ui->operationComboBox->setCurrentIndex(data.value("multipilot").toInt() + 1);
-    ui->ppNumberComboBox->setCurrentIndex(data.value("multiengine").toInt() + 1);
-    ui->ppTypeComboBox->setCurrentIndex(data.value("engineType").toInt() + 1);
-    ui->weightComboBox->setCurrentIndex(data.value("weightClass").toInt() + 1);
+    ui->operationComboBox->setCurrentIndex(data.value(DB_multipilot).toInt() + 1);
+    ui->ppNumberComboBox ->setCurrentIndex(data.value(DB_multiengine).toInt() + 1);
+    ui->ppTypeComboBox->setCurrentIndex(data.value(DB_engineType).toInt() + 1);
+    ui->weightComboBox->setCurrentIndex(data.value(DB_weightClass).toInt() + 1);
 }
 
 /*!
@@ -192,21 +192,21 @@ void NewTailDialog::submitForm()
     line_edits.removeOne(this->findChild<QLineEdit *>("searchLineEdit"));
 
     for (const auto &le : line_edits) {
-        QString name = le->objectName().remove("LineEdit");
-        new_data.insert(name, le->text());
+        auto key = le->objectName().remove("LineEdit");
+        new_data.insert(key, le->text());
     }
 
     if (ui->operationComboBox->currentIndex() != 0) { // bool Multipilot
-        new_data.insert("multipilot", QString::number(ui->operationComboBox->currentIndex() - 1));
+        new_data.insert(DB_multipilot, ui->operationComboBox->currentIndex() - 1);
     }
     if (ui->ppNumberComboBox->currentIndex() != 0) { // bool MultiEngine
-        new_data.insert("multiengine", QString::number(ui->ppNumberComboBox->currentIndex() - 1));
+        new_data.insert(DB_multiengine, ui->ppNumberComboBox->currentIndex() - 1);
     }
     if (ui->ppTypeComboBox->currentIndex() != 0) { // int 0=unpowered,....4=jet
-        new_data.insert("engineType", QString::number(ui->ppTypeComboBox->currentIndex() - 1));
+        new_data.insert(DB_engineType, ui->ppTypeComboBox->currentIndex() - 1);
     }
     if (ui->weightComboBox->currentIndex() != 0) { // int 0=light...3=super
-        new_data.insert("weightClass", QString::number(ui->weightComboBox->currentIndex() - 1));
+        new_data.insert(DB_weightClass, ui->weightComboBox->currentIndex() - 1);
     }
 
     //create db object

@@ -137,7 +137,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
 void DebugWidget::on_selectCsvPushButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
-        tr("Open CSV File for import"), QDir::homePath(), tr("CSV files (*.csv)"));
+                                                 tr("Open CSV File for import"), QDir::homePath(), tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }
 
@@ -167,11 +167,32 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    using namespace experimental;
+    qlonglong number_of_runs = 500;
+            long time1 = 0;
+            using namespace experimental;
+            {
 
-    auto acft = aDB()->getTailEntry(5);
-    DEB(acft.getData().key("make"));
-    DEB(acft.type());
+                ATimer timer;
+                for (int i = 0; i < number_of_runs; i++) {
+                    // first block, do stuff here...
+                    auto acft = aDB()->getTailEntry(5);
+                    auto pilot = aDB()->getPilotEntry(7);
+                    auto flight = aDB()->getFlightEntry(15);
+                    QList<AEntry> list = {acft, pilot, flight};
+                    for (auto entry : list) {
+                        for (auto column : entry.getData()) {
+                            QString value = column.toString();
+                        }
+                    }
+                }
+
+                time1 = timer.timeNow();
+            }
+
+            DEB("First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+            // 116 - 134 milliseconds with legacy exp db api
+            // 108 - 110 milliseconds with improved exp api
+            // to do: with string literals*/
 
 
 }
@@ -201,3 +222,33 @@ void DebugWidget::on_debugPushButton_clicked()
     DEB("First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
     DEB("Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
 */
+
+
+
+
+/*qlonglong number_of_runs = 500;
+        long time1 = 0;
+        using namespace experimental;
+        {
+
+            ATimer timer;
+            for (int i = 0; i < number_of_runs; i++) {
+                // first block, do stuff here...
+                auto acft = aDB()->getTailEntry(5);
+                auto pilot = aDB()->getPilotEntry(7);
+                auto flight = aDB()->getFlightEntry(15);
+                QList<AEntry> list = {acft, pilot, flight};
+                for (auto entry : list) {
+                    for (auto column : entry.getData()) {
+                        QString value = column.toString();
+                    }
+                }
+            }
+
+            time1 = timer.timeNow();
+        }
+
+        DEB("First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+        // 108 - 134 milliseconds with legacy exp db api
+        // 108 - 110 milliseconds with improved exp api
+        // to do: with string literals*/

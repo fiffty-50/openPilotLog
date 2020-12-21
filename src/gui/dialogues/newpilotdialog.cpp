@@ -131,9 +131,8 @@ void NewPilotDialog::formFiller()
     auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
-        QString key = le->objectName().remove("LineEdit");
-        QString value = pilotEntry.getData().value(key);
-        le->setText(value);
+        auto key = le->objectName().remove("LineEdit");
+        le->setText(pilotEntry.getData().value(key).toString());
     }
 }
 
