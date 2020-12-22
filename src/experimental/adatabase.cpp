@@ -498,7 +498,7 @@ int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
         statement.append(DB_TABLE_AIRCRAFT);
         break;
     case tails:
-        statement.append(DB_TABLE_AIRCRAFT);
+        statement.append(DB_TABLE_TAILS);
         break;
     default:
         DEB("Not a valid completer target for this function.");

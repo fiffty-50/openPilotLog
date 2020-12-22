@@ -1,4 +1,4 @@
-/*
+﻿/*
  *openPilot Log - A FOSS Pilot Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
@@ -103,6 +103,14 @@ NewFlightDialog::NewFlightDialog(QWidget *parent) :
     ui->setupUi(this);
     flightEntry = AFlightEntry();
     setup();
+    if (ASettings::read("NewFlight/FunctionComboBox").toString() == "SIC") {
+        ui->picNameLineEdit->setText(DB_NULL);
+        ui->secondPilotNameLineEdit->setText("self");
+    }
+    if(ASettings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
+        ui->picNameLineEdit->setText("self");
+        emit ui->picNameLineEdit->editingFinished();
+    }
 }
 
 NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent) :
@@ -142,54 +150,46 @@ void NewFlightDialog::setup()
 
     ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
     emit ui->doftLineEdit->editingFinished();
-
-    if(ASettings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
-        ui->picNameLineEdit->setText("self");
-        emit ui->picNameLineEdit->editingFinished();
-    }
     ui->deptLocLineEdit->setFocus();
 }
 void NewFlightDialog::readSettings()
 {
     DEB("Reading Settings...");
     QSettings settings;
-    ui->FunctionComboBox->setCurrentText(ASettings::read("NewFlight/FunctionComboBox").toString());
-    ui->ApproachComboBox->setCurrentText(ASettings::read("NewFlight/ApproachComboBox").toString());
-    ui->PilotFlyingCheckBox->setChecked(ASettings::read("NewFlight/PilotFlyingCheckBox").toBool());
-    ui->PilotMonitoringCheckBox->setChecked(ASettings::read("NewFlight/PilotMonitoringCheckBox").toBool());
-    ui->TakeoffSpinBox->setValue(ASettings::read("NewFlight/TakeoffSpinBox").toInt());
-    ui->TakeoffCheckBox->setChecked(ASettings::read("NewFlight/TakeoffCheckBox").toBool());
-    ui->LandingSpinBox->setValue(ASettings::read("NewFlight/LandingSpinBox").toInt());
-    ui->LandingCheckBox->setChecked(ASettings::read("NewFlight/LandingCheckBox").toBool());
-    ui->AutolandSpinBox->setValue(ASettings::read("NewFlight/AutolandSpinBox").toInt());
-    ui->AutolandCheckBox->setChecked(ASettings::read("NewFlight/AutolandCheckBox").toBool());
-    ui->IfrCheckBox->setChecked(ASettings::read("NewFlight/IfrCheckBox").toBool());
-    ui->VfrCheckBox->setChecked(ASettings::read("NewFlight/VfrCheckBox").toBool());
-    ui->FlightNumberLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
-    ui->calendarCheckBox->setChecked(ASettings::read("NewFlight/calendarCheckBox").toBool());
-    if (ASettings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
-        ui->picNameLineEdit->setText(DB_NULL);
-        ui->secondPilotNameLineEdit->setText("self");
+    ui->FunctionComboBox->setCurrentText(ASettings::read("flightlogging/function").toString());
+    ui->ApproachComboBox->setCurrentText(ASettings::read("flightlogging/approach").toString());
+
+    ASettings::read("flightlogging/pilotFlying").toBool() ? ui->PilotFlyingCheckBox->setChecked(true)
+                                                          : ui->PilotMonitoringCheckBox->setChecked(true);
+
+    ui->TakeoffSpinBox->setValue(ASettings::read("flightlogging/numberTakeoffs").toInt());
+    ui->TakeoffSpinBox->value() > 0 ? ui->TakeoffCheckBox->setChecked(true)
+                                    : ui->TakeoffCheckBox->setChecked(false);
+    ui->LandingSpinBox->setValue(ASettings::read("flightlogging/numberLandings").toInt());
+    ui->LandingSpinBox->value() > 0 ? ui->LandingCheckBox->setChecked(true)
+                                    : ui->LandingCheckBox->setChecked(false);
+    if (ASettings::read("flightlogging/logIfr").toBool()) {
+        ui->IfrCheckBox->setChecked(true);
+    } else {
+        ui->VfrCheckBox->setChecked(true);
     }
+
+    ui->FlightNumberLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
+    ui->calendarCheckBox->setChecked(ASettings::read("flightlogging/popupCalendar").toBool());
+
 }
 
 void NewFlightDialog::writeSettings()
 {
     DEB("Writing Settings...");
 
-    ASettings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
-    ASettings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
-    ASettings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
-    ASettings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
-    ASettings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
-    ASettings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
-    ASettings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
-    ASettings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
-    ASettings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
-    ASettings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
-    ASettings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
-    ASettings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
-    ASettings::write("NewFlight/calendarCheckBox",ui->calendarCheckBox->isChecked());
+    ASettings::write("flightlogging/function", ui->FunctionComboBox->currentText());
+    ASettings::write("flightlogging/approach", ui->ApproachComboBox->currentText());
+    ASettings::write("flightlogging/pilotFlying", ui->PilotFlyingCheckBox->isChecked());
+    ASettings::write("flightlogging/numberTakeoffs", ui->TakeoffSpinBox->value());
+    ASettings::write("flightlogging/numberLandings", ui->LandingSpinBox->value());
+    ASettings::write("flightlogging/logIfr", ui->IfrCheckBox->isChecked());
+    ASettings::write("flightlogging/popupCalendar", ui->calendarCheckBox->isChecked());
 }
 
 void NewFlightDialog::setupButtonGroups()
@@ -804,6 +804,9 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
         // update map and list, set line edit
         tailsIdMap  = aDB()->getIdMap(ADataBase::tails);
         tailsList   = aDB()->getCompletionList(ADataBase::registrations);
+
+        DEB("New Entry added. Id:" << aDB()->getLastEntry(ADataBase::tails));
+        DEB("AC Map: " << tailsIdMap);
 
         parent_line_edit->setText(tailsIdMap.key(aDB()->getLastEntry(ADataBase::tails)));
         emit parent_line_edit->editingFinished();

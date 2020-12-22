@@ -220,7 +220,8 @@ void NewTailDialog::submitForm()
         message_box.exec();
         return;
     } else {
-        ACalc::updateAutoTimes(entry.getPosition().second);
+        if (entry.getPosition().second != 0)
+            ACalc::updateAutoTimes(entry.getPosition().second);
         QDialog::accept();
     }
 }
