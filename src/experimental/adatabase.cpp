@@ -123,7 +123,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
     query.prepare("BEGIN EXCLUSIVE TRANSACTION");
     query.exec();
 
-    for (const auto data_position : data_position_list) {
+    for (const auto& data_position : data_position_list) {
         if (!exists(data_position)) {
             lastError = "Database Error: Database entry not found.";
             errorCount++;
@@ -391,26 +391,26 @@ AFlightEntry ADataBase::getFlightEntry(RowId row_id)
     return flight_entry;
 }
 
-const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
+const QStringList ADataBase::getCompletionList(DBTarget target)
 {
     QString statement;
 
     switch (target) {
-    case pilots:
+    case DBTarget::pilots:
         statement.append("SELECT piclastname||', '||picfirstname FROM pilots");
         break;
-    case aircraft:
+    case DBTarget::aircraft:
         statement.append("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airport_identifier_all:
+    case DBTarget::airport_identifier_all:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
         break;
-    case registrations:
+    case DBTarget::registrations:
         statement.append("SELECT registration FROM tails");
         break;
-    case companies:
+    case DBTarget::companies:
         statement.append("SELECT company FROM pilots");
         break;
     default:
@@ -439,29 +439,29 @@ const QStringList ADataBase::getCompletionList(ADataBase::DatabaseTarget target)
     return completer_list;
 }
 
-const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
+const QMap<QString, int> ADataBase::getIdMap(DBTarget target)
 {
     QString statement;
 
     switch (target) {
-    case pilots:
+    case DBTarget::pilots:
         statement.append("SELECT ROWID, piclastname||', '||picfirstname FROM pilots");
         break;
-    case aircraft:
+    case DBTarget::aircraft:
         statement.append("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case airport_identifier_icao:
+    case DBTarget::airport_identifier_icao:
         statement.append("SELECT ROWID, icao FROM airports");
         break;
-    case airport_identifier_iata:
+    case DBTarget::airport_identifier_iata:
         statement.append("SELECT ROWID, iata FROM airports WHERE iata NOT NULL");
         break;
-    case airport_names:
+    case DBTarget::airport_names:
         statement.append("SELECT ROWID, name FROM airports");
         break;
-    case tails:
+    case DBTarget::tails:
         statement.append("SELECT ROWID, registration FROM tails");
         break;
     default:
@@ -486,18 +486,18 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBase::DatabaseTarget target)
     }
 }
 
-int ADataBase::getLastEntry(ADataBase::DatabaseTarget target)
+int ADataBase::getLastEntry(DBTarget target)
 {
     QString statement = "SELECT MAX(ROWID) FROM ";
 
     switch (target) {
-    case pilots:
+    case DBTarget::pilots:
         statement.append(DB_TABLE_PILOTS);
         break;
-    case aircraft:
+    case DBTarget::aircraft:
         statement.append(DB_TABLE_AIRCRAFT);
         break;
-    case tails:
+    case DBTarget::tails:
         statement.append(DB_TABLE_TAILS);
         break;
     default:

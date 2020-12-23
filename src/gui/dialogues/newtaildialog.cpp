@@ -81,8 +81,8 @@ NewTailDialog::~NewTailDialog()
 void NewTailDialog::setupCompleter()
 {
     using namespace experimental;
-    idMap = aDB()->getIdMap(ADataBase::aircraft);
-    aircraftList = aDB()->getCompletionList(experimental::ADataBase::aircraft);
+    idMap = aDB()->getIdMap(DBTarget::aircraft);
+    aircraftList = aDB()->getCompletionList(DBTarget::aircraft);
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);

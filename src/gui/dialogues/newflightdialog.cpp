@@ -206,15 +206,15 @@ void NewFlightDialog::setupButtonGroups()
 void NewFlightDialog::setupRawInputValidation()
 {
     // get Maps
-    pilotsIdMap      = aDB()->getIdMap(ADataBase::pilots);
-    tailsIdMap       = aDB()->getIdMap(ADataBase::tails);
-    airportIcaoIdMap = aDB()->getIdMap(ADataBase::airport_identifier_icao);
-    airportIataIdMap = aDB()->getIdMap(ADataBase::airport_identifier_iata);
-    airportNameIdMap = aDB()->getIdMap(ADataBase::airport_names);
+    pilotsIdMap      = aDB()->getIdMap(DBTarget::pilots);
+    tailsIdMap       = aDB()->getIdMap(DBTarget::tails);
+    airportIcaoIdMap = aDB()->getIdMap(DBTarget::airport_identifier_icao);
+    airportIataIdMap = aDB()->getIdMap(DBTarget::airport_identifier_iata);
+    airportNameIdMap = aDB()->getIdMap(DBTarget::airport_names);
     //get Completer Lists
-    pilotList   = aDB()->getCompletionList(ADataBase::pilots);
-    tailsList   = aDB()->getCompletionList(ADataBase::registrations);
-    airportList = aDB()->getCompletionList(ADataBase::airport_identifier_all);
+    pilotList   = aDB()->getCompletionList(DBTarget::pilots);
+    tailsList   = aDB()->getCompletionList(DBTarget::registrations);
+    airportList = aDB()->getCompletionList(DBTarget::airport_identifier_all);
     auto tempList = QStringList();
     // define tuples
     const std::tuple<QString, QStringList*, QRegularExpression>
@@ -802,13 +802,13 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
         auto na = NewTailDialog(ui->acftLineEdit->text(), this);
         na.exec();
         // update map and list, set line edit
-        tailsIdMap  = aDB()->getIdMap(ADataBase::tails);
-        tailsList   = aDB()->getCompletionList(ADataBase::registrations);
+        tailsIdMap  = aDB()->getIdMap(DBTarget::tails);
+        tailsList   = aDB()->getCompletionList(DBTarget::registrations);
 
-        DEB("New Entry added. Id:" << aDB()->getLastEntry(ADataBase::tails));
+        DEB("New Entry added. Id:" << aDB()->getLastEntry(DBTarget::tails));
         DEB("AC Map: " << tailsIdMap);
 
-        parent_line_edit->setText(tailsIdMap.key(aDB()->getLastEntry(ADataBase::tails)));
+        parent_line_edit->setText(tailsIdMap.key(aDB()->getLastEntry(DBTarget::tails)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(DB_NULL);
@@ -834,10 +834,10 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
         auto np = NewPilotDialog(this);
         np.exec();
         // update map and list, set line edit
-        pilotsIdMap  = aDB()->getIdMap(ADataBase::pilots);
-        pilotList    = aDB()->getCompletionList(ADataBase::pilots);
-        DEB("Setting new entry: " << pilotsIdMap.key(aDB()->getLastEntry(ADataBase::pilots)));
-        parent_line_edit->setText(pilotsIdMap.key(aDB()->getLastEntry(ADataBase::pilots)));
+        pilotsIdMap  = aDB()->getIdMap(DBTarget::pilots);
+        pilotList    = aDB()->getCompletionList(DBTarget::pilots);
+        DEB("Setting new entry: " << pilotsIdMap.key(aDB()->getLastEntry(DBTarget::pilots)));
+        parent_line_edit->setText(pilotsIdMap.key(aDB()->getLastEntry(DBTarget::pilots)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(DB_NULL);

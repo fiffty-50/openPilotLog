@@ -35,6 +35,25 @@
 
 namespace experimental {
 
+
+// [G]: Suspicious documentation -,O
+/*!
+ * \brief The DBTarget enum provides the items for which QCompleter
+ * completion lists are provided from the database.
+ */
+enum class DBTarget
+{
+    airport_identifier_icao,
+    airport_identifier_iata,
+    airport_identifier_all,
+    airport_names,
+    pilots,
+    registrations,
+    aircraft,
+    companies,
+    tails
+};
+
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
@@ -52,12 +71,6 @@ public:
     void operator=(const ADataBase&) = delete;
     static ADataBase* getInstance();
     QString lastError;
-
-    /*!
-     * \brief The CompleterTarget enum provides the items for which QCompleter
-     * completion lists are provided from the database.
-     */
-    enum DatabaseTarget {airport_identifier_icao, airport_identifier_iata, airport_identifier_all, airport_names, pilots, registrations, aircraft, companies, tails};
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -170,16 +183,16 @@ public:
      * QCompleter based on database values
      * \return
      */
-    const QStringList getCompletionList(DatabaseTarget);
+    const QStringList getCompletionList(DBTarget);
 
     /*!
      * \brief returns a QMap<QString, int> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      * \return
      */
-    const QMap<QString, int> getIdMap(DatabaseTarget);
+    const QMap<QString, int> getIdMap(DBTarget);
 
-    int getLastEntry(DatabaseTarget);
+    int getLastEntry(DBTarget);
 
 signals:
     /*!
