@@ -40,6 +40,10 @@ bool setup()
     QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
     QFileInfo check_file(settingspath,settingsfile);
 
+    QSettings settings;
+    settings.setValue("setup/touch", true);
+    settings.sync();
+
     return check_file.exists() && check_file.isFile();
 };
 

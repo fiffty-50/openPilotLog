@@ -100,13 +100,19 @@ void FirstRunDialog::on_finishButton_clicked()
             QMessageBox message_box(this);
             message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
         }
+        ASettings::write("setup/setup_complete", true);
         aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
         aDB()->connect();
         auto pilot = APilotEntry(1);
         pilot.setData(data);
-        aDB()->commit(pilot);
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        if (aDB()->commit(pilot)) {
+            qApp->quit();
+            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        } else {
+            QMessageBox message_box(this);
+            message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        }
+
     }
 }
 
