@@ -41,7 +41,7 @@ namespace experimental {
  * \brief The DBTarget enum provides the items for which QCompleter
  * completion lists are provided from the database.
  */
-enum class DBTarget
+enum class ADataBaseTarget
 {
     airport_identifier_icao,
     airport_identifier_iata,
@@ -52,6 +52,20 @@ enum class DBTarget
     aircraft,
     companies,
     tails
+};
+
+// [G]: This is how we should handle custom "events" in the program.
+// In this case a custom error doesnt need to be built from scratch.
+// Find the type of error you want and extend it with a few tweaks.
+/*!
+ * \brief Custom Database Error derived from QSqlError.
+ * Extends text() adding "Database Error: " before the text.
+ */
+class ADataBaseError : public QSqlError {
+public:
+  ADataBaseError() = default;
+  ADataBaseError(QString msg);
+  QString text() const;
 };
 
 /*!
@@ -70,7 +84,7 @@ public:
     ADataBase(const ADataBase&) = delete;
     void operator=(const ADataBase&) = delete;
     static ADataBase* getInstance();
-    QString lastError;
+    ADataBaseError lastError;
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -183,16 +197,16 @@ public:
      * QCompleter based on database values
      * \return
      */
-    const QStringList getCompletionList(DBTarget);
+    const QStringList getCompletionList(ADataBaseTarget);
 
     /*!
      * \brief returns a QMap<QString, int> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      * \return
      */
-    const QMap<QString, int> getIdMap(DBTarget);
+    const QMap<QString, int> getIdMap(ADataBaseTarget);
 
-    int getLastEntry(DBTarget);
+    int getLastEntry(ADataBaseTarget);
 
 signals:
     /*!

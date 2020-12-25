@@ -108,7 +108,7 @@ void NewPilotDialog::setup()
     }
 
     DEB("Setting up completer...");
-    auto completer = new QCompleter(aDB()->getCompletionList(DBTarget::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(aDB()->getCompletionList(ADataBaseTarget::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
@@ -154,7 +154,7 @@ void NewPilotDialog::submitForm()
     if (!aDB()->commit(pilotEntry)) {
         auto message_box = QMessageBox(this);
         message_box.setText("The following error has ocurred:\n\n"
-                            + aDB()->lastError
+                            + aDB()->lastError.text()
                             + "\n\nThe entry has not been saved.");
         message_box.exec();
         return;
