@@ -42,6 +42,7 @@ namespace experimental {
 class AEntry {
 protected:
     DataPosition position;
+public:
     TableData tableData;
 public:
     AEntry() = delete; // Demand specificity from default constructor
