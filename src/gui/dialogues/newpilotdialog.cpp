@@ -108,7 +108,7 @@ void NewPilotDialog::setup()
     }
 
     DEB("Setting up completer...");
-    auto completer = new QCompleter(aDB()->getCompletionList(ADataBaseTarget::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(aDB()->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);

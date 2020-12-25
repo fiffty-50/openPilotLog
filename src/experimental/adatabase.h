@@ -41,7 +41,7 @@ namespace experimental {
  * \brief The DBTarget enum provides the items for which QCompleter
  * completion lists are provided from the database.
  */
-enum class ADataBaseTarget
+enum class ADatabaseTarget
 {
     airport_identifier_icao,
     airport_identifier_iata,
@@ -61,10 +61,10 @@ enum class ADataBaseTarget
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
  */
-class ADataBaseError : public QSqlError {
+class ADatabaseError : public QSqlError {
 public:
-  ADataBaseError() = default;
-  ADataBaseError(QString msg);
+  ADatabaseError() = default;
+  ADatabaseError(QString msg);
   QString text() const;
 };
 
@@ -72,19 +72,19 @@ public:
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class ADataBase : public QObject {
+class ADatabase : public QObject {
     Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static ADataBase* instance;
-    ADataBase() = default;
+    static ADatabase* instance;
+    ADatabase() = default;
 public:
     // Ensure DB is not copiable or assignable
-    ADataBase(const ADataBase&) = delete;
-    void operator=(const ADataBase&) = delete;
-    static ADataBase* getInstance();
-    ADataBaseError lastError;
+    ADatabase(const ADatabase&) = delete;
+    void operator=(const ADatabase&) = delete;
+    static ADatabase* getInstance();
+    ADatabaseError lastError;
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -197,16 +197,16 @@ public:
      * QCompleter based on database values
      * \return
      */
-    const QStringList getCompletionList(ADataBaseTarget);
+    const QStringList getCompletionList(ADatabaseTarget);
 
     /*!
      * \brief returns a QMap<QString, int> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      * \return
      */
-    const QMap<QString, int> getIdMap(ADataBaseTarget);
+    const QMap<QString, int> getIdMap(ADatabaseTarget);
 
-    int getLastEntry(ADataBaseTarget);
+    int getLastEntry(ADatabaseTarget);
 
 signals:
     /*!
@@ -225,7 +225,7 @@ signals:
  * Write this:
  * aDB()->commit(...)
  */
-ADataBase* aDB();
+ADatabase* aDB();
 
 }  // namespace experimental
 

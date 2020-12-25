@@ -20,25 +20,25 @@
 
 namespace experimental {
 
-ADataBaseError::ADataBaseError(QString msg_)
+ADatabaseError::ADatabaseError(QString msg_)
     : QSqlError::QSqlError(msg_)
 {}
 
-QString ADataBaseError::text() const
+QString ADatabaseError::text() const
 {
     return "Database Error: " + QSqlError::text();
 }
 
-ADataBase* ADataBase::instance = nullptr;
+ADatabase* ADatabase::instance = nullptr;
 
-ADataBase* ADataBase::getInstance()
+ADatabase* ADatabase::getInstance()
 {
     if(!instance)
-        instance = new ADataBase();
+        instance = new ADatabase();
     return instance;
 }
 
-bool ADataBase::connect()
+bool ADatabase::connect()
 {
     const QString driver("QSQLITE");
 
@@ -72,20 +72,20 @@ bool ADataBase::connect()
     return true;
 }
 
-void ADataBase::disconnect()
+void ADatabase::disconnect()
 {
-    auto db = ADataBase::database();
+    auto db = ADatabase::database();
     db.close();
     db.removeDatabase(db.connectionName());
     DEB("Database connection closed.");
 }
 
-QSqlDatabase ADataBase::database()
+QSqlDatabase ADatabase::database()
 {
     return QSqlDatabase::database("qt_sql_default_connection");
 }
 
-bool ADataBase::commit(AEntry entry)
+bool ADatabase::commit(AEntry entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -94,11 +94,11 @@ bool ADataBase::commit(AEntry entry)
     }
 }
 
-bool ADataBase::remove(AEntry entry)
+bool ADatabase::remove(AEntry entry)
 {
     if (!exists(entry)) {
         DEB("Error: Database entry not found.");
-        lastError = ADataBaseError("Database entry not found.");
+        lastError = ADatabaseError("Database entry not found.");
         return false;
     }
 
@@ -125,7 +125,7 @@ bool ADataBase::remove(AEntry entry)
     }
 }
 
-bool ADataBase::removeMany(QList<DataPosition> data_position_list)
+bool ADatabase::removeMany(QList<DataPosition> data_position_list)
 {
     int errorCount = 0;
     QSqlQuery query;
@@ -134,7 +134,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
 
     for (const auto& data_position : data_position_list) {
         if (!exists(data_position)) {
-            lastError = ADataBaseError("Database entry not found.");
+            lastError = ADatabaseError("Database entry not found.");
             errorCount++;
         }
         QString statement = "DELETE FROM " + data_position.first +
@@ -166,7 +166,7 @@ bool ADataBase::removeMany(QList<DataPosition> data_position_list)
     }
 }
 
-bool ADataBase::exists(AEntry entry)
+bool ADatabase::exists(AEntry entry)
 {
     if(entry.getPosition().second == 0)
         return false;
@@ -191,12 +191,12 @@ bool ADataBase::exists(AEntry entry)
         return true;
     } else {
         DEB("Database entry not found.");
-        lastError = ADataBaseError("Database entry not found.");
+        lastError = ADatabaseError("Database entry not found.");
         return false;
     }
 }
 
-bool ADataBase::exists(DataPosition data_position)
+bool ADatabase::exists(DataPosition data_position)
 {
     if(data_position.second == 0)
         return false;
@@ -220,13 +220,13 @@ bool ADataBase::exists(DataPosition data_position)
         return true;
     } else {
         DEB("No entry exists at DataPosition: " << data_position);
-        lastError = ADataBaseError("Database entry not found.");
+        lastError = ADatabaseError("Database entry not found.");
         return false;
     }
 }
 
 
-bool ADataBase::update(AEntry updated_entry)
+bool ADatabase::update(AEntry updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
@@ -262,7 +262,7 @@ bool ADataBase::update(AEntry updated_entry)
     }
 }
 
-bool ADataBase::insert(AEntry new_entry)
+bool ADatabase::insert(AEntry new_entry)
 {
     auto data = new_entry.getData();
     QString statement = "INSERT INTO " + new_entry.getPosition().tableName + QLatin1String(" (");
@@ -308,7 +308,7 @@ bool ADataBase::insert(AEntry new_entry)
 
 }
 
-TableData ADataBase::getEntryData(DataPosition data_position)
+TableData ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
     if (!tableNames.contains(data_position.first)) {
@@ -335,7 +335,7 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
         DEB("No Entry found for row id: " << data_position.second );
-        lastError = ADataBaseError("Database entry not found.");
+        lastError = ADatabaseError("Database entry not found.");
         return TableData();
     }
 
@@ -365,61 +365,61 @@ TableData ADataBase::getEntryData(DataPosition data_position)
     return entry_data;
 }
 
-AEntry ADataBase::getEntry(DataPosition data_position)
+AEntry ADatabase::getEntry(DataPosition data_position)
 {
     AEntry entry(data_position);
     entry.setData(getEntryData(data_position));
     return entry;
 }
 
-APilotEntry ADataBase::getPilotEntry(RowId row_id)
+APilotEntry ADatabase::getPilotEntry(RowId row_id)
 {
     APilotEntry pilot_entry(row_id);
     pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
     return pilot_entry;
 }
 
-ATailEntry ADataBase::getTailEntry(RowId row_id)
+ATailEntry ADatabase::getTailEntry(RowId row_id)
 {
     ATailEntry tail_entry(row_id);
     tail_entry.setData(getEntryData(tail_entry.getPosition()));
     return tail_entry;
 }
 
-AAircraftEntry ADataBase::getAircraftEntry(RowId row_id)
+AAircraftEntry ADatabase::getAircraftEntry(RowId row_id)
 {
     AAircraftEntry aircraft_entry(row_id);
     aircraft_entry.setData(getEntryData(aircraft_entry.getPosition()));
     return aircraft_entry;
 }
 
-AFlightEntry ADataBase::getFlightEntry(RowId row_id)
+AFlightEntry ADatabase::getFlightEntry(RowId row_id)
 {
     AFlightEntry flight_entry(row_id);
     flight_entry.setData(getEntryData(flight_entry.getPosition()));
     return flight_entry;
 }
 
-const QStringList ADataBase::getCompletionList(ADataBaseTarget target)
+const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 {
     QString statement;
 
     switch (target) {
-    case ADataBaseTarget::pilots:
+    case ADatabaseTarget::pilots:
         statement.append("SELECT piclastname||', '||picfirstname FROM pilots");
         break;
-    case ADataBaseTarget::aircraft:
+    case ADatabaseTarget::aircraft:
         statement.append("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case ADataBaseTarget::airport_identifier_all:
+    case ADatabaseTarget::airport_identifier_all:
         statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
         break;
-    case ADataBaseTarget::registrations:
+    case ADatabaseTarget::registrations:
         statement.append("SELECT registration FROM tails");
         break;
-    case ADataBaseTarget::companies:
+    case ADatabaseTarget::companies:
         statement.append("SELECT company FROM pilots");
         break;
     default:
@@ -448,29 +448,29 @@ const QStringList ADataBase::getCompletionList(ADataBaseTarget target)
     return completer_list;
 }
 
-const QMap<QString, int> ADataBase::getIdMap(ADataBaseTarget target)
+const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
     switch (target) {
-    case ADataBaseTarget::pilots:
+    case ADatabaseTarget::pilots:
         statement.append("SELECT ROWID, piclastname||', '||picfirstname FROM pilots");
         break;
-    case ADataBaseTarget::aircraft:
+    case ADatabaseTarget::aircraft:
         statement.append("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
                          "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
         break;
-    case ADataBaseTarget::airport_identifier_icao:
+    case ADatabaseTarget::airport_identifier_icao:
         statement.append("SELECT ROWID, icao FROM airports");
         break;
-    case ADataBaseTarget::airport_identifier_iata:
+    case ADatabaseTarget::airport_identifier_iata:
         statement.append("SELECT ROWID, iata FROM airports WHERE iata NOT NULL");
         break;
-    case ADataBaseTarget::airport_names:
+    case ADatabaseTarget::airport_names:
         statement.append("SELECT ROWID, name FROM airports");
         break;
-    case ADataBaseTarget::tails:
+    case ADatabaseTarget::tails:
         statement.append("SELECT ROWID, registration FROM tails");
         break;
     default:
@@ -495,18 +495,18 @@ const QMap<QString, int> ADataBase::getIdMap(ADataBaseTarget target)
     }
 }
 
-int ADataBase::getLastEntry(ADataBaseTarget target)
+int ADatabase::getLastEntry(ADatabaseTarget target)
 {
     QString statement = "SELECT MAX(ROWID) FROM ";
 
     switch (target) {
-    case ADataBaseTarget::pilots:
+    case ADatabaseTarget::pilots:
         statement.append(DB_TABLE_PILOTS);
         break;
-    case ADataBaseTarget::aircraft:
+    case ADatabaseTarget::aircraft:
         statement.append(DB_TABLE_AIRCRAFT);
         break;
-    case ADataBaseTarget::tails:
+    case ADatabaseTarget::tails:
         statement.append(DB_TABLE_TAILS);
         break;
     default:
@@ -517,13 +517,13 @@ int ADataBase::getLastEntry(ADataBaseTarget target)
     if (query.first()) {
         return query.value(0).toInt();
     } else {
-        lastError = ADataBaseError("Database entry not found.");
+        lastError = ADatabaseError("Database entry not found.");
         DEB("No entry found.");
         return 0;
     }
 }
 
-QVector<QString> ADataBase::customQuery(QString statement, int return_values)
+QVector<QString> ADatabase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);
     query.exec();
@@ -549,6 +549,6 @@ QVector<QString> ADataBase::customQuery(QString statement, int return_values)
     }
 }
 
-ADataBase* aDB() { return ADataBase::getInstance(); }
+ADatabase* aDB() { return ADatabase::getInstance(); }
 
 }// namespace experimental
