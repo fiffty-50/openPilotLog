@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['formattimeinput_132',['formatTimeInput',['../namespace_a_calc.html#a362d1ab22d757e4c14d9cf143afec234',1,'ACalc']]]
+  ['exists_136',['exists',['../class_db.html#a05ccd0af0703255fc249e5cb9e2eb945',1,'Db::exists()'],['../classexperimental_1_1_a_database.html#ad3fc7756ef3f032d252b02ed6867e0a5',1,'experimental::ADatabase::exists()']]]
 ];

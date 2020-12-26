@@ -4,17 +4,17 @@
 #include <QString>
 #include <QStringLiteral>
 
-/// [F]: These constants deviate slightly from const naming convention to reflect their sql column name.
-/// In many places throughout the application, we have to programatically access or write data
-/// to or from the database using column names as identifiers, doing something like this:
-///
-/// newData.insert("dept", ui->deptLocLineEdit->text());
-/// newData.value("multipilot") // do stuff
-///
-///
-/// Declaring the literals here avoids memory allocation at runtime for construction of temporary qstrings
-/// like ("dept"). See https://doc.qt.io/qt-5/qstring.html#QStringLiteral
-///
+// [F]: These constants deviate slightly from const naming convention to reflect their sql column name.
+// In many places throughout the application, we have to programatically access or write data
+// to or from the database using column names as identifiers, doing something like this:
+//
+// newData.insert("dept", ui->deptLocLineEdit->text());
+// newData.value("multipilot") // do stuff
+//
+//
+// Declaring the literals here avoids memory allocation at runtime for construction of temporary qstrings
+// like ("dept"). See https://doc.qt.io/qt-5/qstring.html#QStringLiteral
+//
 
 // Table names
 static const auto DB_TABLE_FLIGHTS  = QStringLiteral("flights");

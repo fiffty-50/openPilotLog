@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['qtimetominutes_153',['QTimeToMinutes',['../namespace_a_calc.html#ab9a4beeaf2f02314adef0dc6c0dc2ccd',1,'ACalc']]]
+  ['newflightdialog_157',['NewFlightDialog',['../class_new_flight_dialog.html#a28d14d3bf3c2a283c43456a25d97899d',1,'NewFlightDialog::NewFlightDialog(QWidget *parent=nullptr)'],['../class_new_flight_dialog.html#ad60b284ebebae287c00f0c9f30105f28',1,'NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent=nullptr)']]]
 ];

@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['singleselect_159',['singleSelect',['../class_db.html#addcbd285617f8ef82f79c276d7bddfe1',1,'Db']]],
-  ['singleupdate_160',['singleUpdate',['../class_db.html#a939456015e76b398af918656791e3951',1,'Db']]],
-  ['solarelevation_161',['solarElevation',['../namespace_a_calc.html#acfa830e821e2f9e20bebffda67d393b1',1,'ACalc']]],
-  ['sqliteversion_162',['sqliteversion',['../class_db_info.html#a1ffc87d62fc7c2745c085622b20d6f2c',1,'DbInfo']]],
-  ['stringtominutes_163',['stringToMinutes',['../namespace_a_calc.html#a0354672c538f003b4f7624ad38b6a42b',1,'ACalc']]],
-  ['summary_164',['summary',['../classexperimental_1_1_a_flight_entry.html#a8ea56a97aa4a51cfffc13773eb8627bd',1,'experimental::AFlightEntry']]]
+  ['radtodeg_159',['radToDeg',['../namespace_a_calc.html#a2a540662e22840e4b58e8e760611b4f2',1,'ACalc']]],
+  ['radtonauticalmiles_160',['radToNauticalMiles',['../namespace_a_calc.html#a37c52e8b522b233087b8c4d94f30fca5',1,'ACalc']]],
+  ['remove_161',['remove',['../classexperimental_1_1_a_database.html#aeeb82d8057f36436fd793a242627668e',1,'experimental::ADatabase']]],
+  ['removemany_162',['removeMany',['../classexperimental_1_1_a_database.html#ab4fe26545b5fd05fa6b63486f2d234e3',1,'experimental::ADatabase']]],
+  ['resettodefault_163',['resetToDefault',['../class_a_data_base_setup.html#a89fee11dbb1510262a783ee97d946ab7',1,'ADataBaseSetup']]]
 ];

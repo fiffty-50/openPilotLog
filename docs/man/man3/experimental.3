@@ -1,0 +1,147 @@
+.TH "experimental" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+experimental \- Temporary namespace for experimental features\&. Will be removed in later versions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBAAircraftEntry\fP"
+.br
+.ti -1c
+.RI "class \fBADatabase\fP"
+.br
+.RI "The DB class encapsulates the SQL database by providing fast access to hot database data\&. "
+.ti -1c
+.RI "class \fBADatabaseError\fP"
+.br
+.RI "Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&. "
+.ti -1c
+.RI "class \fBAEntry\fP"
+.br
+.RI "The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries in the database to operate on\&. "
+.ti -1c
+.RI "class \fBAFlightEntry\fP"
+.br
+.ti -1c
+.RI "struct \fBAPilotEntry\fP"
+.br
+.ti -1c
+.RI "struct \fBATailEntry\fP"
+.br
+.ti -1c
+.RI "struct \fBDataPosition\fP"
+.br
+.ti -1c
+.RI "class \fBUserInput\fP"
+.br
+.RI "The EntryData struct\&. Contains ALL possible data\&. However depending on who is constructing it, different types are initialised\&. FUTURE: Would it be necessary to able to change data? George: I would say no because we dont want to fuck around with the entry\&. Collect data from user -> Pack it up in the entry -> Consume it\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "using \fBColName\fP = QString"
+.br
+.RI "An alias for QString\&. "
+.ti -1c
+.RI "using \fBColData\fP = QVariant"
+.br
+.ti -1c
+.RI "using \fBTableName\fP = QString"
+.br
+.ti -1c
+.RI "using \fBRowId\fP = int"
+.br
+.ti -1c
+.RI "using \fBTableNames\fP = QStringList"
+.br
+.ti -1c
+.RI "using \fBTableData\fP = QMap< \fBColName\fP, ColData >"
+.br
+.ti -1c
+.RI "using \fBColumnData\fP = QPair< \fBColName\fP, ColData >"
+.br
+.ti -1c
+.RI "using \fBColumnNames\fP = QStringList"
+.br
+.ti -1c
+.RI "using \fBTableColumns\fP = QMap< TableName, ColumnNames >"
+.br
+.ti -1c
+.RI "using \fBEntryData\fP = QMap< QString, QString >"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBADatabaseTarget\fP { \fBairport_identifier_icao\fP, \fBairport_identifier_iata\fP, \fBairport_identifier_all\fP, \fBairport_names\fP, \fBpilots\fP, \fBregistrations\fP, \fBaircraft\fP, \fBcompanies\fP, \fBtails\fP }"
+.br
+.RI "The DBTarget enum provides the items for which QCompleter completion lists are provided from the database\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBADatabase\fP * \fBaDB\fP ()"
+.br
+.RI "Convinience function that returns instance of DataBase\&. Instead of this: DataBase::getInstance()\&.commit(\&.\&.\&.) Write this: \fBaDB()\fP->commit(\&.\&.\&.) "
+.ti -1c
+.RI "\fBUserInput\fP \fBnewPilotInput\fP (EntryData ed)"
+.br
+.ti -1c
+.RI "\fBUserInput\fP \fBnewFlightInput\fP (EntryData ed)"
+.br
+.ti -1c
+.RI "\fBUserInput\fP \fBnewAircraftInput\fP (EntryData ed)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "auto const \fBDEFAULT_PILOT_POSITION\fP = \fBDataPosition\fP('pilots', 0)"
+.br
+.ti -1c
+.RI "auto const \fBDEFAULT_TAIL_POSITION\fP = \fBDataPosition\fP('tails', 0)"
+.br
+.ti -1c
+.RI "auto const \fBDEFAULT_AIRCRAFT_POSITION\fP = \fBDataPosition\fP('aircraft', 0)"
+.br
+.ti -1c
+.RI "auto const \fBDEFAULT_FLIGHT_POSITION\fP = \fBDataPosition\fP('flights', 0)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Temporary namespace for experimental features\&. Will be removed in later versions\&. 
+
+
+.PP
+\fBTodo\fP
+.RS 4
+Remove this namespace (and learn about some nice \\something of doxygen) Decide documentation style\&. https://www.doxygen.nl/manual/docblocks.html#specialblock 
+.RE
+.PP
+
+.SH "Typedef Documentation"
+.PP 
+.SS "using \fBexperimental::ColName\fP = typedef QString"
+
+.PP
+An alias for QString\&. Very long description \fIwith\fP \fBmarkdown?\fP
+.PP
+.PP
+ 
+.SH "Header"
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

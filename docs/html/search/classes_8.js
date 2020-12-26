@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['settingswidget_115',['SettingsWidget',['../class_settings_widget.html',1,'']]]
+  ['settingswidget_119',['SettingsWidget',['../class_settings_widget.html',1,'']]]
 ];
