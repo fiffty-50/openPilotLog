@@ -59,9 +59,9 @@ CREATE TABLE "flights" (
     "autoland"      INTEGER,
     "secondPilot"   INTEGER,
     "thirdPilot"    INTEGER,
-    "ApproachType"  TEXT,
-    "FlightNumber"  TEXT,
-    "Remarks"       TEXT,
+    "approachType"  TEXT,
+    "flightNumber"  TEXT,
+    "remarks"       TEXT,
     PRIMARY KEY("flight_id" AUTOINCREMENT),
     FOREIGN KEY("acft") REFERENCES "tails"("tail_id")   ON DELETE RESTRICT,
     FOREIGN KEY("pic")  REFERENCES "pilots"("pilot_id") ON DELETE RESTRICT
@@ -110,9 +110,9 @@ The flight table holds all the data relevant to a flight. Every row in the table
 | `autoland` | INTEGER | Number of autolands |
 | `secondPilot` | INTEGER | The second pilot of the flight. This is a [foreign key](https://sqlite.org/foreignkeys.html) referencing pilots.pilot_id |
 | `thirdPilot` | INTEGER | The third pilot of the flight. This is a [foreign key](https://sqlite.org/foreignkeys.html) referencing pilots.pilot_id |
-| `ApproachType` | INTEGER | The type of Approach flown |
-| `FlightNumber` | INTEGER | The flight number. The airline prefix can be set in the settings dialog |
-| `Remarks` | INTEGER | Remarks and endorsements |
+| `approachType` | INTEGER | The type of Approach flown |
+| `flightNumber` | INTEGER | The flight number. The airline prefix can be set in the settings dialog |
+| `remarks` | INTEGER | Remarks and endorsements |
 
 </p>
 </details>
@@ -124,8 +124,8 @@ The flight table holds all the data relevant to a flight. Every row in the table
 ```sql
 CREATE TABLE "pilots" (
     "pilot_id"       INTEGER NOT NULL,
-    "piclastname"    TEXT    NOT NULL,
-    "picfirstname"   TEXT,
+    "lastname"    TEXT    NOT NULL,
+    "firstname"   TEXT,
     "alias"          TEXT,
     "company"        TEXT,
     "employeeid"     TEXT,
@@ -144,14 +144,14 @@ CREATE TABLE "pilots" (
 | field   |      value      |  description |
 |---------|-----------------|--------------|
 | `pilot_id` | INTEGER | The primary key of the table, referenced by `flights.pic`. Auto-increments.
-| `piclastname` | TEXT | The last name(s) of the pilot
+| `lastname` | TEXT | The last name(s) of the pilot
 
 <details><summary>Optional Fields</summary>
 <p>
 
 | field   |      value      |  description |
 |---------|-----------------|--------------|
-| `picfirstname` | TEXT | The first name(s) of the pilot
+| `firstname` | TEXT | The first name(s) of the pilot
 | `alias` | TEXT | An alias, nick-name, call-sign, etc.
 | `company` | TEXT | Company
 | `employeeid` | TEXT | Employee ID or crew code
