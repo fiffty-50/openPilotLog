@@ -1,4 +1,4 @@
-flight_id,doft,dept,dest,tofb,tonb,pic,acft,tblk,tSPSE,tSPME,tMP,tNIGHT,tIFR,tPIC,tPICUS,tSIC,tDUAL,tFI,tSIM,pilotFlying,toDay,toNight,ldgDay,ldgNight,autoland,secondPilot,thirdPilot,ApproachType,FlightNumber,Remarks
+flight_id,doft,dept,dest,tofb,tonb,pic,acft,tblk,tSPSE,tSPME,tMP,tNIGHT,tIFR,tPIC,tPICUS,tSIC,tDUAL,tFI,tSIM,pilotFlying,toDay,toNight,ldgDay,ldgNight,autoland,secondPilot,thirdPilot,approachType,flightNumber,remarks
 2,2020-12-03,KVOK,LTAO,947,1112,1,302,165,165,,,165,,,,,165,,,1,1,,1,,,1224,2481,VISUAL,FR-2263,
 3,2020-11-21,NTKO,VVBM,239,835,1,297,596,,,596,344,596,596,,,,,,,,,,,,549,512,ILS CAT I,FR-2263,
 5,2020-11-09,KSDM,URWI,238,416,1,102,178,,,178,178,178,,,178,,,,,,,,,,1055,536,LOC,FR-2263,

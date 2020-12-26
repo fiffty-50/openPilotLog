@@ -407,7 +407,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append("SELECT piclastname||', '||picfirstname FROM pilots");
+        statement.append("SELECT lastname||', '||firstname FROM pilots");
         break;
     case ADatabaseTarget::aircraft:
         statement.append("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
@@ -455,7 +455,7 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append("SELECT ROWID, piclastname||', '||picfirstname FROM pilots");
+        statement.append("SELECT ROWID, lastname||', '||firstname FROM pilots");
         break;
     case ADatabaseTarget::aircraft:
         statement.append("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "

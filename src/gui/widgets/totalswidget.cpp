@@ -15,7 +15,7 @@ TotalsWidget::TotalsWidget(QWidget *parent) :
         line_edit->setText(field.second);
     }
     QSettings settings;
-    QString name = settings.value("userdata/picfirstname").toString();
+    QString name = settings.value("userdata/firstname").toString();
     if(!name.isEmpty()) {
         QString salutation = "Welcome to openPilotLog, " + name + QLatin1Char('!');
         ui->welcomeLabel->setText(salutation);

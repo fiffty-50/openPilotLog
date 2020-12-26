@@ -130,10 +130,10 @@ void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
         le->setText(data.value(key).toString());
     }
 
-    ui->operationComboBox->setCurrentIndex(data.value(DB_multipilot).toInt() + 1);
-    ui->ppNumberComboBox ->setCurrentIndex(data.value(DB_multiengine).toInt() + 1);
-    ui->ppTypeComboBox->setCurrentIndex(data.value(DB_engineType).toInt() + 1);
-    ui->weightComboBox->setCurrentIndex(data.value(DB_weightClass).toInt() + 1);
+    ui->operationComboBox->setCurrentIndex(data.value(DB_TAILS_MULTIPILOT).toInt() + 1);
+    ui->ppNumberComboBox ->setCurrentIndex(data.value(DB_TAILS_MULTIENGINE).toInt() + 1);
+    ui->ppTypeComboBox->setCurrentIndex(data.value(DB_TAILS_ENGINETYPE).toInt() + 1);
+    ui->weightComboBox->setCurrentIndex(data.value(DB_TAILS_WEIGHTCLASS).toInt() + 1);
 }
 
 /*!
@@ -197,16 +197,16 @@ void NewTailDialog::submitForm()
     }
 
     if (ui->operationComboBox->currentIndex() != 0) { // bool Multipilot
-        new_data.insert(DB_multipilot, ui->operationComboBox->currentIndex() - 1);
+        new_data.insert(DB_TAILS_MULTIPILOT, ui->operationComboBox->currentIndex() - 1);
     }
     if (ui->ppNumberComboBox->currentIndex() != 0) { // bool MultiEngine
-        new_data.insert(DB_multiengine, ui->ppNumberComboBox->currentIndex() - 1);
+        new_data.insert(DB_TAILS_MULTIENGINE, ui->ppNumberComboBox->currentIndex() - 1);
     }
     if (ui->ppTypeComboBox->currentIndex() != 0) { // int 0=unpowered,....4=jet
-        new_data.insert(DB_engineType, ui->ppTypeComboBox->currentIndex() - 1);
+        new_data.insert(DB_TAILS_ENGINETYPE, ui->ppTypeComboBox->currentIndex() - 1);
     }
     if (ui->weightComboBox->currentIndex() != 0) { // int 0=light...3=super
-        new_data.insert(DB_weightClass, ui->weightComboBox->currentIndex() - 1);
+        new_data.insert(DB_TAILS_WEIGHTCLASS, ui->weightComboBox->currentIndex() - 1);
     }
 
     //create db object

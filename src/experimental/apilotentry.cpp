@@ -36,8 +36,8 @@ const QString APilotEntry::name()
     if (tableData.isEmpty())
         return QLatin1String("");
 
-    return tableData.value(QStringLiteral("piclastname")).toString() + ','
-           +tableData.value(QStringLiteral("picfirstname")).toString().left(1) + '.';
+    return tableData.value(QStringLiteral("lastname")).toString() + ','
+           +tableData.value(QStringLiteral("firstname")).toString().left(1) + '.';
 }
 
 } // namespace experimental

@@ -408,19 +408,19 @@ void NewFlightDialog::fillDeductibleData()
 
 
     // SP SE
-    if(acft.getData().value(DB_multipilot).toInt() == 0
-            && acft.getData().value(DB_multiengine).toInt() == 0){
+    if(acft.getData().value(DB_TAILS_MULTIPILOT).toInt() == 0
+            && acft.getData().value(DB_TAILS_MULTIENGINE).toInt() == 0){
         ui->tSPSETimeLineEdit->setText(block_time);
         ui->tSPSELabel->setText(block_time);
     }
     // SP ME
-    if(acft.getData().value(DB_multipilot).toInt() == 0
-            && acft.getData().value(DB_multiengine).toInt() == 1){
+    if(acft.getData().value(DB_TAILS_MULTIPILOT).toInt() == 0
+            && acft.getData().value(DB_TAILS_MULTIENGINE).toInt() == 1){
         ui->tSPMETimeLineEdit->setText(block_time);
         ui->tSPMELabel->setText(block_time);
     }
     // MP
-    if(acft.getData().value(DB_multipilot).toInt() == 1){
+    if(acft.getData().value(DB_TAILS_MULTIPILOT).toInt() == 1){
         ui->tMPTimeLineEdit->setText(block_time);
         ui->tMPLabel->setText(block_time);
     }
@@ -486,41 +486,41 @@ TableData NewFlightDialog::collectInput()
     TableData newData;
     DEB("Collecting Input...");
     // Mandatory data
-    newData.insert(DB_doft, ui->doftLineEdit->text());
-    newData.insert(DB_dept, ui->deptLocLineEdit->text());
-    newData.insert(DB_tofb, ACalc::stringToMinutes(ui->tofbTimeLineEdit->text()));
-    newData.insert(DB_dest, ui->destLocLineEdit->text());
-    newData.insert(DB_tonb, ACalc::stringToMinutes(ui->tonbTimeLineEdit->text()));
+    newData.insert(DB_FLIGHTS_DOFT, ui->doftLineEdit->text());
+    newData.insert(DB_FLIGHTS_DEPT, ui->deptLocLineEdit->text());
+    newData.insert(DB_FLIGHTS_TOFB, ACalc::stringToMinutes(ui->tofbTimeLineEdit->text()));
+    newData.insert(DB_FLIGHTS_DEST, ui->destLocLineEdit->text());
+    newData.insert(DB_FLIGHTS_TONB, ACalc::stringToMinutes(ui->tonbTimeLineEdit->text()));
     //Block Time
     const auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(), TIME_FORMAT);
     const auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(), TIME_FORMAT);
     const QString block_time = ACalc::blocktime(tofb, tonb).toString(TIME_FORMAT);
     const int block_minutes = ACalc::stringToMinutes(block_time);
 
-    newData.insert(DB_tblk, block_minutes);
+    newData.insert(DB_FLIGHTS_TBLK, block_minutes);
     // Aircraft
-    newData.insert(DB_acft, tailsIdMap.value(ui->acftLineEdit->text()));
+    newData.insert(DB_FLIGHTS_ACFT, tailsIdMap.value(ui->acftLineEdit->text()));
     // Pilots
-    newData.insert(DB_pic, pilotsIdMap.value(ui->picNameLineEdit->text()));
-    newData.insert(DB_secondPilot, pilotsIdMap.value(ui->secondPilotNameLineEdit->text()));
-    newData.insert(DB_thirdPilot, pilotsIdMap.value(ui->thirdPilotNameLineEdit->text()));
+    newData.insert(DB_FLIGHTS_PIC, pilotsIdMap.value(ui->picNameLineEdit->text()));
+    newData.insert(DB_FLIGHTS_SECONDPILOT, pilotsIdMap.value(ui->secondPilotNameLineEdit->text()));
+    newData.insert(DB_FLIGHTS_THIRDPILOT, pilotsIdMap.value(ui->thirdPilotNameLineEdit->text()));
 
     // Extra Times
     ui->tSPSETimeLineEdit->text().isEmpty() ?
-                newData.insert(DB_tSPSE, DB_NULL)
-              : newData.insert(DB_tSPSE, ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text()));
+                newData.insert(DB_FLIGHTS_TSPSE, DB_NULL)
+              : newData.insert(DB_FLIGHTS_TSPSE, ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text()));
 
     ui->tSPMETimeLineEdit->text().isEmpty() ?
-                newData.insert(DB_tSPME, DB_NULL)
-              : newData.insert(DB_tSPME, ACalc::stringToMinutes(ui->tSPMETimeLineEdit->text()));
+                newData.insert(DB_FLIGHTS_SPME, DB_NULL)
+              : newData.insert(DB_FLIGHTS_SPME, ACalc::stringToMinutes(ui->tSPMETimeLineEdit->text()));
     ui->tMPTimeLineEdit->text().isEmpty() ?
-                newData.insert(DB_tMP, DB_NULL)
-              : newData.insert(DB_tMP, ACalc::stringToMinutes(ui->tMPTimeLineEdit->text()));
+                newData.insert(DB_FLIGHTS_TMP, DB_NULL)
+              : newData.insert(DB_FLIGHTS_TMP, ACalc::stringToMinutes(ui->tMPTimeLineEdit->text()));
 
     if (ui->IfrCheckBox->isChecked()) {
-        newData.insert(DB_tIFR, block_minutes);
+        newData.insert(DB_FLIGHTS_TIFR, block_minutes);
     } else {
-        newData.insert(DB_tIFR, DB_NULL);
+        newData.insert(DB_FLIGHTS_TIFR, DB_NULL);
     }
     // Night
     const auto dept_date = ui->doftLineEdit->text() + QStringLiteral("T") + tofb.toString(TIME_FORMAT);
@@ -533,96 +533,96 @@ TableData NewFlightDialog::collectInput()
                     dept_date_time,
                     block_minutes,
                     night_angle);
-    newData.insert(DB_tNIGHT, night_minutes);
+    newData.insert(DB_FLIGHTS_TNIGHT, night_minutes);
 
     // Function times - This is a little explicit but these are mutually exclusive so its better to be safe than sorry here.
     switch (ui->FunctionComboBox->currentIndex()) {
     case 0://PIC
-        newData.insert(DB_tPIC, block_minutes);
-        newData.insert(DB_tPICUS, DB_NULL);
-        newData.insert(DB_tSIC, DB_NULL);
-        newData.insert(DB_tDUAL, DB_NULL);
-        newData.insert(DB_tFI, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPIC, block_minutes);
+        newData.insert(DB_FLIGHTS_TPICUS, DB_NULL);
+        newData.insert(DB_FLIGHTS_TSIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TDUAL, DB_NULL);
+        newData.insert(DB_FLIGHTS_TFI, DB_NULL);
         break;
     case 1://PICUS
-        newData.insert(DB_tPIC, DB_NULL);
-        newData.insert(DB_tPICUS, block_minutes);
-        newData.insert(DB_tSIC, DB_NULL);
-        newData.insert(DB_tDUAL, DB_NULL);
-        newData.insert(DB_tFI, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPICUS, block_minutes);
+        newData.insert(DB_FLIGHTS_TSIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TDUAL, DB_NULL);
+        newData.insert(DB_FLIGHTS_TFI, DB_NULL);
         break;
     case 2://Co-Pilot
-        newData.insert(DB_tPIC, DB_NULL);
-        newData.insert(DB_tPICUS, DB_NULL);
-        newData.insert(DB_tSIC, block_minutes);
-        newData.insert(DB_tDUAL, DB_NULL);
-        newData.insert(DB_tFI, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPICUS, DB_NULL);
+        newData.insert(DB_FLIGHTS_TSIC, block_minutes);
+        newData.insert(DB_FLIGHTS_TDUAL, DB_NULL);
+        newData.insert(DB_FLIGHTS_TFI, DB_NULL);
         break;
     case 3://Dual
-        newData.insert(DB_tPIC, DB_NULL);
-        newData.insert(DB_tPICUS, DB_NULL);
-        newData.insert(DB_tSIC, DB_NULL);
-        newData.insert(DB_tDUAL, block_minutes);
-        newData.insert(DB_tFI, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TPICUS, DB_NULL);
+        newData.insert(DB_FLIGHTS_TSIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TDUAL, block_minutes);
+        newData.insert(DB_FLIGHTS_TFI, DB_NULL);
         break;
     case 4://Instructor
-        newData.insert(DB_tPIC, block_minutes);
-        newData.insert(DB_tPICUS, DB_NULL);
-        newData.insert(DB_tSIC, DB_NULL);
-        newData.insert(DB_tDUAL, DB_NULL);
-        newData.insert(DB_tFI, block_minutes);
+        newData.insert(DB_FLIGHTS_TPIC, block_minutes);
+        newData.insert(DB_FLIGHTS_TPICUS, DB_NULL);
+        newData.insert(DB_FLIGHTS_TSIC, DB_NULL);
+        newData.insert(DB_FLIGHTS_TDUAL, DB_NULL);
+        newData.insert(DB_FLIGHTS_TFI, block_minutes);
     }
     // Pilot Flying
-    newData.insert(DB_pilotFlying, ui->PilotFlyingCheckBox->isChecked());
+    newData.insert(DB_FLIGHTS_PILOTFLYING, ui->PilotFlyingCheckBox->isChecked());
     // TO and LDG - again a bit explicit, but we  need to check for both night to day as well as day to night transitions.
     if (ui->TakeoffCheckBox->isChecked()) {
         if (night_minutes == 0) { // all day
-            newData.insert(DB_toDay, ui->TakeoffSpinBox->value());
-            newData.insert(DB_toNight, 0);
+            newData.insert(DB_FLIGHTS_TODAY, ui->TakeoffSpinBox->value());
+            newData.insert(DB_FLIGHTS_TONIGHT, 0);
         } else if (night_minutes == block_minutes) { // all night
-            newData.insert(DB_toDay, 0);
-            newData.insert(DB_toNight, ui->TakeoffSpinBox->value());
+            newData.insert(DB_FLIGHTS_TODAY, 0);
+            newData.insert(DB_FLIGHTS_TONIGHT, ui->TakeoffSpinBox->value());
         } else {
             if(ACalc::isNight(ui->deptLocLineEdit->text(), dept_date_time,  night_angle)) {
-                newData.insert(DB_toDay, 0);
-                newData.insert(DB_toNight, ui->TakeoffSpinBox->value());
+                newData.insert(DB_FLIGHTS_TODAY, 0);
+                newData.insert(DB_FLIGHTS_TONIGHT, ui->TakeoffSpinBox->value());
             } else {
-                newData.insert(DB_toDay, ui->TakeoffSpinBox->value());
-                newData.insert(DB_toNight, 0);
+                newData.insert(DB_FLIGHTS_TODAY, ui->TakeoffSpinBox->value());
+                newData.insert(DB_FLIGHTS_TONIGHT, 0);
             }
         }
     } else {
-        newData.insert(DB_toDay, 0);
-        newData.insert(DB_toNight, 0);
+        newData.insert(DB_FLIGHTS_TODAY, 0);
+        newData.insert(DB_FLIGHTS_TONIGHT, 0);
     }
 
     if (ui->LandingCheckBox->isChecked()) {
         if (night_minutes == 0) { // all day
-            newData.insert(DB_ldgDay, ui->LandingSpinBox->value());
-            newData.insert(DB_ldgNight, 0);
+            newData.insert(DB_FLIGHTS_LDGDAY, ui->LandingSpinBox->value());
+            newData.insert(DB_FLIGHTS_LDGNIGHT, 0);
         } else if (night_minutes == block_minutes) { // all night
-            newData.insert(DB_ldgDay, 0);
-            newData.insert(DB_ldgNight, ui->LandingSpinBox->value());
+            newData.insert(DB_FLIGHTS_LDGDAY, 0);
+            newData.insert(DB_FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
         } else { //check
             const auto dest_date = ui->doftLineEdit->text() + QStringLiteral("T") + tonb.toString(TIME_FORMAT);
             const auto dest_date_time = QDateTime::fromString(dest_date, QStringLiteral("yyyy-MM-ddThh:mm"));
             if (ACalc::isNight(ui->destLocLineEdit->text(), dest_date_time,  night_angle)) {
-                newData.insert(DB_ldgDay, 0);
-                newData.insert(DB_ldgNight, ui->LandingSpinBox->value());
+                newData.insert(DB_FLIGHTS_LDGDAY, 0);
+                newData.insert(DB_FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
             } else {
-                newData.insert(DB_ldgDay, ui->LandingSpinBox->value());
-                newData.insert(DB_ldgNight, 0);
+                newData.insert(DB_FLIGHTS_LDGDAY, ui->LandingSpinBox->value());
+                newData.insert(DB_FLIGHTS_LDGNIGHT, 0);
             }
         }
     } else {
-        newData.insert(DB_ldgDay, 0);
-        newData.insert(DB_ldgNight, 0);
+        newData.insert(DB_FLIGHTS_LDGDAY, 0);
+        newData.insert(DB_FLIGHTS_LDGNIGHT, 0);
     }
 
-    newData.insert(DB_autoland, ui->AutolandSpinBox->value());
-    newData.insert(DB_ApproachType, ui->ApproachComboBox->currentText());
-    newData.insert(DB_FlightNumber, ui->FlightNumberLineEdit->text());
-    newData.insert(DB_Remarks, ui->RemarksLineEdit->text());
+    newData.insert(DB_FLIGHTS_AUTOLAND, ui->AutolandSpinBox->value());
+    newData.insert(DB_FLIGHTS_APPROACHTYPE, ui->ApproachComboBox->currentText());
+    newData.insert(DB_FLIGHTS_FLIGHTNUMBER, ui->FlightNumberLineEdit->text());
+    newData.insert(DB_FLIGHTS_REMARKS, ui->RemarksLineEdit->text());
 
     DEB("New Flight Data: " << newData);
 
@@ -707,18 +707,18 @@ void NewFlightDialog::formFiller()
         }
     }
     // Approach Combo Box
-    const QString& app = flightEntry.getData().value(DB_ApproachType).toString();
+    const QString& app = flightEntry.getData().value(DB_FLIGHTS_APPROACHTYPE).toString();
     if(app != DB_NULL){
         ui->ApproachComboBox->setCurrentText(app);
     }
     // Task and Rules
-    qint8 PF = flightEntry.getData().value(DB_pilotFlying).toInt();
+    qint8 PF = flightEntry.getData().value(DB_FLIGHTS_PILOTFLYING).toInt();
     if (PF > 0) {
         ui->PilotFlyingCheckBox->setChecked(true);
     } else {
         ui->PilotMonitoringCheckBox->setChecked(true);
     }
-    qint8 FR = flightEntry.getData().value(DB_tIFR).toInt();
+    qint8 FR = flightEntry.getData().value(DB_FLIGHTS_TIFR).toInt();
     if (FR > 0) {
         ui->IfrCheckBox->setChecked(true);
     } else {
@@ -726,10 +726,10 @@ void NewFlightDialog::formFiller()
         ui->VfrCheckBox->setChecked(true);
     }
     // Take Off and Landing
-    qint8 TO = flightEntry.getData().value(DB_toDay).toInt()
-            + flightEntry.getData().value(DB_toNight).toInt();
-    qint8 LDG = flightEntry.getData().value(DB_ldgDay).toInt()
-            + flightEntry.getData().value(DB_ldgNight).toInt();
+    qint8 TO = flightEntry.getData().value(DB_FLIGHTS_TODAY).toInt()
+            + flightEntry.getData().value(DB_FLIGHTS_TONIGHT).toInt();
+    qint8 LDG = flightEntry.getData().value(DB_FLIGHTS_LDGDAY).toInt()
+            + flightEntry.getData().value(DB_FLIGHTS_LDGNIGHT).toInt();
     if(TO > 0) {
         ui->TakeoffCheckBox->setChecked(true);
         ui->TakeoffSpinBox->setValue(TO);
@@ -744,7 +744,7 @@ void NewFlightDialog::formFiller()
         ui->LandingCheckBox->setChecked(false);
         ui->LandingSpinBox->setValue(0);
     }
-    qint8 AL = flightEntry.getData().value(DB_autoland).toInt();
+    qint8 AL = flightEntry.getData().value(DB_FLIGHTS_AUTOLAND).toInt();
     if(AL > 0) {
         ui->AutolandCheckBox->setChecked(true);
         ui->AutolandSpinBox->setValue(AL);
@@ -1184,7 +1184,7 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinished()
         DEB("self recognized.");
         line_edit->setText(pilotsIdMap.key(1));
         auto pilot = aDB()->getPilotEntry(1);
-        ui->picCompanyLabel->setText(pilot.getData().value(DB_company).toString());
+        ui->picCompanyLabel->setText(pilot.getData().value(DB_TAILS_COMPANY).toString());
         onGoodInputReceived(line_edit);
         return;
     }
@@ -1192,7 +1192,7 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinished()
     if(pilotsIdMap.value(line_edit->text()) != 0) {
         DEB("Mapped: " << line_edit->text() << pilotsIdMap.value(line_edit->text()));
         auto pilot = aDB()->getPilotEntry(pilotsIdMap.value(line_edit->text()));
-        ui->picCompanyLabel->setText(pilot.getData().value(DB_company).toString());
+        ui->picCompanyLabel->setText(pilot.getData().value(DB_TAILS_COMPANY).toString());
         onGoodInputReceived(line_edit);
         return;
     }
