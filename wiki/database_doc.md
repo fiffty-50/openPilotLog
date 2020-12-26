@@ -88,7 +88,32 @@ The flight table holds all the data relevant to a flight. Every row in the table
 
 <details><summary>Optional fields</summary>
 <p>
-Work in progress
+
+| field   |      value      |  description |
+|---------|-----------------|--------------|
+| `tSPSE` | INTEGER | Time (minutes) single pilot single engine |
+| `tSPME` | INTEGER | Time (minutes) single pilot multi engine |
+| `tMP` | INTEGER | Time (minutes) single pilot single engine |
+| `tNIGHT` | INTEGER | Time (minutes) Night flying time |
+| `tIFR` | INTEGER | Time (minutes) flown under Instrument Flight Rules |
+| `tPIC` | INTEGER | Time (minutes) flown as Pilot-in-Command |
+| `tPICUS` | INTEGER | Time (minutes) flown as Pilot-in-Command under supervision |
+| `tSIC` | INTEGER | Time (minutes) flown as Second-in-Command (Co-Pilot) |
+| `tDUAL` | INTEGER | Time (minutes) flown as training received |
+| `tFI` | INTEGER | Time (minutes) flown as Flight Instructor |
+| `tSIM` | INTEGER | Time (minutes) of Simulator Training (currently not implemented) |
+| `pilotFlying` | INTEGER | Whether the user acted as Pilot Flying (`1`) or Pilot Monitoring (`0`) |
+| `toDay` | INTEGER | Number of take-offs during day time |
+| `toNight` | INTEGER | Number of take-offs during night time |
+| `ldgDay` | INTEGER | Number of landings during day time |
+| `ldgNight` | INTEGER | Number of landings during night time |
+| `autoland` | INTEGER | Number of autolands |
+| `secondPilot` | INTEGER | The second pilot of the flight. This is a [foreign key](https://sqlite.org/foreignkeys.html) referencing pilots.pilot_id |
+| `thirdPilot` | INTEGER | The third pilot of the flight. This is a [foreign key](https://sqlite.org/foreignkeys.html) referencing pilots.pilot_id |
+| `ApproachType` | INTEGER | The type of Approach flown |
+| `FlightNumber` | INTEGER | The flight number. The airline prefix can be set in the settings dialog |
+| `Remarks` | INTEGER | Remarks and endorsements |
+
 </p>
 </details>
 
@@ -159,27 +184,19 @@ The first entry in the pilot logbook is the logbook owner. This ensures he is ea
 <p>
 
 ```sql
-CREATE TABLE "tails" (
-     "tail_id"        INTEGER NOT NULL, 
-     "registration"   TEXT    NOT NULL, 
-     "company"        TEXT, 
-     "make"           TEXT, 
-     "model"          TEXT, 
-     "variant"        TEXT, 
-     "singlepilot"    INTEGER, 
-     "multipilot"     INTEGER, 
-     "singleengine"   INTEGER, 
-     "multiengine"    INTEGER, 
-     "unpowered"      INTEGER, 
-     "piston"         INTEGER, 
-     "turboprop"      INTEGER, 
-     "jet"            INTEGER, 
-     "light"          INTEGER, 
-     "medium"         INTEGER, 
-     "heavy"          INTEGER, 
-     "super"          INTEGER, 
-     PRIMARY KEY("tail_id" AUTOINCREMENT)
-     );
+CREATE TABLE tails ("
+            " tail_id        INTEGER NOT NULL,"
+            " registration   TEXT NOT NULL,"
+            " company        TEXT,"
+            " make           TEXT,"
+            " model          TEXT,"
+            " variant        TEXT,"
+            " multipilot     INTEGER,"
+            " multiengine    INTEGER,"
+            " engineType     INTEGER,"
+            " weightClass    INTEGER,"
+            " PRIMARY KEY(tail_id AUTOINCREMENT)"
+            ")";
 ```
 
 </p>
@@ -202,21 +219,37 @@ CREATE TABLE "tails" (
 | `make` | TEXT | The [manufacturer](https://en.wikipedia.org/wiki/List_of_aircraft_manufacturers_by_ICAO_name) of the aircraft | `Boeing`
 | `model` | TEXT | The model of the aircraft | `747`
 | `variant` | TEXT | The variant of the aircroft | `400`
-| `singlepilot` | INTEGER | Whether the aircraft is certified for single-pilot operations | `0`
-| `multipilot` | INTEGER | Whether the aircraft is certified for multi-pilot operations | `1`
-| `singleengine` | INTEGER | Whether the aircraft is single-engine | `0`
+| `multipilot` | INTEGER | Whether the aircraft is certified for multi-pilot operations. | `1`
 | `multiengine` | INTEGER | Whether the aircraft is multi-engine | `1`
-| `unpowered` | INTEGER | Engine Type | `0`
-| `piston` | INTEGER | Engine Type | `0`
-| `turboprop` | INTEGER | Engine Type | `0`
-| `jet` | INTEGER | Engine Type | `1`
-| `light` | INTEGER | [Weight Category](https://www.skybrary.aero/index.php/ICAO_Wake_Turbulence_Category) | `0`
-| `medium` | INTEGER | Weight Category | `0`
-| `heavy` | INTEGER | Weight Category | `1`
-| `super` | INTEGER | Weight Category | `0`
+| `engineType` | INTEGER | Engine Type, see below | `3`
+| `weightClass` | INTEGER | [Weight Category](https://www.skybrary.aero/index.php/ICAO_Wake_Turbulence_Category), see below | `2`
+
+Sqlite does not have a boolean data type, but 'multiengine' and 'multipilot' could be seen as such:
+
+```
+multiengine = 0 == singleengine = 1
+multipilot  = 0 == singlepilot = 1
+```
+
+engineType is categorized as:
+```
+0 = unpowered
+1 = piston Engine
+2 = Turboprop
+3 = Jet
+```
+weightClass is categorized as:
+```
+0 = light
+1 = medium
+2 = heavy
+3 = super
+```
 
 </p>
 </details>
+
+### Description
 
 The tails table holds the aircraft the user has flown and is associated with the flights table via its primary key.
 
@@ -234,15 +267,60 @@ An <b>aircraft</b> is a template that holds information that tail 'instances' ca
 |`tails`|Individual aircraft|
 |`aircraft`|Template for aircraft type|
 
-> The <b>tails</b> 'D-LMAO' and 'LN-NEN' are two different aircraft, however they are both the same type of <b>aircraft</b> 'Boeing 737-800'.
+> The <b>tails</b> 'D-ABAD' and 'LN-NEN' are two different aircraft, however they are both the same type of <b>aircraft</b> 'Boeing 737-800'.
 
 ## airports <a name="airports"></a>
+
+<details><summary>Create Statement</summary>
+<p>
+
+```sql
+CREATE TABLE airports
+            airport_id     INTEGER NOT NULL,
+            icao           TEXT NOT NULL,
+            iata           TEXT,
+            name           TEXT,
+            lat            REAL,
+            long           REAL,
+            country        TEXT,
+            alt            INTEGER,
+            utcoffset      INTEGER,
+            tzolson        TEXT,
+            PRIMARY KEY(airport_id AUTOINCREMENT)
+            );
+```
+
+</p>
+</details>
 
 The `airports` table holds information about airports. These include, among others, ICAO and IATA codes, common name, coordinates of their location and timezone data.
 
 The user is in general not expected to interface with the airports table, but some limited access may be implemented at a later date, for example to change airport names or codes as they change over time.
 
 ## aircraft <a name="aircraft"></a>
+
+<details><summary>Create Statement</summary>
+<p>
+
+```sql
+CREATE TABLE aircraft (
+            aircraft_id   INTEGER NOT NULL,
+            make          TEXT,
+            model         TEXT,
+            variant       TEXT,
+            name          TEXT,
+            iata          TEXT,
+            icao          TEXT,
+            multipilot    INTEGER,
+            multiengine   INTEGER,
+            engineType    INTEGER,
+            weightClass   INTEGER,
+            PRIMARY KEY(aircraft_id AUTOINCREMENT)
+            );
+```
+
+</p>
+</details>
 
 The `aircraft` table holds information about different aircraft types. This includes data like make, model, variant, engine number and type and operation. This data is used to facilitate creation of an entry in the tail database and shares most of its fields with the `tails` table.
 
