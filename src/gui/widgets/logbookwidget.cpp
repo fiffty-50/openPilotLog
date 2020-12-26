@@ -228,7 +228,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             for (auto& flight : flights_list) {
                 DEB("Deleting flight: " << flight.summary());
                 if(!aDB()->remove(flight)) {
-                    messageBox->setText(" Error "); // [F]: To Do: error info
+                    messageBox->setText(aDB()->lastError.text());
                     messageBox->exec();
                     return;
                 }
@@ -255,7 +255,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             }
             if (!aDB()->removeMany(selected_flights)) {
 
-                messageBox->setText(" Error "); // [F]: To Do: error info
+                messageBox->setText(aDB()->lastError.text()); // [F]: To Do: error info
                 messageBox->exec();
                 return;
             }

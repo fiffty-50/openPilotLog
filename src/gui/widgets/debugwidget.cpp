@@ -67,7 +67,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     if (oldDatabase.exists()) {
         auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
         DEB("Backing up old database as: " << "logbook-backup-" + dateString);
-        if (!oldDatabase.rename("data/logbook-backup-" + dateString)) {
+        if (!oldDatabase.rename("data/logbook-backup-" + dateString + ".db")) {
             DEB("Warning: Creating backup of old database has failed.");
         }
     }

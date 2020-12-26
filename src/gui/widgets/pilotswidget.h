@@ -44,7 +44,7 @@ private slots:
     void tableView_headerClicked(int);
     void on_newPilotButton_clicked();
     void on_deletePilotButton_clicked();
-    void on_deleteUnsuccessful();
+    void onDeleteUnsuccessful();
     void pilot_editing_finished();
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 

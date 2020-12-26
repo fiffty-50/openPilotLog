@@ -35,29 +35,56 @@
 
 namespace experimental {
 
+
+// [G]: Suspicious documentation -,O
+/*!
+ * \brief The DBTarget enum provides the items for which QCompleter
+ * completion lists are provided from the database.
+ */
+enum class ADatabaseTarget
+{
+    airport_identifier_icao,
+    airport_identifier_iata,
+    airport_identifier_all,
+    airport_names,
+    pilots,
+    registrations,
+    aircraft,
+    companies,
+    tails
+};
+
+// [G]: This is how we should handle custom "events" in the program.
+// In this case a custom error doesnt need to be built from scratch.
+// Find the type of error you want and extend it with a few tweaks.
+/*!
+ * \brief Custom Database Error derived from QSqlError.
+ * Extends text() adding "Database Error: " before the text.
+ */
+class ADatabaseError : public QSqlError {
+public:
+  ADatabaseError() = default;
+  ADatabaseError(QString msg);
+  QString text() const;
+};
+
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class ADataBase : public QObject {
+class ADatabase : public QObject {
     Q_OBJECT
 private:
     TableNames tableNames;
     TableColumns tableColumns;
-    static ADataBase* instance;
-    ADataBase() = default;
+    static ADatabase* instance;
+    ADatabase() = default;
 public:
     // Ensure DB is not copiable or assignable
-    ADataBase(const ADataBase&) = delete;
-    void operator=(const ADataBase&) = delete;
-    static ADataBase* getInstance();
-    QString lastError;
-
-    /*!
-     * \brief The CompleterTarget enum provides the items for which QCompleter
-     * completion lists are provided from the database.
-     */
-    enum DatabaseTarget {airport_identifier_icao, airport_identifier_iata, airport_identifier_all, airport_names, pilots, registrations, aircraft, companies, tails};
+    ADatabase(const ADatabase&) = delete;
+    void operator=(const ADatabase&) = delete;
+    static ADatabase* getInstance();
+    ADatabaseError lastError;
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -168,18 +195,25 @@ public:
     /*!
      * \brief getCompletionList returns a QStringList of values for a
      * QCompleter based on database values
-     * \return
      */
-    const QStringList getCompletionList(DatabaseTarget);
+    const QStringList getCompletionList(ADatabaseTarget);
 
     /*!
      * \brief returns a QMap<QString, int> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
-     * \return
      */
-    const QMap<QString, int> getIdMap(DatabaseTarget);
+    const QMap<QString, int> getIdMap(ADatabaseTarget);
 
-    int getLastEntry(DatabaseTarget);
+    /*!
+     * \brief returns the ROWID for the newest entry in the respective database.
+     */
+    int getLastEntry(ADatabaseTarget);
+
+    /*!
+     * \brief returns a list of ROWID's in the flights table for which foreign key constraints
+     * exist.
+     */
+    QList<int> getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target);
 
 signals:
     /*!
@@ -198,7 +232,7 @@ signals:
  * Write this:
  * aDB()->commit(...)
  */
-ADataBase* aDB();
+ADatabase* aDB();
 
 }  // namespace experimental
 

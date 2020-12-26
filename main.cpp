@@ -18,11 +18,13 @@
 #include "mainwindow.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
+#include "src/experimental/adatabase.h"
+#include "src/classes/asettings.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
-#include "src/experimental/adatabase.h"
+
 
 const auto DATA_DIR = QLatin1String("data");
 /*!
@@ -38,6 +40,10 @@ bool setup()
     QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
     QFileInfo check_file(settingspath,settingsfile);
 
+    QSettings settings;
+    settings.setValue("setup/touch", true);
+    settings.sync();
+
     return check_file.exists() && check_file.isFile();
 };
 
@@ -51,14 +57,19 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;
 
-//    Db::connect();
     experimental::aDB()->connect();
 
     QApplication openPilotLog(argc, argv);
     if(!setup()){
+        DEB("error creating required directories");
+        return 0;
+    }
+
+    if (!ASettings::read("setup/setup_complete").toBool()) {
         FirstRunDialog dialog;
         dialog.exec();
     }
+
 
 
     //Theming

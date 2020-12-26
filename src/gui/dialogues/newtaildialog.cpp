@@ -81,8 +81,8 @@ NewTailDialog::~NewTailDialog()
 void NewTailDialog::setupCompleter()
 {
     using namespace experimental;
-    idMap = aDB()->getIdMap(ADataBase::aircraft);
-    aircraftList = aDB()->getCompletionList(experimental::ADataBase::aircraft);
+    idMap = aDB()->getIdMap(ADatabaseTarget::aircraft);
+    aircraftList = aDB()->getCompletionList(ADatabaseTarget::aircraft);
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -215,12 +215,13 @@ void NewTailDialog::submitForm()
     if (!aDB()->commit(entry)) {
         auto message_box = QMessageBox(this);
         message_box.setText("The following error has ocurred:\n\n"
-                            + aDB()->lastError
+                            + aDB()->lastError.text()
                             + "\n\nThe entry has not been saved.");
         message_box.exec();
         return;
     } else {
-        ACalc::updateAutoTimes(entry.getPosition().second);
+        if (entry.getPosition().second != 0)
+            ACalc::updateAutoTimes(entry.getPosition().second);
         QDialog::accept();
     }
 }

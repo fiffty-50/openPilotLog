@@ -5,7 +5,11 @@
 #include <QButtonGroup>
 #include <QMessageBox>
 #include "src/classes/asettings.h"
-#include "src/classes/pilot.h"
+#include "src/testing/adebug.h"
+#include "src/experimental/apilotentry.h"
+#include "src/experimental/adatabase.h"
+#include "src/classes/adownload.h"
+#include "src/database/adatabasesetup.h"
 
 namespace Ui {
 class FirstRunDialog;
@@ -28,6 +32,8 @@ private slots:
     void on_themeGroup_toggled(int id);
 
     void on_finishButton_clicked();
+
+    bool finishSetup();
 
 private:
     Ui::FirstRunDialog *ui;

@@ -150,41 +150,43 @@ void PilotsWidget::on_deletePilotButton_clicked()
 
     } else if (selectedPilots.length() == 1) {
         auto entry = aDB()->getPilotEntry(selectedPilots.first());
-        aDB()->remove(entry);
+        auto message_box = QMessageBox(this);
+        QString message = "You are deleting the following pilot:<br><br><b><tt>";
+        message.append(entry.name());
+        message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
+        message_box.setText(message);
+        message_box.exec();
+        if(!aDB()->remove(entry))
+            onDeleteUnsuccessful();
         }
     model->select();
 }
 
-void PilotsWidget::on_deleteUnsuccessful()
+void PilotsWidget::onDeleteUnsuccessful()
 {
-    /// [F] to do: migrate to new DB class
-    ///
-    /// This query should normally only fail because of a foreign key constraint,
-    /// i.e. a flight exists with this pilot. So we need to make the user aware
-    /// of this and need to display some flight information regarding the flight
-    /// causing the constraint.
-    ///
-    /// The information that needs to be displayed could be extracted from
-    /// a FlightEntry.
-    QVector<QString> columns = {"doft","dept","dest"};
-    QVector<QString> details = Db::multiSelect(columns, "flights", "pic",
-                                               QString::number(selectedPilots.first()), Db::exactMatch);
-    auto mb = QMessageBox(this);
-    QString message = "\nUnable to delete.\n\n";
-    if(!details.isEmpty()){
-        message += "This is most likely the case because a flight exists with the Pilot "
-                   "you are trying to delete. You have to change or remove this flight "
-                   "before being able to remove this pilot from the database.\n\n"
-                   "The following flight(s) with this pilot have been found:\n\n";
-        for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
-            message += details[i] + QLatin1Char(' ')
-                    + details[i+1] + QLatin1Char(' ')
-                    + details[i+2] + QLatin1String("\n");
+    /// [F]: To do: Some logic to display a warning if too many entries exists, so that
+    /// the messagebox doesn't grow too tall.
+    QList<int> foreign_key_constraints = aDB()->getForeignKeyConstraints(selectedPilots.first(), ADatabaseTarget::pilots);
+    QList<AFlightEntry> constrained_flights;
+    for (const auto &row_id : foreign_key_constraints) {
+        constrained_flights.append(aDB()->getFlightEntry(row_id));
+    }
+
+    QString message = "<br>Unable to delete.<br><br>";
+    if(!constrained_flights.isEmpty()){
+        message.append(QStringLiteral("This is most likely the case because a flight exists with the Pilot "
+                   "you are trying to delete as PIC.<br>"
+                   "The following flight(s) with this pilot have been found:<br><br><br><b><tt>"));
+        for (auto &flight : constrained_flights) {
+            message.append(flight.summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
     }
-    mb.setText(message);
-    mb.setIcon(QMessageBox::Critical);
-    mb.exec();
+    message.append(QStringLiteral("</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+                                  "before removing this pilot from the database.<br><br>"));
+    QMessageBox message_box(this);
+    message_box.setText(message);
+    message_box.setIcon(QMessageBox::Critical);
+    message_box.exec();
 }
 
 void PilotsWidget::pilot_editing_finished()

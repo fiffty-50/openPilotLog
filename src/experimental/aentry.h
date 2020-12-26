@@ -31,6 +31,10 @@ namespace experimental {
 /// [G]: Define what data is public and what not. For objects such as
 /// DataPosition which are consumable its no biggy. Are entries the same?
 /// If so we could avoid getters and setters
+/// [F]: In the way we are using the entries atm, we do access and edit the
+/// TableData quite frequently. Maybe the data could be public, but the
+/// position private? Except for creating a new entry, the position should
+/// never really be changed.
 /*!
  * \brief The Entry class encapsulates table metadata(table name, row id)
  *  and data for new and existing entries in the database to operate on.
@@ -38,6 +42,7 @@ namespace experimental {
 class AEntry {
 protected:
     DataPosition position;
+public:
     TableData tableData;
 public:
     AEntry() = delete; // Demand specificity from default constructor

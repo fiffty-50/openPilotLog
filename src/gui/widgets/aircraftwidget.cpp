@@ -22,6 +22,8 @@
 #define DEB(expr) \
     qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
 
+using namespace experimental;
+
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AircraftWidget)
@@ -81,51 +83,63 @@ void AircraftWidget::setupModelAndView()
  */
 void AircraftWidget::on_deleteButton_clicked()
 {
-    if (selectedTails.length() > 0) {
-        for(const auto& selectedTail : selectedTails){
-            auto ac = Aircraft(selectedTail);
-            auto& warningMsg = "Deleting Aircraft with registration:<br><center><b>"
-                    + ac.data.value("registration")
-                    + "<br></center></b>Do you want to proceed?";
-            QMessageBox confirm;
-            confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            confirm.setDefaultButton(QMessageBox::No);
-            confirm.setIcon(QMessageBox::Question);
-            confirm.setWindowTitle("Delete Aircraft");
-            confirm.setText(warningMsg);
-            int reply = confirm.exec();
-            if(reply == QMessageBox::Yes) {
-                if(!ac.remove()) {
-                    QVector<QString> columns = {"doft","dept","dest"};
-                    QVector<QString> details = Db::multiSelect(columns, "flights", "acft",
-                                                               QString::number(selectedTail), Db::exactMatch);
-                    auto mb = QMessageBox(this);
-                    QString message = "\nUnable to delete. The following error has ocurred:\n\n";
-                    if(!details.isEmpty()){
-                        message += ac.error + QLatin1String("\n\n");
-                        message += "This is most likely the case because a flight exists with the aircaft "
-                                   "you are trying to delete. In order to maintain database integrity, you have to\n"
-                                   "change or remove this flight before being able to remove this aircraft.\n\n"
-                                   "The following flight(s) with this tail have been found:\n\n";
-                        auto space = QLatin1Char(' ');
-                        for(int i = 0; i <= 30 && i <=details.length()-3; i+=3){
-                            message += details[i] + space
-                                     + details[i+1] + space
-                                     + details[i+2] + QLatin1String("\n");
-                        }
-                    }
-                    mb.setText(message);
-                    mb.setIcon(QMessageBox::Critical);
-                    mb.show();
-                }
-            }
-        }
-        model->select();
-    } else {
+    if (selectedTails.length() == 0) {
         auto mb = QMessageBox(this);
-        mb.setText("No aircraft selected.");
-        mb.show();
+        mb.setText(QStringLiteral("No Aircraft selected."));
+        mb.exec();
+
+    } else if (selectedTails.length() > 1) {
+        auto mb = QMessageBox(this);
+        mb.setText(QStringLiteral("Deleting multiple entries is currently not supported"));
+        mb.exec();
+        /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
+        /// I am not sure if enabling this functionality for this widget is a good idea.
+        /// On the one hand, deleting many entries could be useful in a scenario where
+        /// for example, the user has changed airlines and does not want to have his 'old'
+        /// colleagues polluting his logbook anymore.
+        /// On the other hand we could run into issues with foreign key constraints on the
+        /// flights table (see on_delete_unsuccessful) below.
+        /// I think batch-editing should be implemented at some point, but batch-deleting should not.
+
+    } else if (selectedTails.length() == 1) {
+        auto entry = aDB()->getTailEntry(selectedTails.first());
+        auto message_box = QMessageBox(this);
+        QString message = "You are deleting the following aircraft:<br><br><b><tt>";
+        message.append(entry.registration() + QStringLiteral(" - (") + entry.type() + ')');
+        message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
+        message_box.setText(message);
+        message_box.exec();
+        if(!aDB()->remove(entry))
+            onDeleteUnsuccessful();
+        }
+    model->select();
+}
+
+void AircraftWidget::onDeleteUnsuccessful()
+{
+    /// [F]: To do: Some logic to display a warning if too many entries exists, so that
+    /// the messagebox doesn't grow too tall.
+    QList<int> foreign_key_constraints = aDB()->getForeignKeyConstraints(selectedTails.first(), ADatabaseTarget::tails);
+    QList<AFlightEntry> constrained_flights;
+    for (const auto &row_id : foreign_key_constraints) {
+        constrained_flights.append(aDB()->getFlightEntry(row_id));
     }
+
+    QString message = "<br>Unable to delete.<br><br>";
+    if(!constrained_flights.isEmpty()){
+        message.append(QStringLiteral("This is most likely the case because a flight exists with the aircraft "
+                   "you are trying to delete.<br>"
+                   "The following flight(s) with this aircraft have been found:<br><br><br><b><tt>"));
+        for (auto &flight : constrained_flights) {
+            message.append(flight.summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+        }
+    }
+    message.append(QStringLiteral("</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+                                  "before removing this aircraft from the database.<br><br>"));
+    QMessageBox message_box(this);
+    message_box.setText(message);
+    message_box.setIcon(QMessageBox::Critical);
+    message_box.exec();
 }
 
 void AircraftWidget::on_newAircraftButton_clicked()
