@@ -195,18 +195,25 @@ public:
     /*!
      * \brief getCompletionList returns a QStringList of values for a
      * QCompleter based on database values
-     * \return
      */
     const QStringList getCompletionList(ADatabaseTarget);
 
     /*!
      * \brief returns a QMap<QString, int> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
-     * \return
      */
     const QMap<QString, int> getIdMap(ADatabaseTarget);
 
+    /*!
+     * \brief returns the ROWID for the newest entry in the respective database.
+     */
     int getLastEntry(ADatabaseTarget);
+
+    /*!
+     * \brief returns a list of ROWID's in the flights table for which foreign key constraints
+     * exist.
+     */
+    QList<int> getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target);
 
 signals:
     /*!

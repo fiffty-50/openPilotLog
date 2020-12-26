@@ -24,11 +24,20 @@ APilotEntry::APilotEntry()
 {}
 
 APilotEntry::APilotEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QLatin1String("pilots"), row_id))
+    : AEntry::AEntry(DataPosition(QStringLiteral("pilots"), row_id))
 {}
 
 APilotEntry::APilotEntry(TableData table_data)
     : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
 {}
+
+const QString APilotEntry::name()
+{
+    if (tableData.isEmpty())
+        return QLatin1String("");
+
+    return tableData.value(QStringLiteral("piclastname")).toString() + ','
+           +tableData.value(QStringLiteral("picfirstname")).toString().left(1) + '.';
+}
 
 } // namespace experimental

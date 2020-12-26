@@ -30,6 +30,8 @@ public:
     APilotEntry& operator=(const APilotEntry& pe) = default;
     APilotEntry(int row_id);
     APilotEntry(TableData table_data);
+
+    const QString name();
 };
 
 } // namespace experimental

@@ -103,7 +103,7 @@ bool ADatabase::remove(AEntry entry)
     }
 
     QString statement = "DELETE FROM " + entry.getPosition().tableName +
-            " WHERE ROWID?";
+            " WHERE ROWID=?";
 
     QSqlQuery query;
     query.prepare(statement);
@@ -138,9 +138,10 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             errorCount++;
         }
         QString statement = "DELETE FROM " + data_position.first +
-                " WHERE ROWID=" + QString::number(data_position.second);
+                " WHERE ROWID=?";
 
         query.prepare(statement);
+        query.addBindValue(data_position.second);
         query.exec();
 
         if (!(query.lastError().type() == QSqlError::NoError))
@@ -521,6 +522,43 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
         DEB("No entry found.");
         return 0;
     }
+}
+
+QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target)
+{
+    QString statement = "SELECT ROWID FROM flights WHERE ";
+
+    switch (target) {
+    case ADatabaseTarget::pilots:
+        statement.append("pic=?");
+        break;
+    case ADatabaseTarget::tails:
+        statement.append("acft=?");
+        break;
+    default:
+        DEB("Not a valid target for this function.");
+        return QList<int>();
+        break;
+    }
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(foreign_row_id);
+    query.exec();
+
+    if (!query.isActive()) {
+        lastError = query.lastError().text();
+        DEB("Error");
+        DEB(statement);
+        DEB(query.lastError().text());
+        return QList<int>();
+    }
+
+    QList<int> row_ids;
+    while (query.next()) {
+        row_ids.append(query.value(0).toInt());
+    }
+    return row_ids;
 }
 
 QVector<QString> ADatabase::customQuery(QString statement, int return_values)
