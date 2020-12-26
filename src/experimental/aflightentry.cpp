@@ -8,7 +8,7 @@ AFlightEntry::AFlightEntry()
 {}
 
 AFlightEntry::AFlightEntry(int row_id)
-    : AEntry::AEntry(DataPosition("flights", row_id))
+    : AEntry::AEntry(DataPosition(QStringLiteral("flights"), row_id))
 {}
 
 AFlightEntry::AFlightEntry(TableData table_data)
@@ -66,7 +66,7 @@ const QString AFlightEntry::getPilotName(pilot pilot_)
     if(row_id == QString())
         return row_id;
 
-    QString statement = "SELECT piclastname||\", \"||picfirstname "
+    QString statement = "SELECT lastname||', '||firstname "
                         "FROM pilots "
                         "WHERE ROWID =" + row_id;
 

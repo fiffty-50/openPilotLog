@@ -11,7 +11,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
-    ui->piclastnameLineEdit->setFocus();
+    ui->lastnameLineEdit->setFocus();
     ui->nightComboBox->setCurrentIndex(1);
 
     auto *themeGroup = new QButtonGroup;
@@ -51,13 +51,13 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
 
 void FirstRunDialog::on_finishButton_clicked()
 {
-    if(ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()){
+    if(ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()){
         auto mb = new QMessageBox(this);
         mb->setText("You have to enter a valid first and last name for the logbook.");
         mb->show();
     } else {
-        ASettings::write("userdata/piclastname", ui->piclastnameLineEdit->text());
-        ASettings::write("userdata/picfirstname", ui->picfirstnameLineEdit->text());
+        ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
+        ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
         ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
         ASettings::write("userdata/phone", ui->phoneLineEdit->text());
         ASettings::write("userdata/email", ui->emailLineEdit->text());
@@ -89,8 +89,8 @@ void FirstRunDialog::on_finishButton_clicked()
         default:
             break;
         }
-        data.insert("piclastname", ui->piclastnameLineEdit->text());
-        data.insert("picfirstname", ui->picfirstnameLineEdit->text());
+        data.insert("lastname", ui->lastnameLineEdit->text());
+        data.insert("firstname", ui->firstnameLineEdit->text());
         data.insert("alias", "self");
         data.insert("employeeid", ui->employeeidLineEdit->text());
         data.insert("phone", ui->phoneLineEdit->text());

@@ -36,9 +36,9 @@
 
 static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-     "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     "firstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-     "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     "lastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
      "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
@@ -70,7 +70,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     setup();
 
     pilotEntry = APilotEntry();
-    ui->piclastnameLineEdit->setFocus();
+    ui->lastnameLineEdit->setFocus();
 }
 
 NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
@@ -83,7 +83,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     pilotEntry = aDB()->getPilotEntry(rowId);
     DEB("Pilot Entry position: " << pilotEntry.getPosition());
     formFiller();
-    ui->piclastnameLineEdit->setFocus();
+    ui->lastnameLineEdit->setFocus();
 }
 
 NewPilotDialog::~NewPilotDialog()
@@ -116,7 +116,7 @@ void NewPilotDialog::setup()
 
 void NewPilotDialog::on_buttonBox_accepted()
 {
-    if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
+    if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
         auto mb = QMessageBox(this);
         mb.setText("Last Name and First Name are required.");
         mb.show();
