@@ -1,0 +1,177 @@
+.TH "experimental::ADatabase" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+experimental::ADatabase \- The DB class encapsulates the SQL database by providing fast access to hot database data\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <adatabase\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBdataBaseUpdated\fP ()"
+.br
+.RI "updated is emitted whenever the database contents have been updated\&. This can be either a commit, update or remove\&. This signal should be used to trigger an update to the models of the views displaying database contents in the user interface so that a user is always presented with up-to-date information\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBADatabase\fP (const \fBADatabase\fP &)=delete"
+.br
+.ti -1c
+.RI "void \fBoperator=\fP (const \fBADatabase\fP &)=delete"
+.br
+.ti -1c
+.RI "bool \fBconnect\fP ()"
+.br
+.RI "Connect to the database and populate database information\&. "
+.ti -1c
+.RI "void \fBdisconnect\fP ()"
+.br
+.RI "closes the database connection\&. "
+.ti -1c
+.RI "QVector< QString > \fBcustomQuery\fP (QString statement, int return_values)"
+.br
+.RI "Can be used to send a complex query to the database\&. "
+.ti -1c
+.RI "bool \fBexists\fP (\fBAEntry\fP entry)"
+.br
+.RI "Checks if an entry exists in the database, based on position data\&. "
+.ti -1c
+.RI "bool \fBexists\fP (\fBDataPosition\fP data_position)"
+.br
+.ti -1c
+.RI "bool \fBcommit\fP (\fBAEntry\fP entry)"
+.br
+.RI "commits an entry to the database, calls either insert or update, based on position data "
+.ti -1c
+.RI "bool \fBinsert\fP (\fBAEntry\fP new_entry)"
+.br
+.RI "Create new entry in the databse based on \fBUserInput\fP\&. "
+.ti -1c
+.RI "bool \fBupdate\fP (\fBAEntry\fP updated_entry)"
+.br
+.RI "Updates entry in database from existing entry tweaked by the user\&. "
+.ti -1c
+.RI "bool \fBremove\fP (\fBAEntry\fP entry)"
+.br
+.RI "deletes an entry from the database\&. "
+.ti -1c
+.RI "bool \fBremoveMany\fP (QList< \fBDataPosition\fP >)"
+.br
+.RI "deletes a list of entries from the database\&. Optimised for speed when deleting many entries\&. "
+.ti -1c
+.RI "TableData \fBgetEntryData\fP (\fBDataPosition\fP data_position)"
+.br
+.RI "retreive entry data from the database to create an entry object "
+.ti -1c
+.RI "\fBAEntry\fP \fBgetEntry\fP (\fBDataPosition\fP data_position)"
+.br
+.RI "retreive an Entry from the database\&. "
+.ti -1c
+.RI "\fBAPilotEntry\fP \fBgetPilotEntry\fP (RowId row_id)"
+.br
+.RI "retreives a PilotEntry from the database\&. "
+.ti -1c
+.RI "\fBATailEntry\fP \fBgetTailEntry\fP (RowId row_id)"
+.br
+.RI "retreives a TailEntry from the database\&. "
+.ti -1c
+.RI "\fBAAircraftEntry\fP \fBgetAircraftEntry\fP (RowId row_id)"
+.br
+.RI "retreives a TailEntry from the database\&. "
+.ti -1c
+.RI "\fBAFlightEntry\fP \fBgetFlightEntry\fP (RowId row_id)"
+.br
+.RI "retreives a flight entry from the database\&. "
+.ti -1c
+.RI "const QStringList \fBgetCompletionList\fP (ADatabaseTarget)"
+.br
+.RI "getCompletionList returns a QStringList of values for a QCompleter based on database values "
+.ti -1c
+.RI "const QMap< QString, int > \fBgetIdMap\fP (ADatabaseTarget)"
+.br
+.RI "returns a QMap<QString, int> of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
+.ti -1c
+.RI "int \fBgetLastEntry\fP (ADatabaseTarget)"
+.br
+.RI "returns the ROWID for the newest entry in the respective database\&. "
+.ti -1c
+.RI "QList< int > \fBgetForeignKeyConstraints\fP (int foreign_row_id, ADatabaseTarget target)"
+.br
+.RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBADatabase\fP * \fBgetInstance\fP ()"
+.br
+.ti -1c
+.RI "static QSqlDatabase \fBdatabase\fP ()"
+.br
+.RI "Can be used to access the database connection\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBADatabaseError\fP \fBlastError\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The DB class encapsulates the SQL database by providing fast access to hot database data\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "QVector< QString > experimental::ADatabase::customQuery (QString statement, int return_values)"
+
+.PP
+Can be used to send a complex query to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIquery\fP - the full sql query statement 
+.br
+\fIreturnValues\fP - the number of return values 
+.RE
+.PP
+
+.SS "QSqlDatabase experimental::ADatabase::database ()\fC [static]\fP"
+
+.PP
+Can be used to access the database connection\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The QSqlDatabase object pertaining to the connection\&. 
+.RE
+.PP
+
+.SS "\fBAAircraftEntry\fP experimental::ADatabase::getAircraftEntry (RowId row_id)"
+
+.PP
+retreives a TailEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAAircraftEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to an aircraft entry with only the RowId required as input\&. 
+.SS "\fBAFlightEntry\fP experimental::ADatabase::getFlightEntry (RowId row_id)"
+
+.PP
+retreives a flight entry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAFlightEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to a flight entry with only the RowId required as input\&. 
+.SS "\fBAPilotEntry\fP experimental::ADatabase::getPilotEntry (RowId row_id)"
+
+.PP
+retreives a PilotEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a PilotEntry instead of an Entry\&. It allows for easy access to a pilot entry with only the RowId required as input\&. 
+.SS "\fBATailEntry\fP experimental::ADatabase::getTailEntry (RowId row_id)"
+
+.PP
+retreives a TailEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a TailEntry instead of an Entry\&. It allows for easy access to a tail entry with only the RowId required as input\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

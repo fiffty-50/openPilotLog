@@ -1,0 +1,30 @@
+.TH "experimental::ADatabaseError" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+experimental::ADatabaseError \- Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <adatabase\&.h>\fP
+.PP
+Inherits QSqlError\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBADatabaseError\fP (QString msg)"
+.br
+.ti -1c
+.RI "QString \fBtext\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

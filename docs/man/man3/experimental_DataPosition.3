@@ -1,0 +1,42 @@
+.TH "experimental::DataPosition" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+experimental::DataPosition
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <decl\&.h>\fP
+.PP
+Inherits QPair< TableName, RowId >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPosition\fP (TableName table_name, RowId row_id)"
+.br
+.ti -1c
+.RI "\fBDataPosition\fP (const \fBDataPosition\fP &other)=default"
+.br
+.ti -1c
+.RI "\fBDataPosition\fP & \fBoperator=\fP (const \fBDataPosition\fP &other)=default"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "TableName \fBtableName\fP"
+.br
+.ti -1c
+.RI "RowId \fBrowId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+[G]: Needs some work\&. Inheriting from QPair may be helpful but may also be overkill\&. Lets determine the specific uses of \fBDataPosition\fP and provide our own interface i would say\&. [F]: Good idea! Implementing something similar to first and second methods of QPair would be useful to carry over, or some other way of quickly and unambiguously accessing the elements\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

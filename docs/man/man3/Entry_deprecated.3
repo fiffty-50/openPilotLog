@@ -1,0 +1,67 @@
+.TH "Entry_deprecated" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Entry_deprecated \- The Entry class is the base class for database entries\&. It can be seen as a row in a table within the database\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <entry_deprecated\&.h>\fP
+.PP
+Inherited by \fBAircraft\fP, \fBFlight\fP, and \fBPilot\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBEntry_deprecated\fP (QString table, int row)"
+.br
+.ti -1c
+.RI "\fBEntry_deprecated\fP (QString table, QMap< QString, QString > newData)"
+.br
+.ti -1c
+.RI "void \fBsetData\fP (QMap< QString, QString > &value)"
+.br
+.ti -1c
+.RI "bool \fBcommit\fP ()"
+.br
+.ti -1c
+.RI "bool \fBremove\fP ()"
+.br
+.ti -1c
+.RI "bool \fBexists\fP ()"
+.br
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.ti -1c
+.RI "QString \fBdebug\fP ()"
+.br
+.ti -1c
+.RI "\fBoperator QString\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QPair< QString, int > \fBposition\fP = QPair<QString, int>()"
+.br
+.ti -1c
+.RI "QVector< QString > \fBcolumns\fP = QVector<QString>()"
+.br
+.ti -1c
+.RI "QMap< QString, QString > \fBdata\fP = QMap<QString, QString>()"
+.br
+.ti -1c
+.RI "QString \fBerror\fP = QString()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The Entry class is the base class for database entries\&. It can be seen as a row in a table within the database\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

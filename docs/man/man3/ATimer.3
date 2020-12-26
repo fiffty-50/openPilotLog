@@ -1,0 +1,35 @@
+.TH "ATimer" 3 "Sat Dec 26 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ATimer \- The \fBATimer\fP class provides an easy to use performance timer\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atimer\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBATimer\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "long \fBtimeNow\fP ()"
+.br
+.RI "timeNow takes an intermediate timing and returns miliseconds elapsed\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBATimer\fP class provides an easy to use performance timer\&. 
+
+It automatically stops when going out of scope and prints the elapsed time to the console\&. Intermediate timings can be manually obtained with \fBtimeNow()\fP\&.
+.PP
+It can be given a QObject as a parent to time its lifetime or can be used without parent in any context\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.
