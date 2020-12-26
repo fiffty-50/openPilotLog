@@ -1,4 +1,4 @@
-pilot_id,picfirstname,piclastname,alias,company,employeeid,phone,email
+pilot_id,firstname,lastname,alias,company,employeeid,phone,email
 1,Dave,Bowman,self,NASA,HAL9000,+12 345 6789,dave@nasa.com
 3,Jens,Lehmann,,PanAm,,,
 4,Hans,Meise,Hansi,NAS,,,

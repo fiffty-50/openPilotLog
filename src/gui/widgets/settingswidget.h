@@ -47,8 +47,8 @@ private slots:
     void on_acSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
     void on_prefixLineEdit_textChanged(const QString &arg1);
-    void on_piclastnameLineEdit_editingFinished();
-    void on_picfirstnameLineEdit_editingFinished();
+    void on_lastnameLineEdit_editingFinished();
+    void on_firstnameLineEdit_editingFinished();
     void on_employeeidLineEdit_editingFinished();
     void on_emailLineEdit_editingFinished();
     void on_phoneLineEdit_editingFinished();

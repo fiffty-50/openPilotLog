@@ -24,58 +24,58 @@ static const auto DB_TABLE_AIRCRAFT = QStringLiteral("aircraft");
 static const auto DB_TABLE_AIRPORTS = QStringLiteral("airports");
 
 // Flights table
-static const auto DB_doft           = QStringLiteral("doft");
-static const auto DB_dept           = QStringLiteral("dept");
-static const auto DB_dest           = QStringLiteral("dest");
-static const auto DB_tofb           = QStringLiteral("tofb");
-static const auto DB_tonb           = QStringLiteral("tonb");
-static const auto DB_pic            = QStringLiteral("pic");
-static const auto DB_acft           = QStringLiteral("acft");
-static const auto DB_tblk           = QStringLiteral("tblk");
-static const auto DB_tSPSE          = QStringLiteral("tSPSE");
-static const auto DB_tSPME          = QStringLiteral("tSPME");
-static const auto DB_tMP            = QStringLiteral("tMP");
-static const auto DB_tNIGHT         = QStringLiteral("tNIGHT");
-static const auto DB_tIFR           = QStringLiteral("tIFR");
-static const auto DB_tPIC           = QStringLiteral("tPIC");
-static const auto DB_tPICUS         = QStringLiteral("tPICUS");
-static const auto DB_tSIC           = QStringLiteral("tSIC");
-static const auto DB_tDUAL          = QStringLiteral("tDUAL");
-static const auto DB_tFI            = QStringLiteral("tFI");
-static const auto DB_tSIM           = QStringLiteral("tSIM");
-static const auto DB_pilotFlying    = QStringLiteral("pilotFlying");
-static const auto DB_toDay          = QStringLiteral("toDay");
-static const auto DB_toNight        = QStringLiteral("toNight");
-static const auto DB_ldgDay         = QStringLiteral("ldgDay");
-static const auto DB_ldgNight       = QStringLiteral("ldgNight");
-static const auto DB_autoland       = QStringLiteral("autoland");
-static const auto DB_secondPilot    = QStringLiteral("secondPilot");
-static const auto DB_thirdPilot     = QStringLiteral("thirdPilot");
-static const auto DB_ApproachType   = QStringLiteral("ApproachType");
-static const auto DB_FlightNumber   = QStringLiteral("FlightNumber");
-static const auto DB_Remarks        = QStringLiteral("Remarks");
+static const auto DB_FLIGHTS_DOFT           = QStringLiteral("doft");
+static const auto DB_FLIGHTS_DEPT           = QStringLiteral("dept");
+static const auto DB_FLIGHTS_DEST           = QStringLiteral("dest");
+static const auto DB_FLIGHTS_TOFB           = QStringLiteral("tofb");
+static const auto DB_FLIGHTS_TONB           = QStringLiteral("tonb");
+static const auto DB_FLIGHTS_PIC            = QStringLiteral("pic");
+static const auto DB_FLIGHTS_ACFT           = QStringLiteral("acft");
+static const auto DB_FLIGHTS_TBLK           = QStringLiteral("tblk");
+static const auto DB_FLIGHTS_TSPSE          = QStringLiteral("tSPSE");
+static const auto DB_FLIGHTS_SPME           = QStringLiteral("tSPME");
+static const auto DB_FLIGHTS_TMP            = QStringLiteral("tMP");
+static const auto DB_FLIGHTS_TNIGHT         = QStringLiteral("tNIGHT");
+static const auto DB_FLIGHTS_TIFR           = QStringLiteral("tIFR");
+static const auto DB_FLIGHTS_TPIC           = QStringLiteral("tPIC");
+static const auto DB_FLIGHTS_TPICUS         = QStringLiteral("tPICUS");
+static const auto DB_FLIGHTS_TSIC           = QStringLiteral("tSIC");
+static const auto DB_FLIGHTS_TDUAL          = QStringLiteral("tDUAL");
+static const auto DB_FLIGHTS_TFI            = QStringLiteral("tFI");
+static const auto DB_FLIGHTS_TSIM           = QStringLiteral("tSIM");
+static const auto DB_FLIGHTS_PILOTFLYING    = QStringLiteral("pilotFlying");
+static const auto DB_FLIGHTS_TODAY          = QStringLiteral("toDay");
+static const auto DB_FLIGHTS_TONIGHT        = QStringLiteral("toNight");
+static const auto DB_FLIGHTS_LDGDAY         = QStringLiteral("ldgDay");
+static const auto DB_FLIGHTS_LDGNIGHT       = QStringLiteral("ldgNight");
+static const auto DB_FLIGHTS_AUTOLAND       = QStringLiteral("autoland");
+static const auto DB_FLIGHTS_SECONDPILOT    = QStringLiteral("secondPilot");
+static const auto DB_FLIGHTS_THIRDPILOT     = QStringLiteral("thirdPilot");
+static const auto DB_FLIGHTS_APPROACHTYPE   = QStringLiteral("approachType");
+static const auto DB_FLIGHTS_FLIGHTNUMBER   = QStringLiteral("flightNumber");
+static const auto DB_FLIGHTS_REMARKS        = QStringLiteral("remarks");
 
-// aircraft and tails tables
+// tails table
 
-static const auto DB_registration   = QStringLiteral("registration");
-//static const auto DB_company      = QStringLiteral("company"); to do - resolve naming conflict with pilots.company, time being these are equivalent since they are unique in their respective tables but still..
-static const auto DB_make           = QStringLiteral("make");
-static const auto DB_model          = QStringLiteral("model");
-static const auto DB_variant        = QStringLiteral("variant");
-static const auto DB_multipilot     = QStringLiteral("multipilot");
-static const auto DB_multiengine    = QStringLiteral("multiengine");
-static const auto DB_engineType     = QStringLiteral("engineType");
-static const auto DB_weightClass    = QStringLiteral("weightClass");
+static const auto DB_TAILS_REGISTRATION   = QStringLiteral("registration");
+static const auto DB_TAILS_COMPANY        = QStringLiteral("company");
+static const auto DB_TAILS_MAKE           = QStringLiteral("make");
+static const auto DB_TAILS_MODEL          = QStringLiteral("model");
+static const auto DB_TAILS_VARIANT        = QStringLiteral("variant");
+static const auto DB_TAILS_MULTIPILOT     = QStringLiteral("multipilot");
+static const auto DB_TAILS_MULTIENGINE    = QStringLiteral("multiengine");
+static const auto DB_TAILS_ENGINETYPE     = QStringLiteral("engineType");
+static const auto DB_TAILS_WEIGHTCLASS    = QStringLiteral("weightClass");
 
 // pilots table
 
-static const auto DB_piclastname    = QStringLiteral("piclastname");
-static const auto DB_picfirstname   = QStringLiteral("picfirstname");
-static const auto DB_alias          = QStringLiteral("alias");
-static const auto DB_company        = QStringLiteral("company");
-static const auto DB_employeeid     = QStringLiteral("employeeid");
-static const auto DB_phone          = QStringLiteral("phone");
-static const auto DB_email          = QStringLiteral("email");
+static const auto DB_PILOTS_LASTNAME       = QStringLiteral("lastname");
+static const auto DB_PILOTS_FIRSTNAME      = QStringLiteral("firstname");
+static const auto DB_PILOTS_ALIAS          = QStringLiteral("alias");
+static const auto DB_PILOTS_COMPANY        = QStringLiteral("company");
+static const auto DB_PILOTS_EMPLOYEEID     = QStringLiteral("employeeid");
+static const auto DB_PILOTS_PHONE          = QStringLiteral("phone");
+static const auto DB_PILOTS_EMAIL          = QStringLiteral("email");
 
 // all tables
 

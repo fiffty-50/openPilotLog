@@ -21,9 +21,9 @@
 #include "src/testing/adebug.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "picfirstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
+    "firstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "piclastnameLineEdit", QRegularExpression("\\w+")};
+    "lastnameLineEdit", QRegularExpression("\\w+")};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
@@ -72,8 +72,8 @@ void SettingsWidget::readSettings()
     /*
      * Personal Tab
      */
-    ui->piclastnameLineEdit->setText(ASettings::read("userdata/piclastname").toString());
-    ui->picfirstnameLineEdit->setText(ASettings::read("userdata/picfirstname").toString());
+    ui->lastnameLineEdit->setText(ASettings::read("userdata/lastname").toString());
+    ui->firstnameLineEdit->setText(ASettings::read("userdata/firstname").toString());
     ui->companyLineEdit->setText(ASettings::read("userdata/company").toString());
     ui->employeeidLineEdit->setText(ASettings::read("userdata/employeeid").toString());
     ui->phoneLineEdit->setText(ASettings::read("userdata/phone").toString());
@@ -136,9 +136,9 @@ void SettingsWidget::updatePersonalDetails()
         break;
     case 2:{
         QString name;
-        name.append(ui->piclastnameLineEdit->text());
+        name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->picfirstnameLineEdit->text().left(1));
+        name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
         data.insert("alias", name);
     }
@@ -146,8 +146,8 @@ void SettingsWidget::updatePersonalDetails()
     default:
         break;
     }
-    data.insert("piclastname", ui->piclastnameLineEdit->text());
-    data.insert("picfirstname", ui->picfirstnameLineEdit->text());
+    data.insert("lastname", ui->lastnameLineEdit->text());
+    data.insert("firstname", ui->firstnameLineEdit->text());
     data.insert("company", ui->companyLineEdit->text());
     data.insert("employeeid", ui->employeeidLineEdit->text());
     data.insert("phone", ui->phoneLineEdit->text());
@@ -168,24 +168,24 @@ void SettingsWidget::updatePersonalDetails()
  * Personal Tab
  */
 
-void SettingsWidget::on_piclastnameLineEdit_editingFinished()
+void SettingsWidget::on_lastnameLineEdit_editingFinished()
 {
-    if(ui->piclastnameLineEdit->text().isEmpty()){
-        ui->piclastnameLineEdit->setText(ASettings::read("userdata/piclastname").toString());
-        ui->piclastnameLineEdit->setFocus();
+    if(ui->lastnameLineEdit->text().isEmpty()){
+        ui->lastnameLineEdit->setText(ASettings::read("userdata/lastname").toString());
+        ui->lastnameLineEdit->setFocus();
     } else {
-        ASettings::write("userdata/piclastname",ui->piclastnameLineEdit->text());
+        ASettings::write("userdata/lastname",ui->lastnameLineEdit->text());
         updatePersonalDetails();
     }
 }
 
-void SettingsWidget::on_picfirstnameLineEdit_editingFinished()
+void SettingsWidget::on_firstnameLineEdit_editingFinished()
 {
-    if(ui->picfirstnameLineEdit->text().isEmpty()){
-        ui->picfirstnameLineEdit->setText(ASettings::read("userdata/picfirstname").toString());
-        ui->picfirstnameLineEdit->setFocus();
+    if(ui->firstnameLineEdit->text().isEmpty()){
+        ui->firstnameLineEdit->setText(ASettings::read("userdata/firstname").toString());
+        ui->firstnameLineEdit->setFocus();
     } else {
-        ASettings::write("userdata/picfirstname",ui->picfirstnameLineEdit->text());
+        ASettings::write("userdata/firstname",ui->firstnameLineEdit->text());
         updatePersonalDetails();
     }
 }
