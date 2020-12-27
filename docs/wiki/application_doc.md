@@ -33,3 +33,14 @@ The general design of this application shall align with the following guiding pr
 
 The purpose of this application is to be lightweight, reliable, customizable and stay out of the users way.
 
+## PilotsWidget <a name="PilotsWidget"></a>
+
+In the PilotsWiget, a list of the pilots the user has added to the database is shown. On the left side of the screen, all pilots are shown in a table, with their last name, first name and company. On the right side, a line edit is available where the table view can be filtered and searched.
+
+Once the user selects an entry in the table view, a [NewPilotDialog](#NewPilotDialog) is shown as a widget on the right side of the screen. Here, the user can see all the details related to the entry and edit it.
+
+Below the table view are push buttons that enable the user to create new entries or edit existing ones.
+
+## New Pilot Dialog <a name="NewPilotDialog"></a>
+
+The New Pilot Dialog is used to add new pilots to the database or edit existing ones. It has 7 line edits, which represent the columns of the pilots table in the database. 
