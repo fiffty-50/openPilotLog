@@ -24,58 +24,71 @@
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
+#include <QStandardPaths>
 
-
-const auto DATA_DIR = QLatin1String("data");
-/*!
- * \brief setup checks if data folder and settings files exists.
- * \return
- */
-bool setup()
-{
-    if (!QDir(DATA_DIR).exists())
-        QDir().mkdir(DATA_DIR);
-
-    QDir      settingspath(DATA_DIR + QLatin1Char('/') + QCoreApplication::organizationName());
-    QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
-    QFileInfo check_file(settingspath,settingsfile);
-
-    QSettings settings;
-    settings.setValue("setup/touch", true);
-    settings.sync();
-
-    return check_file.exists() && check_file.isFile();
+/// Utility struct for standard app paths. Struct should be created after QCoreApplication::set___Name.
+struct StandardAppPaths{
+    QMap<QStandardPaths::StandardLocation, QString> paths;
+    StandardAppPaths()
+        : paths({{QStandardPaths::AppConfigLocation, QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)},
+                 {QStandardPaths::AppDataLocation, QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)},})
+    {}
 };
+
+/// Ensure standard app paths exist, if not mkdir them.
+static inline
+void scan_paths(StandardAppPaths paths)
+{
+    for(auto& path : paths.paths.values()){
+        auto dir = QDir(path);
+        DEB("Scanning " << dir.path());
+        if(!dir.exists())
+            DEB("Creating " << dir.path());
+            dir.mkdir(path);
+    }
+}
+
+/// Validate standard app paths are valid in structure and contents.
+static inline
+bool validate_paths(StandardAppPaths paths)
+{
+    for(auto& path : paths.paths.values()){
+        DEB("Validating " << path);
+        if(false)  // determine path as valid (scan contents and parse for correctness)
+            return false;
+    }
+    return true;
+}
 
 int main(int argc, char *argv[])
 {
+    QApplication openPilotLog(argc, argv);
     QCoreApplication::setOrganizationName("openPilotLog");
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openPilotLog");
 
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, DATA_DIR);
+    StandardAppPaths std_paths;
+    scan_paths(std_paths);
+    if(!validate_paths(std_paths)){
+        DEB("Standard paths not valid.");
+        return 1;
+    }
+
     QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, std_paths.paths[QStandardPaths::AppDataLocation]);
     QSettings settings;
 
     experimental::aDB()->connect();
 
-    QApplication openPilotLog(argc, argv);
-    if(!setup()){
-        DEB("error creating required directories");
-        return 0;
-    }
-
-    if (!ASettings::read("setup/setup_complete").toBool()) {
-        FirstRunDialog dialog;
-        dialog.exec();
-    }
-
-
+//    if (!ASettings::read("setup/setup_complete").toBool()) {
+//        FirstRunDialog dialog;
+//        dialog.exec();
+//    }
 
     //Theming
-    int selectedtheme = settings.value("main/theme").toInt();
-    QDir::setCurrent("/themes");
-    switch (selectedtheme) {
+//    int selectedtheme = settings.value("main/theme").toInt();
+//    QDir::setCurrent("/themes");
+    switch (2) {
     case 1:{
         qDebug() << "main :: Loading light theme";
         QFile file(":light.qss");
@@ -95,7 +108,6 @@ int main(int argc, char *argv[])
     default:
         break;
     }
-
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard("opl_single_key");
