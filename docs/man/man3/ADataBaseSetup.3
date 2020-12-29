@@ -1,0 +1,73 @@
+.TH "ADataBaseSetup" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ADataBaseSetup \- The \fBADataBaseSetup\fP class is responsible for the inital setup of the database when the application is first launched\&. It creates the database in the specified default location and creates all required tables and views\&. It can also be used to reset the database currently used\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <adatabasesetup\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBdebug\fP ()"
+.br
+.RI "dbSetup::debug prints Database Layout "
+.ti -1c
+.RI "static bool \fBcreateDatabase\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBfillTemplates\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBimportDefaultData\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBresetToDefault\fP ()"
+.br
+.RI "DbSetup::resetToDefault Empties all user-generated content in the database\&. "
+.ti -1c
+.RI "static bool \fBcommitData\fP (QVector< QStringList > fromCSV, const QString &tableName)"
+.br
+.RI "DbSetup::commitData inserts the data parsed from a csv file into the database\&. The first line of the csv file has to contain the column names of the corresponding table in the database\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBADataBaseSetup\fP class is responsible for the inital setup of the database when the application is first launched\&. It creates the database in the specified default location and creates all required tables and views\&. It can also be used to reset the database currently used\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ADataBaseSetup::commitData (QVector< QStringList > fromCSV, const QString & tableName)\fC [static]\fP"
+
+.PP
+DbSetup::commitData inserts the data parsed from a csv file into the database\&. The first line of the csv file has to contain the column names of the corresponding table in the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfromCSV\fP input as parsed from CSV::read() 
+.br
+\fItableName\fP as in the database 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool ADataBaseSetup::resetToDefault ()\fC [static]\fP"
+
+.PP
+DbSetup::resetToDefault Empties all user-generated content in the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true on success 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

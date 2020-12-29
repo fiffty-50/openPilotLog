@@ -161,7 +161,7 @@ class Db
         QVector<QString> icustomQuery(QString query, int returnValues);
 
     public:
-        /// [George]: Why delete these in particular?
+        // [George]: Why delete these in particular?
         Db(Db const&)              = delete;
         void operator=(Db const&)  = delete;
 };

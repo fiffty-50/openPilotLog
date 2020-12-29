@@ -1,0 +1,57 @@
+.TH "NewFlightDialog" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NewFlightDialog
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits QDialog\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNewFlightDialog\fP (QWidget *parent=nullptr)"
+.br
+.RI "\fBNewFlightDialog\fP create a new flight and add it to the logbook\&. "
+.ti -1c
+.RI "\fBNewFlightDialog\fP (int row_id, QWidget *parent=nullptr)"
+.br
+.RI "\fBNewFlightDialog\fP Edit an existing logbook entry\&. "
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "NewFlightDialog::NewFlightDialog (QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+\fBNewFlightDialog\fP create a new flight and add it to the logbook\&. Construction ///\&.
+.PP
+[F] The general idea for this dialog is this:
+.IP "\(bu" 2
+Most line edits have validators and completers\&.
+.IP "\(bu" 2
+Validators are based on regular expressions, serving as raw input validation
+.IP "\(bu" 2
+The Completers are based off the database and provide auto-completion
+.IP "\(bu" 2
+mandatory line edits only emit editing finished if their content has passed raw input validation or focus is lost\&.
+.IP "\(bu" 2
+Editing finished triggers validating inputs by mapping them to Database values where required and results in either pass or fail\&.
+.IP "\(bu" 2
+A QBitArray is mainained containing the state of validity of the mandatory line edits
+.IP "\(bu" 2
+The deducted entries are automatically filled if all mandatory entries are valid\&.
+.IP "\(bu" 2
+Comitting an entry to the database is only allowed if all mandatory inputs are valid\&.
+.PP
+.PP
+if the user presses 'OK', check if all mandatory inputs are valid, check if optional user inputs are valid and commit\&.
+.PP
+For the completion and mapping, I have settled on a more low-level approach using Completers based on QStringLists and mapping with QMaps\&.
+.PP
+I implemented the Completers and mapping based on a QSqlTableModel which would have been quite nice, since it would keep all data in one place, providing both completion and mapping in one model\&. But as we have seen before with the more high-level qt classes, they are quite slow on execution when used for tasks they were probably not designed to do\&. Mapping a registration to an ID for example took around 300ms, which is very noticeable in the UI and not an acceptable user experience\&. Using QStringLists and QMaps this goes down to around 5ms\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

@@ -1,0 +1,44 @@
+.TH "ADownload" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ADownload
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBdownloadFinished\fP (QNetworkReply *data)"
+.br
+.ti -1c
+.RI "void \fBdownloadProgress\fP (qint64 received, qint64 total)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBdone\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetTarget\fP (const QUrl &value)"
+.br
+.ti -1c
+.RI "void \fBsetFileName\fP (const QString &value)"
+.br
+.ti -1c
+.RI "void \fBdownload\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

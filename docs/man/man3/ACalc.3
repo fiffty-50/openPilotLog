@@ -1,0 +1,356 @@
+.TH "ACalc" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACalc \- The \fBACalc\fP namespace provides various functions for calculations that are performed outside of the database\&. This includes tasks like converting different units and formats, or functions calculating block time or night time\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "QTime \fBblocktime\fP (QTime tofb, QTime tonb)"
+.br
+.RI "\fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. "
+.ti -1c
+.RI "QString \fBminutesToString\fP (QString block_minutes)"
+.br
+.RI "ACalc::minutes_to_string Converts database time to String Time\&. "
+.ti -1c
+.RI "QString \fBminutesToString\fP (int block_minutes)"
+.br
+.ti -1c
+.RI "int \fBQTimeToMinutes\fP (QTime time)"
+.br
+.RI "ACalc::time_to_minutes converts QTime to int minutes\&. "
+.ti -1c
+.RI "int \fBstringToMinutes\fP (QString timestring)"
+.br
+.RI "ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. "
+.ti -1c
+.RI "double \fBradToDeg\fP (double rad)"
+.br
+.RI "radToDeg Converts radians to degrees "
+.ti -1c
+.RI "double \fBdegToRad\fP (double deg)"
+.br
+.RI "degToRad Converts degrees to radians "
+.ti -1c
+.RI "double \fBradToNauticalMiles\fP (double rad)"
+.br
+.RI "radToNauticalMiles Convert Radians to nautical miles "
+.ti -1c
+.RI "double \fBgreatCircleDistance\fP (double lat1, double lon1, double lat2, double lon2)"
+.br
+.RI "greatCircleDistance Calculates Great Circle distance between two coordinates, return in Radians\&. "
+.ti -1c
+.RI "double \fBgreatCircleDistanceBetweenAirports\fP (const QString &dept, const QString &dest)"
+.br
+.RI "\fBACalc::greatCircleDistanceBetweenAirports\fP Calculates Great Circle distance between two coordinates, return in nautical miles\&. "
+.ti -1c
+.RI "QVector< QVector< double > > \fBintermediatePointsOnGreatCircle\fP (double lat1, double lon1, double lat2, double lon2, int tblk)"
+.br
+.RI "Calculates a list of points (lat,lon) along the Great Circle between two points\&. The points are spaced equally, one minute of block time apart\&. "
+.ti -1c
+.RI "double \fBsolarElevation\fP (QDateTime utc_time_point, double lat, double lon)"
+.br
+.RI "Calculates solar elevation angle for a given point in time and latitude/longitude coordinates\&. "
+.ti -1c
+.RI "int \fBcalculateNightTime\fP (const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)"
+.br
+.RI "Calculates which portion of a flight was conducted in night conditions\&. "
+.ti -1c
+.RI "bool \fBisNight\fP (const QString &icao, QDateTime event_time, int night_angle)"
+.br
+.ti -1c
+.RI "QString \fBformatTimeInput\fP (QString user_input)"
+.br
+.RI "\fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&. "
+.ti -1c
+.RI "void \fBupdateAutoTimes\fP (int acft_id)"
+.br
+.RI "\fBACalc::updateAutoTimes\fP When the details of an aircraft are changed, this function recalculates deductable times for this aircraft and updates the database accordingly\&. "
+.ti -1c
+.RI "void \fBautoTimes\fP (\fBFlight\fP, \fBAircraft\fP)"
+.br
+.ti -1c
+.RI "void \fBupdateNightTimes\fP ()"
+.br
+.RI "\fBACalc::updateNightTimes\fP updates the night times in the database, used when changing night angle setting for example\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBACalc\fP namespace provides various functions for calculations that are performed outside of the database\&. This includes tasks like converting different units and formats, or functions calculating block time or night time\&. 
+.SH "Function Documentation"
+.PP 
+.SS "QTime ACalc::blocktime (QTime tofb, QTime tonb)\fC [inline]\fP"
+
+.PP
+\fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItofb\fP QTime Time Off Blocks 
+.br
+\fItonb\fP QTime Time On Blocks 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Block Time in minutes 
+.RE
+.PP
+
+.SS "int ACalc::calculateNightTime (const QString & dept, const QString & dest, QDateTime departureTime, int tblk, int nightAngle)"
+
+.PP
+Calculates which portion of a flight was conducted in night conditions\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdept\fP - ICAO 4-letter code of Departure Airport 
+.br
+\fIdest\fP - ICAO 4-letter Code of Destination Airport 
+.br
+\fIdepartureTime\fP - QDateTime of Departure (UTC) 
+.br
+\fItblk\fP - Total block time in minutes 
+.br
+\fInightAngle\fP - the solar elevation angle where night conditons exist\&. Default -6 (end of civil evening twilight) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Total number of minutes under night flying conditions 
+.RE
+.PP
+
+.SS "double ACalc::degToRad (double deg)\fC [inline]\fP"
+
+.PP
+degToRad Converts degrees to radians 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdeg\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+radians 
+.RE
+.PP
+
+.SS "QString ACalc::formatTimeInput (QString user_input)"
+
+.PP
+\fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserinput\fP from a QLineEdit 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+formatted QString 'hh:mm' or Empty String 
+.RE
+.PP
+
+.SS "double ACalc::greatCircleDistance (double lat1, double lon1, double lat2, double lon2)"
+
+.PP
+greatCircleDistance Calculates Great Circle distance between two coordinates, return in Radians\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlat1\fP Location Latitude in degrees -90:90 ;S(-) N(+) 
+.br
+\fIlon1\fP Location Longitude in degrees -180:180 W(-) E(+) 
+.br
+\fIlat2\fP Location Latitude in degrees -90:90 ;S(-) N(+) 
+.br
+\fIlon2\fP Location Longitude in degrees -180:180 W(-) E(+) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+The purpose of the following functions is to provide functionality enabling the Calculation of night flying time\&. EASA defines night as follows:
+.PP
+‘Night’ means the period between the end of evening civil twilight and the beginning of morning civil twilight or such other period between sunset and sunrise as may be prescribed by the appropriate authority, as defined by the Member State\&.
+.PP
+This is the proccess of Calculating night time in this program:
+.PP
+1) A flight from A to B follows the Great Circle Track along these two points at an average cruising height of 11km\&. (~FL 360)
+.PP
+2) Any time the Elevation of the Sun at the current position is less than -6 degrees, night conditions are present\&. 3) The Calculation is performed for every minute of flight time\&.
+.PP
+In general, input and output for most functions is decimal degrees, like coordinates are stowed in the airports table\&. Calculations are normally done using Radians\&. 
+.SS "double ACalc::greatCircleDistanceBetweenAirports (const QString & dept, const QString & dest)"
+
+.PP
+\fBACalc::greatCircleDistanceBetweenAirports\fP Calculates Great Circle distance between two coordinates, return in nautical miles\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdept\fP ICAO 4-letter Airport Identifier 
+.br
+\fIdest\fP ICAO 4-letter Airport Identifier 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Nautical Miles From Departure to Destination 
+.RE
+.PP
+
+.SS "QVector< QVector< double > > ACalc::intermediatePointsOnGreatCircle (double lat1, double lon1, double lat2, double lon2, int tblk)"
+
+.PP
+Calculates a list of points (lat,lon) along the Great Circle between two points\&. The points are spaced equally, one minute of block time apart\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlat1\fP Location Latitude in degrees -90:90 ;S(-) N(+) 
+.br
+\fIlon1\fP Location Longitude in degrees -180:180 W(-) E(+) 
+.br
+\fIlat2\fP Location Latitude in degrees -90:90 ;S(-) N(+) 
+.br
+\fIlon2\fP Location Longitude in degrees -180:180 W(-) E(+) 
+.br
+\fItblk\fP Total Blocktime in minutes 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+coordinates {lat,lon} along the Great Circle Track 
+.RE
+.PP
+
+.SS "QString ACalc::minutesToString (QString block_minutes)\fC [inline]\fP"
+
+.PP
+ACalc::minutes_to_string Converts database time to String Time\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIblockminutes\fP from database 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+String hh:mm 
+.RE
+.PP
+
+.SS "int ACalc::QTimeToMinutes (QTime time)\fC [inline]\fP"
+
+.PP
+ACalc::time_to_minutes converts QTime to int minutes\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItime\fP QTime 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+int time as number of minutes 
+.RE
+.PP
+
+.SS "double ACalc::radToDeg (double rad)\fC [inline]\fP"
+
+.PP
+radToDeg Converts radians to degrees 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrad\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+degrees 
+.RE
+.PP
+
+.SS "double ACalc::radToNauticalMiles (double rad)\fC [inline]\fP"
+
+.PP
+radToNauticalMiles Convert Radians to nautical miles 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrad\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+nautical miles 
+.RE
+.PP
+
+.SS "double ACalc::solarElevation (QDateTime utc_time_point, double lat, double lon)"
+
+.PP
+Calculates solar elevation angle for a given point in time and latitude/longitude coordinates\&. It is based on the formulas found here: http://stjarnhimlen.se/comp/tutorial.html#5
+.PP
+Credit also goes to Darin C\&. Koblick for his matlab implementation of various of these formulas and to Kevin Godden for porting it to C++\&.
+.PP
+Darin C\&. Koblock: https://www.mathworks.com/matlabcentral/profile/authors/1284781 Kevin Godden: https://www.ridgesolutions.ie/index.php/about-us/
+.PP
+\fBParameters\fP
+.RS 4
+\fIutc_time_point\fP - QDateTime (UTC) for which the elevation is Calculated 
+.br
+\fIlat\fP - Location Latitude in degrees -90:90 ;S(-) N(+) 
+.br
+\fIlon\fP - Location Longitude in degrees -180:180 W(-) E(+) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+elevation - double of solar elevation in degrees\&. 
+.RE
+.PP
+
+.SS "int ACalc::stringToMinutes (QString timestring)\fC [inline]\fP"
+
+.PP
+ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItimestring\fP 'hh:mm' 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+String number of minutes 
+.RE
+.PP
+
+.SS "void ACalc::updateAutoTimes (int acft_id)"
+
+.PP
+\fBACalc::updateAutoTimes\fP When the details of an aircraft are changed, this function recalculates deductable times for this aircraft and updates the database accordingly\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIacft\fP An aircraft object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.
