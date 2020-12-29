@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
     QApplication openPilotLog(argc, argv);
     if(!setup()){
-        DEB("error creating required directories");
+        DEB "error creating required directories";
         return 0;
     }
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     QDir::setCurrent("/themes");
     switch (selectedtheme) {
     case 1:{
-        qDebug() << "main :: Loading light theme";
+        DEB "main :: Loading light theme";
         QFile file(":light.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         break;
     }
     case 2:{
-        qDebug() << "Loading dark theme";
+        DEB "Loading dark theme";
         QFile file(":dark.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard("opl_single_key");
         if ( !guard.tryToRun() ){
-            qDebug() << "Another Instance is already running. Exiting.";
+            DEB "Another Instance is already running. Exiting.";
             return 0;
         }
 

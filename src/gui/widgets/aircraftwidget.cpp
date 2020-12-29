@@ -28,7 +28,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AircraftWidget)
 {
-    DEB("New AircraftWidet");
+    DEB "New AircraftWidet";
     ui->setupUi(this);
     ui->stackedWidget->addWidget(this->findChild<QWidget*>("welcomePageTails"));
     ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePageTails"));
@@ -38,7 +38,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
 AircraftWidget::~AircraftWidget()
 {
-    DEB("Deleting NewAircraftWidget");
+    DEB "Deleting NewAircraftWidget";
     delete ui;
 }
 
@@ -167,7 +167,7 @@ void AircraftWidget::onDisplayModel_dataBaseUpdated()
 void AircraftWidget::tableView_selectionChanged()
 {
     if (this->findChild<NewTailDialog*>() != nullptr) {
-        DEB("Selection changed. Deleting orphaned dialog.");
+        DEB "Selection changed. Deleting orphaned dialog.";
         delete this->findChild<NewTailDialog*>();
         /// [F] if the user changes the selection without making any changes,
         /// if(selectedTails.length() == 1) spawns a new dialog without the
@@ -180,7 +180,7 @@ void AircraftWidget::tableView_selectionChanged()
 
     for (const auto& row : selection->selectedRows()) {
         selectedTails << row.data().toInt();
-        DEB("Selected Tails(s) with ID: " << selectedTails);
+        DEB "Selected Tails(s) with ID: " << selectedTails;
     }
     if(selectedTails.length() == 1) {
         auto* nt = new NewTailDialog(selectedTails.first(), this);

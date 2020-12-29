@@ -84,7 +84,7 @@ void LogbookWidget::connectSignalsAndSlots()
 
 void LogbookWidget::setupDefaultView()
 {
-    DEB("Loading Default View...");
+    DEB "Loading Default View...";
     displayModel = new QSqlTableModel;
     displayModel->setTable("viewDefault");
     displayModel->select();
@@ -117,7 +117,7 @@ void LogbookWidget::setupDefaultView()
 
 void LogbookWidget::setupEasaView()
 {
-    DEB("Loading EASA View...");
+    DEB "Loading EASA View...";
     displayModel = new QSqlTableModel;
     displayModel->setTable("viewEASA");
     displayModel->select();
@@ -168,7 +168,7 @@ void LogbookWidget::flightsTableView_selectionChanged()//
     selectedFlights.clear();
     for (const auto& row : selectionModel->selectedRows()) {
         selectedFlights.append(row.data().toInt());
-        DEB("Selected Flight(s) with ID: " << selectedFlights);
+        DEB "Selected Flight(s) with ID: " << selectedFlights;
     }
 }
 
@@ -198,7 +198,7 @@ void LogbookWidget::on_editFlightButton_clicked()
 
 void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
-    DEB("Flights selected: " << selectedFlights.length());
+    DEB "Flights selected: " << selectedFlights.length();
     if (selectedFlights.length() == 0) {
         messageBox->setIcon(QMessageBox::Information);
         messageBox->setText("No Flight Selected.");
@@ -229,7 +229,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         int reply = confirm.exec();
         if (reply == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
-                DEB("Deleting flight: " << flight.summary());
+                DEB "Deleting flight: " << flight.summary();
                 if(!aDB()->remove(flight)) {
                     messageBox->setText(aDB()->lastError.text());
                     messageBox->exec();

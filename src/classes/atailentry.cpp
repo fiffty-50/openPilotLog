@@ -37,11 +37,11 @@ const QString ATailEntry::registration()
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!getData().value(DB_TAILS_MAKE).toString().isEmpty())
+    if (!tableData.value(DB_TAILS_MAKE).toString().isEmpty())
         type_string.append(getData().value(DB_TAILS_MAKE).toString() + ' ');
-    if (!getData().value(DB_TAILS_MODEL).toString().isEmpty())
+    if (!tableData.value(DB_TAILS_MODEL).toString().isEmpty())
         type_string.append(getData().value(DB_TAILS_MODEL).toString());
-    if (!getData().value(DB_TAILS_VARIANT).toString().isEmpty())
+    if (!tableData.value(DB_TAILS_VARIANT).toString().isEmpty())
         type_string.append('-' + getData().value(DB_TAILS_VARIANT).toString() + ' ');
 
     return type_string;

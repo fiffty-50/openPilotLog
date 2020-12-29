@@ -3,7 +3,6 @@
 
 #include <QDebug>
 
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t" <<
 
 #endif

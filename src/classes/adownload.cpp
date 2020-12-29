@@ -28,7 +28,7 @@ ADownload::ADownload() : QObject(nullptr)
 
 ADownload::~ADownload()
 {
-    DEB("Deleting Download object");
+    DEB "Deleting Download object" ;
 }
 
 void ADownload::setTarget(const QUrl &value)
@@ -44,7 +44,7 @@ void ADownload::setFileName(const QString &value)
 void ADownload::download()
 {
     QNetworkRequest request(target);
-    DEB("Downloading from: " << target.toString());
+    DEB "Downloading from: " << target.toString();
 
     QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
@@ -52,7 +52,7 @@ void ADownload::download()
 
 void ADownload::downloadProgress(qint64 received, qint64 total)
 {
-    DEB("Received " << received << " bytes of " << total);
+    DEB "Received " << received << " bytes of " << total;
 }
 
 
@@ -65,7 +65,7 @@ void ADownload::downloadFinished(QNetworkReply *data)
     const QByteArray sdata = data->readAll();
     localFile.write(sdata);
     localFile.close();
-    qDebug() << "Download finished. Output file: " << fileName;
+    DEB "Download finished. Output file: " << fileName;
 
     emit done();
 }
