@@ -51,19 +51,19 @@ const QString AFlightEntry::getRegistration()
     return acft.registration();
 }
 
-const QString AFlightEntry::getPilotName(pilot pilot_)
+const QString AFlightEntry::getPilotName(pilotPosition pilot_)
 {
     switch (pilot_) {
-    case pilot::pic: {
+    case pilotPosition::pic: {
         auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_PIC).toInt());
         return foreign_pilot.name();
         break;
     }
-    case pilot::sic: {
+    case pilotPosition::secondPilot: {
         auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_SECONDPILOT).toInt());
         return foreign_pilot.name();
     }
-    case pilot::thirdPilot: {
+    case pilotPosition::thirdPilot: {
         auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_THIRDPILOT).toInt());
         return foreign_pilot.name();
         break;

@@ -18,6 +18,7 @@
 #include "adatabase.h"
 #include "src/testing/adebug.h"
 
+#define DATABASE_VERSION 15
 const auto SQL_DRIVER = QStringLiteral("QSQLITE");
 
 ADatabaseError::ADatabaseError(QString msg_)

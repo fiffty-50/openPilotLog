@@ -29,7 +29,7 @@ public:
     AFlightEntry(int row_id);
     AFlightEntry(RowData table_data);
 
-    enum pilot { pic, sic, thirdPilot };
+    enum class pilotPosition { pic, secondPilot, thirdPilot };
 
     /*!
      * \brief Returs a summary of the flight data, if struct holds data
@@ -46,7 +46,7 @@ public:
      * \param pilot_number - 1=pic, 2=second Pilot, 3 = third Pilot
      * \return "Lastname, Firstname"
      */
-    const QString getPilotName(pilot);
+    const QString getPilotName(pilotPosition);
 };
 
 #endif // AFLIGHTENTRY_H
