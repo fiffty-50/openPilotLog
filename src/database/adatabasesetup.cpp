@@ -19,7 +19,7 @@
 #include "src/testing/adebug.h"
 
 
-// Statements for creation of database tables, Revision 13
+// Statements for creation of database tables, Revision 15
 
 const QString createTablePilots = "CREATE TABLE pilots ( "
             " pilot_id       INTEGER NOT NULL, "
@@ -257,6 +257,7 @@ const QStringList templateTables= {
 
 bool ADataBaseSetup::createDatabase()
 {
+
     DEB("Creating tables...");
     if (!createSchemata(tables)) {
         DEB("Creating tables has failed.");
@@ -268,6 +269,9 @@ bool ADataBaseSetup::createDatabase()
         DEB("Creating views failed.");
         return false;
     }
+
+    // call connect again to (re-)populate tableNames and columnNames
+    experimental::aDB()->connect();
 
     DEB("Populating tables...");
     if (!importDefaultData()) {
@@ -352,6 +356,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         query.exec();
         if(!query.isActive()) {
             errors << statement.section(QLatin1Char(' '),2,2) + " ERROR - " + query.lastError().text();
+            DEB("Query: " << query.lastQuery());
         } else {
             DEB("Schema added: " << statement.section(QLatin1Char(' '),2,2));
         }
@@ -378,9 +383,9 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
+    DEB("Table names: " << experimental::aDB()->getTableNames());
     DEB("Importing Data to" << tableName);
-    auto dbLayout = DbInfo();
-    if (!dbLayout.tables.contains(tableName)){
+    if (!experimental::aDB()->getTableNames().contains(tableName)){
         DEB(tableName << "is not a table in the database. Aborting.");
         DEB("Please check input data.");
         return false;
@@ -389,7 +394,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
     QString statement = "INSERT INTO " + tableName + " (";
     QString placeholder = ") VALUES (";
     for (auto& csvColumn : fromCSV) {
-        if(dbLayout.format.value(tableName).contains(csvColumn.first())){
+        if(experimental::aDB()->getTableColumns().value(tableName).contains(csvColumn.first())) {
             statement += csvColumn.first() + ',';
             csvColumn.removeFirst();
             placeholder.append("?,");

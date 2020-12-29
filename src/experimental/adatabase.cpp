@@ -16,7 +16,10 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabase.h"
-#include "src/database/tablecolumnliterals.h"
+#include "src/testing/adebug.h"
+
+const auto SQL_DRIVER = QStringLiteral("QSQLITE");
+
 
 namespace experimental {
 
@@ -31,6 +34,16 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::instance = nullptr;
 
+TableNames ADatabase::getTableNames() const
+{
+    return tableNames;
+}
+
+TableColumns ADatabase::getTableColumns() const
+{
+    return tableColumns;
+}
+
 ADatabase* ADatabase::getInstance()
 {
     if(!instance)
@@ -38,22 +51,33 @@ ADatabase* ADatabase::getInstance()
     return instance;
 }
 
+/*!
+ * \brief ADatabase::sqliteVersion returns database sqlite version.
+ * \return sqlite version string
+ */
+const QString ADatabase::sqliteVersion()
+{
+    QSqlQuery query;
+    query.prepare("SELECT sqlite_version()");
+    query.exec();
+    query.next();
+    return query.value(0).toString();
+}
+
 bool ADatabase::connect()
 {
-    const QString driver("QSQLITE");
-
-    if (!QSqlDatabase::isDriverAvailable(driver))
+    if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
         return false;
 
     QDir directory("data");
     QString databaseLocation = directory.filePath("logbook.db");
-    QSqlDatabase db = QSqlDatabase::addDatabase(driver);
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
     db.setDatabaseName(databaseLocation);
 
     if (!db.open())
         return false;
 
-    DEB("Database connection established.");
+    DEB("Database connection established." << db.lastError().text());
     // Enable foreign key restrictions
     QSqlQuery query("PRAGMA foreign_keys = ON;");
     tableNames = db.tables();
@@ -76,7 +100,6 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    db.removeDatabase(db.connectionName());
     DEB("Database connection closed.");
 }
 
@@ -559,6 +582,16 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
         row_ids.append(query.value(0).toInt());
     }
     return row_ids;
+}
+
+APilotEntry ADatabase::resolveForeignPilot(int foreign_key)
+{
+    return aDB()->getPilotEntry(foreign_key);
+}
+
+ATailEntry ADatabase::resolveForeignTail(int foreign_key)
+{
+    return aDB()->getTailEntry(foreign_key);
 }
 
 QVector<QString> ADatabase::customQuery(QString statement, int return_values)

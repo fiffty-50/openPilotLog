@@ -8,7 +8,7 @@ DebugWidget::DebugWidget(QWidget *parent) :
     ui(new Ui::DebugWidget)
 {
     ui->setupUi(this);
-    for (const auto& table : DbInfo().tables) {
+    for (const auto& table : aDB()->getTableNames()) {
         if( table != "sqlite_sequence") {
             ui->tableComboBox->addItem(table);
         }
@@ -59,17 +59,20 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
     }
+
     //close database connection
     aDB()->disconnect();
 
-    // back up old database
+    // back up and remove old database
     auto oldDatabase = QFile("data/logbook.db");
     if (oldDatabase.exists()) {
         auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
-        DEB("Backing up old database as: " << "logbook-backup-" + dateString);
-        if (!oldDatabase.rename("data/logbook-backup-" + dateString + ".db")) {
-            DEB("Warning: Creating backup of old database has failed.");
+        DEB("Backing up old database as: " << "logbook-backup-" + dateString + ".db");
+        if (oldDatabase.copy("data/logbook-backup-" + dateString + ".db")) {
+            oldDatabase.remove();
+            DEB("Old Database removed.");
         }
+
     }
     // re-connct and create new database
     aDB()->connect();
@@ -167,33 +170,6 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    qlonglong number_of_runs = 500;
-            long time1 = 0;
-            using namespace experimental;
-            {
-
-                ATimer timer;
-                for (int i = 0; i < number_of_runs; i++) {
-                    // first block, do stuff here...
-                    auto acft = aDB()->getTailEntry(5);
-                    auto pilot = aDB()->getPilotEntry(7);
-                    auto flight = aDB()->getFlightEntry(15);
-                    QList<AEntry> list = {acft, pilot, flight};
-                    for (auto entry : list) {
-                        for (auto column : entry.getData()) {
-                            QString value = column.toString();
-                        }
-                    }
-                }
-
-                time1 = timer.timeNow();
-            }
-
-            DEB("First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-            // 116 - 134 milliseconds with legacy exp db api
-            // 108 - 110 milliseconds with improved exp api
-            // to do: with string literals*/
-
 
 }
 

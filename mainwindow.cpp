@@ -173,6 +173,6 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np = NewPilotDialog(Db::createNew, this);
+    NewPilotDialog np = NewPilotDialog(this);
     np.exec();
 }

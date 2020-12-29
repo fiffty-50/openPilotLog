@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/database/db.h"
 #include "src/functions/astat.h"
 
 namespace Ui {

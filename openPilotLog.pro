@@ -19,16 +19,9 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     src/classes/adownload.cpp \
-    src/classes/aircraft.cpp \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
-    src/classes/astrictrxvalidator.cpp \
-    src/classes/flight.cpp \
-    src/classes/pilot.cpp \
     src/database/adatabasesetup.cpp \
-    src/database/db.cpp \
-    src/database/dbinfo.cpp \
-    src/database/entry_deprecated.cpp \
     src/experimental/aaircraftentry.cpp \
     src/experimental/adatabase.cpp \
     src/experimental/aentry.cpp \
@@ -55,16 +48,9 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     src/classes/adownload.h \
-    src/classes/aircraft.h \
     src/classes/arunguard.h \
     src/classes/asettings.h \
-    src/classes/astrictrxvalidator.h \
-    src/classes/flight.h \
-    src/classes/pilot.h \
     src/database/adatabasesetup.h \
-    src/database/db.h \
-    src/database/dbinfo.h \
-    src/database/entry_deprecated.h \
     src/database/tablecolumnliterals.h \
     src/experimental/UserInput.h \
     src/experimental/aaircraftentry.h \

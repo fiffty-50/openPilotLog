@@ -23,7 +23,6 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCompleter>
-#include "src/classes/pilot.h"
 
 #include "src/experimental/adatabase.h"
 #include "src/experimental/aentry.h"

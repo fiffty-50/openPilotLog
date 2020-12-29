@@ -24,7 +24,6 @@
 #include <QRegularExpression>
 
 #include "src/classes/asettings.h"
-#include "src/classes/aircraft.h"
 #include "src/functions/acalc.h"
 #include "src/experimental/adatabase.h"
 #include "src/experimental/atailentry.h"

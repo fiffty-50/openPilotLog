@@ -22,13 +22,10 @@
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include "src/database/db.h"
 #include "src/functions/astat.h"
 #include "src/functions/acalc.h"
 #include "src/gui/dialogues/newtaildialog.h"
-#include "src/classes/aircraft.h"
 #include "src/gui/dialogues/newpilotdialog.h"
-#include "src/database/entry_deprecated.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"

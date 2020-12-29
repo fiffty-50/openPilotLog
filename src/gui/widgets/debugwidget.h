@@ -8,9 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
-#include "src/database/db.h"
 #include "src/database/adatabasesetup.h"
-#include "src/database/dbinfo.h"
 #include "src/classes/adownload.h"
 #include "src/functions/areadcsv.h"
 

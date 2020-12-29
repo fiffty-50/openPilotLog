@@ -1,5 +1,23 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "aflightentry.h"
 #include "src/experimental/adatabase.h"
+#include "src/database/tablecolumnliterals.h"
 
 namespace experimental {
 
@@ -8,7 +26,7 @@ AFlightEntry::AFlightEntry()
 {}
 
 AFlightEntry::AFlightEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QStringLiteral("flights"), row_id))
+    : AEntry::AEntry(DataPosition(DB_TABLE_FLIGHTS, row_id))
 {}
 
 AFlightEntry::AFlightEntry(TableData table_data)
@@ -21,61 +39,40 @@ const QString AFlightEntry::summary()
         return QString();
 
     QString flight_summary;
-    flight_summary.append(tableData.value("doft").toString() + " ");
-    flight_summary.append(tableData.value("dept").toString() + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value("tofb").toString()) + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value("tonb").toString()) + " ");
-    flight_summary.append(tableData.value("dest").toString() + " ");
+    flight_summary.append(tableData.value(DB_FLIGHTS_DOFT).toString() + " ");
+    flight_summary.append(tableData.value(DB_FLIGHTS_DEPT).toString() + " ");
+    flight_summary.append(ACalc::minutesToString(tableData.value(DB_FLIGHTS_TOFB).toString()) + " ");
+    flight_summary.append(ACalc::minutesToString(tableData.value(DB_FLIGHTS_TONB).toString()) + " ");
+    flight_summary.append(tableData.value(DB_FLIGHTS_DEST).toString() + " ");
 
     return flight_summary;
 }
 
 const QString AFlightEntry::getRegistration()
 {
-    QString tail_id = tableData.value(QLatin1String("acft")).toString();
-    if(tail_id.isEmpty())
-        return QString();
-
-    QString statement = "SELECT registration "
-                        "FROM tails "
-                        "WHERE ROWID =" + tail_id;
-
-    auto tail_registration = aDB()->customQuery(statement, 1);
-
-    if(tail_registration.isEmpty()) {
-        return QString();
-    } else {
-        return tail_registration.first();
-    }
+    ATailEntry acft = aDB()->resolveForeignTail(tableData.value(DB_FLIGHTS_ACFT).toInt());
+    return acft.registration();
 }
 
 const QString AFlightEntry::getPilotName(pilot pilot_)
 {
-    QString row_id;
     switch (pilot_) {
-    case pilot::pic:
-        row_id = tableData.value(QLatin1String("pic")).toString();
-        break;
-    case pilot::sic:
-        row_id = tableData.value(QLatin1String("sic")).toString();
-        break;
-    case pilot::thirdPilot:
-        row_id = tableData.value(QLatin1String("thirdPilot")).toString();
+    case pilot::pic: {
+        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_PIC).toInt());
+        return foreign_pilot.name();
         break;
     }
-    if(row_id == QString())
-        return row_id;
-
-    QString statement = "SELECT lastname||', '||firstname "
-                        "FROM pilots "
-                        "WHERE ROWID =" + row_id;
-
-    auto pilot_name = aDB()->customQuery(statement, 1);
-    if(pilot_name.isEmpty()) {
-        return QString();
-    } else {
-        return pilot_name.first();
+    case pilot::sic: {
+        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_SECONDPILOT).toInt());
+        return foreign_pilot.name();
     }
+    case pilot::thirdPilot: {
+        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_THIRDPILOT).toInt());
+        return foreign_pilot.name();
+        break;
+    } // case scope
+    } // switch (pilot_)
+    return QString();
 }
 
 } // namespace experimental

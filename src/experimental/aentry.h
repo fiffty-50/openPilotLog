@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ENTRY_H
-#define ENTRY_H
+#ifndef AENTRY_H
+#define AENTRY_H
 
 #include <QString>
 #include <QStringList>
@@ -62,4 +62,4 @@ public:
 
 }
 
-#endif // ENTRY_H
+#endif // AENTRY_H

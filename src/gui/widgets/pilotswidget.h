@@ -24,7 +24,6 @@
 #include <QDebug>
 #include <QTableView>
 #include "src/classes/asettings.h"
-#include "src/classes/pilot.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 
 namespace Ui {

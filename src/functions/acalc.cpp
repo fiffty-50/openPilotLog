@@ -1,6 +1,7 @@
 #include "acalc.h"
 #include "src/testing/adebug.h"
 #include "src/experimental/adatabase.h"
+#include "src/classes/asettings.h"
 
 using namespace ACalc;
 using namespace experimental;

@@ -17,7 +17,6 @@
  */
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
-#include "src/database/dbinfo.h"
 #include "src/testing/adebug.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
@@ -325,7 +324,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     auto message_box = QMessageBox(this);
-    QString SQLITE_VERSION = DbInfo().version;
+    QString SQLITE_VERSION = aDB()->sqliteVersion();
     QString text = QMessageBox::tr(
 
                        "<h3><center>About openPilotLog</center></h3>"

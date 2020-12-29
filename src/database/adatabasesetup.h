@@ -19,8 +19,7 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
-#include "src/database/db.h"
-#include "src/database/dbinfo.h"
+#include "src/experimental/adatabase.h"
 #include "src/functions/areadcsv.h"
 
 /*!

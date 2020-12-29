@@ -55,10 +55,10 @@ struct DataPosition : QPair<TableName, RowId> {
     DataPosition(const DataPosition& other) = default;
     DataPosition& operator=(const DataPosition& other) = default;
 };
-auto const DEFAULT_PILOT_POSITION = DataPosition("pilots", 0);
-auto const DEFAULT_TAIL_POSITION = DataPosition("tails", 0);
-auto const DEFAULT_AIRCRAFT_POSITION = DataPosition("aircraft", 0);
-auto const DEFAULT_FLIGHT_POSITION = DataPosition("flights", 0);
+auto const DEFAULT_PILOT_POSITION    = DataPosition(QStringLiteral("pilots"), 0);
+auto const DEFAULT_TAIL_POSITION     = DataPosition(QStringLiteral("tails"), 0);
+auto const DEFAULT_AIRCRAFT_POSITION = DataPosition(QStringLiteral("aircraft"), 0);
+auto const DEFAULT_FLIGHT_POSITION   = DataPosition(QStringLiteral("flights"), 0);
 
 }
 

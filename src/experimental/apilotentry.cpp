@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "apilotentry.h"
+#include "src/database/tablecolumnliterals.h"
 
 namespace experimental {
 
@@ -24,7 +25,7 @@ APilotEntry::APilotEntry()
 {}
 
 APilotEntry::APilotEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QStringLiteral("pilots"), row_id))
+    : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
 {}
 
 APilotEntry::APilotEntry(TableData table_data)
@@ -34,10 +35,10 @@ APilotEntry::APilotEntry(TableData table_data)
 const QString APilotEntry::name()
 {
     if (tableData.isEmpty())
-        return QLatin1String("");
+        return DB_NULL;
 
-    return tableData.value(QStringLiteral("lastname")).toString() + ','
-           +tableData.value(QStringLiteral("firstname")).toString().left(1) + '.';
+    return tableData.value(DB_PILOTS_LASTNAME).toString() + ','
+           +tableData.value(DB_PILOTS_FIRSTNAME).toString().left(1) + '.';
 }
 
 } // namespace experimental

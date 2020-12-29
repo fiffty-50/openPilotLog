@@ -15,18 +15,24 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef __DB_H__
-#define __DB_H__
+#ifndef ADATABASE_H
+#define ADATABASE_H
 
 #include <QPair>
 #include <QMap>
 #include <QString>
+#include <QDir>
+#include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlTableModel>
-#include "src/database/dbinfo.h"
-#include "src/testing/adebug.h"
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlField>
 
+#include "decl.h"
+#include "src/database/tablecolumnliterals.h"
 #include "aentry.h"
 #include "apilotentry.h"
 #include "atailentry.h"
@@ -38,18 +44,18 @@ namespace experimental {
 
 // [G]: Suspicious documentation -,O
 /*!
- * \brief The DBTarget enum provides the items for which QCompleter
- * completion lists are provided from the database.
+ * \brief The DBTarget enum lists database items that are
+ * used by completers, for content matching or need to be accessed programatically.
  */
 enum class ADatabaseTarget
 {
+    aircraft,
     airport_identifier_icao,
     airport_identifier_iata,
     airport_identifier_all,
     airport_names,
     pilots,
     registrations,
-    aircraft,
     companies,
     tails
 };
@@ -85,6 +91,9 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* getInstance();
     ADatabaseError lastError;
+    TableNames getTableNames() const;
+    TableColumns getTableColumns() const;
+    const QString sqliteVersion();
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -215,6 +224,20 @@ public:
      */
     QList<int> getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target);
 
+    /*!
+     * \brief Resolves the foreign key in a flight entry
+     * \return The Pilot Entry referencted by the foreign key.
+     */
+    APilotEntry resolveForeignPilot(int foreign_key);
+
+    /*!
+     * \brief Resolves the foreign key in a flight entry
+     * \return The Tail Entry referencted by the foreign key.
+     */
+    ATailEntry resolveForeignTail(int foreign_key);
+
+
+
 signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.
@@ -236,4 +259,4 @@ ADatabase* aDB();
 
 }  // namespace experimental
 
-#endif
+#endif // ADATABASE_H
