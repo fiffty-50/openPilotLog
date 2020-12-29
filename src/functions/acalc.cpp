@@ -1,10 +1,9 @@
 #include "acalc.h"
 #include "src/testing/adebug.h"
-#include "src/experimental/adatabase.h"
+#include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 
 using namespace ACalc;
-using namespace experimental;
 
 /*!
  * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm

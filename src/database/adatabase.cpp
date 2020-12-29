@@ -20,9 +20,6 @@
 
 const auto SQL_DRIVER = QStringLiteral("QSQLITE");
 
-
-namespace experimental {
-
 ADatabaseError::ADatabaseError(QString msg_)
     : QSqlError::QSqlError(msg_)
 {}
@@ -332,12 +329,12 @@ bool ADatabase::insert(AEntry new_entry)
 
 }
 
-TableData ADatabase::getEntryData(DataPosition data_position)
+RowData ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
     if (!tableNames.contains(data_position.first)) {
         DEB(data_position.first << " not a table in the database. Unable to retreive Entry data.");
-        return TableData();
+        return RowData();
     }
 
     //Check Database for rowId
@@ -353,14 +350,14 @@ TableData ADatabase::getEntryData(DataPosition data_position)
         DEB("SQL error: " << check_query.lastError().text());
         DEB("Statement: " << statement);
         lastError = check_query.lastError().text();
-        return TableData();
+        return RowData();
     }
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
         DEB("No Entry found for row id: " << data_position.second );
         lastError = ADatabaseError("Database entry not found.");
-        return TableData();
+        return RowData();
     }
 
     // Retreive TableData
@@ -377,11 +374,11 @@ TableData ADatabase::getEntryData(DataPosition data_position)
         DEB("SQL error: " << select_query.lastError().text());
         DEB("Statement: " << statement);
         lastError = select_query.lastError().text();
-        return TableData();
+        return RowData();
     }
 
     select_query.next();
-    TableData entry_data;
+    RowData entry_data;
 
     for (const auto &column : tableColumns.value(data_position.first)) {
         entry_data.insert(column, select_query.value(column));
@@ -621,5 +618,3 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
 }
 
 ADatabase* aDB() { return ADatabase::getInstance(); }
-
-}// namespace experimental

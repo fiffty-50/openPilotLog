@@ -16,9 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "astat.h"
+#include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
-
-using namespace experimental;
 
 /*!
  * \brief AStat::totalTime Looks up Total Blocktime in the flights database

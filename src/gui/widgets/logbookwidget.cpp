@@ -17,9 +17,12 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-#include "src/testing/adebug.h"
 
-using namespace experimental;
+#include "src/classes/aflightentry.h"
+#include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
+#include "src/gui/dialogues/newflightdialog.h"
+#include "src/testing/adebug.h"
 
 const QMap<int, QString> FILTER_MAP = {
     {0, "Date LIKE \"%"},
@@ -202,10 +205,10 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         messageBox->exec();
         return;
     } else if (selectedFlights.length() > 0 && selectedFlights.length() < 11) {
-        QList<experimental::AFlightEntry> flights_list;
+        QList<AFlightEntry> flights_list;
 
         for (const auto &flight_id : selectedFlights) {
-            flights_list.append(experimental::aDB()->getFlightEntry(flight_id));
+            flights_list.append(aDB()->getFlightEntry(flight_id));
         }
 
         QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";

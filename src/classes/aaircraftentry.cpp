@@ -1,5 +1,5 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
+ *openTail Log - A FOSS Tail Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,35 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aentry.h"
+#include "aaircraftentry.h"
 
-namespace experimental {
-
-AEntry::AEntry(DataPosition position_)
-    : position(position_)
+AAircraftEntry::AAircraftEntry()
+    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
 {}
 
-AEntry::AEntry(TableData table_data)
-    : tableData(table_data)
+AAircraftEntry::AAircraftEntry(int row_id)
+    : AEntry::AEntry(DataPosition(DB_TABLE_AIRCRAFT, row_id))
 {}
 
-AEntry::AEntry(DataPosition position_, TableData table_data)
-    : position(position_), tableData(table_data)
+AAircraftEntry::AAircraftEntry(RowData table_data)
+    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION, table_data)
 {}
-
-void AEntry::setData(TableData table_data)
-{
-    tableData = table_data;
-}
-
-const DataPosition& AEntry::getPosition()
-{
-    return position;
-}
-
-const TableData& AEntry::getData()
-{
-    return tableData;
-}
-
-}  // namespace experimental

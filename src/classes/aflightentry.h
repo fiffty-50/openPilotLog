@@ -18,10 +18,8 @@
 #ifndef AFLIGHTENTRY_H
 #define AFLIGHTENTRY_H
 
-#include "src/experimental/aentry.h"
+#include "src/classes/aentry.h"
 #include "src/functions/acalc.h"
-
-namespace experimental {
 
 class AFlightEntry : public AEntry {
 public:
@@ -29,7 +27,7 @@ public:
     AFlightEntry(const AFlightEntry& pe) = default;
     AFlightEntry& operator=(const AFlightEntry& pe) = default;
     AFlightEntry(int row_id);
-    AFlightEntry(TableData table_data);
+    AFlightEntry(RowData table_data);
 
     enum pilot { pic, sic, thirdPilot };
 
@@ -50,7 +48,5 @@ public:
      */
     const QString getPilotName(pilot);
 };
-
-} // namespace experimental
 
 #endif // AFLIGHTENTRY_H

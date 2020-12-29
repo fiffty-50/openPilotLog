@@ -31,18 +31,13 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
-#include "decl.h"
-#include "src/database/tablecolumnliterals.h"
-#include "aentry.h"
-#include "apilotentry.h"
-#include "atailentry.h"
-#include "aaircraftentry.h"
-#include "aflightentry.h"
+#include "src/database/declarations.h"
+#include "src/classes/aentry.h"
+#include "src/classes/apilotentry.h"
+#include "src/classes/atailentry.h"
+#include "src/classes/aaircraftentry.h"
+#include "src/classes/aflightentry.h"
 
-namespace experimental {
-
-
-// [G]: Suspicious documentation -,O
 /*!
  * \brief The DBTarget enum lists database items that are
  * used by completers, for content matching or need to be accessed programatically.
@@ -154,7 +149,7 @@ public:
     /*!
      * \brief retreive entry data from the database to create an entry object
      */
-    TableData getEntryData(DataPosition data_position);
+    RowData getEntryData(DataPosition data_position);
 
     /*!
      * \brief retreive an Entry from the database.
@@ -256,7 +251,5 @@ signals:
  * aDB()->commit(...)
  */
 ADatabase* aDB();
-
-}  // namespace experimental
 
 #endif // ADATABASE_H

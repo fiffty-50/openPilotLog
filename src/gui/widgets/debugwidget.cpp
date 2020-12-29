@@ -1,8 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
 
-using namespace experimental;
-
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DebugWidget)
@@ -177,7 +175,6 @@ void DebugWidget::on_debugPushButton_clicked()
     qlonglong number_of_runs = 5000;
     long time1 = 0;
     long time2 = 0;
-    using namespace experimental;
     {
 
         ATimer timer;
@@ -204,7 +201,6 @@ void DebugWidget::on_debugPushButton_clicked()
 
 /*qlonglong number_of_runs = 500;
         long time1 = 0;
-        using namespace experimental;
         {
 
             ATimer timer;

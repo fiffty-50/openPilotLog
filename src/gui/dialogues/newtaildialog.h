@@ -25,9 +25,9 @@
 
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
-#include "src/experimental/adatabase.h"
-#include "src/experimental/atailentry.h"
-#include "src/experimental/aaircraftentry.h"
+#include "src/database/adatabase.h"
+#include "src/classes/atailentry.h"
+#include "src/classes/aaircraftentry.h"
 
 namespace Ui {
 class NewTail;
@@ -44,9 +44,9 @@ class NewTailDialog : public QDialog
     Q_OBJECT
 
 public:
-    // experimental create new tail
+    //create new tail
     explicit NewTailDialog(QString new_registration, QWidget *parent = nullptr);
-    // experimental edit existing tail
+    //edit existing tail
     explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();
@@ -54,7 +54,7 @@ private:
 
     Ui::NewTail *ui;
 
-    experimental::ATailEntry entry;
+    ATailEntry entry;
 
     QStringList aircraftList;
 
@@ -62,7 +62,7 @@ private:
 
     void setupCompleter();
     void setupValidators();
-    void fillForm(experimental::AEntry entry, bool is_template);
+    void fillForm(AEntry entry, bool is_template);
     bool verify();
     void submitForm();
 

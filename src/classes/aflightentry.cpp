@@ -16,10 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aflightentry.h"
-#include "src/experimental/adatabase.h"
-#include "src/database/tablecolumnliterals.h"
-
-namespace experimental {
+#include "src/database/adatabase.h"
 
 AFlightEntry::AFlightEntry()
     : AEntry::AEntry(DEFAULT_FLIGHT_POSITION)
@@ -29,7 +26,7 @@ AFlightEntry::AFlightEntry(int row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_FLIGHTS, row_id))
 {}
 
-AFlightEntry::AFlightEntry(TableData table_data)
+AFlightEntry::AFlightEntry(RowData table_data)
     : AEntry::AEntry(DEFAULT_FLIGHT_POSITION, table_data)
 {}
 
@@ -74,5 +71,3 @@ const QString AFlightEntry::getPilotName(pilot pilot_)
     } // switch (pilot_)
     return QString();
 }
-
-} // namespace experimental

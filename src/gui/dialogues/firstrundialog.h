@@ -4,12 +4,6 @@
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
-#include "src/classes/asettings.h"
-#include "src/testing/adebug.h"
-#include "src/experimental/apilotentry.h"
-#include "src/experimental/adatabase.h"
-#include "src/classes/adownload.h"
-#include "src/database/adatabasesetup.h"
 
 namespace Ui {
 class FirstRunDialog;

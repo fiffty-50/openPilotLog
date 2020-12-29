@@ -16,9 +16,6 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "atailentry.h"
-#include "src/database/tablecolumnliterals.h"
-
-namespace experimental {
 
 ATailEntry::ATailEntry()
     : AEntry::AEntry(DEFAULT_TAIL_POSITION)
@@ -28,7 +25,7 @@ ATailEntry::ATailEntry(int row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_TAILS, row_id))
 {}
 
-ATailEntry::ATailEntry(TableData table_data)
+ATailEntry::ATailEntry(RowData table_data)
     : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
 {}
 
@@ -49,5 +46,3 @@ const QString ATailEntry::type()
 
     return type_string;
 }
-
-} // namespace experimental

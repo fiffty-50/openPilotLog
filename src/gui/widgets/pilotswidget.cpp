@@ -18,8 +18,9 @@
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
+#include "src/classes/apilotentry.h"
 
-using namespace experimental;
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PilotsWidget)

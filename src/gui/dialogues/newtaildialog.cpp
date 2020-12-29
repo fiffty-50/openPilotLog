@@ -18,7 +18,6 @@
 #include "newtaildialog.h"
 #include "ui_newtail.h"
 #include "src/testing/adebug.h"
-#include "src/database/tablecolumnliterals.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -35,7 +34,7 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB("new NewTailDialog (experimental)");
+    DEB("new NewTailDialog");
     ui->setupUi(this);
 
     setupCompleter();
@@ -45,15 +44,14 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     ui->searchLineEdit->setStyleSheet("border: 1px solid blue");
     ui->searchLineEdit->setFocus();
 
-    entry = experimental::ATailEntry();
+    entry = ATailEntry();
 }
 
 NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    using namespace experimental;
-    DEB("New experimental New Pilot Dialog (edit existing)");
+    DEB("New New Pilot Dialog (edit existing)");
     ui->setupUi(this);
 
     ui->searchLabel->hide();
@@ -80,7 +78,6 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    using namespace experimental;
     idMap = aDB()->getIdMap(ADatabaseTarget::aircraft);
     aircraftList = aDB()->getCompletionList(ADatabaseTarget::aircraft);
 
@@ -114,9 +111,9 @@ void NewTailDialog::setupValidators()
  * a tail (ATail, used when editing an existing entry)
  * \param entry
  */
-void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
+void NewTailDialog::fillForm(AEntry entry, bool is_template)
 {
-    DEB("Filling Form for (experimental) a/c" << entry.getPosition());
+    DEB("Filling Form for a/c" << entry.getPosition());
     //fill Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
 
@@ -185,8 +182,7 @@ bool NewTailDialog::verify()
 void NewTailDialog::submitForm()
 {
     DEB("Creating Database Object...");
-    using namespace experimental;
-    TableData new_data;
+    RowData new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>("searchLineEdit"));
@@ -301,7 +297,6 @@ void NewTailDialog::onSearchCompleterActivated()
 
             DEB("Template Selected. aircraft_id is: " << idMap.value(text));
             //call autofiller for dialog
-            using namespace experimental;
             fillForm(aDB()->getAircraftEntry(idMap.value(text)), true);
             ui->searchLineEdit->setStyleSheet("border: 1px solid green");
             ui->searchLabel->setText(text);

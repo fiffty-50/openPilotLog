@@ -17,6 +17,9 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
+
+#include "src/database/adatabase.h"
+#include "src/classes/aentry.h"
 #include "src/testing/adebug.h"
 
 /* Examples for names around the world:
@@ -58,8 +61,6 @@ static const auto LINE_EDIT_VALIDATORS = QVector{
         COMPANY_VALID,
         EMPLOYEENR_VALID
 };
-
-using namespace experimental;
 
 // For creating a new entry
 NewPilotDialog::NewPilotDialog(QWidget *parent) :
@@ -140,7 +141,7 @@ void NewPilotDialog::submitForm()
 {
     DEB("Collecting User Input...");
 
-    TableData new_data;
+    RowData new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove("LineEdit");

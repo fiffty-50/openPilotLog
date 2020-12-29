@@ -23,11 +23,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCompleter>
-
-#include "src/experimental/adatabase.h"
-#include "src/experimental/aentry.h"
-#include "src/experimental/apilotentry.h"
-#include "src/experimental/decl.h"
+#include "src/classes/apilotentry.h"
 
 namespace Ui {
 class NewPilot;
@@ -46,7 +42,7 @@ private slots:
 private:
     Ui::NewPilot *ui;
 
-    experimental::APilotEntry pilotEntry;
+    APilotEntry pilotEntry;
 
     inline void setup();
 

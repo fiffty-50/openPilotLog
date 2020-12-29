@@ -16,7 +16,9 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabasesetup.h"
+#include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
+#include "src/functions/areadcsv.h"
 
 
 // Statements for creation of database tables, Revision 15
@@ -271,7 +273,7 @@ bool ADataBaseSetup::createDatabase()
     }
 
     // call connect again to (re-)populate tableNames and columnNames
-    experimental::aDB()->connect();
+    aDB()->connect();
 
     DEB("Populating tables...");
     if (!importDefaultData()) {
@@ -383,9 +385,9 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
-    DEB("Table names: " << experimental::aDB()->getTableNames());
+    DEB("Table names: " << aDB()->getTableNames());
     DEB("Importing Data to" << tableName);
-    if (!experimental::aDB()->getTableNames().contains(tableName)){
+    if (!aDB()->getTableNames().contains(tableName)){
         DEB(tableName << "is not a table in the database. Aborting.");
         DEB("Please check input data.");
         return false;
@@ -394,7 +396,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
     QString statement = "INSERT INTO " + tableName + " (";
     QString placeholder = ") VALUES (";
     for (auto& csvColumn : fromCSV) {
-        if(experimental::aDB()->getTableColumns().value(tableName).contains(csvColumn.first())) {
+        if(aDB()->getTableColumns().value(tableName).contains(csvColumn.first())) {
             statement += csvColumn.first() + ',';
             csvColumn.removeFirst();
             placeholder.append("?,");

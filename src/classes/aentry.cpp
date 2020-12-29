@@ -15,25 +15,31 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef APILOTENTRY_H
-#define APILOTENTRY_H
+#include "aentry.h"
 
-#include "src/experimental/aentry.h"
-#include "src/experimental/decl.h"
+AEntry::AEntry(DataPosition position_)
+    : position(position_)
+{}
 
-namespace experimental {
+AEntry::AEntry(RowData table_data)
+    : tableData(table_data)
+{}
 
-struct APilotEntry : public AEntry {
-public:
-    APilotEntry();
-    APilotEntry(const APilotEntry& pe) = default;
-    APilotEntry& operator=(const APilotEntry& pe) = default;
-    APilotEntry(int row_id);
-    APilotEntry(TableData table_data);
+AEntry::AEntry(DataPosition position_, RowData table_data)
+    : position(position_), tableData(table_data)
+{}
 
-    const QString name();
-};
+void AEntry::setData(RowData table_data)
+{
+    tableData = table_data;
+}
 
-} // namespace experimental
+const DataPosition& AEntry::getPosition()
+{
+    return position;
+}
 
-#endif // APILOTENTRY_H
+const RowData& AEntry::getData()
+{
+    return tableData;
+}

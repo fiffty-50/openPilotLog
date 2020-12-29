@@ -1,9 +1,12 @@
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
-
+#include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
+#include "src/database/adatabasesetup.h"
+#include "src/classes/apilotentry.h"
+#include "src/classes/adownload.h"
+#include "src/classes/asettings.h"
 const auto TEMPLATE_URL = QLatin1String("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
-
-using namespace experimental;
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),

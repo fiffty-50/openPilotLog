@@ -18,7 +18,7 @@
 #include "mainwindow.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
-#include "src/experimental/adatabase.h"
+#include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include <QApplication>
 #include <QProcess>
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings settings;
 
-    experimental::aDB()->connect();
+    aDB()->connect();
 
     QApplication openPilotLog(argc, argv);
     if(!setup()){

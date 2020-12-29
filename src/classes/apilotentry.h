@@ -1,5 +1,5 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
+ *openPilot Log - A FOSS Pilot Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,28 +15,21 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ATAILENTRY_H
-#define ATAILENTRY_H
+#ifndef APILOTENTRY_H
+#define APILOTENTRY_H
 
-#include "src/experimental/aentry.h"
-#include "src/experimental/decl.h"
-#include <QVariant>
+#include "src/classes/aentry.h"
+#include "src/database/declarations.h"
 
-namespace experimental {
-
-struct ATailEntry : public AEntry {
+struct APilotEntry : public AEntry {
 public:
-    ATailEntry();
-    ATailEntry(const ATailEntry& te) = default;
-    ATailEntry& operator=(const ATailEntry& te) = default;
-    ATailEntry(int row_id);
-    ATailEntry(TableData table_data);
+    APilotEntry();
+    APilotEntry(const APilotEntry& pe) = default;
+    APilotEntry& operator=(const APilotEntry& pe) = default;
+    APilotEntry(int row_id);
+    APilotEntry(RowData table_data);
 
-    const QString registration();
-
-    const QString type();
+    const QString name();
 };
 
-} // namespace experimental
-
-#endif // ATAILENTRY_H
+#endif // APILOTENTRY_H

@@ -1,5 +1,5 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
+ *openTail Log - A FOSS Tail Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,30 +15,24 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "apilotentry.h"
-#include "src/database/tablecolumnliterals.h"
+#ifndef ATAILENTRY_H
+#define ATAILENTRY_H
 
-namespace experimental {
+#include "src/classes/aentry.h"
+#include "src/database/declarations.h"
 
-APilotEntry::APilotEntry()
-    : AEntry::AEntry(DEFAULT_PILOT_POSITION)
-{}
+struct ATailEntry : public AEntry {
+public:
+    ATailEntry();
+    ATailEntry(const ATailEntry& te) = default;
+    ATailEntry& operator=(const ATailEntry& te) = default;
+    ATailEntry(int row_id);
+    ATailEntry(RowData table_data);
 
-APilotEntry::APilotEntry(int row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
-{}
+    const QString registration();
 
-APilotEntry::APilotEntry(TableData table_data)
-    : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
-{}
+    const QString type();
+};
 
-const QString APilotEntry::name()
-{
-    if (tableData.isEmpty())
-        return DB_NULL;
 
-    return tableData.value(DB_PILOTS_LASTNAME).toString() + ','
-           +tableData.value(DB_PILOTS_FIRSTNAME).toString().left(1) + '.';
-}
-
-} // namespace experimental
+#endif // ATAILENTRY_H

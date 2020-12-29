@@ -18,6 +18,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -76,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     /// [F] I understand how it is annoying to not have the database
     /// working when something has changed. Hopefully this check
     /// helps to avoid that in the future!
-    const int DATABASE_REVISION_NUMBER = 14;
+    const int DATABASE_REVISION_NUMBER = 15;
     QSqlQuery query;
     query.prepare("SELECT COUNT (*) FROM changelog");
     query.exec();
@@ -132,11 +133,11 @@ void MainWindow::on_actionDebug_triggered()
 
 void MainWindow::connectWidgets()
 {
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      logbookWidget, &LogbookWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
 
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,

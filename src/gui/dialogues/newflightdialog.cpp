@@ -17,10 +17,14 @@
  */
 #include "newflightdialog.h"
 #include "ui_newflight.h"
-#include "src/testing/adebug.h"
-#include "src/database/tablecolumnliterals.h"
+#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/functions/acalc.h"
+#include "src/testing/atimer.h"
+#include "src/database/adatabase.h"
 
-using namespace experimental;
+
+#include "src/testing/adebug.h"
 
 /////////////////////////////////////// DEBUG /////////////////////////////////////////////////////
 void NewFlightDialog::onInputRejected()
@@ -481,9 +485,9 @@ void NewFlightDialog::fillDeductibleData()
  * no input validation is done in this step and input data is assumed to be valid.
  * \return
  */
-TableData NewFlightDialog::collectInput()
+RowData NewFlightDialog::collectInput()
 {
-    TableData newData;
+    RowData newData;
     DEB("Collecting Input...");
     // Mandatory data
     newData.insert(DB_FLIGHTS_DOFT, ui->doftLineEdit->text());

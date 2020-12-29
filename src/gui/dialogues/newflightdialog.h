@@ -31,15 +31,9 @@
 #include <QTabWidget>
 #include <QKeyEvent>
 
-#include "src/gui/dialogues/newtaildialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
-
-#include "src/experimental/adatabase.h"
-#include "src/experimental/aflightentry.h"
-#include "src/experimental/apilotentry.h"
-#include "src/experimental/atailentry.h"
-#include "src/functions/acalc.h"
-#include "src/testing/atimer.h"
+#include "src/classes/aflightentry.h"
+#include "src/classes/apilotentry.h"
+#include "src/classes/atailentry.h"
 
 namespace Ui {
 class NewFlight;
@@ -98,7 +92,7 @@ private:
      * from an old entry, is used to fill the form for editing an entry, or is
      * filled with new data for adding a new entry to the logbook.
      */
-    experimental::AFlightEntry flightEntry;
+    AFlightEntry flightEntry;
 
     QList<QLineEdit*> mandatoryLineEdits;
     QList<QLineEdit*> primaryTimeLineEdits;
@@ -151,7 +145,7 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
-    experimental::TableData collectInput();
+    RowData collectInput();
 };
 
 

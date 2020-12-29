@@ -1,5 +1,5 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
+ *openPilot Log - A FOSS Pilot Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,25 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aaircraftentry.h"
+#include "apilotentry.h"
 
-namespace experimental {
-
-AAircraftEntry::AAircraftEntry()
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
+APilotEntry::APilotEntry()
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION)
 {}
 
-AAircraftEntry::AAircraftEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QLatin1String("aircraft"), row_id))
+APilotEntry::APilotEntry(int row_id)
+    : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
 {}
 
-AAircraftEntry::AAircraftEntry(TableData table_data)
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION, table_data)
+APilotEntry::APilotEntry(RowData table_data)
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
 {}
 
-} // namespace experimental
+const QString APilotEntry::name()
+{
+    if (tableData.isEmpty())
+        return DB_NULL;
+
+    return tableData.value(DB_PILOTS_LASTNAME).toString() + ','
+           +tableData.value(DB_PILOTS_FIRSTNAME).toString().left(1) + '.';
+}

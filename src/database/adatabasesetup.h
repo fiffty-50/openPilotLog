@@ -19,8 +19,6 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
-#include "src/experimental/adatabase.h"
-#include "src/functions/areadcsv.h"
 
 /*!
  * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
