@@ -13,8 +13,8 @@
  * class Myclass {
  *  ...
  * 	REPR(MyClass,
- *       "member1=" << object.member1 << ", "
- *       "something2" << object.calculate()
+ *       "member1=" + object.member1 + ", "
+ *       "something2" + object.calculate()
  *      )
  * };
  *
@@ -22,13 +22,13 @@
  * DEB mc;
  *
  * output:
- * MyClass( member1= 3000 , something2= "A320" )
+ * MyClass(member1=3000, something2="A320")
  */
-#define REPR(cls, expr) \
+#define REPR(cls, str) \
 friend \
 QDebug operator<<(QDebug qdb, const cls& object) \
 { \
-    qdb << #cls "(" << expr << ')'; \
+    qdb << QString(#cls) + '(' + str + ')'; \
     return qdb; \
 }
 

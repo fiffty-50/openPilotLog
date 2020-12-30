@@ -19,25 +19,23 @@
 #include "src/astandardpaths.h"
 #include <QSettings>
 
-QSettings ASettings::settings;
-
 void ASettings::setup()
 {
-    settings.setDefaultFormat(QSettings::IniFormat);
-    settings.setPath(QSettings::IniFormat, QSettings::UserScope, AStandardPaths::getPaths()[QStandardPaths::AppDataLocation]);
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, AStandardPaths::getPaths()[QStandardPaths::AppDataLocation]);
 }
 
 QVariant ASettings::read(const QString &key)
 {
-    return settings.value(key);
+    return QSettings().value(key);
 }
 
 void ASettings::write(const QString &key, const QVariant &val)
 {
-    settings.setValue(key, val);
+    QSettings().setValue(key, val);
 }
 
-QSettings& ASettings::getSettings()
+QSettings ASettings::settings()
 {
-    return settings;
+    return QSettings();
 }

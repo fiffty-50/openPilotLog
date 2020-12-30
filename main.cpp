@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 //    }
 
     //Theming
-    int selectedtheme = ASettings::getSettings().value("main/theme").toInt();
+    int selectedtheme = ASettings::settings().value("main/theme").toInt();
     QDir::setCurrent("/themes");
     switch (2) {
     case 1:{
