@@ -26,13 +26,18 @@
  */
 namespace ASettings
 {
-    void setup();
 
-    QVariant read(const QString &key);
+/*!
+ * \brief Should be called after QCoreApplication::set...Name have been called.
+ */
+void setup();
 
-    void write(const QString &key, const QVariant &val);
+QVariant read(const QString &key);
 
-    QSettings settings();
+void write(const QString &key, const QVariant &val);
+
+QSettings settings();
+
 }
 
 #endif // ASETTINGS_H

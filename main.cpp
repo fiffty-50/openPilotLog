@@ -29,9 +29,9 @@
 #include <QStandardPaths>
 #include <QDebug>
 
-#define APPNAME "openPilotLog"
-#define ORGNAME APPNAME
-#define ORGDOMAIN "https://github.com/fiffty-50/openpilotlog"
+#define APPNAME QStringLiteral("openPilotLog")
+#define ORGNAME QStringLiteral("opl")
+#define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
 
 int main(int argc, char *argv[])
 {
