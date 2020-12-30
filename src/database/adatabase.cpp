@@ -56,7 +56,7 @@ ADatabase* ADatabase::getInstance()
 const QString ADatabase::sqliteVersion()
 {
     QSqlQuery query;
-    query.prepare("SELECT sqlite_version()");
+    query.prepare(QStringLiteral("SELECT sqlite_version()"));
     query.exec();
     query.next();
     return query.value(0).toString();
@@ -67,8 +67,8 @@ bool ADatabase::connect()
     if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
         return false;
 
-    QDir directory("data");
-    QString databaseLocation = directory.filePath("logbook.db");
+    QDir directory(QStringLiteral("data"));
+    QString databaseLocation = directory.filePath(QStringLiteral("logbook.db"));
     QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
     db.setDatabaseName(databaseLocation);
 
@@ -77,7 +77,7 @@ bool ADatabase::connect()
 
     DEB "Database connection established." << db.lastError().text();
     // Enable foreign key restrictions
-    QSqlQuery query("PRAGMA foreign_keys = ON;");
+    QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     tableNames = db.tables();
 
     QStringList column_names;
@@ -103,7 +103,7 @@ void ADatabase::disconnect()
 
 QSqlDatabase ADatabase::database()
 {
-    return QSqlDatabase::database("qt_sql_default_connection");
+    return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
 }
 
 bool ADatabase::commit(AEntry entry)
@@ -119,7 +119,7 @@ bool ADatabase::remove(AEntry entry)
 {
     if (!exists(entry)) {
         DEB "Error: Database entry not found.";
-        lastError = ADatabaseError("Database entry not found.");
+        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
 
@@ -150,7 +150,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
 {
     int errorCount = 0;
     QSqlQuery query;
-    query.prepare("BEGIN EXCLUSIVE TRANSACTION");
+    query.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
     query.exec();
 
     for (const auto& data_position : data_position_list) {
@@ -170,7 +170,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
     }
 
     if (errorCount == 0) {
-        query.prepare("COMMIT");
+        query.prepare(QStringLiteral("COMMIT"));
         query.exec();
         if(query.lastError().type() == QSqlError::NoError) {
             emit dataBaseUpdated();
@@ -181,7 +181,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             return false;
         }
     } else {
-        query.prepare("ROLLBACK");
+        query.prepare(QStringLiteral("ROLLBACK"));
         query.exec();
         lastError = "Transaction unsuccessful (no changes have been made). Error count: " + QString::number(errorCount);
         return false;
@@ -213,7 +213,7 @@ bool ADatabase::exists(AEntry entry)
         return true;
     } else {
         DEB "Database entry not found.";
-        lastError = ADatabaseError("Database entry not found.");
+        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
 }
@@ -242,7 +242,7 @@ bool ADatabase::exists(DataPosition data_position)
         return true;
     } else {
         DEB "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
-        lastError = ADatabaseError("Database entry not found.");
+        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
 }
@@ -428,21 +428,21 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append("SELECT lastname||', '||firstname FROM pilots");
+        statement.append(QStringLiteral("SELECT lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
-                         "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
+                         "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
     case ADatabaseTarget::airport_identifier_all:
-        statement.append("SELECT icao FROM airports UNION SELECT iata FROM airports");
+        statement.append(QStringLiteral("SELECT icao FROM airports UNION SELECT iata FROM airports"));
         break;
     case ADatabaseTarget::registrations:
-        statement.append("SELECT registration FROM tails");
+        statement.append(QStringLiteral("SELECT registration FROM tails"));
         break;
     case ADatabaseTarget::companies:
-        statement.append("SELECT company FROM pilots");
+        statement.append(QStringLiteral("SELECT company FROM pilots"));
         break;
     default:
         DEB "Not a valid completer target for this function.";
@@ -476,24 +476,24 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append("SELECT ROWID, lastname||', '||firstname FROM pilots");
+        statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
                          "UNION "
-                         "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL");
+                         "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
     case ADatabaseTarget::airport_identifier_icao:
-        statement.append("SELECT ROWID, icao FROM airports");
+        statement.append(QStringLiteral("SELECT ROWID, icao FROM airports"));
         break;
     case ADatabaseTarget::airport_identifier_iata:
-        statement.append("SELECT ROWID, iata FROM airports WHERE iata NOT NULL");
+        statement.append(QStringLiteral("SELECT ROWID, iata FROM airports WHERE iata NOT NULL"));
         break;
     case ADatabaseTarget::airport_names:
-        statement.append("SELECT ROWID, name FROM airports");
+        statement.append(QStringLiteral("SELECT ROWID, name FROM airports"));
         break;
     case ADatabaseTarget::tails:
-        statement.append("SELECT ROWID, registration FROM tails");
+        statement.append(QStringLiteral("SELECT ROWID, registration FROM tails"));
         break;
     default:
         DEB "Not a valid completer target for this function.";
@@ -539,7 +539,7 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
     if (query.first()) {
         return query.value(0).toInt();
     } else {
-        lastError = ADatabaseError("Database entry not found.");
+        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         DEB "No entry found.";
         return 0;
     }

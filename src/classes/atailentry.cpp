@@ -21,7 +21,7 @@ ATailEntry::ATailEntry()
     : AEntry::AEntry(DEFAULT_TAIL_POSITION)
 {}
 
-ATailEntry::ATailEntry(int row_id)
+ATailEntry::ATailEntry(RowId row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_TAILS, row_id))
 {}
 

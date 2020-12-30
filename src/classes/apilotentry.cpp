@@ -21,7 +21,7 @@ APilotEntry::APilotEntry()
     : AEntry::AEntry(DEFAULT_PILOT_POSITION)
 {}
 
-APilotEntry::APilotEntry(int row_id)
+APilotEntry::APilotEntry(RowId row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
 {}
 

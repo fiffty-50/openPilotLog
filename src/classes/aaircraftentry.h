@@ -7,10 +7,11 @@
 struct AAircraftEntry : public AEntry {
 public:
     AAircraftEntry();
+    AAircraftEntry(RowId row_id);
+    AAircraftEntry(RowData table_data);
+
     AAircraftEntry(const AAircraftEntry& te) = default;
     AAircraftEntry& operator=(const AAircraftEntry& te) = default;
-    AAircraftEntry(int row_id);
-    AAircraftEntry(RowData table_data);
 };
 
 #endif // AAIRCRAFTENTRY_H

@@ -515,8 +515,8 @@ RowData NewFlightDialog::collectInput()
               : newData.insert(DB_FLIGHTS_TSPSE, ACalc::stringToMinutes(ui->tSPSETimeLineEdit->text()));
 
     ui->tSPMETimeLineEdit->text().isEmpty() ?
-                newData.insert(DB_FLIGHTS_SPME, DB_NULL)
-              : newData.insert(DB_FLIGHTS_SPME, ACalc::stringToMinutes(ui->tSPMETimeLineEdit->text()));
+                newData.insert(DB_FLIGHTS_TSPME, DB_NULL)
+              : newData.insert(DB_FLIGHTS_TSPME, ACalc::stringToMinutes(ui->tSPMETimeLineEdit->text()));
     ui->tMPTimeLineEdit->text().isEmpty() ?
                 newData.insert(DB_FLIGHTS_TMP, DB_NULL)
               : newData.insert(DB_FLIGHTS_TMP, ACalc::stringToMinutes(ui->tMPTimeLineEdit->text()));

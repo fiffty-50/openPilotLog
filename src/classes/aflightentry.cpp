@@ -22,7 +22,7 @@ AFlightEntry::AFlightEntry()
     : AEntry::AEntry(DEFAULT_FLIGHT_POSITION)
 {}
 
-AFlightEntry::AFlightEntry(int row_id)
+AFlightEntry::AFlightEntry(RowId row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_FLIGHTS, row_id))
 {}
 

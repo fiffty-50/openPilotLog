@@ -24,10 +24,11 @@
 struct APilotEntry : public AEntry {
 public:
     APilotEntry();
+    APilotEntry(RowId row_id);
+    APilotEntry(RowData table_data);
+
     APilotEntry(const APilotEntry& pe) = default;
     APilotEntry& operator=(const APilotEntry& pe) = default;
-    APilotEntry(int row_id);
-    APilotEntry(RowData table_data);
 
     const QString name();
 };

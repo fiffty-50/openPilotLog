@@ -241,7 +241,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             displayModel->select();
         }
     } else if (selectedFlights.length() > 10) {
-        auto& warningMsg = "You have selected " + QString::number(selectedFlights.length())
+        auto warningMsg = "You have selected " + QString::number(selectedFlights.length())
                 + " flights.\n\n Deleting flights is irreversible.\n\n"
                   "Are you sure you want to proceed?";
         QMessageBox confirm;

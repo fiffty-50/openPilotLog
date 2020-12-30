@@ -26,7 +26,7 @@ public:
     ATailEntry();
     ATailEntry(const ATailEntry& te) = default;
     ATailEntry& operator=(const ATailEntry& te) = default;
-    ATailEntry(int row_id);
+    ATailEntry(RowId row_id);
     ATailEntry(RowData table_data);
 
     const QString registration();

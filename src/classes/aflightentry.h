@@ -24,10 +24,12 @@
 class AFlightEntry : public AEntry {
 public:
     AFlightEntry();
+    AFlightEntry(RowId row_id);
+    AFlightEntry(RowData table_data);
+
     AFlightEntry(const AFlightEntry& pe) = default;
     AFlightEntry& operator=(const AFlightEntry& pe) = default;
-    AFlightEntry(int row_id);
-    AFlightEntry(RowData table_data);
+
 
     enum class pilotPosition { pic, secondPilot, thirdPilot };
 

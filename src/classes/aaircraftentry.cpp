@@ -21,7 +21,7 @@ AAircraftEntry::AAircraftEntry()
     : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
 {}
 
-AAircraftEntry::AAircraftEntry(int row_id)
+AAircraftEntry::AAircraftEntry(RowId row_id)
     : AEntry::AEntry(DataPosition(DB_TABLE_AIRCRAFT, row_id))
 {}
 
