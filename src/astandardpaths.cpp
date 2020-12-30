@@ -22,7 +22,7 @@ void AStandardPaths::scan_paths()
         DEB "Scanning " << dir.path();
         if(!dir.exists()) {
             DEB"Creating " << dir.path();
-            dir.mkdir(path);
+            dir.mkpath(path);
         }
     }
 }
