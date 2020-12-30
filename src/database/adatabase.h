@@ -85,10 +85,11 @@ public:
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
     static ADatabase* getInstance();
-    ADatabaseError lastError;
     TableNames getTableNames() const;
     TableColumns getTableColumns() const;
     const QString sqliteVersion();
+
+    ADatabaseError lastError;
 
     /*!
      * \brief Connect to the database and populate database information.

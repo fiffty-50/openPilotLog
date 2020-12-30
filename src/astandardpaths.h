@@ -20,6 +20,7 @@ public:
     /// Initialise paths with corresponding StandardLocation paths
     static void setup();
 
+    static QString getPath(QStandardPaths::StandardLocation loc);
     static QMap<QStandardPaths::StandardLocation, QString> getPaths();
 
     /// Ensure standard app paths exist, if not mkdir them.

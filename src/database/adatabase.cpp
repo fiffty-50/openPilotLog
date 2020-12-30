@@ -17,6 +17,7 @@
  */
 #include "adatabase.h"
 #include "src/testing/adebug.h"
+#include "src/astandardpaths.h"
 
 #define DATABASE_VERSION 15
 const auto SQL_DRIVER = QStringLiteral("QSQLITE");
@@ -67,7 +68,9 @@ bool ADatabase::connect()
     if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
         return false;
 
-    QDir directory(QStringLiteral("data"));
+    QString path = AStandardPaths::getPath(QStandardPaths::AppDataLocation);
+    QDir directory(path);
+    // [G]: Where would it make sense to define the database file?. In the class perhaps?
     QString databaseLocation = directory.filePath(QStringLiteral("logbook.db"));
     QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
     db.setDatabaseName(databaseLocation);

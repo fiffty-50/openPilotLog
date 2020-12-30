@@ -22,7 +22,9 @@
 void ASettings::setup()
 {
     QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, AStandardPaths::getPaths()[QStandardPaths::AppDataLocation]);
+    QSettings::setPath(QSettings::IniFormat,
+                       QSettings::UserScope,
+                       AStandardPaths::getPaths()[QStandardPaths::AppConfigLocation]);
 }
 
 QVariant ASettings::read(const QString &key)

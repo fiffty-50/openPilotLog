@@ -4,10 +4,17 @@ QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::paths;
 
 void AStandardPaths::setup()
 {
-     paths = {
-        {QStandardPaths::AppConfigLocation, QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)},
-        {QStandardPaths::AppDataLocation, QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)},
+    auto settings_location = QStandardPaths::AppConfigLocation;
+    auto data_location = QStandardPaths::AppDataLocation;
+    paths = {
+        {settings_location, QStandardPaths::writableLocation(settings_location)},
+        {data_location, QStandardPaths::writableLocation(data_location)},
     };
+}
+
+QString AStandardPaths::getPath(QStandardPaths::StandardLocation loc)
+{
+    return paths[loc];
 }
 
 QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::getPaths()

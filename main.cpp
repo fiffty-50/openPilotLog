@@ -51,10 +51,10 @@ int main(int argc, char *argv[])
 
     aDB()->connect();
 
-//    if (!ASettings::read("setup/setup_complete").toBool()) {
-//        FirstRunDialog dialog;
-//        dialog.exec();
-//    }
+    if (!ASettings::read("setup/setup_complete").toBool()) {
+        FirstRunDialog dialog;
+        dialog.exec();
+    }
 
     //Theming
     int selectedtheme = ASettings::settings().value("main/theme").toInt();
