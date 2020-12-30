@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     //Theming
     int selectedtheme = ASettings::getSettings().value("main/theme").toInt();
     QDir::setCurrent("/themes");
-    switch (2) {
+    switch (selectedtheme) {
     case 1:{
         DEB "main :: Loading light theme";
         QFile file(":light.qss");

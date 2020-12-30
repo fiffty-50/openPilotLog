@@ -133,7 +133,7 @@ bool ADatabase::remove(AEntry entry)
 
     if (query.lastError().type() == QSqlError::NoError)
     {
-        DEB "Entry " << entry.getPosition().tableName << entry.getPosition().rowId << " removed.";
+        DEB "Entry " << entry.getPosition() << " removed.";
         emit dataBaseUpdated();
         lastError = QString();
         return true;

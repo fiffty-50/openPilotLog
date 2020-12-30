@@ -2,6 +2,7 @@
 #define DECLARATIONS_H
 
 #include <QtCore>
+#include "src/testing/adebug.h"
 
 /*!
  * \brief An alias for QString
@@ -57,6 +58,17 @@ struct DataPosition {
 
     DataPosition(const DataPosition& other) = default;
     DataPosition& operator=(const DataPosition& other) = default;
+
+    // Compatibility with qDebug
+    QString debug() const
+    {
+        DEB "Table: " + tableName + "RowId: " + QString::number(rowId);
+        return QString();
+    }
+    operator QString() const
+    {
+        return debug();    //overload for compatibility with qDebug()
+    }
 };
 
 // [F]:
