@@ -59,16 +59,10 @@ struct DataPosition {
     DataPosition(const DataPosition& other) = default;
     DataPosition& operator=(const DataPosition& other) = default;
 
-    // Compatibility with qDebug
-    QString debug() const
-    {
-        DEB "Table: " + tableName + "RowId: " + QString::number(rowId);
-        return QString();
-    }
-    operator QString() const
-    {
-        return debug();    //overload for compatibility with qDebug()
-    }
+    REPR(DataPosition,
+         "tableName=" << object.tableName << ", "
+         "rowId=" << object.rowId
+         )
 };
 
 // [F]:

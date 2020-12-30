@@ -5,4 +5,31 @@
 
 #define DEB qDebug() << __PRETTY_FUNCTION__ << "\t" <<
 
+/*!
+ * Representation macro for custom classes.
+ *
+ * Usage
+ * -----
+ * class Myclass {
+ *  ...
+ * 	REPR(MyClass,
+ *       "member1=" << object.member1 << ", "
+ *       "something2" << object.calculate()
+ *      )
+ * };
+ *
+ * MyClass mc;
+ * DEB mc;
+ *
+ * output:
+ * MyClass( member1= 3000 , something2= "A320" )
+ */
+#define REPR(cls, expr) \
+friend \
+QDebug operator<<(QDebug qdb, const cls& object) \
+{ \
+    qdb << #cls "(" << expr << ')'; \
+    return qdb; \
+}
+
 #endif

@@ -27,6 +27,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QStandardPaths>
+#include <QDebug>
 
 #define APPNAME "openPilotLog"
 #define ORGNAME APPNAME
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
     AStandardPaths::setup();
     AStandardPaths::scan_paths();
     if(!AStandardPaths::validate_paths()){
-        DEB("Standard paths not valid.");
+        DEB "Standard paths not valid.";
         return 1;
     }
 
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     //Theming
     int selectedtheme = ASettings::getSettings().value("main/theme").toInt();
     QDir::setCurrent("/themes");
-    switch (selectedtheme) {
+    switch (2) {
     case 1:{
         DEB "main :: Loading light theme";
         QFile file(":light.qss");
