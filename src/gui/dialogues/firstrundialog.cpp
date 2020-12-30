@@ -6,7 +6,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-const auto TEMPLATE_URL = QLatin1String("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
+const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 static inline
 void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
@@ -48,7 +48,7 @@ void FirstRunDialog::on_previousPushButton_clicked()
         ui->previousPushButton->setEnabled(false);
         break;
     case 2:
-        ui->nextPushButton->setText("Next");
+        ui->nextPushButton->setText(QStringLiteral("Next"));
         break;
     }
     ui->stackedWidget->setCurrentIndex(current_idx - 1);
@@ -62,15 +62,15 @@ void FirstRunDialog::on_nextPushButton_clicked()
     switch (current_idx) {
     case 0:
         if(ui->firstnameLineEdit->text().isEmpty()
-                || ui->lastnameLineEdit->text().isEmpty())
+           || ui->lastnameLineEdit->text().isEmpty())
         {
-            prompt_error_box("Error", "Please enter first and last name");
+            prompt_error_box(QStringLiteral("Error"), QStringLiteral("Please enter first and last name"));
             return;
         }
         ui->previousPushButton->setEnabled(true);
         break;
     case 1:
-        ui->nextPushButton->setText("Done");
+        ui->nextPushButton->setText(QStringLiteral("Done"));
         break;
     case 2:
         finish();
@@ -117,9 +117,8 @@ void FirstRunDialog::finish()
         case 1:
             ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
             break;
-        case 2:{
+        case 2:
             ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-        }
             break;
         default:
             break;
