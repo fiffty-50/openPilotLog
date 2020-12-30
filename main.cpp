@@ -28,13 +28,16 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 
+#define APPNAME "openPilotLog"
+#define ORGNAME APPNAME
+#define ORGDOMAIN "https://github.com/fiffty-50/openpilotlog"
 
 int main(int argc, char *argv[])
 {
     QApplication openPilotLog(argc, argv);
-    QCoreApplication::setOrganizationName("openPilotLog");
-    QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
-    QCoreApplication::setApplicationName("openPilotLog");
+    QCoreApplication::setOrganizationName(ORGNAME);
+    QCoreApplication::setOrganizationDomain(ORGDOMAIN);
+    QCoreApplication::setApplicationName(APPNAME);
 
     AStandardPaths::setup();
     AStandardPaths::scan_paths();
@@ -47,10 +50,10 @@ int main(int argc, char *argv[])
 
     aDB()->connect();
 
-    if (!ASettings::read("setup/setup_complete").toBool()) {
-        FirstRunDialog dialog;
-        dialog.exec();
-    }
+//    if (!ASettings::read("setup/setup_complete").toBool()) {
+//        FirstRunDialog dialog;
+//        dialog.exec();
+//    }
 
     //Theming
     int selectedtheme = ASettings::getSettings().value("main/theme").toInt();

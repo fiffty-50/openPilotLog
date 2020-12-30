@@ -82,7 +82,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     setup();
 
     pilotEntry = aDB()->getPilotEntry(rowId);
-    DEB "Pilot Entry position: " << pilotEntry.getPosition();
+    DEB "Pilot Entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     formFiller();
     ui->lastnameLineEdit->setFocus();
 }
@@ -150,7 +150,7 @@ void NewPilotDialog::submitForm()
     }
 
     pilotEntry.setData(new_data);
-    DEB "Pilot entry position: " << pilotEntry.getPosition();
+    DEB "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     DEB "Pilot entry data: " << pilotEntry.getData();
     if (!aDB()->commit(pilotEntry)) {
         auto message_box = QMessageBox(this);

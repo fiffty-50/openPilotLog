@@ -24,7 +24,6 @@
  * \brief The Settings class is a thin wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-
 class ASettings
 {
 private:

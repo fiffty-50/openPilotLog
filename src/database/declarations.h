@@ -30,7 +30,7 @@ using TableColumns = QMap<TableName, ColumnNames>;
 // [F]: Good idea! Implementing something similar to first and second methods
 // of QPair would be useful to carry over, or some other way of quickly and
 // unambiguously accessing the elements.
-struct DataPosition : QPair<TableName, RowId> {
+/*struct DataPosition : QPair<TableName, RowId> {
     TableName tableName;
     RowId rowId;
     DataPosition()
@@ -40,6 +40,21 @@ struct DataPosition : QPair<TableName, RowId> {
         : QPair<TableName, RowId>::QPair(table_name, row_id),
           tableName(first), rowId(second)
     {}
+    DataPosition(const DataPosition& other) = default;
+    DataPosition& operator=(const DataPosition& other) = default;
+};*/
+
+//[F]: How about something like this?
+struct DataPosition {
+    TableName tableName;
+    RowId rowId;
+    DataPosition()
+        : tableName(TableName())
+    {};
+    DataPosition(TableName table_name, RowId row_id)
+        : tableName(table_name), rowId(row_id)
+    {};
+
     DataPosition(const DataPosition& other) = default;
     DataPosition& operator=(const DataPosition& other) = default;
 };

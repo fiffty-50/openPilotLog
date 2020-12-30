@@ -159,11 +159,11 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             lastError = ADatabaseError("Database entry not found.");
             errorCount++;
         }
-        QString statement = "DELETE FROM " + data_position.first +
+        QString statement = "DELETE FROM " + data_position.tableName +
                 " WHERE ROWID=?";
 
         query.prepare(statement);
-        query.addBindValue(data_position.second);
+        query.addBindValue(data_position.rowId);
         query.exec();
 
         if (!(query.lastError().type() == QSqlError::NoError))
@@ -191,7 +191,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
 
 bool ADatabase::exists(AEntry entry)
 {
-    if(entry.getPosition().second == 0)
+    if(entry.getPosition().rowId == 0)
         return false;
 
     //Check database for row id
@@ -221,15 +221,15 @@ bool ADatabase::exists(AEntry entry)
 
 bool ADatabase::exists(DataPosition data_position)
 {
-    if(data_position.second == 0)
+    if(data_position.rowId == 0)
         return false;
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + data_position.first +
+    QString statement = "SELECT COUNT(*) FROM " + data_position.tableName +
             " WHERE ROWID=?";
     QSqlQuery query;
     query.prepare(statement);
-    query.addBindValue(data_position.second);
+    query.addBindValue(data_position.rowId);
     query.setForwardOnly(true);
     query.exec();
     //this returns either 1 or 0 since row ids are unique
@@ -242,7 +242,7 @@ bool ADatabase::exists(DataPosition data_position)
     if (rowId) {
         return true;
     } else {
-        DEB "No entry exists at DataPosition: " << data_position;
+        DEB "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
         lastError = ADatabaseError("Database entry not found.");
         return false;
     }
@@ -334,17 +334,17 @@ bool ADatabase::insert(AEntry new_entry)
 RowData ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
-    if (!tableNames.contains(data_position.first)) {
-        DEB data_position.first << " not a table in the database. Unable to retreive Entry data.";
+    if (!tableNames.contains(data_position.tableName)) {
+        DEB data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
         return RowData();
     }
 
     //Check Database for rowId
-    QString statement = "SELECT COUNT(*) FROM " + data_position.first
+    QString statement = "SELECT COUNT(*) FROM " + data_position.tableName
                       + " WHERE ROWID=?";
     QSqlQuery check_query;
     check_query.prepare(statement);
-    check_query.addBindValue(data_position.second);
+    check_query.addBindValue(data_position.rowId);
     check_query.setForwardOnly(true);
     check_query.exec();
 
@@ -357,18 +357,18 @@ RowData ADatabase::getEntryData(DataPosition data_position)
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
-        DEB "No Entry found for row id: " << data_position.second;
+        DEB "No Entry found for row id: " << data_position.rowId;
         lastError = ADatabaseError("Database entry not found.");
         return RowData();
     }
 
     // Retreive TableData
-    statement = "SELECT * FROM " + data_position.first
+    statement = "SELECT * FROM " + data_position.tableName
               + " WHERE ROWID=?";
 
     QSqlQuery select_query;
     select_query.prepare(statement);
-    select_query.addBindValue(data_position.second);
+    select_query.addBindValue(data_position.rowId);
     select_query.setForwardOnly(true);
     select_query.exec();
 
@@ -382,7 +382,7 @@ RowData ADatabase::getEntryData(DataPosition data_position)
     select_query.next();
     RowData entry_data;
 
-    for (const auto &column : tableColumns.value(data_position.first)) {
+    for (const auto &column : tableColumns.value(data_position.tableName)) {
         entry_data.insert(column, select_query.value(column));
     }
     return entry_data;
