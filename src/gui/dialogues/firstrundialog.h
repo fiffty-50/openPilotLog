@@ -25,12 +25,15 @@ private slots:
 
     void on_themeGroup_toggled(int id);
 
-    void on_finishButton_clicked();
 
-    bool finishSetup();
 
 private:
     Ui::FirstRunDialog *ui;
+    // [G]: finish is the old signal.
+    // finishSetup does something with template of database which
+    // goes over my head but everything works for now. Better naming needed
+    bool finishSetup();
+    void finish();
 
 };
 

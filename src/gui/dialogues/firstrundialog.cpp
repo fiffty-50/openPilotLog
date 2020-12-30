@@ -8,13 +8,20 @@
 #include "src/classes/asettings.h"
 const auto TEMPLATE_URL = QLatin1String("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
+static inline
+void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
+{
+    QMessageBox(QMessageBox::Warning, title, text, QMessageBox::Ok, parent).exec();
+}
+
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FirstRunDialog)
 {
     ui->setupUi(this);
-    ui->tabWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(0);
     ui->lastnameLineEdit->setFocus();
+    ui->previousPushButton->setEnabled(false);
     ui->nightComboBox->setCurrentIndex(1);
 
     auto *themeGroup = new QButtonGroup;
@@ -33,18 +40,43 @@ FirstRunDialog::~FirstRunDialog()
 
 void FirstRunDialog::on_previousPushButton_clicked()
 {
-    if(ui->tabWidget->currentIndex()>0)
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex()-1);
+    auto current_idx = ui->stackedWidget->currentIndex();
+    switch (current_idx) {
+    case 0:
+        return;
+    case 1:
+        ui->previousPushButton->setEnabled(false);
+        break;
+    case 2:
+        ui->nextPushButton->setText("Next");
+        break;
+    }
+    ui->stackedWidget->setCurrentIndex(current_idx - 1);
+
 }
 
 void FirstRunDialog::on_nextPushButton_clicked()
 {
-    if(ui->tabWidget->currentIndex()<2){
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex()+1);
-    } else {
-        emit ui->finishButton->clicked();
+    auto current_idx = ui->stackedWidget->currentIndex();
+    // [G]: per index do appropriate error handling
+    switch (current_idx) {
+    case 0:
+        if(ui->firstnameLineEdit->text().isEmpty()
+                || ui->lastnameLineEdit->text().isEmpty())
+        {
+            prompt_error_box("Error", "Please enter first and last name");
+            return;
+        }
+        ui->previousPushButton->setEnabled(true);
+        break;
+    case 1:
+        ui->nextPushButton->setText("Done");
+        break;
+    case 2:
+        finish();
+        return;
     }
-
+    ui->stackedWidget->setCurrentIndex(current_idx + 1);
 }
 
 void FirstRunDialog::on_themeGroup_toggled(int id)
@@ -52,12 +84,12 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
     ASettings::write("main/theme", id);
 }
 
-void FirstRunDialog::on_finishButton_clicked()
+void FirstRunDialog::finish()
 {
     if(ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()){
-        auto mb = new QMessageBox(this);
-        mb->setText("You have to enter a valid first and last name for the logbook.");
-        mb->show();
+        auto mb = QMessageBox(this);
+        mb.setText("You have to enter a valid first and last name for the logbook.");
+        mb.show();
     } else {
         ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
         ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
