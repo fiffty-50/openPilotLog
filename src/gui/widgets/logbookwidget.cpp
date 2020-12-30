@@ -17,9 +17,12 @@
  */
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-#include "src/testing/adebug.h"
 
-using namespace experimental;
+#include "src/classes/aflightentry.h"
+#include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
+#include "src/gui/dialogues/newflightdialog.h"
+#include "src/testing/adebug.h"
 
 const QMap<int, QString> FILTER_MAP = {
     {0, "Date LIKE \"%"},
@@ -81,7 +84,7 @@ void LogbookWidget::connectSignalsAndSlots()
 
 void LogbookWidget::setupDefaultView()
 {
-    DEB("Loading Default View...");
+    DEB << "Loading Default View...";
     displayModel = new QSqlTableModel;
     displayModel->setTable("viewDefault");
     displayModel->select();
@@ -114,7 +117,7 @@ void LogbookWidget::setupDefaultView()
 
 void LogbookWidget::setupEasaView()
 {
-    DEB("Loading EASA View...");
+    DEB << "Loading EASA View...";
     displayModel = new QSqlTableModel;
     displayModel->setTable("viewEASA");
     displayModel->select();
@@ -165,7 +168,7 @@ void LogbookWidget::flightsTableView_selectionChanged()//
     selectedFlights.clear();
     for (const auto& row : selectionModel->selectedRows()) {
         selectedFlights.append(row.data().toInt());
-        DEB("Selected Flight(s) with ID: " << selectedFlights);
+        DEB << "Selected Flight(s) with ID: " << selectedFlights;
     }
 }
 
@@ -195,17 +198,17 @@ void LogbookWidget::on_editFlightButton_clicked()
 
 void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
-    DEB("Flights selected: " << selectedFlights.length());
+    DEB << "Flights selected: " << selectedFlights.length();
     if (selectedFlights.length() == 0) {
         messageBox->setIcon(QMessageBox::Information);
         messageBox->setText("No Flight Selected.");
         messageBox->exec();
         return;
     } else if (selectedFlights.length() > 0 && selectedFlights.length() < 11) {
-        QList<experimental::AFlightEntry> flights_list;
+        QList<AFlightEntry> flights_list;
 
         for (const auto &flight_id : selectedFlights) {
-            flights_list.append(experimental::aDB()->getFlightEntry(flight_id));
+            flights_list.append(aDB()->getFlightEntry(flight_id));
         }
 
         QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";
@@ -226,7 +229,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         int reply = confirm.exec();
         if (reply == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
-                DEB("Deleting flight: " << flight.summary());
+                DEB << "Deleting flight: " << flight.summary();
                 if(!aDB()->remove(flight)) {
                     messageBox->setText(aDB()->lastError.text());
                     messageBox->exec();
@@ -238,7 +241,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             displayModel->select();
         }
     } else if (selectedFlights.length() > 10) {
-        auto& warningMsg = "You have selected " + QString::number(selectedFlights.length())
+        auto warningMsg = "You have selected " + QString::number(selectedFlights.length())
                 + " flights.\n\n Deleting flights is irreversible.\n\n"
                   "Are you sure you want to proceed?";
         QMessageBox confirm;

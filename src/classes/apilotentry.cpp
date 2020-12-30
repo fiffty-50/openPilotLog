@@ -15,25 +15,25 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef APILOTENTRY_H
-#define APILOTENTRY_H
+#include "apilotentry.h"
 
-#include "src/experimental/aentry.h"
-#include "src/experimental/decl.h"
+APilotEntry::APilotEntry()
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION)
+{}
 
-namespace experimental {
+APilotEntry::APilotEntry(RowId row_id)
+    : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
+{}
 
-struct APilotEntry : public AEntry {
-public:
-    APilotEntry();
-    APilotEntry(const APilotEntry& pe) = default;
-    APilotEntry& operator=(const APilotEntry& pe) = default;
-    APilotEntry(int row_id);
-    APilotEntry(TableData table_data);
+APilotEntry::APilotEntry(RowData table_data)
+    : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
+{}
 
-    const QString name();
-};
+const QString APilotEntry::name()
+{
+    if (tableData.isEmpty())
+        return DB_NULL;
 
-} // namespace experimental
-
-#endif // APILOTENTRY_H
+    return tableData.value(DB_PILOTS_LASTNAME).toString() + ','
+           +tableData.value(DB_PILOTS_FIRSTNAME).toString().left(1) + '.';
+}

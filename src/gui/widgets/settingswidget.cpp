@@ -17,8 +17,11 @@
  */
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
-#include "src/database/dbinfo.h"
 #include "src/testing/adebug.h"
+
+#include "src/classes/asettings.h"
+#include "src/database/adatabase.h"
+#include "src/classes/apilotentry.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "firstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
@@ -41,8 +44,6 @@ static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALI
                                            COMPANY_VALID,     EMPLOYEENR_VALID,
                                            PREFIX_VALID});
 
-using namespace experimental;
-
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsWidget)
@@ -59,7 +60,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     setupValidators();
 
     QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-                     this, &SettingsWidget::on_themeGroup_buttonClicked);
+                     this, &SettingsWidget::onThemeGroup_buttonClicked);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -111,14 +112,14 @@ void SettingsWidget::readSettings()
 
 void SettingsWidget::setupValidators()
 {
-    DEB("Setting up Validators...");
+    DEB << "Setting up Validators...";
     for(const auto& pair : LINE_EDIT_VALIDATORS){
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
         if(line_edit != nullptr){
             auto validator = new QRegularExpressionValidator(pair.second,line_edit);
             line_edit->setValidator(validator);
         }else{
-            DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
+            DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
         }
 
     }
@@ -263,7 +264,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 /*
  * Misc Tab
  */
-void SettingsWidget::on_themeGroup_buttonClicked(int theme_id)
+void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
 {
     ASettings::write("main/theme", theme_id);
 
@@ -325,7 +326,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     auto message_box = QMessageBox(this);
-    QString SQLITE_VERSION = DbInfo().version;
+    QString SQLITE_VERSION = aDB()->sqliteVersion();
     QString text = QMessageBox::tr(
 
                        "<h3><center>About openPilotLog</center></h3>"

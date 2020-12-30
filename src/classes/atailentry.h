@@ -1,5 +1,5 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
+ *openTail Log - A FOSS Tail Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,24 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef PILOT_H
-#define PILOT_H
-#include "src/database/entry_deprecated.h"
+#ifndef ATAILENTRY_H
+#define ATAILENTRY_H
 
+#include "src/classes/aentry.h"
+#include "src/database/declarations.h"
 
-class Pilot : public Entry_deprecated
-{
-//    using Entry::Entry;
+struct ATailEntry : public AEntry {
 public:
-    Pilot();
-    Pilot(int pilot_id);
-    Pilot(QMap<QString, QString> newData);
+    ATailEntry();
+    ATailEntry(const ATailEntry& te) = default;
+    ATailEntry& operator=(const ATailEntry& te) = default;
+    ATailEntry(RowId row_id);
+    ATailEntry(RowData table_data);
+
+    const QString registration();
+
+    const QString type();
 };
 
-#endif // PILOT_H
+
+#endif // ATAILENTRY_H

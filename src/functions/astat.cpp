@@ -16,9 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "astat.h"
+#include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
-
-using namespace experimental;
 
 /*!
  * \brief AStat::totalTime Looks up Total Blocktime in the flights database
@@ -56,8 +55,8 @@ QString AStat::totalTime(yearType year_type)
     QSqlQuery query(statement);
 
     if (!query.first()) {
-        DEB("No result found. Check Query and Error.");
-        DEB("Error: " << query.lastError().text());
+        DEB << "No result found. Check Query and Error.";
+        DEB << "Error: " << query.lastError().text();
         return "00:00";
     } else {
         query.previous();

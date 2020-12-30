@@ -1,10 +1,6 @@
 #ifndef ACALC_H
 #define ACALC_H
 
-#include "src/database/db.h"
-#include "src/classes/aircraft.h"
-#include "src/classes/flight.h"
-#include "src/classes/asettings.h"
 #include <QDateTime>
 #include <cmath>
 #include <QDebug>
@@ -200,8 +196,6 @@ bool isNight(const QString &icao, QDateTime event_time, int night_angle);
 QString formatTimeInput(QString user_input);
 
 void updateAutoTimes(int acft_id);
-
-void autoTimes(Flight, Aircraft);
 
 void updateNightTimes();
 } // namespace ACalc

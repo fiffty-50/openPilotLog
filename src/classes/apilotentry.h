@@ -1,5 +1,5 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
+ *openPilot Log - A FOSS Pilot Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,22 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aaircraftentry.h"
+#ifndef APILOTENTRY_H
+#define APILOTENTRY_H
 
-namespace experimental {
+#include "src/classes/aentry.h"
+#include "src/database/declarations.h"
 
-AAircraftEntry::AAircraftEntry()
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
-{}
+struct APilotEntry : public AEntry {
+public:
+    APilotEntry();
+    APilotEntry(RowId row_id);
+    APilotEntry(RowData table_data);
 
-AAircraftEntry::AAircraftEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QLatin1String("aircraft"), row_id))
-{}
+    APilotEntry(const APilotEntry& pe) = default;
+    APilotEntry& operator=(const APilotEntry& pe) = default;
 
-AAircraftEntry::AAircraftEntry(TableData table_data)
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION, table_data)
-{}
+    const QString name();
+};
 
-} // namespace experimental
+#endif // APILOTENTRY_H

@@ -17,6 +17,9 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
+
+#include "src/database/adatabase.h"
+#include "src/classes/aentry.h"
 #include "src/testing/adebug.h"
 
 /* Examples for names around the world:
@@ -59,14 +62,12 @@ static const auto LINE_EDIT_VALIDATORS = QVector{
         EMPLOYEENR_VALID
 };
 
-using namespace experimental;
-
 // For creating a new entry
 NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    DEB("New NewPilotDialog (newEntry)");
+    DEB << "New NewPilotDialog (newEntry)";
     setup();
 
     pilotEntry = APilotEntry();
@@ -77,18 +78,18 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    DEB("New NewPilotDialog (editEntry)");
+    DEB << "New NewPilotDialog (editEntry)";
     setup();
 
     pilotEntry = aDB()->getPilotEntry(rowId);
-    DEB("Pilot Entry position: " << pilotEntry.getPosition());
+    DEB << "Pilot Entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     formFiller();
     ui->lastnameLineEdit->setFocus();
 }
 
 NewPilotDialog::~NewPilotDialog()
 {
-    DEB("Deleting New NewPilotDialog");
+    DEB << "Deleting New NewPilotDialog";
     delete ui;
 }
 
@@ -96,18 +97,18 @@ void NewPilotDialog::setup()
 {
     ui->setupUi(this);
 
-    DEB("Setting up Validators...");
+    DEB << "Setting up Validators...";
     for (const auto& pair : LINE_EDIT_VALIDATORS) {
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
         if (line_edit != nullptr) {
             auto validator = new QRegularExpressionValidator(pair.second,line_edit);
             line_edit->setValidator(validator);
         } else {
-            DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
+            DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
         }
     }
 
-    DEB("Setting up completer...");
+    DEB << "Setting up completer...";
     auto completer = new QCompleter(aDB()->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
@@ -127,7 +128,7 @@ void NewPilotDialog::on_buttonBox_accepted()
 
 void NewPilotDialog::formFiller()
 {
-    DEB("Filling Form...");
+    DEB << "Filling Form...";
     auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
@@ -138,9 +139,9 @@ void NewPilotDialog::formFiller()
 
 void NewPilotDialog::submitForm()
 {
-    DEB("Collecting User Input...");
+    DEB << "Collecting User Input...";
 
-    TableData new_data;
+    RowData new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove("LineEdit");
@@ -149,8 +150,8 @@ void NewPilotDialog::submitForm()
     }
 
     pilotEntry.setData(new_data);
-    DEB("Pilot entry position: " << pilotEntry.getPosition());
-    DEB("Pilot entry data: " << pilotEntry.getData());
+    DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
+    DEB << "Pilot entry data: " << pilotEntry.getData();
     if (!aDB()->commit(pilotEntry)) {
         auto message_box = QMessageBox(this);
         message_box.setText("The following error has ocurred:\n\n"

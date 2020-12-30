@@ -1,9 +1,9 @@
 #include "acalc.h"
 #include "src/testing/adebug.h"
-#include "src/experimental/adatabase.h"
+#include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
 
 using namespace ACalc;
-using namespace experimental;
 
 /*!
  * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
@@ -17,25 +17,25 @@ QString ACalc::formatTimeInput(QString user_input)
     QString output; //
     QTime temp_time; //empty time object is invalid by default
 
-    bool contains_seperator = user_input.contains(":");
+    bool contains_seperator = user_input.contains(':');
     if (user_input.length() == 4 && !contains_seperator) {
-        temp_time = QTime::fromString(user_input, "hhmm");
+        temp_time = QTime::fromString(user_input, QStringLiteral("hhmm"));
     } else if (user_input.length() == 3 && !contains_seperator) {
         if (user_input.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
-            QString tempstring = user_input.prepend("0");
-            temp_time = QTime::fromString(tempstring, "hhmm");
+            QString tempstring = user_input.prepend(QStringLiteral("0"));
+            temp_time = QTime::fromString(tempstring, QStringLiteral("hhmm"));
         } else {
-            temp_time = QTime::fromString(user_input, "Hmm");
+            temp_time = QTime::fromString(user_input, QStringLiteral("Hmm"));
         }
     } else if (user_input.length() == 4 && contains_seperator) {
-        temp_time = QTime::fromString(user_input, "h:mm");
+        temp_time = QTime::fromString(user_input, QStringLiteral("h:mm"));
     } else if (user_input.length() == 5 && contains_seperator) {
-        temp_time = QTime::fromString(user_input, "hh:mm");
+        temp_time = QTime::fromString(user_input, QStringLiteral("hh:mm"));
     }
 
-    output = temp_time.toString("hh:mm");
+    output = temp_time.toString(QStringLiteral("hh:mm"));
     if (output.isEmpty()) {
-        qDebug() << "Time input is invalid.";
+        DEB << "Time input is invalid.";
     }
     return output;
 }
@@ -86,12 +86,12 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
 
 double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept;
-    statement.append("' OR icao = '" + dest + "'");
+    auto statement = "SELECT lat, long FROM airports WHERE icao = '"
+            + dept + "' OR icao = '" + dest + "'";
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
-        DEB("Invalid input. Aborting.");
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -205,12 +205,11 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
 
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept;
-    statement.append("' OR icao = '" + dest + "'");
+    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept + "' OR icao = '" + dest + "'";
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
-        DEB("Invalid input. Aborting.");
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -238,7 +237,7 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
-        DEB("Invalid input. Aborting.");
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -262,40 +261,37 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 void ACalc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
-    auto statement = "SELECT flight_id FROM flights WHERE acft = " + QString::number(acft_id);
+    const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
     auto flight_list = aDB()->customQuery(statement, 1);
-
     if (flight_list.isEmpty()) {
-        DEB("No flights for this tail found.");
+        DEB << "No flights for this tail found.";
         return;
     }
-
-    DEB("Updating " << flight_list.length() << " flights with this aircraft.");
+    DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
     auto acft = aDB()->getTailEntry(acft_id);
     auto acft_data = acft.getData();
     for (const auto& item : flight_list) {
-
         auto flight = aDB()->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
 
-        if(acft_data.value("multipilot").toInt() == 0
-                && acft_data.value("multiengine") == 0) {
-            DEB("SPSE");
-            flight_data.insert("tSPSE", flight_data.value("tblk"));
-            flight_data.insert("tSPME", "");
-            flight_data.insert("tMP", "");
-        } else if ((acft_data.value("multipilot") == 0
-                    && acft.getData().value("multiengine") == 1)) {
-            DEB("SPME");
-            flight_data.insert("tSPME", flight_data.value("tblk"));
-            flight_data.insert("tSPSE", "");
-            flight_data.insert("tMP", "");
-        } else if ((acft_data.value("multipilot") == 1)) {
-            DEB("MPME");
-            flight_data.insert("tMP", flight_data.value("tblk"));
-            flight_data.insert("tSPSE", "");
-            flight_data.insert("tSPME", "");
+        if(acft_data.value(DB_TAILS_MULTIPILOT).toInt() == 0
+                && acft_data.value(DB_TAILS_MULTIENGINE) == 0) {
+            DEB << "SPSE";
+            flight_data.insert(DB_FLIGHTS_TSPSE, flight_data.value(DB_FLIGHTS_TBLK));
+            flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
+            flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
+        } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 0
+                    && acft.getData().value(DB_TAILS_MULTIENGINE) == 1)) {
+            DEB << "SPME";
+            flight_data.insert(DB_FLIGHTS_TSPME, flight_data.value(DB_FLIGHTS_TBLK));
+            flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
+            flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
+        } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 1)) {
+            DEB << "MPME";
+            flight_data.insert(DB_FLIGHTS_TMP, flight_data.value(DB_FLIGHTS_TBLK));
+            flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
+            flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
         }
         flight.setData(flight_data);
         aDB()->commit(flight);
@@ -307,31 +303,31 @@ void ACalc::updateAutoTimes(int acft_id)
  */
 void ACalc::updateNightTimes()
 {
-    const int night_angle = ASettings::read("flightlogging/nightangle").toInt();
+    const int night_angle = ASettings::read(QStringLiteral("flightlogging/nightangle")).toInt();
 
     //find all flights for aircraft
     auto statement = "SELECT ROWID FROM flights";
     auto flight_list = aDB()->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {
-        DEB("No flights found.");
+        DEB << "No flights found.";
         return;
     }
-    DEB("Updating " << flight_list.length() << " flights in the database.");
+    DEB << "Updating " << flight_list.length() << " flights in the database.";
 
     for (const auto& item : flight_list) {
 
         auto flt = aDB()->getFlightEntry(item.toInt());
         auto data = flt.getData();
-        auto dateTime = QDateTime(QDate::fromString(data.value(QLatin1String("doft")).toString(), Qt::ISODate),
-                                  QTime().addSecs(data.value(QLatin1String("tofb")).toInt() * 60),
+        auto dateTime = QDateTime(QDate::fromString(data.value(DB_FLIGHTS_DOFT).toString(), Qt::ISODate),
+                                  QTime().addSecs(data.value(DB_FLIGHTS_TOFB).toInt() * 60),
                                   Qt::UTC);
-        data.insert(QLatin1String("tNIGHT"), QString::number(
-                             calculateNightTime(data.value(QLatin1String("dept")).toString(),
-                             data.value(QLatin1String("dest")).toString(),
-                             dateTime,
-                             data.value(QLatin1String("tblk")).toInt(),
-                             night_angle)));
+        data.insert(DB_FLIGHTS_TNIGHT,
+                    calculateNightTime(data.value(DB_FLIGHTS_DEPT).toString(),
+                                       data.value(DB_FLIGHTS_DEST).toString(),
+                                       dateTime,
+                                       data.value(DB_FLIGHTS_TBLK).toInt(),
+                                       night_angle));
         flt.setData(data);
         aDB()->commit(flt);
     }

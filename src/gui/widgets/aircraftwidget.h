@@ -24,14 +24,6 @@
 #include <QDebug>
 #include <QTableView>
 
-#include "src/classes/asettings.h"
-#include "src/gui/dialogues/newtaildialog.h"
-//#include "src/classes/aircraft.h"
-//#include "src/database/db.h"
-#include "src/experimental/adatabase.h"
-#include "src/experimental/atailentry.h"
-#include "src/experimental/aflightentry.h"
-
 
 namespace Ui {
 class AircraftWidget;

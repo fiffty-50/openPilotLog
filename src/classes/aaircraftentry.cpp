@@ -1,5 +1,5 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
+ *openTail Log - A FOSS Tail Logbook Application
  *Copyright (C) 2020  Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef STRICTRXVALIDATOR_H
-#define STRICTRXVALIDATOR_H
+#include "aaircraftentry.h"
 
-#include <QRegularExpression>
-#include <QValidator>
+AAircraftEntry::AAircraftEntry()
+    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
+{}
 
-/*!
- * \brief The AStrictRxValidator class only returns Invalid or Acceptable
- */
-class AStrictRxValidator : public QRegularExpressionValidator
-{
-    using QRegularExpressionValidator::QRegularExpressionValidator;
-public:
-    QValidator::State validate(QString &txt, int &pos) const;
-};
+AAircraftEntry::AAircraftEntry(RowId row_id)
+    : AEntry::AEntry(DataPosition(DB_TABLE_AIRCRAFT, row_id))
+{}
 
-#endif
+AAircraftEntry::AAircraftEntry(RowData table_data)
+    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION, table_data)
+{}

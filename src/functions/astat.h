@@ -20,10 +20,8 @@
 #include <QtCore>
 #include <QSqlQuery>
 #include <QSqlError>
-#include "src/experimental/adatabase.h"
 
 namespace AStat {
-
 
 /*!
  * \brief The AStat namespace provides functionality for retreiving various statistics

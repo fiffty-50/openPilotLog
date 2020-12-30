@@ -15,22 +15,31 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AIRCRAFT_H
-#define AIRCRAFT_H
-#include <QCoreApplication>
-#include "src/database/entry_deprecated.h"
+#include "aentry.h"
 
-/*!
- * \brief The aircraft class
- *
- */
-class Aircraft : public Entry_deprecated
+AEntry::AEntry(DataPosition position_)
+    : position(position_)
+{}
+
+AEntry::AEntry(RowData table_data)
+    : tableData(table_data)
+{}
+
+AEntry::AEntry(DataPosition position_, RowData table_data)
+    : position(position_), tableData(table_data)
+{}
+
+void AEntry::setData(RowData table_data)
 {
-//    using Entry::Entry;
-public:
-    Aircraft();
-    Aircraft(int tail_id);
-    Aircraft(QMap<QString, QString> newData);
-};
+    tableData = table_data;
+}
 
-#endif // AIRCRAFT_H
+const DataPosition& AEntry::getPosition()
+{
+    return position;
+}
+
+const RowData& AEntry::getData()
+{
+    return tableData;
+}

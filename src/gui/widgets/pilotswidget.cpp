@@ -18,8 +18,9 @@
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
+#include "src/classes/apilotentry.h"
 
-using namespace experimental;
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PilotsWidget)
@@ -80,7 +81,7 @@ void PilotsWidget::onDisplayModel_dataBaseUpdated()
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
 {
     if (this->findChild<NewPilotDialog*>() != nullptr) {
-        DEB("Selection changed. Deleting orphaned dialog.");
+        DEB << "Selection changed. Deleting orphaned dialog.";
         delete this->findChild<NewPilotDialog*>();
         /// [F] if the user changes the selection without making any changes,
         /// if(selectedPilots.length() == 1) spawns a new dialog without the
@@ -94,7 +95,7 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
 
     for (const auto& row : selection->selectedRows()) {
         selectedPilots.append(row.data().toInt());
-        DEB("Selected Tails(s) with ID: " << selectedPilots);
+        DEB << "Selected Tails(s) with ID: " << selectedPilots;
     }
     if(selectedPilots.length() == 1) {
 

@@ -18,6 +18,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -50,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->insertWidget(ui->actionDebug, spacer);
 
 
-    DEB("Construction MainWindow Widgets\n");
+    DEB << "Construction MainWindow Widgets\n";
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
@@ -75,20 +76,17 @@ MainWindow::MainWindow(QWidget *parent)
     //// START DEBUG ////
     /// [F] I understand how it is annoying to not have the database
     /// working when something has changed. Hopefully this check
-    /// helps to avoid that in the future!
-    const int DATABASE_REVISION_NUMBER = 14;
-    QSqlQuery query;
-    query.prepare("SELECT COUNT (*) FROM changelog");
-    query.exec();
-    query.next();
-    if (query.value(0).toInt() != DATABASE_REVISION_NUMBER) {
-        DEB("##########################################");
-        DEB("Your database is out of date.");
-        DEB("Current Revision:  " << DATABASE_REVISION_NUMBER);
-        DEB("You have revision: " << query.value(0).toInt());
-        DEB("Use of DebugWidget to udpate recommended.");
-        DEB("##########################################");
-    }
+    /// helps to avoid that in the future! 
+    #if DATABASE < 15
+    DEB << "Your database is up to date with the latest revision.";
+    #else
+    DEB << "##########################################";
+    DEB << "Your database is out of date.";
+    DEB << "Current Revision:  " << DATABASE_REVISION_NUMBER;
+    DEB << "You have revision: " << query.value(0).toInt();
+    DEB << "Use of DebugWidget to udpate recommended.";
+    DEB << "##########################################";
+    #endif
     //// END DEBUG ////
 
 }
@@ -132,11 +130,11 @@ void MainWindow::on_actionDebug_triggered()
 
 void MainWindow::connectWidgets()
 {
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      logbookWidget, &LogbookWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(experimental::aDB(), &experimental::ADatabase::dataBaseUpdated,
+    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
 
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
@@ -173,6 +171,6 @@ void MainWindow::on_actionNewAircraft_triggered()
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np = NewPilotDialog(Db::createNew, this);
+    NewPilotDialog np = NewPilotDialog(this);
     np.exec();
 }

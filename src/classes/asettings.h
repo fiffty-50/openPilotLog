@@ -21,15 +21,23 @@
 #include <QSettings>
 
 /*!
- * \brief The Settings class is a thin wrapper for the QSettings class,
+ * \brief Thin (namespace) wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-class ASettings
+namespace ASettings
 {
-public:
-    static QVariant read(const QString &key);
 
-    static void write(const QString &key, const QVariant &val);
-};
+/*!
+ * \brief Should be called after QCoreApplication::set...Name have been called.
+ */
+void setup();
+
+QVariant read(const QString &key);
+
+void write(const QString &key, const QVariant &val);
+
+QSettings settings();
+
+}
 
 #endif // ASETTINGS_H

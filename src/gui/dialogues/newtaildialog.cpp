@@ -18,7 +18,6 @@
 #include "newtaildialog.h"
 #include "ui_newtail.h"
 #include "src/testing/adebug.h"
-#include "src/database/tablecolumnliterals.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -35,7 +34,7 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB("new NewTailDialog (experimental)");
+    DEB << "new NewTailDialog";
     ui->setupUi(this);
 
     setupCompleter();
@@ -45,15 +44,14 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     ui->searchLineEdit->setStyleSheet("border: 1px solid blue");
     ui->searchLineEdit->setFocus();
 
-    entry = experimental::ATailEntry();
+    entry = ATailEntry();
 }
 
 NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    using namespace experimental;
-    DEB("New experimental New Pilot Dialog (edit existing)");
+    DEB << "New New Pilot Dialog (edit existing)";
     ui->setupUi(this);
 
     ui->searchLabel->hide();
@@ -67,7 +65,7 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
 
 NewTailDialog::~NewTailDialog()
 {
-    DEB("Deleting NewTailDialog\n");
+    DEB << "Deleting NewTailDialog\n";
     delete ui;
 }
 /// Functions
@@ -80,7 +78,6 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    using namespace experimental;
     idMap = aDB()->getIdMap(ADatabaseTarget::aircraft);
     aircraftList = aDB()->getCompletionList(ADatabaseTarget::aircraft);
 
@@ -114,9 +111,9 @@ void NewTailDialog::setupValidators()
  * a tail (ATail, used when editing an existing entry)
  * \param entry
  */
-void NewTailDialog::fillForm(experimental::AEntry entry, bool is_template)
+void NewTailDialog::fillForm(AEntry entry, bool is_template)
 {
-    DEB("Filling Form for (experimental) a/c" << entry.getPosition());
+    DEB << "Filling Form for a/c" << entry.getPosition().tableName << entry.getPosition().rowId;
     //fill Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
 
@@ -152,12 +149,12 @@ bool NewTailDialog::verify()
 
     for (const auto &le : recommended_line_edits) {
         if (le->text() != "") {
-            DEB("Good: " << le);
+            DEB << "Good: " << le;
             recommended_line_edits.removeOne(le);
             le->setStyleSheet("");
         } else {
             le->setStyleSheet("border: 1px solid red");
-            DEB("Not Good: " << le);
+            DEB << "Not Good: " << le;
         }
     }
     for (const auto &cb : recommended_combo_boxes) {
@@ -167,7 +164,7 @@ bool NewTailDialog::verify()
             cb->setStyleSheet("");
         } else {
             cb->setStyleSheet("background: orange");
-            DEB("Not Good: " << cb);
+            DEB << "Not Good: " << cb;
         }
     }
 
@@ -184,9 +181,8 @@ bool NewTailDialog::verify()
  */
 void NewTailDialog::submitForm()
 {
-    DEB("Creating Database Object...");
-    using namespace experimental;
-    TableData new_data;
+    DEB << "Creating Database Object...";
+    RowData new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>("searchLineEdit"));
@@ -220,8 +216,8 @@ void NewTailDialog::submitForm()
         message_box.exec();
         return;
     } else {
-        if (entry.getPosition().second != 0)
-            ACalc::updateAutoTimes(entry.getPosition().second);
+        if (entry.getPosition().rowId != 0)
+            ACalc::updateAutoTimes(entry.getPosition().rowId);
         QDialog::accept();
     }
 }
@@ -258,7 +254,7 @@ void NewTailDialog::on_weightComboBox_currentIndexChanged(int index)
 
 void NewTailDialog::on_buttonBox_accepted()
 {
-    DEB("Button Box Accepted.");
+    DEB << "Button Box Accepted.";
     if (ui->registrationLineEdit->text().isEmpty()) {
         auto nope = QMessageBox(this);
         nope.setText("Registration cannot be empty.");
@@ -289,19 +285,18 @@ void NewTailDialog::on_buttonBox_accepted()
             }
         }
     }
-    DEB("Form verified");
+    DEB << "Form verified";
     submitForm();
 }
 
 void NewTailDialog::onSearchCompleterActivated()
 {
-    DEB("Search completer activated!");
+    DEB << "Search completer activated!";
     const auto &text = ui->searchLineEdit->text();
     if (aircraftList.contains(text)) {
 
-            DEB("Template Selected. aircraft_id is: " << idMap.value(text));
+            DEB << "Template Selected. aircraft_id is: " << idMap.value(text);
             //call autofiller for dialog
-            using namespace experimental;
             fillForm(aDB()->getAircraftEntry(idMap.value(text)), true);
             ui->searchLineEdit->setStyleSheet("border: 1px solid green");
             ui->searchLabel->setText(text);

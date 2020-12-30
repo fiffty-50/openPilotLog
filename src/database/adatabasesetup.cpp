@@ -16,12 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabasesetup.h"
+#include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
+#include "src/functions/areadcsv.h"
 
 
-// Statements for creation of database tables, Revision 13
+// Statements for creation of database tables, Revision 15
 
-const QString createTablePilots = "CREATE TABLE pilots ( "
+const auto createTablePilots = QStringLiteral("CREATE TABLE pilots ( "
             " pilot_id       INTEGER NOT NULL, "
             " lastname       TEXT    NOT NULL, "
             " firstname      TEXT, "
@@ -31,9 +33,9 @@ const QString createTablePilots = "CREATE TABLE pilots ( "
             " phone          TEXT, "
             " email          TEXT, "
             " PRIMARY KEY(pilot_id AUTOINCREMENT)"
-            ")";
+            ")");
 
-const QString createTableTails = "CREATE TABLE tails ("
+const auto createTableTails = QStringLiteral("CREATE TABLE tails ("
             " tail_id        INTEGER NOT NULL,"
             " registration   TEXT NOT NULL,"
             " company        TEXT,"
@@ -45,9 +47,9 @@ const QString createTableTails = "CREATE TABLE tails ("
             " engineType     INTEGER,"
             " weightClass    INTEGER,"
             " PRIMARY KEY(tail_id AUTOINCREMENT)"
-            ")";
+            ")");
 
-const QString createTableFlights = "CREATE TABLE flights ("
+const auto createTableFlights = QStringLiteral("CREATE TABLE flights ("
             " flight_id      INTEGER NOT NULL, "
             " doft           NUMERIC NOT NULL, "
             " dept           TEXT NOT NULL, "
@@ -82,9 +84,9 @@ const QString createTableFlights = "CREATE TABLE flights ("
             " FOREIGN KEY(pic)  REFERENCES pilots(pilot_id) ON DELETE RESTRICT, "
             " FOREIGN KEY(acft) REFERENCES tails(tail_id)   ON DELETE RESTRICT, "
             " PRIMARY KEY(flight_id    AUTOINCREMENT) "
-        ")";
+        ")");
 
-const QString createTableAirports = "CREATE TABLE airports ( "
+const auto createTableAirports = QStringLiteral("CREATE TABLE airports ( "
             " airport_id     INTEGER NOT NULL, "
             " icao           TEXT NOT NULL, "
             " iata           TEXT, "
@@ -96,9 +98,9 @@ const QString createTableAirports = "CREATE TABLE airports ( "
             " utcoffset      INTEGER, "
             " tzolson        TEXT, "
             " PRIMARY KEY(airport_id AUTOINCREMENT) "
-            ")";
+            ")");
 
-const QString createTableAircraft = "CREATE TABLE aircraft ("
+const auto createTableAircraft = QStringLiteral("CREATE TABLE aircraft ("
             " aircraft_id   INTEGER NOT NULL,"
             " make          TEXT,"
             " model         TEXT,"
@@ -111,17 +113,17 @@ const QString createTableAircraft = "CREATE TABLE aircraft ("
             " engineType    INTEGER,"
             " weightClass   INTEGER,"
             " PRIMARY KEY(aircraft_id AUTOINCREMENT)"
-            ")";
+            ")");
 
-const QString createTableChangelog = "CREATE TABLE changelog ( "
+const auto createTableChangelog = QStringLiteral("CREATE TABLE changelog ( "
             " revision   INTEGER NOT NULL, "
             " comment    TEXT, "
             " date       NUMERIC, "
             " PRIMARY KEY(revision) "
-            ")";
+            ")");
 
 // Statements for creation of views in the database
-const QString createViewDefault = "CREATE VIEW viewDefault AS "
+const auto createViewDefault = QStringLiteral("CREATE VIEW viewDefault AS "
         " SELECT flight_id, doft as 'Date', "
         " dept AS 'Dept', "
         " printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time', "
@@ -139,9 +141,9 @@ const QString createViewDefault = "CREATE VIEW viewDefault AS "
         " FROM flights "
         " INNER JOIN pilots on flights.pic = pilots.pilot_id "
         " INNER JOIN tails on flights.acft = tails.tail_id "
-        " ORDER BY date DESC ";
+        " ORDER BY date DESC ");
 
-const QString createViewEASA = "CREATE VIEW viewEASA AS "
+const auto createViewEASA = QStringLiteral("CREATE VIEW viewEASA AS "
         " SELECT "
         " flight_id, doft as 'Date', "
         " dept AS 'Dept', "
@@ -170,9 +172,9 @@ const QString createViewEASA = "CREATE VIEW viewEASA AS "
         " FROM flights "
         " INNER JOIN pilots on flights.pic = pilots.pilot_id "
         " INNER JOIN tails on flights.acft = tails.tail_id "
-        " ORDER BY date DESC";
+        " ORDER BY date DESC");
 
-const QString createViewTails = "CREATE VIEW viewTails AS "
+const auto createViewTails = QStringLiteral("CREATE VIEW viewTails AS "
         " SELECT "
         " tail_id AS 'ID', "
         " registration AS 'Registration', "
@@ -185,24 +187,24 @@ const QString createViewTails = "CREATE VIEW viewTails AS "
         " registration AS 'Registration', "
         " make||' '||model||'-'||variant AS 'Type', "
         " company AS 'Company' "
-        " FROM tails WHERE variant IS NOT NULL";
+        " FROM tails WHERE variant IS NOT NULL");
 
-const QString createViewPilots = "CREATE VIEW viewPilots AS "
+const auto createViewPilots = QStringLiteral("CREATE VIEW viewPilots AS "
         " SELECT "
         " pilot_id AS 'ID', "
         " lastname AS 'Last Name', "
         " firstname AS 'First Name', "
         " company AS 'Company' "
-        " FROM pilots";
+        " FROM pilots");
 
-const QString createViewQCompleter = "CREATE VIEW viewQCompleter AS "
+const auto createViewQCompleter = QStringLiteral("CREATE VIEW viewQCompleter AS "
         " SELECT airport_id, icao, iata, tail_id, registration, pilot_id, "
         " lastname||', '||firstname AS 'pilot_name', alias "
         " FROM airports "
         " LEFT JOIN tails ON airports.airport_id = tails.tail_id "
-        " LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id";
+        " LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id");
 
-const QString createViewTotals = "CREATE VIEW viewTotals AS "
+const auto createViewTotals = QStringLiteral("CREATE VIEW viewTotals AS "
         " SELECT "
         " printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) AS \"TOTAL\", "
         " printf(\"%02d\",CAST(SUM(tSPSE) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSPSE) AS INT)%60) AS \"SP SE\", "
@@ -218,14 +220,7 @@ const QString createViewTotals = "CREATE VIEW viewTotals AS "
         " printf(\"%02d\",CAST(SUM(tMP) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tMP) AS INT)%60) AS \"MultPilot\", "
         " CAST(SUM(toDay) AS INT) AS \"TO Day\", CAST(SUM(toNight) AS INT) AS \"TO Night\", "
         " CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
-        " FROM flights";
-
-/*const QString createViewPilotsTailsMap = "CREATE VIEW viewPilotsTailsMap AS "
-        "SELECT "
-        "pilot_id, lastname, firstname, tail_id, registration "
-        "FROM pilots "
-        "LEFT JOIN tails "
-        "ON pilots.pilot_id = tails.tail_id";*/
+        " FROM flights");
 
 const QStringList tables = {
     createTablePilots,
@@ -257,25 +252,29 @@ const QStringList templateTables= {
 
 bool ADataBaseSetup::createDatabase()
 {
-    DEB("Creating tables...");
+
+    DEB << "Creating tables...";
     if (!createSchemata(tables)) {
-        DEB("Creating tables has failed.");
+        DEB << "Creating tables has failed.";
         return false;
     }
 
-    DEB("Creating views...");
+    DEB << "Creating views...";
     if (!createSchemata(views)) {
-        DEB("Creating views failed.");
+        DEB << "Creating views failed.";
         return false;
     }
 
-    DEB("Populating tables...");
+    // call connect again to (re-)populate tableNames and columnNames
+    aDB()->connect();
+
+    DEB << "Populating tables...";
     if (!importDefaultData()) {
-        DEB("Populating tables failed.");
+        DEB << "Populating tables failed.";
         return false;
     }
 
-    DEB("Database successfully created!");
+    DEB << "Database successfully created!";
     return true;
 }
 
@@ -288,11 +287,11 @@ bool ADataBaseSetup::importDefaultData()
         //clear tables
         query.prepare("DELETE FROM " + table);
         if (!query.exec()) {
-            DEB("Error: " << query.lastError().text());
+            DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
         if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
-            DEB("Error importing data.");
+            DEB << "Error importing data.";
             return false;
         }
     }
@@ -311,7 +310,7 @@ bool ADataBaseSetup::resetToDefault()
     for (const auto& table : userTables) {
         query.prepare("DELETE FROM " + table);
         if (!query.exec()) {
-            DEB("Error: " << query.lastError().text());
+            DEB << "Error: " << query.lastError().text();
         }
     }
     return true;
@@ -322,7 +321,7 @@ bool ADataBaseSetup::resetToDefault()
  */
 void ADataBaseSetup::debug()
 {
-    DEB("Database tables and views: ");
+    DEB << "Database tables and views: ";
     QSqlQuery query;
     const QVector<QString> types = { "table", "view" };
     for (const auto& var : types){
@@ -332,7 +331,7 @@ void ADataBaseSetup::debug()
             QString table = query.value(0).toString();
             QSqlQuery entries("SELECT COUNT(*) FROM " + table);
             entries.next();
-            DEB("Element " << query.value(0).toString()) << "with"
+            DEB << "Element " << query.value(0).toString() << "with"
                 << entries.value(0).toString() << "rows";
         }
     }
@@ -352,19 +351,20 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         query.exec();
         if(!query.isActive()) {
             errors << statement.section(QLatin1Char(' '),2,2) + " ERROR - " + query.lastError().text();
+            DEB << "Query: " << query.lastQuery();
         } else {
-            DEB("Schema added: " << statement.section(QLatin1Char(' '),2,2));
+            DEB << "Schema added: " << statement.section(QLatin1Char(' '),2,2);
         }
     }
 
     if (!errors.isEmpty()) {
-        DEB("The following errors have ocurred: ");
+        DEB << "The following errors have ocurred: ";
         for (const auto& error : errors) {
-            DEB(error);
+            DEB << error;
         }
         return false;
     } else {
-        DEB("All schemas added successfully");
+        DEB << "All schemas added successfully";
         return true;
     }
 }
@@ -378,24 +378,24 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
-    DEB("Importing Data to" << tableName);
-    auto dbLayout = DbInfo();
-    if (!dbLayout.tables.contains(tableName)){
-        DEB(tableName << "is not a table in the database. Aborting.");
-        DEB("Please check input data.");
+    DEB << "Table names: " << aDB()->getTableNames();
+    DEB << "Importing Data to" << tableName;
+    if (!aDB()->getTableNames().contains(tableName)){
+        DEB << tableName << "is not a table in the database. Aborting.";
+        DEB << "Please check input data.";
         return false;
     }
     // create insert statement
     QString statement = "INSERT INTO " + tableName + " (";
     QString placeholder = ") VALUES (";
     for (auto& csvColumn : fromCSV) {
-        if(dbLayout.format.value(tableName).contains(csvColumn.first())){
+        if(aDB()->getTableColumns().value(tableName).contains(csvColumn.first())) {
             statement += csvColumn.first() + ',';
             csvColumn.removeFirst();
             placeholder.append("?,");
         } else {
-            DEB(csvColumn.first() << "is not a column of " << tableName << "Aborting.");
-            DEB("Please check input data.");
+            DEB << csvColumn.first() << "is not a column of " << tableName << "Aborting.";
+            DEB << "Please check input data.";
             return false;
         }
     }
@@ -423,7 +423,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
 
     query.exec("COMMIT;"); //commit transaction
     if (query.lastError().text().length() > 3) {
-        DEB("Error:" << query.lastError().text());
+        DEB << "Error:" << query.lastError().text();
         return false;
     } else {
         qDebug() << tableName << "Database successfully updated!";

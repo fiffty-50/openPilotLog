@@ -18,23 +18,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/astandardpaths.cpp \
+    src/classes/aaircraftentry.cpp \
     src/classes/adownload.cpp \
-    src/classes/aircraft.cpp \
+    src/classes/aentry.cpp \
+    src/classes/aflightentry.cpp \
+    src/classes/apilotentry.cpp \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
-    src/classes/astrictrxvalidator.cpp \
-    src/classes/flight.cpp \
-    src/classes/pilot.cpp \
+    src/classes/atailentry.cpp \
+    src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
-    src/database/db.cpp \
-    src/database/dbinfo.cpp \
-    src/database/entry_deprecated.cpp \
-    src/experimental/aaircraftentry.cpp \
-    src/experimental/adatabase.cpp \
-    src/experimental/aentry.cpp \
-    src/experimental/aflightentry.cpp \
-    src/experimental/apilotentry.cpp \
-    src/experimental/atailentry.cpp \
     src/functions/acalc.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
@@ -54,26 +48,18 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    src/astandardpaths.h \
+    src/classes/aaircraftentry.h \
     src/classes/adownload.h \
-    src/classes/aircraft.h \
+    src/classes/aentry.h \
+    src/classes/aflightentry.h \
+    src/classes/apilotentry.h \
     src/classes/arunguard.h \
     src/classes/asettings.h \
-    src/classes/astrictrxvalidator.h \
-    src/classes/flight.h \
-    src/classes/pilot.h \
+    src/classes/atailentry.h \
+    src/database/adatabase.h \
     src/database/adatabasesetup.h \
-    src/database/db.h \
-    src/database/dbinfo.h \
-    src/database/entry_deprecated.h \
-    src/database/tablecolumnliterals.h \
-    src/experimental/UserInput.h \
-    src/experimental/aaircraftentry.h \
-    src/experimental/adatabase.h \
-    src/experimental/aentry.h \
-    src/experimental/aflightentry.h \
-    src/experimental/apilotentry.h \
-    src/experimental/atailentry.h \
-    src/experimental/decl.h \
+    src/database/declarations.h \
     src/functions/acalc.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \

@@ -17,36 +17,32 @@
  */
 #include "atailentry.h"
 
-namespace experimental {
-
 ATailEntry::ATailEntry()
     : AEntry::AEntry(DEFAULT_TAIL_POSITION)
 {}
 
-ATailEntry::ATailEntry(int row_id)
-    : AEntry::AEntry(DataPosition(QLatin1String("tails"), row_id))
+ATailEntry::ATailEntry(RowId row_id)
+    : AEntry::AEntry(DataPosition(DB_TABLE_TAILS, row_id))
 {}
 
-ATailEntry::ATailEntry(TableData table_data)
+ATailEntry::ATailEntry(RowData table_data)
     : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
 {}
 
 const QString ATailEntry::registration()
 {
-    return getData().value(QLatin1String("registration")).toString();
+    return getData().value(DB_TAILS_REGISTRATION).toString();
 }
 
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!getData().value(QLatin1String("make")).toString().isEmpty())
-        type_string.append(getData().value(QLatin1String("make")).toString() + ' ');
-    if (!getData().value(QLatin1String("model")).toString().isEmpty())
-        type_string.append(getData().value(QLatin1String("model")).toString());
-    if (!getData().value(QLatin1String("variant")).toString().isEmpty())
-        type_string.append('-' + getData().value(QLatin1String("variant")).toString() + ' ');
+    if (!tableData.value(DB_TAILS_MAKE).toString().isEmpty())
+        type_string.append(getData().value(DB_TAILS_MAKE).toString() + ' ');
+    if (!tableData.value(DB_TAILS_MODEL).toString().isEmpty())
+        type_string.append(getData().value(DB_TAILS_MODEL).toString());
+    if (!tableData.value(DB_TAILS_VARIANT).toString().isEmpty())
+        type_string.append('-' + getData().value(DB_TAILS_VARIANT).toString() + ' ');
 
     return type_string;
 }
-
-} // namespace experimental

@@ -18,66 +18,48 @@
 #include "mainwindow.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
-#include "src/experimental/adatabase.h"
+#include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
+#include "src/astandardpaths.h"
 #include "src/classes/asettings.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
+#include <QStandardPaths>
+#include <QDebug>
 
-
-const auto DATA_DIR = QLatin1String("data");
-/*!
- * \brief setup checks if data folder and settings files exists.
- * \return
- */
-bool setup()
-{
-    if (!QDir(DATA_DIR).exists())
-        QDir().mkdir(DATA_DIR);
-
-    QDir      settingspath(DATA_DIR + QLatin1Char('/') + QCoreApplication::organizationName());
-    QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
-    QFileInfo check_file(settingspath,settingsfile);
-
-    QSettings settings;
-    settings.setValue("setup/touch", true);
-    settings.sync();
-
-    return check_file.exists() && check_file.isFile();
-};
+#define APPNAME QStringLiteral("openPilotLog")
+#define ORGNAME QStringLiteral("opl")
+#define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("openPilotLog");
-    QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
-    QCoreApplication::setApplicationName("openPilotLog");
-
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, DATA_DIR);
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings settings;
-
-    experimental::aDB()->connect();
-
     QApplication openPilotLog(argc, argv);
-    if(!setup()){
-        DEB("error creating required directories");
-        return 0;
+    QCoreApplication::setOrganizationName(ORGNAME);
+    QCoreApplication::setOrganizationDomain(ORGDOMAIN);
+    QCoreApplication::setApplicationName(APPNAME);
+
+    AStandardPaths::setup();
+    AStandardPaths::scan_paths();
+    if(!AStandardPaths::validate_paths()){
+        DEB << "Standard paths not valid.";
+        return 1;
     }
+
+    ASettings::setup();
+
+    aDB()->connect();
 
     if (!ASettings::read("setup/setup_complete").toBool()) {
         FirstRunDialog dialog;
         dialog.exec();
     }
 
-
-
     //Theming
-    int selectedtheme = settings.value("main/theme").toInt();
-    QDir::setCurrent("/themes");
-    switch (selectedtheme) {
+    switch (ASettings::read("main/theme").toInt()) {
     case 1:{
-        qDebug() << "main :: Loading light theme";
+        DEB << "main :: Loading light theme";
         QFile file(":light.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);
@@ -85,7 +67,7 @@ int main(int argc, char *argv[])
         break;
     }
     case 2:{
-        qDebug() << "Loading dark theme";
+        DEB << "Loading dark theme";
         QFile file(":dark.qss");
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream stream(&file);
@@ -96,11 +78,10 @@ int main(int argc, char *argv[])
         break;
     }
 
-
     //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard("opl_single_key");
         if ( !guard.tryToRun() ){
-            qDebug() << "Another Instance is already running. Exiting.";
+            DEB << "Another Instance is already running. Exiting.";
             return 0;
         }
 
