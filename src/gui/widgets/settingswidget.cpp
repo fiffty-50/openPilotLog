@@ -112,14 +112,14 @@ void SettingsWidget::readSettings()
 
 void SettingsWidget::setupValidators()
 {
-    DEB "Setting up Validators...";
+    DEB << "Setting up Validators...";
     for(const auto& pair : LINE_EDIT_VALIDATORS){
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
         if(line_edit != nullptr){
             auto validator = new QRegularExpressionValidator(pair.second,line_edit);
             line_edit->setValidator(validator);
         }else{
-            DEB "Error: Line Edit not found: "<< pair.first << " - skipping.";
+            DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
         }
 
     }

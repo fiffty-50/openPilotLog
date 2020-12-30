@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t" <<
+#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t"
 
 /*!
  * Representation macro for custom classes.
@@ -19,7 +19,7 @@
  * };
  *
  * MyClass mc;
- * DEB mc;
+ * DEB << mc;
  *
  * output:
  * MyClass(member1=3000, something2="A320")

@@ -55,8 +55,8 @@ QString AStat::totalTime(yearType year_type)
     QSqlQuery query(statement);
 
     if (!query.first()) {
-        DEB "No result found. Check Query and Error.";
-        DEB "Error: " << query.lastError().text();
+        DEB << "No result found. Check Query and Error.";
+        DEB << "Error: " << query.lastError().text();
         return "00:00";
     } else {
         query.previous();

@@ -40,7 +40,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     QMessageBox mb(this);
     //check if template dir exists and create if needed.
     QDir dir("data/templates");
-    DEB dir.path();
+    DEB << dir.path();
     if (!dir.exists())
         dir.mkpath(".");
     // download latest csv
@@ -66,10 +66,10 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     auto oldDatabase = QFile("data/logbook.db");
     if (oldDatabase.exists()) {
         auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
-        DEB "Backing up old database as: " << "logbook-backup-" + dateString + ".db";
+        DEB << "Backing up old database as: " << "logbook-backup-" + dateString + ".db";
         if (oldDatabase.copy("data/logbook-backup-" + dateString + ".db")) {
             oldDatabase.remove();
-            DEB "Old Database removed.";
+            DEB << "Old Database removed.";
         }
 
     }
@@ -97,7 +97,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     QMessageBox mb(this);
     //check if template dir exists and create if needed.
     QDir dir("data/templates");
-    DEB dir.path();
+    DEB << dir.path();
     if (!dir.exists())
         dir.mkpath(".");
     // download latest csv
@@ -147,7 +147,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 {
     ATimer timer(this);
     auto file = QFileInfo(ui->importCsvLineEdit->text());
-    DEB "File exists/is file: " << file.exists() << file.isFile() << " Path: " << file.absoluteFilePath();
+    DEB << "File exists/is file: " << file.exists() << file.isFile() << " Path: " << file.absoluteFilePath();
 
     if (file.exists() && file.isFile()) {
 
@@ -169,7 +169,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    DEB AStandardPaths::getPaths()[QStandardPaths::AppDataLocation];
+    DEB << AStandardPaths::getPaths()[QStandardPaths::AppDataLocation];
 }
 
 /* //Comparing two functions template
@@ -193,8 +193,8 @@ void DebugWidget::on_debugPushButton_clicked()
         time2 = timer.timeNow();
     }
 
-    DEB "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-    DEB "Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
+    DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+    DEB << "Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
 */
 
 
@@ -221,7 +221,7 @@ void DebugWidget::on_debugPushButton_clicked()
             time1 = timer.timeNow();
         }
 
-        DEB "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
+        DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
         // 108 - 134 milliseconds with legacy exp db api
         // 108 - 110 milliseconds with improved exp api
         // to do: with string literals*/

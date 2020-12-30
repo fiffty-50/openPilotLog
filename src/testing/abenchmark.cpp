@@ -29,7 +29,7 @@ ABenchmark::ABenchmark(void (*function_one)(), void (*function_two)(), int numbe
             function_one();
         }
         auto stop1 = std::chrono::high_resolution_clock::now();
-        DEB "First Function execution finished (" << number_of_runs << " runs)";
+        DEB << "First Function execution finished (" << number_of_runs << " runs)";
 
 
         auto start2 = std::chrono::high_resolution_clock::now();
@@ -37,12 +37,12 @@ ABenchmark::ABenchmark(void (*function_one)(), void (*function_two)(), int numbe
             function_two();
         }
         auto stop2 = std::chrono::high_resolution_clock::now();
-        DEB "Second Function execution finished (" << number_of_runs << " runs)";
+        DEB << "Second Function execution finished (" << number_of_runs << " runs)";
 
-        DEB "Execution time for function 1: "
+        DEB << "Execution time for function 1: "
             << std::chrono::duration_cast<std::chrono::milliseconds>(stop1 - start1).count()
             << "milliseconds.";
-        DEB "Execution time for function 2: "
+        DEB << "Execution time for function 2: "
             << std::chrono::duration_cast<std::chrono::milliseconds>(stop2 - start2).count()
             << "milliseconds.";
 }
@@ -54,7 +54,7 @@ ABenchmark::ABenchmark(bool (*function_one)(), bool (*function_two)(), int numbe
         function_one();
     }
     auto stop1 = std::chrono::high_resolution_clock::now();
-    DEB "First Function execution finished (" << number_of_runs << " runs)";
+    DEB << "First Function execution finished (" << number_of_runs << " runs)";
 
 
     auto start2 = std::chrono::high_resolution_clock::now();
@@ -62,12 +62,12 @@ ABenchmark::ABenchmark(bool (*function_one)(), bool (*function_two)(), int numbe
         function_two();
     }
     auto stop2 = std::chrono::high_resolution_clock::now();
-    DEB "Second Function execution finished (" << number_of_runs << " runs)";
+    DEB << "Second Function execution finished (" << number_of_runs << " runs)";
 
-    DEB "Execution time for function 1: "
+    DEB << "Execution time for function 1: "
         << std::chrono::duration_cast<std::chrono::milliseconds>(stop1 - start1).count()
         << "milliseconds.";
-    DEB "Execution time for function 2: "
+    DEB << "Execution time for function 2: "
         << std::chrono::duration_cast<std::chrono::milliseconds>(stop2 - start2).count()
         << "milliseconds.";
 }

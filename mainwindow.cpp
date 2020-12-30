@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->insertWidget(ui->actionDebug, spacer);
 
 
-    DEB "Construction MainWindow Widgets\n";
+    DEB << "Construction MainWindow Widgets\n";
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
@@ -78,14 +78,14 @@ MainWindow::MainWindow(QWidget *parent)
     /// working when something has changed. Hopefully this check
     /// helps to avoid that in the future! 
     #if DATABASE < 15
-    DEB "Your database is up to date with the latest revision.";
+    DEB << "Your database is up to date with the latest revision.";
     #else
-    DEB "##########################################";
-    DEB "Your database is out of date.";
-    DEB "Current Revision:  " << DATABASE_REVISION_NUMBER;
-    DEB "You have revision: " << query.value(0).toInt();
-    DEB "Use of DebugWidget to udpate recommended.";
-    DEB "##########################################";
+    DEB << "##########################################";
+    DEB << "Your database is out of date.";
+    DEB << "Current Revision:  " << DATABASE_REVISION_NUMBER;
+    DEB << "You have revision: " << query.value(0).toInt();
+    DEB << "Use of DebugWidget to udpate recommended.";
+    DEB << "##########################################";
     #endif
     //// END DEBUG ////
 

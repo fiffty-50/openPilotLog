@@ -253,28 +253,28 @@ const QStringList templateTables= {
 bool ADataBaseSetup::createDatabase()
 {
 
-    DEB "Creating tables...";
+    DEB << "Creating tables...";
     if (!createSchemata(tables)) {
-        DEB "Creating tables has failed.";
+        DEB << "Creating tables has failed.";
         return false;
     }
 
-    DEB "Creating views...";
+    DEB << "Creating views...";
     if (!createSchemata(views)) {
-        DEB "Creating views failed.";
+        DEB << "Creating views failed.";
         return false;
     }
 
     // call connect again to (re-)populate tableNames and columnNames
     aDB()->connect();
 
-    DEB "Populating tables...";
+    DEB << "Populating tables...";
     if (!importDefaultData()) {
-        DEB "Populating tables failed.";
+        DEB << "Populating tables failed.";
         return false;
     }
 
-    DEB "Database successfully created!";
+    DEB << "Database successfully created!";
     return true;
 }
 
@@ -287,11 +287,11 @@ bool ADataBaseSetup::importDefaultData()
         //clear tables
         query.prepare("DELETE FROM " + table);
         if (!query.exec()) {
-            DEB "Error: " << query.lastError().text();
+            DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
         if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
-            DEB "Error importing data.";
+            DEB << "Error importing data.";
             return false;
         }
     }
@@ -310,7 +310,7 @@ bool ADataBaseSetup::resetToDefault()
     for (const auto& table : userTables) {
         query.prepare("DELETE FROM " + table);
         if (!query.exec()) {
-            DEB "Error: " << query.lastError().text();
+            DEB << "Error: " << query.lastError().text();
         }
     }
     return true;
@@ -321,7 +321,7 @@ bool ADataBaseSetup::resetToDefault()
  */
 void ADataBaseSetup::debug()
 {
-    DEB "Database tables and views: ";
+    DEB << "Database tables and views: ";
     QSqlQuery query;
     const QVector<QString> types = { "table", "view" };
     for (const auto& var : types){
@@ -331,7 +331,7 @@ void ADataBaseSetup::debug()
             QString table = query.value(0).toString();
             QSqlQuery entries("SELECT COUNT(*) FROM " + table);
             entries.next();
-            DEB "Element " << query.value(0).toString() << "with"
+            DEB << "Element " << query.value(0).toString() << "with"
                 << entries.value(0).toString() << "rows";
         }
     }
@@ -351,20 +351,20 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         query.exec();
         if(!query.isActive()) {
             errors << statement.section(QLatin1Char(' '),2,2) + " ERROR - " + query.lastError().text();
-            DEB "Query: " << query.lastQuery();
+            DEB << "Query: " << query.lastQuery();
         } else {
-            DEB "Schema added: " << statement.section(QLatin1Char(' '),2,2);
+            DEB << "Schema added: " << statement.section(QLatin1Char(' '),2,2);
         }
     }
 
     if (!errors.isEmpty()) {
-        DEB "The following errors have ocurred: ";
+        DEB << "The following errors have ocurred: ";
         for (const auto& error : errors) {
-            DEB error;
+            DEB << error;
         }
         return false;
     } else {
-        DEB "All schemas added successfully";
+        DEB << "All schemas added successfully";
         return true;
     }
 }
@@ -378,11 +378,11 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
 {
-    DEB "Table names: " << aDB()->getTableNames();
-    DEB "Importing Data to" << tableName;
+    DEB << "Table names: " << aDB()->getTableNames();
+    DEB << "Importing Data to" << tableName;
     if (!aDB()->getTableNames().contains(tableName)){
-        DEB tableName << "is not a table in the database. Aborting.";
-        DEB "Please check input data.";
+        DEB << tableName << "is not a table in the database. Aborting.";
+        DEB << "Please check input data.";
         return false;
     }
     // create insert statement
@@ -394,8 +394,8 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
             csvColumn.removeFirst();
             placeholder.append("?,");
         } else {
-            DEB csvColumn.first() << "is not a column of " << tableName << "Aborting.";
-            DEB "Please check input data.";
+            DEB << csvColumn.first() << "is not a column of " << tableName << "Aborting.";
+            DEB << "Please check input data.";
             return false;
         }
     }
@@ -423,7 +423,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
 
     query.exec("COMMIT;"); //commit transaction
     if (query.lastError().text().length() > 3) {
-        DEB "Error:" << query.lastError().text();
+        DEB << "Error:" << query.lastError().text();
         return false;
     } else {
         qDebug() << tableName << "Database successfully updated!";

@@ -19,9 +19,9 @@ void AStandardPaths::scan_paths()
 {
     for(auto& path : paths.values()){
         auto dir = QDir(path);
-        DEB "Scanning " << dir.path();
+        DEB << "Scanning " << dir.path();
         if(!dir.exists()) {
-            DEB"Creating " << dir.path();
+            DEB <<"Creating " << dir.path();
             dir.mkpath(path);
         }
     }
@@ -30,7 +30,7 @@ void AStandardPaths::scan_paths()
 bool AStandardPaths::validate_paths()
 {
     for(auto& path : paths.values()){
-        DEB "Validating " << path;
+        DEB << "Validating " << path;
         if(false)  // determine path as valid (scan contents and parse for correctness)
             return false;
     }

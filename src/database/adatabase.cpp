@@ -75,7 +75,7 @@ bool ADatabase::connect()
     if (!db.open())
         return false;
 
-    DEB "Database connection established." << db.lastError().text();
+    DEB << "Database connection established." << db.lastError().text();
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     tableNames = db.tables();
@@ -89,8 +89,8 @@ bool ADatabase::connect()
             tableColumns.insert(table, column_names);
         }
     }
-    DEB "Database Tables: " << tableNames;
-    DEB "Tables and Columns: " << tableColumns;
+    DEB << "Database Tables: " << tableNames;
+    DEB << "Tables and Columns: " << tableColumns;
     return true;
 }
 
@@ -98,7 +98,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    DEB "Database connection closed.";
+    DEB << "Database connection closed.";
 }
 
 QSqlDatabase ADatabase::database()
@@ -118,7 +118,7 @@ bool ADatabase::commit(AEntry entry)
 bool ADatabase::remove(AEntry entry)
 {
     if (!exists(entry)) {
-        DEB "Error: Database entry not found.";
+        DEB << "Error: Database entry not found.";
         lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
@@ -133,14 +133,14 @@ bool ADatabase::remove(AEntry entry)
 
     if (query.lastError().type() == QSqlError::NoError)
     {
-        DEB "Entry " << entry.getPosition() << " removed.";
+        DEB << "Entry " << entry.getPosition() << " removed.";
         emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
-        DEB "Unable to delete.";
-        DEB "Query: " << statement;
-        DEB "Query Error: " << query.lastError().text();
+        DEB << "Unable to delete.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
         lastError = query.lastError().text();
         return false;
     }
@@ -204,7 +204,7 @@ bool ADatabase::exists(AEntry entry)
     //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
         lastError = query.lastError().text();
-        DEB "Query Error: " << query.lastError().text() << statement;
+        DEB << "Query Error: " << query.lastError().text() << statement;
         return false;
     }
     query.next();
@@ -212,7 +212,7 @@ bool ADatabase::exists(AEntry entry)
     if (rowId) {
         return true;
     } else {
-        DEB "Database entry not found.";
+        DEB << "Database entry not found.";
         lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
@@ -234,14 +234,14 @@ bool ADatabase::exists(DataPosition data_position)
     //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
         lastError = query.lastError().text();
-        DEB "Query Error: " << query.lastError().text() << statement;
+        DEB << "Query Error: " << query.lastError().text() << statement;
     }
     query.next();
     int rowId = query.value(0).toInt();
     if (rowId) {
         return true;
     } else {
-        DEB "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
+        DEB << "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
         lastError = ADatabaseError(QStringLiteral("Database entry not found."));
         return false;
     }
@@ -271,14 +271,14 @@ bool ADatabase::update(AEntry updated_entry)
 
     if (query.lastError().type() == QSqlError::NoError)
     {
-        DEB "Entry successfully committed.";
+        DEB << "Entry successfully committed.";
         emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
-        DEB "Unable to commit.";
-        DEB "Query: " << statement;
-        DEB "Query Error: " << query.lastError().text();
+        DEB << "Unable to commit.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
         lastError = query.lastError().text();
         return false;
     }
@@ -316,14 +316,14 @@ bool ADatabase::insert(AEntry new_entry)
     //check result.
     if (query.lastError().type() == QSqlError::NoError)
     {
-        DEB "Entry successfully committed.";
+        DEB << "Entry successfully committed.";
         emit dataBaseUpdated();
         lastError = QString();
         return true;
     } else {
-        DEB "Unable to commit.";
-        DEB "Query: " << statement;
-        DEB "Query Error: " << query.lastError().text();
+        DEB << "Unable to commit.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
         lastError = query.lastError().text();
         return false;
     }
@@ -334,7 +334,7 @@ RowData ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
     if (!tableNames.contains(data_position.tableName)) {
-        DEB data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
+        DEB << data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
         return RowData();
     }
 
@@ -348,15 +348,15 @@ RowData ADatabase::getEntryData(DataPosition data_position)
     check_query.exec();
 
     if (check_query.lastError().type() != QSqlError::NoError) {
-        DEB "SQL error: " << check_query.lastError().text();
-        DEB "Statement: " << statement;
+        DEB << "SQL error: " << check_query.lastError().text();
+        DEB << "Statement: " << statement;
         lastError = check_query.lastError().text();
         return RowData();
     }
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
-        DEB "No Entry found for row id: " << data_position.rowId;
+        DEB << "No Entry found for row id: " << data_position.rowId;
         lastError = ADatabaseError("Database entry not found.");
         return RowData();
     }
@@ -372,8 +372,8 @@ RowData ADatabase::getEntryData(DataPosition data_position)
     select_query.exec();
 
     if (select_query.lastError().type() != QSqlError::NoError) {
-        DEB "SQL error: " << select_query.lastError().text();
-        DEB "Statement: " << statement;
+        DEB << "SQL error: " << select_query.lastError().text();
+        DEB << "Statement: " << statement;
         lastError = select_query.lastError().text();
         return RowData();
     }
@@ -445,7 +445,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT company FROM pilots"));
         break;
     default:
-        DEB "Not a valid completer target for this function.";
+        DEB << "Not a valid completer target for this function.";
         return QStringList();
     }
 
@@ -496,16 +496,16 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT ROWID, registration FROM tails"));
         break;
     default:
-        DEB "Not a valid completer target for this function.";
+        DEB << "Not a valid completer target for this function.";
         return QMap<QString, int>();
     }
 
     auto id_map = QMap<QString, int>();
     auto query = QSqlQuery(statement);
     if (!query.isActive()) {
-        DEB "No result found. Check Query and Error.";
-        DEB "Query: " << statement;
-        DEB "Error: " << query.lastError().text();
+        DEB << "No result found. Check Query and Error.";
+        DEB << "Query: " << statement;
+        DEB << "Error: " << query.lastError().text();
         lastError = query.lastError().text();
         return QMap<QString, int>();
     } else {
@@ -532,7 +532,7 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
         statement.append(DB_TABLE_TAILS);
         break;
     default:
-        DEB "Not a valid completer target for this function.";
+        DEB << "Not a valid completer target for this function.";
         return 0;
     }
     auto query = QSqlQuery(statement);
@@ -540,7 +540,7 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
         return query.value(0).toInt();
     } else {
         lastError = ADatabaseError(QStringLiteral("Database entry not found."));
-        DEB "No entry found.";
+        DEB << "No entry found.";
         return 0;
     }
 }
@@ -557,7 +557,7 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
         statement.append("acft=?");
         break;
     default:
-        DEB "Not a valid target for this function.";
+        DEB << "Not a valid target for this function.";
         return QList<int>();
         break;
     }
@@ -569,9 +569,9 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
 
     if (!query.isActive()) {
         lastError = query.lastError().text();
-        DEB "Error";
-        DEB statement;
-        DEB query.lastError().text();
+        DEB << "Error";
+        DEB << statement;
+        DEB << query.lastError().text();
         return QList<int>();
     }
 
@@ -598,9 +598,9 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
     query.exec();
 
     if (!query.first()) {
-        DEB "No result found. Check Query and Error.";
-        DEB "Error: " << query.lastError().text();
-        DEB "Statement: " << statement;
+        DEB << "No result found. Check Query and Error.";
+        DEB << "Error: " << query.lastError().text();
+        DEB << "Statement: " << statement;
         lastError = query.lastError().text();
         return QVector<QString>();
     } else {

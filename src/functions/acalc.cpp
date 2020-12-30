@@ -35,7 +35,7 @@ QString ACalc::formatTimeInput(QString user_input)
 
     output = temp_time.toString(QStringLiteral("hh:mm"));
     if (output.isEmpty()) {
-        DEB "Time input is invalid.";
+        DEB << "Time input is invalid.";
     }
     return output;
 }
@@ -91,7 +91,7 @@ double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QStr
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
-        DEB "Invalid input. Aborting.";
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -209,7 +209,7 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
-        DEB "Invalid input. Aborting.";
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -237,7 +237,7 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
     auto lat_lon = aDB()->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
-        DEB "Invalid input. Aborting.";
+        DEB << "Invalid input. Aborting.";
         return 0;
     }
 
@@ -264,10 +264,10 @@ void ACalc::updateAutoTimes(int acft_id)
     const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
     auto flight_list = aDB()->customQuery(statement, 1);
     if (flight_list.isEmpty()) {
-        DEB "No flights for this tail found.";
+        DEB << "No flights for this tail found.";
         return;
     }
-    DEB "Updating " << flight_list.length() << " flights with this aircraft.";
+    DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
     auto acft = aDB()->getTailEntry(acft_id);
     auto acft_data = acft.getData();
@@ -277,18 +277,18 @@ void ACalc::updateAutoTimes(int acft_id)
 
         if(acft_data.value(DB_TAILS_MULTIPILOT).toInt() == 0
                 && acft_data.value(DB_TAILS_MULTIENGINE) == 0) {
-            DEB "SPSE";
+            DEB << "SPSE";
             flight_data.insert(DB_FLIGHTS_TSPSE, flight_data.value(DB_FLIGHTS_TBLK));
             flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
             flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
         } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 0
                     && acft.getData().value(DB_TAILS_MULTIENGINE) == 1)) {
-            DEB "SPME";
+            DEB << "SPME";
             flight_data.insert(DB_FLIGHTS_TSPME, flight_data.value(DB_FLIGHTS_TBLK));
             flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
             flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
         } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 1)) {
-            DEB "MPME";
+            DEB << "MPME";
             flight_data.insert(DB_FLIGHTS_TMP, flight_data.value(DB_FLIGHTS_TBLK));
             flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
             flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
@@ -310,10 +310,10 @@ void ACalc::updateNightTimes()
     auto flight_list = aDB()->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {
-        DEB "No flights found.";
+        DEB << "No flights found.";
         return;
     }
-    DEB "Updating " << flight_list.length() << " flights in the database.";
+    DEB << "Updating " << flight_list.length() << " flights in the database.";
 
     for (const auto& item : flight_list) {
 
