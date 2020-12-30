@@ -113,7 +113,7 @@ void NewTailDialog::setupValidators()
  */
 void NewTailDialog::fillForm(AEntry entry, bool is_template)
 {
-    DEB "Filling Form for a/c" << entry.getPosition();
+    DEB "Filling Form for a/c" << entry.getPosition().tableName << entry.getPosition().rowId;
     //fill Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
 
@@ -216,8 +216,8 @@ void NewTailDialog::submitForm()
         message_box.exec();
         return;
     } else {
-        if (entry.getPosition().second != 0)
-            ACalc::updateAutoTimes(entry.getPosition().second);
+        if (entry.getPosition().rowId != 0)
+            ACalc::updateAutoTimes(entry.getPosition().rowId);
         QDialog::accept();
     }
 }
