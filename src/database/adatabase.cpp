@@ -67,6 +67,7 @@ bool ADatabase::connect()
     if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
         return false;
 
+
     QDir directory("data");
     QString databaseLocation = directory.filePath("logbook.db");
     QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);

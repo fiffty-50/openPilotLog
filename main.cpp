@@ -20,45 +20,14 @@
 #include "src/classes/arunguard.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
+#include "src/astandardpaths.h"
+#include "src/classes/asettings.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
 #include <QStandardPaths>
 
-/// Utility struct for standard app paths. Struct should be created after QCoreApplication::set___Name.
-struct StandardAppPaths{
-    QMap<QStandardPaths::StandardLocation, QString> paths;
-    StandardAppPaths()
-        : paths({{QStandardPaths::AppConfigLocation, QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)},
-                 {QStandardPaths::AppDataLocation, QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)},})
-    {}
-};
-
-/// Ensure standard app paths exist, if not mkdir them.
-static inline
-void scan_paths(StandardAppPaths paths)
-{
-    for(auto& path : paths.paths.values()){
-        auto dir = QDir(path);
-        DEB("Scanning " << dir.path());
-        if(!dir.exists())
-            DEB("Creating " << dir.path());
-            dir.mkdir(path);
-    }
-}
-
-/// Validate standard app paths are valid in structure and contents.
-static inline
-bool validate_paths(StandardAppPaths paths)
-{
-    for(auto& path : paths.paths.values()){
-        DEB("Validating " << path);
-        if(false)  // determine path as valid (scan contents and parse for correctness)
-            return false;
-    }
-    return true;
-}
 
 int main(int argc, char *argv[])
 {
@@ -67,27 +36,25 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
     QCoreApplication::setApplicationName("openPilotLog");
 
-    StandardAppPaths std_paths;
-    scan_paths(std_paths);
-    if(!validate_paths(std_paths)){
+    AStandardPaths::setup();
+    AStandardPaths::scan_paths();
+    if(!AStandardPaths::validate_paths()){
         DEB("Standard paths not valid.");
         return 1;
     }
 
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, std_paths.paths[QStandardPaths::AppDataLocation]);
-    QSettings settings;
+    ASettings::setup();
 
     aDB()->connect();
 
-//    if (!ASettings::read("setup/setup_complete").toBool()) {
-//        FirstRunDialog dialog;
-//        dialog.exec();
-//    }
+    if (!ASettings::read("setup/setup_complete").toBool()) {
+        FirstRunDialog dialog;
+        dialog.exec();
+    }
 
     //Theming
-//    int selectedtheme = settings.value("main/theme").toInt();
-//    QDir::setCurrent("/themes");
+    int selectedtheme = ASettings::getSettings().value("main/theme").toInt();
+    QDir::setCurrent("/themes");
     switch (2) {
     case 1:{
         DEB "main :: Loading light theme";
