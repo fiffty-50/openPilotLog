@@ -26,10 +26,17 @@
  */
 class ASettings
 {
+private:
+    static QSettings settings;
+
 public:
+    static void setup();
+
     static QVariant read(const QString &key);
 
     static void write(const QString &key, const QVariant &val);
+
+    static QSettings& getSettings();
 };
 
 #endif // ASETTINGS_H

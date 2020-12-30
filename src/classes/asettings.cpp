@@ -16,15 +16,28 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "asettings.h"
+#include "src/astandardpaths.h"
+#include <QSettings>
+
+QSettings ASettings::settings;
+
+void ASettings::setup()
+{
+    settings.setDefaultFormat(QSettings::IniFormat);
+    settings.setPath(QSettings::IniFormat, QSettings::UserScope, AStandardPaths::getPaths()[QStandardPaths::AppDataLocation]);
+}
 
 QVariant ASettings::read(const QString &key)
 {
-    QSettings settings;
     return settings.value(key);
 }
 
 void ASettings::write(const QString &key, const QVariant &val)
 {
-    QSettings settings;
     settings.setValue(key, val);
+}
+
+QSettings& ASettings::getSettings()
+{
+    return settings;
 }
