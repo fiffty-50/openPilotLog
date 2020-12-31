@@ -19,7 +19,10 @@
 #include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
 #include "src/functions/areadcsv.h"
+#include "src/astandardpaths.h"
+#include "src/classes/adownload.h"
 
+const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 // Statements for creation of database tables, Revision 15
 
@@ -278,6 +281,46 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
+/*!
+ * \brief create template directory or verify exists
+ */
+bool ADataBaseSetup::setupTemplateDir()
+{
+    QDir dir(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
+             % QStringLiteral("/templates"));
+    if (dir.exists()) {
+        return true;
+    } else {
+        if(dir.mkpath(".")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+/*!
+ * \brief Download up-to-date database templates
+ */
+bool ADataBaseSetup::downloadTemplates()
+{
+    DEB << "Downloading templates...";
+    for (const auto& table : templateTables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done,
+                         &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
+        dl->setFileName(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
+                        % QStringLiteral("/templates/")
+                        % table % QStringLiteral(".csv"));
+        dl->download();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+        dl->deleteLater(); // schedule dl object for deletion
+    }
+    DEB << "Downloading templates complete";
+    return true;
+}
+
 
 bool ADataBaseSetup::importDefaultData()
 {
@@ -290,7 +333,10 @@ bool ADataBaseSetup::importDefaultData()
             DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
-        if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
+        if (!commitData(aReadCsv(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
+                                 % QStringLiteral("/templates/")
+                                 % table % QStringLiteral(".csv")),
+                        table)) {
             DEB << "Error importing data.";
             return false;
         }

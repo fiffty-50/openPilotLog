@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QStringBuilder>
 
 namespace Ui {
 class FirstRunDialog;
@@ -25,14 +26,14 @@ private slots:
 
     void on_themeGroup_toggled(int id);
 
-
-
 private:
     Ui::FirstRunDialog *ui;
     // [G]: finish is the old signal.
     // finishSetup does something with template of database which
     // goes over my head but everything works for now. Better naming needed
-    bool finishSetup();
+
+    void reject() override;
+    bool setupDatabase();
     void finish();
 
 };

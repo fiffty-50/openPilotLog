@@ -50,13 +50,20 @@ int main(int argc, char *argv[])
     ASettings::setup();
 
     aDB()->connect();
-    if (!ASettings::read("setup/setup_complete").toBool()) {
+    if (!ASettings::read(QStringLiteral("setup/setup_complete")).toBool()) {
         FirstRunDialog dialog;
-        dialog.exec();
+        if(dialog.exec() == QDialog::Accepted) {
+            qApp->quit();
+            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        } else {
+            DEB "First run not accepted.";
+            return 0;
+        }
+
     }
 
     //Theming
-    switch (ASettings::read("main/theme").toInt()) {
+    switch (ASettings::read(QStringLiteral("main/theme")).toInt()) {
     case 1:{
         DEB << "main :: Loading light theme";
         QFile file(":light.qss");
@@ -78,7 +85,7 @@ int main(int argc, char *argv[])
     }
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
-    ARunGuard guard("opl_single_key");
+    ARunGuard guard(QStringLiteral("opl_single_key"));
         if ( !guard.tryToRun() ){
             DEB << "Another Instance is already running. Exiting.";
             return 0;

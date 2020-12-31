@@ -19,6 +19,8 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
+#include <QStringBuilder>
+#include <QEventLoop>
 
 /*!
  * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
@@ -32,6 +34,10 @@ public:
     static void debug();
 
     static bool createDatabase();
+
+    static bool setupTemplateDir();
+
+    static bool downloadTemplates();
 
     static bool fillTemplates();
 
