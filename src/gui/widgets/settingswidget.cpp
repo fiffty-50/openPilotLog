@@ -88,12 +88,11 @@ void SettingsWidget::readSettings()
     ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
-    //////////////////// CONTINUE changin "setup/setup_complete" to enum of ASETTINGS
 
     /*
      * Misc Tab
      */
-    switch (ASettings::read("main/theme").toInt()) {
+    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
     case 0:
         ui->systemThemeCheckBox->setChecked(true);
         break;
@@ -103,13 +102,13 @@ void SettingsWidget::readSettings()
     case 2:
         ui->darkThemeCheckBox->setChecked(true);
     }
-    ui->logbookViewComboBox->setCurrentIndex(ASettings::read("logbook/view").toInt());
+    ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::LogBook::View).toInt());
     /*
      * Aircraft Tab
      */
-    ui->acSortComboBox->setCurrentIndex(ASettings::read("userdata/acSortColumn").toInt());
-    ui->pilotSortComboBox->setCurrentIndex(ASettings::read("userdata/pilSortColumn").toInt());
-    ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read("userdata/acAllowIncomplete").toInt());
+    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcSortColumn).toInt());
+    ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilSortColumn).toInt());
+    ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt());
 }
 
 void SettingsWidget::setupValidators()
@@ -174,10 +173,10 @@ void SettingsWidget::updatePersonalDetails()
 void SettingsWidget::on_lastnameLineEdit_editingFinished()
 {
     if(ui->lastnameLineEdit->text().isEmpty()){
-        ui->lastnameLineEdit->setText(ASettings::read("userdata/lastname").toString());
+        ui->lastnameLineEdit->setText(ASettings::read(ASettings::UserData::LastName).toString());
         ui->lastnameLineEdit->setFocus();
     } else {
-        ASettings::write("userdata/lastname",ui->lastnameLineEdit->text());
+        ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
         updatePersonalDetails();
     }
 }
@@ -185,35 +184,35 @@ void SettingsWidget::on_lastnameLineEdit_editingFinished()
 void SettingsWidget::on_firstnameLineEdit_editingFinished()
 {
     if(ui->firstnameLineEdit->text().isEmpty()){
-        ui->firstnameLineEdit->setText(ASettings::read("userdata/firstname").toString());
+        ui->firstnameLineEdit->setText(ASettings::read(ASettings::UserData::FirstName).toString());
         ui->firstnameLineEdit->setFocus();
     } else {
-        ASettings::write("userdata/firstname",ui->firstnameLineEdit->text());
+        ASettings::write(ASettings::UserData::FirstName,ui->firstnameLineEdit->text());
         updatePersonalDetails();
     }
 }
 
 void SettingsWidget::on_companyLineEdit_editingFinished()
 {
-    ASettings::write("userdata/company", ui->companyLineEdit->text());
+    ASettings::write(ASettings::UserData::Company, ui->companyLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_employeeidLineEdit_editingFinished()
 {
-    ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
+    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_emailLineEdit_editingFinished()
 {
-    ASettings::write("userdata/email", ui->emailLineEdit->text());
+    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_phoneLineEdit_editingFinished()
 {
-    ASettings::write("userdata/phone", ui->phoneLineEdit->text());
+    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
     updatePersonalDetails();
 }
 
@@ -223,43 +222,43 @@ void SettingsWidget::on_phoneLineEdit_editingFinished()
 
 void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("userdata/displayselfas", index);
+    ASettings::write(ASettings::UserData::DisplaySelfAs, index);
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_functionComboBox_currentIndexChanged(const QString &arg1)
 {
-    ASettings::write("flightlogging/function", arg1);
+    ASettings::write(ASettings::FlightLogging::Function, arg1);
 }
 
 void SettingsWidget::on_rulesComboBox_currentIndexChanged(const QString &arg1)
 {
-    ASettings::write("flightlogging/rules", arg1);
+    ASettings::write(ASettings::FlightLogging::Rules, arg1);
 }
 
 void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1)
 {
-    ASettings::write("flightlogging/approach", arg1);
+    ASettings::write(ASettings::FlightLogging::Approach, arg1);
 }
 
 void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("flightlogging/nightlogging", index);
+    ASettings::write(ASettings::FlightLogging::NightLogging, index);
     switch (index) {
     case 1:
-        ASettings::write("flightlogging/nightangle", -6);
+        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
         break;
     case 2:
-        ASettings::write("flightlogging/nightangle", 0);
+        ASettings::write(ASettings::FlightLogging::NightAngle, 0);
         break;
     default:
-        ASettings::write("flightlogging/nightangle", -6);
+        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
     }
 }
 
 void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 {
-    ASettings::write("flightlogging/flightnumberPrefix", arg1);
+    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, arg1);
 
 }
 
@@ -268,7 +267,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
  */
 void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
 {
-    ASettings::write("main/theme", theme_id);
+    ASettings::write(ASettings::Main::Theme, theme_id);
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Changing Themes",
@@ -286,22 +285,22 @@ void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
 }
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("logbook/view", index);
+    ASettings::write(ASettings::LogBook::View, index);
     emit viewSelectionChanged(index);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("userdata/pilSortColumn", index);
+    ASettings::write(ASettings::UserData::PilSortColumn, index);
 }
 
 void SettingsWidget::on_acSortComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("userdata/acSortColumn", index);
+    ASettings::write(ASettings::UserData::AcSortColumn, index);
 }
 
 void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 {
-    ASettings::write("userdata/acAllowIncomplete", index);
+    ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
     if (index) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::warning(this, "Warning",
@@ -313,7 +312,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
                                       "Are you sure you want to proceed?",
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
-            ASettings::write("userdata/acAllowIncomplete", index);
+            ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
         } else {
             ui->acAllowIncompleteComboBox->setCurrentIndex(0);
         }

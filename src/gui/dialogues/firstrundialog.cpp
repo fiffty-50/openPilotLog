@@ -115,6 +115,7 @@ void FirstRunDialog::finish()
     if (!finishSetup()) {
         QMessageBox message_box(this);
         message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        message_box.exec();
     }
     ASettings::write(ASettings::Setup::SetupComplete, true);
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
@@ -129,12 +130,15 @@ void FirstRunDialog::finish()
     } else {
         QMessageBox message_box(this);
         message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        message_box.exec();
     }
 }
 
 bool FirstRunDialog::finishSetup()
 {
+
     QMessageBox confirm;
+    DEB << "TESTETESTS";
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);

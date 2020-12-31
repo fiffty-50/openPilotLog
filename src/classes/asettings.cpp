@@ -18,47 +18,54 @@
 #include "asettings.h"
 #include "src/astandardpaths.h"
 #include <QSettings>
+#include <algorithm>
+#include <iterator>
+
 
 QMap<ASettings::Main, QString> ASettings::mainMap = {
-    {Main::Theme, "theme"},
-    {Main::ThemeID, "theme_id"}, // inconsistent naming
+    {Main::Theme,   QStringLiteral("theme")},
+    {Main::ThemeID, QStringLiteral("theme_id")}, // inconsistent naming
+};
+
+QMap<ASettings::LogBook, QString> ASettings::logBookMap = {
+    {LogBook::View, QStringLiteral("view")},
 };
 
 QMap<ASettings::UserData, QString> ASettings::userDataMap = {
-    {UserData::LastName, "lastname"},
-    {UserData::FirstName, "firstname" },
-    {UserData::Company, "company"},
-    {UserData::EmployeeID, "employeeid"},
-    {UserData::Phone, "phone"},
-    {UserData::Email, "email"},
-    {UserData::DisplaySelfAs, "displayselfas"},
-    {UserData::Alias, "alias"},
-    {UserData::AcSortColumn, "acSortColumn"},  // [G]: inconsistent naming
-    {UserData::PilSortColumn, "pilSortColumn"},
-    {UserData::AcAllowIncomplete, "acAllowIncomplete"},
+    {UserData::LastName,          QStringLiteral("lastname")},
+    {UserData::FirstName,         QStringLiteral("firstname") },
+    {UserData::Company,           QStringLiteral("company")},
+    {UserData::EmployeeID,        QStringLiteral("employeeid")},
+    {UserData::Phone,             QStringLiteral("phone")},
+    {UserData::Email,             QStringLiteral("email")},
+    {UserData::DisplaySelfAs,     QStringLiteral("displayselfas")},
+    {UserData::Alias,             QStringLiteral("alias")},
+    {UserData::AcSortColumn,      QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
+    {UserData::PilSortColumn,     QStringLiteral("pilSortColumn")},
+    {UserData::AcAllowIncomplete, QStringLiteral("acAllowIncomplete")},
 };
 
 QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
-    {FlightLogging::Function, "function"},
-    {FlightLogging::Approach, "approach"},
-    {FlightLogging::NightLogging, "nightlogging"},
-    {FlightLogging::LogIFR, "logIfr"},
-    {FlightLogging::FlightNumberPrefix, "flightnumberPrefix"},
-    {FlightLogging::NumberTakeoffs, "numberTakeoffs"},
-    {FlightLogging::NumberLandings, "numberLandings"},
-    {FlightLogging::PopupCalendar,  "popupCalendar"},
-    {FlightLogging::PilotFlying, "pilotFlying"},
-    {FlightLogging::NightAngle, "nightangle"},
-    {FlightLogging::Rules, "rules"},
+    {FlightLogging::Function,           QStringLiteral("function")},
+    {FlightLogging::Approach,           QStringLiteral("approach")},
+    {FlightLogging::NightLogging,       QStringLiteral("nightlogging")},
+    {FlightLogging::LogIFR,             QStringLiteral("logIfr")},
+    {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
+    {FlightLogging::NumberTakeoffs,     QStringLiteral("numberTakeoffs")},
+    {FlightLogging::NumberLandings,     QStringLiteral("numberLandings")},
+    {FlightLogging::PopupCalendar,      QStringLiteral("popupCalendar")},
+    {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
+    {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
+    {FlightLogging::Rules,              QStringLiteral("rules")},
 };
 
 QMap<ASettings::Setup, QString> ASettings::setupMap = {
-    {Setup::SetupComplete, "setup_complete"},  // inconsistent naming
+    {Setup::SetupComplete, QStringLiteral("setup_complete")},  // inconsistent naming
 };
 
 QMap<ASettings::NewFlight, QString> ASettings::newFlightMap = {
-    {NewFlight::FunctionComboBox, "FunctionComboBox"},  // inconsistent naming
-    {NewFlight::CalendarCheckBox, "calendarCheckBox"},
+    {NewFlight::FunctionComboBox, QStringLiteral("FunctionComboBox")},  // inconsistent naming
+    {NewFlight::CalendarCheckBox, QStringLiteral("calendarCheckBox")},
 };
 
 void ASettings::setup()
@@ -71,50 +78,62 @@ void ASettings::setup()
 // Read/Write
 //
 
-QVariant ASettings::read(const Main key)
-{ return QSettings().value(QStringLiteral("main/") + mainMap[key]); }
-
-void ASettings::write(const Main key, const QVariant &val)
-{ QSettings().setValue(QStringLiteral("main/") + mainMap[key], val); }
-
-QVariant ASettings::read(const UserData key)
-{ return QSettings().value(QStringLiteral("userdata/") + userDataMap[key]); }
-
-void ASettings::write(const UserData key, const QVariant &val)
-{ QSettings().setValue(QStringLiteral("userdata/") + userDataMap[key], val); }
-
 QVariant ASettings::read(const FlightLogging key)
-{ return QSettings().value(QStringLiteral("flightlogging/") + flightLoggingMap[key]); }
+{ return QSettings().value(stringOfKey(key)); }
 
 void ASettings::write(const FlightLogging key, const QVariant &val)
-{ QSettings().setValue(QStringLiteral("flightlogging/") + flightLoggingMap[key], val); }
+{ QSettings().setValue(stringOfKey(key), val); }
+
+QVariant ASettings::read(const LogBook key)
+{ return QSettings().value(stringOfKey(key)); }
+
+void ASettings::write(const LogBook key, const QVariant &val)
+{ QSettings().setValue(stringOfKey(key), val); }
+
+QVariant ASettings::read(const Main key)
+{ return QSettings().value(stringOfKey(key)); }
+
+void ASettings::write(const Main key, const QVariant &val)
+{ QSettings().setValue(stringOfKey(key), val); }
 
 QVariant ASettings::read(const Setup key)
-{ return QSettings().value(QStringLiteral("setup/") + setupMap[key]); }
+{ return QSettings().value(stringOfKey(key)); }
 
 void ASettings::write(const Setup key, const QVariant &val)
-{ QSettings().setValue(QStringLiteral("setup/") + setupMap[key], val); }
+{ QSettings().setValue(stringOfKey(key), val); }
 
 QVariant ASettings::read(const NewFlight key)
-{ return QSettings().value(QStringLiteral("NewFlight/") + newFlightMap[key]); }
+{ return QSettings().value(stringOfKey(key)); }
 
 void ASettings::write(const NewFlight key, const QVariant &val)
-{ QSettings().setValue(QStringLiteral("NewFlight/") + newFlightMap[key], val); }
+{ QSettings().setValue(stringOfKey(key), val); }
+
+QVariant ASettings::read(const UserData key)
+{ return QSettings().value(stringOfKey(key)); }
+
+void ASettings::write(const UserData key, const QVariant &val)
+{ QSettings().setValue(stringOfKey(key), val); }
 
 //
-// to QString conversion
+// QString conversion
 //
-QString ASettings::stringOfKey(const Main key)
-{ return mainMap[key]; }
+QString ASettings::stringOfKey (const ASettings::FlightLogging key)
+{ return QStringLiteral("flightlogging/") + flightLoggingMap[key]; }
 
-QString ASettings::stringOfKey(const UserData key)
-{ return userDataMap[key]; }
+QString ASettings::stringOfKey (const ASettings::LogBook key)
+{ return QStringLiteral("logbook/") + logBookMap[key]; }
 
-QString ASettings::stringOfKey(const FlightLogging key)
-{ return flightLoggingMap[key]; }
+QString ASettings::stringOfKey (const ASettings::Main key)
+{ return QStringLiteral("main/") + mainMap[key]; }
 
-QString ASettings::stringOfKey(const Setup key)
-{ return setupMap[key]; }
+QString ASettings::stringOfKey (const ASettings::NewFlight key)
+{ return QStringLiteral("NewFlight/") + newFlightMap[key]; }
+
+QString ASettings::stringOfKey (const ASettings::Setup key)
+{ return QStringLiteral("setup/") + setupMap[key]; }
+
+QString ASettings::stringOfKey (const ASettings::UserData key)
+{ return QStringLiteral("userdata/") + userDataMap[key]; }
 
 QSettings ASettings::settings()
 { return QSettings(); }

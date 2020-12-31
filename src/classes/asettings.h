@@ -77,25 +77,33 @@ public:
      */
     static void setup();
 
-    static inline QVariant read(const Main key);
-    static inline void write(const Main key, const QVariant &val);
+    static QVariant read(const Setup key);
+    static void write(const Setup key, const QVariant &val);
 
-    static inline QVariant read(const FlightLogging key);
-    static inline void write(const UserData key, const QVariant &val);
+    static QVariant read(const LogBook key);
+    static void write(const LogBook key, const QVariant &val);
 
-    static inline QVariant read(const UserData key);
-    static inline void write(const FlightLogging key, const QVariant &val);
+    static QVariant read(const Main key);
+    static void write(const Main key, const QVariant &val);
 
-    static inline QVariant read(const Setup key);
-    static inline void write(const Setup key, const QVariant &val);
+    static QVariant read(const FlightLogging key);
+    static void write(const UserData key, const QVariant &val);
 
-    static inline QVariant read(const NewFlight key);
-    static inline void write(const NewFlight key, const QVariant &val);
+    static QVariant read(const UserData key);
+    static void write(const FlightLogging key, const QVariant &val);
 
-    static inline QString stringOfKey(const Main key);
-    static inline QString stringOfKey(const UserData key);
-    static inline QString stringOfKey(const FlightLogging key);
-    static inline QString stringOfKey(const Setup key);
+    static QVariant read(const NewFlight key);
+    static void write(const NewFlight key, const QVariant &val);
+
+    /*!
+     * \brief Return "ini_header/key"
+     */
+    static QString stringOfKey(const Main key);
+    static QString stringOfKey(const LogBook key);
+    static QString stringOfKey(const NewFlight key);
+    static QString stringOfKey(const FlightLogging key);
+    static QString stringOfKey(const Setup key);
+    static QString stringOfKey(const UserData key);
 
     static QSettings settings();
 
@@ -106,10 +114,6 @@ private:
     static QMap<FlightLogging, QString> flightLoggingMap;
     static QMap<Setup, QString> setupMap;
     static QMap<NewFlight, QString> newFlightMap;
-
-// [G]: no need for these anymore
-//	static QVariant read(const QString &key);
-//	static void write(const QString &key, const QVariant &val);
 
 };
 

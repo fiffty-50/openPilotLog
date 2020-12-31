@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     }
 
     ASettings::setup();
-
+    DEB << "HELLO???????????";
     FirstRunDialog().exec();
     aDB()->connect();
 //    if (!ASettings::read("setup/setup_complete").toBool()) {
