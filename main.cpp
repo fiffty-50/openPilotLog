@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
 
     ASettings::setup();
 
-    FirstRunDialog().exec();
     aDB()->connect();
     if (!ASettings::read(QStringLiteral("setup/setup_complete")).toBool()) {
         FirstRunDialog dialog;
@@ -57,10 +56,9 @@ int main(int argc, char *argv[])
             qApp->quit();
             QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
         } else {
-            DEB "First run not accepted.";
+            DEB "First run not accepted. Exiting.";
             return 0;
         }
-
     }
 
     //Theming

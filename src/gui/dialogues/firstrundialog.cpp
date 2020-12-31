@@ -88,61 +88,63 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
 
 void FirstRunDialog::finish()
 {
-    ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
-    ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
-    ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
-    ASettings::write("userdata/phone", ui->phoneLineEdit->text());
-    ASettings::write("userdata/email", ui->emailLineEdit->text());
+    ASettings::write(QStringLiteral("userdata/lastname"), ui->lastnameLineEdit->text());
+    ASettings::write(QStringLiteral("userdata/firstname"), ui->firstnameLineEdit->text());
+    ASettings::write(QStringLiteral("userdata/employeeid"), ui->employeeidLineEdit->text());
+    ASettings::write(QStringLiteral("userdata/phone"), ui->phoneLineEdit->text());
+    ASettings::write(QStringLiteral("userdata/email"), ui->emailLineEdit->text());
 
-    ASettings::write("flightlogging/function", ui->functionComboBox->currentText());
-    ASettings::write("flightlogging/approach", ui->approachComboBox->currentText());
-    ASettings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
-    ASettings::write("flightlogging/logIfr", ui->rulesComboBox->currentIndex());
-    ASettings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
+    ASettings::write(QStringLiteral("flightlogging/function"), ui->functionComboBox->currentText());
+    ASettings::write(QStringLiteral("flightlogging/approach"), ui->approachComboBox->currentText());
+    ASettings::write(QStringLiteral("flightlogging/nightlogging"), ui->nightComboBox->currentIndex());
+    ASettings::write(QStringLiteral("flightlogging/logIfr"), ui->rulesComboBox->currentIndex());
+    ASettings::write(QStringLiteral("flightlogging/flightnumberPrefix"), ui->prefixLineEdit->text());
 
-    ASettings::write("flightlogging/numberTakeoffs", 1);
-    ASettings::write("flightlogging/numberLandings", 1);
-    ASettings::write("flightlogging/popupCalendar", true);
-    ASettings::write("flightlogging/pilotFlying", true);
+    ASettings::write(QStringLiteral("flightlogging/numberTakeoffs"), 1);
+    ASettings::write(QStringLiteral("flightlogging/numberLandings"), 1);
+    ASettings::write(QStringLiteral("flightlogging/popupCalendar"), true);
+    ASettings::write(QStringLiteral("flightlogging/pilotFlying"), true);
 
     QMap<QString, QVariant> data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
         break;
     case 1:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
         break;
     case 2:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
         break;
     default:
         break;
     }
-    data.insert("lastname", ui->lastnameLineEdit->text());
-    data.insert("firstname", ui->firstnameLineEdit->text());
-    data.insert("alias", "self");
-    data.insert("employeeid", ui->employeeidLineEdit->text());
-    data.insert("phone", ui->phoneLineEdit->text());
-    data.insert("email", ui->emailLineEdit->text());
+    data.insert(QStringLiteral("lastname"), ui->lastnameLineEdit->text());
+    data.insert(QStringLiteral("firstname"), ui->firstnameLineEdit->text());
+    data.insert(QStringLiteral("alias"), QStringLiteral("self"));
+    data.insert(QStringLiteral("employeeid"), ui->employeeidLineEdit->text());
+    data.insert(QStringLiteral("phone"), ui->phoneLineEdit->text());
+    data.insert(QStringLiteral("email"), ui->emailLineEdit->text());
 
-    if (!finishSetup()) {
+    if (!setupDatabase()) {
         QMessageBox message_box(this);
-        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        message_box.setText(QStringLiteral("Errors have ocurred creating the database. Without a working database The application will not be usable."));
     }
-    ASettings::write("setup/setup_complete", true);
+
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
     aDB()->connect();
+
     auto pilot = APilotEntry(1);
     pilot.setData(data);
-    // [G]: Extremely suspect behaviour. Too much control for something that runs once.
-    // Main should handle the qApp since we dont have a dedicated "application" class
     if (aDB()->commit(pilot)) {
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        ASettings::write(QStringLiteral("setup/setup_complete"), true);
+        QDialog::accept();
     } else {
         QMessageBox message_box(this);
-        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        message_box.setText(QStringLiteral("Errors have ocurred creating the database. "
+                                           "Without a working database The application will "
+                                           "not be usable."));
+        QDialog::reject();
     }
 }
 
@@ -152,8 +154,10 @@ bool FirstRunDialog::setupDatabase()
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle("Create Database");
-    confirm.setText("We are now going to create the database. Would you like to download the latest database information?\n(Recommended, Internet connection required)\n");
+    confirm.setWindowTitle(QStringLiteral("Create Database"));
+    confirm.setText(QStringLiteral("We are now going to create the database.<br>"
+                                   "Would you like to download the latest database information?"
+                                   "<br>(Recommended, Internet connection required)\n"));
 
     int reply = confirm.exec();
     if (reply == QMessageBox::Yes)
@@ -163,23 +167,22 @@ bool FirstRunDialog::setupDatabase()
     ADataBaseSetup::backupOldData();
     aDB()->connect();
 
+    ///[F]: to do: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
         return false;
     if(!ADataBaseSetup::importDefaultData())
         return false;
-    ASettings::write("setup/setup_complete", true);
+    ASettings::write(QStringLiteral("setup/setup_complete"), true);
     return true;
 }
 
 void FirstRunDialog::reject()
 {
-
-
     auto confirm = QMessageBox(this);
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle("Delete Flight");
+    confirm.setIcon(QMessageBox::Critical);
+    confirm.setWindowTitle(QStringLiteral("Setup incomplete"));
     confirm.setText(QStringLiteral("Without completing the initial setup"
                                    " you cannot use the application.<br><br>"
                                    "Quit anyway?"));
