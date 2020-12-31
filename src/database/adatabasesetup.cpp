@@ -283,11 +283,8 @@ bool ADataBaseSetup::downloadTemplates()
 {
     QStringList templateTables = {"aircraft", "airports", "changelog"};
     QString linkStub = TEMPLATE_URL;
-    // [G]: could be moved to AStandard paths. Feels clunky here.
-    // Might aswell be created upfront and have a more strict access.
-    aDB()->databaseDir.mkdir("templates");
-    // ---
-    QDir template_dir(aDB()->databaseDir.filePath("templates"));
+    QDir template_dir(AStandardPaths::getPath(AStandardPaths::Templates));
+    DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;

@@ -133,6 +133,8 @@ void FirstRunDialog::finish()
     aDB()->connect();
     auto pilot = APilotEntry(1);
     pilot.setData(data);
+    // [G]: Extremely suspect behaviour. Too much control for something that runs once.
+    // Main should handle the qApp since we dont have a dedicated "application" class
     if (aDB()->commit(pilot)) {
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());

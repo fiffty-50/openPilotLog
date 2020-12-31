@@ -1,23 +1,26 @@
 #include "src/astandardpaths.h"
 
-QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::paths;
+//QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::paths;
+QMap<AStandardPaths::Dirs, QString> AStandardPaths::paths;
 
 void AStandardPaths::setup()
 {
     auto settings_location = QStandardPaths::AppConfigLocation;
     auto data_location = QStandardPaths::AppDataLocation;
     paths = {
-        {settings_location, QStandardPaths::writableLocation(settings_location)},
-        {data_location, QStandardPaths::writableLocation(data_location)},
+        {Database, QStandardPaths::writableLocation(data_location)},
+        {Templates, QDir(QStandardPaths::writableLocation(data_location)).filePath("templates")},
+        {Settings, QStandardPaths::writableLocation(settings_location)},
     };
+    DEB << "Paths created: " << paths;
 }
 
-QString AStandardPaths::getPath(QStandardPaths::StandardLocation loc)
+QString AStandardPaths::getPath(Dirs loc)
 {
     return paths[loc];
 }
 
-QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::getPaths()
+QMap<AStandardPaths::Dirs, QString> AStandardPaths::getPaths()
 {
     return paths;
 }

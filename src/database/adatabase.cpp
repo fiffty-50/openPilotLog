@@ -51,7 +51,7 @@ ADatabase* ADatabase::getInstance()
 }
 
 ADatabase::ADatabase()
-    : databaseDir(QDir(AStandardPaths::getPath(QStandardPaths::AppDataLocation))),
+    : databaseDir(QDir(AStandardPaths::getPath(AStandardPaths::Database))),
       databasePath(databaseDir.filePath(QStringLiteral("logbook.db")))
 {}
 
