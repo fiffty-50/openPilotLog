@@ -22,6 +22,8 @@
 #include <QStringBuilder>
 #include <QEventLoop>
 
+const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
+
 /*!
  * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
  * the application is first launched. It creates the database in the specified default
@@ -35,9 +37,9 @@ public:
 
     static bool createDatabase();
 
-    static bool setupTemplateDir();
-
     static bool downloadTemplates();
+
+    static bool backupOldData();
 
     static bool fillTemplates();
 

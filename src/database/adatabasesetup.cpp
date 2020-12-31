@@ -281,46 +281,38 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
-/*!
- * \brief create template directory or verify exists
- */
-bool ADataBaseSetup::setupTemplateDir()
-{
-    QDir dir(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
-             % QStringLiteral("/templates"));
-    if (dir.exists()) {
-        return true;
-    } else {
-        if(dir.mkpath(".")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-/*!
- * \brief Download up-to-date database templates
- */
 bool ADataBaseSetup::downloadTemplates()
 {
-    DEB << "Downloading templates...";
+    QStringList templateTables = {"aircraft", "airports", "changelog"};
+    QString linkStub = TEMPLATE_URL;
+    QDir template_dir(AStandardPaths::getPath(AStandardPaths::Templates));
+    DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done,
-                         &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
-        dl->setFileName(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
-                        % QStringLiteral("/templates/")
-                        % table % QStringLiteral(".csv"));
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(linkStub + table + ".csv"));
+        dl->setFileName(template_dir.filePath(table + ".csv"));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
-        dl->deleteLater(); // schedule dl object for deletion
+        dl->deleteLater();
     }
-    DEB << "Downloading templates complete";
     return true;
 }
 
+bool ADataBaseSetup::backupOldData()
+{
+    // back up old database
+    auto oldDatabase = QFile(aDB()->databasePath);
+    if (oldDatabase.exists()) {
+        auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
+        DEB << "Backing up old database as: " << "logbook-backup-" + dateString;
+        if (!oldDatabase.rename("data/logbook-backup-" + dateString)) {
+            DEB << "Warning: Creating backup of old database has failed.";
+        }
+    }
+    return true;
+}
 
 bool ADataBaseSetup::importDefaultData()
 {

@@ -7,6 +7,7 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/astandardpaths.h"
+//const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 static inline
 void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
@@ -87,122 +88,86 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
 
 void FirstRunDialog::finish()
 {
-    if(ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()){
-        auto mb = QMessageBox(this);
-        mb.setText(QStringLiteral("You have to enter a valid first and last name for the logbook."));
-        mb.show();
+    ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
+    ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
+    ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
+    ASettings::write("userdata/phone", ui->phoneLineEdit->text());
+    ASettings::write("userdata/email", ui->emailLineEdit->text());
+
+    ASettings::write("flightlogging/function", ui->functionComboBox->currentText());
+    ASettings::write("flightlogging/approach", ui->approachComboBox->currentText());
+    ASettings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
+    ASettings::write("flightlogging/logIfr", ui->rulesComboBox->currentIndex());
+    ASettings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
+
+    ASettings::write("flightlogging/numberTakeoffs", 1);
+    ASettings::write("flightlogging/numberLandings", 1);
+    ASettings::write("flightlogging/popupCalendar", true);
+    ASettings::write("flightlogging/pilotFlying", true);
+
+    QMap<QString, QVariant> data;
+    switch (ui->aliasComboBox->currentIndex()) {
+    case 0:
+        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        break;
+    case 1:
+        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        break;
+    case 2:
+        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
+        break;
+    default:
+        break;
+    }
+    data.insert("lastname", ui->lastnameLineEdit->text());
+    data.insert("firstname", ui->firstnameLineEdit->text());
+    data.insert("alias", "self");
+    data.insert("employeeid", ui->employeeidLineEdit->text());
+    data.insert("phone", ui->phoneLineEdit->text());
+    data.insert("email", ui->emailLineEdit->text());
+
+    if (!finishSetup()) {
+        QMessageBox message_box(this);
+        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+    }
+    ASettings::write("setup/setup_complete", true);
+    aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
+    aDB()->connect();
+    auto pilot = APilotEntry(1);
+    pilot.setData(data);
+    // [G]: Extremely suspect behaviour. Too much control for something that runs once.
+    // Main should handle the qApp since we dont have a dedicated "application" class
+    if (aDB()->commit(pilot)) {
+        qApp->quit();
+        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     } else {
-        ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
-        ASettings::write(QStringLiteral("userdata/firstname"), ui->firstnameLineEdit->text());
-        ASettings::write(QStringLiteral("userdata/employeeid"), ui->employeeidLineEdit->text());
-        ASettings::write(QStringLiteral("userdata/phone"), ui->phoneLineEdit->text());
-        ASettings::write(QStringLiteral("userdata/email"), ui->emailLineEdit->text());
-
-        ASettings::write(QStringLiteral("flightlogging/function"), ui->functionComboBox->currentText());
-        ASettings::write(QStringLiteral("flightlogging/approach"), ui->approachComboBox->currentText());
-        ASettings::write(QStringLiteral("flightlogging/nightlogging"), ui->nightComboBox->currentIndex());
-        ASettings::write(QStringLiteral("flightlogging/logIfr"), ui->rulesComboBox->currentIndex());
-        ASettings::write(QStringLiteral("flightlogging/flightnumberPrefix"), ui->prefixLineEdit->text());
-
-        ASettings::write(QStringLiteral("flightlogging/numberTakeoffs"), 1);
-        ASettings::write(QStringLiteral("flightlogging/numberLandings"), 1);
-        ASettings::write(QStringLiteral("flightlogging/popupCalendar"), true);
-        ASettings::write(QStringLiteral("flightlogging/pilotFlying"), true);
-
-
-        QMap<QString, QVariant> data;
-        switch (ui->aliasComboBox->currentIndex()) {
-        case 0:
-            ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-            break;
-        case 1:
-            ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-            break;
-        case 2:
-            ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-            break;
-        default:
-            break;
-        }
-        data.insert(QStringLiteral("lastname"), ui->lastnameLineEdit->text());
-        data.insert(QStringLiteral("firstname"), ui->firstnameLineEdit->text());
-        data.insert(QStringLiteral("alias"), QStringLiteral("self"));
-        data.insert(QStringLiteral("employeeid"), ui->employeeidLineEdit->text());
-        data.insert(QStringLiteral("phone"), ui->phoneLineEdit->text());
-        data.insert(QStringLiteral("email"), ui->emailLineEdit->text());
-
-        if (!setupDatabase()) {
-            QMessageBox message_box(this);
-            message_box.setText(QStringLiteral("Errors have ocurred creating the database. "
-                                               "Without a working database The application will "
-                                               "not be usable."));
-        }
-        ASettings::write(QStringLiteral("setup/setup_complete"), true);
-        aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
-        aDB()->connect();
-        auto pilot = APilotEntry(1);
-        pilot.setData(data);
-        if (aDB()->commit(pilot)) {
-            QDialog::accept();
-        } else {
-            QMessageBox message_box(this);
-            message_box.setText(QStringLiteral("Errors have ocurred creating the database. "
-                                               "Without a working database The application will "
-                                               "not be usable."));
-        }
+        QMessageBox message_box(this);
+        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
     }
 }
 
 bool FirstRunDialog::setupDatabase()
 {
-    //check if template dir exists and create if needed.
-
     QMessageBox confirm;
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle(QStringLiteral("Create Database"));
-    confirm.setText(QStringLiteral("We are now going to create the database. "
-                                   "Would you like to download the latest database information?\n"
-                                   "(Recommended, Internet connection required)\n"));
+    confirm.setWindowTitle("Create Database");
+    confirm.setText("We are now going to create the database. Would you like to download the latest database information?\n(Recommended, Internet connection required)\n");
+
     int reply = confirm.exec();
-    if (reply == QMessageBox::Yes) {// to do: else use local copy that shipped with the release
-        //close database connection
-        aDB()->disconnect();
-        // back up old database if exists
-        auto oldDatabase = QFile(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
-                                 % QStringLiteral("/logbook.db"));
+    if (reply == QMessageBox::Yes)
+        ADataBaseSetup::downloadTemplates();
 
-        if (oldDatabase.exists()) {
-            auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
-            DEB << "Backing up old database as: " << "logbook-backup-" + dateString;
-            if (!oldDatabase.rename(AStandardPaths::getPath(QStandardPaths::AppDataLocation)
-                                    % QStringLiteral("/logbook-backup-") % dateString
-                                    % QStringLiteral(".db"))) {
-                DEB << "Warning: Creating backup of old database has failed.";
-            }
-        }
-        // re-connect and create new database
-        aDB()->connect();
+    aDB()->disconnect();
+    ADataBaseSetup::backupOldData();
+    aDB()->connect();
 
-        if(! ADataBaseSetup::createDatabase()) {
-            DEB << "Error creating Database";
-            return false;
-        }
-        if(! ADataBaseSetup::setupTemplateDir()) {
-                    DEB << "Error setting up template dir";
-                    return false;
-                }
-        if(! ADataBaseSetup::downloadTemplates()) {
-                    DEB << "Download Error";
-                    return false;
-                }
-        if(! ADataBaseSetup::importDefaultData()) {
-                    DEB << "Error importing default data";
-                    return false;
-                }
-        ASettings::write(QStringLiteral("setup/setup_complete"), true);
-    }
+    if(!ADataBaseSetup::createDatabase())
+        return false;
+    if(!ADataBaseSetup::importDefaultData())
+        return false;
+    ASettings::write("setup/setup_complete", true);
     return true;
 }
 
