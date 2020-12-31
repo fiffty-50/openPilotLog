@@ -48,7 +48,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     //Initialise message Box
     messageBox = new QMessageBox(this);
 
-    prepareModelAndView(ASettings::read("logbook/view").toInt());
+    prepareModelAndView(ASettings::read(ASettings::LogBook::View).toInt());
     connectSignalsAndSlots();
 }
 

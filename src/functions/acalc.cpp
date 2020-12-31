@@ -303,7 +303,7 @@ void ACalc::updateAutoTimes(int acft_id)
  */
 void ACalc::updateNightTimes()
 {
-    const int night_angle = ASettings::read(QStringLiteral("flightlogging/nightangle")).toInt();
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
 
     //find all flights for aircraft
     auto statement = "SELECT ROWID FROM flights";

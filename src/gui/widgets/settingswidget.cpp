@@ -73,21 +73,23 @@ void SettingsWidget::readSettings()
     /*
      * Personal Tab
      */
-    ui->lastnameLineEdit->setText(ASettings::read("userdata/lastname").toString());
-    ui->firstnameLineEdit->setText(ASettings::read("userdata/firstname").toString());
-    ui->companyLineEdit->setText(ASettings::read("userdata/company").toString());
-    ui->employeeidLineEdit->setText(ASettings::read("userdata/employeeid").toString());
-    ui->phoneLineEdit->setText(ASettings::read("userdata/phone").toString());
-    ui->emailLineEdit->setText(ASettings::read("userdata/email").toString());
+    ui->lastnameLineEdit->setText(ASettings::read(ASettings::UserData::LastName).toString());
+    ui->firstnameLineEdit->setText(ASettings::read(ASettings::UserData::FirstName).toString());
+    ui->companyLineEdit->setText(ASettings::read(ASettings::UserData::Company).toString());
+    ui->employeeidLineEdit->setText(ASettings::read(ASettings::UserData::EmployeeID).toString());
+    ui->phoneLineEdit->setText(ASettings::read(ASettings::UserData::Phone).toString());
+    ui->emailLineEdit->setText(ASettings::read(ASettings::UserData::Email).toString());
     /*
      * Flight Logging Tab
      */
-    ui->aliasComboBox->setCurrentIndex(ASettings::read("userdata/displayselfas").toInt());
-    ui->functionComboBox->setCurrentText(ASettings::read("flightlogging/function").toString());
-    ui->rulesComboBox->setCurrentText(ASettings::read("flightlogging/rules").toString());
-    ui->approachComboBox->setCurrentText(ASettings::read("flightlogging/approach").toString());
-    ui->nightComboBox->setCurrentIndex(ASettings::read("flightlogging/nightlogging").toInt());
-    ui->prefixLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
+    ui->aliasComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::DisplaySelfAs).toInt());
+    ui->functionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
+    ui->rulesComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Rules).toString());
+    ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
+    ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
+    ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
+    //////////////////// CONTINUE changin "setup/setup_complete" to enum of ASETTINGS
+
     /*
      * Misc Tab
      */

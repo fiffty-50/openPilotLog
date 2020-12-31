@@ -81,54 +81,42 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 void FirstRunDialog::on_themeGroup_toggled(int id)
 {
-    ASettings::write("main/theme", id);
+    ASettings::write(ASettings::Main::Theme, id);
 }
 
 void FirstRunDialog::finish()
 {
-    ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
-    ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
-    ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
-    ASettings::write("userdata/phone", ui->phoneLineEdit->text());
-    ASettings::write("userdata/email", ui->emailLineEdit->text());
 
-    ASettings::write("flightlogging/function", ui->functionComboBox->currentText());
-    ASettings::write("flightlogging/approach", ui->approachComboBox->currentText());
-    ASettings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
-    ASettings::write("flightlogging/logIfr", ui->rulesComboBox->currentIndex());
-    ASettings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
+    ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
+    ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
+    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
+    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
+    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
 
-    ASettings::write("flightlogging/numberTakeoffs", 1);
-    ASettings::write("flightlogging/numberLandings", 1);
-    ASettings::write("flightlogging/popupCalendar", true);
-    ASettings::write("flightlogging/pilotFlying", true);
+    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
+    ASettings::write(ASettings::FlightLogging::NumberTakeoffs, 1);
+    ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
+    ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
+    ASettings::write(ASettings::FlightLogging::PilotFlying, true);
 
     QMap<QString, QVariant> data;
-    switch (ui->aliasComboBox->currentIndex()) {
-    case 0:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-        break;
-    case 1:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-        break;
-    case 2:
-        ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-        break;
-    default:
-        break;
-    }
-    data.insert("lastname", ui->lastnameLineEdit->text());
-    data.insert("firstname", ui->firstnameLineEdit->text());
-    data.insert("alias", "self");
-    data.insert("employeeid", ui->employeeidLineEdit->text());
-    data.insert("phone", ui->phoneLineEdit->text());
-    data.insert("email", ui->emailLineEdit->text());
+    ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::LastName), ui->lastnameLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::FirstName), ui->firstnameLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Alias), "self");
+    data.insert(ASettings::stringOfKey(ASettings::UserData::EmployeeID), ui->employeeidLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
 
     if (!finishSetup()) {
         QMessageBox message_box(this);
         message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
     }
-    ASettings::write("setup/setup_complete", true);
+    ASettings::write(ASettings::Setup::SetupComplete, true);
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
     aDB()->connect();
     auto pilot = APilotEntry(1);
@@ -165,7 +153,7 @@ bool FirstRunDialog::finishSetup()
         return false;
     if(!ADataBaseSetup::importDefaultData())
         return false;
-    ASettings::write("setup/setup_complete", true);
+    ASettings::write(ASettings::Setup::SetupComplete, true);
     return true;
 }
 

@@ -24,20 +24,93 @@
  * \brief Thin (namespace) wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-namespace ASettings
-{
+class ASettings {
+public:
+    enum class Setup {
+        SetupComplete,
+    };
 
-/*!
- * \brief Should be called after QCoreApplication::set...Name have been called.
- */
-void setup();
+    enum class Main {
+        Theme,
+        ThemeID,
+    };
 
-QVariant read(const QString &key);
+    enum class LogBook {
+        View,
+    };
 
-void write(const QString &key, const QVariant &val);
+    enum class UserData {
+        LastName,
+        FirstName,
+        Company,
+        EmployeeID,
+        Phone,
+        Email,
+        DisplaySelfAs,
+        Alias,
+        AcSortColumn, // not sure what ac is
+        PilSortColumn,
+        AcAllowIncomplete,
+    };
 
-QSettings settings();
+    enum class FlightLogging {
+        Function,
+        Approach,
+        NightLogging,
+        LogIFR,
+        FlightNumberPrefix,
+        NumberTakeoffs,
+        NumberLandings,
+        PopupCalendar,
+        PilotFlying,
+        NightAngle,
+        Rules,
+    };
 
-}
+    enum class NewFlight {
+        FunctionComboBox,
+        CalendarCheckBox,
+    };
+
+    /*!
+     * \brief Should be called after QCoreApplication::set...Name have been called.
+     */
+    static void setup();
+
+    static inline QVariant read(const Main key);
+    static inline void write(const Main key, const QVariant &val);
+
+    static inline QVariant read(const FlightLogging key);
+    static inline void write(const UserData key, const QVariant &val);
+
+    static inline QVariant read(const UserData key);
+    static inline void write(const FlightLogging key, const QVariant &val);
+
+    static inline QVariant read(const Setup key);
+    static inline void write(const Setup key, const QVariant &val);
+
+    static inline QVariant read(const NewFlight key);
+    static inline void write(const NewFlight key, const QVariant &val);
+
+    static inline QString stringOfKey(const Main key);
+    static inline QString stringOfKey(const UserData key);
+    static inline QString stringOfKey(const FlightLogging key);
+    static inline QString stringOfKey(const Setup key);
+
+    static QSettings settings();
+
+private:
+    static QMap<Main, QString> mainMap;
+    static QMap<LogBook, QString> logBookMap;
+    static QMap<UserData, QString> userDataMap;
+    static QMap<FlightLogging, QString> flightLoggingMap;
+    static QMap<Setup, QString> setupMap;
+    static QMap<NewFlight, QString> newFlightMap;
+
+// [G]: no need for these anymore
+//	static QVariant read(const QString &key);
+//	static void write(const QString &key, const QVariant &val);
+
+};
 
 #endif // ASETTINGS_H

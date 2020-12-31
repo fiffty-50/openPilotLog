@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 //    }
 
     //Theming
-    switch (ASettings::read("main/theme").toInt()) {
+    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
     case 1:{
         DEB << "main :: Loading light theme";
         QFile file(":light.qss");
