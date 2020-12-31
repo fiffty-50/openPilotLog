@@ -50,6 +50,11 @@ ADatabase* ADatabase::getInstance()
     return instance;
 }
 
+ADatabase::ADatabase()
+    : databaseDir(QDir(AStandardPaths::getPath(QStandardPaths::AppDataLocation))),
+      databasePath(databaseDir.filePath(QStringLiteral("logbook.db")))
+{}
+
 /*!
  * \brief ADatabase::sqliteVersion returns database sqlite version.
  * \return sqlite version string
@@ -68,12 +73,8 @@ bool ADatabase::connect()
     if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
         return false;
 
-    QString path = AStandardPaths::getPath(QStandardPaths::AppDataLocation);
-    QDir directory(path);
-    // [G]: Where would it make sense to define the database file?. In the class perhaps?
-    QString databaseLocation = directory.filePath(QStringLiteral("logbook.db"));
     QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
-    db.setDatabaseName(databaseLocation);
+    db.setDatabaseName(databasePath);
 
     if (!db.open())
         return false;

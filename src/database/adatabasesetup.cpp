@@ -20,6 +20,7 @@
 #include "src/testing/adebug.h"
 #include "src/functions/areadcsv.h"
 
+#include "src/classes/adownload.h"
 
 // Statements for creation of database tables, Revision 15
 
@@ -278,6 +279,41 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
+bool ADataBaseSetup::downloadTemplates()
+{
+    QStringList templateTables = {"aircraft", "airports", "changelog"};
+    QString linkStub = TEMPLATE_URL;
+    // [G]: could be moved to AStandard paths. Feels clunky here.
+    // Might aswell be created upfront and have a more strict access.
+    aDB()->databaseDir.mkdir("templates");
+    // ---
+    QDir template_dir(aDB()->databaseDir.filePath("templates"));
+    for (const auto& table : templateTables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(linkStub + table + ".csv"));
+        dl->setFileName(template_dir.filePath(table + ".csv"));
+        dl->download();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+        dl->deleteLater();
+    }
+    return true;
+}
+
+bool ADataBaseSetup::backupOldData()
+{
+    // back up old database
+    auto oldDatabase = QFile(aDB()->databasePath);
+    if (oldDatabase.exists()) {
+        auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
+        DEB << "Backing up old database as: " << "logbook-backup-" + dateString;
+        if (!oldDatabase.rename("data/logbook-backup-" + dateString)) {
+            DEB << "Warning: Creating backup of old database has failed.";
+        }
+    }
+    return true;
+}
 
 bool ADataBaseSetup::importDefaultData()
 {
