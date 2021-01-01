@@ -7,12 +7,7 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/astandardpaths.h"
-
-static inline
-void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
-{
-    QMessageBox(QMessageBox::Warning, title, text, QMessageBox::Ok, parent).exec();
-}
+#include <QErrorMessage>
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,7 +24,8 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
 
-    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
+    // [G]: no sure what this connects and why button is overloaded but changed it to what QtCreator suggests
+    QObject::connect(themeGroup, &QButtonGroup::idClicked,
                      this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
@@ -64,8 +60,9 @@ void FirstRunDialog::on_nextPushButton_clicked()
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
         {
-            prompt_error_box(QStringLiteral("Error"),
-                             QStringLiteral("Please enter first and last name"));
+            QMessageBox(QMessageBox::Warning,QStringLiteral("Error"),
+                             QStringLiteral("Please enter first and last name")
+                             ).exec();
             return;
         }
         ui->previousPushButton->setEnabled(true);
@@ -112,10 +109,13 @@ void FirstRunDialog::finish()
     data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
     data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
 
+    auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
+                                       QStringLiteral("Errors have ocurred creating the database."
+                                                      "Without a working database The application will not be usable."));
+    // [G]: Im abit confused on the logic here
+    // why do you write setup complete twice?
     if (!setupDatabase()) {
-        QMessageBox message_box(this);
-        message_box.setText(QStringLiteral("Errors have ocurred creating the database. Without a working database The application will not be usable."));
-        message_box.exec();
+        db_fail_msg_box.exec();
     }
     ASettings::write(ASettings::Setup::SetupComplete, true);
 
@@ -125,39 +125,33 @@ void FirstRunDialog::finish()
     auto pilot = APilotEntry(1);
     pilot.setData(data);
     if (aDB()->commit(pilot)) {
-        ASettings::write(QStringLiteral("setup/setup_complete"), true);
+        ASettings::write(ASettings::Setup::SetupComplete, true);
         QDialog::accept();
     } else {
-        QMessageBox message_box(this);
-        message_box.setText(QStringLiteral("Errors have ocurred creating the database. "
-                                           "Without a working database The application will "
-                                           "not be usable."));
+        db_fail_msg_box.exec();
         QDialog::reject();
     }
 }
 
 bool FirstRunDialog::setupDatabase()
 {
-
-    QMessageBox confirm;
-    DEB << "TESTETESTS";
-    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    auto confirm = QMessageBox(QMessageBox::Question, QStringLiteral("Create Database"),
+                               QStringLiteral("We are now going to create the database.<br>"  // [G]: Why both <br> and \n ?
+                                              "Would you like to download the latest database information?"
+                                              "<br>(Recommended, Internet connection required)\n"),
+                               QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle(QStringLiteral("Create Database"));
-    confirm.setText(QStringLiteral("We are now going to create the database.<br>"
-                                   "Would you like to download the latest database information?"
-                                   "<br>(Recommended, Internet connection required)\n"));
 
-    int reply = confirm.exec();
-    if (reply == QMessageBox::Yes)
+    if (confirm.exec() == QMessageBox::Yes)
         ADataBaseSetup::downloadTemplates();
 
     aDB()->disconnect();
     ADataBaseSetup::backupOldData();
     aDB()->connect();
 
-    ///[F]: to do: handle unsuccessful steps
+    // [F]: todo: handle unsuccessful steps
+    // [G]: only two / for comments
+    // three are shorthand for documentation
     if(!ADataBaseSetup::createDatabase())
         return false;
     if(!ADataBaseSetup::importDefaultData())
@@ -168,14 +162,16 @@ bool FirstRunDialog::setupDatabase()
 
 void FirstRunDialog::reject()
 {
-    auto confirm = QMessageBox(this);
-    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    auto confirm = QMessageBox(QMessageBox::Critical,
+                                     QStringLiteral("Setup incomplete"),
+                                     QStringLiteral("Without completing the initial setup"
+                                                    " you cannot use the application.<br><br>"
+                                                    "Quit anyway?"),
+                                     QMessageBox::Yes | QMessageBox::No,
+                                     this
+                                     );
     confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Critical);
-    confirm.setWindowTitle(QStringLiteral("Setup incomplete"));
-    confirm.setText(QStringLiteral("Without completing the initial setup"
-                                   " you cannot use the application.<br><br>"
-                                   "Quit anyway?"));
+
     if (confirm.exec() == QMessageBox::Yes) {
         DEB << "rejected.";
         QDialog::reject();

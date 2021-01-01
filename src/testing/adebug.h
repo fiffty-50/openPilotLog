@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t"
+#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t\n"
 
 /*!
  * Representation macro for custom classes.
