@@ -7,7 +7,6 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/astandardpaths.h"
-//const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 static inline
 void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
@@ -83,53 +82,42 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 void FirstRunDialog::on_themeGroup_toggled(int id)
 {
-    ASettings::write(QStringLiteral("main/theme"), id);
+    ASettings::write(ASettings::Main::Theme, id);
 }
 
 void FirstRunDialog::finish()
 {
-    ASettings::write(QStringLiteral("userdata/lastname"), ui->lastnameLineEdit->text());
-    ASettings::write(QStringLiteral("userdata/firstname"), ui->firstnameLineEdit->text());
-    ASettings::write(QStringLiteral("userdata/employeeid"), ui->employeeidLineEdit->text());
-    ASettings::write(QStringLiteral("userdata/phone"), ui->phoneLineEdit->text());
-    ASettings::write(QStringLiteral("userdata/email"), ui->emailLineEdit->text());
+    ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
+    ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
+    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
+    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
+    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
 
-    ASettings::write(QStringLiteral("flightlogging/function"), ui->functionComboBox->currentText());
-    ASettings::write(QStringLiteral("flightlogging/approach"), ui->approachComboBox->currentText());
-    ASettings::write(QStringLiteral("flightlogging/nightlogging"), ui->nightComboBox->currentIndex());
-    ASettings::write(QStringLiteral("flightlogging/logIfr"), ui->rulesComboBox->currentIndex());
-    ASettings::write(QStringLiteral("flightlogging/flightnumberPrefix"), ui->prefixLineEdit->text());
-
-    ASettings::write(QStringLiteral("flightlogging/numberTakeoffs"), 1);
-    ASettings::write(QStringLiteral("flightlogging/numberLandings"), 1);
-    ASettings::write(QStringLiteral("flightlogging/popupCalendar"), true);
-    ASettings::write(QStringLiteral("flightlogging/pilotFlying"), true);
+    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
+    ASettings::write(ASettings::FlightLogging::NumberTakeoffs, 1);
+    ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
+    ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
+    ASettings::write(ASettings::FlightLogging::PilotFlying, true);
 
     QMap<QString, QVariant> data;
-    switch (ui->aliasComboBox->currentIndex()) {
-    case 0:
-        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-        break;
-    case 1:
-        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-        break;
-    case 2:
-        ASettings::write(QStringLiteral("userdata/displayselfas"), ui->aliasComboBox->currentIndex());
-        break;
-    default:
-        break;
-    }
-    data.insert(QStringLiteral("lastname"), ui->lastnameLineEdit->text());
-    data.insert(QStringLiteral("firstname"), ui->firstnameLineEdit->text());
-    data.insert(QStringLiteral("alias"), QStringLiteral("self"));
-    data.insert(QStringLiteral("employeeid"), ui->employeeidLineEdit->text());
-    data.insert(QStringLiteral("phone"), ui->phoneLineEdit->text());
-    data.insert(QStringLiteral("email"), ui->emailLineEdit->text());
+    ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::LastName), ui->lastnameLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::FirstName), ui->firstnameLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Alias), "self");
+    data.insert(ASettings::stringOfKey(ASettings::UserData::EmployeeID), ui->employeeidLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
+    data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
 
     if (!setupDatabase()) {
         QMessageBox message_box(this);
         message_box.setText(QStringLiteral("Errors have ocurred creating the database. Without a working database The application will not be usable."));
+        message_box.exec();
     }
+    ASettings::write(ASettings::Setup::SetupComplete, true);
 
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
     aDB()->connect();
@@ -150,7 +138,9 @@ void FirstRunDialog::finish()
 
 bool FirstRunDialog::setupDatabase()
 {
+
     QMessageBox confirm;
+    DEB << "TESTETESTS";
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);
@@ -172,7 +162,7 @@ bool FirstRunDialog::setupDatabase()
         return false;
     if(!ADataBaseSetup::importDefaultData())
         return false;
-    ASettings::write(QStringLiteral("setup/setup_complete"), true);
+    ASettings::write(ASettings::Setup::SetupComplete, true);
     return true;
 }
 

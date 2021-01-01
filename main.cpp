@@ -48,9 +48,11 @@ int main(int argc, char *argv[])
     }
 
     ASettings::setup();
+    //Debug firstrundialog
+    ASettings::write(ASettings::Setup::SetupComplete, false);
 
     aDB()->connect();
-    if (!ASettings::read(QStringLiteral("setup/setup_complete")).toBool()) {
+    if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
         FirstRunDialog dialog;
         if(dialog.exec() == QDialog::Accepted) {
             qApp->quit();
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
     }
 
     //Theming
-    switch (ASettings::read(QStringLiteral("main/theme")).toInt()) {
+    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
     case 1:{
         DEB << "main :: Loading light theme";
         QFile file(":light.qss");
