@@ -48,13 +48,20 @@ int main(int argc, char *argv[])
     }
 
     ASettings::setup();
-    DEB << "HELLO???????????";
-    FirstRunDialog().exec();
+    //Debug firstrundialog
+    ASettings::write(ASettings::Setup::SetupComplete, false);
+
     aDB()->connect();
-//    if (!ASettings::read("setup/setup_complete").toBool()) {
-//        FirstRunDialog dialog;
-//        dialog.exec();
-//    }
+    if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
+        FirstRunDialog dialog;
+        if(dialog.exec() == QDialog::Accepted) {
+            qApp->quit();
+            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        } else {
+            DEB "First run not accepted. Exiting.";
+            return 0;
+        }
+    }
 
     //Theming
     switch (ASettings::read(ASettings::Main::Theme).toInt()) {
@@ -79,7 +86,7 @@ int main(int argc, char *argv[])
     }
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
-    ARunGuard guard("opl_single_key");
+    ARunGuard guard(QStringLiteral("opl_single_key"));
         if ( !guard.tryToRun() ){
             DEB << "Another Instance is already running. Exiting.";
             return 0;

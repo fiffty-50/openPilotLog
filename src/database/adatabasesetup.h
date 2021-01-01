@@ -19,6 +19,8 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
+#include <QStringBuilder>
+#include <QEventLoop>
 
 const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 

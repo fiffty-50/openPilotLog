@@ -19,7 +19,7 @@
 #include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
 #include "src/functions/areadcsv.h"
-
+#include "src/astandardpaths.h"
 #include "src/classes/adownload.h"
 
 // Statements for creation of database tables, Revision 15
@@ -281,16 +281,14 @@ bool ADataBaseSetup::createDatabase()
 
 bool ADataBaseSetup::downloadTemplates()
 {
-    QStringList templateTables = {"aircraft", "airports", "changelog"};
-    QString linkStub = TEMPLATE_URL;
     QDir template_dir(AStandardPaths::getPath(AStandardPaths::Templates));
     DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(linkStub + table + ".csv"));
-        dl->setFileName(template_dir.filePath(table + ".csv"));
+        dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
+        dl->setFileName(template_dir.filePath(table % QStringLiteral(".csv")));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
@@ -323,7 +321,10 @@ bool ADataBaseSetup::importDefaultData()
             DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
-        if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
+        if (!commitData(aReadCsv(AStandardPaths::getPath(AStandardPaths::Templates)
+                                 % QLatin1Char('/')
+                                 % table % QStringLiteral(".csv")),
+                        table)) {
             DEB << "Error importing data.";
             return false;
         }

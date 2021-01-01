@@ -6,7 +6,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-//const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
+#include "src/astandardpaths.h"
 
 static inline
 void prompt_error_box(QString title, QString text, QWidget* parent = nullptr)
@@ -64,7 +64,8 @@ void FirstRunDialog::on_nextPushButton_clicked()
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
         {
-            prompt_error_box(QStringLiteral("Error"), QStringLiteral("Please enter first and last name"));
+            prompt_error_box(QStringLiteral("Error"),
+                             QStringLiteral("Please enter first and last name"));
             return;
         }
         ui->previousPushButton->setEnabled(true);
@@ -86,7 +87,6 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
 
 void FirstRunDialog::finish()
 {
-
     ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
     ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
     ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
@@ -112,29 +112,31 @@ void FirstRunDialog::finish()
     data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
     data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
 
-    if (!finishSetup()) {
+    if (!setupDatabase()) {
         QMessageBox message_box(this);
-        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
+        message_box.setText(QStringLiteral("Errors have ocurred creating the database. Without a working database The application will not be usable."));
         message_box.exec();
     }
     ASettings::write(ASettings::Setup::SetupComplete, true);
+
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
     aDB()->connect();
+
     auto pilot = APilotEntry(1);
     pilot.setData(data);
-    // [G]: Extremely suspect behaviour. Too much control for something that runs once.
-    // Main should handle the qApp since we dont have a dedicated "application" class
     if (aDB()->commit(pilot)) {
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+        ASettings::write(QStringLiteral("setup/setup_complete"), true);
+        QDialog::accept();
     } else {
         QMessageBox message_box(this);
-        message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
-        message_box.exec();
+        message_box.setText(QStringLiteral("Errors have ocurred creating the database. "
+                                           "Without a working database The application will "
+                                           "not be usable."));
+        QDialog::reject();
     }
 }
 
-bool FirstRunDialog::finishSetup()
+bool FirstRunDialog::setupDatabase()
 {
 
     QMessageBox confirm;
@@ -142,8 +144,10 @@ bool FirstRunDialog::finishSetup()
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle("Create Database");
-    confirm.setText("We are now going to create the database. Would you like to download the latest database information?\n(Recommended, Internet connection required)\n");
+    confirm.setWindowTitle(QStringLiteral("Create Database"));
+    confirm.setText(QStringLiteral("We are now going to create the database.<br>"
+                                   "Would you like to download the latest database information?"
+                                   "<br>(Recommended, Internet connection required)\n"));
 
     int reply = confirm.exec();
     if (reply == QMessageBox::Yes)
@@ -153,6 +157,7 @@ bool FirstRunDialog::finishSetup()
     ADataBaseSetup::backupOldData();
     aDB()->connect();
 
+    ///[F]: to do: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
         return false;
     if(!ADataBaseSetup::importDefaultData())
@@ -161,4 +166,18 @@ bool FirstRunDialog::finishSetup()
     return true;
 }
 
-
+void FirstRunDialog::reject()
+{
+    auto confirm = QMessageBox(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Critical);
+    confirm.setWindowTitle(QStringLiteral("Setup incomplete"));
+    confirm.setText(QStringLiteral("Without completing the initial setup"
+                                   " you cannot use the application.<br><br>"
+                                   "Quit anyway?"));
+    if (confirm.exec() == QMessageBox::Yes) {
+        DEB << "rejected.";
+        QDialog::reject();
+        }
+}
