@@ -17,7 +17,7 @@
  */
 #include "adatabase.h"
 #include "src/testing/adebug.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 
 #define DATABASE_VERSION 15
 const auto SQL_DRIVER = QStringLiteral("QSQLITE");

@@ -37,7 +37,7 @@
 #include "src/classes/atailentry.h"
 #include "src/classes/aaircraftentry.h"
 #include "src/classes/aflightentry.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 
 /*!
  * \brief The DBTarget enum lists database items that are

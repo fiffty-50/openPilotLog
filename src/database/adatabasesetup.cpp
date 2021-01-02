@@ -19,7 +19,7 @@
 #include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
 #include "src/functions/areadcsv.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
 
 // Statements for creation of database tables, Revision 15

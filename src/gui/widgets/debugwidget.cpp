@@ -1,6 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),

@@ -6,7 +6,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 #include <QErrorMessage>
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
@@ -24,8 +24,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
 
-    // [G]: no sure what this connects and why button is overloaded but changed it to what QtCreator suggests
-    QObject::connect(themeGroup, &QButtonGroup::idClicked,
+    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
                      this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
@@ -138,7 +137,7 @@ bool FirstRunDialog::setupDatabase()
     auto confirm = QMessageBox(QMessageBox::Question, QStringLiteral("Create Database"),
                                QStringLiteral("We are now going to create the database.<br>"  // [G]: Why both <br> and \n ?
                                               "Would you like to download the latest database information?"
-                                              "<br>(Recommended, Internet connection required)\n"),
+                                              "<br>(Recommended, Internet connection required)"),
                                QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
@@ -163,17 +162,15 @@ bool FirstRunDialog::setupDatabase()
 void FirstRunDialog::reject()
 {
     auto confirm = QMessageBox(QMessageBox::Critical,
-                                     QStringLiteral("Setup incomplete"),
-                                     QStringLiteral("Without completing the initial setup"
-                                                    " you cannot use the application.<br><br>"
-                                                    "Quit anyway?"),
-                                     QMessageBox::Yes | QMessageBox::No,
-                                     this
-                                     );
+                               QStringLiteral("Setup incomplete"),
+                               QStringLiteral("Without completing the initial setup"
+                                              " you cannot use the application.<br><br>"
+                                              "Quit anyway?"),
+                               QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
     if (confirm.exec() == QMessageBox::Yes) {
         DEB << "rejected.";
         QDialog::reject();
-        }
+    }
 }

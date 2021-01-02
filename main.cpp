@@ -20,7 +20,7 @@
 #include "src/classes/arunguard.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
 #include <QApplication>
 #include <QProcess>

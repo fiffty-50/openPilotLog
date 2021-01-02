@@ -32,7 +32,6 @@ public:
 
     enum class Main {
         Theme,
-        ThemeID,
     };
 
     enum class LogBook {
@@ -100,14 +99,14 @@ public:
     // All enums should be unique of course thats easy. See At the end of the file
     // for details
     /*!
-     * \brief Return string representation of path to key: "ini_header/key"
+     * \brief Return string representation of group of key: "ini_header/key"
      */
-    static QString pathOfKey(const Main key);
-    static QString pathOfKey(const LogBook key);
-    static QString pathOfKey(const NewFlight key);
-    static QString pathOfKey(const FlightLogging key);
-    static QString pathOfKey(const Setup key);
-    static QString pathOfKey(const UserData key);
+    static QString groupOfKey(const Main key);
+    static QString groupOfKey(const LogBook key);
+    static QString groupOfKey(const NewFlight key);
+    static QString groupOfKey(const FlightLogging key);
+    static QString groupOfKey(const Setup key);
+    static QString groupOfKey(const UserData key);
 
     /*!
      * \brief Return string representation of key
@@ -129,8 +128,8 @@ private:
     static QMap<Setup, QString> setupMap;
     static QMap<NewFlight, QString> newFlightMap;
 
-#define REFACTOR_PROPOSAL_REVIEWED true
-#if (REFACTOR_PROPOSAL_REVIEWED)
+#define FOR_CURRENT_VERSION 0
+#if (FOR_CURRENT_VERSION)
     /* By default unless specified each enum is + 1.
        If we are interested in doing multiple returns at once then
        we should make them so that the can be OR-ed.
@@ -197,6 +196,7 @@ private:
     QStringList stringOfKeys2(Keys ks);
 
 #endif
+#undef FOR_CURRENT_VERSION
 
 };
 
