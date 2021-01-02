@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
     }
 
     ASettings::setup();
-    //Debug firstrundialog
     ASettings::write(ASettings::Setup::SetupComplete, false);
 
     aDB()->connect();
@@ -59,7 +58,7 @@ int main(int argc, char *argv[])
             QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
         } else {
             DEB "First run not accepted. Exiting.";
-            return 0;
+            return 1;
         }
     }
 
@@ -89,7 +88,7 @@ int main(int argc, char *argv[])
     ARunGuard guard(QStringLiteral("opl_single_key"));
         if ( !guard.tryToRun() ){
             DEB << "Another Instance is already running. Exiting.";
-            return 0;
+            return 2;
         }
 
     MainWindow w;

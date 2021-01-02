@@ -281,7 +281,7 @@ bool ADataBaseSetup::createDatabase()
 
 bool ADataBaseSetup::downloadTemplates()
 {
-    QDir template_dir(AStandardPaths::getPath(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::pathTo(AStandardPaths::Templates));
     DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
@@ -298,14 +298,16 @@ bool ADataBaseSetup::downloadTemplates()
 
 bool ADataBaseSetup::backupOldData()
 {
-    // back up old database
-    auto oldDatabase = QFile(aDB()->databasePath);
-    if (oldDatabase.exists()) {
-        auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
-        DEB << "Backing up old database as: " << "logbook-backup-" + dateString;
-        if (!oldDatabase.rename("data/logbook-backup-" + dateString)) {
-            DEB << "Warning: Creating backup of old database has failed.";
+    auto database_file = aDB()->databaseFile;
+    if(database_file.exists()){
+        auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+        auto backup_dir = QDir(AStandardPaths::pathTo(AStandardPaths::DatabaseBackup));
+        auto backup_name = database_file.baseName() + "-backup-" + date_string + ".bak";
+        if(!backup_dir.mkpath(backup_name)){
+            DEB << "Could not create file " << backup_name << " at: " << backup_dir.path();
+            return false;
         }
+        DEB << "Backing up old database as: " << backup_name;
     }
     return true;
 }
@@ -321,7 +323,7 @@ bool ADataBaseSetup::importDefaultData()
             DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
-        if (!commitData(aReadCsv(AStandardPaths::getPath(AStandardPaths::Templates)
+        if (!commitData(aReadCsv(AStandardPaths::pathTo(AStandardPaths::Templates)
                                  % QLatin1Char('/')
                                  % table % QStringLiteral(".csv")),
                         table)) {

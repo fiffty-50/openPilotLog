@@ -34,7 +34,7 @@ private:
 
     void reject() override;
     bool setupDatabase();
-    void finish();
+    bool finish();
 
 };
 

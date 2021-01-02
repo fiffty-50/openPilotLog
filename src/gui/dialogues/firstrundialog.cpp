@@ -59,9 +59,9 @@ void FirstRunDialog::on_nextPushButton_clicked()
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
         {
-            QMessageBox(QMessageBox::Warning,QStringLiteral("Error"),
-                             QStringLiteral("Please enter first and last name")
-                             ).exec();
+            QMessageBox(QMessageBox::Warning, QStringLiteral("Error"),
+                        QStringLiteral("Please enter first and last name")
+                        ).exec();
             return;
         }
         ui->previousPushButton->setEnabled(true);
@@ -70,7 +70,10 @@ void FirstRunDialog::on_nextPushButton_clicked()
         ui->nextPushButton->setText(QStringLiteral("Done"));
         break;
     case 2:
-        finish();
+        if(!finish())
+            QDialog::reject();
+        else
+            QDialog::accept();
         return;
     }
     ui->stackedWidget->setCurrentIndex(current_idx + 1);
@@ -81,7 +84,7 @@ void FirstRunDialog::on_themeGroup_toggled(int id)
     ASettings::write(ASettings::Main::Theme, id);
 }
 
-void FirstRunDialog::finish()
+bool FirstRunDialog::finish()
 {
     ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
     ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
@@ -115,21 +118,19 @@ void FirstRunDialog::finish()
     // why do you write setup complete twice?
     if (!setupDatabase()) {
         db_fail_msg_box.exec();
+        return false;
     }
-    ASettings::write(ASettings::Setup::SetupComplete, true);
-
     aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
     aDB()->connect();
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
-    if (aDB()->commit(pilot)) {
-        ASettings::write(ASettings::Setup::SetupComplete, true);
-        QDialog::accept();
-    } else {
+    if(!aDB()->commit(pilot)){
         db_fail_msg_box.exec();
-        QDialog::reject();
+        return false;
     }
+    ASettings::write(ASettings::Setup::SetupComplete, true);
+    return true;
 }
 
 bool FirstRunDialog::setupDatabase()

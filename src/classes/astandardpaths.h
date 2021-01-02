@@ -18,6 +18,7 @@ public:
         Database,
         Templates,
         Settings,
+        DatabaseBackup
     };
 private:
     static
@@ -26,8 +27,12 @@ public:
     /// Initialise paths with corresponding StandardLocation paths
     static void setup();
 
-    static QString getPath(Dirs loc);
-    static QMap<Dirs, QString> getPaths();
+    // [G]: Subjective opinion:
+    // We should move away from getThis getThat functions.
+    // I believe we can give better namings while avoiding this
+    // OOP cliche of getEverything
+    static QString pathTo(Dirs loc);
+    static QMap<Dirs, QString> allPaths();
 
     /// Ensure standard app paths exist, if not mkdir them.
     static void scan_paths();

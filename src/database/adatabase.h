@@ -92,7 +92,7 @@ public:
 
     ADatabaseError lastError;
     const QDir databaseDir;
-    const QString databasePath;
+    const QFileInfo databaseFile;
 
     /*!
      * \brief Connect to the database and populate database information.

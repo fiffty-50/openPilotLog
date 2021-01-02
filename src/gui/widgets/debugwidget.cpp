@@ -169,7 +169,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    DEB << AStandardPaths::getPaths()[AStandardPaths::Database	];
+    DEB << AStandardPaths::allPaths()[AStandardPaths::Database	];
 }
 
 /* //Comparing two functions template
