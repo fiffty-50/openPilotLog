@@ -299,16 +299,18 @@ bool ADataBaseSetup::downloadTemplates()
 bool ADataBaseSetup::backupOldData()
 {
     auto database_file = aDB()->databaseFile;
-    if(database_file.exists()){
-        auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
-        auto backup_dir = QDir(AStandardPaths::pathTo(AStandardPaths::DatabaseBackup));
-        auto backup_name = database_file.baseName() + "-backup-" + date_string + ".bak";
-        if(!backup_dir.mkpath(backup_name)){
-            DEB << "Could not create file " << backup_name << " at: " << backup_dir.path();
-            return false;
-        }
-        DEB << "Backing up old database as: " << backup_name;
+    if(!database_file.exists()) {
+        DEB << "No Database to backup, returning.";
+        return true;
     }
+    auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+    auto backup_dir = QDir(AStandardPaths::pathTo(AStandardPaths::DatabaseBackup));
+    auto backup_name = database_file.baseName() + "-backup-" + date_string + ".bak";
+    if(!backup_dir.mkpath(backup_name)){
+        DEB << "Could not create file " << backup_name << " at: " << backup_dir.path();
+        return false;
+    }
+    DEB << "Backing up old database as: " << backup_name;
     return true;
 }
 
