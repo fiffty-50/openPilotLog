@@ -41,25 +41,25 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     AStandardPaths::setup();
-    AStandardPaths::scan_paths();
-    if(!AStandardPaths::validate_paths()){
+    AStandardPaths::scan_dirs();
+    if(!AStandardPaths::validate_dirs()){
         DEB << "Standard paths not valid.";
         return 1;
     }
 
     ASettings::setup();
-    ASettings::write(ASettings::Setup::SetupComplete, false);
 
     aDB()->connect();
     if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
         FirstRunDialog dialog;
-        if(dialog.exec() == QDialog::Accepted) {
-            qApp->quit();
-            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-        } else {
+        if(dialog.exec() == QDialog::Rejected){
             DEB "First run not accepted. Exiting.";
             return 1;
         }
+        ASettings::write(ASettings::Setup::SetupComplete, true);
+        DEB << "Wrote setup_commplete?";
+        qApp->quit();
+        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     }
 
     //Theming

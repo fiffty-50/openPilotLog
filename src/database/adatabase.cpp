@@ -51,7 +51,7 @@ ADatabase* ADatabase::getInstance()
 }
 
 ADatabase::ADatabase()
-    : databaseDir(QDir(AStandardPaths::pathTo(AStandardPaths::Database))),
+    : databaseDir(QDir(AStandardPaths::absPathOf(AStandardPaths::Database))),
       databaseFile(QFileInfo(databaseDir.filePath(QStringLiteral("logbook.db"))))
 {}
 
@@ -74,7 +74,7 @@ bool ADatabase::connect()
         return false;
 
     QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
-    db.setDatabaseName(databaseFile.completeBaseName());
+    db.setDatabaseName(databaseFile.absoluteFilePath());
 
     if (!db.open())
         return false;

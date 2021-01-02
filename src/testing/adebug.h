@@ -3,7 +3,17 @@
 
 #include <QDebug>
 
-#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t\n"
+#if defined(__GNUC__) || defined(__clang__)
+    #define FUNC_IDENT __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+    #define FUNC_IDENT __FUNCSIG__
+#else
+    #define FUNC_IDENT __func__
+#endif
+
+#define DEB qDebug() << FUNC_IDENT << "\n\t"
+#define DEB_SRC DEB
+#define DEB_RAW qDebug() << '\t'
 
 /*!
  * Representation macro for custom classes.

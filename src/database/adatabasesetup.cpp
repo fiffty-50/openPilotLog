@@ -281,7 +281,7 @@ bool ADataBaseSetup::createDatabase()
 
 bool ADataBaseSetup::downloadTemplates()
 {
-    QDir template_dir(AStandardPaths::pathTo(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
     DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
@@ -295,7 +295,6 @@ bool ADataBaseSetup::downloadTemplates()
     }
     return true;
 }
-
 bool ADataBaseSetup::backupOldData()
 {
     auto database_file = aDB()->databaseFile;
@@ -303,14 +302,17 @@ bool ADataBaseSetup::backupOldData()
         DEB << "No Database to backup, returning.";
         return true;
     }
+
     auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
-    auto backup_dir = QDir(AStandardPaths::pathTo(AStandardPaths::DatabaseBackup));
+    auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "-backup-" + date_string + ".bak";
-    if(!backup_dir.mkpath(backup_name)){
-        DEB << "Could not create file " << backup_name << " at: " << backup_dir.path();
+    auto file = QFile(aDB()->databaseFile.absoluteFilePath());
+
+    if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
+        DEB << "Unable to backup old database.";
         return false;
     }
-    DEB << "Backing up old database as: " << backup_name;
+    DEB << "Backed up old database as: " << backup_name;
     return true;
 }
 
@@ -325,7 +327,7 @@ bool ADataBaseSetup::importDefaultData()
             DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
-        if (!commitData(aReadCsv(AStandardPaths::pathTo(AStandardPaths::Templates)
+        if (!commitData(aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
                                  % QLatin1Char('/')
                                  % table % QStringLiteral(".csv")),
                         table)) {
@@ -390,21 +392,20 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         if(!query.isActive()) {
             errors << statement.section(QLatin1Char(' '),2,2) + " ERROR - " + query.lastError().text();
             DEB << "Query: " << query.lastQuery();
-        } else {
-            DEB << "Schema added: " << statement.section(QLatin1Char(' '),2,2);
+            continue;
         }
+        DEB << "Schema added: " << statement.section(QLatin1Char(' '), 2, 2);
     }
 
     if (!errors.isEmpty()) {
-        DEB << "The following errors have ocurred: ";
+        DEB_SRC << "The following errors have ocurred: ";
         for (const auto& error : errors) {
-            DEB << error;
+            DEB_RAW << error;
         }
         return false;
-    } else {
-        DEB << "All schemas added successfully";
-        return true;
     }
+    DEB << "All schemas added successfully";
+    return true;
 }
 /*!
  * \brief DbSetup::commitData inserts the data parsed from a csv file into the

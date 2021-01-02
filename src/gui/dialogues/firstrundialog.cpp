@@ -129,7 +129,6 @@ bool FirstRunDialog::finish()
         db_fail_msg_box.exec();
         return false;
     }
-    ASettings::write(ASettings::Setup::SetupComplete, true);
     return true;
 }
 
@@ -156,7 +155,6 @@ bool FirstRunDialog::setupDatabase()
         return false;
     if(!ADataBaseSetup::importDefaultData())
         return false;
-    ASettings::write(ASettings::Setup::SetupComplete, true);
     return true;
 }
 

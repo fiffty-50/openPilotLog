@@ -1,47 +1,47 @@
 #include "src/classes/astandardpaths.h"
 
 //QMap<QStandardPaths::StandardLocation, QString> AStandardPaths::paths;
-QMap<AStandardPaths::Dirs, QString> AStandardPaths::paths;
+QMap<AStandardPaths::Dirs, QString> AStandardPaths::dirs;
 
 void AStandardPaths::setup()
 {
     auto settings_location = QStandardPaths::AppConfigLocation;
     auto data_location = QStandardPaths::AppDataLocation;
-    paths = {  // [G]: potential rename to `dirs`
+    dirs = {  // [G]: potential rename to `dirs`
         {Database, QStandardPaths::writableLocation(data_location)},
         {Templates, QDir(QStandardPaths::writableLocation(data_location)).filePath("templates")},
         {Settings, QStandardPaths::writableLocation(settings_location)},
         {DatabaseBackup, QDir(QStandardPaths::writableLocation(data_location)).filePath("backup")}
     };
-    DEB << "Paths created: " << paths;
+    DEB << "Paths created: " << dirs;
 }
 
-QString AStandardPaths::pathTo(Dirs loc)
+const QString& AStandardPaths::absPathOf(Dirs loc)
 {
-    return paths[loc];
+    return dirs[loc];
 }
 
-QMap<AStandardPaths::Dirs, QString> AStandardPaths::allPaths()
+const QMap<AStandardPaths::Dirs, QString>& AStandardPaths::allPaths()
 {
-    return paths;
+    return dirs;
 }
 
-void AStandardPaths::scan_paths()
+void AStandardPaths::scan_dirs()
 {
-    for(auto& path : paths){
-        auto dir = QDir(path);
-        DEB << "Scanning " << dir.path();
-        if(!dir.exists()) {
-            DEB <<"Creating " << dir.path();
-            dir.mkpath(path);
+    for(auto& dir : dirs){
+        auto d = QDir(dir);
+        DEB << "Scanning " << d.path();
+        if(!d.exists()) {
+            DEB <<"Creating " << d.path();
+            d.mkpath(dir);
         }
     }
 }
 
-bool AStandardPaths::validate_paths()
+bool AStandardPaths::validate_dirs()
 {
-    for(auto& path : paths){
-        DEB << "Validating " << path;
+    for(auto& dir : dirs){
+        DEB << "Validating " << dir;
         if(false)  // determine path as valid (scan contents and parse for correctness)
             return false;
     }

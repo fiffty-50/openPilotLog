@@ -21,8 +21,7 @@ public:
         DatabaseBackup
     };
 private:
-    static
-    QMap<Dirs, QString> paths;
+    static QMap<Dirs, QString> dirs;
 public:
     /// Initialise paths with corresponding StandardLocation paths
     static void setup();
@@ -31,14 +30,14 @@ public:
     // We should move away from getThis getThat functions.
     // I believe we can give better namings while avoiding this
     // OOP cliche of getEverything
-    static QString pathTo(Dirs loc);
-    static QMap<Dirs, QString> allPaths();
+    static const QString& absPathOf(Dirs loc);
+    static const QMap<Dirs, QString>& allPaths();
 
-    /// Ensure standard app paths exist, if not mkdir them.
-    static void scan_paths();
+    /// Ensure standard app directories exist, if not mkpath them.
+    static void scan_dirs();
 
-    /// Validate standard app paths are valid in structure and contents.
-    static bool validate_paths();
+    /// Validate standard app directories are valid in structure and contents.
+    static bool validate_dirs();
 };
 
 
