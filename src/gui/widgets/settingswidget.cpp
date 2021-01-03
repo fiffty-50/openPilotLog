@@ -18,7 +18,7 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 #include "src/testing/adebug.h"
-#include "src/astyle.h"
+#include "src/classes/astyle.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"

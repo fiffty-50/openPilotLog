@@ -15,10 +15,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# [G]: need to fix this. There must be a src/* command or smth
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    src/astyle.cpp \
+    src/classes/astyle.cpp \
     src/classes/astandardpaths.cpp \
     src/classes/aaircraftentry.cpp \
     src/classes/adownload.cpp \
@@ -49,7 +50,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
-    src/astyle.h \
+    src/classes/astyle.h \
     src/classes/astandardpaths.h \
     src/classes/aaircraftentry.h \
     src/classes/adownload.h \

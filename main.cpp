@@ -22,7 +22,7 @@
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
-#include "src/astyle.h"
+#include "src/classes/astyle.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
