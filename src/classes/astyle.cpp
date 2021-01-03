@@ -5,8 +5,13 @@
 #include "src/testing/adebug.h"
 #include "src/classes/asettings.h"
 
+#ifdef __linux__
+const QString AStyle::defaultStyle = QStringLiteral("fusion");
+#elif defined(_WIN32) || defined(_WIN64)
+const QString AStyle::defaultStyle = QStringLiteral("Windows");
+#endif
+
 const QStringList AStyle::styles = QStyleFactory::keys();
-const QString AStyle::defaultStyle = QStringLiteral("kvantum-dark");
 QString AStyle::currentStyle;
 
 // [G]: Are there leaks when style changes?
