@@ -107,11 +107,11 @@ NewFlightDialog::NewFlightDialog(QWidget *parent) :
     ui->setupUi(this);
     flightEntry = AFlightEntry();
     setup();
-    if (ASettings::read("NewFlight/FunctionComboBox").toString() == "SIC") {
+    if (ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == "SIC") {
         ui->picNameLineEdit->setText(DB_NULL);
         ui->secondPilotNameLineEdit->setText("self");
     }
-    if(ASettings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
+    if(ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == "PIC"){
         ui->picNameLineEdit->setText("self");
         emit ui->picNameLineEdit->editingFinished();
     }
@@ -160,26 +160,26 @@ void NewFlightDialog::readSettings()
 {
     DEB << "Reading Settings...";
     QSettings settings;
-    ui->FunctionComboBox->setCurrentText(ASettings::read("flightlogging/function").toString());
-    ui->ApproachComboBox->setCurrentText(ASettings::read("flightlogging/approach").toString());
+    ui->FunctionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
+    ui->ApproachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
 
-    ASettings::read("flightlogging/pilotFlying").toBool() ? ui->PilotFlyingCheckBox->setChecked(true)
+    ASettings::read(ASettings::FlightLogging::PilotFlying).toBool() ? ui->PilotFlyingCheckBox->setChecked(true)
                                                           : ui->PilotMonitoringCheckBox->setChecked(true);
 
-    ui->TakeoffSpinBox->setValue(ASettings::read("flightlogging/numberTakeoffs").toInt());
+    ui->TakeoffSpinBox->setValue(ASettings::read(ASettings::FlightLogging::NumberTakeoffs).toInt());
     ui->TakeoffSpinBox->value() > 0 ? ui->TakeoffCheckBox->setChecked(true)
                                     : ui->TakeoffCheckBox->setChecked(false);
-    ui->LandingSpinBox->setValue(ASettings::read("flightlogging/numberLandings").toInt());
+    ui->LandingSpinBox->setValue(ASettings::read(ASettings::FlightLogging::NumberLandings).toInt());
     ui->LandingSpinBox->value() > 0 ? ui->LandingCheckBox->setChecked(true)
                                     : ui->LandingCheckBox->setChecked(false);
-    if (ASettings::read("flightlogging/logIfr").toBool()) {
+    if (ASettings::read(ASettings::FlightLogging::LogIFR).toBool()) {
         ui->IfrCheckBox->setChecked(true);
     } else {
         ui->VfrCheckBox->setChecked(true);
     }
 
-    ui->FlightNumberLineEdit->setText(ASettings::read("flightlogging/flightnumberPrefix").toString());
-    ui->calendarCheckBox->setChecked(ASettings::read("flightlogging/popupCalendar").toBool());
+    ui->FlightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
+    ui->calendarCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PopupCalendar).toBool());
 
 }
 
@@ -187,13 +187,13 @@ void NewFlightDialog::writeSettings()
 {
     DEB << "Writing Settings...";
 
-    ASettings::write("flightlogging/function", ui->FunctionComboBox->currentText());
-    ASettings::write("flightlogging/approach", ui->ApproachComboBox->currentText());
-    ASettings::write("flightlogging/pilotFlying", ui->PilotFlyingCheckBox->isChecked());
-    ASettings::write("flightlogging/numberTakeoffs", ui->TakeoffSpinBox->value());
-    ASettings::write("flightlogging/numberLandings", ui->LandingSpinBox->value());
-    ASettings::write("flightlogging/logIfr", ui->IfrCheckBox->isChecked());
-    ASettings::write("flightlogging/popupCalendar", ui->calendarCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::Function, ui->FunctionComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->ApproachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::PilotFlying, ui->PilotFlyingCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::NumberTakeoffs, ui->TakeoffSpinBox->value());
+    ASettings::write(ASettings::FlightLogging::NumberLandings, ui->LandingSpinBox->value());
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->IfrCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::PopupCalendar, ui->calendarCheckBox->isChecked());
 }
 
 void NewFlightDialog::setupButtonGroups()
@@ -442,7 +442,7 @@ void NewFlightDialog::fillDeductibleData()
     QString dept_date = ui->doftLineEdit->text() + 'T' + tofb.toString(TIME_FORMAT);
     QDateTime dept_date_time = QDateTime::fromString(dept_date,"yyyy-MM-ddThh:mm");
     int tblk = block_minutes.toInt();
-    const int night_angle = ASettings::read("flightlogging/nightangle").toInt();
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
     QString night_minutes = QString::number(
                 ACalc::calculateNightTime(
                     ui->deptLocLineEdit->text(),
@@ -530,7 +530,7 @@ RowData NewFlightDialog::collectInput()
     const auto dept_date = ui->doftLineEdit->text() + QStringLiteral("T") + tofb.toString(TIME_FORMAT);
     const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
 
-    const auto night_angle = ASettings::read("flightlogging/nightangle").toInt();
+    const auto night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
     const auto night_minutes = ACalc::calculateNightTime(
                     ui->deptLocLineEdit->text(),
                     ui->destLocLineEdit->text(),
@@ -1063,7 +1063,7 @@ void NewFlightDialog::onDoftLineEdit_entered()
 
 void NewFlightDialog::on_calendarCheckBox_stateChanged(int arg1)
 {
-    ASettings::write("NewFlight/calendarCheckBox", ui->calendarCheckBox->isChecked());
+    ASettings::write(ASettings::NewFlight::CalendarCheckBox, ui->calendarCheckBox->isChecked());
     DEB << "Calendar check box state changed.";
     switch (arg1) {
     case 0: // unchecked

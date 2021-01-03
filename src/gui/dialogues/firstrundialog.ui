@@ -14,15 +14,23 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="previousPushButton">
+     <property name="text">
+      <string>Previous</string>
      </property>
-     <widget class="QWidget" name="tab_1">
-      <attribute name="title">
-       <string>General</string>
-      </attribute>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="nextPushButton">
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="1">
         <widget class="QLabel" name="label">
@@ -130,10 +138,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Flight Logging</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage2">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="1">
         <widget class="QLabel" name="label_2">
@@ -387,11 +392,22 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>Finish</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage3">
       <layout class="QGridLayout" name="gridLayout_4">
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="lightThemeCheckBox">
+         <property name="text">
+          <string>Light Theme</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="darkThemeCheckBox">
+         <property name="text">
+          <string>Dark Theme</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_4">
          <property name="text">
@@ -422,52 +438,8 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QCheckBox" name="lightThemeCheckBox">
-         <property name="text">
-          <string>Light Theme</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QCheckBox" name="darkThemeCheckBox">
-         <property name="text">
-          <string>Dark Theme</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QPushButton" name="finishButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color:rgb(78, 154, 6)</string>
-         </property>
-         <property name="text">
-          <string>Finish Setup</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="previousPushButton">
-     <property name="text">
-      <string>Previous</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="nextPushButton">
-     <property name="text">
-      <string>Next</string>
-     </property>
     </widget>
    </item>
   </layout>
@@ -489,8 +461,7 @@
   <tabstop>systemThemeCheckBox</tabstop>
   <tabstop>lightThemeCheckBox</tabstop>
   <tabstop>darkThemeCheckBox</tabstop>
-  <tabstop>finishButton</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>stackedWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

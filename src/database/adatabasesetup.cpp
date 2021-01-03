@@ -19,7 +19,8 @@
 #include "src/database/adatabase.h"
 #include "src/testing/adebug.h"
 #include "src/functions/areadcsv.h"
-
+#include "src/classes/astandardpaths.h"
+#include "src/classes/adownload.h"
 
 // Statements for creation of database tables, Revision 15
 
@@ -278,6 +279,42 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
+bool ADataBaseSetup::downloadTemplates()
+{
+    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    DEB << template_dir;
+    for (const auto& table : templateTables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
+        dl->setFileName(template_dir.filePath(table % QStringLiteral(".csv")));
+        dl->download();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+        dl->deleteLater();
+    }
+    return true;
+}
+bool ADataBaseSetup::backupOldData()
+{
+    auto database_file = aDB()->databaseFile;
+    if(!database_file.exists()) {
+        DEB << "No Database to backup, returning.";
+        return true;
+    }
+
+    auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+    auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
+    auto backup_name = database_file.baseName() + "-backup-" + date_string + ".bak";
+    auto file = QFile(aDB()->databaseFile.absoluteFilePath());
+
+    if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
+        DEB << "Unable to backup old database.";
+        return false;
+    }
+    DEB << "Backed up old database as: " << backup_name;
+    return true;
+}
 
 bool ADataBaseSetup::importDefaultData()
 {
@@ -290,7 +327,10 @@ bool ADataBaseSetup::importDefaultData()
             DEB << "Error: " << query.lastError().text();
         }
         //fill with data from csv
-        if (!commitData(aReadCsv("data/templates/" + table + ".csv"), table)) {
+        if (!commitData(aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
+                                 % QLatin1Char('/')
+                                 % table % QStringLiteral(".csv")),
+                        table)) {
             DEB << "Error importing data.";
             return false;
         }
@@ -352,21 +392,20 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         if(!query.isActive()) {
             errors << statement.section(QLatin1Char(' '),2,2) + " ERROR - " + query.lastError().text();
             DEB << "Query: " << query.lastQuery();
-        } else {
-            DEB << "Schema added: " << statement.section(QLatin1Char(' '),2,2);
+            continue;
         }
+        DEB << "Schema added: " << statement.section(QLatin1Char(' '), 2, 2);
     }
 
     if (!errors.isEmpty()) {
-        DEB << "The following errors have ocurred: ";
+        DEB_SRC << "The following errors have ocurred: ";
         for (const auto& error : errors) {
-            DEB << error;
+            DEB_RAW << error;
         }
         return false;
-    } else {
-        DEB << "All schemas added successfully";
-        return true;
     }
+    DEB << "All schemas added successfully";
+    return true;
 }
 /*!
  * \brief DbSetup::commitData inserts the data parsed from a csv file into the

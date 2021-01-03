@@ -37,6 +37,7 @@
 #include "src/classes/atailentry.h"
 #include "src/classes/aaircraftentry.h"
 #include "src/classes/aflightentry.h"
+#include "src/classes/astandardpaths.h"
 
 /*!
  * \brief The DBTarget enum lists database items that are
@@ -79,7 +80,7 @@ private:
     TableNames tableNames;
     TableColumns tableColumns;
     static ADatabase* instance;
-    ADatabase() = default;
+    ADatabase();
 public:
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
@@ -90,6 +91,8 @@ public:
     const QString sqliteVersion();
 
     ADatabaseError lastError;
+    const QDir databaseDir;
+    const QFileInfo databaseFile;
 
     /*!
      * \brief Connect to the database and populate database information.

@@ -1,6 +1,6 @@
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "src/astandardpaths.h"
+#include "src/classes/astandardpaths.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -169,7 +169,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    DEB << AStandardPaths::getPaths()[QStandardPaths::AppDataLocation];
+    DEB << AStandardPaths::allPaths()[AStandardPaths::Database	];
 }
 
 /* //Comparing two functions template
