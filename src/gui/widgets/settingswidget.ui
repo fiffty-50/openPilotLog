@@ -468,8 +468,8 @@
        <string>Misc</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="2" column="1">
-        <widget class="QLabel" name="pilotSortLabel">
+       <item row="5" column="1">
+        <widget class="QLabel" name="logbookViewLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -477,31 +477,14 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>Sort Pilots by</string>
+          <string>Logbook Dispay</string>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QComboBox" name="acAllowIncompleteComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>No</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Yes</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="3" column="2">
@@ -526,8 +509,45 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="styleComboBox"/>
+       <item row="4" column="1">
+        <widget class="QLabel" name="acAllowIncompleteLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Allow incomplete Entries </string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QComboBox" name="acAllowIncompleteComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>No</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yes</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="darkStyleCheckBox">
+         <property name="text">
+          <string>Dark</string>
+         </property>
+        </widget>
        </item>
        <item row="3" column="1">
         <widget class="QLabel" name="acSortLabel">
@@ -545,55 +565,6 @@
          </property>
          <property name="text">
           <string>Sort Aircraft by</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QComboBox" name="logbookViewComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Default</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>EASA Part-FCL</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLabel" name="logbookViewLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Logbook Dispay</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="styleLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Style</string>
          </property>
         </widget>
        </item>
@@ -619,8 +590,41 @@
          </item>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="acAllowIncompleteLabel">
+       <item row="0" column="2">
+        <widget class="QComboBox" name="styleComboBox"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="styleLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Style</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QComboBox" name="logbookViewComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Default</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EASA Part-FCL</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="pilotSortLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -628,10 +632,13 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>Allow incomplete Entries </string>
+          <string>Sort Pilots by</string>
          </property>
         </widget>
        </item>

@@ -10,28 +10,39 @@ const QString AStyle::defaultStyle = QStringLiteral("fusion");
 #elif defined(_WIN32) || defined(_WIN64)
 const QString AStyle::defaultStyle = QStringLiteral("Windows");
 #endif
+const QString AStyle::defaultStyleSheet = QStringLiteral("");
 
-const QString AStyle::defaultQStyleSheet = QStringLiteral("dark");
 const QStringList AStyle::styles = QStyleFactory::keys();
-QString AStyle::currentStyle;
-QString AStyle::currentStyleSheet;
+
+const QMap<AStyle::StyleSheet, QFileInfo> AStyle::defaultStyleSheets = {
+    {Dark, QFileInfo(QStringLiteral("dark.qss"))},
+    {Light, QFileInfo(QStringLiteral("light.qss"))},
+    {Default, QFileInfo(defaultStyleSheet)},
+};
+
+QString AStyle::currentStyle = defaultStyle;
+QString AStyle::currentStyleSheet = defaultStyleSheet;
+
 
 static inline
-QString read_stylesheet(const QString stylesheet)
+QString read_stylesheet(const AStyle::StyleSheet stylesheet)
 {
-    DEB << "reading:" << ":" + stylesheet + ".qss";
-    QFile file(":" + stylesheet + ".qss");
+    QFileInfo qss_file_info = AStyle::defaultStyleSheets[stylesheet];
+    DEB << "reading:" << ":" + qss_file_info.fileName();
+
+    QFile file(":" + qss_file_info.fileName());
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream stream(&file);
     return stream.readAll();
 }
 
-// [G]: Are there leaks when style changes?
+/*!
+ * \brief Setup style and stylesheet by reading from openPilotLog.ini
+ */
 void AStyle::setup()
 {
+    // [G]: Are there leaks when style changes?
     QVariant app_style = ASettings::read(ASettings::Main::Style);
-    QVariant app_stylesheet = ASettings::read(ASettings::Main::StyleSheet);
-
     if(!app_style.toBool()){
         DEB << "Setting style to default:" << defaultStyle;
         app_style = defaultStyle;
@@ -41,13 +52,14 @@ void AStyle::setup()
     QApplication::setStyle(QStyleFactory::create(app_style.toString()));
     currentStyle = app_style.toString();
 
+    auto app_stylesheet = ASettings::read(ASettings::Main::StyleSheet);
     if(!app_stylesheet.toBool()){
-        DEB << "Setting stylesheet to default:" << defaultQStyleSheet;
-        app_stylesheet = defaultQStyleSheet;
+        DEB << "Setting stylesheet to default:" << defaultStyleSheet;
+        app_stylesheet = defaultStyleSheet;
         ASettings::write(ASettings::Main::StyleSheet, app_stylesheet);
     }
     DEB << "Stylesheet set to:" << app_stylesheet;
-    qApp->setStyleSheet(read_stylesheet(app_stylesheet.toString()));
+    qApp->setStyleSheet(read_stylesheet(static_cast<StyleSheet>(app_stylesheet.toUInt())));
     currentStyleSheet = app_stylesheet.toString();
 }
 
@@ -56,11 +68,15 @@ void AStyle::setStyle(const QString style)
     DEB << "Setting style to:" << style;
     QApplication::setStyle(QStyleFactory::create(style));
     ASettings::write(ASettings::Main::Style, style);
+    currentStyle = style;
 }
 
-void AStyle::setStyleSheet(const QString stylesheet)
+void AStyle::setStyleSheet(const StyleSheet stylesheet)
 {
+    DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet];
     qApp->setStyleSheet(read_stylesheet(stylesheet));
+    ASettings::write(ASettings::Main::StyleSheet, stylesheet);
+    currentStyleSheet = defaultStyleSheets[stylesheet].fileName();
 }
 
 const QString& AStyle::style()

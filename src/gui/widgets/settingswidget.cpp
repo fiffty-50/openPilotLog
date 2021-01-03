@@ -62,15 +62,13 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->styleComboBox->model()->sort(0);
     ui->styleComboBox->setCurrentText(current_style);
 
+    if(ASettings::read(ASettings::Main::StyleSheet).toUInt() == AStyle::Dark)
+        ui->darkStyleCheckBox->setCheckState(Qt::Checked);
+
     readSettings();
     setupValidators();
 }
 
-void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
-{
-    DEB << text;
-    AStyle::setStyle(text);
-}
 
 SettingsWidget::~SettingsWidget()
 {
@@ -340,4 +338,19 @@ void SettingsWidget::on_aboutPushButton_clicked()
                          QString(SQLITE_VERSION));
     message_box.setText(text);
     message_box.exec();
+}
+
+void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
+{
+    DEB << text;
+    AStyle::setStyle(text);
+}
+
+void SettingsWidget::on_darkStyleCheckBox_stateChanged(int state)
+{
+    DEB << "Setting to:" << (state ? "dark" : "default");
+    if(state == Qt::Checked)
+        AStyle::setStyleSheet(AStyle::Dark);
+    else
+        AStyle::setStyleSheet(AStyle::Default);
 }
