@@ -54,6 +54,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
 
 LogbookWidget::~LogbookWidget()
 {
+    delete displayModel;  // [G]: previously leaked from logbookwidget.cpp:89
     delete ui;
 }
 

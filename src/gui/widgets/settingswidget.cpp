@@ -53,19 +53,17 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
 
-    auto *themeGroup = new QButtonGroup;
-    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-    themeGroup->addButton(ui->darkThemeCheckBox, 2);
+    auto styles = AStyle::styles;
+    auto current_style = AStyle::style();
+    ui->styleComboBox->addItem(current_style);
+    styles.removeOne(current_style);
 
-    for(auto & x : QStyleFactory::keys())
-        ui->styleComboBox->addItem(x);
+    ui->styleComboBox->addItems(styles);
+    ui->styleComboBox->model()->sort(0);
+    ui->styleComboBox->setCurrentText(current_style);
 
     readSettings();
     setupValidators();
-
-    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-                     this, &SettingsWidget::onThemeGroup_buttonClicked);
 }
 
 void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
@@ -100,19 +98,6 @@ void SettingsWidget::readSettings()
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
 
-    /*
-     * Misc Tab
-     */
-    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
-    case 0:
-        ui->systemThemeCheckBox->setChecked(true);
-        break;
-    case 1:
-        ui->lightThemeCheckBox->setChecked(true);
-        break;
-    case 2:
-        ui->darkThemeCheckBox->setChecked(true);
-    }
     ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::LogBook::View).toInt());
     /*
      * Aircraft Tab
@@ -276,28 +261,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 /*
  * Misc Tab
  */
-void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
-{
-    ASettings::write(ASettings::Main::Theme, theme_id);
-    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
-    case 1:{
-        DEB << "main :: Loading light theme";
-        QFile file(":light.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        qApp->setStyleSheet(stream.readAll());
-        break;
-    }
-    case 2:{
-        DEB << "Loading dark theme";
-        QFile file(":dark.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        qApp->setStyleSheet(stream.readAll());
-        break;
-    }
-    }
-}
+
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::LogBook::View, index);

@@ -39,7 +39,7 @@ public:
 
 private slots:
 
-    void onThemeGroup_buttonClicked(int theme_id);
+//    void onThemeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
     void on_acSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);

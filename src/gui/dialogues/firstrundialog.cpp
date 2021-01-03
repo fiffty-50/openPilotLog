@@ -19,13 +19,13 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->previousPushButton->setEnabled(false);
     ui->nightComboBox->setCurrentIndex(1);
 
-    auto *themeGroup = new QButtonGroup;
-    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-    themeGroup->addButton(ui->darkThemeCheckBox, 2);
+//    auto *themeGroup = new QButtonGroup;
+//    themeGroup->addButton(ui->systemThemeCheckBox, 0);
+//    themeGroup->addButton(ui->lightThemeCheckBox, 1);
+//    themeGroup->addButton(ui->darkThemeCheckBox, 2);
 
-    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-                     this, &FirstRunDialog::on_themeGroup_toggled);
+//    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
+//                     this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -79,10 +79,10 @@ void FirstRunDialog::on_nextPushButton_clicked()
     ui->stackedWidget->setCurrentIndex(current_idx + 1);
 }
 
-void FirstRunDialog::on_themeGroup_toggled(int id)
-{
-    ASettings::write(ASettings::Main::Theme, id);
-}
+//void FirstRunDialog::on_themeGroup_toggled(int id)
+//{
+//    ASettings::write(ASettings::Main::Theme, id);
+//}
 
 bool FirstRunDialog::finish()
 {
