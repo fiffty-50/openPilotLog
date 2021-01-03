@@ -9,8 +9,7 @@ const QStringList AStyle::styles = QStyleFactory::keys();
 const QString AStyle::defaultStyle = QStringLiteral("kvantum-dark");
 QString AStyle::currentStyle;
 
-// [G]: Kvantum crashes
-// Are there leaks when style changes?
+// [G]: Are there leaks when style changes?
 void AStyle::setup()
 {
     QVariant app_style = ASettings::read(ASettings::Main::Theme);
