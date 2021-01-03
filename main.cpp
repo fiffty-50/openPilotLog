@@ -64,10 +64,11 @@ int main(int argc, char *argv[])
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard(QStringLiteral("opl_single_key"));
-        if ( !guard.tryToRun() ){
-            DEB << "Another Instance is already running. Exiting.";
-            return 2;
-        }
+    if ( !guard.tryToRun() ){
+        DEB << "Another Instance is already running. Exiting.";
+        return 2;
+    }
+
 
     MainWindow w;
     //w.showMaximized();

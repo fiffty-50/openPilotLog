@@ -21,7 +21,8 @@
 
 
 QMap<ASettings::Main, QString> ASettings::mainMap = {
-    {Main::Theme,   QStringLiteral("theme")},
+    {Main::Style,      QStringLiteral("style")},
+    {Main::StyleSheet, QStringLiteral("stylesheet")},
 };
 
 QMap<ASettings::LogBook, QString> ASettings::logBookMap = {
