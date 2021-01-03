@@ -58,6 +58,8 @@ private slots:
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
 
+    void on_styleComboBox_currentTextChanged(const QString& index);
+
 private:
     Ui::SettingsWidget *ui;
 

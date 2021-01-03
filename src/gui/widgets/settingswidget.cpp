@@ -18,10 +18,12 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 #include "src/testing/adebug.h"
-
+#include "src/astyle.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
+
+#include <QStyleFactory>
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "firstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
@@ -56,11 +58,20 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     themeGroup->addButton(ui->lightThemeCheckBox, 1);
     themeGroup->addButton(ui->darkThemeCheckBox, 2);
 
+    for(auto & x : QStyleFactory::keys())
+        ui->styleComboBox->addItem(x);
+
     readSettings();
     setupValidators();
 
     QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
                      this, &SettingsWidget::onThemeGroup_buttonClicked);
+}
+
+void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
+{
+    DEB << text;
+    AStyle::setStyle(text);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -268,19 +279,23 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
 {
     ASettings::write(ASettings::Main::Theme, theme_id);
-
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Changing Themes",
-                                  "Changing the theme requires restarting the Application.\n\nWould you like to restart now?",
-                                  QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-
-    } else {
-        QMessageBox *info = new QMessageBox(this);
-        info->setText("Theme change will take effect the next time you start the application.");
-        info->exec();
+    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
+    case 1:{
+        DEB << "main :: Loading light theme";
+        QFile file(":light.qss");
+        file.open(QFile::ReadOnly | QFile::Text);
+        QTextStream stream(&file);
+        qApp->setStyleSheet(stream.readAll());
+        break;
+    }
+    case 2:{
+        DEB << "Loading dark theme";
+        QFile file(":dark.qss");
+        file.open(QFile::ReadOnly | QFile::Text);
+        QTextStream stream(&file);
+        qApp->setStyleSheet(stream.readAll());
+        break;
+    }
     }
 }
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)

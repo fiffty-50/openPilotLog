@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/astyle.cpp \
     src/classes/astandardpaths.cpp \
     src/classes/aaircraftentry.cpp \
     src/classes/adownload.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    src/astyle.h \
     src/classes/astandardpaths.h \
     src/classes/aaircraftentry.h \
     src/classes/adownload.h \
