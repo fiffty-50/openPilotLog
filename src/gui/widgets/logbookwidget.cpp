@@ -54,7 +54,6 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
 
 LogbookWidget::~LogbookWidget()
 {
-    delete displayModel;  // [G]: previously leaked from logbookwidget.cpp:89
     delete ui;
 }
 
@@ -86,7 +85,7 @@ void LogbookWidget::connectSignalsAndSlots()
 void LogbookWidget::setupDefaultView()
 {
     DEB << "Loading Default View...";
-    displayModel = new QSqlTableModel;
+    displayModel = new QSqlTableModel(this);
     displayModel->setTable("viewDefault");
     displayModel->select();
 
