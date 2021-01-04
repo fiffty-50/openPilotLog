@@ -114,12 +114,12 @@ bool FirstRunDialog::finish()
     auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."
                                                       "Without a working database The application will not be usable."));
-    // [G]: Im abit confused on the logic here
-    // why do you write setup complete twice?
     if (!setupDatabase()) {
         db_fail_msg_box.exec();
         return false;
     }
+
+    aDB()->updateLayout();
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
@@ -147,10 +147,11 @@ bool FirstRunDialog::setupDatabase()
     aDB()->connect();
 
     // [F]: todo: handle unsuccessful steps
-    // [G]: only two / for comments
-    // three are shorthand for documentation
     if(!ADataBaseSetup::createDatabase())
         return false;
+
+    aDB()->updateLayout();
+
     if(!ADataBaseSetup::importDefaultData())
         return false;
     return true;

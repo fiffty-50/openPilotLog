@@ -266,6 +266,8 @@ bool ADataBaseSetup::createDatabase()
         return false;
     }
 
+    aDB()->updateLayout();
+
     DEB << "Populating tables...";
     if (!importDefaultData()) {
         DEB << "Populating tables failed.";

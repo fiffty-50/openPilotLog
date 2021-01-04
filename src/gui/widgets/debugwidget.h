@@ -51,8 +51,6 @@ private:
     Ui::DebugWidget *ui;
 
     bool downloadComplete = false;
-
-    void touchDatabase();
 };
 
 #endif // DEBUGWIDGET_H

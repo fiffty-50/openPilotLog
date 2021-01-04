@@ -29,7 +29,7 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
     if (ADataBaseSetup::resetToDefault()){
         result.setText("Database successfully reset");
         result.exec();
-        touchDatabase();
+        emit aDB()->dataBaseUpdated();
     } else {
         result.setText("Errors have occurred. Check console for Debug output. ");
         result.exec();
@@ -74,7 +74,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     }
     if (ADataBaseSetup::importDefaultData()) {
         message_box.setText("Database has been successfully reset.");
-        touchDatabase();
+        emit aDB()->dataBaseUpdated();
         message_box.exec();
     } else {
         message_box.setText("Errors have ocurred while importing templates.<br>"
@@ -127,7 +127,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
 
     message_box.setText("User tables successfully populated.");
     message_box.exec();
-    touchDatabase();
+    emit aDB()->dataBaseUpdated();
 }
 
 void DebugWidget::on_selectCsvPushButton_clicked()
@@ -165,20 +165,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    touchDatabase();
-}
 
-/*!
- * \brief Acess the database to trigger aDB()::databaseUpdated
- */
-void DebugWidget::touchDatabase()
-{
-    QMap<QString, QVariant> debugData;
-    debugData.insert("lastname","debugLastName");
-    debugData.insert("firstname","debugFirstName");
-    auto pilot = APilotEntry(1);
-    pilot.setData(debugData);
-    aDB()->commit(pilot);
 }
 
 /* //Comparing two functions template

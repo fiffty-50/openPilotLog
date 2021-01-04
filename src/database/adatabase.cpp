@@ -33,33 +33,41 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::instance = nullptr;
 
-//[F]: This is what I mentioned the other day, instead of writing the table names
-// to a member variable once at connect(), we are accessing the layout at the moment we query it.
-// While being a little more expensive, this makes the app much more robust because
-// it always returns an accurate description of the database, regardless of whether
-// it is already created or not. Also it encapsulates this functionality here instead
-// of being included in connect()
 /*!
- * \brief Return the names of the tables in the database.
+ * \brief Return the names of a given table in the database.
  */
-TableNames ADatabase::getTableNames() const
+ColumnNames ADatabase::getTableColumns(TableName table_name) const
 {
-    auto db = ADatabase::database();
-    return db.tables();
+    return tableColumns.value(table_name);
 }
 
 /*!
- * \brief Return the names of the columns for a table in the database
+ * \brief Return the names of all tables in the database
  */
-TableColumns ADatabase::getTableColumns(TableName table_name) const
+TableNames ADatabase::getTableNames() const
+{
+    return tableNames;
+}
+
+/*!
+ * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+ * if the database has been altered. This function is normally only required during database setup or maintenance.
+ */
+void ADatabase::updateLayout()
 {
     auto db = ADatabase::database();
-    TableColumns table_columns;
-    QSqlRecord fields = db.record(table_name);
-    for (int i = 0; i < fields.count(); i++) {
-        table_columns.append(fields.field(i).name());
+    tableNames = db.tables();
+
+    tableColumns.clear();
+    for (const auto &table_name : tableNames) {
+        ColumnNames table_columns;
+        QSqlRecord fields = db.record(table_name);
+        for (int i = 0; i < fields.count(); i++) {
+            table_columns.append(fields.field(i).name());
+        }
+        tableColumns.insert(table_name, table_columns);
     }
-   return table_columns;
+    emit dataBaseUpdated();
 }
 
 ADatabase* ADatabase::getInstance()
@@ -101,6 +109,7 @@ bool ADatabase::connect()
     DEB << "Database connection established." << db.lastError().text();
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
+    updateLayout();
     return true;
 }
 
