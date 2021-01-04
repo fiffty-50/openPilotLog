@@ -31,7 +31,8 @@ public:
     };
 
     enum class Main {
-        Theme,
+        Style,
+        StyleSheet,
     };
 
     enum class LogBook {

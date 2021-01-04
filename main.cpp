@@ -22,6 +22,7 @@
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
+#include "src/classes/astyle.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
@@ -49,47 +50,25 @@ int main(int argc, char *argv[])
 
     ASettings::setup();
 
+    AStyle::setup();
+
     aDB()->connect();
     if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
-        FirstRunDialog dialog;
-        if(dialog.exec() == QDialog::Rejected){
+        if(FirstRunDialog().exec() == QDialog::Rejected){
             DEB "First run not accepted. Exiting.";
             return 1;
         }
         ASettings::write(ASettings::Setup::SetupComplete, true);
         DEB << "Wrote setup_commplete?";
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-    }
-
-    //Theming
-    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
-    case 1:{
-        DEB << "main :: Loading light theme";
-        QFile file(":light.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        openPilotLog.setStyleSheet(stream.readAll());
-        break;
-    }
-    case 2:{
-        DEB << "Loading dark theme";
-        QFile file(":dark.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        openPilotLog.setStyleSheet(stream.readAll());
-        break;
-    }
-    default:
-        break;
     }
 
     //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard(QStringLiteral("opl_single_key"));
-        if ( !guard.tryToRun() ){
-            DEB << "Another Instance is already running. Exiting.";
-            return 2;
-        }
+    if ( !guard.tryToRun() ){
+        DEB << "Another Instance is already running. Exiting.";
+        return 2;
+    }
+
 
     MainWindow w;
     //w.showMaximized();

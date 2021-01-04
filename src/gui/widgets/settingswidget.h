@@ -39,7 +39,7 @@ public:
 
 private slots:
 
-    void onThemeGroup_buttonClicked(int theme_id);
+//    void onThemeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
     void on_acSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
@@ -57,6 +57,8 @@ private slots:
     void on_pilotSortComboBox_currentIndexChanged(int index);
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
+    void on_darkStyleCheckBox_stateChanged(int state);
+    void on_styleComboBox_currentTextChanged(const QString& index);
 
 private:
     Ui::SettingsWidget *ui;

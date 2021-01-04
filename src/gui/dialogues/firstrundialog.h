@@ -24,7 +24,7 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-    void on_themeGroup_toggled(int id);
+//    void on_themeGroup_toggled(int id);
 
 private:
     Ui::FirstRunDialog *ui;

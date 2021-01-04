@@ -85,7 +85,7 @@ void LogbookWidget::connectSignalsAndSlots()
 void LogbookWidget::setupDefaultView()
 {
     DEB << "Loading Default View...";
-    displayModel = new QSqlTableModel;
+    displayModel = new QSqlTableModel(this);
     displayModel->setTable("viewDefault");
     displayModel->select();
 

@@ -18,10 +18,12 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 #include "src/testing/adebug.h"
-
+#include "src/classes/astyle.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
+
+#include <QStyleFactory>
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     "firstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
@@ -51,17 +53,22 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
 
-    auto *themeGroup = new QButtonGroup;
-    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-    themeGroup->addButton(ui->darkThemeCheckBox, 2);
+    auto styles = AStyle::styles;
+    auto current_style = AStyle::style();
+    ui->styleComboBox->addItem(current_style);
+    styles.removeOne(current_style);
+
+    ui->styleComboBox->addItems(styles);
+    ui->styleComboBox->model()->sort(0);
+    ui->styleComboBox->setCurrentText(current_style);
+
+    if(ASettings::read(ASettings::Main::StyleSheet).toUInt() == AStyle::Dark)
+        ui->darkStyleCheckBox->setCheckState(Qt::Checked);
 
     readSettings();
     setupValidators();
-
-    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-                     this, &SettingsWidget::onThemeGroup_buttonClicked);
 }
+
 
 SettingsWidget::~SettingsWidget()
 {
@@ -89,19 +96,6 @@ void SettingsWidget::readSettings()
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
 
-    /*
-     * Misc Tab
-     */
-    switch (ASettings::read(ASettings::Main::Theme).toInt()) {
-    case 0:
-        ui->systemThemeCheckBox->setChecked(true);
-        break;
-    case 1:
-        ui->lightThemeCheckBox->setChecked(true);
-        break;
-    case 2:
-        ui->darkThemeCheckBox->setChecked(true);
-    }
     ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::LogBook::View).toInt());
     /*
      * Aircraft Tab
@@ -265,24 +259,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 /*
  * Misc Tab
  */
-void SettingsWidget::onThemeGroup_buttonClicked(int theme_id)
-{
-    ASettings::write(ASettings::Main::Theme, theme_id);
 
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Changing Themes",
-                                  "Changing the theme requires restarting the Application.\n\nWould you like to restart now?",
-                                  QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-        qApp->quit();
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-
-    } else {
-        QMessageBox *info = new QMessageBox(this);
-        info->setText("Theme change will take effect the next time you start the application.");
-        info->exec();
-    }
-}
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::LogBook::View, index);
@@ -361,4 +338,19 @@ void SettingsWidget::on_aboutPushButton_clicked()
                          QString(SQLITE_VERSION));
     message_box.setText(text);
     message_box.exec();
+}
+
+void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
+{
+    DEB << text;
+    AStyle::setStyle(text);
+}
+
+void SettingsWidget::on_darkStyleCheckBox_stateChanged(int state)
+{
+    DEB << "Setting to:" << (state ? "dark" : "default");
+    if(state == Qt::Checked)
+        AStyle::setStyleSheet(AStyle::Dark);
+    else
+        AStyle::setStyleSheet(AStyle::Default);
 }
