@@ -97,7 +97,7 @@ public:
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
-    static ADatabase* instance();
+    static inline ADatabase* instance();
     TableNames getTableNames() const;
     ColumnNames getTableColumns(TableName table_name) const;
     void updateLayout();
