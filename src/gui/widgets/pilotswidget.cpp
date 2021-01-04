@@ -150,14 +150,14 @@ void PilotsWidget::on_deletePilotButton_clicked()
         /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = aDB()->getPilotEntry(selectedPilots.first());
+        auto entry = aDB->getPilotEntry(selectedPilots.first());
         auto message_box = QMessageBox(this);
         QString message = "You are deleting the following pilot:<br><br><b><tt>";
         message.append(entry.name());
         message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
         message_box.setText(message);
         message_box.exec();
-        if(!aDB()->remove(entry))
+        if(!aDB->remove(entry))
             onDeleteUnsuccessful();
         }
     model->select();
@@ -167,10 +167,10 @@ void PilotsWidget::onDeleteUnsuccessful()
 {
     /// [F]: To do: Some logic to display a warning if too many entries exists, so that
     /// the messagebox doesn't grow too tall.
-    QList<int> foreign_key_constraints = aDB()->getForeignKeyConstraints(selectedPilots.first(), ADatabaseTarget::pilots);
+    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(), ADatabaseTarget::pilots);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
-        constrained_flights.append(aDB()->getFlightEntry(row_id));
+        constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
     QString message = "<br>Unable to delete.<br><br>";

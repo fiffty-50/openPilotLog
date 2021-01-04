@@ -47,7 +47,7 @@ const QString AFlightEntry::summary()
 
 const QString AFlightEntry::getRegistration()
 {
-    ATailEntry acft = aDB()->resolveForeignTail(tableData.value(DB_FLIGHTS_ACFT).toInt());
+    ATailEntry acft = aDB->resolveForeignTail(tableData.value(DB_FLIGHTS_ACFT).toInt());
     return acft.registration();
 }
 
@@ -55,16 +55,16 @@ const QString AFlightEntry::getPilotName(pilotPosition pilot_)
 {
     switch (pilot_) {
     case pilotPosition::pic: {
-        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_PIC).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(DB_FLIGHTS_PIC).toInt());
         return foreign_pilot.name();
         break;
     }
     case pilotPosition::secondPilot: {
-        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_SECONDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(DB_FLIGHTS_SECONDPILOT).toInt());
         return foreign_pilot.name();
     }
     case pilotPosition::thirdPilot: {
-        auto foreign_pilot = aDB()->resolveForeignPilot(tableData.value(DB_FLIGHTS_THIRDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(DB_FLIGHTS_THIRDPILOT).toInt());
         return foreign_pilot.name();
         break;
     } // case scope

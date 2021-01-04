@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     ASettings::setup();
 
     AStyle::setup();
-    aDB()->connect();
+    aDB->connect();
     if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
         if(FirstRunDialog().exec() == QDialog::Rejected){
             DEB "First run not accepted. Exiting.";

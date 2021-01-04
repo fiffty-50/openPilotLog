@@ -59,7 +59,7 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     ui->line->hide();
 
     setupValidators();
-    entry = aDB()->getTailEntry(row_id);
+    entry = aDB->getTailEntry(row_id);
     fillForm(entry, false);
 }
 
@@ -78,8 +78,8 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    idMap = aDB()->getIdMap(ADatabaseTarget::aircraft);
-    aircraftList = aDB()->getCompletionList(ADatabaseTarget::aircraft);
+    idMap = aDB->getIdMap(ADatabaseTarget::aircraft);
+    aircraftList = aDB->getCompletionList(ADatabaseTarget::aircraft);
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -208,10 +208,10 @@ void NewTailDialog::submitForm()
     //create db object
 
     entry.setData(new_data);
-    if (!aDB()->commit(entry)) {
+    if (!aDB->commit(entry)) {
         auto message_box = QMessageBox(this);
         message_box.setText("The following error has ocurred:\n\n"
-                            + aDB()->lastError.text()
+                            + aDB->lastError.text()
                             + "\n\nThe entry has not been saved.");
         message_box.exec();
         return;
@@ -297,7 +297,7 @@ void NewTailDialog::onSearchCompleterActivated()
 
             DEB << "Template Selected. aircraft_id is: " << idMap.value(text);
             //call autofiller for dialog
-            fillForm(aDB()->getAircraftEntry(idMap.value(text)), true);
+            fillForm(aDB->getAircraftEntry(idMap.value(text)), true);
             ui->searchLineEdit->setStyleSheet("border: 1px solid green");
             ui->searchLabel->setText(text);
         } else {

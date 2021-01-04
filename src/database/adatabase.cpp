@@ -19,8 +19,6 @@
 #include "src/testing/adebug.h"
 #include "src/classes/astandardpaths.h"
 
-#define DATABASE_VERSION 15
-const auto SQL_DRIVER = QStringLiteral("QSQLITE");
 
 ADatabaseError::ADatabaseError(QString msg_)
     : QSqlError::QSqlError(msg_)
@@ -31,7 +29,7 @@ QString ADatabaseError::text() const
     return "Database Error: " + QSqlError::text();
 }
 
-ADatabase* ADatabase::instance = nullptr;
+ADatabase* ADatabase::self = nullptr;
 
 /*!
  * \brief Return the names of a given table in the database.
@@ -70,11 +68,16 @@ void ADatabase::updateLayout()
     emit dataBaseUpdated();
 }
 
-ADatabase* ADatabase::getInstance()
+inline
+ADatabase* ADatabase::instance()
 {
-    if(!instance)
-        instance = new ADatabase();
-    return instance;
+#ifdef __GNUC__
+    return self ?: self = new ADatabase();
+#else
+    if(!self)
+        self = new ADatabase();
+    return self;
+#endif
 }
 
 ADatabase::ADatabase()
@@ -97,10 +100,10 @@ const QString ADatabase::sqliteVersion()
 
 bool ADatabase::connect()
 {
-    if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
+    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
         return false;
 
-    QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
     db.setDatabaseName(databaseFile.absoluteFilePath());
 
     if (!db.open())
@@ -603,12 +606,12 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
 
 APilotEntry ADatabase::resolveForeignPilot(int foreign_key)
 {
-    return aDB()->getPilotEntry(foreign_key);
+    return aDB->getPilotEntry(foreign_key);
 }
 
 ATailEntry ADatabase::resolveForeignTail(int foreign_key)
 {
-    return aDB()->getTailEntry(foreign_key);
+    return aDB->getTailEntry(foreign_key);
 }
 
 QVector<QString> ADatabase::customQuery(QString statement, int return_values)
@@ -636,5 +639,3 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
         return result;
     }
 }
-
-ADatabase* aDB() { return ADatabase::getInstance(); }

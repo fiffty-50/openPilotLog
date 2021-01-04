@@ -81,7 +81,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
     DEB << "New NewPilotDialog (editEntry)";
     setup();
 
-    pilotEntry = aDB()->getPilotEntry(rowId);
+    pilotEntry = aDB->getPilotEntry(rowId);
     DEB << "Pilot Entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     formFiller();
     ui->lastnameLineEdit->setFocus();
@@ -109,7 +109,7 @@ void NewPilotDialog::setup()
     }
 
     DEB << "Setting up completer...";
-    auto completer = new QCompleter(aDB()->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(aDB->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
@@ -152,10 +152,10 @@ void NewPilotDialog::submitForm()
     pilotEntry.setData(new_data);
     DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     DEB << "Pilot entry data: " << pilotEntry.getData();
-    if (!aDB()->commit(pilotEntry)) {
+    if (!aDB->commit(pilotEntry)) {
         auto message_box = QMessageBox(this);
         message_box.setText("The following error has ocurred:\n\n"
-                            + aDB()->lastError.text()
+                            + aDB->lastError.text()
                             + "\n\nThe entry has not been saved.");
         message_box.exec();
         return;

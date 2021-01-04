@@ -84,7 +84,7 @@ QVector<QString> AStat::currencyTakeOffLanding(int days)
             "FROM flights "
             "WHERE doft >= \"" + startdate + "\"";
 
-    QVector<QString> result = aDB()->customQuery(statement, 2);
+    QVector<QString> result = aDB->customQuery(statement, 2);
 
     if (!result.isEmpty()) {
         return result;
