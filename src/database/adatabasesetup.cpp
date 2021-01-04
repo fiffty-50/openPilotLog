@@ -266,7 +266,7 @@ bool ADataBaseSetup::createDatabase()
         return false;
     }
 
-    aDB()->updateLayout();
+    aDB->updateLayout();
 
     DEB << "Populating tables...";
     if (!importDefaultData()) {
@@ -296,7 +296,7 @@ bool ADataBaseSetup::downloadTemplates()
 }
 bool ADataBaseSetup::backupOldData()
 {
-    auto database_file = aDB()->databaseFile;
+    auto database_file = aDB->databaseFile;
     if(!database_file.exists()) {
         DEB << "No Database to backup, returning.";
         return true;
@@ -305,7 +305,7 @@ bool ADataBaseSetup::backupOldData()
     auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
-    auto file = QFile(aDB()->databaseFile.absoluteFilePath());
+    auto file = QFile(aDB->databaseFile.absoluteFilePath());
 
     if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
         DEB << "Unable to backup old database.";
@@ -416,9 +416,9 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &table_name)
 {
-    DEB << "Table names: " << aDB()->getTableNames();
+    DEB << "Table names: " << aDB->getTableNames();
     DEB << "Importing Data to" << table_name;
-    if (!aDB()->getTableNames().contains(table_name)){
+    if (!aDB->getTableNames().contains(table_name)){
         DEB << table_name << "is not a table in the database. Aborting.";
         DEB << "Please check input data.";
         return false;
@@ -427,7 +427,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &ta
     QString statement = "INSERT INTO " + table_name + " (";
     QString placeholder = ") VALUES (";
     for (auto& csvColumn : from_csv) {
-        if(aDB()->getTableColumns(table_name).contains(csvColumn.first())) {
+        if(aDB->getTableColumns(table_name).contains(csvColumn.first())) {
             statement += csvColumn.first() + ',';
             csvColumn.removeFirst();
             placeholder.append("?,");

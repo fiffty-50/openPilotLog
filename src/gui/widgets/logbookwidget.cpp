@@ -208,7 +208,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         QList<AFlightEntry> flights_list;
 
         for (const auto &flight_id : selectedFlights) {
-            flights_list.append(aDB()->getFlightEntry(flight_id));
+            flights_list.append(aDB->getFlightEntry(flight_id));
         }
 
         QString warningMsg = "The following flight(s) will be deleted:<br><br><b><tt>";
@@ -230,8 +230,8 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
         if (reply == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
                 DEB << "Deleting flight: " << flight.summary();
-                if(!aDB()->remove(flight)) {
-                    messageBox->setText(aDB()->lastError.text());
+                if(!aDB->remove(flight)) {
+                    messageBox->setText(aDB->lastError.text());
                     messageBox->exec();
                     return;
                 }
@@ -256,9 +256,9 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             for (const auto& flight_id : selectedFlights) {
                 selected_flights.append({QLatin1String("flights"), flight_id});
             }
-            if (!aDB()->removeMany(selected_flights)) {
+            if (!aDB->removeMany(selected_flights)) {
 
-                messageBox->setText(aDB()->lastError.text()); // [F]: To Do: error info
+                messageBox->setText(aDB->lastError.text()); // [F]: To Do: error info
                 messageBox->exec();
                 return;
             }

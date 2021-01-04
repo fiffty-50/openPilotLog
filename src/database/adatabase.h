@@ -39,6 +39,17 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
 
+#define DATABASE_VERSION 15
+
+/*!
+ * \brief Convinience macro that returns instance of DataBase.
+ * Instead of this:
+ * DataBase::getInstance().commit(...)
+ * Write this:
+ * aDB->commit(...)
+ */
+#define aDB ADatabase::instance()
+
 /*!
  * \brief The DBTarget enum lists database items that are
  * used by completers, for content matching or need to be accessed programatically.
@@ -77,15 +88,16 @@ public:
 class ADatabase : public QObject {
     Q_OBJECT
 private:
-    static ADatabase* instance;
     ADatabase();
+
+    static ADatabase* self;
     TableNames tableNames;
     TableColumns tableColumns;
 public:
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
-    static ADatabase* getInstance();
+    static ADatabase* instance();
     TableNames getTableNames() const;
     ColumnNames getTableColumns(TableName table_name) const;
     void updateLayout();
@@ -249,14 +261,5 @@ signals:
      */
     void dataBaseUpdated();
 };
-
-/*!
- * \brief Convinience function that returns instance of DataBase.
- * Instead of this:
- * DataBase::getInstance().commit(...)
- * Write this:
- * aDB()->commit(...)
- */
-ADatabase* aDB();
 
 #endif // ADATABASE_H

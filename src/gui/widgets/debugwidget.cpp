@@ -10,7 +10,7 @@ DebugWidget::DebugWidget(QWidget *parent) :
     ui(new Ui::DebugWidget)
 {
     ui->setupUi(this);
-    for (const auto& table : aDB()->getTableNames()) {
+    for (const auto& table : aDB->getTableNames()) {
         if( table != "sqlite_sequence") {
             ui->tableComboBox->addItem(table);
         }
@@ -29,7 +29,7 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
     if (ADataBaseSetup::resetToDefault()){
         result.setText("Database successfully reset");
         result.exec();
-        emit aDB()->dataBaseUpdated();
+        emit aDB->dataBaseUpdated();
     } else {
         result.setText("Errors have occurred. Check console for Debug output. ");
         result.exec();
@@ -60,11 +60,11 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     }
 
     // back up old db
-    aDB()->disconnect();
+    aDB->disconnect();
     ADataBaseSetup::backupOldData();
 
     // re-connct and create new database
-    aDB()->connect();
+    aDB->connect();
     if (ADataBaseSetup::createDatabase()) {
         DEB << "Database has been successfully created.";
     } else {
@@ -74,7 +74,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     }
     if (ADataBaseSetup::importDefaultData()) {
         message_box.setText("Database has been successfully reset.");
-        emit aDB()->dataBaseUpdated();
+        emit aDB->dataBaseUpdated();
         message_box.exec();
     } else {
         message_box.setText("Errors have ocurred while importing templates.<br>"
@@ -127,7 +127,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
 
     message_box.setText("User tables successfully populated.");
     message_box.exec();
-    emit aDB()->dataBaseUpdated();
+    emit aDB->dataBaseUpdated();
 }
 
 void DebugWidget::on_selectCsvPushButton_clicked()
@@ -203,9 +203,9 @@ void DebugWidget::on_debugPushButton_clicked()
             ATimer timer;
             for (int i = 0; i < number_of_runs; i++) {
                 // first block, do stuff here...
-                auto acft = aDB()->getTailEntry(5);
-                auto pilot = aDB()->getPilotEntry(7);
-                auto flight = aDB()->getFlightEntry(15);
+                auto acft = aDB->getTailEntry(5);
+                auto pilot = aDB->getPilotEntry(7);
+                auto flight = aDB->getFlightEntry(15);
                 QList<AEntry> list = {acft, pilot, flight};
                 for (auto entry : list) {
                     for (auto column : entry.getData()) {

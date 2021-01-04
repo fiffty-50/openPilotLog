@@ -114,11 +114,11 @@ bool FirstRunDialog::finish()
         return false;
     }
 
-    aDB()->updateLayout();
+    aDB->updateLayout();
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
-    if(!aDB()->commit(pilot)){
+    if(!aDB->commit(pilot)){
         db_fail_msg_box.exec();
         return false;
     }
@@ -137,15 +137,15 @@ bool FirstRunDialog::setupDatabase()
     if (confirm.exec() == QMessageBox::Yes)
         ADataBaseSetup::downloadTemplates();
 
-    aDB()->disconnect();
+    aDB->disconnect();
     ADataBaseSetup::backupOldData();
-    aDB()->connect();
+    aDB->connect();
 
     // [F]: todo: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
         return false;
 
-    aDB()->updateLayout();
+    aDB->updateLayout();
 
     if(!ADataBaseSetup::importDefaultData())
         return false;

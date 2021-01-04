@@ -83,7 +83,7 @@ void SettingsWidget::readSettings()
      */
     {
         const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
-        auto user_data = aDB()->getPilotEntry(1).getData();
+        auto user_data = aDB->getPilotEntry(1).getData();
         ui->lastnameLineEdit->setText(user_data.value(DB_PILOTS_LASTNAME).toString());
         ui->firstnameLineEdit->setText(user_data.value(DB_PILOTS_FIRSTNAME).toString());
         ui->companyLineEdit->setText(user_data.value(DB_PILOTS_COMPANY).toString());
@@ -158,7 +158,7 @@ void SettingsWidget::updatePersonalDetails()
     auto user = APilotEntry(1);
     user.setData(user_data);
 
-    aDB()->commit(user);
+    aDB->commit(user);
 }
 
 /*
@@ -294,7 +294,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     auto message_box = QMessageBox(this);
-    QString SQLITE_VERSION = aDB()->sqliteVersion();
+    QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 
                        "<h3><center>About openPilotLog</center></h3>"
