@@ -120,8 +120,6 @@ bool FirstRunDialog::finish()
         db_fail_msg_box.exec();
         return false;
     }
-    aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
-    aDB()->connect();
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
