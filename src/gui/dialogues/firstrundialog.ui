@@ -30,6 +30,9 @@
    </item>
    <item row="0" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="1">
@@ -397,7 +400,7 @@
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Finish&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Almost done! Here you can select the theme to be used for the application.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;This change will take effect the next time the application is launched.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Finish&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Almost done! We are now going to create the database for the application.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;If you want to use the most up-to-date version of the database, an internet connection is required, otherwise you can use the version included in the download.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::RichText</enum>

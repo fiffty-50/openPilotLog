@@ -23,7 +23,7 @@ using TableNames = QStringList;
 using RowData = QMap<ColName, ColData>;
 using ColumnData = QPair<ColName, ColData>;
 using ColumnNames = QStringList;
-using TableColumns = QMap<TableName, ColumnNames>;
+using TableColumns = QStringList;
 
 // [G]: Needs some work. Inheriting from QPair may be helpful but
 // may also be overkill. Lets determine the specific uses of DataPosition

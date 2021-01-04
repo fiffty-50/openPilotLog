@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
     ASettings::setup();
 
     AStyle::setup();
-
     aDB()->connect();
     if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
         if(FirstRunDialog().exec() == QDialog::Rejected){

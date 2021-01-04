@@ -77,8 +77,6 @@ public:
 class ADatabase : public QObject {
     Q_OBJECT
 private:
-    TableNames tableNames;
-    TableColumns tableColumns;
     static ADatabase* instance;
     ADatabase();
 public:
@@ -87,7 +85,7 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* getInstance();
     TableNames getTableNames() const;
-    TableColumns getTableColumns() const;
+    TableColumns getTableColumns(TableName table_name) const;
     const QString sqliteVersion();
 
     ADatabaseError lastError;

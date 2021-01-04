@@ -47,7 +47,7 @@ public:
 
     static bool resetToDefault();
 
-    static bool commitData(QVector<QStringList> fromCSV, const QString &tableName);
+    static bool commitData(QVector<QStringList> from_csv, const QString &table_name);
 
 private:
 
