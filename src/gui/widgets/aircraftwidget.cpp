@@ -48,7 +48,7 @@ AircraftWidget::~AircraftWidget()
 
 void AircraftWidget::setupModelAndView()
 {
-    sortColumn = ASettings::read(ASettings::UserData::AcSortColumn).toInt();
+    sortColumn = ASettings::read(ASettings::UserData::AcftSortColumn).toInt();
 
     model = new QSqlTableModel(this);
     model->setTable("viewTails");
@@ -199,7 +199,7 @@ void AircraftWidget::tableView_selectionChanged()
 void AircraftWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write(ASettings::UserData::AcSortColumn, column);
+    ASettings::write(ASettings::UserData::AcftSortColumn, column);
 }
 
 void AircraftWidget::acft_editing_finished()

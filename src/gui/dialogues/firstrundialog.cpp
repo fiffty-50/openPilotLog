@@ -86,11 +86,6 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 bool FirstRunDialog::finish()
 {
-    ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
-    ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
-    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
-    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
-    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
 
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
@@ -104,12 +99,12 @@ bool FirstRunDialog::finish()
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::LastName), ui->lastnameLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::FirstName), ui->firstnameLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Alias), "self");
-    data.insert(ASettings::stringOfKey(ASettings::UserData::EmployeeID), ui->employeeidLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
+    data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."

@@ -30,15 +30,8 @@ QMap<ASettings::LogBook, QString> ASettings::logBookMap = {
 };
 
 QMap<ASettings::UserData, QString> ASettings::userDataMap = {
-    {UserData::LastName,          QStringLiteral("lastname")},
-    {UserData::FirstName,         QStringLiteral("firstname") },
-    {UserData::Company,           QStringLiteral("company")},
-    {UserData::EmployeeID,        QStringLiteral("employeeid")},
-    {UserData::Phone,             QStringLiteral("phone")},
-    {UserData::Email,             QStringLiteral("email")},
     {UserData::DisplaySelfAs,     QStringLiteral("displayselfas")},
-    {UserData::Alias,             QStringLiteral("alias")},
-    {UserData::AcSortColumn,      QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
+    {UserData::AcftSortColumn,      QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
     {UserData::PilSortColumn,     QStringLiteral("pilSortColumn")},
     {UserData::AcAllowIncomplete, QStringLiteral("acAllowIncomplete")},
 };
@@ -58,7 +51,7 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
 };
 
 QMap<ASettings::Setup, QString> ASettings::setupMap = {
-    {Setup::SetupComplete, QStringLiteral("setup_complete")},  // inconsistent naming
+    {Setup::SetupComplete, QStringLiteral("setupComplete")}
 };
 
 QMap<ASettings::NewFlight, QString> ASettings::newFlightMap = {

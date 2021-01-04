@@ -22,6 +22,7 @@
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
+#include "src/database/declarations.h"
 
 #include <QStyleFactory>
 
@@ -80,12 +81,17 @@ void SettingsWidget::readSettings()
     /*
      * Personal Tab
      */
-    ui->lastnameLineEdit->setText(ASettings::read(ASettings::UserData::LastName).toString());
-    ui->firstnameLineEdit->setText(ASettings::read(ASettings::UserData::FirstName).toString());
-    ui->companyLineEdit->setText(ASettings::read(ASettings::UserData::Company).toString());
-    ui->employeeidLineEdit->setText(ASettings::read(ASettings::UserData::EmployeeID).toString());
-    ui->phoneLineEdit->setText(ASettings::read(ASettings::UserData::Phone).toString());
-    ui->emailLineEdit->setText(ASettings::read(ASettings::UserData::Email).toString());
+    {
+        const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
+        auto user_data = aDB()->getPilotEntry(1).getData();
+        ui->lastnameLineEdit->setText(user_data.value(DB_PILOTS_LASTNAME).toString());
+        ui->firstnameLineEdit->setText(user_data.value(DB_PILOTS_FIRSTNAME).toString());
+        ui->companyLineEdit->setText(user_data.value(DB_PILOTS_COMPANY).toString());
+        ui->employeeidLineEdit->setText(user_data.value(DB_PILOTS_EMPLOYEEID).toString());
+        ui->phoneLineEdit->setText(user_data.value(DB_PILOTS_PHONE).toString());
+        ui->emailLineEdit->setText(user_data.value(DB_PILOTS_EMAIL).toString());
+    }
+
     /*
      * Flight Logging Tab
      */
@@ -100,7 +106,7 @@ void SettingsWidget::readSettings()
     /*
      * Aircraft Tab
      */
-    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcSortColumn).toInt());
+    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilSortColumn).toInt());
     ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt());
 }
@@ -122,13 +128,13 @@ void SettingsWidget::setupValidators()
 
 void SettingsWidget::updatePersonalDetails()
 {
-    QMap<QString, QVariant> data;
+    RowData user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        data.insert("alias", "self");
+        user_data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
         break;
     case 1:
-        data.insert("alias","SELF");
+        user_data.insert(DB_PILOTS_ALIAS,QStringLiteral("SELF"));
         break;
     case 2:{
         QString name;
@@ -136,23 +142,23 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
-        data.insert("alias", name);
+        user_data.insert(DB_PILOTS_ALIAS, name);
     }
         break;
     default:
         break;
     }
-    data.insert("lastname", ui->lastnameLineEdit->text());
-    data.insert("firstname", ui->firstnameLineEdit->text());
-    data.insert("company", ui->companyLineEdit->text());
-    data.insert("employeeid", ui->employeeidLineEdit->text());
-    data.insert("phone", ui->phoneLineEdit->text());
-    data.insert("email", ui->emailLineEdit->text());
+    user_data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    user_data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(DB_PILOTS_COMPANY, ui->companyLineEdit->text());
+    user_data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    user_data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
+    user_data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
 
-    auto pic = APilotEntry(1);
-    pic.setData(data);
+    auto user = APilotEntry(1);
+    user.setData(user_data);
 
-    aDB()->commit(pic);
+    aDB()->commit(user);
 }
 
 /*
@@ -166,47 +172,31 @@ void SettingsWidget::updatePersonalDetails()
 
 void SettingsWidget::on_lastnameLineEdit_editingFinished()
 {
-    if(ui->lastnameLineEdit->text().isEmpty()){
-        ui->lastnameLineEdit->setText(ASettings::read(ASettings::UserData::LastName).toString());
-        ui->lastnameLineEdit->setFocus();
-    } else {
-        ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
-        updatePersonalDetails();
-    }
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_firstnameLineEdit_editingFinished()
 {
-    if(ui->firstnameLineEdit->text().isEmpty()){
-        ui->firstnameLineEdit->setText(ASettings::read(ASettings::UserData::FirstName).toString());
-        ui->firstnameLineEdit->setFocus();
-    } else {
-        ASettings::write(ASettings::UserData::FirstName,ui->firstnameLineEdit->text());
-        updatePersonalDetails();
-    }
+    updatePersonalDetails();
 }
 
 void SettingsWidget::on_companyLineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Company, ui->companyLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_employeeidLineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_emailLineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_phoneLineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
     updatePersonalDetails();
 }
 
@@ -272,7 +262,7 @@ void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 
 void SettingsWidget::on_acSortComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::UserData::AcSortColumn, index);
+    ASettings::write(ASettings::UserData::AcftSortColumn, index);
 }
 
 void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
