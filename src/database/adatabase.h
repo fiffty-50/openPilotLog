@@ -40,6 +40,7 @@
 #include "src/classes/astandardpaths.h"
 
 #define DATABASE_VERSION 15
+#define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
 /*!
  * \brief Convinience macro that returns instance of DataBase.

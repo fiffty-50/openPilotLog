@@ -19,10 +19,6 @@
 #include "src/testing/adebug.h"
 #include "src/classes/astandardpaths.h"
 
-// [G]: this is something that should be declared in adatabase.h
-// it can also be a define because i think we can fetch the driver
-// from the ADatabase::database() (?)
-const auto SQL_DRIVER = QStringLiteral("QSQLITE");
 
 ADatabaseError::ADatabaseError(QString msg_)
     : QSqlError::QSqlError(msg_)
@@ -103,10 +99,10 @@ const QString ADatabase::sqliteVersion()
 
 bool ADatabase::connect()
 {
-    if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
+    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
         return false;
 
-    QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
     db.setDatabaseName(databaseFile.absoluteFilePath());
 
     if (!db.open())
