@@ -40,15 +40,8 @@ public:
     };
 
     enum class UserData {
-        LastName,
-        FirstName,
-        Company,
-        EmployeeID,
-        Phone,
-        Email,
         DisplaySelfAs,
-        Alias,
-        AcSortColumn, // not sure what ac is
+        AcftSortColumn,
         PilSortColumn,
         AcAllowIncomplete,
     };

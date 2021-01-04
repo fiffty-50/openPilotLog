@@ -77,17 +77,18 @@ public:
 class ADatabase : public QObject {
     Q_OBJECT
 private:
-    TableNames tableNames;
-    TableColumns tableColumns;
     static ADatabase* instance;
     ADatabase();
+    TableNames tableNames;
+    TableColumns tableColumns;
 public:
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
     static ADatabase* getInstance();
     TableNames getTableNames() const;
-    TableColumns getTableColumns() const;
+    ColumnNames getTableColumns(TableName table_name) const;
+    void updateLayout();
     const QString sqliteVersion();
 
     ADatabaseError lastError;
@@ -234,6 +235,8 @@ public:
      * \return The Tail Entry referencted by the foreign key.
      */
     ATailEntry resolveForeignTail(int foreign_key);
+
+
 
 
 

@@ -266,8 +266,7 @@ bool ADataBaseSetup::createDatabase()
         return false;
     }
 
-    // call connect again to (re-)populate tableNames and columnNames
-    aDB()->connect();
+    aDB()->updateLayout();
 
     DEB << "Populating tables...";
     if (!importDefaultData()) {
@@ -415,25 +414,25 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  * \param tableName as in the database
  * \return
  */
-bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tableName)
+bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &table_name)
 {
     DEB << "Table names: " << aDB()->getTableNames();
-    DEB << "Importing Data to" << tableName;
-    if (!aDB()->getTableNames().contains(tableName)){
-        DEB << tableName << "is not a table in the database. Aborting.";
+    DEB << "Importing Data to" << table_name;
+    if (!aDB()->getTableNames().contains(table_name)){
+        DEB << table_name << "is not a table in the database. Aborting.";
         DEB << "Please check input data.";
         return false;
     }
     // create insert statement
-    QString statement = "INSERT INTO " + tableName + " (";
+    QString statement = "INSERT INTO " + table_name + " (";
     QString placeholder = ") VALUES (";
-    for (auto& csvColumn : fromCSV) {
-        if(aDB()->getTableColumns().value(tableName).contains(csvColumn.first())) {
+    for (auto& csvColumn : from_csv) {
+        if(aDB()->getTableColumns(table_name).contains(csvColumn.first())) {
             statement += csvColumn.first() + ',';
             csvColumn.removeFirst();
             placeholder.append("?,");
         } else {
-            DEB << csvColumn.first() << "is not a column of " << tableName << "Aborting.";
+            DEB << csvColumn.first() << "is not a column of " << table_name << "Aborting.";
             DEB << "Please check input data.";
             return false;
         }
@@ -449,12 +448,12 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
      */
     QSqlQuery query;
     query.exec("BEGIN EXCLUSIVE TRANSACTION;");
-    for (int i = 0; i < fromCSV.first().length(); i++){
+    for (int i = 0; i < from_csv.first().length(); i++){
         query.prepare(statement);
-        for(int j = 0; j < fromCSV.length(); j++) {
-             fromCSV[j][i] == QString("") ? // make sure NULL is committed for empty values
+        for(int j = 0; j < from_csv.length(); j++) {
+             from_csv[j][i] == QString("") ? // make sure NULL is committed for empty values
                          query.addBindValue(QVariant(QVariant::String))
-                       : query.addBindValue(fromCSV[j][i]);
+                       : query.addBindValue(from_csv[j][i]);
              //query.addBindValue(fromCSV[j][i]);
          }
         query.exec();
@@ -465,7 +464,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> fromCSV, const QString &tab
         DEB << "Error:" << query.lastError().text();
         return false;
     } else {
-        qDebug() << tableName << "Database successfully updated!";
+        qDebug() << table_name << "Database successfully updated!";
         return true;
     }
 }

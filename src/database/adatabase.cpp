@@ -33,14 +33,41 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::instance = nullptr;
 
+/*!
+ * \brief Return the names of a given table in the database.
+ */
+ColumnNames ADatabase::getTableColumns(TableName table_name) const
+{
+    return tableColumns.value(table_name);
+}
+
+/*!
+ * \brief Return the names of all tables in the database
+ */
 TableNames ADatabase::getTableNames() const
 {
     return tableNames;
 }
 
-TableColumns ADatabase::getTableColumns() const
+/*!
+ * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+ * if the database has been altered. This function is normally only required during database setup or maintenance.
+ */
+void ADatabase::updateLayout()
 {
-    return tableColumns;
+    auto db = ADatabase::database();
+    tableNames = db.tables();
+
+    tableColumns.clear();
+    for (const auto &table_name : tableNames) {
+        ColumnNames table_columns;
+        QSqlRecord fields = db.record(table_name);
+        for (int i = 0; i < fields.count(); i++) {
+            table_columns.append(fields.field(i).name());
+        }
+        tableColumns.insert(table_name, table_columns);
+    }
+    emit dataBaseUpdated();
 }
 
 ADatabase* ADatabase::getInstance()
@@ -82,19 +109,7 @@ bool ADatabase::connect()
     DEB << "Database connection established." << db.lastError().text();
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
-    tableNames = db.tables();
-
-    QStringList column_names;
-    for (const auto &table : tableNames) {
-        column_names.clear();
-        QSqlRecord fields = db.record(table);
-        for (int i = 0; i < fields.count(); i++) {
-            column_names.append(fields.field(i).name());
-            tableColumns.insert(table, column_names);
-        }
-    }
-    DEB << "Database Tables: " << tableNames;
-    DEB << "Tables and Columns: " << tableColumns;
+    updateLayout();
     return true;
 }
 
@@ -337,7 +352,7 @@ bool ADatabase::insert(AEntry new_entry)
 RowData ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
-    if (!tableNames.contains(data_position.tableName)) {
+    if (!getTableNames().contains(data_position.tableName)) {
         DEB << data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
         return RowData();
     }
@@ -385,7 +400,7 @@ RowData ADatabase::getEntryData(DataPosition data_position)
     select_query.next();
     RowData entry_data;
 
-    for (const auto &column : tableColumns.value(data_position.tableName)) {
+    for (const auto &column : getTableColumns(data_position.tableName)) {
         entry_data.insert(column, select_query.value(column));
     }
     return entry_data;

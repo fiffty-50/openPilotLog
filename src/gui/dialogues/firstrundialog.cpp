@@ -86,11 +86,6 @@ void FirstRunDialog::on_nextPushButton_clicked()
 
 bool FirstRunDialog::finish()
 {
-    ASettings::write(ASettings::UserData::LastName, ui->lastnameLineEdit->text());
-    ASettings::write(ASettings::UserData::FirstName, ui->firstnameLineEdit->text());
-    ASettings::write(ASettings::UserData::EmployeeID, ui->employeeidLineEdit->text());
-    ASettings::write(ASettings::UserData::Phone, ui->phoneLineEdit->text());
-    ASettings::write(ASettings::UserData::Email, ui->emailLineEdit->text());
 
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
@@ -104,24 +99,22 @@ bool FirstRunDialog::finish()
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::LastName), ui->lastnameLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::FirstName), ui->firstnameLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Alias), "self");
-    data.insert(ASettings::stringOfKey(ASettings::UserData::EmployeeID), ui->employeeidLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Phone), ui->phoneLineEdit->text());
-    data.insert(ASettings::stringOfKey(ASettings::UserData::Email), ui->emailLineEdit->text());
+    data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."
                                                       "Without a working database The application will not be usable."));
-    // [G]: Im abit confused on the logic here
-    // why do you write setup complete twice?
     if (!setupDatabase()) {
         db_fail_msg_box.exec();
         return false;
     }
-    aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
-    aDB()->connect();
+
+    aDB()->updateLayout();
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
@@ -149,10 +142,11 @@ bool FirstRunDialog::setupDatabase()
     aDB()->connect();
 
     // [F]: todo: handle unsuccessful steps
-    // [G]: only two / for comments
-    // three are shorthand for documentation
     if(!ADataBaseSetup::createDatabase())
         return false;
+
+    aDB()->updateLayout();
+
     if(!ADataBaseSetup::importDefaultData())
         return false;
     return true;
