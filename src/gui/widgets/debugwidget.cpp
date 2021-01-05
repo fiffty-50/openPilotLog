@@ -105,8 +105,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         ADownload* dl = new ADownload;
         connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
-        dl->setFileName(template_dir.filePath("sample_" + table % QStringLiteral(".csv")));
-        //dl->setFileName("data/templates/sample_" + table + ".csv");
+        dl->setFileName(template_dir.filePath("sample_" % table % QStringLiteral(".csv")));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
@@ -166,15 +165,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-    DEB << "SSL version use for build: " << QSslSocket::sslLibraryBuildVersionString();
-    DEB << "SSL version use for run-time: " << QSslSocket::sslLibraryVersionNumber();
-    DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "At least 5.12";
-#else
-    DEB << "SSL version use for build: " << QSslSocket::sslLibraryBuildVersionString();
-    DEB << "SSL version use for run-time: " << QSslSocket::sslLibraryVersionNumber();
-    DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "Less than 5.12";
-#endif
+    // space for debugging
 }
 
 /* //Comparing two functions template
@@ -202,31 +193,11 @@ void DebugWidget::on_debugPushButton_clicked()
     DEB << "Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
 */
 
+/*
+ *#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+ *   DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "At least 5.12";
+ *#else
+ *   DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "Less than 5.12";
+ * #endif
+ */
 
-
-
-/*qlonglong number_of_runs = 500;
-        long time1 = 0;
-        {
-
-            ATimer timer;
-            for (int i = 0; i < number_of_runs; i++) {
-                // first block, do stuff here...
-                auto acft = aDB->getTailEntry(5);
-                auto pilot = aDB->getPilotEntry(7);
-                auto flight = aDB->getFlightEntry(15);
-                QList<AEntry> list = {acft, pilot, flight};
-                for (auto entry : list) {
-                    for (auto column : entry.getData()) {
-                        QString value = column.toString();
-                    }
-                }
-            }
-
-            time1 = timer.timeNow();
-        }
-
-        DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-        // 108 - 134 milliseconds with legacy exp db api
-        // 108 - 110 milliseconds with improved exp api
-        // to do: with string literals*/
