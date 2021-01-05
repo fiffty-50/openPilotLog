@@ -68,7 +68,6 @@ void ADatabase::updateLayout()
     emit dataBaseUpdated();
 }
 
-inline
 ADatabase* ADatabase::instance()
 {
 #ifdef __GNUC__
