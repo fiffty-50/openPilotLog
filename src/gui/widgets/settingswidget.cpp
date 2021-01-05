@@ -42,7 +42,7 @@ static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
 static const auto PREFIX_VALID = QPair<QString, QRegularExpression> {
     "prefixLineEdit", QRegularExpression("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]")};
 
-static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>({FIRSTNAME_VALID, LASTNAME_VALID,
                                            PHONE_VALID,     EMAIL_VALID,
                                            COMPANY_VALID,     EMPLOYEENR_VALID,
                                            PREFIX_VALID});

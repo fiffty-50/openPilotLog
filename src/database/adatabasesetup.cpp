@@ -416,8 +416,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
  */
 bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &table_name)
 {
-    DEB << "Table names: " << aDB->getTableNames();
-    DEB << "Importing Data to" << table_name;
+    aDB->updateLayout();
     if (!aDB->getTableNames().contains(table_name)){
         DEB << table_name << "is not a table in the database. Aborting.";
         DEB << "Please check input data.";
@@ -452,7 +451,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &ta
         query.prepare(statement);
         for(int j = 0; j < from_csv.length(); j++) {
              from_csv[j][i] == QString("") ? // make sure NULL is committed for empty values
-                         query.addBindValue(QVariant(QVariant::String))
+                         query.addBindValue(QVariant(QString()))
                        : query.addBindValue(from_csv[j][i]);
              //query.addBindValue(fromCSV[j][i]);
          }

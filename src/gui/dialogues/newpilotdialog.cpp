@@ -53,7 +53,7 @@ static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
      "employeeidLineEdit", QRegularExpression("\\w+")};
 
-static const auto LINE_EDIT_VALIDATORS = QVector{
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>> {
         FIRSTNAME_VALID,
         LASTNAME_VALID,
         PHONE_VALID,

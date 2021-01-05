@@ -4,6 +4,7 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include <QtGlobal>
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -165,7 +166,15 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    DEB << "SSL version use for build: " << QSslSocket::sslLibraryBuildVersionString();
+    DEB << "SSL version use for run-time: " << QSslSocket::sslLibraryVersionNumber();
+    DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "At least 5.12";
+#else
+    DEB << "SSL version use for build: " << QSslSocket::sslLibraryBuildVersionString();
+    DEB << "SSL version use for run-time: " << QSslSocket::sslLibraryVersionNumber();
+    DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "Less than 5.12";
+#endif
 }
 
 /* //Comparing two functions template

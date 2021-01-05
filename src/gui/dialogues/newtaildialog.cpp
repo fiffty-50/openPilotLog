@@ -27,7 +27,7 @@ static const auto MODEL_VALID = QPair<QString, QRegularExpression> {
     "modelLineEdit", QRegularExpression("[\\s\\w-]+")};
 static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
     "variantLineEdit", QRegularExpression("[\\s\\w-]+")};
-static const auto LINE_EDIT_VALIDATORS = QVector({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
 
 
 NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
