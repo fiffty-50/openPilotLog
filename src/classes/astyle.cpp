@@ -5,11 +5,10 @@
 #include "src/testing/adebug.h"
 #include "src/classes/asettings.h"
 
-#ifdef __linux__
-const QString AStyle::defaultStyle = QStringLiteral("fusion");
-#elif defined(_WIN32) || defined(_WIN64)
-const QString AStyle::defaultStyle = QStringLiteral("Windows");
-#endif
+// this was throwing hundreds of warnings on 5.9.5, fusion is a good default for all platforms, let's
+// stick with that for now.
+const QString AStyle::defaultStyle = QStringLiteral("Fusion");
+
 const QString AStyle::defaultStyleSheet = QStringLiteral("");
 
 const QStringList AStyle::styles = QStyleFactory::keys();
@@ -73,7 +72,8 @@ void AStyle::setStyle(const QString style)
 
 void AStyle::setStyleSheet(const StyleSheet stylesheet)
 {
-    DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet];
+    // [F]: qt 5.9.5 compatibility
+    DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet].baseName();
     qApp->setStyleSheet(read_stylesheet(stylesheet));
     ASettings::write(ASettings::Main::StyleSheet, stylesheet);
     currentStyleSheet = defaultStyleSheets[stylesheet].fileName();

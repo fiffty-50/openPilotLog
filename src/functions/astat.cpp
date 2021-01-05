@@ -123,9 +123,9 @@ QVector<QPair<QString, QString>> AStat::totals()
     for (const auto &column : columns) {
         value = query.value(columns.indexOf(column)).toString();
         if (!value.isEmpty()) {
-            output << QPair{column, value};
+            output.append(QPair<QString, QString>{column, value});
         } else {
-            output << QPair{column, QString("00:00")};
+            output.append(QPair<QString, QString>{column, QString("00:00")});
         }
     }
     return output;

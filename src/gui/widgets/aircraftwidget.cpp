@@ -84,14 +84,14 @@ void AircraftWidget::setupModelAndView()
 void AircraftWidget::on_deleteButton_clicked()
 {
     if (selectedTails.length() == 0) {
-        auto mb = QMessageBox(this);
-        mb.setText(QStringLiteral("No Aircraft selected."));
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText(QStringLiteral("No Aircraft selected."));
+        message_box.exec();
 
     } else if (selectedTails.length() > 1) {
-        auto mb = QMessageBox(this);
-        mb.setText(QStringLiteral("Deleting multiple entries is currently not supported"));
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText(QStringLiteral("Deleting multiple entries is currently not supported"));
+        message_box.exec();
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where
@@ -103,7 +103,7 @@ void AircraftWidget::on_deleteButton_clicked()
 
     } else if (selectedTails.length() == 1) {
         auto entry = aDB->getTailEntry(selectedTails.first());
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         QString message = "You are deleting the following aircraft:<br><br><b><tt>";
         message.append(entry.registration() + QStringLiteral(" - (") + entry.type() + ')');
         message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));

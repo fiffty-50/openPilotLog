@@ -27,7 +27,7 @@ static const auto MODEL_VALID = QPair<QString, QRegularExpression> {
     "modelLineEdit", QRegularExpression("[\\s\\w-]+")};
 static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
     "variantLineEdit", QRegularExpression("[\\s\\w-]+")};
-static const auto LINE_EDIT_VALIDATORS = QVector({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
 
 
 NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
@@ -264,11 +264,11 @@ void NewTailDialog::on_buttonBox_accepted()
 
     if (!verify()) {
         if (!ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt()) {
-            auto nope = QMessageBox(this);
-            nope.setIcon(QMessageBox::Warning);
-            nope.setText("Some or all recommended fields are empty.\nPlease go back and "
+            QMessageBox message_box(this);
+            message_box.setIcon(QMessageBox::Warning);
+            message_box.setText("Some or all recommended fields are empty.\nPlease go back and "
                          "complete the form.\n\nYou can allow logging incomplete tail entries on the settings page.");
-            nope.exec();
+            message_box.exec();
             return;
         } else {
             QMessageBox::StandardButton reply;

@@ -53,7 +53,7 @@ static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
      "employeeidLineEdit", QRegularExpression("\\w+")};
 
-static const auto LINE_EDIT_VALIDATORS = QVector{
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>> {
         FIRSTNAME_VALID,
         LASTNAME_VALID,
         PHONE_VALID,
@@ -118,9 +118,9 @@ void NewPilotDialog::setup()
 void NewPilotDialog::on_buttonBox_accepted()
 {
     if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
-        auto mb = QMessageBox(this);
-        mb.setText("Last Name and First Name are required.");
-        mb.show();
+        QMessageBox message_box(this);
+        message_box.setText("Last Name and First Name are required.");
+        message_box.show();
     } else {
         submitForm();
     }

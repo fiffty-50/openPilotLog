@@ -56,10 +56,6 @@ public:
 
 private slots:
 
-    /////// DEBUG
-        void onInputRejected();
-    /////// DEBUG
-
     void onToUpperTriggered_textChanged(const QString&);
     void onPilotNameLineEdit_editingFinished();
     void onLocationEditingFinished(QLineEdit*, QLabel*);

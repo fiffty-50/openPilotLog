@@ -4,6 +4,7 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include <QtGlobal>
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -25,14 +26,14 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    QMessageBox result;
+    QMessageBox message_box(this);
     if (ADataBaseSetup::resetToDefault()){
-        result.setText("Database successfully reset");
-        result.exec();
+        message_box.setText("Database successfully reset");
+        message_box.exec();
         emit aDB->dataBaseUpdated();
     } else {
-        result.setText("Errors have occurred. Check console for Debug output. ");
-        result.exec();
+        message_box.setText("Errors have occurred. Check console for Debug output. ");
+        message_box.exec();
     }
 }
 
@@ -104,8 +105,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         ADownload* dl = new ADownload;
         connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(linkStub + table + ".csv"));
-        dl->setFileName(template_dir.filePath("sample_" + table % QStringLiteral(".csv")));
-        //dl->setFileName("data/templates/sample_" + table + ".csv");
+        dl->setFileName(template_dir.filePath("sample_" % table % QStringLiteral(".csv")));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
@@ -148,24 +148,24 @@ void DebugWidget::on_importCsvPushButton_clicked()
     if (file.exists() && file.isFile()) {
 
         if (ADataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
-            auto mb = QMessageBox(this);
-            mb.setText("Data inserted successfully.");
-            mb.exec();
+            QMessageBox message_box(this);
+            message_box.setText("Data inserted successfully.");
+            message_box.exec();
         } else {
-            auto mb = QMessageBox(this);
-            mb.setText("Errors have ocurred. Check console for details.");
-            mb.exec();
+            QMessageBox message_box(this);
+            message_box.setText("Errors have ocurred. Check console for details.");
+            message_box.exec();
         }
     } else {
-        auto mb = QMessageBox(this);
-        mb.setText("Please select a valid file.");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText("Please select a valid file.");
+        message_box.exec();
     }
 }
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-
+    // space for debugging
 }
 
 /* //Comparing two functions template
@@ -193,31 +193,11 @@ void DebugWidget::on_debugPushButton_clicked()
     DEB << "Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
 */
 
+/*
+ *#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+ *   DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "At least 5.12";
+ *#else
+ *   DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "Less than 5.12";
+ * #endif
+ */
 
-
-
-/*qlonglong number_of_runs = 500;
-        long time1 = 0;
-        {
-
-            ATimer timer;
-            for (int i = 0; i < number_of_runs; i++) {
-                // first block, do stuff here...
-                auto acft = aDB->getTailEntry(5);
-                auto pilot = aDB->getPilotEntry(7);
-                auto flight = aDB->getFlightEntry(15);
-                QList<AEntry> list = {acft, pilot, flight};
-                for (auto entry : list) {
-                    for (auto column : entry.getData()) {
-                        QString value = column.toString();
-                    }
-                }
-            }
-
-            time1 = timer.timeNow();
-        }
-
-        DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-        // 108 - 134 milliseconds with legacy exp db api
-        // 108 - 110 milliseconds with improved exp api
-        // to do: with string literals*/

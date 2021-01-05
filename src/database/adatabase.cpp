@@ -68,7 +68,6 @@ void ADatabase::updateLayout()
     emit dataBaseUpdated();
 }
 
-inline
 ADatabase* ADatabase::instance()
 {
 #ifdef __GNUC__
@@ -282,8 +281,8 @@ bool ADatabase::update(AEntry updated_entry)
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.value() == QVariant(QVariant::String)) {
-            query.addBindValue(QVariant(QVariant::String));
+        if (i.value() == QVariant(QString())) {
+            query.addBindValue(QVariant(QString()));
         } else {
             query.addBindValue(i.value());
         }
@@ -327,8 +326,8 @@ bool ADatabase::insert(AEntry new_entry)
     query.prepare(statement);
 
     for (i = data.begin(); i != data.end(); ++i) {
-        if (i.value() == "") {
-            query.addBindValue(QVariant(QVariant::String));
+        if (i.value() == QVariant(QString())) {
+            query.addBindValue(QVariant(QString()));
         } else {
             query.addBindValue(i.value());
         }
