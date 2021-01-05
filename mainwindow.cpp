@@ -98,9 +98,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::nope()
 {
-    QMessageBox nope(this); //error box
-    nope.setText("This feature is not yet available!");
-    nope.exec();
+    QMessageBox message_box(this); //error box
+    message_box.setText("This feature is not yet available!");
+    message_box.exec();
 }
 
 
@@ -158,19 +158,19 @@ void MainWindow::on_actionAircraft_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    NewFlightDialog nf = NewFlightDialog(this);
+    NewFlightDialog nf(this);
     nf.exec();
 
 }
 
 void MainWindow::on_actionNewAircraft_triggered()
 {
-    NewTailDialog nt = NewTailDialog(QString(), this);
+    NewTailDialog nt(QString(), this);
     nt.exec();
 }
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np = NewPilotDialog(this);
+    NewPilotDialog np(this);
     np.exec();
 }

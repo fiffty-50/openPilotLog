@@ -132,14 +132,14 @@ void PilotsWidget::on_newPilotButton_clicked()
 void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
-        auto mb = QMessageBox(this);
-        mb.setText("No Pilot selected.");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText("No Pilot selected.");
+        message_box.exec();
 
     } else if (selectedPilots.length() > 1) {
-        auto mb = QMessageBox(this);
-        mb.setText("Deleting multiple entries is currently not supported");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText("Deleting multiple entries is currently not supported");
+        message_box.exec();
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where

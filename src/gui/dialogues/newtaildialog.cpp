@@ -264,11 +264,11 @@ void NewTailDialog::on_buttonBox_accepted()
 
     if (!verify()) {
         if (!ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt()) {
-            auto nope = QMessageBox(this);
-            nope.setIcon(QMessageBox::Warning);
-            nope.setText("Some or all recommended fields are empty.\nPlease go back and "
+            QMessageBox message_box(this);
+            message_box.setIcon(QMessageBox::Warning);
+            message_box.setText("Some or all recommended fields are empty.\nPlease go back and "
                          "complete the form.\n\nYou can allow logging incomplete tail entries on the settings page.");
-            nope.exec();
+            message_box.exec();
             return;
         } else {
             QMessageBox::StandardButton reply;

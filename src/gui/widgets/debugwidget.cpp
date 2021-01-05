@@ -25,14 +25,14 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    QMessageBox result;
+    QMessageBox message_box(this);
     if (ADataBaseSetup::resetToDefault()){
-        result.setText("Database successfully reset");
-        result.exec();
+        message_box.setText("Database successfully reset");
+        message_box.exec();
         emit aDB->dataBaseUpdated();
     } else {
-        result.setText("Errors have occurred. Check console for Debug output. ");
-        result.exec();
+        message_box.setText("Errors have occurred. Check console for Debug output. ");
+        message_box.exec();
     }
 }
 
@@ -148,18 +148,18 @@ void DebugWidget::on_importCsvPushButton_clicked()
     if (file.exists() && file.isFile()) {
 
         if (ADataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
-            auto mb = QMessageBox(this);
-            mb.setText("Data inserted successfully.");
-            mb.exec();
+            QMessageBox message_box(this);
+            message_box.setText("Data inserted successfully.");
+            message_box.exec();
         } else {
-            auto mb = QMessageBox(this);
-            mb.setText("Errors have ocurred. Check console for details.");
-            mb.exec();
+            QMessageBox message_box(this);
+            message_box.setText("Errors have ocurred. Check console for details.");
+            message_box.exec();
         }
     } else {
-        auto mb = QMessageBox(this);
-        mb.setText("Please select a valid file.");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText("Please select a valid file.");
+        message_box.exec();
     }
 }
 

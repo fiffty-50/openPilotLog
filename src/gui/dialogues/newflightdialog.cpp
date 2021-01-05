@@ -26,15 +26,6 @@
 
 #include "src/testing/adebug.h"
 
-/////////////////////////////////////// DEBUG /////////////////////////////////////////////////////
-void NewFlightDialog::onInputRejected()
-{
-    auto sender_object = sender();
-    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
-    DEB << line_edit->objectName() << "Input Rejected - " << line_edit->text();
-}
-/////////////////////////////////////// DEBUG /////////////////////////////////////////////////////
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                         constants                                           ///
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,10 +273,6 @@ void NewFlightDialog::setupSignalsAndSlots()
     auto line_edits = this->findChildren<QLineEdit*>();
 
     for (const auto &line_edit : line_edits){
-        /////////////////////////////////////// DEBUG /////////////////////////////////////////////////////
-        QObject::connect(line_edit, &QLineEdit::inputRejected,
-                         this, &NewFlightDialog::onInputRejected);
-        /////////////////////////////////////// DEBUG /////////////////////////////////////////////////////
         line_edit->installEventFilter(this);
         if(line_edit->objectName().contains("Loc")){
             QObject::connect(line_edit, &QLineEdit::textChanged,

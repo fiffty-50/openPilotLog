@@ -118,9 +118,9 @@ void NewPilotDialog::setup()
 void NewPilotDialog::on_buttonBox_accepted()
 {
     if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
-        auto mb = QMessageBox(this);
-        mb.setText("Last Name and First Name are required.");
-        mb.show();
+        QMessageBox message_box(this);
+        message_box.setText("Last Name and First Name are required.");
+        message_box.show();
     } else {
         submitForm();
     }
