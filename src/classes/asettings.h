@@ -17,6 +17,7 @@
  */
 #ifndef ASETTINGS_H
 #define ASETTINGS_H
+#include <QtGlobal>
 #include <QtCore>
 #include <QSettings>
 
@@ -88,6 +89,10 @@ public:
     static QVariant read(const NewFlight key);
     static void write(const NewFlight key, const QVariant &val);
 
+#if QT_VERSION > QT_VERSION_CHECK(5, 9, 0)
+    static QSettings settings() { return QSettings(); }
+#endif
+
     // [G]: enum class may be making it abit too strict perhaps?
     // a workaround is to use plain enums and have one function takes an int
     // All enums should be unique of course thats easy. See At the end of the file
@@ -112,7 +117,6 @@ public:
     static QString stringOfKey(const Setup key);
     static QString stringOfKey(const UserData key);
 
-    static QSettings settings();
 
 private:
     static QMap<Main, QString> mainMap;

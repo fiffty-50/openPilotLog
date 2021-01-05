@@ -1,5 +1,6 @@
 #include "astyle.h"
 #include <QStyle>
+#include <QtGlobal>
 #include <QStyleFactory>
 #include <QApplication>
 #include "src/testing/adebug.h"
@@ -7,7 +8,17 @@
 
 // this was throwing hundreds of warnings on 5.9.5, fusion is a good default for all platforms, let's
 // stick with that for now.
+// [G]: Ensure QStringLiteral is in version
+#if QT_VERSION > QT_VERSION_CHECK(5, 9, 0)  // we can set macros like STABLE_QT or smth for readability of course
+#ifdef __linux__
+const QString AStyle::defaultStyle = QStringLiteral("fusion");
+#elif
+￼const QString AStyle::defaultStyle = QStringLiteral("Windows");
+#endif
+#elif
 const QString AStyle::defaultStyle = QStringLiteral("Fusion");
+#endif
+
 
 const QString AStyle::defaultStyleSheet = QStringLiteral("");
 
