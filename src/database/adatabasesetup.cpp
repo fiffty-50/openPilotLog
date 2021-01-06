@@ -302,7 +302,11 @@ bool ADataBaseSetup::backupOldData()
         return true;
     }
 
-    auto date_string = QDateTime::currentDateTime().toString("yyyy_MM_dd_T_hh_mm");
+    auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+#if defined(_WIN32) || defined(_WIN64)
+    date_string.replace(':', '-');
+#endif
+    DEB << date_string;
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() % "_bak_" % date_string + ".db";
     auto file = QFile(aDB->databaseFile.absoluteFilePath());

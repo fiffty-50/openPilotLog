@@ -29,6 +29,7 @@ const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiff
  * the application is first launched. It creates the database in the specified default
  * location and creates all required tables and views. It can also be used to reset the
  * database currently used
+ * \todo Convert to namespace (no data encapsulated so reason to bloat memory.
  */
 class ADataBaseSetup
 {
