@@ -1,8 +1,11 @@
 #ifndef ACALC_H
 #define ACALC_H
 
+#if _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <QDateTime>
-#define _USE_MATH_DEFINES // needed for MSVC
 #include <cmath>
 #include <QDebug>
 /*!
