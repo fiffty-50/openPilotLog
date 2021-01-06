@@ -302,12 +302,12 @@ bool ADataBaseSetup::backupOldData()
         return true;
     }
 
-    auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+    auto date_string = QDateTime::currentDateTime().toString("yyyy_MM_dd_T_hh_mm");
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
-    auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
+    auto backup_name = database_file.baseName() % "_bak_" % date_string + ".db";
     auto file = QFile(aDB->databaseFile.absoluteFilePath());
 
-    if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
+    if (!file.rename(backup_dir.absolutePath() % '/' % backup_name)) {
         DEB << "Unable to backup old database.";
         return false;
     }
@@ -398,7 +398,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
 
     if (!errors.isEmpty()) {
         DEB_SRC << "The following errors have ocurred: ";
-        for (const auto& error : errors) {
+        for (const auto& error : qAsConst(errors)) {
             DEB_RAW << error;
         }
         return false;
