@@ -2,6 +2,7 @@
 #define ACALC_H
 
 #include <QDateTime>
+#define _USE_MATH_DEFINES // needed for MSVC
 #include <cmath>
 #include <QDebug>
 /*!
