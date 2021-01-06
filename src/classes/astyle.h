@@ -13,9 +13,9 @@ class AStyle
 {
 public:
     enum StyleSheet{
-        Dark = 0,
+        Default = 0,  // Nothing read from config file produces .UInt() == 0
+        Dark,
         Light,
-        Default,
     };
 private:
     static QString currentStyle;
