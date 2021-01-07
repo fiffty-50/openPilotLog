@@ -18,6 +18,7 @@
 #include "newtaildialog.h"
 #include "ui_newtail.h"
 #include "src/testing/adebug.h"
+#include "src/oplconstants.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
     "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
@@ -127,10 +128,10 @@ void NewTailDialog::fillForm(AEntry entry, bool is_template)
         le->setText(data.value(key).toString());
     }
 
-    ui->operationComboBox->setCurrentIndex(data.value(DB_TAILS_MULTIPILOT).toInt() + 1);
-    ui->ppNumberComboBox ->setCurrentIndex(data.value(DB_TAILS_MULTIENGINE).toInt() + 1);
-    ui->ppTypeComboBox->setCurrentIndex(data.value(DB_TAILS_ENGINETYPE).toInt() + 1);
-    ui->weightComboBox->setCurrentIndex(data.value(DB_TAILS_WEIGHTCLASS).toInt() + 1);
+    ui->operationComboBox->setCurrentIndex(data.value(opl::db::TAILS_MULTIPILOT).toInt() + 1);
+    ui->ppNumberComboBox ->setCurrentIndex(data.value(opl::db::TAILS_MULTIENGINE).toInt() + 1);
+    ui->ppTypeComboBox->setCurrentIndex(data.value(opl::db::TAILS_ENGINETYPE).toInt() + 1);
+    ui->weightComboBox->setCurrentIndex(data.value(opl::db::TAILS_WEIGHTCLASS).toInt() + 1);
 }
 
 /*!
@@ -193,16 +194,16 @@ void NewTailDialog::submitForm()
     }
 
     if (ui->operationComboBox->currentIndex() != 0) { // bool Multipilot
-        new_data.insert(DB_TAILS_MULTIPILOT, ui->operationComboBox->currentIndex() - 1);
+        new_data.insert(opl::db::TAILS_MULTIPILOT, ui->operationComboBox->currentIndex() - 1);
     }
     if (ui->ppNumberComboBox->currentIndex() != 0) { // bool MultiEngine
-        new_data.insert(DB_TAILS_MULTIENGINE, ui->ppNumberComboBox->currentIndex() - 1);
+        new_data.insert(opl::db::TAILS_MULTIENGINE, ui->ppNumberComboBox->currentIndex() - 1);
     }
     if (ui->ppTypeComboBox->currentIndex() != 0) { // int 0=unpowered,....4=jet
-        new_data.insert(DB_TAILS_ENGINETYPE, ui->ppTypeComboBox->currentIndex() - 1);
+        new_data.insert(opl::db::TAILS_ENGINETYPE, ui->ppTypeComboBox->currentIndex() - 1);
     }
     if (ui->weightComboBox->currentIndex() != 0) { // int 0=light...3=super
-        new_data.insert(DB_TAILS_WEIGHTCLASS, ui->weightComboBox->currentIndex() - 1);
+        new_data.insert(opl::db::TAILS_WEIGHTCLASS, ui->weightComboBox->currentIndex() - 1);
     }
 
     //create db object

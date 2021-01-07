@@ -16,13 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "apilotentry.h"
+#include "src/oplconstants.h"
 
 APilotEntry::APilotEntry()
     : AEntry::AEntry(DEFAULT_PILOT_POSITION)
 {}
 
 APilotEntry::APilotEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_PILOTS, row_id))
+    : AEntry::AEntry(DataPosition(opl::db::TABLE_PILOTS, row_id))
 {}
 
 APilotEntry::APilotEntry(RowData table_data)
@@ -32,8 +33,8 @@ APilotEntry::APilotEntry(RowData table_data)
 const QString APilotEntry::name()
 {
     if (tableData.isEmpty())
-        return DB_NULL;
+        return QString();
 
-    return tableData.value(DB_PILOTS_LASTNAME).toString() + ','
-           +tableData.value(DB_PILOTS_FIRSTNAME).toString().left(1) + '.';
+    return tableData.value(opl::db::PILOTS_LASTNAME).toString() + ','
+           +tableData.value(opl::db::PILOTS_FIRSTNAME).toString().left(1) + '.';
 }

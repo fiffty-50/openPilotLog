@@ -7,6 +7,7 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
+#include "src/oplconstants.h"
 #include <QErrorMessage>
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
@@ -99,12 +100,12 @@ bool FirstRunDialog::finish()
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
-    data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
+    data.insert(opl::db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(opl::db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(opl::db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(opl::db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(opl::db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(opl::db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."

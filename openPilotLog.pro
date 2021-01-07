@@ -78,6 +78,7 @@ HEADERS += \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
     src/gui/widgets/totalswidget.h \
+    src/oplconstants.h \
     src/testing/abenchmark.h \
     src/testing/adebug.h \
     src/testing/atimer.h

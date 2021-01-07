@@ -16,13 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aaircraftentry.h"
+#include "src/oplconstants.h"
 
 AAircraftEntry::AAircraftEntry()
     : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
 {}
 
 AAircraftEntry::AAircraftEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_AIRCRAFT, row_id))
+    : AEntry::AEntry(DataPosition(opl::db::TABLE_AIRCRAFT, row_id))
 {}
 
 AAircraftEntry::AAircraftEntry(RowData table_data)

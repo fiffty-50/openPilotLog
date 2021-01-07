@@ -21,6 +21,7 @@
 #include "src/functions/areadcsv.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
+#include "src/oplconstants.h"
 
 // Statements for creation of database tables, Revision 15
 
@@ -302,12 +303,12 @@ bool ADataBaseSetup::backupOldData()
         return true;
     }
 
-    auto date_string = QDateTime::currentDateTime().toString("yyyy_MM_dd_T_hh_mm");
+    auto date_string = QDateTime::currentDateTime().toString(opl::datetime::DATETIME_BACKUP_FORMAT);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
-    auto backup_name = database_file.baseName() % "_bak_" % date_string + ".db";
+    auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
     auto file = QFile(aDB->databaseFile.absoluteFilePath());
 
-    if (!file.rename(backup_dir.absolutePath() % '/' % backup_name)) {
+    if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
         DEB << "Unable to backup old database.";
         return false;
     }
