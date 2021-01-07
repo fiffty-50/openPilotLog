@@ -292,7 +292,7 @@ void NewFlightDialog::setupSignalsAndSlots()
                              this, &NewFlightDialog::onTimeLineEdit_editingFinished);
         }
     }
-    for (const auto &line_edit : mandatoryLineEdits) {
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits)) {
         if(line_edit->objectName().contains("doft"))
             break;
         QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::highlighted),
@@ -390,7 +390,7 @@ void NewFlightDialog::fillDeductibleData()
     //Calculate block time
     auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT);
     auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT);
-    QString block_time = ACalc::blocktime(tofb, tonb).toString(opl::datetime::TIME_DEFAULT_FORMAT);
+    QString block_time = ACalc::blocktime(tofb, tonb).toString(opl::datetime::FLIGHT_TIME_DEFAULT_FORMAT);
     QString block_minutes = QString::number(ACalc::stringToMinutes(block_time));
     ui->tblkTimeLineEdit->setText(block_time);
     // get acft data and fill deductible entries
@@ -486,7 +486,7 @@ RowData NewFlightDialog::collectInput()
     //Block Time
     const auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT);
     const auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT);
-    const QString block_time = ACalc::blocktime(tofb, tonb).toString(opl::datetime::TIME_DEFAULT_FORMAT);
+    const QString block_time = ACalc::blocktime(tofb, tonb).toString(opl::datetime::FLIGHT_TIME_DEFAULT_FORMAT);
     const int block_minutes = ACalc::stringToMinutes(block_time);
 
     newData.insert(opl::db::FLIGHTS_TBLK, block_minutes);
@@ -636,7 +636,7 @@ void NewFlightDialog::formFiller()
 
     for (const auto& data_key : flightEntry.getData().keys()) {
         auto rx = QRegularExpression(data_key + "LineEdit");//acftLineEdit
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -648,7 +648,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + "Loc\\w+?");
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -660,7 +660,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + "Time\\w+?");
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Time Match found: " << key << " - " << leName);
                 auto line_edits = this->findChild<QLineEdit *>(leName);
@@ -742,7 +742,7 @@ void NewFlightDialog::formFiller()
         ui->AutolandSpinBox->setValue(AL);
     }
 
-    for(const auto& le : mandatoryLineEdits){
+    for(const auto& le : qAsConst(mandatoryLineEdits)){
         emit le->editingFinished();
     }
 }
@@ -758,9 +758,9 @@ bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
         return false;
     }
 
-    auto extra_time = QTime::fromString(time_string,opl::datetime::TIME_DEFAULT_FORMAT);
+    auto extra_time = QTime::fromString(time_string, opl::datetime::TIME_DEFAULT_FORMAT);
     auto block_time = ACalc::blocktime(QTime::fromString(
-                                           ui->tofbTimeLineEdit->text(),opl::datetime::TIME_DEFAULT_FORMAT),
+                                           ui->tofbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT),
                                        QTime::fromString(
                                            ui->tonbTimeLineEdit->text(), opl::datetime::TIME_DEFAULT_FORMAT));
     if (extra_time <= block_time) {
@@ -848,7 +848,7 @@ void NewFlightDialog::on_cancelButton_clicked()
 
 void NewFlightDialog::on_submitButton_clicked()
 {
-    for (const auto &line_edit : mandatoryLineEdits) {
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits)) {
         emit line_edit->editingFinished();
     }
     DEB << "editing finished emitted. good count: " << mandatoryLineEditsGood.count(true);

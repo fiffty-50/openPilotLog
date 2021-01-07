@@ -17,6 +17,7 @@ namespace opl {
 namespace datetime {
 
 static const auto TIME_DEFAULT_FORMAT    = QStringLiteral("hh:mm");
+static const auto FLIGHT_TIME_DEFAULT_FORMAT    = QStringLiteral("hh:mm");
 static const auto DATETIME_BACKUP_FORMAT = QStringLiteral("yyyy_MM_dd_T_hh_mm");
 
 } // namespace opl::datetime
