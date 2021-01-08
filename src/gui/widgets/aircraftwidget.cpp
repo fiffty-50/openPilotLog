@@ -121,7 +121,7 @@ void AircraftWidget::onDeleteUnsuccessful()
     /// the messagebox doesn't grow too tall.
     QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(), ADatabaseTarget::tails);
     QList<AFlightEntry> constrained_flights;
-    for (const auto &row_id : foreign_key_constraints) {
+    for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
@@ -144,7 +144,7 @@ void AircraftWidget::onDeleteUnsuccessful()
 
 void AircraftWidget::on_newAircraftButton_clicked()
 {
-    auto nt = NewTailDialog(QString(), this);
+    NewTailDialog nt(QString(), this);
     connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
     connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
     nt.exec();

@@ -750,7 +750,7 @@ void NewFlightDialog::formFiller()
 bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 {
     if (mandatoryLineEditsGood.count(true) != 7){
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText("Unable to determine total block time.\n"
                             "Please fill out Departure and Arrival Time\n"
                             "before manually editing these times.");
@@ -766,7 +766,7 @@ bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
     if (extra_time <= block_time) {
         return true;
     } else {
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setWindowTitle("Error");
         message_box.setText("The flight time you have entered is longer than the total blocktime:<br><center><b>"
                             + block_time.toString(opl::datetime::TIME_DEFAULT_FORMAT)
@@ -791,7 +791,7 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
     if (reply == QMessageBox::Yes) {
         DEB << "Add new aircraft selected";
         // create and open new aircraft dialog
-        auto na = NewTailDialog(ui->acftLineEdit->text(), this);
+        NewTailDialog na(ui->acftLineEdit->text(), this);
         na.exec();
         // update map and list, set line edit
         tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
@@ -823,7 +823,7 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
     if (reply == QMessageBox::Yes) {
         DEB << "Add new pilot selected";
         // create and open new pilot dialog
-        auto np = NewPilotDialog(this);
+        NewPilotDialog np(this);
         np.exec();
         // update map and list, set line edit
         pilotsIdMap  = aDB->getIdMap(ADatabaseTarget::pilots);
@@ -863,7 +863,7 @@ void NewFlightDialog::on_submitButton_clicked()
         }
         error_message.append("</b></center><br>Please go back and fill in the required data.");
 
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText(error_message);
         message_box.exec();
         return;
@@ -875,7 +875,7 @@ void NewFlightDialog::on_submitButton_clicked()
     flightEntry.setData(newData);
     DEB << "Committing...";
     if (!aDB->commit(flightEntry)) {
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText("The following error has ocurred:\n\n"
                             + aDB->lastError.text()
                             + "\n\nYour entry has not been saved.");
@@ -1245,7 +1245,7 @@ void NewFlightDialog::on_IfrCheckBox_stateChanged(int)
 void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
     if (!(mandatoryLineEditsGood.count(true) == 7) && ui->manualEditingCheckBox->isChecked()) {
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText("Before editing times manually, please fill out the required fields in the flight data tab,"
                             " so that total time can be calculated.");
         message_box.exec();

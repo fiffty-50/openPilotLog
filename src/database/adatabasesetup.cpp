@@ -306,7 +306,7 @@ bool ADataBaseSetup::backupOldData()
     auto date_string = QDateTime::currentDateTime().toString(opl::datetime::DATETIME_BACKUP_FORMAT);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
-    auto file = QFile(aDB->databaseFile.absoluteFilePath());
+    QFile file(aDB->databaseFile.absoluteFilePath());
 
     if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
         DEB << "Unable to backup old database.";

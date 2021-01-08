@@ -293,7 +293,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 
 void SettingsWidget::on_aboutPushButton_clicked()
 {
-    auto message_box = QMessageBox(this);
+    QMessageBox message_box(this);
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 

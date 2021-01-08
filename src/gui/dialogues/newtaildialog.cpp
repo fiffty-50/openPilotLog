@@ -210,7 +210,7 @@ void NewTailDialog::submitForm()
 
     entry.setData(new_data);
     if (!aDB->commit(entry)) {
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText("The following error has ocurred:\n\n"
                             + aDB->lastError.text()
                             + "\n\nThe entry has not been saved.");
@@ -257,9 +257,9 @@ void NewTailDialog::on_buttonBox_accepted()
 {
     DEB << "Button Box Accepted.";
     if (ui->registrationLineEdit->text().isEmpty()) {
-        auto nope = QMessageBox(this);
-        nope.setText("Registration cannot be empty.");
-        nope.exec();
+        QMessageBox message_box(this);
+        message_box.setText("Registration cannot be empty.");
+        message_box.exec();
         return;
     }
 

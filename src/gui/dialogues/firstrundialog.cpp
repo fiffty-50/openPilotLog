@@ -107,7 +107,7 @@ bool FirstRunDialog::finish()
     data.insert(opl::db::PILOTS_PHONE, ui->phoneLineEdit->text());
     data.insert(opl::db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
-    auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
+    QMessageBox db_fail_msg_box(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."
                                                       "Without a working database The application will not be usable."));
     if (!setupDatabase()) {
@@ -128,7 +128,7 @@ bool FirstRunDialog::finish()
 
 bool FirstRunDialog::setupDatabase()
 {
-    auto confirm = QMessageBox(QMessageBox::Question, QStringLiteral("Create Database"),
+    QMessageBox confirm(QMessageBox::Question, QStringLiteral("Create Database"),
                                QStringLiteral("We are now going to create the database.<br>"  // [G]: Why both <br> and \n ?
                                               "Would you like to download the latest database information?"
                                               "<br>(Recommended, Internet connection required)"),
@@ -155,7 +155,7 @@ bool FirstRunDialog::setupDatabase()
 
 void FirstRunDialog::reject()
 {
-    auto confirm = QMessageBox(QMessageBox::Critical,
+    QMessageBox confirm(QMessageBox::Critical,
                                QStringLiteral("Setup incomplete"),
                                QStringLiteral("Without completing the initial setup"
                                               " you cannot use the application.<br><br>"

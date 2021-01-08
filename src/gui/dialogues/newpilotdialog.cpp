@@ -153,7 +153,7 @@ void NewPilotDialog::submitForm()
     DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     DEB << "Pilot entry data: " << pilotEntry.getData();
     if (!aDB->commit(pilotEntry)) {
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         message_box.setText("The following error has ocurred:\n\n"
                             + aDB->lastError.text()
                             + "\n\nThe entry has not been saved.");
