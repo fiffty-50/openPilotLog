@@ -396,8 +396,8 @@ void NewFlightDialog::fillDeductibleData()
     for(const auto& widget : LE) {widget->setText(EMPTY_STRING);}
     for(const auto& widget : LB) {widget->setText(opl::db::NULL_TIME_hhmm);}
     //Calculate block time
-    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text(), opl::time::Default);
-    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text(), opl::time::Default);
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
     const auto tblk = ATime::blocktime(tofb, tonb);
     const auto block_time_string = ATime::toString(tblk, flightTimeFormat);
     const auto block_minutes = ATime::toMinutes(tblk);
@@ -435,7 +435,7 @@ void NewFlightDialog::fillDeductibleData()
     }
     // Night
     auto dept_date = ui->doftLineEdit->text() + 'T'
-            + ATime::toString(tofb, opl::time::Default);
+            + ATime::toString(tofb);
     auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
     auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
@@ -485,8 +485,8 @@ RowData NewFlightDialog::collectInput()
     RowData newData;
     DEB << "Collecting Input...";
     //Block Time
-    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text(), opl::time::Default);
-    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text(), opl::time::Default);
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
     const auto tblk = ATime::blocktime(tofb, tonb);
     const auto block_minutes = ATime::toMinutes(tblk);
     // Mandatory data
@@ -525,7 +525,7 @@ RowData NewFlightDialog::collectInput()
     }
     // Night
     const auto dept_date = ui->doftLineEdit->text() + 'T'
-            + ATime::toString(tofb, opl::time::Default);
+            + ATime::toString(tofb);
     const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
     const auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
@@ -607,7 +607,7 @@ RowData NewFlightDialog::collectInput()
             newData.insert(opl::db::FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
         } else { //check
             const auto dest_date = ui->doftLineEdit->text() + 'T'
-                    + ATime::toString(tonb, opl::time::Default);
+                    + ATime::toString(tonb);
             const auto dest_date_time = QDateTime::fromString(dest_date, QStringLiteral("yyyy-MM-ddThh:mm"));
             if (ACalc::isNight(ui->destLocLineEdit->text(), dest_date_time,  night_angle)) {
                 newData.insert(opl::db::FLIGHTS_LDGDAY, 0);
@@ -1123,7 +1123,7 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
     DEB << line_edit->objectName() << "Editing Finished -" << line_edit->text();
 
     line_edit->setText(ATime::formatTimeInput(line_edit->text()));
-    const auto time = ATime::fromString(line_edit->text(), opl::time::Default);
+    const auto time = ATime::fromString(line_edit->text());
     if(time.isValid()){
         if(primaryTimeLineEdits.contains(line_edit)) {
             onGoodInputReceived(line_edit);

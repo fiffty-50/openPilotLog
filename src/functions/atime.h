@@ -11,7 +11,7 @@ namespace ATime {
 /*!
  * \brief Converts a QTime to a String to be used in the UI
  */
-inline const QString toString(const QTime &time, opl::time::FlightTimeFormat format)
+inline const QString toString(const QTime &time, opl::time::FlightTimeFormat format = opl::time::Default)
 {
     switch (format) {
     case opl::time::Default:
@@ -28,7 +28,7 @@ inline const QString toString(const QTime &time, opl::time::FlightTimeFormat for
 /*!
  * \brief Converts an integer of minutes as received from the Datbase to a String
  */
-inline const QString toString(int minutes_in, opl::time::FlightTimeFormat format)
+inline const QString toString(int minutes_in, opl::time::FlightTimeFormat format = opl::time::Default)
 {
     switch (format) {
     case opl::time::Default:
@@ -69,7 +69,7 @@ inline QTime fromMinutes(int total_minutes)
     return QTime(hour, minute, 0);
 }
 
-inline const QTime fromString(QString time_string, opl::time::FlightTimeFormat format)
+inline const QTime fromString(QString time_string, opl::time::FlightTimeFormat format = opl::time::Default)
 {
     switch (format) {
     case opl::time::Default:
@@ -88,7 +88,7 @@ inline const QTime fromString(QString time_string, opl::time::FlightTimeFormat f
     }
 }
 
-inline const QTime fromString(const char* time_string, opl::time::FlightTimeFormat format)
+inline const QTime fromString(const char* time_string, opl::time::FlightTimeFormat format = opl::time::Default)
 {
     switch (format) {
     case opl::time::Default:
