@@ -24,7 +24,6 @@
 #include "src/database/adatabase.h"
 #include "src/oplconstants.h"
 
-
 #include "src/testing/adebug.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +172,12 @@ void NewFlightDialog::readSettings()
     ui->FlightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
     ui->calendarCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PopupCalendar).toBool());
 
-    flightTimeFormat = opl::time::Default; // No support for Decimal Time implemented yet.
+    // Debug
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, opl::time::Default);
+    //[F]: Support for Decimal Logging is not implemented yet.
+    flightTimeFormat = static_cast<opl::time::FlightTimeFormat>(
+                ASettings::read(ASettings::FlightLogging::FlightTimeFormat).toInt());
+
 
 }
 

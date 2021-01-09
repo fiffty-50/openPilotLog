@@ -19,7 +19,6 @@
 #define AFLIGHTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/functions/acalc.h"
 
 class AFlightEntry : public AEntry {
 public:

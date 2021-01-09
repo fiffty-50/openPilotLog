@@ -22,12 +22,9 @@ namespace ACalc {
  * \param tonb QTime Time On Blocks
  * \return Block Time in minutes
  */
+QT_DEPRECATED
 inline QTime blocktime(QTime tofb, QTime tonb)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
-
     QTime blocktime_out(0, 0); // initialise return value at midnight
 
     if (tonb > tofb) { // landing same day
@@ -47,11 +44,9 @@ inline QTime blocktime(QTime tofb, QTime tonb)
  * \param blockminutes from database
  * \return String hh:mm
  */
+QT_DEPRECATED
 inline QString minutesToString(QString block_minutes)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
     int minutes = block_minutes.toInt();
     QString hour = QString::number(minutes / 60);
     if (hour.size() < 2) {
@@ -65,11 +60,9 @@ inline QString minutesToString(QString block_minutes)
     return block_time;
 };
 
+QT_DEPRECATED
 inline QString minutesToString(int block_minutes)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
     QString hour = QString::number(block_minutes / 60);
     if (hour.size() < 2) {
         hour.prepend("0");
@@ -87,11 +80,9 @@ inline QString minutesToString(int block_minutes)
  * \param time QTime
  * \return int time as number of minutes
  */
+QT_DEPRECATED
 inline int QTimeToMinutes(QTime time)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
     QString timestring = time.toString("hh:mm");
     int minutes = (timestring.left(2).toInt()) * 60;
     minutes += timestring.right(2).toInt();
@@ -103,11 +94,9 @@ inline int QTimeToMinutes(QTime time)
  * \param timestring "hh:mm"
  * \return String number of minutes
  */
+QT_DEPRECATED
 inline int stringToMinutes(QString timestring)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
     int minutes = (timestring.left(2).toInt()) * 60;
     minutes += timestring.right(2).toInt();
     timestring = QString::number(minutes);

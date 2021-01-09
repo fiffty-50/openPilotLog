@@ -58,6 +58,7 @@ public:
         PilotFlying,
         NightAngle,
         Rules,
+        FlightTimeFormat
     };
 
     enum class NewFlight {

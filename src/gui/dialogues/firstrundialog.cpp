@@ -97,6 +97,7 @@ bool FirstRunDialog::finish()
     ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
     ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, opl::time::Default);
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());

@@ -15,7 +15,8 @@ inline const QString toString (const QDateTime date_time, opl::datetime::DateTim
         return date_time.toString(Qt::ISODate);
     case opl::datetime::Backup:
         return date_time.toString(QStringLiteral("yyyy_MM_dd_T_hh_mm"));
-        break;
+    default:
+        return QString();
     }
 }
 

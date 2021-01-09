@@ -12,12 +12,10 @@ using namespace ACalc;
  * input as hh:mm, h:mm, hhmm or hmm.
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
- *
+ */
+QT_DEPRECATED
 QString ACalc::formatTimeInput(QString user_input)
 {
-    DEB << "#######################################";
-    DEB << "# WARNING: USE OF DEPRECATED FUNCTION #";
-    DEB << "#######################################";
     QString output; //
     QTime temp_time; //empty time object is invalid by default
 
@@ -42,7 +40,7 @@ QString ACalc::formatTimeInput(QString user_input)
         DEB << "Time input is invalid.";
     }
     return output;
-}*/
+}
 
 /*!
  * The purpose of the following functions is to provide functionality enabling the Calculation of

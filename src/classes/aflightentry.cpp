@@ -18,6 +18,8 @@
 #include "aflightentry.h"
 #include "src/database/adatabase.h"
 #include "src/oplconstants.h"
+#include "src/functions/atime.h"
+#include "src/classes/asettings.h"
 
 AFlightEntry::AFlightEntry()
     : AEntry::AEntry(DEFAULT_FLIGHT_POSITION)
@@ -37,11 +39,18 @@ const QString AFlightEntry::summary()
         return QString();
 
     QString flight_summary;
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DOFT).toString() + " ");
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEPT).toString() + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value(opl::db::FLIGHTS_TOFB).toString()) + " ");
-    flight_summary.append(ACalc::minutesToString(tableData.value(opl::db::FLIGHTS_TONB).toString()) + " ");
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEST).toString() + " ");
+    auto space = QStringLiteral(" ");
+    flight_summary.append(tableData.value(opl::db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::minutesToString(
+                              tableData.value(opl::db::FLIGHTS_TOFB).toInt(),
+                              opl::time::Default)
+                          + space);
+    flight_summary.append(ATime::minutesToString(
+                              tableData.value(opl::db::FLIGHTS_TONB).toInt(),
+                              opl::time::Default)
+                          + space);
+    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEST).toString());
 
     return flight_summary;
 }

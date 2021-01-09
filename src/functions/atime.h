@@ -8,6 +8,9 @@
 
 namespace ATime {
 
+/*!
+ * \brief Converts a QTime to a String to be used in the UI
+ */
 inline const QString toString(const QTime &time, opl::time::FlightTimeFormat format)
 {
     switch (format) {
@@ -20,6 +23,37 @@ inline const QString toString(const QTime &time, opl::time::FlightTimeFormat for
     default:
         return QString();
     }
+}
+
+/*!
+ * \brief Converts an integer of minutes as received from the Datbase to a String
+ */
+inline const QString minutesToString(int minutes_in, opl::time::FlightTimeFormat format)
+{
+    DEB << "Hallo";
+    switch (format) {
+    case opl::time::Default:
+    {
+        QString hour = QString::number(minutes_in / 60);
+        if (hour.size() < 2) {
+            hour.prepend(QStringLiteral("0"));
+        }
+        QString minute = QString::number(minutes_in % 60);
+        if (minute.size() < 2) {
+            minute.prepend(QStringLiteral("0"));
+        }
+        return hour + ':' + minute;
+    }
+    case opl::time::Decimal:
+    {
+        int hour = minutes_in / 60;
+        double minute = (minutes_in % 60) / 60.0;
+        return QString::number(hour+minute);
+    }
+    default:
+        return QString();
+    }
+
 }
 
 inline double toDecimalHours(const QTime &time){
