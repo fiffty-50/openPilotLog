@@ -18,7 +18,7 @@ inline const QString toString(const QTime &time, opl::time::FlightTimeFormat for
         return time.toString(QStringLiteral("hh:mm"));
         break;
     case opl::time::Decimal:
-        return QString::asprintf("%.2f", (time.hour() * 60 + time.minute() )/60.0);
+        return QString::number(((time.hour() * 60 + time.minute() )/60.0), 'f', 2);
         break;
     default:
         return QString();
@@ -47,7 +47,7 @@ inline const QString toString(int minutes_in, opl::time::FlightTimeFormat format
     {
         int hour = minutes_in / 60;
         double minute = (minutes_in % 60) / 60.0;
-        return QString::asprintf("%.2f", (hour+minute));
+        return QString::number((hour + minute), 'f', 2);
     }
     default:
         return QString();
