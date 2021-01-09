@@ -4,21 +4,36 @@
 #include <QtCore>
 
 /*!
- *  A namespace to collect constants used throughout the application.
+ *  \brief A namespace to collect constants and enums used throughout the application.
+ *
+ *  \details The opl namespace collects enums and constants that are used throughout
+ *  the application and provide uniform access.
+ *
+ *  The date, time and datetime namespaces include enums used to differentiate
+ *  date and time formats for QDate, QTime and QDateTime that deviate from standard values
+ *  included in the Qt Framework like Qt::ISODate and are to be used in conjunction with the
+ *  .toString() members of these classes.
+ *
+ *  The db namespace contains constants for programatically accessing the database in a fast
+ *  and uniform manner.
  */
 namespace opl {
 
-/*!
- * The datetime namespace specifies date and time formats by QDate, QTime
- * and QDateTime that deviate from standard values included in the Qt Framework
- * like Qt::ISODate and are to be used in conjunction with the .toString() members
- * of these classes
- */
+namespace date {
+
+enum DateFormat {Default, Text};
+
+} // namespace opl::date
+
+namespace time {
+
+enum FlightTimeFormat {Default, Decimal};
+
+} // namespace opl::time
+
 namespace datetime {
 
-static const auto TIME_DEFAULT_FORMAT    = QStringLiteral("hh:mm");
-static const auto FLIGHT_TIME_DEFAULT_FORMAT    = QStringLiteral("hh:mm");
-static const auto DATETIME_BACKUP_FORMAT = QStringLiteral("yyyy_MM_dd_T_hh_mm");
+enum DateTimeFormat {Default, Backup};
 
 } // namespace opl::datetime
 

@@ -5,6 +5,7 @@
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
 #include <QtGlobal>
+#include "src/functions/atime.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -166,6 +167,12 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     // space for debugging
+    QTime test(1,15,0);
+
+    DEB << "Qtime: " << test.toString(QStringLiteral("hh:mm"));
+
+    DEB << "ATime from String: " << ATime::fromString("12:45",opl::time::Default);
+    DEB << "ATime from String: " << ATime::fromString("12.75", opl::time::Decimal);
 }
 
 /* //Comparing two functions template

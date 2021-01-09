@@ -22,6 +22,7 @@
 #include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
 #include "src/oplconstants.h"
+#include "src/functions/adatetime.h"
 
 // Statements for creation of database tables, Revision 15
 
@@ -303,7 +304,8 @@ bool ADataBaseSetup::backupOldData()
         return true;
     }
 
-    auto date_string = QDateTime::currentDateTime().toString(opl::datetime::DATETIME_BACKUP_FORMAT);
+    auto date_string = ADateTime::toString(QDateTime::currentDateTime(),
+                                           opl::datetime::Backup);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
     QFile file(aDB->databaseFile.absoluteFilePath());

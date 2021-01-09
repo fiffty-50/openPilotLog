@@ -790,7 +790,8 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <family>DejaVu Sans</family>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -799,7 +800,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: rgb(237, 212, 0);</string>
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -837,30 +838,6 @@
         <widget class="QLabel" name="picCompanyLabel">
          <property name="text">
           <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="submissionReadyTextLabel">
-         <property name="text">
-          <string>Status:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="4">
-        <widget class="QLabel" name="submissonReadyLabel">
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(237, 212, 0);</string>
-         </property>
-         <property name="text">
-          <string>INCOMPLETE</string>
          </property>
         </widget>
        </item>
@@ -920,8 +897,6 @@
       <zorder>placeLabel1</zorder>
       <zorder>calendarCheckBox</zorder>
       <zorder>picCompanyLabel</zorder>
-      <zorder>submissionReadyTextLabel</zorder>
-      <zorder>submissonReadyLabel</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">

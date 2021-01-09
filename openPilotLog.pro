@@ -65,8 +65,10 @@ HEADERS += \
     src/database/adatabasesetup.h \
     src/database/declarations.h \
     src/functions/acalc.h \
+    src/functions/adatetime.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
+    src/functions/atime.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \
