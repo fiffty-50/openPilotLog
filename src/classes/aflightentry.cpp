@@ -42,11 +42,11 @@ const QString AFlightEntry::summary()
     auto space = QStringLiteral(" ");
     flight_summary.append(tableData.value(opl::db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(opl::db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::minutesToString(
+    flight_summary.append(ATime::toString(
                               tableData.value(opl::db::FLIGHTS_TOFB).toInt(),
                               opl::time::Default)
                           + space);
-    flight_summary.append(ATime::minutesToString(
+    flight_summary.append(ATime::toString(
                               tableData.value(opl::db::FLIGHTS_TONB).toInt(),
                               opl::time::Default)
                           + space);

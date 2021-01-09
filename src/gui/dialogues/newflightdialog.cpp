@@ -676,8 +676,8 @@ void NewFlightDialog::formFiller()
                 //DEB << "Time Match found: " << key << " - " << leName);
                 auto line_edits = this->findChild<QLineEdit *>(leName);
                 if(line_edits != nullptr){
-                    DEB << "Setting " << line_edits->objectName() << " to " << minutesToString(flightEntry.getData().value(data_key).toInt(), flightTimeFormat);
-                    line_edits->setText(minutesToString(flightEntry.getData().value(data_key).toInt(),
+                    DEB << "Setting " << line_edits->objectName() << " to " << ATime::toString(flightEntry.getData().value(data_key).toInt(), flightTimeFormat);
+                    line_edits->setText(ATime::toString(flightEntry.getData().value(data_key).toInt(),
                                                         flightTimeFormat));
                     line_edits_names.removeOne(leName);
                 }

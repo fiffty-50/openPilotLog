@@ -28,9 +28,8 @@ inline const QString toString(const QTime &time, opl::time::FlightTimeFormat for
 /*!
  * \brief Converts an integer of minutes as received from the Datbase to a String
  */
-inline const QString minutesToString(int minutes_in, opl::time::FlightTimeFormat format)
+inline const QString toString(int minutes_in, opl::time::FlightTimeFormat format)
 {
-    DEB << "Hallo";
     switch (format) {
     case opl::time::Default:
     {
@@ -48,7 +47,7 @@ inline const QString minutesToString(int minutes_in, opl::time::FlightTimeFormat
     {
         int hour = minutes_in / 60;
         double minute = (minutes_in % 60) / 60.0;
-        return QString::number(hour+minute);
+        return QString::asprintf("%.2f", (hour+minute));
     }
     default:
         return QString();

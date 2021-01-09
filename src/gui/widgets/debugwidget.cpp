@@ -167,6 +167,9 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     // debug space
+    int mins = 125;
+    DEB << ATime::toString(mins, opl::time::Decimal);
+    DEB << ATime::toString(mins, opl::time::Default);
 }
 
 /* //Comparing two functions template
