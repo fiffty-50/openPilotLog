@@ -7,6 +7,7 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
+#include "src/oplconstants.h"
 #include <QErrorMessage>
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
@@ -18,6 +19,10 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->lastnameLineEdit->setFocus();
     ui->previousPushButton->setEnabled(false);
     ui->nightComboBox->setCurrentIndex(1);
+
+    for (const auto &approach : Opl::ApproachTypes){
+        ui->approachComboBox->addItem(approach);
+    }
 
 //    auto *themeGroup = new QButtonGroup;
 //    themeGroup->addButton(ui->systemThemeCheckBox, 0);
@@ -96,17 +101,18 @@ bool FirstRunDialog::finish()
     ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
     ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
-    data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
+    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
-    auto db_fail_msg_box = QMessageBox(QMessageBox::Critical, QStringLiteral("Database setup failed"),
+    QMessageBox db_fail_msg_box(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."
                                                       "Without a working database The application will not be usable."));
     if (!setupDatabase()) {
@@ -127,7 +133,7 @@ bool FirstRunDialog::finish()
 
 bool FirstRunDialog::setupDatabase()
 {
-    auto confirm = QMessageBox(QMessageBox::Question, QStringLiteral("Create Database"),
+    QMessageBox confirm(QMessageBox::Question, QStringLiteral("Create Database"),
                                QStringLiteral("We are now going to create the database.<br>"  // [G]: Why both <br> and \n ?
                                               "Would you like to download the latest database information?"
                                               "<br>(Recommended, Internet connection required)"),
@@ -154,7 +160,7 @@ bool FirstRunDialog::setupDatabase()
 
 void FirstRunDialog::reject()
 {
-    auto confirm = QMessageBox(QMessageBox::Critical,
+    QMessageBox confirm(QMessageBox::Critical,
                                QStringLiteral("Setup incomplete"),
                                QStringLiteral("Without completing the initial setup"
                                               " you cannot use the application.<br><br>"

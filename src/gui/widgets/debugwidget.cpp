@@ -4,7 +4,9 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/dialogues/firstrundialog.h"
 #include <QtGlobal>
+#include "src/functions/atime.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -165,7 +167,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    // space for debugging
+    // debug space
 }
 
 /* //Comparing two functions template

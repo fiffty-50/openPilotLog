@@ -31,7 +31,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout" name="gridLayout_2">
@@ -242,113 +242,7 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QComboBox" name="approachComboBox">
-         <item>
-          <property name="text">
-           <string>VISUAL</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT I</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT II</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT III</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>GLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>MLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LOC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LOC/DME</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (LNAV)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (LNAV/VNAV)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (LPV)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP-AR)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>VOR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>VOR/DME</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NDB</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NDB/DME</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>TACAN</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SRA</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>PAR</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QComboBox" name="approachComboBox"/>
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="nightLabel">

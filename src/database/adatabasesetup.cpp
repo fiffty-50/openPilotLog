@@ -21,6 +21,8 @@
 #include "src/functions/areadcsv.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
+#include "src/oplconstants.h"
+#include "src/functions/adatetime.h"
 
 // Statements for creation of database tables, Revision 15
 
@@ -302,10 +304,11 @@ bool ADataBaseSetup::backupOldData()
         return true;
     }
 
-    auto date_string = QDateTime::currentDateTime().toString(Qt::ISODate);
+    auto date_string = ADateTime::toString(QDateTime::currentDateTime(),
+                                           Opl::Datetime::Backup);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
-    auto file = QFile(aDB->databaseFile.absoluteFilePath());
+    QFile file(aDB->databaseFile.absoluteFilePath());
 
     if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
         DEB << "Unable to backup old database.";
@@ -398,7 +401,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
 
     if (!errors.isEmpty()) {
         DEB_SRC << "The following errors have ocurred: ";
-        for (const auto& error : errors) {
+        for (const auto& error : qAsConst(errors)) {
             DEB_RAW << error;
         }
         return false;

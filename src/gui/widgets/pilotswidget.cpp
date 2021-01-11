@@ -151,7 +151,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
 
     } else if (selectedPilots.length() == 1) {
         auto entry = aDB->getPilotEntry(selectedPilots.first());
-        auto message_box = QMessageBox(this);
+        QMessageBox message_box(this);
         QString message = "You are deleting the following pilot:<br><br><b><tt>";
         message.append(entry.name());
         message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));

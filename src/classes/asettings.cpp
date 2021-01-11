@@ -48,6 +48,7 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
     {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
     {FlightLogging::Rules,              QStringLiteral("rules")},
+    {FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")}
 };
 
 QMap<ASettings::Setup, QString> ASettings::setupMap = {

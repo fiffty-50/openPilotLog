@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -790,7 +790,8 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <family>DejaVu Sans</family>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -799,7 +800,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: rgb(237, 212, 0);</string>
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -837,30 +838,6 @@
         <widget class="QLabel" name="picCompanyLabel">
          <property name="text">
           <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="submissionReadyTextLabel">
-         <property name="text">
-          <string>Status:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="4">
-        <widget class="QLabel" name="submissonReadyLabel">
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(237, 212, 0);</string>
-         </property>
-         <property name="text">
-          <string>INCOMPLETE</string>
          </property>
         </widget>
        </item>
@@ -920,8 +897,6 @@
       <zorder>placeLabel1</zorder>
       <zorder>calendarCheckBox</zorder>
       <zorder>picCompanyLabel</zorder>
-      <zorder>submissionReadyTextLabel</zorder>
-      <zorder>submissonReadyLabel</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">
@@ -1012,73 +987,8 @@
           </size>
          </property>
          <property name="currentText">
-          <string>ILS CAT I</string>
+          <string/>
          </property>
-         <item>
-          <property name="text">
-           <string>ILS CAT I</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT II</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT III</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Visual</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP AR)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>VOR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NDB</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LOC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>GLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>MLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SRA</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="4">

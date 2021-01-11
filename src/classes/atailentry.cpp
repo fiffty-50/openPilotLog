@@ -16,13 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "atailentry.h"
+#include "src/oplconstants.h"
 
 ATailEntry::ATailEntry()
     : AEntry::AEntry(DEFAULT_TAIL_POSITION)
 {}
 
 ATailEntry::ATailEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_TAILS, row_id))
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, row_id))
 {}
 
 ATailEntry::ATailEntry(RowData table_data)
@@ -31,18 +32,18 @@ ATailEntry::ATailEntry(RowData table_data)
 
 const QString ATailEntry::registration()
 {
-    return getData().value(DB_TAILS_REGISTRATION).toString();
+    return getData().value(Opl::Db::TAILS_REGISTRATION).toString();
 }
 
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!tableData.value(DB_TAILS_MAKE).toString().isEmpty())
-        type_string.append(getData().value(DB_TAILS_MAKE).toString() + ' ');
-    if (!tableData.value(DB_TAILS_MODEL).toString().isEmpty())
-        type_string.append(getData().value(DB_TAILS_MODEL).toString());
-    if (!tableData.value(DB_TAILS_VARIANT).toString().isEmpty())
-        type_string.append('-' + getData().value(DB_TAILS_VARIANT).toString() + ' ');
+    if (!tableData.value(Opl::Db::TAILS_MAKE).toString().isEmpty())
+        type_string.append(getData().value(Opl::Db::TAILS_MAKE).toString() + ' ');
+    if (!tableData.value(Opl::Db::TAILS_MODEL).toString().isEmpty())
+        type_string.append(getData().value(Opl::Db::TAILS_MODEL).toString());
+    if (!tableData.value(Opl::Db::TAILS_VARIANT).toString().isEmpty())
+        type_string.append('-' + getData().value(Opl::Db::TAILS_VARIANT).toString() + ' ');
 
     return type_string;
 }

@@ -18,6 +18,7 @@
 #include "adatabase.h"
 #include "src/testing/adebug.h"
 #include "src/classes/astandardpaths.h"
+#include "src/oplconstants.h"
 
 
 ADatabaseError::ADatabaseError(QString msg_)
@@ -544,13 +545,13 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append(DB_TABLE_PILOTS);
+        statement.append(Opl::Db::TABLE_PILOTS);
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(DB_TABLE_AIRCRAFT);
+        statement.append(Opl::Db::TABLE_AIRCRAFT);
         break;
     case ADatabaseTarget::tails:
-        statement.append(DB_TABLE_TAILS);
+        statement.append(Opl::Db::TABLE_TAILS);
         break;
     default:
         DEB << "Not a valid completer target for this function.";

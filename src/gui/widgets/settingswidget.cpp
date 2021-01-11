@@ -22,7 +22,7 @@
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
-#include "src/database/declarations.h"
+#include "src/oplconstants.h"
 
 #include <QStyleFactory>
 
@@ -54,6 +54,19 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
 
+    setupComboBoxes();
+    setupValidators();
+    readSettings();
+}
+
+
+SettingsWidget::~SettingsWidget()
+{
+    delete ui;
+}
+
+void SettingsWidget::setupComboBoxes(){
+    // Style Combo Box
     auto styles = AStyle::styles;
     auto current_style = AStyle::style();
     ui->styleComboBox->addItem(current_style);
@@ -65,15 +78,10 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     if(ASettings::read(ASettings::Main::StyleSheet).toUInt() == AStyle::Dark)
         ui->darkStyleCheckBox->setCheckState(Qt::Checked);
-
-    readSettings();
-    setupValidators();
-}
-
-
-SettingsWidget::~SettingsWidget()
-{
-    delete ui;
+    // Approach Combo Box
+    for (const auto &approach : Opl::ApproachTypes) {
+        ui->approachComboBox->addItem(approach);
+    }
 }
 
 void SettingsWidget::readSettings()
@@ -84,12 +92,12 @@ void SettingsWidget::readSettings()
     {
         const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
         auto user_data = aDB->getPilotEntry(1).getData();
-        ui->lastnameLineEdit->setText(user_data.value(DB_PILOTS_LASTNAME).toString());
-        ui->firstnameLineEdit->setText(user_data.value(DB_PILOTS_FIRSTNAME).toString());
-        ui->companyLineEdit->setText(user_data.value(DB_PILOTS_COMPANY).toString());
-        ui->employeeidLineEdit->setText(user_data.value(DB_PILOTS_EMPLOYEEID).toString());
-        ui->phoneLineEdit->setText(user_data.value(DB_PILOTS_PHONE).toString());
-        ui->emailLineEdit->setText(user_data.value(DB_PILOTS_EMAIL).toString());
+        ui->lastnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_LASTNAME).toString());
+        ui->firstnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_FIRSTNAME).toString());
+        ui->companyLineEdit->setText(user_data.value(Opl::Db::PILOTS_COMPANY).toString());
+        ui->employeeidLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMPLOYEEID).toString());
+        ui->phoneLineEdit->setText(user_data.value(Opl::Db::PILOTS_PHONE).toString());
+        ui->emailLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMAIL).toString());
     }
 
     /*
@@ -131,10 +139,10 @@ void SettingsWidget::updatePersonalDetails()
     RowData user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        user_data.insert(DB_PILOTS_ALIAS, QStringLiteral("self"));
+        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
         break;
     case 1:
-        user_data.insert(DB_PILOTS_ALIAS,QStringLiteral("SELF"));
+        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
         break;
     case 2:{
         QString name;
@@ -142,18 +150,18 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
-        user_data.insert(DB_PILOTS_ALIAS, name);
+        user_data.insert(Opl::Db::PILOTS_ALIAS, name);
     }
         break;
     default:
         break;
     }
-    user_data.insert(DB_PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    user_data.insert(DB_PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    user_data.insert(DB_PILOTS_COMPANY, ui->companyLineEdit->text());
-    user_data.insert(DB_PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    user_data.insert(DB_PILOTS_PHONE, ui->phoneLineEdit->text());
-    user_data.insert(DB_PILOTS_EMAIL, ui->emailLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    user_data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto user = APilotEntry(1);
     user.setData(user_data);
@@ -293,7 +301,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 
 void SettingsWidget::on_aboutPushButton_clicked()
 {
-    auto message_box = QMessageBox(this);
+    QMessageBox message_box(this);
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 

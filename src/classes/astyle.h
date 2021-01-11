@@ -13,9 +13,9 @@ class AStyle
 {
 public:
     enum StyleSheet{
-        Dark = 0,
-        Light,
-        Default,
+        Default = 0,
+        Dark,
+        Light
     };
 private:
     static QString currentStyle;
