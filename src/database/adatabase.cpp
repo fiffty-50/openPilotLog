@@ -545,13 +545,13 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append(opl::db::TABLE_PILOTS);
+        statement.append(Opl::Db::TABLE_PILOTS);
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(opl::db::TABLE_AIRCRAFT);
+        statement.append(Opl::Db::TABLE_AIRCRAFT);
         break;
     case ADatabaseTarget::tails:
-        statement.append(opl::db::TABLE_TAILS);
+        statement.append(Opl::Db::TABLE_TAILS);
         break;
     default:
         DEB << "Not a valid completer target for this function.";

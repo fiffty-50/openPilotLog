@@ -118,7 +118,7 @@ private:
     QMap<QString, int> airportIataIdMap;
     QMap<QString, int> airportNameIdMap;
 
-    opl::time::FlightTimeFormat flightTimeFormat;
+    Opl::Time::FlightTimeFormat flightTimeFormat;
 
     /*!
      * \brief If the user elects to manually edit function times, automatic updating
@@ -151,7 +151,7 @@ private:
      * \brief converts a time string as used in the UI to an integer of minutes for
      * use in the database based on the format in use in the Dialog
      */
-    inline int stringToMinutes(const QString &time_string, opl::time::FlightTimeFormat format)
+    inline int stringToMinutes(const QString &time_string, Opl::Time::FlightTimeFormat format)
     {
         return ATime::toMinutes(ATime::fromString(time_string, format));
     }
@@ -160,7 +160,7 @@ private:
      * \brief minutesToString converts an integer of minutes as received from the database
      * to a String to be displayed in the UI, based on the format in use in the Dialog.
      */
-    inline QString minutesToString(const int minutes, opl::time::FlightTimeFormat format)
+    inline QString minutesToString(const int minutes, Opl::Time::FlightTimeFormat format)
     {
         return ATime::toString(ATime::fromMinutes(minutes), format);
     }

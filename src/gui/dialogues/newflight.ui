@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -987,73 +987,8 @@
           </size>
          </property>
          <property name="currentText">
-          <string>ILS CAT I</string>
+          <string/>
          </property>
-         <item>
-          <property name="text">
-           <string>ILS CAT I</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT II</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT III</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Visual</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP AR)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>VOR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NDB</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LOC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>GLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>MLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SRA</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="4">

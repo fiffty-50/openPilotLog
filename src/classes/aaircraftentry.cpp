@@ -23,7 +23,7 @@ AAircraftEntry::AAircraftEntry()
 {}
 
 AAircraftEntry::AAircraftEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(opl::db::TABLE_AIRCRAFT, row_id))
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_AIRCRAFT, row_id))
 {}
 
 AAircraftEntry::AAircraftEntry(RowData table_data)

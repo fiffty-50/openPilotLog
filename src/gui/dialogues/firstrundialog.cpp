@@ -20,6 +20,10 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->previousPushButton->setEnabled(false);
     ui->nightComboBox->setCurrentIndex(1);
 
+    for (const auto &approach : Opl::ApproachTypes){
+        ui->approachComboBox->addItem(approach);
+    }
+
 //    auto *themeGroup = new QButtonGroup;
 //    themeGroup->addButton(ui->systemThemeCheckBox, 0);
 //    themeGroup->addButton(ui->lightThemeCheckBox, 1);
@@ -97,16 +101,16 @@ bool FirstRunDialog::finish()
     ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
     ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
-    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, opl::time::Default);
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
 
     QMap<QString, QVariant> data;
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(opl::db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(opl::db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(opl::db::PILOTS_ALIAS, QStringLiteral("self"));
-    data.insert(opl::db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(opl::db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(opl::db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
     QMessageBox db_fail_msg_box(QMessageBox::Critical, QStringLiteral("Database setup failed"),
                                        QStringLiteral("Errors have ocurred creating the database."

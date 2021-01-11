@@ -305,7 +305,7 @@ bool ADataBaseSetup::backupOldData()
     }
 
     auto date_string = ADateTime::toString(QDateTime::currentDateTime(),
-                                           opl::datetime::Backup);
+                                           Opl::Datetime::Backup);
     auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
     QFile file(aDB->databaseFile.absoluteFilePath());

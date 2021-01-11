@@ -67,7 +67,10 @@ private:
 
     void setupValidators();
 
+    void setupComboBoxes();
+
     void updatePersonalDetails();
+
 signals:
     void viewSelectionChanged(int view_id);
 };

@@ -4,6 +4,7 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/dialogues/firstrundialog.h"
 #include <QtGlobal>
 #include "src/functions/atime.h"
 
@@ -166,14 +167,6 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    QTime time(13,47,0);
-    int minutes = 143;
-
-
-    DEB << ATime::toString(time);
-    DEB << ATime::toString(time, opl::time::Decimal);
-    DEB << ATime::toString(minutes);
-    DEB << ATime::toString(minutes, opl::time::Decimal);
     // debug space
 }
 

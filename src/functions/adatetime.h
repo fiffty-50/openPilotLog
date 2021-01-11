@@ -9,11 +9,11 @@ namespace ADateTime {
  * \brief toString formats a QDateTime object into a string in a uniform way.
  * \return
  */
-inline const QString toString (const QDateTime date_time, opl::datetime::DateTimeFormat format) {
+inline const QString toString (const QDateTime date_time, Opl::Datetime::DateTimeFormat format) {
     switch (format) {
-    case opl::datetime::Default:
+    case Opl::Datetime::Default:
         return date_time.toString(Qt::ISODate);
-    case opl::datetime::Backup:
+    case Opl::Datetime::Backup:
         return date_time.toString(QStringLiteral("yyyy_MM_dd_T_hh_mm"));
     default:
         return QString();

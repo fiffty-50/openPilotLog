@@ -26,7 +26,7 @@ AFlightEntry::AFlightEntry()
 {}
 
 AFlightEntry::AFlightEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(opl::db::TABLE_FLIGHTS, row_id))
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, row_id))
 {}
 
 AFlightEntry::AFlightEntry(RowData table_data)
@@ -40,20 +40,20 @@ const QString AFlightEntry::summary()
 
     QString flight_summary;
     auto space = QStringLiteral(" ");
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DOFT).toString() + space);
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(opl::db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(Opl::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(opl::db::FLIGHTS_TONB).toInt())
+    flight_summary.append(ATime::toString(tableData.value(Opl::Db::FLIGHTS_TONB).toInt())
                           + space);
-    flight_summary.append(tableData.value(opl::db::FLIGHTS_DEST).toString());
+    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DEST).toString());
 
     return flight_summary;
 }
 
 const QString AFlightEntry::getRegistration()
 {
-    ATailEntry acft = aDB->resolveForeignTail(tableData.value(opl::db::FLIGHTS_ACFT).toInt());
+    ATailEntry acft = aDB->resolveForeignTail(tableData.value(Opl::Db::FLIGHTS_ACFT).toInt());
     return acft.registration();
 }
 
@@ -61,16 +61,16 @@ const QString AFlightEntry::getPilotName(pilotPosition pilot_)
 {
     switch (pilot_) {
     case pilotPosition::pic: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(opl::db::FLIGHTS_PIC).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_PIC).toInt());
         return foreign_pilot.name();
         break;
     }
     case pilotPosition::secondPilot: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(opl::db::FLIGHTS_SECONDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_SECONDPILOT).toInt());
         return foreign_pilot.name();
     }
     case pilotPosition::thirdPilot: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(opl::db::FLIGHTS_THIRDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_THIRDPILOT).toInt());
         return foreign_pilot.name();
         break;
     } // case scope

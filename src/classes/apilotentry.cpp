@@ -23,7 +23,7 @@ APilotEntry::APilotEntry()
 {}
 
 APilotEntry::APilotEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(opl::db::TABLE_PILOTS, row_id))
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_PILOTS, row_id))
 {}
 
 APilotEntry::APilotEntry(RowData table_data)
@@ -35,6 +35,6 @@ const QString APilotEntry::name()
     if (tableData.isEmpty())
         return QString();
 
-    return tableData.value(opl::db::PILOTS_LASTNAME).toString() + ','
-           +tableData.value(opl::db::PILOTS_FIRSTNAME).toString().left(1) + '.';
+    return tableData.value(Opl::Db::PILOTS_LASTNAME).toString() + ','
+           +tableData.value(Opl::Db::PILOTS_FIRSTNAME).toString().left(1) + '.';
 }

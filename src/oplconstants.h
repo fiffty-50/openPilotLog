@@ -17,21 +17,46 @@
  *  The db namespace contains constants for programatically accessing the database in a fast
  *  and uniform manner.
  */
-namespace opl {
+namespace Opl {
 
-namespace date {
+static const auto ApproachTypes = QStringList{
+        QStringLiteral("VISUAL"),
+        QStringLiteral("ILS CAT I"),
+        QStringLiteral("ILS CAT II"),
+        QStringLiteral("ILS CAT III"),
+        QStringLiteral("GLS"),
+        QStringLiteral("MLS"),
+        QStringLiteral("LOC"),
+        QStringLiteral("LOC/DME"),
+        QStringLiteral("RNAV"),
+        QStringLiteral("RNAV (LNAV)"),
+        QStringLiteral("RNAV (LNAV/VNAV)"),
+        QStringLiteral("RNAV (LPV)"),
+        QStringLiteral("RNAV (RNP)"),
+        QStringLiteral("RNAV (RNP-AR)"),
+        QStringLiteral("VOR"),
+        QStringLiteral("VOR/DME"),
+        QStringLiteral("NDB"),
+        QStringLiteral("NDB/DME"),
+        QStringLiteral("TACAN"),
+        QStringLiteral("SRA"),
+        QStringLiteral("PAR"),
+        QStringLiteral("OTHER")
+};
+
+namespace Date {
 
 enum DateFormat {Default, Text};
 
 } // namespace opl::date
 
-namespace time {
+namespace Time {
 
 enum FlightTimeFormat {Default, Decimal};
 
 } // namespace opl::time
 
-namespace datetime {
+namespace Datetime {
 
 enum DateTimeFormat {Default, Backup};
 
@@ -52,7 +77,7 @@ enum DateTimeFormat {Default, Backup};
  *  qstrings like ("dept"). See https://doc.qt.io/qt-5/qstring.html#QStringLiteral and ensures
  *  uniform use throughout the application.
  */
-namespace db {
+namespace Db {
 
 
 // Table names

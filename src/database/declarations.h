@@ -43,9 +43,9 @@ struct DataPosition {
 };
 
 // Default Positions
-static auto const DEFAULT_FLIGHT_POSITION   = DataPosition(opl::db::TABLE_FLIGHTS, 0);
-static auto const DEFAULT_PILOT_POSITION    = DataPosition(opl::db::TABLE_PILOTS, 0);
-static auto const DEFAULT_TAIL_POSITION     = DataPosition(opl::db::TABLE_TAILS, 0);
-static auto const DEFAULT_AIRCRAFT_POSITION = DataPosition(opl::db::TABLE_AIRCRAFT, 0);
+static auto const DEFAULT_FLIGHT_POSITION   = DataPosition(Opl::Db::TABLE_FLIGHTS, 0);
+static auto const DEFAULT_PILOT_POSITION    = DataPosition(Opl::Db::TABLE_PILOTS, 0);
+static auto const DEFAULT_TAIL_POSITION     = DataPosition(Opl::Db::TABLE_TAILS, 0);
+static auto const DEFAULT_AIRCRAFT_POSITION = DataPosition(Opl::Db::TABLE_AIRCRAFT, 0);
 
 #endif // DECLARATIONS_H

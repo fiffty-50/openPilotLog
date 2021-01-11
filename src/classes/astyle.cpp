@@ -5,8 +5,6 @@
 #include "src/testing/adebug.h"
 #include "src/classes/asettings.h"
 
-// this was throwing hundreds of warnings on 5.9.5, fusion is a good default for all platforms, let's
-// stick with that for now.
 const QString AStyle::defaultStyle = QStringLiteral("Fusion");
 
 const QString AStyle::defaultStyleSheet = QStringLiteral("");
@@ -72,7 +70,6 @@ void AStyle::setStyle(const QString style)
 
 void AStyle::setStyleSheet(const StyleSheet stylesheet)
 {
-    // [F]: qt 5.9.5 compatibility
     DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet].baseName();
     qApp->setStyleSheet(read_stylesheet(stylesheet));
     ASettings::write(ASettings::Main::StyleSheet, stylesheet);
