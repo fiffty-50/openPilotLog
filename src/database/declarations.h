@@ -37,8 +37,8 @@ struct DataPosition {
     DataPosition& operator=(const DataPosition& other) = default;
 
     REPR(DataPosition,
-         "tableName=" + object.tableName + ", "
-         "rowId=" + object.rowId
+         "tableName=" + object.tableName
+         + ", rowId=" + QString::number(object.rowId)
          )
 };
 

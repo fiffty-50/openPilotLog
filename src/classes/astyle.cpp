@@ -25,7 +25,7 @@ static inline
 QString read_stylesheet(const AStyle::StyleSheet stylesheet)
 {
     QFileInfo qss_file_info = AStyle::defaultStyleSheets[stylesheet];
-    DEB << "reading:" << ":" + qss_file_info.fileName();
+//    DEB << "reading:" << ":" + qss_file_info.fileName();
 
     QFile file(":" + qss_file_info.fileName());
     file.open(QFile::ReadOnly | QFile::Text);
@@ -41,11 +41,11 @@ void AStyle::setup()
     // [G]: Are there leaks when style changes?
     QVariant app_style = ASettings::read(ASettings::Main::Style);
     if(!app_style.toBool()){
-        DEB << "Setting style to default:" << defaultStyle;
+        //DEB << "Setting style to default:" << defaultStyle;
         app_style = defaultStyle;
         ASettings::write(ASettings::Main::Style, app_style);
     }
-    DEB << "Style set to:" << app_style;
+    //DEB << "Style set to:" << app_style;
     QApplication::setStyle(QStyleFactory::create(app_style.toString()));
     currentStyle = app_style.toString();
 
@@ -55,14 +55,14 @@ void AStyle::setup()
         app_stylesheet = defaultStyleSheet;
         ASettings::write(ASettings::Main::StyleSheet, app_stylesheet);
     }
-    DEB << "Stylesheet set to:" << app_stylesheet;
+    //DEB << "Stylesheet set to:" << app_stylesheet;
     qApp->setStyleSheet(read_stylesheet(static_cast<StyleSheet>(app_stylesheet.toUInt())));
     currentStyleSheet = app_stylesheet.toString();
 }
 
 void AStyle::setStyle(const QString style)
 {
-    DEB << "Setting style to:" << style;
+    //DEB << "Setting style to:" << style;
     QApplication::setStyle(QStyleFactory::create(style));
     ASettings::write(ASettings::Main::Style, style);
     currentStyle = style;
@@ -70,7 +70,7 @@ void AStyle::setStyle(const QString style)
 
 void AStyle::setStyleSheet(const StyleSheet stylesheet)
 {
-    DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet].baseName();
+    //DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet].baseName();
     qApp->setStyleSheet(read_stylesheet(stylesheet));
     ASettings::write(ASettings::Main::StyleSheet, stylesheet);
     currentStyleSheet = defaultStyleSheets[stylesheet].fileName();
