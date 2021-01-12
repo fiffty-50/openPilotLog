@@ -48,11 +48,11 @@ static const auto DATE_VALID_RGX       = QRegularExpression(
 static const auto SELF_RX              = QRegularExpression(
             "self", QRegularExpression::CaseInsensitiveOption);
 
-static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QLatin1String> {
-    {0, QLatin1String("Date of Flight")}, {1, QLatin1String("Departure Airport")},
-    {2, QLatin1String("Destination Airport")}, {3, QLatin1String("Time Off Blocks")},
-    {4, QLatin1String("Time on Blocks")}, {5, QLatin1String("PIC Name")},
-    {6, QLatin1String("Aircraft Registration")}
+static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
+    {0, QStringLiteral("Date of Flight")}, {1, QStringLiteral("Departure Airport")},
+    {2, QStringLiteral("Destination Airport")}, {3, QStringLiteral("Time Off Blocks")},
+    {4, QStringLiteral("Time on Blocks")}, {5, QStringLiteral("PIC Name")},
+    {6, QStringLiteral("Aircraft Registration")}
 };
 
 
@@ -223,13 +223,13 @@ void NewFlightDialog::setupRawInputValidation()
     auto tempList = QStringList();
     // define tuples
     const std::tuple<QString, QStringList*, QRegularExpression>
-            location_line_edit_settings = {QStringLiteral("Loc"), &airportList, LOC_VALID_RGX};
+            location_line_edit_settings {QStringLiteral("Loc"), &airportList, LOC_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
-            name_line_edit_settings = {QStringLiteral("Name"), &pilotList, NAME_VALID_RGX};
+            name_line_edit_settings {QStringLiteral("Name"), &pilotList, NAME_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
-            acft_line_edit_settings = {QStringLiteral("acft"), &tailsList, AIRCRAFT_VALID_RGX};
+            acft_line_edit_settings {QStringLiteral("acft"), &tailsList, AIRCRAFT_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
-            time_line_edit_settings = {QStringLiteral("Time"), &tempList, TIME_VALID_RGX};
+            time_line_edit_settings {QStringLiteral("Time"), &tempList, TIME_VALID_RGX};
     const QList<std::tuple<QString, QStringList*, QRegularExpression>> line_edit_settings = {
         location_line_edit_settings,
         name_line_edit_settings,
@@ -650,7 +650,7 @@ void NewFlightDialog::formFiller()
 
     for (const auto& data_key : flightEntry.getData().keys()) {
         auto rx = QRegularExpression(data_key + "LineEdit");//acftLineEdit
-        for(const auto& leName : qAsConst(line_edits_names)){
+        for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -662,7 +662,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + "Loc\\w+?");
-        for(const auto& leName : qAsConst(line_edits_names)){
+        for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -674,7 +674,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + "Time\\w+?");
-        for(const auto& leName : qAsConst(line_edits_names)){
+        for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Time Match found: " << key << " - " << leName);
                 auto line_edits = this->findChild<QLineEdit *>(leName);
@@ -688,7 +688,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + "Name\\w+?");
-        for(const auto& leName : qAsConst(line_edits_names)){
+        for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 auto line_edits = this->findChild<QLineEdit *>(leName);
                 if(line_edits != nullptr){
@@ -756,7 +756,7 @@ void NewFlightDialog::formFiller()
         ui->AutolandSpinBox->setValue(AL);
     }
 
-    for(const auto& le : qAsConst(mandatoryLineEdits)){
+    for(const auto& le : mandatoryLineEdits){
         emit le->editingFinished();
     }
 }
@@ -862,7 +862,7 @@ void NewFlightDialog::on_cancelButton_clicked()
 
 void NewFlightDialog::on_submitButton_clicked()
 {
-    for (const auto &line_edit : qAsConst(mandatoryLineEdits)) {
+    for (const auto &line_edit : mandatoryLineEdits) {
         emit line_edit->editingFinished();
     }
     DEB << "editing finished emitted. good count: " << mandatoryLineEditsGood.count(true);
