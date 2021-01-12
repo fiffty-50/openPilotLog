@@ -75,7 +75,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
                             "Check console for details.");
         message_box.exec();
     }
-    if (ADataBaseSetup::importDefaultData()) {
+    if (ADataBaseSetup::importDefaultData(false)) {
         message_box.setText("Database has been successfully reset.");
         emit aDB->dataBaseUpdated();
         message_box.exec();
@@ -168,6 +168,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     // debug space
+    ASettings::write(ASettings::Setup::SetupComplete, false);
 }
 
 /* //Comparing two functions template

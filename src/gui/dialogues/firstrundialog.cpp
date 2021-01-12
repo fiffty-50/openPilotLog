@@ -23,14 +23,6 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     for (const auto &approach : Opl::ApproachTypes){
         ui->approachComboBox->addItem(approach);
     }
-
-//    auto *themeGroup = new QButtonGroup;
-//    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-//    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-//    themeGroup->addButton(ui->darkThemeCheckBox, 2);
-
-//    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-//                     this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -58,7 +50,6 @@ void FirstRunDialog::on_previousPushButton_clicked()
 void FirstRunDialog::on_nextPushButton_clicked()
 {
     auto current_idx = ui->stackedWidget->currentIndex();
-    // [G]: per index do appropriate error handling
     switch (current_idx) {
     case 0:
         if(ui->firstnameLineEdit->text().isEmpty()
@@ -83,11 +74,6 @@ void FirstRunDialog::on_nextPushButton_clicked()
     }
     ui->stackedWidget->setCurrentIndex(current_idx + 1);
 }
-
-//void FirstRunDialog::on_themeGroup_toggled(int id)
-//{
-//    ASettings::write(ASettings::Main::Theme, id);
-//}
 
 bool FirstRunDialog::finish()
 {
@@ -140,8 +126,16 @@ bool FirstRunDialog::setupDatabase()
                                QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
-    if (confirm.exec() == QMessageBox::Yes)
-        ADataBaseSetup::downloadTemplates();
+    if (confirm.exec() == QMessageBox::Yes) {
+        useLocalTemplates = false;
+        if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
+            QMessageBox message_box(this);
+            message_box.setText(QStringLiteral("Downloading latest data has failed.<br><br>Using local data instead."));
+            useLocalTemplates = true; // fall back
+        } else {
+        useLocalTemplates = true;
+    }
+    }
 
     aDB->disconnect();
     ADataBaseSetup::backupOldData();
@@ -153,7 +147,7 @@ bool FirstRunDialog::setupDatabase()
 
     aDB->updateLayout();
 
-    if(!ADataBaseSetup::importDefaultData())
+    if(!ADataBaseSetup::importDefaultData(useLocalTemplates))
         return false;
     return true;
 }

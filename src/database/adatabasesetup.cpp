@@ -270,12 +270,6 @@ bool ADataBaseSetup::createDatabase()
 
     aDB->updateLayout();
 
-    DEB << "Populating tables...";
-    if (!importDefaultData()) {
-        DEB << "Populating tables failed.";
-        return false;
-    }
-
     DEB << "Database successfully created!";
     return true;
 }
@@ -292,6 +286,11 @@ bool ADataBaseSetup::downloadTemplates()
         dl->setFileName(template_dir.filePath(table % QStringLiteral(".csv")));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table % QStringLiteral(".csv")));
+        if (downloaded_file.size() == 0)
+            return false; // ssl/network error
+
         dl->deleteLater();
     }
     return true;
@@ -318,7 +317,7 @@ bool ADataBaseSetup::backupOldData()
     return true;
 }
 
-bool ADataBaseSetup::importDefaultData()
+bool ADataBaseSetup::importDefaultData(bool use_local_data)
 {
     QSqlQuery query;
     // reset template tables
@@ -328,13 +327,26 @@ bool ADataBaseSetup::importDefaultData()
         if (!query.exec()) {
             DEB << "Error: " << query.lastError().text();
         }
+
         //fill with data from csv
-        if (!commitData(aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
-                                 % QLatin1Char('/')
-                                 % table % QStringLiteral(".csv")),
-                        table)) {
-            DEB << "Error importing data.";
-            return false;
+        if (use_local_data)
+        {
+            DEB << "Using local resources";
+            if (!commitData(aReadCsv(QStringLiteral(":templates/database/templates/")
+                                     + table + QStringLiteral(".csv")),
+                            table)) {
+                DEB << "Error importing data (local).";
+                return false;
+            }
+        } else {
+            DEB << "Using downloaded resources";
+            if (!commitData(aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
+                                     % QLatin1Char('/')
+                                     % table % QStringLiteral(".csv")),
+                            table)) {
+                DEB << "Error importing data (remote).";
+                return false;
+            }
         }
     }
     return true;

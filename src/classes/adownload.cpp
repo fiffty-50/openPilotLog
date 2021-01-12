@@ -28,7 +28,7 @@ ADownload::ADownload() : QObject(nullptr)
 
 ADownload::~ADownload()
 {
-    DEB << "Deleting Download object" ;
+
 }
 
 void ADownload::setTarget(const QUrl &value)
@@ -65,7 +65,7 @@ void ADownload::downloadFinished(QNetworkReply *data)
     const QByteArray sdata = data->readAll();
     localFile.write(sdata);
     localFile.close();
-    DEB << "Download finished. Output file: " << fileName;
+    DEB << "Download finished. Output file: " << fileName << "size: " << localFile.size();
 
     emit done();
 }

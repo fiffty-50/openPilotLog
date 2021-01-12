@@ -43,7 +43,7 @@ public:
 
     static bool fillTemplates();
 
-    static bool importDefaultData();
+    static bool importDefaultData(bool use_local_data);
 
     static bool resetToDefault();
 

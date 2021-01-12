@@ -24,17 +24,13 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-//    void on_themeGroup_toggled(int id);
-
 private:
     Ui::FirstRunDialog *ui;
-    // [G]: finish is the old signal.
-    // finishSetup does something with template of database which
-    // goes over my head but everything works for now. Better naming needed
 
     void reject() override;
     bool setupDatabase();
     bool finish();
+    bool useLocalTemplates;
 
 };
 
