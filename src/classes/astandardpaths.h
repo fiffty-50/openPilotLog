@@ -10,18 +10,18 @@
 /*!
  * \brief The AStandardAppPaths class encapsulates a static QMap holding
  * the standard paths of the application. Setup should be called after
- * `QCoreApplication::setWhateverName`.
+ * `QCoreApplication::setWhateverName`. The paths contained in this class
+ * include a trailing seperator and all seperators are platform-agnostic.
  */
 class AStandardPaths{
 public:
-    enum Dirs {
+    enum Directories {
         Database,
         Templates,
-        Settings,
         DatabaseBackup
     };
 private:
-    static QMap<Dirs, QString> dirs;
+    static QMap<Directories, QString> directories;
 public:
     /// Initialise paths with corresponding StandardLocation paths
     static void setup();
@@ -30,8 +30,8 @@ public:
     // We should move away from getThis getThat functions.
     // I believe we can give better namings while avoiding this
     // OOP cliche of getEverything
-    static const QString& absPathOf(Dirs loc);
-    static const QMap<Dirs, QString>& allPaths();
+    static const QString& absPathOf(Directories loc);
+    static const QMap<Directories, QString>& allPaths();
 
     /// Ensure standard app directories exist, if not mkpath them.
     static void scan_dirs();

@@ -309,7 +309,7 @@ bool ADataBaseSetup::backupOldData()
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
     QFile file(aDB->databaseFile.absoluteFilePath());
 
-    if (!file.rename(backup_dir.absolutePath() + '/' + backup_name)) {
+    if (!file.rename(backup_dir.absolutePath() + backup_name)) {
         DEB << "Unable to backup old database.";
         return false;
     }
@@ -321,34 +321,34 @@ bool ADataBaseSetup::importDefaultData(bool use_local_data)
 {
     QSqlQuery query;
     // reset template tables
-    for (const auto& table : templateTables) {
+    for (const auto& table_name : templateTables) {
         //clear tables
-        query.prepare("DELETE FROM " + table);
+        query.prepare("DELETE FROM " + table_name);
         if (!query.exec()) {
             DEB << "Error: " << query.lastError().text();
+            return false;
+        }
+        // Prepare data
+        QVector<QStringList> data_to_commit;
+        QString error_message("Error importing data ");
+
+        if (use_local_data) {
+            data_to_commit = aReadCsv(QStringLiteral(":templates/database/templates/")
+                                      + table_name + QStringLiteral(".csv"));
+            error_message.append(" (local) ");
+        } else {
+            data_to_commit = aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
+                                      + table_name + QStringLiteral(".csv"));
+            error_message.append(" (remote) ");
         }
 
         //fill with data from csv
-        if (use_local_data)
-        {
-            DEB << "Using local resources";
-            if (!commitData(aReadCsv(QStringLiteral(":templates/database/templates/")
-                                     + table + QStringLiteral(".csv")),
-                            table)) {
-                DEB << "Error importing data (local).";
-                return false;
-            }
-        } else {
-            DEB << "Using downloaded resources";
-            if (!commitData(aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
-                                     % QLatin1Char('/')
-                                     % table % QStringLiteral(".csv")),
-                            table)) {
-                DEB << "Error importing data (remote).";
-                return false;
-            }
+        if (!commitData(data_to_commit, table_name)) {
+            DEB << error_message;
+            return false;
         }
     }
+
     return true;
 };
 

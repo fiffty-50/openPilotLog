@@ -16,7 +16,6 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "asettings.h"
-#include "astandardpaths.h"
 #include <QSettings>
 
 
@@ -147,6 +146,3 @@ QString ASettings::stringOfKey (const ASettings::Setup key)
 
 QString ASettings::stringOfKey (const ASettings::UserData key)
 { return  userDataMap[key]; }
-
-// [F]: removed because the function was unused and wouldn't compile with qt 5.9.5. Not sure why it did in the first place.
-// see https://doc.qt.io/archives/qt-5.9/qobject.html#no-copy-constructor-or-assignment-operator for info
