@@ -155,7 +155,7 @@ void NewFlightDialog::readSettings()
     DEB << "Reading Settings...";
     QSettings settings;
     ui->FunctionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
-    ui->ApproachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
+    ui->ApproachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
 
     ASettings::read(ASettings::FlightLogging::PilotFlying).toBool() ? ui->PilotFlyingCheckBox->setChecked(true)
                                                           : ui->PilotMonitoringCheckBox->setChecked(true);
@@ -189,7 +189,7 @@ void NewFlightDialog::writeSettings()
     DEB << "Writing Settings...";
 
     ASettings::write(ASettings::FlightLogging::Function, ui->FunctionComboBox->currentText());
-    ASettings::write(ASettings::FlightLogging::Approach, ui->ApproachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->ApproachComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::PilotFlying, ui->PilotFlyingCheckBox->isChecked());
     ASettings::write(ASettings::FlightLogging::NumberTakeoffs, ui->TakeoffSpinBox->value());
     ASettings::write(ASettings::FlightLogging::NumberLandings, ui->LandingSpinBox->value());

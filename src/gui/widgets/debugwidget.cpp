@@ -50,7 +50,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     link_stub.append("/assets/database/templates/");
 
     QStringList template_tables = {"aircraft", "airports", "changelog"};
-    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
     for (const auto& table : template_tables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
@@ -100,7 +100,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     QString linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
     linkStub.append(ui->branchLineEdit->text());
     linkStub.append("/assets/database/templates/sample_");
-    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
     for (const auto& table : userTables) {
         QEventLoop loop;
@@ -116,8 +116,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     allGood.resize(userTables.size());
 
     for (const auto& table : userTables) {
-        auto data = aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
-                             + "/sample_" + table + ".csv");
+        auto data = aReadCsv(AStandardPaths::directory(AStandardPaths::Templates).absoluteFilePath(
+                             + "sample_" + table + ".csv"));
         allGood.setBit(userTables.indexOf(table), ADataBaseSetup::commitData(data, table));
     }
 
@@ -136,7 +136,7 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
                                                  tr("Open CSV File for import"),
-                                                 AStandardPaths::absPathOf(AStandardPaths::Templates),
+                                                 AStandardPaths::directory(AStandardPaths::Templates).absolutePath(),
                                                  tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }
@@ -168,7 +168,10 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     // debug space
-    ASettings::write(ASettings::Setup::SetupComplete, false);
+    //ASettings::write(ASettings::Setup::SetupComplete, false);
+    ASettings::write(ASettings::FlightLogging::Approach, 5);
+    DEB << ASettings::read(ASettings::FlightLogging::Approach);
+
 }
 
 /* //Comparing two functions template

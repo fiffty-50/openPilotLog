@@ -6,7 +6,6 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-#include "src/classes/astandardpaths.h"
 #include "src/oplconstants.h"
 #include <QErrorMessage>
 
@@ -79,7 +78,7 @@ bool FirstRunDialog::finish()
 {
 
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
-    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());

@@ -42,8 +42,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     AStandardPaths::setup();
-    AStandardPaths::scan_dirs();
-    if(!AStandardPaths::validate_dirs()){
+    if(!AStandardPaths::scan_dirs()){
         DEB << "Standard paths not valid.";
         return 1;
     }

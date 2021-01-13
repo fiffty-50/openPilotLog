@@ -28,7 +28,7 @@ ADownload::ADownload() : QObject(nullptr)
 
 ADownload::~ADownload()
 {
-
+    DEB << "Deleting ADownload Object";
 }
 
 void ADownload::setTarget(const QUrl &value)

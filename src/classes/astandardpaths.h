@@ -18,10 +18,10 @@ public:
     enum Directories {
         Database,
         Templates,
-        DatabaseBackup
+        Backup
     };
 private:
-    static QMap<Directories, QString> directories;
+    static QMap<Directories, QDir> directories;
 public:
     /// Initialise paths with corresponding StandardLocation paths
     static void setup();
@@ -30,14 +30,11 @@ public:
     // We should move away from getThis getThat functions.
     // I believe we can give better namings while avoiding this
     // OOP cliche of getEverything
-    static const QString& absPathOf(Directories loc);
-    static const QMap<Directories, QString>& allPaths();
+    static const QDir &directory(Directories loc);
+    static const QMap<Directories, QDir> &allDirectories();
 
     /// Ensure standard app directories exist, if not mkpath them.
-    static void scan_dirs();
-
-    /// Validate standard app directories are valid in structure and contents.
-    static bool validate_dirs();
+    static bool scan_dirs();
 };
 
 

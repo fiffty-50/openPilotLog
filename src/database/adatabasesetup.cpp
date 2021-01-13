@@ -276,22 +276,22 @@ bool ADataBaseSetup::createDatabase()
 
 bool ADataBaseSetup::downloadTemplates()
 {
-    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
     DEB << template_dir;
     for (const auto& table : templateTables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
-        dl->setFileName(template_dir.filePath(table % QStringLiteral(".csv")));
+        dl->setFileName(template_dir.absoluteFilePath(table % QStringLiteral(".csv")));
         dl->download();
+        dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
         QFileInfo downloaded_file(template_dir.filePath(table % QStringLiteral(".csv")));
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
 
-        dl->deleteLater();
     }
     return true;
 }
@@ -305,11 +305,11 @@ bool ADataBaseSetup::backupOldData()
 
     auto date_string = ADateTime::toString(QDateTime::currentDateTime(),
                                            Opl::Datetime::Backup);
-    auto backup_dir = QDir(AStandardPaths::absPathOf(AStandardPaths::DatabaseBackup));
+    auto backup_dir = AStandardPaths::directory(AStandardPaths::Backup);
     auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
     QFile file(aDB->databaseFile.absoluteFilePath());
 
-    if (!file.rename(backup_dir.absolutePath() + backup_name)) {
+    if (!file.rename(backup_dir.absoluteFilePath(backup_name))) {
         DEB << "Unable to backup old database.";
         return false;
     }
@@ -337,8 +337,9 @@ bool ADataBaseSetup::importDefaultData(bool use_local_data)
                                       + table_name + QStringLiteral(".csv"));
             error_message.append(" (local) ");
         } else {
-            data_to_commit = aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
-                                      + table_name + QStringLiteral(".csv"));
+            data_to_commit = aReadCsv(AStandardPaths::directory(
+                                          AStandardPaths::Templates).absoluteFilePath(
+                                          table_name + QStringLiteral(".csv")));
             error_message.append(" (remote) ");
         }
 

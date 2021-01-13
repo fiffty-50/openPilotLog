@@ -81,8 +81,8 @@ ADatabase* ADatabase::instance()
 }
 
 ADatabase::ADatabase()
-    : databaseDir(QDir(AStandardPaths::absPathOf(AStandardPaths::Database))),
-      databaseFile(QFileInfo(databaseDir.filePath(QStringLiteral("logbook.db"))))
+    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                             absoluteFilePath(QStringLiteral("logbook.db"))))
 {}
 
 /*!
@@ -101,6 +101,9 @@ const QString ADatabase::sqliteVersion()
 bool ADatabase::connect()
 {
     if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
+        return false;
+
+    if (!databaseFile.exists())
         return false;
 
     QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);

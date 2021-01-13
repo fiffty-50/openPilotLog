@@ -105,8 +105,9 @@ public:
     const QString sqliteVersion();
 
     ADatabaseError lastError;
-    const QDir databaseDir;
+    //const QDir databaseDir;
     const QFileInfo databaseFile;
+
 
     /*!
      * \brief Connect to the database and populate database information.
