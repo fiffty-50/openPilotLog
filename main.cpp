@@ -41,8 +41,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(ORGDOMAIN);
     QCoreApplication::setApplicationName(APPNAME);
 
-    AStandardPaths::setup();
-    if(!AStandardPaths::scan_dirs()){
+    if(!AStandardPaths::setup()){
         DEB << "Standard paths not valid.";
         return 1;
     }
