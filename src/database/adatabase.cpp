@@ -103,9 +103,6 @@ bool ADatabase::connect()
     if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
         return false;
 
-    if (!databaseFile.exists())
-        return false;
-
     QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
     db.setDatabaseName(databaseFile.absoluteFilePath());
 
