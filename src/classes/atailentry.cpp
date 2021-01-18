@@ -43,7 +43,7 @@ const QString ATailEntry::type()
     if (!tableData.value(Opl::Db::TAILS_MODEL).toString().isEmpty())
         type_string.append(getData().value(Opl::Db::TAILS_MODEL).toString());
     if (!tableData.value(Opl::Db::TAILS_VARIANT).toString().isEmpty())
-        type_string.append('-' + getData().value(Opl::Db::TAILS_VARIANT).toString() + ' ');
+        type_string.append('-' + getData().value(Opl::Db::TAILS_VARIANT).toString());
 
     return type_string;
 }

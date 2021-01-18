@@ -22,6 +22,7 @@
 #include <QCompleter>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QComboBox>
 
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"

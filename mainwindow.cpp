@@ -98,7 +98,7 @@ MainWindow::~MainWindow()
 void MainWindow::nope()
 {
     QMessageBox message_box(this); //error box
-    message_box.setText("This feature is not yet available!");
+    message_box.setText(tr("This feature is not yet available!"));
     message_box.exec();
 }
 

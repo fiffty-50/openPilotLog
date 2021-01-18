@@ -40,8 +40,8 @@ void PilotsWidget::setupModelAndView()
     sortColumn = ASettings::read(ASettings::UserData::PilSortColumn).toInt();
 
     model = new QSqlTableModel(this);
-    model->setTable("viewPilots");
-    model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
+    model->setTable(QStringLiteral("viewPilots"));
+    model->setFilter(QStringLiteral("ID > 1")); // Don't show self
     model->select();
 
     view = ui->pilotsTableView;
@@ -81,7 +81,6 @@ void PilotsWidget::onDisplayModel_dataBaseUpdated()
 void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
 {
     if (this->findChild<NewPilotDialog*>() != nullptr) {
-        DEB << "Selection changed. Deleting orphaned dialog.";
         delete this->findChild<NewPilotDialog*>();
         /// [F] if the user changes the selection without making any changes,
         /// if(selectedPilots.length() == 1) spawns a new dialog without the
@@ -133,12 +132,12 @@ void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
         QMessageBox message_box(this);
-        message_box.setText("No Pilot selected.");
+        message_box.setText(tr("No Pilot selected."));
         message_box.exec();
 
     } else if (selectedPilots.length() > 1) {
         QMessageBox message_box(this);
-        message_box.setText("Deleting multiple entries is currently not supported");
+        message_box.setText(tr("Deleting multiple entries is currently not supported"));
         message_box.exec();
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
@@ -152,14 +151,18 @@ void PilotsWidget::on_deletePilotButton_clicked()
     } else if (selectedPilots.length() == 1) {
         auto entry = aDB->getPilotEntry(selectedPilots.first());
         QMessageBox message_box(this);
-        QString message = "You are deleting the following pilot:<br><br><b><tt>";
-        message.append(entry.name());
-        message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
-        message_box.setText(message);
-        message_box.exec();
-        if(!aDB->remove(entry))
-            onDeleteUnsuccessful();
+        message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        message_box.setDefaultButton(QMessageBox::No);
+        message_box.setIcon(QMessageBox::Question);
+        message_box.setWindowTitle(tr("Delete Pilot"));
+
+        message_box.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
+                               "%1</b></tt><br><br>Are you sure?").arg(entry.name()));
+        if (message_box.exec() == QMessageBox::Yes) {
+            if(!aDB->remove(entry))
+                onDeleteUnsuccessful();
         }
+    }
     model->select();
 }
 
@@ -167,27 +170,40 @@ void PilotsWidget::onDeleteUnsuccessful()
 {
     /// [F]: To do: Some logic to display a warning if too many entries exists, so that
     /// the messagebox doesn't grow too tall.
-    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(), ADatabaseTarget::pilots);
+    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
+                                                                       ADatabaseTarget::pilots);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
-    QString message = "<br>Unable to delete.<br><br>";
-    if(!constrained_flights.isEmpty()){
-        message.append(QStringLiteral("This is most likely the case because a flight exists with the Pilot "
-                   "you are trying to delete as PIC.<br>"
-                   "The following flight(s) with this pilot have been found:<br><br><br><b><tt>"));
-        for (auto &flight : constrained_flights) {
-            message.append(flight.summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-        }
-    }
-    message.append(QStringLiteral("</b></tt><br><br>You have to change or remove the conflicting flight(s) "
-                                  "before removing this pilot from the database.<br><br>"));
     QMessageBox message_box(this);
-    message_box.setText(message);
-    message_box.setIcon(QMessageBox::Critical);
-    message_box.exec();
+    if (constrained_flights.isEmpty()) {
+        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
+                               ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return;
+    } else {
+        QString constrained_flights_string;
+        for (int i=0; i<constrained_flights.length(); i++) {
+            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            if (i>10) {
+                constrained_flights_string.append("<br>[...]<br>");
+                break;
+            }
+        }
+        message_box.setText(tr("Unable to delete.<br><br>"
+                               "This is most likely the case because a flight exists with the Pilot "
+                               "you are trying to delete as PIC.<br><br>"
+                               "%1 flight(s) with this pilot have been found:<br><br><br><b><tt>"
+                               "%2"
+                               "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+                               "before removing this pilot from the database.<br><br>"
+                               ).arg(QString::number(constrained_flights.length()),
+                                     constrained_flights_string));
+        message_box.setIcon(QMessageBox::Critical);
+        message_box.exec();
+    }
 }
 
 void PilotsWidget::pilot_editing_finished()

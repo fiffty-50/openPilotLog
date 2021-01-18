@@ -49,10 +49,10 @@ static const auto SELF_RX              = QRegularExpression(
             "self", QRegularExpression::CaseInsensitiveOption);
 
 static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
-    {0, QStringLiteral("Date of Flight")}, {1, QStringLiteral("Departure Airport")},
-    {2, QStringLiteral("Destination Airport")}, {3, QStringLiteral("Time Off Blocks")},
-    {4, QStringLiteral("Time on Blocks")}, {5, QStringLiteral("PIC Name")},
-    {6, QStringLiteral("Aircraft Registration")}
+    {0, QObject::tr("Date of Flight")},      {1, QObject::tr("Departure Airport")},
+    {2, QObject::tr("Destination Airport")}, {3, QObject::tr("Time Off Blocks")},
+    {4, QObject::tr("Time on Blocks")},      {5, QObject::tr("PIC Name")},
+    {6, QObject::tr("Aircraft Registration")}
 };
 
 
@@ -139,12 +139,12 @@ void NewFlightDialog::setup()
     readSettings();
 
     // Visually mark mandatory fields
-    ui->deptLocLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
-    ui->destLocLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
-    ui->tofbTimeLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
-    ui->tonbTimeLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
-    ui->picNameLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
-    ui->acftLineEdit->setStyleSheet("border: 0.1ex solid #3daee9");
+    ui->deptLocLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->destLocLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->tofbTimeLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->tonbTimeLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->picNameLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->acftLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
 
     ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
     emit ui->doftLineEdit->editingFinished();
@@ -646,10 +646,10 @@ void NewFlightDialog::formFiller()
     }
 
     ui->acftLineEdit->setText(flightEntry.getRegistration());
-    line_edits_names.removeOne("acftLineEdit");
+    line_edits_names.removeOne(QStringLiteral("acftLineEdit"));
 
     for (const auto& data_key : flightEntry.getData().keys()) {
-        auto rx = QRegularExpression(data_key + "LineEdit");//acftLineEdit
+        auto rx = QRegularExpression(data_key + QStringLiteral("LineEdit"));//acftLineEdit
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
@@ -661,7 +661,7 @@ void NewFlightDialog::formFiller()
                 break;
             }
         }
-        rx = QRegularExpression(data_key + "Loc\\w+?");
+        rx = QRegularExpression(data_key + QStringLiteral("Loc\\w+?"));
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
@@ -673,7 +673,7 @@ void NewFlightDialog::formFiller()
                 break;
             }
         }
-        rx = QRegularExpression(data_key + "Time\\w+?");
+        rx = QRegularExpression(data_key + QStringLiteral("Time\\w+?"));
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Time Match found: " << key << " - " << leName);
@@ -687,7 +687,7 @@ void NewFlightDialog::formFiller()
                 break;
             }
         }
-        rx = QRegularExpression(data_key + "Name\\w+?");
+        rx = QRegularExpression(data_key + QStringLiteral("Name\\w+?"));
         for(const auto& leName : line_edits_names){
             if(rx.match(leName).hasMatch())  {
                 auto line_edits = this->findChild<QLineEdit *>(leName);
@@ -705,7 +705,7 @@ void NewFlightDialog::formFiller()
                                               ui->tSICTimeLineEdit, ui->tDUALTimeLineEdit,
                                               ui->tFITimeLineEdit};
     for(const auto& line_edit : function_combo_boxes){
-        if(line_edit->text() != "00:00"){
+        if(line_edit->text() != QStringLiteral("00:00")){
             QString name = line_edit->objectName();
             name.chop(12);
             name.remove(0,1);
@@ -765,9 +765,9 @@ bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 {
     if (mandatoryLineEditsGood.count(true) != 7){
         QMessageBox message_box(this);
-        message_box.setText("Unable to determine total block time.<br>"
-                            "Please fill out all Mandatory Fields<br>"
-                            "before manually editing these times.");
+        message_box.setText(tr("Unable to determine total block time.<br>"
+                               "Please fill out all Mandatory Fields<br>"
+                               "before manually editing these times."));
         message_box.exec();
         return false;
     }
@@ -781,10 +781,10 @@ bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
         return true;
     } else {
         QMessageBox message_box(this);
-        message_box.setWindowTitle("Error");
-        message_box.setText("The flight time you have entered is longer than the total blocktime:<br><center><b>"
-                            + ATime::toString(block_time, flightTimeFormat)
-                            + "</b></center>");
+        message_box.setWindowTitle(tr("Error"));
+        message_box.setText(tr("The flight time you have entered is longer than the total blocktime:"
+                               "<br><center><b>%1</b></center>"
+                               ).arg(ATime::toString(block_time, flightTimeFormat)));
         message_box.exec();
         return false;
     }
@@ -797,10 +797,11 @@ bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "No Aircraft found",
-                                  "No aircraft with this registration found.<br>"
-                                  "If this is the first time you log a flight with this aircraft, you have to "
-                                  "add the registration to the database first.<br><br>Would you like to add a new aircraft to the database?",
+    reply = QMessageBox::question(this, tr("No Aircraft found"),
+                                  tr("No aircraft with this registration found.<br>"
+                                     "If this is the first time you log a flight with this aircraft, "
+                                     "you have to add the registration to the database first."
+                                     "<br><br>Would you like to add a new aircraft to the database?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         DEB << "Add new aircraft selected";
@@ -828,11 +829,12 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
 void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "No Pilot found",
-                                  "No pilot found.<br>Please enter the Name as"
-                                  "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
-                                  "If this is the first time you log a flight with this pilot, you have to "
-                                  "add the name to the database first.<br><br>Would you like to add a new pilot to the database?",
+    reply = QMessageBox::question(this, tr("No Pilot found"),
+                                  tr("No pilot found.<br>Please enter the Name as"
+                                     "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+                                     "If this is the first time you log a flight with this pilot, "
+                                     "you have to add the pilot to the database first."
+                                     "<br><br>Would you like to add a new pilot to the database?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         DEB << "Add new pilot selected";
@@ -867,18 +869,20 @@ void NewFlightDialog::on_submitButton_clicked()
     }
     DEB << "editing finished emitted. good count: " << mandatoryLineEditsGood.count(true);
     if (mandatoryLineEditsGood.count(true) != 7) {
-        QString error_message = "Not all mandatory entries are valid.<br>The following"
-                                " item(s) are empty or missing:<br><br><center><b>";
+        QString missing_items;
         for (int i=0; i < mandatoryLineEditsGood.size(); i++) {
             if (!mandatoryLineEditsGood[i]){
-                error_message.append(MANDATORY_LINE_EDITS_DISPLAY_NAMES.value(i) + "<br>");
-                mandatoryLineEdits[i]->setStyleSheet("border: 1px solid red");
+                missing_items.append(MANDATORY_LINE_EDITS_DISPLAY_NAMES.value(i) + "<br>");
+                mandatoryLineEdits[i]->setStyleSheet(QStringLiteral("border: 1px solid red"));
             }
         }
-        error_message.append("</b></center><br>Please go back and fill in the required data.");
 
         QMessageBox message_box(this);
-        message_box.setText(error_message);
+        message_box.setText(tr("Not all mandatory entries are valid.<br>"
+                               "The following item(s) are empty or missing:"
+                               "<br><br><center><b>%1</b></center><br>"
+                               "Please go back and fill in the required data."
+                               ).arg(missing_items));
         message_box.exec();
         return;
     }
@@ -890,9 +894,10 @@ void NewFlightDialog::on_submitButton_clicked()
     DEB << "Committing...";
     if (!aDB->commit(flightEntry)) {
         QMessageBox message_box(this);
-        message_box.setText("The following error has ocurred:\n\n"
-                            + aDB->lastError.text()
-                            + "\n\nYour entry has not been saved.");
+        message_box.setText(tr("The following error has ocurred:"
+                               "<br><br>%1<br><br>"
+                               "The entry has not been saved."
+                               ).arg(aDB->lastError.text()));
         message_box.setIcon(QMessageBox::Warning);
         message_box.exec();
         return;
@@ -926,7 +931,7 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 {
     DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
-    line_edit->setStyleSheet("border: 1px solid red");
+    line_edit->setStyleSheet(QStringLiteral("border: 1px solid red"));
 
     DEB << "Mandatory Good: " << mandatoryLineEditsGood.count(true) << " out of "
         << mandatoryLineEditsGood.size() << ". Array: " << mandatoryLineEditsGood;
@@ -1106,7 +1111,7 @@ void NewFlightDialog::onLocationEditingFinished(QLineEdit *line_edit, QLabel *na
     // check result
     if (airport_id == 0) {
         // to do: prompt user how to handle unknown airport
-        name_label->setText("Unknown airport identifier");
+        name_label->setText(tr("Unknown airport identifier"));
         onBadInputReceived(line_edit);
         return;
     }
@@ -1171,7 +1176,7 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
 
     // to do: promp user to add new
     onBadInputReceived(line_edit);
-    ui->acftTypeLabel->setText("Unknown Registration.");
+    ui->acftTypeLabel->setText(tr("Unknown Registration."));
     addNewTail(line_edit);
 }
 
@@ -1259,8 +1264,8 @@ void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
     if (!(mandatoryLineEditsGood.count(true) == 7) && ui->manualEditingCheckBox->isChecked()) {
         QMessageBox message_box(this);
-        message_box.setText("Before editing times manually, please fill out the required fields in the flight data tab,"
-                            " so that total time can be calculated.");
+        message_box.setText(tr("Before editing times manually, please fill out the required fields "
+                               "in the flight data tab, so that total time can be calculated."));
         message_box.exec();
         ui->manualEditingCheckBox->setChecked(false);
         return;
@@ -1304,7 +1309,7 @@ void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1
 
     if (arg1 == QStringLiteral("OTHER")) {
         QMessageBox message_box(this);
-        message_box.setText(QStringLiteral("You can specify the approach type in the Remarks field."));
+        message_box.setText(tr("You can specify the approach type in the Remarks field."));
         message_box.exec();
     }
 }

@@ -21,14 +21,18 @@
 #include "src/oplconstants.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {
-    "registrationLineEdit", QRegularExpression("\\w+-\\w+")};
+    QStringLiteral("registrationLineEdit"), QRegularExpression("\\w+-\\w+")};
 static const auto MAKE_VALID = QPair<QString, QRegularExpression> {
-    "makeLineEdit", QRegularExpression("[-a-zA-Z\\s]+")};
+    QStringLiteral("makeLineEdit"), QRegularExpression("[-a-zA-Z\\s]+")};
 static const auto MODEL_VALID = QPair<QString, QRegularExpression> {
-    "modelLineEdit", QRegularExpression("[\\s\\w-]+")};
+    QStringLiteral("modelLineEdit"), QRegularExpression("[\\s\\w-]+")};
 static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
-    "variantLineEdit", QRegularExpression("[\\s\\w-]+")};
-static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>({REG_VALID, MAKE_VALID, MODEL_VALID, VARIANT_VALID});
+    QStringLiteral("variantLineEdit"), QRegularExpression("[\\s\\w-]+")};
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>{
+    REG_VALID,
+    MAKE_VALID,
+    MODEL_VALID,
+    VARIANT_VALID};
 
 
 NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
@@ -42,7 +46,7 @@ NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     setupValidators();
 
     ui->registrationLineEdit->setText(new_registration);
-    ui->searchLineEdit->setStyleSheet("border: 1px solid blue");
+    ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid blue"));
     ui->searchLineEdit->setFocus();
 
     entry = ATailEntry();
@@ -124,7 +128,7 @@ void NewTailDialog::fillForm(AEntry entry, bool is_template)
     auto data = entry.getData();
 
     for (const auto &le : line_edits) {
-        auto key = le->objectName().remove("LineEdit");
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         le->setText(data.value(key).toString());
     }
 
@@ -140,13 +144,13 @@ void NewTailDialog::fillForm(AEntry entry, bool is_template)
  */
 bool NewTailDialog::verify()
 {
-    auto recommended_line_edits = this->findChildren<QLineEdit *>("registrationLineEdit");
-    recommended_line_edits.append(this->findChild<QLineEdit *>("makeLineEdit"));
-    recommended_line_edits.append(this->findChild<QLineEdit *>("modelLineEdit"));
+    auto recommended_line_edits = this->findChildren<QLineEdit *>(QStringLiteral("registrationLineEdit"));
+    recommended_line_edits.append(this->findChild<QLineEdit *>(QStringLiteral("makeLineEdit")));
+    recommended_line_edits.append(this->findChild<QLineEdit *>(QStringLiteral("modelLineEdit")));
 
-    auto recommended_combo_boxes = this->findChildren<QComboBox *>("operationComboBox");
-    recommended_combo_boxes.append(this->findChild<QComboBox *>("ppNumberComboBox"));
-    recommended_combo_boxes.append(this->findChild<QComboBox *>("ppTypeComboBox"));
+    auto recommended_combo_boxes = this->findChildren<QComboBox *>(QStringLiteral("operationComboBox"));
+    recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppNumberComboBox")));
+    recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppTypeComboBox")));
 
     for (const auto &le : recommended_line_edits) {
         if (le->text() != "") {
@@ -154,7 +158,7 @@ bool NewTailDialog::verify()
             recommended_line_edits.removeOne(le);
             le->setStyleSheet("");
         } else {
-            le->setStyleSheet("border: 1px solid red");
+            le->setStyleSheet(QStringLiteral("border: 1px solid red"));
             DEB << "Not Good: " << le;
         }
     }
@@ -164,7 +168,7 @@ bool NewTailDialog::verify()
             recommended_combo_boxes.removeOne(cb);
             cb->setStyleSheet("");
         } else {
-            cb->setStyleSheet("background: orange");
+            cb->setStyleSheet(QStringLiteral("background: orange"));
             DEB << "Not Good: " << cb;
         }
     }
@@ -186,10 +190,10 @@ void NewTailDialog::submitForm()
     RowData new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
-    line_edits.removeOne(this->findChild<QLineEdit *>("searchLineEdit"));
+    line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));
 
     for (const auto &le : line_edits) {
-        auto key = le->objectName().remove("LineEdit");
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         new_data.insert(key, le->text());
     }
 
@@ -211,14 +215,16 @@ void NewTailDialog::submitForm()
     entry.setData(new_data);
     if (!aDB->commit(entry)) {
         QMessageBox message_box(this);
-        message_box.setText("The following error has ocurred:\n\n"
-                            + aDB->lastError.text()
-                            + "\n\nThe entry has not been saved.");
+        message_box.setText(tr("The following error has ocurred:"
+                               "<br><br>%1<br><br>"
+                               "The entry has not been saved."
+                               ).arg(aDB->lastError.text()));
         message_box.exec();
         return;
     } else {
         if (entry.getPosition().rowId != 0)
             ACalc::updateAutoTimes(entry.getPosition().rowId);
+
         QDialog::accept();
     }
 }
@@ -227,30 +233,26 @@ void NewTailDialog::submitForm()
 
 void NewTailDialog::on_operationComboBox_currentIndexChanged(int index)
 {
-    if (index != 0) {
+    if (index != 0)
         ui->operationComboBox->setStyleSheet("");
-    }
 }
 
 void NewTailDialog::on_ppTypeComboBox_currentIndexChanged(int index)
 {
-    if (index != 0) {
+    if (index != 0)
         ui->ppTypeComboBox->setStyleSheet("");
-    }
 }
 
 void NewTailDialog::on_ppNumberComboBox_currentIndexChanged(int index)
 {
-    if (index != 0) {
+    if (index != 0)
         ui->ppNumberComboBox->setStyleSheet("");
-    }
 }
 
 void NewTailDialog::on_weightComboBox_currentIndexChanged(int index)
 {
-    if (index != 0) {
+    if (index != 0)
         ui->weightComboBox->setStyleSheet("");
-    }
 }
 
 void NewTailDialog::on_buttonBox_accepted()
@@ -258,7 +260,7 @@ void NewTailDialog::on_buttonBox_accepted()
     DEB << "Button Box Accepted.";
     if (ui->registrationLineEdit->text().isEmpty()) {
         QMessageBox message_box(this);
-        message_box.setText("Registration cannot be empty.");
+        message_box.setText(tr("Registration cannot be empty."));
         message_box.exec();
         return;
     }
@@ -267,19 +269,22 @@ void NewTailDialog::on_buttonBox_accepted()
         if (!ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt()) {
             QMessageBox message_box(this);
             message_box.setIcon(QMessageBox::Warning);
-            message_box.setText("Some or all recommended fields are empty.\nPlease go back and "
-                         "complete the form.\n\nYou can allow logging incomplete tail entries on the settings page.");
+            message_box.setText(tr("Some or all recommended fields are empty.<br>"
+                                   "Please go back and complete the form.<br><br>"
+                                   "You can allow logging incomplete tail entries "
+                                   "on the settings page."));
             message_box.exec();
             return;
         } else {
             QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Warning",
-                                          "Some recommended fields are empty.\n\n"
+            reply = QMessageBox::question(this, tr("Warning"),
+                                          tr("Some recommended fields are empty.<br><br>"
                                           "If you do not fill out the aircraft details, "
-                                          "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time."
-                                          "This will also impact statistics and auto-logging capabilites.\n\n"
-                                          "It is highly recommended to fill in all the details.\n\n"
-                                          "Are you sure you want to proceed?",
+                                          "it will be impossible to automatically determine "
+                                          "Single/Multi Pilot Times or Single/Multi Engine Time."
+                                          "This will also impact statistics and auto-logging capabilites.<br><br>"
+                                          "It is highly recommended to fill in all the details.<br><br>"
+                                          "Are you sure you want to proceed?"),
                                           QMessageBox::Yes | QMessageBox::No);
             if (reply == QMessageBox::Yes) {
                 submitForm();
@@ -292,18 +297,17 @@ void NewTailDialog::on_buttonBox_accepted()
 
 void NewTailDialog::onSearchCompleterActivated()
 {
-    DEB << "Search completer activated!";
     const auto &text = ui->searchLineEdit->text();
     if (aircraftList.contains(text)) {
 
             DEB << "Template Selected. aircraft_id is: " << idMap.value(text);
             //call autofiller for dialog
             fillForm(aDB->getAircraftEntry(idMap.value(text)), true);
-            ui->searchLineEdit->setStyleSheet("border: 1px solid green");
+            ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
             ui->searchLabel->setText(text);
         } else {
             //for example, editing finished without selecting a result from Qcompleter
-            ui->searchLineEdit->setStyleSheet("border: 1px solid orange");
+            ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid orange"));
         }
 }
 

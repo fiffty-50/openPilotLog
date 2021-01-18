@@ -27,25 +27,24 @@
 #include <QStyleFactory>
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "firstnameLineEdit", QRegularExpression("[a-zA-Z]+")};
+    QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "lastnameLineEdit", QRegularExpression("\\w+")};
+    QStringLiteral("lastnameLineEdit"), QRegularExpression("\\w+")};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
-    "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+    QStringLiteral("phoneLineEdit"), QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-    "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+    QStringLiteral("emailLineEdit"), QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                                         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-    "companyLineEdit", QRegularExpression("\\w+")};
+    QStringLiteral("companyLineEdit"), QRegularExpression("\\w+")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
-    "employeeidLineEdit", QRegularExpression("\\w+")};
+    QStringLiteral("employeeidLineEdit"), QRegularExpression("\\w+")};
 static const auto PREFIX_VALID = QPair<QString, QRegularExpression> {
-    "prefixLineEdit", QRegularExpression("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]")};
+    QStringLiteral("prefixLineEdit"), QRegularExpression("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]")};
 
-static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>({FIRSTNAME_VALID, LASTNAME_VALID,
-                                           PHONE_VALID,     EMAIL_VALID,
-                                           COMPANY_VALID,     EMPLOYEENR_VALID,
-                                           PREFIX_VALID});
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>{
+    FIRSTNAME_VALID, LASTNAME_VALID, PHONE_VALID, EMAIL_VALID,
+    COMPANY_VALID, EMPLOYEENR_VALID, PREFIX_VALID};
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -278,13 +277,13 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
     ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
     if (index) {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::warning(this, "Warning",
-                                      "Enabling incomplete logging will enable you to add aircraft with incomplete data.\n\n"
+        reply = QMessageBox::warning(this, tr("Warning"),
+                                      tr("Enabling incomplete logging will enable you to add aircraft with incomplete data.<br><br>"
                                       "If you do not fill out the aircraft details, "
                                       "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time. "
-                                      "This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.\n\n"
-                                      "It is highly recommended to keep this option off unless you have a specific reason not to.\n\n"
-                                      "Are you sure you want to proceed?",
+                                      "This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.<br><br>"
+                                      "It is highly recommended to keep this option off unless you have a specific reason not to.<br><br>"
+                                      "Are you sure you want to proceed?"),
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
@@ -307,7 +306,7 @@ void SettingsWidget::on_aboutPushButton_clicked()
 
                        "<h3><center>About openPilotLog</center></h3>"
                        "<br>"
-                       "(c) 2020 Felix Turowsky"
+                       "(c) 2020-2021 Felix Turowsky"
                        "<br>"
                        "<p>This is a collaboratively developed Free and Open Source Application. "
                        "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
@@ -324,16 +323,18 @@ void SettingsWidget::on_aboutPushButton_clicked()
 
                        "<p>You should have received a copy of the GNU General Public License "
                        "along with this program.  If not, "
-                       "please click <a href=\"https://www.gnu.org/licenses/\">here</a>.</p>"
+                       "please click <a href=\"https://%2\">here</a>.</p>"
 
                        "<br>"
 
-                       "<p>This program uses <a href=\"http://%2/\">Qt</a> version %3 and "
-                       "<a href=\"https://sqlite.org/about.html\">SQLite</a> version %4</p>"
-                   ).arg(QLatin1String("github.com/fiffty-50/openpilotlog"),
-                         QLatin1String("qt.io"),
-                         QLatin1String(QT_VERSION_STR),
-                         QString(SQLITE_VERSION));
+                       "<p>This program uses <a href=\"http://%3/\">Qt</a> version %4 and "
+                       "<a href=\"https://%5/\">SQLite</a> version %6</p>"
+                   ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog"),
+                         QStringLiteral("gnu.org/licenses/"),
+                         QStringLiteral("qt.io"),
+                         QT_VERSION_STR,
+                         QStringLiteral("sqlite.org/about.html"),
+                         SQLITE_VERSION);
     message_box.setText(text);
     message_box.exec();
 }
