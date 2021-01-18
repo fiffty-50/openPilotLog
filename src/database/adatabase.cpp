@@ -81,8 +81,8 @@ ADatabase* ADatabase::instance()
 }
 
 ADatabase::ADatabase()
-    : databaseDir(QDir(AStandardPaths::absPathOf(AStandardPaths::Database))),
-      databaseFile(QFileInfo(databaseDir.filePath(QStringLiteral("logbook.db"))))
+    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                             absoluteFilePath(QStringLiteral("logbook.db"))))
 {}
 
 /*!

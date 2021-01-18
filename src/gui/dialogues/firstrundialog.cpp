@@ -1,3 +1,20 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
 #include "src/testing/adebug.h"
@@ -6,7 +23,6 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-#include "src/classes/astandardpaths.h"
 #include "src/oplconstants.h"
 #include <QErrorMessage>
 
@@ -23,14 +39,6 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     for (const auto &approach : Opl::ApproachTypes){
         ui->approachComboBox->addItem(approach);
     }
-
-//    auto *themeGroup = new QButtonGroup;
-//    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-//    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-//    themeGroup->addButton(ui->darkThemeCheckBox, 2);
-
-//    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-//                     this, &FirstRunDialog::on_themeGroup_toggled);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -58,7 +66,6 @@ void FirstRunDialog::on_previousPushButton_clicked()
 void FirstRunDialog::on_nextPushButton_clicked()
 {
     auto current_idx = ui->stackedWidget->currentIndex();
-    // [G]: per index do appropriate error handling
     switch (current_idx) {
     case 0:
         if(ui->firstnameLineEdit->text().isEmpty()
@@ -84,16 +91,11 @@ void FirstRunDialog::on_nextPushButton_clicked()
     ui->stackedWidget->setCurrentIndex(current_idx + 1);
 }
 
-//void FirstRunDialog::on_themeGroup_toggled(int id)
-//{
-//    ASettings::write(ASettings::Main::Theme, id);
-//}
-
 bool FirstRunDialog::finish()
 {
 
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
-    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
@@ -140,8 +142,16 @@ bool FirstRunDialog::setupDatabase()
                                QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
-    if (confirm.exec() == QMessageBox::Yes)
-        ADataBaseSetup::downloadTemplates();
+    if (confirm.exec() == QMessageBox::Yes) {
+        useLocalTemplates = false;
+        if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
+            QMessageBox message_box(this);
+            message_box.setText(QStringLiteral("Downloading latest data has failed.<br><br>Using local data instead."));
+            useLocalTemplates = true; // fall back
+        } else {
+        useLocalTemplates = true;
+    }
+    }
 
     aDB->disconnect();
     ADataBaseSetup::backupOldData();
@@ -153,7 +163,7 @@ bool FirstRunDialog::setupDatabase()
 
     aDB->updateLayout();
 
-    if(!ADataBaseSetup::importDefaultData())
+    if(!ADataBaseSetup::importDefaultData(useLocalTemplates))
         return false;
     return true;
 }

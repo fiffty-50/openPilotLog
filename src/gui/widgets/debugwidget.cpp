@@ -1,3 +1,20 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
 #include "src/classes/astandardpaths.h"
@@ -50,7 +67,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     link_stub.append("/assets/database/templates/");
 
     QStringList template_tables = {"aircraft", "airports", "changelog"};
-    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
     for (const auto& table : template_tables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
@@ -75,7 +92,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
                             "Check console for details.");
         message_box.exec();
     }
-    if (ADataBaseSetup::importDefaultData()) {
+    if (ADataBaseSetup::importDefaultData(false)) {
         message_box.setText("Database has been successfully reset.");
         emit aDB->dataBaseUpdated();
         message_box.exec();
@@ -100,7 +117,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     QString linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
     linkStub.append(ui->branchLineEdit->text());
     linkStub.append("/assets/database/templates/sample_");
-    QDir template_dir(AStandardPaths::absPathOf(AStandardPaths::Templates));
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
     for (const auto& table : userTables) {
         QEventLoop loop;
@@ -116,8 +133,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     allGood.resize(userTables.size());
 
     for (const auto& table : userTables) {
-        auto data = aReadCsv(AStandardPaths::absPathOf(AStandardPaths::Templates)
-                             + "/sample_" + table + ".csv");
+        auto data = aReadCsv(AStandardPaths::directory(AStandardPaths::Templates).absoluteFilePath(
+                             + "sample_" + table + ".csv"));
         allGood.setBit(userTables.indexOf(table), ADataBaseSetup::commitData(data, table));
     }
 
@@ -136,7 +153,7 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
                                                  tr("Open CSV File for import"),
-                                                 AStandardPaths::absPathOf(AStandardPaths::Templates),
+                                                 AStandardPaths::directory(AStandardPaths::Templates).absolutePath(),
                                                  tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }
@@ -145,7 +162,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 {
     ATimer timer(this);
     auto file = QFileInfo(ui->importCsvLineEdit->text());
-    DEB << "File exists/is file: " << file.exists() << file.isFile() << " Path: " << file.absoluteFilePath();
+    DEB << "File exists/is file:" << file.exists() << file.isFile() << " Path:" << file.absoluteFilePath();
 
     if (file.exists() && file.isFile()) {
 
@@ -168,6 +185,8 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::on_debugPushButton_clicked()
 {
     // debug space
+    //ASettings::write(ASettings::Setup::SetupComplete, false);
+
 }
 
 /* //Comparing two functions template

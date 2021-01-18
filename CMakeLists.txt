@@ -97,6 +97,7 @@ set(PROJECT_SOURCES
     src/gui/widgets/totalswidget.ui
     assets/icons.qrc
     assets/themes/breeze.qrc
+    assets/templates.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

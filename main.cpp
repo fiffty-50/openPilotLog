@@ -41,9 +41,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(ORGDOMAIN);
     QCoreApplication::setApplicationName(APPNAME);
 
-    AStandardPaths::setup();
-    AStandardPaths::scan_dirs();
-    if(!AStandardPaths::validate_dirs()){
+    if(!AStandardPaths::setup()){
         DEB << "Standard paths not valid.";
         return 1;
     }
@@ -51,21 +49,25 @@ int main(int argc, char *argv[])
     ASettings::setup();
 
     AStyle::setup();
-    aDB->connect();
+
+    if (!aDB->connect()) {
+        DEB << "Error establishing database connection";
+        return 2;
+    }
+
     if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
         if(FirstRunDialog().exec() == QDialog::Rejected){
-            DEB "First run not accepted. Exiting.";
-            return 1;
+            DEB << "First run not accepted. Exiting.";
+            return 3;
         }
         ASettings::write(ASettings::Setup::SetupComplete, true);
         DEB << "Wrote setup_commplete?";
     }
 
-    //sqlite does not deal well with multiple connections, ensure only one instance is running
     ARunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
-        DEB << "Another Instance is already running. Exiting.";
-        return 2;
+        DEB << "Another Instance of openPilotLog is already running. Exiting.";
+        return 0;
     }
 
 

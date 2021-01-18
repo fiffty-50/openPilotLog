@@ -1,43 +1,58 @@
+/*
+ *openPilot Log - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020  Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "src/classes/astandardpaths.h"
 
-QMap<AStandardPaths::Dirs, QString> AStandardPaths::dirs;
+QMap<AStandardPaths::Directories, QDir> AStandardPaths::directories;
 
-void AStandardPaths::setup()
+bool AStandardPaths::setup()
 {
     auto data_location = QStandardPaths::AppDataLocation;
-    dirs = {  // [G]: potential rename to `dirs`
-        {Database, QStandardPaths::writableLocation(data_location)},
-        {Templates, QDir(QStandardPaths::writableLocation(data_location)).filePath("templates")},
-        {DatabaseBackup, QDir(QStandardPaths::writableLocation(data_location)).filePath("backup")}
+    directories = {
+        {Database, QDir(QStandardPaths::writableLocation(data_location))},
+        {Templates, QDir(QStandardPaths::writableLocation(data_location)
+         + QStringLiteral("/templates"))},
+        {Backup, QDir(QStandardPaths::writableLocation(data_location)
+         + QStringLiteral("/backup"))}
     };
+    if (scan_directories())
+        return true;
+
+    return false;
 }
 
-const QString& AStandardPaths::absPathOf(Dirs loc)
+const QDir& AStandardPaths::directory(Directories location)
 {
-    return dirs[loc];
+    return directories[location];
 }
 
-const QMap<AStandardPaths::Dirs, QString>& AStandardPaths::allPaths()
+const QMap<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
 {
-    return dirs;
+    return directories;
 }
 
-void AStandardPaths::scan_dirs()
+bool AStandardPaths::scan_directories()
 {
-    for(auto& dir : dirs){
-        auto d = QDir(dir);
-        if(!d.exists()) {
-            d.mkpath(dir);
+    for(const auto& dir : directories){
+        if(!dir.exists()) {
+            DEB << dir << "Does not exist. Creating:" << dir.absolutePath();
+            if (!dir.mkpath(dir.absolutePath()))
+                return false;
         }
-    }
-}
-
-bool AStandardPaths::validate_dirs()
-{
-    for(auto& dir : dirs){
-        //DEB << "Validating " << dir;
-        if(false)  // determine path as valid (scan contents and parse for correctness)
-            return false;
     }
     return true;
 }

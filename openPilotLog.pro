@@ -108,6 +108,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     assets/icons.qrc \
+    assets/templates.qrc \
     assets/themes/breeze.qrc
 
 DISTFILES += \
