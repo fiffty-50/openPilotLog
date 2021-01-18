@@ -199,13 +199,17 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             lastError = QString();
             return true;
         } else {
-            lastError = "Transaction unsuccessful (Interrupted). Error count: " + QString::number(errorCount);
+            lastError = ADatabaseError(
+                        "Transaction unsuccessful (Interrupted). Error count: "
+                        + QString::number(errorCount));
             return false;
         }
     } else {
         query.prepare(QStringLiteral("ROLLBACK"));
         query.exec();
-        lastError = "Transaction unsuccessful (no changes have been made). Error count: " + QString::number(errorCount);
+        lastError = ADatabaseError(
+                    "Transaction unsuccessful (no changes have been made). Error count: "
+                    + QString::number(errorCount));
         return false;
     }
 }
