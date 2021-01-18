@@ -39,19 +39,19 @@
 
 static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-     "firstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     QStringLiteral("firstnameLineEdit"), QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-     "lastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     QStringLiteral("lastnameLineEdit"), QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
-     "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+     QStringLiteral("phoneLineEdit"), QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-     "emailLineEdit", QRegularExpression(
+     QStringLiteral("emailLineEdit"), QRegularExpression(
                 "\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
                 "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-     "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
+     QStringLiteral("companyLineEdit"), QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
-     "employeeidLineEdit", QRegularExpression("\\w+")};
+     QStringLiteral("employeeidLineEdit"), QRegularExpression("\\w+")};
 
 static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>> {
         FIRSTNAME_VALID,
@@ -119,7 +119,7 @@ void NewPilotDialog::on_buttonBox_accepted()
 {
     if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
         QMessageBox message_box(this);
-        message_box.setText("Last Name and First Name are required.");
+        message_box.setText(tr("Last Name and First Name are required."));
         message_box.show();
     } else {
         submitForm();
@@ -132,7 +132,7 @@ void NewPilotDialog::formFiller()
     auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
-        auto key = le->objectName().remove("LineEdit");
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         le->setText(pilotEntry.getData().value(key).toString());
     }
 }
@@ -144,7 +144,7 @@ void NewPilotDialog::submitForm()
     RowData new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
-        auto key = le->objectName().remove("LineEdit");
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         auto value = le->text();
         new_data.insert(key, value);
     }
@@ -154,9 +154,10 @@ void NewPilotDialog::submitForm()
     DEB << "Pilot entry data: " << pilotEntry.getData();
     if (!aDB->commit(pilotEntry)) {
         QMessageBox message_box(this);
-        message_box.setText("The following error has ocurred:\n\n"
-                            + aDB->lastError.text()
-                            + "\n\nThe entry has not been saved.");
+        message_box.setText(tr("The following error has ocurred:"
+                               "<br><br>%1<br><br>"
+                               "The entry has not been saved."
+                               ).arg(aDB->lastError.text()));
         message_box.exec();
         return;
     } else {

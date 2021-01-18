@@ -18,6 +18,7 @@
 #include "totalswidget.h"
 #include "ui_totalswidget.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
 
 TotalsWidget::TotalsWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,20 +27,28 @@ TotalsWidget::TotalsWidget(QWidget *parent) :
     ui->setupUi(this);
     auto data = AStat::totals();
     DEB << "Filling Totals Line Edits...";
-    //DEB << "data: " << data;
     for (const auto &field : data) {
         auto line_edit = parent->findChild<QLineEdit *>(field.first + "LineEdit");
         line_edit->setText(field.second);
     }
-    QSettings settings;
-    QString name = settings.value("userdata/firstname").toString();
-    if(!name.isEmpty()) {
-        QString salutation = "Welcome to openPilotLog, " + name + QLatin1Char('!');
-        ui->welcomeLabel->setText(salutation);
-    }
+
+    QString salutation = tr("Welcome to openPilotLog");
+    salutation.append(QStringLiteral(", ") + userName() + QLatin1Char('!'));
+
+    ui->welcomeLabel->setText(salutation);
 }
 
 TotalsWidget::~TotalsWidget()
 {
     delete ui;
+}
+
+const QString TotalsWidget::userName()
+{
+    auto namestring = aDB->getPilotEntry(1).name();
+    auto names = namestring.split(',');
+    if (!names.isEmpty())
+        return names[0];
+
+    return QString();
 }

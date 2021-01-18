@@ -85,12 +85,12 @@ void AircraftWidget::on_deleteButton_clicked()
 {
     if (selectedTails.length() == 0) {
         QMessageBox message_box(this);
-        message_box.setText(QStringLiteral("No Aircraft selected."));
+        message_box.setText(tr("No Aircraft selected."));
         message_box.exec();
 
     } else if (selectedTails.length() > 1) {
         QMessageBox message_box(this);
-        message_box.setText(QStringLiteral("Deleting multiple entries is currently not supported"));
+        message_box.setText(tr("Deleting multiple entries is currently not supported"));
         message_box.exec();
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
@@ -104,42 +104,59 @@ void AircraftWidget::on_deleteButton_clicked()
     } else if (selectedTails.length() == 1) {
         auto entry = aDB->getTailEntry(selectedTails.first());
         QMessageBox message_box(this);
-        QString message = "You are deleting the following aircraft:<br><br><b><tt>";
-        message.append(entry.registration() + QStringLiteral(" - (") + entry.type() + ')');
-        message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
-        message_box.setText(message);
-        message_box.exec();
-        if(!aDB->remove(entry))
-            onDeleteUnsuccessful();
+        message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        message_box.setDefaultButton(QMessageBox::No);
+        message_box.setIcon(QMessageBox::Question);
+        message_box.setWindowTitle(tr("Delete Aircraft"));
+        message_box.setText(tr("You are deleting the following aircraft:<br><br><b><tt>"
+                               "%1 - (%2)</b></tt><br><br>Are you sure?"
+                               ).arg(entry.registration(),
+                                     entry.type()));
+
+        if (message_box.exec() == QMessageBox::Yes) {
+            if(!aDB->remove(entry))
+                onDeleteUnsuccessful();
         }
+    }
+
     model->select();
 }
 
 void AircraftWidget::onDeleteUnsuccessful()
 {
-    /// [F]: To do: Some logic to display a warning if too many entries exists, so that
-    /// the messagebox doesn't grow too tall.
-    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(), ADatabaseTarget::tails);
+    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
+                                                                       ADatabaseTarget::tails);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
-    QString message = "<br>Unable to delete.<br><br>";
-    if(!constrained_flights.isEmpty()){
-        message.append(QStringLiteral("This is most likely the case because a flight exists with the aircraft "
-                   "you are trying to delete.<br>"
-                   "The following flight(s) with this aircraft have been found:<br><br><br><b><tt>"));
-        for (auto &flight : constrained_flights) {
-            message.append(flight.summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-        }
-    }
-    message.append(QStringLiteral("</b></tt><br><br>You have to change or remove the conflicting flight(s) "
-                                  "before removing this aircraft from the database.<br><br>"));
     QMessageBox message_box(this);
-    message_box.setText(message);
-    message_box.setIcon(QMessageBox::Critical);
-    message_box.exec();
+    if (constrained_flights.isEmpty()) {
+        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
+                               ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return;
+    } else {
+        QString constrained_flights_string;
+        for (int i=0; i<constrained_flights.length(); i++) {
+            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            if (i>10) {
+                constrained_flights_string.append("<br>[...]<br>");
+                break;
+            }
+        }
+        message_box.setText(tr("Unable to delete.<br><br>"
+                               "This is most likely the case because a flight exists with the aircraft "
+                               "you are trying to delete.<br><br>"
+                               "%1 flight(s) with this aircraft have been found:<br><br><br><b><tt>"
+                               "%2"
+                               "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+                               "before removing this aircraft from the database.<br><br>"
+                               ).arg(QString::number(constrained_flights.length()), constrained_flights_string));
+        message_box.setIcon(QMessageBox::Critical);
+        message_box.exec();
+    }
 }
 
 void AircraftWidget::on_newAircraftButton_clicked()
@@ -155,7 +172,9 @@ void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
     if(ui->aircraftSearchComboBox->currentIndex() == 0){
         ui->aircraftSearchLineEdit->setText(arg1.toUpper());
     }
-    model->setFilter(ui->aircraftSearchComboBox->currentText() + " LIKE \"%" + arg1 + "%\"");
+    model->setFilter(ui->aircraftSearchComboBox->currentText()
+                     + QStringLiteral(" LIKE \"%")
+                     + arg1 + QStringLiteral("%\""));
 }
 
 void AircraftWidget::onDisplayModel_dataBaseUpdated()
@@ -167,7 +186,6 @@ void AircraftWidget::onDisplayModel_dataBaseUpdated()
 void AircraftWidget::tableView_selectionChanged()
 {
     if (this->findChild<NewTailDialog*>() != nullptr) {
-        DEB << "Selection changed. Deleting orphaned dialog.";
         delete this->findChild<NewTailDialog*>();
         /// [F] if the user changes the selection without making any changes,
         /// if(selectedTails.length() == 1) spawns a new dialog without the

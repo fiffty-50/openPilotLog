@@ -56,7 +56,7 @@ void FirstRunDialog::on_previousPushButton_clicked()
         ui->previousPushButton->setEnabled(false);
         break;
     case 2:
-        ui->nextPushButton->setText(QStringLiteral("Next"));
+        ui->nextPushButton->setText(tr("Next"));
         break;
     }
     ui->stackedWidget->setCurrentIndex(current_idx - 1);
@@ -71,15 +71,15 @@ void FirstRunDialog::on_nextPushButton_clicked()
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
         {
-            QMessageBox(QMessageBox::Warning, QStringLiteral("Error"),
-                        QStringLiteral("Please enter first and last name")
+            QMessageBox(QMessageBox::Warning, tr("Error"),
+                        tr("Please enter first and last name")
                         ).exec();
             return;
         }
         ui->previousPushButton->setEnabled(true);
         break;
     case 1:
-        ui->nextPushButton->setText(QStringLiteral("Done"));
+        ui->nextPushButton->setText(tr("Done"));
         break;
     case 2:
         if(!finish())
@@ -114,9 +114,9 @@ bool FirstRunDialog::finish()
     data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
     data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
-    QMessageBox db_fail_msg_box(QMessageBox::Critical, QStringLiteral("Database setup failed"),
-                                       QStringLiteral("Errors have ocurred creating the database."
-                                                      "Without a working database The application will not be usable."));
+    QMessageBox db_fail_msg_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable."));
     if (!setupDatabase()) {
         db_fail_msg_box.exec();
         return false;
@@ -135,8 +135,8 @@ bool FirstRunDialog::finish()
 
 bool FirstRunDialog::setupDatabase()
 {
-    QMessageBox confirm(QMessageBox::Question, QStringLiteral("Create Database"),
-                               QStringLiteral("We are now going to create the database.<br>"  // [G]: Why both <br> and \n ?
+    QMessageBox confirm(QMessageBox::Question, tr("Create Database"),
+                               tr("We are now going to create the database.<br>"
                                               "Would you like to download the latest database information?"
                                               "<br>(Recommended, Internet connection required)"),
                                QMessageBox::Yes | QMessageBox::No, this);
@@ -146,7 +146,7 @@ bool FirstRunDialog::setupDatabase()
         useLocalTemplates = false;
         if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
             QMessageBox message_box(this);
-            message_box.setText(QStringLiteral("Downloading latest data has failed.<br><br>Using local data instead."));
+            message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
             useLocalTemplates = true; // fall back
         } else {
         useLocalTemplates = true;
@@ -171,8 +171,8 @@ bool FirstRunDialog::setupDatabase()
 void FirstRunDialog::reject()
 {
     QMessageBox confirm(QMessageBox::Critical,
-                               QStringLiteral("Setup incomplete"),
-                               QStringLiteral("Without completing the initial setup"
+                               tr("Setup incomplete"),
+                               tr("Without completing the initial setup"
                                               " you cannot use the application.<br><br>"
                                               "Quit anyway?"),
                                QMessageBox::Yes | QMessageBox::No, this);

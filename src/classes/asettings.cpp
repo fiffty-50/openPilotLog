@@ -20,19 +20,19 @@
 
 
 QMap<ASettings::Main, QString> ASettings::mainMap = {
-    {Main::Style,      QStringLiteral("style")},
-    {Main::StyleSheet, QStringLiteral("stylesheet")},
+    {Main::Style,                       QStringLiteral("style")},
+    {Main::StyleSheet,                  QStringLiteral("stylesheet")},
 };
 
 QMap<ASettings::LogBook, QString> ASettings::logBookMap = {
-    {LogBook::View, QStringLiteral("view")},
+    {LogBook::View,                     QStringLiteral("view")},
 };
 
 QMap<ASettings::UserData, QString> ASettings::userDataMap = {
-    {UserData::DisplaySelfAs,     QStringLiteral("displayselfas")},
-    {UserData::AcftSortColumn,      QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
-    {UserData::PilSortColumn,     QStringLiteral("pilSortColumn")},
-    {UserData::AcAllowIncomplete, QStringLiteral("acAllowIncomplete")},
+    {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
+    {UserData::AcftSortColumn,          QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
+    {UserData::PilSortColumn,           QStringLiteral("pilSortColumn")},
+    {UserData::AcAllowIncomplete,       QStringLiteral("acAllowIncomplete")},
 };
 
 QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
@@ -51,12 +51,12 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
 };
 
 QMap<ASettings::Setup, QString> ASettings::setupMap = {
-    {Setup::SetupComplete, QStringLiteral("setupComplete")}
+    {Setup::SetupComplete,              QStringLiteral("setupComplete")}
 };
 
 QMap<ASettings::NewFlight, QString> ASettings::newFlightMap = {
-    {NewFlight::FunctionComboBox, QStringLiteral("FunctionComboBox")},  // inconsistent naming
-    {NewFlight::CalendarCheckBox, QStringLiteral("calendarCheckBox")},
+    {NewFlight::FunctionComboBox,       QStringLiteral("FunctionComboBox")},  // inconsistent naming
+    {NewFlight::CalendarCheckBox,       QStringLiteral("calendarCheckBox")},
 };
 
 void ASettings::setup()

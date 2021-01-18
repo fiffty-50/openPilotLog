@@ -39,6 +39,7 @@ public:
 
 private:
     Ui::TotalsWidget *ui;
+    const QString userName();
 };
 
 #endif // TOTALSWIDGET_H
