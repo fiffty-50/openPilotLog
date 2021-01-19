@@ -55,9 +55,41 @@ static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
     {6, QObject::tr("Aircraft Registration")}
 };
 
-
-
-
+//
+// MandatoryLineEdits definition
+//
+bool NewFlightDialog::MandatoryLineEdits::contains(QLineEdit* le)
+{
+    return lineEdits.contains(le);
+}
+void NewFlightDialog::MandatoryLineEdits::validate(QLineEdit* le)
+{
+    lineEditsOk.setBit(lineEdits.indexOf(le), true);
+}
+void NewFlightDialog::MandatoryLineEdits::unvalidate(QLineEdit* le)
+{
+    lineEditsOk.setBit(lineEdits.indexOf(le), false);
+}
+int NewFlightDialog::MandatoryLineEdits::countOk()
+{
+    return lineEditsOk.count(true);
+}
+int NewFlightDialog::MandatoryLineEdits::size()
+{
+    return lineEditsOk.size();
+}
+bool NewFlightDialog::MandatoryLineEdits::okAt(int idx)
+{
+    return lineEditsOk[idx];
+}
+bool NewFlightDialog::MandatoryLineEdits::allOk()
+{
+    return lineEditsOk.count(true) == lineEdits.size();
+}
+QLineEdit* NewFlightDialog::MandatoryLineEdits::operator[] (int idx)
+{
+    return lineEdits[idx];
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                      Construction                                           ///
@@ -255,8 +287,10 @@ void NewFlightDialog::setupRawInputValidation()
             }
         }
     }
+
+    // [G]: TODO cleanup
     // populate Mandatory Line Edits list and prepare QBitArray
-    mandatoryLineEdits = {
+    mandatoryLineEdits.lineEdits = {
         ui->doftLineEdit,
         ui->deptLocLineEdit,
         ui->destLocLineEdit,
@@ -265,6 +299,8 @@ void NewFlightDialog::setupRawInputValidation()
         ui->picNameLineEdit,
         ui->acftLineEdit,
     };
+    mandatoryLineEdits.lineEditsOk.resize(mandatoryLineEdits.lineEdits.size());
+
     primaryTimeLineEdits = {
         ui->tofbTimeLineEdit,
         ui->tonbTimeLineEdit
@@ -275,7 +311,6 @@ void NewFlightDialog::setupRawInputValidation()
         ui->thirdPilotNameLineEdit
     };
 
-    mandatoryLineEditsGood.resize(mandatoryLineEdits.size());
 }
 
 void NewFlightDialog::setupSignalsAndSlots()
@@ -302,7 +337,7 @@ void NewFlightDialog::setupSignalsAndSlots()
         }
     }
 #if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
-    for (const auto &line_edit : qAsConst(mandatoryLineEdits)) {
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits.lineEdits)) {
         if(line_edit->objectName().contains(QStringLiteral("doft")))
             break;
         QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::highlighted),
@@ -351,7 +386,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
     auto line_edit = qobject_cast<QLineEdit*>(object);
     if (line_edit != nullptr) {
         if (mandatoryLineEdits.contains(line_edit) && event->type() == QEvent::FocusIn) {
-            mandatoryLineEditsGood.setBit(mandatoryLineEdits.indexOf(line_edit), false);
+            mandatoryLineEdits.unvalidate(line_edit);
             DEB << "Editing " << line_edit->objectName();
             // set verification bit to false when entering a mandatory line edit
             return false;
@@ -386,7 +421,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
 void NewFlightDialog::fillDeductibleData()
 {
     // check if mandatory line edits are valid
-    if (mandatoryLineEditsGood.count(true) != 7) {
+    if (!mandatoryLineEdits.allOk()) {
         return;
     }
 
@@ -756,14 +791,14 @@ void NewFlightDialog::formFiller()
         ui->AutolandSpinBox->setValue(AL);
     }
 
-    for(const auto& le : mandatoryLineEdits){
+    for(const auto& le : mandatoryLineEdits.lineEdits){
         emit le->editingFinished();
     }
 }
 
 bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 {
-    if (mandatoryLineEditsGood.count(true) != 7){
+    if (!mandatoryLineEdits.allOk()){
         QMessageBox message_box(this);
         message_box.setText(tr("Unable to determine total block time.<br>"
                                "Please fill out all Mandatory Fields<br>"
@@ -864,14 +899,14 @@ void NewFlightDialog::on_cancelButton_clicked()
 
 void NewFlightDialog::on_submitButton_clicked()
 {
-    for (const auto &line_edit : mandatoryLineEdits) {
+    for (const auto &line_edit : mandatoryLineEdits.lineEdits) {
         emit line_edit->editingFinished();
     }
-    DEB << "editing finished emitted. good count: " << mandatoryLineEditsGood.count(true);
-    if (mandatoryLineEditsGood.count(true) != 7) {
+    DEB << "editing finished emitted. good count: " << mandatoryLineEdits.countOk();
+    if (!mandatoryLineEdits.allOk()) {
         QString missing_items;
-        for (int i=0; i < mandatoryLineEditsGood.size(); i++) {
-            if (!mandatoryLineEditsGood[i]){
+        for (int i=0; i < mandatoryLineEdits.size(); i++) {
+            if (!mandatoryLineEdits.okAt(i)){
                 missing_items.append(MANDATORY_LINE_EDITS_DISPLAY_NAMES.value(i) + "<br>");
                 mandatoryLineEdits[i]->setStyleSheet(QStringLiteral("border: 1px solid red"));
             }
@@ -887,7 +922,7 @@ void NewFlightDialog::on_submitButton_clicked()
         return;
     }
 
-    DEB << "Submit Button clicked. Mandatory good (out of 7): " << mandatoryLineEditsGood.count(true);
+    DEB << "Submit Button clicked. Mandatory good (out of 8): " << mandatoryLineEdits.countOk();
     auto newData = collectInput();
     DEB << "Setting Data for flightEntry...";
     flightEntry.setData(newData);
@@ -918,13 +953,13 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
     line_edit->setStyleSheet("");
 
     if (mandatoryLineEdits.contains(line_edit))
-        mandatoryLineEditsGood.setBit(mandatoryLineEdits.indexOf(line_edit), true);
+        mandatoryLineEdits.validate(line_edit);
 
-    if (mandatoryLineEditsGood.count(true) == 7)
+    if (mandatoryLineEdits.allOk())
         onMandatoryLineEditsFilled();
 
-    DEB << "Mandatory good: " << mandatoryLineEditsGood.count(true)
-        << " (out of 7) " << mandatoryLineEditsGood;
+    DEB << "Mandatory good: " << mandatoryLineEdits.countOk()
+        << " (out of 7) " << mandatoryLineEdits.lineEdits;
 
 }
 
@@ -933,8 +968,8 @@ void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
     DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
     line_edit->setStyleSheet(QStringLiteral("border: 1px solid red"));
 
-    DEB << "Mandatory Good: " << mandatoryLineEditsGood.count(true) << " out of "
-        << mandatoryLineEditsGood.size() << ". Array: " << mandatoryLineEditsGood;
+    DEB << "Mandatory Good: " << mandatoryLineEdits.countOk() << " out of "
+        << mandatoryLineEdits.size() << ". Array: " << mandatoryLineEdits.lineEditsOk;
 }
 
 // capitalize input for dept, dest and registration input
@@ -952,14 +987,14 @@ void NewFlightDialog::onToUpperTriggered_textChanged(const QString &text)
 // update is disabled if the user chose to manually edit extra times
 void NewFlightDialog::onMandatoryLineEditsFilled()
 {
-    if (!(mandatoryLineEditsGood.count(true) == 7)) {
+    if (!mandatoryLineEdits.allOk()) {
         DEB << "erroneously called.";
         return;
     };
 
     if (updateEnabled)
         fillDeductibleData();
-    DEB << mandatoryLineEditsGood;
+    DEB << mandatoryLineEdits.lineEditsOk;
 }
 
 // make sure that when using keyboard to scroll through completer sugggestions, line edit is up to date
@@ -1256,13 +1291,13 @@ void NewFlightDialog::on_PilotFlyingCheckBox_stateChanged(int)
 
 void NewFlightDialog::on_IfrCheckBox_stateChanged(int)
 {
-    if (mandatoryLineEditsGood.count(true) == 7 && updateEnabled)
+    if (mandatoryLineEdits.allOk() && updateEnabled)
         onMandatoryLineEditsFilled();
 }
 
 void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
-    if (!(mandatoryLineEditsGood.count(true) == 7) && ui->manualEditingCheckBox->isChecked()) {
+    if (!(mandatoryLineEdits.allOk()) && ui->manualEditingCheckBox->isChecked()) {
         QMessageBox message_box(this);
         message_box.setText(tr("Before editing times manually, please fill out the required fields "
                                "in the flight data tab, so that total time can be calculated."));
@@ -1280,7 +1315,7 @@ void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
             le->setStyleSheet("");
         }
         updateEnabled = true;
-        if (mandatoryLineEditsGood.count(true) == 7 && updateEnabled)
+        if (mandatoryLineEdits.allOk() && updateEnabled)
             onMandatoryLineEditsFilled();
         break;
     case 2:
