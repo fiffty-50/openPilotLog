@@ -57,7 +57,15 @@ static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
 
 //
 // MandatoryLineEdits definition
-//
+// Ugly but works
+NewFlightDialog::MandatoryLineEdits::MandatoryLineEdits(std::initializer_list<QLineEdit*> il)
+    : lineEdits(il), lineEditsOk(il.size())
+{}
+void NewFlightDialog::MandatoryLineEdits::operator= (std::initializer_list<QLineEdit*> il)
+{
+    lineEdits = il;
+    lineEdits.resize(il.size());
+}
 bool NewFlightDialog::MandatoryLineEdits::contains(QLineEdit* le)
 {
     return lineEdits.contains(le);
@@ -290,7 +298,7 @@ void NewFlightDialog::setupRawInputValidation()
 
     // [G]: TODO cleanup
     // populate Mandatory Line Edits list and prepare QBitArray
-    mandatoryLineEdits.lineEdits = {
+    mandatoryLineEdits = {
         ui->doftLineEdit,
         ui->deptLocLineEdit,
         ui->destLocLineEdit,
@@ -299,7 +307,6 @@ void NewFlightDialog::setupRawInputValidation()
         ui->picNameLineEdit,
         ui->acftLineEdit,
     };
-    mandatoryLineEdits.lineEditsOk.resize(mandatoryLineEdits.lineEdits.size());
 
     primaryTimeLineEdits = {
         ui->tofbTimeLineEdit,
