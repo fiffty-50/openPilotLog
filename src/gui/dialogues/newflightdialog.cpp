@@ -58,41 +58,41 @@ static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
 //
 // MandatoryLineEdits definition
 // Ugly but works
-NewFlightDialog::MandatoryLineEdits::MandatoryLineEdits(std::initializer_list<QLineEdit*> il)
-    : lineEdits(il), lineEditsOk(il.size())
+NewFlightDialog::MandatoryLineEdits::MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list)
+    : lineEdits(init_list), lineEditsValid(QBitArray(init_list.size()))
 {}
-void NewFlightDialog::MandatoryLineEdits::operator= (std::initializer_list<QLineEdit*> il)
+void NewFlightDialog::MandatoryLineEdits::operator= (std::initializer_list<QLineEdit*> init_list)
 {
-    lineEdits = il;
-    lineEdits.resize(il.size());
+    lineEdits = init_list;
+    lineEditsValid.resize(init_list.size());
 }
-bool NewFlightDialog::MandatoryLineEdits::contains(QLineEdit* le)
+bool NewFlightDialog::MandatoryLineEdits::contains(QLineEdit* line_edit)
 {
-    return lineEdits.contains(le);
+    return lineEdits.contains(line_edit);
 }
-void NewFlightDialog::MandatoryLineEdits::validate(QLineEdit* le)
+void NewFlightDialog::MandatoryLineEdits::validate(QLineEdit* line_edit)
 {
-    lineEditsOk.setBit(lineEdits.indexOf(le), true);
+    lineEditsValid.setBit(lineEdits.indexOf(line_edit), true);
 }
-void NewFlightDialog::MandatoryLineEdits::unvalidate(QLineEdit* le)
+void NewFlightDialog::MandatoryLineEdits::unvalidate(QLineEdit* line_edit)
 {
-    lineEditsOk.setBit(lineEdits.indexOf(le), false);
+    lineEditsValid.setBit(lineEdits.indexOf(line_edit), false);
 }
-int NewFlightDialog::MandatoryLineEdits::countOk()
+int NewFlightDialog::MandatoryLineEdits::countValid()
 {
-    return lineEditsOk.count(true);
+    return lineEditsValid.count(true);
 }
 int NewFlightDialog::MandatoryLineEdits::size()
 {
-    return lineEditsOk.size();
+    return lineEditsValid.size();
 }
-bool NewFlightDialog::MandatoryLineEdits::okAt(int idx)
+bool NewFlightDialog::MandatoryLineEdits::validAt(int idx)
 {
-    return lineEditsOk[idx];
+    return lineEditsValid[idx];
 }
-bool NewFlightDialog::MandatoryLineEdits::allOk()
+bool NewFlightDialog::MandatoryLineEdits::allValid()
 {
-    return lineEditsOk.count(true) == lineEdits.size();
+    return lineEditsValid.count(true) == lineEdits.size();
 }
 QLineEdit* NewFlightDialog::MandatoryLineEdits::operator[] (int idx)
 {
@@ -428,7 +428,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
 void NewFlightDialog::fillDeductibleData()
 {
     // check if mandatory line edits are valid
-    if (!mandatoryLineEdits.allOk()) {
+    if (!mandatoryLineEdits.allValid()) {
         return;
     }
 
@@ -479,7 +479,7 @@ void NewFlightDialog::fillDeductibleData()
         ui->tIFRLabel->setText(block_time_string);
     }
     // Night
-    auto dept_date = ui->doftLineEdit->text() + 'T'
+    QString dept_date = ui->doftLineEdit->text() + 'T'
             + ATime::toString(tofb);
     auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
@@ -569,7 +569,7 @@ RowData NewFlightDialog::collectInput()
         newData.insert(Opl::Db::FLIGHTS_TIFR, EMPTY_STRING);
     }
     // Night
-    const auto dept_date = ui->doftLineEdit->text() + 'T'
+    const QString dept_date = ui->doftLineEdit->text() + 'T'
             + ATime::toString(tofb);
     const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
@@ -651,7 +651,7 @@ RowData NewFlightDialog::collectInput()
             newData.insert(Opl::Db::FLIGHTS_LDGDAY, 0);
             newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
         } else { //check
-            const auto dest_date = ui->doftLineEdit->text() + 'T'
+            const QString dest_date = ui->doftLineEdit->text() + 'T'
                     + ATime::toString(tonb);
             const auto dest_date_time = QDateTime::fromString(dest_date, QStringLiteral("yyyy-MM-ddThh:mm"));
             if (ACalc::isNight(ui->destLocLineEdit->text(), dest_date_time,  night_angle)) {
@@ -692,7 +692,7 @@ void NewFlightDialog::formFiller()
 
     for (const auto& data_key : flightEntry.getData().keys()) {
         auto rx = QRegularExpression(data_key + QStringLiteral("LineEdit"));//acftLineEdit
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -704,7 +704,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + QStringLiteral("Loc\\w+?"));
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Loc Match found: " << key << " - " << leName);
                 auto line_edit = this->findChild<QLineEdit *>(leName);
@@ -716,7 +716,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + QStringLiteral("Time\\w+?"));
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 //DEB << "Time Match found: " << key << " - " << leName);
                 auto line_edits = this->findChild<QLineEdit *>(leName);
@@ -730,7 +730,7 @@ void NewFlightDialog::formFiller()
             }
         }
         rx = QRegularExpression(data_key + QStringLiteral("Name\\w+?"));
-        for(const auto& leName : line_edits_names){
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
                 auto line_edits = this->findChild<QLineEdit *>(leName);
                 if(line_edits != nullptr){
@@ -798,14 +798,14 @@ void NewFlightDialog::formFiller()
         ui->AutolandSpinBox->setValue(AL);
     }
 
-    for(const auto& le : mandatoryLineEdits.lineEdits){
+    for(const auto& le : qAsConst(mandatoryLineEdits.lineEdits)){
         emit le->editingFinished();
     }
 }
 
 bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 {
-    if (!mandatoryLineEdits.allOk()){
+    if (!mandatoryLineEdits.allValid()){
         QMessageBox message_box(this);
         message_box.setText(tr("Unable to determine total block time.<br>"
                                "Please fill out all Mandatory Fields<br>"
@@ -906,14 +906,14 @@ void NewFlightDialog::on_cancelButton_clicked()
 
 void NewFlightDialog::on_submitButton_clicked()
 {
-    for (const auto &line_edit : mandatoryLineEdits.lineEdits) {
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits.lineEdits)) {
         emit line_edit->editingFinished();
     }
-    DEB << "editing finished emitted. good count: " << mandatoryLineEdits.countOk();
-    if (!mandatoryLineEdits.allOk()) {
+    DEB << "editing finished emitted. good count: " << mandatoryLineEdits.countValid();
+    if (!mandatoryLineEdits.allValid()) {
         QString missing_items;
         for (int i=0; i < mandatoryLineEdits.size(); i++) {
-            if (!mandatoryLineEdits.okAt(i)){
+            if (!mandatoryLineEdits.validAt(i)){
                 missing_items.append(MANDATORY_LINE_EDITS_DISPLAY_NAMES.value(i) + "<br>");
                 mandatoryLineEdits[i]->setStyleSheet(QStringLiteral("border: 1px solid red"));
             }
@@ -929,7 +929,7 @@ void NewFlightDialog::on_submitButton_clicked()
         return;
     }
 
-    DEB << "Submit Button clicked. Mandatory good (out of 8): " << mandatoryLineEdits.countOk();
+    DEB << "Submit Button clicked. Mandatory good " << mandatoryLineEdits.size() << "out of: " << mandatoryLineEdits.countValid();
     auto newData = collectInput();
     DEB << "Setting Data for flightEntry...";
     flightEntry.setData(newData);
@@ -962,12 +962,12 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
     if (mandatoryLineEdits.contains(line_edit))
         mandatoryLineEdits.validate(line_edit);
 
-    if (mandatoryLineEdits.allOk())
+    if (mandatoryLineEdits.allValid())
         onMandatoryLineEditsFilled();
 
-    DEB << "Mandatory good: " << mandatoryLineEdits.countOk()
-        << " (out of 7) " << mandatoryLineEdits.lineEdits;
-
+    DEB << "Mandatory good: " << mandatoryLineEdits.countValid()
+        << " out of " << mandatoryLineEdits.size()
+        << " : " << mandatoryLineEdits.lineEdits;
 }
 
 void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
@@ -975,8 +975,8 @@ void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
     DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
     line_edit->setStyleSheet(QStringLiteral("border: 1px solid red"));
 
-    DEB << "Mandatory Good: " << mandatoryLineEdits.countOk() << " out of "
-        << mandatoryLineEdits.size() << ". Array: " << mandatoryLineEdits.lineEditsOk;
+    DEB << "Mandatory Good: " << mandatoryLineEdits.countValid() << " out of "
+        << mandatoryLineEdits.size() << ". Array: " << mandatoryLineEdits.lineEditsValid;
 }
 
 // capitalize input for dept, dest and registration input
@@ -994,14 +994,14 @@ void NewFlightDialog::onToUpperTriggered_textChanged(const QString &text)
 // update is disabled if the user chose to manually edit extra times
 void NewFlightDialog::onMandatoryLineEditsFilled()
 {
-    if (!mandatoryLineEdits.allOk()) {
+    if (!mandatoryLineEdits.allValid()) {
         DEB << "erroneously called.";
         return;
     };
 
     if (updateEnabled)
         fillDeductibleData();
-    DEB << mandatoryLineEdits.lineEditsOk;
+    DEB << mandatoryLineEdits.lineEditsValid;
 }
 
 // make sure that when using keyboard to scroll through completer sugggestions, line edit is up to date
@@ -1298,13 +1298,13 @@ void NewFlightDialog::on_PilotFlyingCheckBox_stateChanged(int)
 
 void NewFlightDialog::on_IfrCheckBox_stateChanged(int)
 {
-    if (mandatoryLineEdits.allOk() && updateEnabled)
+    if (mandatoryLineEdits.allValid() && updateEnabled)
         onMandatoryLineEditsFilled();
 }
 
 void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
-    if (!(mandatoryLineEdits.allOk()) && ui->manualEditingCheckBox->isChecked()) {
+    if (!(mandatoryLineEdits.allValid()) && ui->manualEditingCheckBox->isChecked()) {
         QMessageBox message_box(this);
         message_box.setText(tr("Before editing times manually, please fill out the required fields "
                                "in the flight data tab, so that total time can be calculated."));
@@ -1322,7 +1322,7 @@ void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
             le->setStyleSheet("");
         }
         updateEnabled = true;
-        if (mandatoryLineEdits.allOk() && updateEnabled)
+        if (mandatoryLineEdits.allValid() && updateEnabled)
             onMandatoryLineEditsFilled();
         break;
     case 2:

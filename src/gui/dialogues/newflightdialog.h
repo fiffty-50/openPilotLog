@@ -99,25 +99,25 @@ private:
      */
     struct MandatoryLineEdits {
         QVector<QLineEdit*> lineEdits;
-        QBitArray lineEditsOk;
+        QBitArray lineEditsValid;
 
         MandatoryLineEdits() = default;
-        MandatoryLineEdits(std::initializer_list<QLineEdit*> il);
-        void operator= (std::initializer_list<QLineEdit*> il);
+        MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list);
+        void operator= (std::initializer_list<QLineEdit*> init_list);
 
-        bool contains(QLineEdit* le);
-        void validate(QLineEdit* le);
-        void unvalidate(QLineEdit* le);
-        int countOk();
+        bool contains(QLineEdit* line_edit);
+        void validate(QLineEdit* line_edit);
+        void unvalidate(QLineEdit* line_edit);
+        int countValid();
         int size();
-        bool okAt(int idx);
-        bool allOk();
+        bool validAt(int idx);
+        bool allValid();
         QLineEdit* operator[] (int idx);
 
     } mandatoryLineEdits;
 
-    QList<QLineEdit*> primaryTimeLineEdits;
-    QList<QLineEdit*> pilotsLineEdits;
+    QVector<QLineEdit*> primaryTimeLineEdits;
+    QVector<QLineEdit*> pilotsLineEdits;
 
     /*!
      * To be used by the QCompleters
