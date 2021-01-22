@@ -92,15 +92,32 @@ private:
      */
     AFlightEntry flightEntry;
 
-    QList<QLineEdit*> mandatoryLineEdits;
-    QList<QLineEdit*> primaryTimeLineEdits;
-    QList<QLineEdit*> pilotsLineEdits;
-
+    // [G]: Initial refactoring based on previous use.
     /*!
-     * \brief holds a bit for each mandatory line edit that is flipped
-     * according to its validity state
+     * \brief Wrapper around Vector of mandatory line edits and their corresponding
+     * "ok" QBitArray.
      */
-    QBitArray mandatoryLineEditsGood;
+    struct MandatoryLineEdits {
+        QVector<QLineEdit*> lineEdits;
+        QBitArray lineEditsValid;
+
+        MandatoryLineEdits() = default;
+        MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list);
+        void operator= (std::initializer_list<QLineEdit*> init_list);
+
+        bool contains(QLineEdit* line_edit);
+        void validate(QLineEdit* line_edit);
+        void unvalidate(QLineEdit* line_edit);
+        int countValid();
+        int size();
+        bool validAt(int idx);
+        bool allValid();
+        QLineEdit* operator[] (int idx);
+
+    } mandatoryLineEdits;
+
+    QVector<QLineEdit*> primaryTimeLineEdits;
+    QVector<QLineEdit*> pilotsLineEdits;
 
     /*!
      * To be used by the QCompleters
