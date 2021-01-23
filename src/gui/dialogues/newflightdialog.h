@@ -35,7 +35,7 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
-
+#include "src/database/adatabase.h"
 
 namespace Ui {
 class NewFlight;
@@ -44,7 +44,14 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-
+    using PilotName_qstr = ADatabase::PilotName_qstr;
+    using PilotRowId_i = ADatabase::PilotRowId_i;
+    using TailRgstr_qstr = ADatabase::TailRgstr_qstr;
+    using TailId_i = ADatabase::TailId_i;
+    using ArprtICAO_qstr = ADatabase::ArprtICAO_qstr;
+    using ArprtIATA_qstr = ADatabase::ArprtIATA_qstr;
+    using ArprtName_qstr = ADatabase::ArprtName_qstr;
+    using ArprtId_i = ADatabase::ArprtId_i;
 public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
@@ -129,11 +136,11 @@ private:
     /*!
      * \brief Used to map user input to database keys
      */
-    QMap<QString, int> pilotsIdMap;
-    QMap<QString, int> tailsIdMap;
-    QMap<QString, int> airportIcaoIdMap;
-    QMap<QString, int> airportIataIdMap;
-    QMap<QString, int> airportNameIdMap;
+    QMap<PilotName_qstr, PilotRowId_i> pilotsIdMap;
+    QMap<TailRgstr_qstr, TailId_i> tailsIdMap;
+    QMap<ArprtICAO_qstr, ArprtId_i> airportIcaoIdMap;
+    QMap<ArprtIATA_qstr, ArprtId_i> airportIataIdMap;
+    QMap<ArprtName_qstr, ArprtId_i> airportNameIdMap;
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 

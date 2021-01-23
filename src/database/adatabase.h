@@ -88,6 +88,23 @@ public:
  */
 class ADatabase : public QObject {
     Q_OBJECT
+public:
+
+    using QueryResult_qstr = QString;
+    using QueryResult_i = int;
+
+    using PilotName_qstr = QueryResult_qstr;
+    using PilotRowId_i = QueryResult_i;
+
+    using TailRgstr_qstr = QueryResult_qstr;
+    using TailId_i = QueryResult_i;
+
+    using ArprtICAO_qstr = QueryResult_qstr;
+    using ArprtIATA_qstr = QueryResult_qstr;
+    using ArprtName_qstr = QueryResult_qstr;
+    using ArprtId_i = QueryResult_i;
+
+
 private:
     ADatabase();
 
@@ -219,18 +236,18 @@ public:
      * \brief getCompletionList returns a QStringList of values for a
      * QCompleter based on database values
      */
-    const QStringList getCompletionList(ADatabaseTarget);
+    const QStringList getCompletionList(ADatabaseTarget target);
 
     /*!
-     * \brief returns a QMap<QString, int> of a human-readable database value and
+     * \brief returns a QMap<QueryResult_qstr, QueryResult_i> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      */
-    const QMap<QString, int> getIdMap(ADatabaseTarget);
+    const QMap<QueryResult_qstr, QueryResult_i> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTarget);
+    int getLastEntry(ADatabaseTarget target);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints

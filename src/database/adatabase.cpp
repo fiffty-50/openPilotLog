@@ -496,7 +496,8 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
     return completer_list;
 }
 
-const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
+const
+QMap<ADatabase::QueryResult_qstr, ADatabase::QueryResult_i> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -523,24 +524,25 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
         break;
     default:
         DEB << "Not a valid completer target for this function.";
-        return QMap<QString, int>();
+        return {};  // [G]: Cpp will implicitly create the default map.
+                    // if this is too vague change to QMap<...>()
     }
 
-    auto id_map = QMap<QString, int>();
     auto query = QSqlQuery(statement);
     if (!query.isActive()) {
         DEB << "No result found. Check Query and Error.";
         DEB << "Query: " << statement;
         DEB << "Error: " << query.lastError().text();
         lastError = query.lastError().text();
-        return QMap<QString, int>();
-    } else {
-        QVector<QString> query_result;
-        while (query.next()) {
-            id_map.insert(query.value(1).toString(), query.value(0).toInt());
-        }
-        return id_map;
+        return {};
     }
+
+    // QVector<QString> query_result;  // [G]: unused
+    auto id_map = QMap<QueryResult_qstr, QueryResult_i>();
+    while (query.next()) {
+        id_map.insert(query.value(1).toString(), query.value(0).toInt());
+    }
+    return id_map;
 }
 
 int ADatabase::getLastEntry(ADatabaseTarget target)
