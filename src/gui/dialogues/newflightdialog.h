@@ -44,14 +44,14 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-    using PilotName_qstr = ADatabase::PilotName_qstr;
-    using PilotRowId_i = ADatabase::PilotRowId_i;
-    using TailRgstr_qstr = ADatabase::TailRgstr_qstr;
-    using TailId_i = ADatabase::TailId_i;
-    using ArprtICAO_qstr = ADatabase::ArprtICAO_qstr;
-    using ArprtIATA_qstr = ADatabase::ArprtIATA_qstr;
-    using ArprtName_qstr = ADatabase::ArprtName_qstr;
-    using ArprtId_i = ADatabase::ArprtId_i;
+    using PilotName_t = ADatabase::PilotName_t;
+    using PilotRowId_t = ADatabase::PilotRowId_t;
+    using TailRgstr_t = ADatabase::TailRgstr_t;
+    using TailId_t = ADatabase::TailId_t;
+    using ArprtICAO_t = ADatabase::ArprtICAO_t;
+    using ArprtIATA_t = ADatabase::ArprtIATA_t;
+    using ArprtName_t = ADatabase::ArprtName_t;
+    using ArprtId_t = ADatabase::ArprtId_t;
 public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
@@ -129,18 +129,18 @@ private:
     /*!
      * To be used by the QCompleters
      */
-    QStringList pilotList;
+    QStringList pilotList;QVariant
     QStringList tailsList;
     QStringList airportList;
 
     /*!
      * \brief Used to map user input to database keys
      */
-    QMap<PilotName_qstr, PilotRowId_i> pilotsIdMap;
-    QMap<TailRgstr_qstr, TailId_i> tailsIdMap;
-    QMap<ArprtICAO_qstr, ArprtId_i> airportIcaoIdMap;
-    QMap<ArprtIATA_qstr, ArprtId_i> airportIataIdMap;
-    QMap<ArprtName_qstr, ArprtId_i> airportNameIdMap;
+    QMap<PilotName_t, PilotRowId_t> pilotsIdMap;
+    QMap<TailRgstr_t, TailId_t> tailsIdMap;
+    QMap<ArprtICAO_t, ArprtId_t> airportIcaoIdMap;
+    QMap<ArprtIATA_t, ArprtId_t> airportIataIdMap;
+    QMap<ArprtName_t, ArprtId_t> airportNameIdMap;
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 

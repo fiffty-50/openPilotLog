@@ -497,7 +497,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 }
 
 const
-QMap<ADatabase::QueryResult_qstr, ADatabase::QueryResult_i> ADatabase::getIdMap(ADatabaseTarget target)
+QMap<ADatabase::QString, ADatabase::RowId_t> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -538,7 +538,7 @@ QMap<ADatabase::QueryResult_qstr, ADatabase::QueryResult_i> ADatabase::getIdMap(
     }
 
     // QVector<QString> query_result;  // [G]: unused
-    auto id_map = QMap<QueryResult_qstr, QueryResult_i>();
+    auto id_map = QMap<QString, RowId_t>();
     while (query.next()) {
         id_map.insert(query.value(1).toString(), query.value(0).toInt());
     }

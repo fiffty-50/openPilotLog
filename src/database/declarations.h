@@ -22,6 +22,10 @@
 #include "src/oplconstants.h"
 #include "src/testing/adebug.h"
 
+/// \todo Break apart these aliases to their
+/// corresponding sub section of the program
+/// eg DB related to ADatabase.h and so on
+
 /*!
  * \brief An alias for QString
  *

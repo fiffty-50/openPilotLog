@@ -89,20 +89,18 @@ public:
 class ADatabase : public QObject {
     Q_OBJECT
 public:
+    using RowId_t = int;
 
-    using QueryResult_qstr = QString;
-    using QueryResult_i = int;
+    using PilotName_t = QString;
+    using PilotRowId_t = RowId_t;
 
-    using PilotName_qstr = QueryResult_qstr;
-    using PilotRowId_i = QueryResult_i;
+    using TailRgstr_t = QString;
+    using TailId_t = RowId_t;
 
-    using TailRgstr_qstr = QueryResult_qstr;
-    using TailId_i = QueryResult_i;
-
-    using ArprtICAO_qstr = QueryResult_qstr;
-    using ArprtIATA_qstr = QueryResult_qstr;
-    using ArprtName_qstr = QueryResult_qstr;
-    using ArprtId_i = QueryResult_i;
+    using ArprtICAO_t = QString;
+    using ArprtIATA_t = QString;
+    using ArprtName_t = QString;
+    using ArprtId_t = RowId_t;
 
 
 private:
@@ -242,7 +240,7 @@ public:
      * \brief returns a QMap<QueryResult_qstr, QueryResult_i> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      */
-    const QMap<QueryResult_qstr, QueryResult_i> getIdMap(ADatabaseTarget target);
+    const QMap<QString, RowId_t> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
