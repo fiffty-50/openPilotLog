@@ -19,38 +19,41 @@
 #define DECLARATIONS_H
 
 #include <QtCore>
-#include "src/oplconstants.h"
 #include "src/testing/adebug.h"
 
-/// \todo Break apart these aliases to their
-/// corresponding sub section of the program
-/// eg DB related to ADatabase.h and so on
+// [G]: TODO. Break apart these aliases to their
+// corresponding sub section of the program
+// eg DB related to ADatabase.h and so on
 
-/*!
- * \brief An alias for QString
- *
- * Very long description *with* **markdown?**
- * - - -
- * # Header
- */
-using ColName = QString;
-using ColData = QVariant;
-using TableName = QString;
-using RowId = int;
+using RowId_t = int;
+using PilotName_t = QString;
+using PilotRowId_t = RowId_t;
+using TailRgstr_t = QString;
+using TailId_t = RowId_t;
+using ArprtICAO_t = QString;
+using ArprtIATA_t = QString;
+using ArprtName_t = QString;
+using ArprtId_t = RowId_t;
+using ColName_t = QString;
+using ColData_t = QVariant;
+using TableName_t = QString;
+using RowId_t = int;
 
-using TableNames = QStringList;
-using RowData = QMap<ColName, ColData>;
-using ColumnData = QPair<ColName, ColData>;
-using ColumnNames = QStringList;
-using TableColumns = QMap<TableName, ColumnNames>;
+using TableNames_t = QStringList;
+using RowData_t = QMap<ColName_t, ColData_t>;
+using ColumnData_t = QPair<ColName_t, ColData_t>;
+using ColumnNames_t = QStringList;
+using TableColumns_t = QMap<TableName_t, ColumnNames_t>;
+
+using ForeignKey_t = int;
 
 struct DataPosition {
-    TableName tableName;
-    RowId rowId;
+    TableName_t tableName;
+    RowId_t rowId;
     DataPosition()
-        : tableName(TableName())
+        : tableName(TableName_t())
     {};
-    DataPosition(TableName table_name, RowId row_id)
+    DataPosition(TableName_t table_name, RowId_t row_id)
         : tableName(table_name), rowId(row_id)
     {};
 
@@ -62,11 +65,5 @@ struct DataPosition {
          + ", rowId=" + QString::number(object.rowId)
          )
 };
-
-// Default Positions
-static auto const DEFAULT_FLIGHT_POSITION   = DataPosition(Opl::Db::TABLE_FLIGHTS, 0);
-static auto const DEFAULT_PILOT_POSITION    = DataPosition(Opl::Db::TABLE_PILOTS, 0);
-static auto const DEFAULT_TAIL_POSITION     = DataPosition(Opl::Db::TABLE_TAILS, 0);
-static auto const DEFAULT_AIRCRAFT_POSITION = DataPosition(Opl::Db::TABLE_AIRCRAFT, 0);
 
 #endif // DECLARATIONS_H

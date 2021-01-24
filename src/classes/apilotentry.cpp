@@ -19,15 +19,15 @@
 #include "src/oplconstants.h"
 
 APilotEntry::APilotEntry()
-    : AEntry::AEntry(DEFAULT_PILOT_POSITION)
+    : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION)
 {}
 
-APilotEntry::APilotEntry(RowId row_id)
+APilotEntry::APilotEntry(RowId_t row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_PILOTS, row_id))
 {}
 
-APilotEntry::APilotEntry(RowData table_data)
-    : AEntry::AEntry(DEFAULT_PILOT_POSITION, table_data)
+APilotEntry::APilotEntry(RowData_t table_data)
+    : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION, table_data)
 {}
 
 const QString APilotEntry::name()

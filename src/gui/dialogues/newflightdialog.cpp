@@ -525,9 +525,9 @@ void NewFlightDialog::fillDeductibleData()
  * no input validation is done in this step and input data is assumed to be valid.
  * \return
  */
-RowData NewFlightDialog::collectInput()
+RowData_t NewFlightDialog::collectInput()
 {
-    RowData newData;
+    RowData_t newData;
     DEB << "Collecting Input...";
     //Block Time
     const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());

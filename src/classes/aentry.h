@@ -24,7 +24,7 @@
 #include <QPair>
 #include <QVariant>
 
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 
 // [G]: Define what data is public and what not. For objects such as
 // DataPosition which are consumable its no biggy. Are entries the same?
@@ -41,20 +41,20 @@ class AEntry {
 protected:
     DataPosition position;
 public:
-    RowData tableData;
+    RowData_t tableData;
 public:
     AEntry() = delete; // Demand specificity from default constructor
     AEntry(const AEntry&) = default;
     AEntry& operator=(const AEntry&) = default;
     AEntry(DataPosition position_);
-    AEntry(RowData table_data);
-    AEntry(DataPosition position_, RowData table_data);
+    AEntry(RowData_t table_data);
+    AEntry(DataPosition position_, RowData_t table_data);
 
-    void setData(RowData table_data);
+    void setData(RowData_t table_data);
     void setPosition(DataPosition position_);
 
     const DataPosition& getPosition();
-    const RowData& getData();
+    const RowData_t& getData();
 
 };
 

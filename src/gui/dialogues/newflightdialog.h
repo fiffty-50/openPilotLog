@@ -44,14 +44,6 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-    using PilotName_t = ADatabase::PilotName_t;
-    using PilotRowId_t = ADatabase::PilotRowId_t;
-    using TailRgstr_t = ADatabase::TailRgstr_t;
-    using TailId_t = ADatabase::TailId_t;
-    using ArprtICAO_t = ADatabase::ArprtICAO_t;
-    using ArprtIATA_t = ADatabase::ArprtIATA_t;
-    using ArprtName_t = ADatabase::ArprtName_t;
-    using ArprtId_t = ADatabase::ArprtId_t;
 public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
@@ -129,7 +121,7 @@ private:
     /*!
      * To be used by the QCompleters
      */
-    QStringList pilotList;QVariant
+    QStringList pilotList;
     QStringList tailsList;
     QStringList airportList;
 
@@ -169,7 +161,7 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
-    RowData collectInput();
+    RowData_t collectInput();
 
     /*!
      * \brief converts a time string as used in the UI to an integer of minutes for

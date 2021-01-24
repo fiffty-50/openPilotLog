@@ -19,13 +19,13 @@
 #define AAIRCRAFTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 
 struct AAircraftEntry : public AEntry {
 public:
     AAircraftEntry();
-    AAircraftEntry(RowId row_id);
-    AAircraftEntry(RowData table_data);
+    AAircraftEntry(RowId_t row_id);
+    AAircraftEntry(RowData_t table_data);
 
     AAircraftEntry(const AAircraftEntry& te) = default;
     AAircraftEntry& operator=(const AAircraftEntry& te) = default;

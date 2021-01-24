@@ -21,15 +21,15 @@ AEntry::AEntry(DataPosition position_)
     : position(position_)
 {}
 
-AEntry::AEntry(RowData table_data)
+AEntry::AEntry(RowData_t table_data)
     : tableData(table_data)
 {}
 
-AEntry::AEntry(DataPosition position_, RowData table_data)
+AEntry::AEntry(DataPosition position_, RowData_t table_data)
     : position(position_), tableData(table_data)
 {}
 
-void AEntry::setData(RowData table_data)
+void AEntry::setData(RowData_t table_data)
 {
     tableData = table_data;
 }
@@ -39,7 +39,7 @@ const DataPosition& AEntry::getPosition()
     return position;
 }
 
-const RowData& AEntry::getData()
+const RowData_t& AEntry::getData()
 {
     return tableData;
 }
