@@ -24,8 +24,8 @@
 struct AAircraftEntry : public AEntry {
 public:
     AAircraftEntry();
-    AAircraftEntry(RowId_t row_id);
-    AAircraftEntry(RowData_t table_data);
+    AAircraftEntry(RowId_T row_id);
+    AAircraftEntry(RowData_T table_data);
 
     AAircraftEntry(const AAircraftEntry& te) = default;
     AAircraftEntry& operator=(const AAircraftEntry& te) = default;

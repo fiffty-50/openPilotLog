@@ -22,10 +22,10 @@ AAircraftEntry::AAircraftEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION)
 {}
 
-AAircraftEntry::AAircraftEntry(RowId_t row_id)
+AAircraftEntry::AAircraftEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_AIRCRAFT, row_id))
 {}
 
-AAircraftEntry::AAircraftEntry(RowData_t table_data)
+AAircraftEntry::AAircraftEntry(RowData_T table_data)
     : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION, table_data)
 {}

@@ -24,8 +24,8 @@
 struct APilotEntry : public AEntry {
 public:
     APilotEntry();
-    APilotEntry(RowId_t row_id);
-    APilotEntry(RowData_t table_data);
+    APilotEntry(RowId_T row_id);
+    APilotEntry(RowData_T table_data);
 
     APilotEntry(const APilotEntry& pe) = default;
     APilotEntry& operator=(const APilotEntry& pe) = default;

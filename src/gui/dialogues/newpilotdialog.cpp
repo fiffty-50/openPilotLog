@@ -141,7 +141,7 @@ void NewPilotDialog::submitForm()
 {
     DEB << "Collecting User Input...";
 
-    RowData_t new_data;
+    RowData_T new_data;
     auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));

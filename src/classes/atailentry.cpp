@@ -22,11 +22,11 @@ ATailEntry::ATailEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION)
 {}
 
-ATailEntry::ATailEntry(RowId_t row_id)
+ATailEntry::ATailEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, row_id))
 {}
 
-ATailEntry::ATailEntry(RowData_t table_data)
+ATailEntry::ATailEntry(RowData_T table_data)
     : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION, table_data)
 {}
 

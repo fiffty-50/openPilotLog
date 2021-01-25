@@ -22,11 +22,11 @@ APilotEntry::APilotEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION)
 {}
 
-APilotEntry::APilotEntry(RowId_t row_id)
+APilotEntry::APilotEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_PILOTS, row_id))
 {}
 
-APilotEntry::APilotEntry(RowData_t table_data)
+APilotEntry::APilotEntry(RowData_T table_data)
     : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION, table_data)
 {}
 

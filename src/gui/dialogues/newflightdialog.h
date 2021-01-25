@@ -128,11 +128,11 @@ private:
     /*!
      * \brief Used to map user input to database keys
      */
-    QMap<PilotName_t, PilotRowId_t> pilotsIdMap;
-    QMap<TailRgstr_t, TailId_t> tailsIdMap;
-    QMap<ArprtICAO_t, ArprtId_t> airportIcaoIdMap;
-    QMap<ArprtIATA_t, ArprtId_t> airportIataIdMap;
-    QMap<ArprtName_t, ArprtId_t> airportNameIdMap;
+    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
+    QMap<TailRegistration_T, TailId_T> tailsIdMap;
+    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
+    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
+    QMap<AirportName_T, AirportId_T> airportNameIdMap;
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 
@@ -161,7 +161,7 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
-    RowData_t collectInput();
+    RowData_T collectInput();
 
     /*!
      * \brief converts a time string as used in the UI to an integer of minutes for

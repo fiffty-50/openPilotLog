@@ -94,15 +94,15 @@ private:
     ADatabase();
 
     static ADatabase* self;
-    TableNames_t tableNames;
-    TableColumns_t tableColumns;
+    TableNames_T tableNames;
+    TableColumns_T tableColumns;
 public:
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
-    TableNames_t getTableNames() const;
-    ColumnNames_t getTableColumns(TableName_t table_name) const;
+    TableNames_T getTableNames() const;
+    ColumnNames_T getTableColumns(TableName_T table_name) const;
     void updateLayout();
     const QString sqliteVersion();
 
@@ -170,7 +170,7 @@ public:
     /*!
      * \brief retreive entry data from the database to create an entry object
      */
-    RowData_t getEntryData(DataPosition data_position);
+    RowData_T getEntryData(DataPosition data_position);
 
     /*!
      * \brief retreive an Entry from the database.
@@ -185,7 +185,7 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    APilotEntry getPilotEntry(RowId_t row_id);
+    APilotEntry getPilotEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -195,7 +195,7 @@ public:
      * instead of an Entry. It allows for easy access to a tail entry
      * with only the RowId required as input.
      */
-    ATailEntry getTailEntry(RowId_t row_id);
+    ATailEntry getTailEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -205,7 +205,7 @@ public:
      * instead of an AEntry. It allows for easy access to an aircraft entry
      * with only the RowId required as input.
      */
-    AAircraftEntry getAircraftEntry(RowId_t row_id);
+    AAircraftEntry getAircraftEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a flight entry from the database.
@@ -215,7 +215,7 @@ public:
      * instead of an AEntry. It allows for easy access to a flight entry
      * with only the RowId required as input.
      */
-    AFlightEntry getFlightEntry(RowId_t row_id);
+    AFlightEntry getFlightEntry(RowId_T row_id);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a
@@ -226,8 +226,9 @@ public:
     /*!
      * \brief returns a QMap<QString, RowId_t> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
+     * \todo What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString
      */
-    const QMap<QString, RowId_t> getIdMap(ADatabaseTarget target);
+    const QMap<QString, RowId_T> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
@@ -238,19 +239,19 @@ public:
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<RowId_t> getForeignKeyConstraints(RowId_t foreign_row_id, ADatabaseTarget target);
+    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
      * \return The Pilot Entry referencted by the foreign key.
      */
-    APilotEntry resolveForeignPilot(ForeignKey_t foreign_key);
+    APilotEntry resolveForeignPilot(ForeignKey_T foreign_key);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
      * \return The Tail Entry referencted by the foreign key.
      */
-    ATailEntry resolveForeignTail(ForeignKey_t foreign_key);
+    ATailEntry resolveForeignTail(ForeignKey_T foreign_key);
 
 
 

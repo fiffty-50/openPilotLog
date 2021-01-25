@@ -41,20 +41,20 @@ class AEntry {
 protected:
     DataPosition position;
 public:
-    RowData_t tableData;
+    RowData_T tableData;
 public:
     AEntry() = delete; // Demand specificity from default constructor
     AEntry(const AEntry&) = default;
     AEntry& operator=(const AEntry&) = default;
     AEntry(DataPosition position_);
-    AEntry(RowData_t table_data);
-    AEntry(DataPosition position_, RowData_t table_data);
+    AEntry(RowData_T table_data);
+    AEntry(DataPosition position_, RowData_T table_data);
 
-    void setData(RowData_t table_data);
+    void setData(RowData_T table_data);
     void setPosition(DataPosition position_);
 
     const DataPosition& getPosition();
-    const RowData_t& getData();
+    const RowData_T& getData();
 
 };
 

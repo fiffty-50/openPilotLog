@@ -21,39 +21,35 @@
 #include <QtCore>
 #include "src/testing/adebug.h"
 
-// [G]: TODO. Break apart these aliases to their
-// corresponding sub section of the program
-// eg DB related to ADatabase.h and so on
+/// \todo Short descriptions
+using RowId_T = int;
+using PilotName_T = QString;
+using PilotRowId_T = RowId_T;
+using TailRegistration_T = QString;
+using TailId_T = RowId_T;
+using AirportICAO_T = QString;
+using AirportIATA_T = QString;
+using AirportName_T = QString;
+using AirportId_T = RowId_T;
+using ColName_T = QString;
+using ColData_T = QVariant;
+using TableName_T = QString;
 
-using RowId_t = int;
-using PilotName_t = QString;
-using PilotRowId_t = RowId_t;
-using TailRgstr_t = QString;
-using TailId_t = RowId_t;
-using ArprtICAO_t = QString;
-using ArprtIATA_t = QString;
-using ArprtName_t = QString;
-using ArprtId_t = RowId_t;
-using ColName_t = QString;
-using ColData_t = QVariant;
-using TableName_t = QString;
-using RowId_t = int;
+using TableNames_T = QStringList;
+using RowData_T = QMap<ColName_T, ColData_T>;
+using ColumnData_T = QPair<ColName_T, ColData_T>;
+using ColumnNames_T = QStringList;
+using TableColumns_T = QMap<TableName_T, ColumnNames_T>;
 
-using TableNames_t = QStringList;
-using RowData_t = QMap<ColName_t, ColData_t>;
-using ColumnData_t = QPair<ColName_t, ColData_t>;
-using ColumnNames_t = QStringList;
-using TableColumns_t = QMap<TableName_t, ColumnNames_t>;
-
-using ForeignKey_t = int;
+using ForeignKey_T = RowId_T;
 
 struct DataPosition {
-    TableName_t tableName;
-    RowId_t rowId;
+    TableName_T tableName;
+    RowId_T rowId;
     DataPosition()
-        : tableName(TableName_t())
+        : tableName(TableName_T())
     {};
-    DataPosition(TableName_t table_name, RowId_t row_id)
+    DataPosition(TableName_T table_name, RowId_T row_id)
         : tableName(table_name), rowId(row_id)
     {};
 

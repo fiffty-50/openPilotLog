@@ -25,11 +25,11 @@ AFlightEntry::AFlightEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION)
 {}
 
-AFlightEntry::AFlightEntry(RowId_t row_id)
+AFlightEntry::AFlightEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, row_id))
 {}
 
-AFlightEntry::AFlightEntry(RowData_t table_data)
+AFlightEntry::AFlightEntry(RowData_T table_data)
     : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION, table_data)
 {}
 
