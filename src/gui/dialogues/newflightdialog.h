@@ -35,7 +35,7 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
-
+#include "src/database/adatabase.h"
 
 namespace Ui {
 class NewFlight;
@@ -44,7 +44,6 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-
 public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
@@ -129,11 +128,11 @@ private:
     /*!
      * \brief Used to map user input to database keys
      */
-    QMap<QString, int> pilotsIdMap;
-    QMap<QString, int> tailsIdMap;
-    QMap<QString, int> airportIcaoIdMap;
-    QMap<QString, int> airportIataIdMap;
-    QMap<QString, int> airportNameIdMap;
+    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
+    QMap<TailRegistration_T, TailId_T> tailsIdMap;
+    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
+    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
+    QMap<AirportName_T, AirportId_T> airportNameIdMap;
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 
@@ -162,7 +161,7 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
-    RowData collectInput();
+    RowData_T collectInput();
 
     /*!
      * \brief converts a time string as used in the UI to an integer of minutes for

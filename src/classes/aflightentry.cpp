@@ -22,15 +22,15 @@
 #include "src/classes/asettings.h"
 
 AFlightEntry::AFlightEntry()
-    : AEntry::AEntry(DEFAULT_FLIGHT_POSITION)
+    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION)
 {}
 
-AFlightEntry::AFlightEntry(RowId row_id)
+AFlightEntry::AFlightEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, row_id))
 {}
 
-AFlightEntry::AFlightEntry(RowData table_data)
-    : AEntry::AEntry(DEFAULT_FLIGHT_POSITION, table_data)
+AFlightEntry::AFlightEntry(RowData_T table_data)
+    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION, table_data)
 {}
 
 const QString AFlightEntry::summary()

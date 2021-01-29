@@ -19,6 +19,7 @@
 #define OPLCONSTANTS_H
 
 #include <QtCore>
+#include "src/database/adatabasetypes.h"
 
 /*!
  *  \brief A namespace to collect constants and enums used throughout the application.
@@ -163,6 +164,11 @@ static const auto PILOTS_EMAIL           = QStringLiteral("email");
 static const auto ROWID                  = QStringLiteral("ROWID");
 static const auto EMPTY_STRING           = QStringLiteral("");
 static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
+
+static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
+static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
+static const auto DEFAULT_TAIL_POSITION     = DataPosition(TABLE_TAILS, 0);
+static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 } // namespace opl::db
 

@@ -19,34 +19,37 @@
 #define DECLARATIONS_H
 
 #include <QtCore>
-#include "src/oplconstants.h"
 #include "src/testing/adebug.h"
 
-/*!
- * \brief An alias for QString
- *
- * Very long description *with* **markdown?**
- * - - -
- * # Header
- */
-using ColName = QString;
-using ColData = QVariant;
-using TableName = QString;
-using RowId = int;
+/// \todo Short descriptions
+using RowId_T = int;
+using PilotName_T = QString;
+using PilotRowId_T = RowId_T;
+using TailRegistration_T = QString;
+using TailId_T = RowId_T;
+using AirportICAO_T = QString;
+using AirportIATA_T = QString;
+using AirportName_T = QString;
+using AirportId_T = RowId_T;
+using ColName_T = QString;
+using ColData_T = QVariant;
+using TableName_T = QString;
 
-using TableNames = QStringList;
-using RowData = QMap<ColName, ColData>;
-using ColumnData = QPair<ColName, ColData>;
-using ColumnNames = QStringList;
-using TableColumns = QMap<TableName, ColumnNames>;
+using TableNames_T = QStringList;
+using RowData_T = QMap<ColName_T, ColData_T>;
+using ColumnData_T = QPair<ColName_T, ColData_T>;
+using ColumnNames_T = QStringList;
+using TableColumns_T = QMap<TableName_T, ColumnNames_T>;
+
+using ForeignKey_T = RowId_T;
 
 struct DataPosition {
-    TableName tableName;
-    RowId rowId;
+    TableName_T tableName;
+    RowId_T rowId;
     DataPosition()
-        : tableName(TableName())
+        : tableName(TableName_T())
     {};
-    DataPosition(TableName table_name, RowId row_id)
+    DataPosition(TableName_T table_name, RowId_T row_id)
         : tableName(table_name), rowId(row_id)
     {};
 
@@ -58,11 +61,5 @@ struct DataPosition {
          + ", rowId=" + QString::number(object.rowId)
          )
 };
-
-// Default Positions
-static auto const DEFAULT_FLIGHT_POSITION   = DataPosition(Opl::Db::TABLE_FLIGHTS, 0);
-static auto const DEFAULT_PILOT_POSITION    = DataPosition(Opl::Db::TABLE_PILOTS, 0);
-static auto const DEFAULT_TAIL_POSITION     = DataPosition(Opl::Db::TABLE_TAILS, 0);
-static auto const DEFAULT_AIRCRAFT_POSITION = DataPosition(Opl::Db::TABLE_AIRCRAFT, 0);
 
 #endif // DECLARATIONS_H

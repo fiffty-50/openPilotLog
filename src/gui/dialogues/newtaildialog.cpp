@@ -187,7 +187,7 @@ bool NewTailDialog::verify()
 void NewTailDialog::submitForm()
 {
     DEB << "Creating Database Object...";
-    RowData new_data;
+    RowData_T new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));

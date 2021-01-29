@@ -35,7 +35,7 @@ ADatabase* ADatabase::self = nullptr;
 /*!
  * \brief Return the names of a given table in the database.
  */
-ColumnNames ADatabase::getTableColumns(TableName table_name) const
+ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
 {
     return tableColumns.value(table_name);
 }
@@ -43,7 +43,7 @@ ColumnNames ADatabase::getTableColumns(TableName table_name) const
 /*!
  * \brief Return the names of all tables in the database
  */
-TableNames ADatabase::getTableNames() const
+TableNames_T ADatabase::getTableNames() const
 {
     return tableNames;
 }
@@ -59,7 +59,7 @@ void ADatabase::updateLayout()
 
     tableColumns.clear();
     for (const auto &table_name : tableNames) {
-        ColumnNames table_columns;
+        ColumnNames_T table_columns;
         QSqlRecord fields = db.record(table_name);
         for (int i = 0; i < fields.count(); i++) {
             table_columns.append(fields.field(i).name());
@@ -356,12 +356,12 @@ bool ADatabase::insert(AEntry new_entry)
 
 }
 
-RowData ADatabase::getEntryData(DataPosition data_position)
+RowData_T ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
     if (!getTableNames().contains(data_position.tableName)) {
         DEB << data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
-        return RowData();
+        return RowData_T();
     }
 
     //Check Database for rowId
@@ -377,14 +377,14 @@ RowData ADatabase::getEntryData(DataPosition data_position)
         DEB << "SQL error: " << check_query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = check_query.lastError().text();
-        return RowData();
+        return RowData_T();
     }
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
         DEB << "No Entry found for row id: " << data_position.rowId;
         lastError = ADatabaseError("Database entry not found.");
-        return RowData();
+        return RowData_T();
     }
 
     // Retreive TableData
@@ -401,11 +401,11 @@ RowData ADatabase::getEntryData(DataPosition data_position)
         DEB << "SQL error: " << select_query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = select_query.lastError().text();
-        return RowData();
+        return RowData_T();
     }
 
     select_query.next();
-    RowData entry_data;
+    RowData_T entry_data;
 
     for (const auto &column : getTableColumns(data_position.tableName)) {
         entry_data.insert(column, select_query.value(column));
@@ -420,28 +420,28 @@ AEntry ADatabase::getEntry(DataPosition data_position)
     return entry;
 }
 
-APilotEntry ADatabase::getPilotEntry(RowId row_id)
+APilotEntry ADatabase::getPilotEntry(RowId_T row_id)
 {
     APilotEntry pilot_entry(row_id);
     pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
     return pilot_entry;
 }
 
-ATailEntry ADatabase::getTailEntry(RowId row_id)
+ATailEntry ADatabase::getTailEntry(RowId_T row_id)
 {
     ATailEntry tail_entry(row_id);
     tail_entry.setData(getEntryData(tail_entry.getPosition()));
     return tail_entry;
 }
 
-AAircraftEntry ADatabase::getAircraftEntry(RowId row_id)
+AAircraftEntry ADatabase::getAircraftEntry(RowId_T row_id)
 {
     AAircraftEntry aircraft_entry(row_id);
     aircraft_entry.setData(getEntryData(aircraft_entry.getPosition()));
     return aircraft_entry;
 }
 
-AFlightEntry ADatabase::getFlightEntry(RowId row_id)
+AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
 {
     AFlightEntry flight_entry(row_id);
     flight_entry.setData(getEntryData(flight_entry.getPosition()));
@@ -496,7 +496,8 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
     return completer_list;
 }
 
-const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
+const
+QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -523,24 +524,25 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
         break;
     default:
         DEB << "Not a valid completer target for this function.";
-        return QMap<QString, int>();
+        return {};  // [G]: Cpp will implicitly create the default map.
+                    // if this is too vague change to QMap<...>()
     }
 
-    auto id_map = QMap<QString, int>();
     auto query = QSqlQuery(statement);
     if (!query.isActive()) {
         DEB << "No result found. Check Query and Error.";
         DEB << "Query: " << statement;
         DEB << "Error: " << query.lastError().text();
         lastError = query.lastError().text();
-        return QMap<QString, int>();
-    } else {
-        QVector<QString> query_result;
-        while (query.next()) {
-            id_map.insert(query.value(1).toString(), query.value(0).toInt());
-        }
-        return id_map;
+        return {};
     }
+
+    // QVector<QString> query_result;  // [G]: unused
+    auto id_map = QMap<QString, RowId_T>();
+    while (query.next()) {
+        id_map.insert(query.value(1).toString(), query.value(0).toInt());
+    }
+    return id_map;
 }
 
 int ADatabase::getLastEntry(ADatabaseTarget target)
@@ -571,7 +573,7 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
     }
 }
 
-QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target)
+QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target)
 {
     QString statement = "SELECT ROWID FROM flights WHERE ";
 
@@ -608,12 +610,12 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
     return row_ids;
 }
 
-APilotEntry ADatabase::resolveForeignPilot(int foreign_key)
+APilotEntry ADatabase::resolveForeignPilot(ForeignKey_T foreign_key)
 {
     return aDB->getPilotEntry(foreign_key);
 }
 
-ATailEntry ADatabase::resolveForeignTail(int foreign_key)
+ATailEntry ADatabase::resolveForeignTail(ForeignKey_T foreign_key)
 {
     return aDB->getTailEntry(foreign_key);
 }

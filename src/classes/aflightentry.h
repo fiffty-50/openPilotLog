@@ -23,8 +23,8 @@
 class AFlightEntry : public AEntry {
 public:
     AFlightEntry();
-    AFlightEntry(RowId row_id);
-    AFlightEntry(RowData table_data);
+    AFlightEntry(RowId_T row_id);
+    AFlightEntry(RowData_T table_data);
 
     AFlightEntry(const AFlightEntry& pe) = default;
     AFlightEntry& operator=(const AFlightEntry& pe) = default;

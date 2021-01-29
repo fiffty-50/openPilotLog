@@ -19,15 +19,15 @@
 #include "src/oplconstants.h"
 
 ATailEntry::ATailEntry()
-    : AEntry::AEntry(DEFAULT_TAIL_POSITION)
+    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION)
 {}
 
-ATailEntry::ATailEntry(RowId row_id)
+ATailEntry::ATailEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, row_id))
 {}
 
-ATailEntry::ATailEntry(RowData table_data)
-    : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
+ATailEntry::ATailEntry(RowData_T table_data)
+    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION, table_data)
 {}
 
 const QString ATailEntry::registration()

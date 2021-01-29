@@ -135,7 +135,7 @@ void SettingsWidget::setupValidators()
 
 void SettingsWidget::updatePersonalDetails()
 {
-    RowData user_data;
+    RowData_T user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
         user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
