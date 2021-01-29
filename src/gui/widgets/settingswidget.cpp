@@ -72,6 +72,7 @@ void SettingsWidget::setupComboBoxes(){
         for (const auto &style_sheet_name : AStyle::styleSheets) {
             ui->styleComboBox->addItem(style_sheet_name.first);
         }
+        ui->styleComboBox->model()->sort(0);
 
         // Approach Combo Box
         const QSignalBlocker blocker_approach(ui->approachComboBox);
