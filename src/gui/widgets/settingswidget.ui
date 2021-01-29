@@ -17,7 +17,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="personalTab">
       <attribute name="title">
@@ -381,28 +381,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QComboBox" name="acSortComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Registration</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Type</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Company</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="4" column="1">
         <widget class="QLabel" name="acAllowIncompleteLabel">
          <property name="sizePolicy">
@@ -419,27 +397,35 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QComboBox" name="acAllowIncompleteComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <item row="0" column="1">
+        <widget class="QLabel" name="styleLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <item>
-          <property name="text">
-           <string>No</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Yes</string>
-          </property>
-         </item>
+         <property name="text">
+          <string>Style</string>
+         </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QCheckBox" name="darkStyleCheckBox">
+       <item row="2" column="1">
+        <widget class="QLabel" name="pilotSortLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
-          <string>Dark</string>
+          <string>Sort Pilots by</string>
          </property>
         </widget>
        </item>
@@ -460,6 +446,28 @@
          <property name="text">
           <string>Sort Aircraft by</string>
          </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QComboBox" name="acSortComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Registration</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Company</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="2" column="2">
@@ -487,17 +495,21 @@
        <item row="0" column="2">
         <widget class="QComboBox" name="styleComboBox"/>
        </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="styleLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item row="4" column="2">
+        <widget class="QComboBox" name="acAllowIncompleteComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="text">
-          <string>Style</string>
-         </property>
+         <item>
+          <property name="text">
+           <string>No</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yes</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="5" column="2">
@@ -515,25 +527,6 @@
            <string>EASA Part-FCL</string>
           </property>
          </item>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="pilotSortLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Sort Pilots by</string>
-         </property>
         </widget>
        </item>
       </layout>

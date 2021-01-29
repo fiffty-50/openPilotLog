@@ -15,6 +15,11 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+/*
+ * Stylesheets used (c) Alexander Huszagh
+ * https://github.com/Alexhuszagh/BreezeStyleSheets
+ */
 #include "astyle.h"
 #include <QStyle>
 #include <QStyleFactory>
@@ -24,27 +29,22 @@
 
 const QString AStyle::defaultStyle = QStringLiteral("Fusion");
 
-const QString AStyle::defaultStyleSheet = QStringLiteral("");
+const QString AStyle::defaultStyleSheet = QString();
 
 const QStringList AStyle::styles = QStyleFactory::keys();
 
-const QMap<AStyle::StyleSheet, QFileInfo> AStyle::defaultStyleSheets = {
-    {Dark, QFileInfo(QStringLiteral("dark.qss"))},
-    {Light, QFileInfo(QStringLiteral("light.qss"))},
-    {Default, QFileInfo(defaultStyleSheet)},
+const QList<QPair <QString, QString>> AStyle::styleSheets = {
+    {QStringLiteral("Breeze"), QStringLiteral(":light.qss")},
+    {QStringLiteral("Breeze-Dark"), QStringLiteral(":dark.qss")}
 };
 
 QString AStyle::currentStyle = defaultStyle;
 QString AStyle::currentStyleSheet = defaultStyleSheet;
 
 
-static inline
-QString read_stylesheet(const AStyle::StyleSheet stylesheet)
+static inline QString read_stylesheet(const QString &stylesheet)
 {
-    QFileInfo qss_file_info = AStyle::defaultStyleSheets[stylesheet];
-//    DEB << "reading:" << ":" + qss_file_info.fileName();
-
-    QFile file(":" + qss_file_info.fileName());
+    QFile file(stylesheet);
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream stream(&file);
     return stream.readAll();
@@ -55,50 +55,44 @@ QString read_stylesheet(const AStyle::StyleSheet stylesheet)
  */
 void AStyle::setup()
 {
-    // [G]: Are there leaks when style changes?
-    QVariant app_style = ASettings::read(ASettings::Main::Style);
-    if(!app_style.toBool()){
+    QVariant style_setting = ASettings::read(ASettings::Main::Style);
+    if(!style_setting.toBool()){
         //DEB << "Setting style to default:" << defaultStyle;
-        app_style = defaultStyle;
-        ASettings::write(ASettings::Main::Style, app_style);
+        style_setting = defaultStyle;
+        ASettings::write(ASettings::Main::Style, style_setting);
     }
-    //DEB << "Style set to:" << app_style;
-    QApplication::setStyle(QStyleFactory::create(app_style.toString()));
-    currentStyle = app_style.toString();
-
-    auto app_stylesheet = ASettings::read(ASettings::Main::StyleSheet);
-    if(!app_stylesheet.toBool()){
-        DEB << "Setting stylesheet to default:" << defaultStyleSheet;
-        app_stylesheet = defaultStyleSheet;
-        ASettings::write(ASettings::Main::StyleSheet, app_stylesheet);
+    for (const auto &style_name : styles) {
+        if (style_setting == style_name) {
+            setStyle(style_name);
+            currentStyle = style_name;
+            return;
+        }
     }
-    //DEB << "Stylesheet set to:" << app_stylesheet;
-    qApp->setStyleSheet(read_stylesheet(static_cast<StyleSheet>(app_stylesheet.toUInt())));
-    currentStyleSheet = app_stylesheet.toString();
+    for (const auto &style_sheet_name : styleSheets) {
+        if (style_setting == style_sheet_name.first) {
+            setStyle(style_sheet_name);
+            currentStyle = style_sheet_name.first;
+            return;
+        }
+    }
 }
 
 void AStyle::setStyle(const QString style)
 {
-    //DEB << "Setting style to:" << style;
+    DEB << "Setting style: " << style;
+    qApp->setStyleSheet(QString());
     QApplication::setStyle(QStyleFactory::create(style));
-    ASettings::write(ASettings::Main::Style, style);
     currentStyle = style;
 }
 
-void AStyle::setStyleSheet(const StyleSheet stylesheet)
+void AStyle::setStyle(const QPair<QString, QString> stylesheet)
 {
-    //DEB << "Setting stylesheet to:" << defaultStyleSheets[stylesheet].baseName();
-    qApp->setStyleSheet(read_stylesheet(stylesheet));
-    ASettings::write(ASettings::Main::StyleSheet, stylesheet);
-    currentStyleSheet = defaultStyleSheets[stylesheet].fileName();
+    DEB << "Setting stylesheet: " << stylesheet.first;
+    qApp->setStyleSheet(read_stylesheet(stylesheet.second));
+    currentStyleSheet = stylesheet.first;
 }
 
 const QString& AStyle::style()
 {
     return currentStyle;
-}
-
-const QString& AStyle::styleSheet()
-{
-    return currentStyleSheet;
 }

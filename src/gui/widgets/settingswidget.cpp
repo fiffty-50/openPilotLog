@@ -65,21 +65,19 @@ SettingsWidget::~SettingsWidget()
 }
 
 void SettingsWidget::setupComboBoxes(){
-    // Style Combo Box
-    auto styles = AStyle::styles;
-    auto current_style = AStyle::style();
-    ui->styleComboBox->addItem(current_style);
-    styles.removeOne(current_style);
+    {
+        // Style combo box
+        const QSignalBlocker blocker_style(ui->styleComboBox);
+        ui->styleComboBox->addItems(AStyle::styles);
+        for (const auto &style_sheet_name : AStyle::styleSheets) {
+            ui->styleComboBox->addItem(style_sheet_name.first);
+        }
 
-    ui->styleComboBox->addItems(styles);
-    ui->styleComboBox->model()->sort(0);
-    ui->styleComboBox->setCurrentText(current_style);
-
-    if(ASettings::read(ASettings::Main::StyleSheet).toUInt() == AStyle::Dark)
-        ui->darkStyleCheckBox->setCheckState(Qt::Checked);
-    // Approach Combo Box
-    for (const auto &approach : Opl::ApproachTypes) {
-        ui->approachComboBox->addItem(approach);
+        // Approach Combo Box
+        const QSignalBlocker blocker_approach(ui->approachComboBox);
+        for (const auto &approach : Opl::ApproachTypes) {
+            ui->approachComboBox->addItem(approach);
+        }
     }
 }
 
@@ -111,11 +109,12 @@ void SettingsWidget::readSettings()
 
     ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::LogBook::View).toInt());
     /*
-     * Aircraft Tab
+     * Misc Tab
      */
     ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilSortColumn).toInt());
     ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt());
+    ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
 }
 
 void SettingsWidget::setupValidators()
@@ -339,17 +338,21 @@ void SettingsWidget::on_aboutPushButton_clicked()
     message_box.exec();
 }
 
-void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& text)
+void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_style_setting)
 {
-    DEB << text;
-    AStyle::setStyle(text);
-}
+    for (const auto &style_name : AStyle::styles) {
+        if (new_style_setting == style_name) {
+            AStyle::setStyle(style_name);
+            ASettings::write(ASettings::Main::Style, new_style_setting);
+            return;
+        }
+    }
 
-void SettingsWidget::on_darkStyleCheckBox_stateChanged(int state)
-{
-    DEB << "Setting to:" << (state ? "dark" : "default");
-    if(state == Qt::Checked)
-        AStyle::setStyleSheet(AStyle::Dark);
-    else
-        AStyle::setStyleSheet(AStyle::Default);
+    for (const auto &style_sheet_name : AStyle::styleSheets) {
+        if (new_style_setting == style_sheet_name.first) {
+            AStyle::setStyle(style_sheet_name);
+            ASettings::write(ASettings::Main::Style, new_style_setting);
+            return;
+        }
+    }
 }

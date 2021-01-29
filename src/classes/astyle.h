@@ -28,26 +28,23 @@
  */
 class AStyle
 {
-public:
-    enum StyleSheet{
-        Default = 0,
-        Dark,
-        Light
-    };
 private:
     static QString currentStyle;
     static QString currentStyleSheet;
 public:
     static const QStringList styles;
     static const QString defaultStyle;
+    /*!
+     * \brief contains a List of the available style sheets and their
+     * file name in the resource system.
+     */
+    static const QList<QPair<QString, QString>> styleSheets;
     static const QString defaultStyleSheet;
-    static const QMap<StyleSheet, QFileInfo> defaultStyleSheets;
 
     static void setup();
     static void setStyle(const QString style);
-    static void setStyleSheet(const StyleSheet stylesheet);
+    static void setStyle(const QPair<QString, QString> stylesheet);
     static const QString& style();
-    static const QString& styleSheet();
 };
 
 #endif // ASTYLE_H
