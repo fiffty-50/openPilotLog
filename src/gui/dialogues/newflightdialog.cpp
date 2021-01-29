@@ -30,7 +30,6 @@
 ///                                         constants                                           ///
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-static const auto EMPTY_STRING=QStringLiteral("");
 static const auto NAME_RX     = QLatin1String("((\\p{L}+)?('|\\-|,)?(\\p{L}+)?)");
 static const auto ADD_NAME_RX = QLatin1String("(\\s?(\\p{L}+('|\\-|,)?\\p{L}+?))?");
 
@@ -138,12 +137,12 @@ NewFlightDialog::NewFlightDialog(QWidget *parent) :
     ui->setupUi(this);
     flightEntry = AFlightEntry();
     setup();
-    if (ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == "SIC") {
-        ui->picNameLineEdit->setText(QStringLiteral(""));
+    if (ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == QLatin1String("SIC")) {
+        ui->picNameLineEdit->setText(QString());
         ui->secondPilotNameLineEdit->setText("self");
     }
-    if(ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == "PIC"){
-        ui->picNameLineEdit->setText("self");
+    if(ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == QLatin1String("PIC")){
+        ui->picNameLineEdit->setText(QStringLiteral("self"));
         emit ui->picNameLineEdit->editingFinished();
     }
 }
@@ -438,7 +437,7 @@ void NewFlightDialog::fillDeductibleData()
                               ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
     QList<QLabel*>      LB = {ui->tSPSELabel, ui->tSPMELabel,  ui->tMPLabel,  ui->tIFRLabel,  ui->tNIGHTLabel,
                               ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDUALLabel, ui->tFILabel};
-    for(const auto& widget : LE) {widget->setText(EMPTY_STRING);}
+    for(const auto& widget : LE) {widget->setText(QString());}
     for(const auto& widget : LB) {widget->setText(Opl::Db::NULL_TIME_hhmm);}
     //Calculate block time
     const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
@@ -472,7 +471,8 @@ void NewFlightDialog::fillDeductibleData()
         ui->tMPLabel->setText(block_time_string);
     }
     // TOTAL
-    ui->tblkLabel->setText("<b>" + block_time_string + "</b>");
+    ui->tblkLabel->setText(QLatin1String("<b>") + block_time_string
+                           + QLatin1String("</b>"));
     // IFR
     if(ui->IfrCheckBox->isChecked()){
         ui->tIFRTimeLineEdit->setText(block_time_string);
@@ -550,23 +550,23 @@ RowData_T NewFlightDialog::collectInput()
 
     // Extra Times
     ui->tSPSETimeLineEdit->text().isEmpty() ?
-                newData.insert(Opl::Db::FLIGHTS_TSPSE, EMPTY_STRING)
+                newData.insert(Opl::Db::FLIGHTS_TSPSE, QString())
               : newData.insert(Opl::Db::FLIGHTS_TSPSE, stringToMinutes(
                                    ui->tSPSETimeLineEdit->text(), flightTimeFormat));
 
     ui->tSPMETimeLineEdit->text().isEmpty() ?
-                newData.insert(Opl::Db::FLIGHTS_TSPME, EMPTY_STRING)
+                newData.insert(Opl::Db::FLIGHTS_TSPME, QString())
               : newData.insert(Opl::Db::FLIGHTS_TSPME, stringToMinutes(
                                    ui->tSPMETimeLineEdit->text(), flightTimeFormat));
     ui->tMPTimeLineEdit->text().isEmpty() ?
-                newData.insert(Opl::Db::FLIGHTS_TMP, EMPTY_STRING)
+                newData.insert(Opl::Db::FLIGHTS_TMP, QString())
               : newData.insert(Opl::Db::FLIGHTS_TMP, stringToMinutes(
                                    ui->tMPTimeLineEdit->text(), flightTimeFormat));
 
     if (ui->IfrCheckBox->isChecked()) {
         newData.insert(Opl::Db::FLIGHTS_TIFR, block_minutes);
     } else {
-        newData.insert(Opl::Db::FLIGHTS_TIFR, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TIFR, QString());
     }
     // Night
     const QString dept_date = ui->doftLineEdit->text() + 'T'
@@ -586,37 +586,37 @@ RowData_T NewFlightDialog::collectInput()
     switch (ui->FunctionComboBox->currentIndex()) {
     case 0://PIC
         newData.insert(Opl::Db::FLIGHTS_TPIC, block_minutes);
-        newData.insert(Opl::Db::FLIGHTS_TPICUS, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TSIC, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TDUAL, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TFI, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
         break;
     case 1://PICUS
-        newData.insert(Opl::Db::FLIGHTS_TPIC, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
         newData.insert(Opl::Db::FLIGHTS_TPICUS, block_minutes);
-        newData.insert(Opl::Db::FLIGHTS_TSIC, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TDUAL, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TFI, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
         break;
     case 2://Co-Pilot
-        newData.insert(Opl::Db::FLIGHTS_TPIC, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TPICUS, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
         newData.insert(Opl::Db::FLIGHTS_TSIC, block_minutes);
-        newData.insert(Opl::Db::FLIGHTS_TDUAL, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TFI, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
         break;
     case 3://Dual
-        newData.insert(Opl::Db::FLIGHTS_TPIC, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TPICUS, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TSIC, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
         newData.insert(Opl::Db::FLIGHTS_TDUAL, block_minutes);
-        newData.insert(Opl::Db::FLIGHTS_TFI, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
         break;
     case 4://Instructor
         newData.insert(Opl::Db::FLIGHTS_TPIC, block_minutes);
-        newData.insert(Opl::Db::FLIGHTS_TPICUS, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TSIC, EMPTY_STRING);
-        newData.insert(Opl::Db::FLIGHTS_TDUAL, EMPTY_STRING);
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
         newData.insert(Opl::Db::FLIGHTS_TFI, block_minutes);
     }
     // Pilot Flying
@@ -756,7 +756,7 @@ void NewFlightDialog::formFiller()
     }
     // Approach Combo Box
     const QString& app = flightEntry.getData().value(Opl::Db::FLIGHTS_APPROACHTYPE).toString();
-    if(app != EMPTY_STRING){
+    if(app != QString()){
         ui->ApproachComboBox->setCurrentText(app);
     }
     // Task and Rules
@@ -770,7 +770,7 @@ void NewFlightDialog::formFiller()
     if (FR > 0) {
         ui->IfrCheckBox->setChecked(true);
     } else {
-        ui->tIFRTimeLineEdit->setText(EMPTY_STRING);
+        ui->tIFRTimeLineEdit->setText(QString());
         ui->VfrCheckBox->setChecked(true);
     }
     // Take Off and Landing
@@ -860,7 +860,7 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
         parent_line_edit->setText(tailsIdMap.key(aDB->getLastEntry(ADatabaseTarget::tails)));
         emit parent_line_edit->editingFinished();
     } else {
-        parent_line_edit->setText(EMPTY_STRING);
+        parent_line_edit->setText(QString());
     }
 }
 
@@ -890,7 +890,7 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
         parent_line_edit->setText(pilotsIdMap.key(aDB->getLastEntry(ADatabaseTarget::pilots)));
         emit parent_line_edit->editingFinished();
     } else {
-        parent_line_edit->setText(EMPTY_STRING);
+        parent_line_edit->setText(QString());
     }
 }
 
@@ -957,7 +957,7 @@ void NewFlightDialog::on_submitButton_clicked()
 void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 {
     DEB << line_edit->objectName() << " - Good input received - " << line_edit->text();
-    line_edit->setStyleSheet("");
+    line_edit->setStyleSheet(QString());
 
     if (mandatoryLineEdits.contains(line_edit))
         mandatoryLineEdits.validate(line_edit);
@@ -1179,7 +1179,7 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
             onGoodInputReceived(line_edit);
         } else { // is extra time line edit
             if (!isLessOrEqualThanBlockTime(line_edit->text())) {
-                line_edit->setText(EMPTY_STRING);
+                line_edit->setText(QString());
                 line_edit->setFocus();
                 return;
             }
@@ -1338,7 +1338,7 @@ void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 
 void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1)
 {
-    if(arg1 == QStringLiteral("ILS CAT III")){  //for a CAT III approach an Autoland is mandatory, so we can preselect it.
+    if(arg1 == QLatin1String("ILS CAT III")){  //for a CAT III approach an Autoland is mandatory, so we can preselect it.
         ui->AutolandCheckBox->setCheckState(Qt::Checked);
         ui->AutolandSpinBox->setValue(1);
     }else{
@@ -1346,10 +1346,10 @@ void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1
         ui->AutolandSpinBox->setValue(0);
     }
 
-    if (arg1 != QStringLiteral("VISUAL"))
+    if (arg1 != QLatin1String("VISUAL"))
         ui->IfrCheckBox->setChecked(true);
 
-    if (arg1 == QStringLiteral("OTHER")) {
+    if (arg1 == QLatin1String("OTHER")) {
         QMessageBox message_box(this);
         message_box.setText(tr("You can specify the approach type in the Remarks field."));
         message_box.exec();

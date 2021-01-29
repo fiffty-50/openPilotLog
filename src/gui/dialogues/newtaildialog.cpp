@@ -166,7 +166,7 @@ bool NewTailDialog::verify()
         if (cb->currentIndex() != 0) {
 
             recommended_combo_boxes.removeOne(cb);
-            cb->setStyleSheet("");
+            cb->setStyleSheet(QString());
         } else {
             cb->setStyleSheet(QStringLiteral("background: orange"));
             DEB << "Not Good: " << cb;

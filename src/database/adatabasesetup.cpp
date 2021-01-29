@@ -297,18 +297,19 @@ bool ADataBaseSetup::downloadTemplates()
 }
 bool ADataBaseSetup::backupOldData()
 {
+    DEB << "Backing up old database...";
     auto database_file = aDB->databaseFile;
+
     if(!database_file.exists()) {
         DEB << "No Database to backup, returning.";
         return true;
     }
-
     auto date_string = ADateTime::toString(QDateTime::currentDateTime(),
                                            Opl::Datetime::Backup);
     auto backup_dir = AStandardPaths::directory(AStandardPaths::Backup);
-    auto backup_name = database_file.baseName() + "_bak_" + date_string + ".db";
-    QFile file(aDB->databaseFile.absoluteFilePath());
-
+    QString backup_name = database_file.baseName() + QLatin1String("_bak_")
+            + date_string + QLatin1String(".db");
+    QFile file(aDB->databaseFile.absoluteFilePath()); 
     if (!file.rename(backup_dir.absoluteFilePath(backup_name))) {
         DEB << "Unable to backup old database.";
         return false;

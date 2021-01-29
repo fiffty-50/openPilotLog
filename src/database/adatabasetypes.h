@@ -41,8 +41,6 @@ using ColumnData_T = QPair<ColName_T, ColData_T>;
 using ColumnNames_T = QStringList;
 using TableColumns_T = QMap<TableName_T, ColumnNames_T>;
 
-using ForeignKey_T = RowId_T;
-
 struct DataPosition {
     TableName_T tableName;
     RowId_T rowId;

@@ -105,8 +105,11 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
 
 double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '"
-            + dept + "' OR icao = '" + dest + "'";
+    QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + dept
+            + QLatin1String("' OR icao = '")
+            + dest
+            + QLatin1String("'");
     auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
@@ -224,7 +227,10 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
 
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept + "' OR icao = '" + dest + "'";
+    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + dept
+            + QLatin1String("' OR icao = '") + dest
+            + QLatin1String("'");
     auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
@@ -252,7 +258,9 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
 
 bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 {
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + icao + "'";
+    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + icao
+            + QLatin1String("'");
     auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
@@ -325,7 +333,7 @@ void ACalc::updateNightTimes()
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
 
     //find all flights for aircraft
-    auto statement = "SELECT ROWID FROM flights";
+    auto statement = QStringLiteral("SELECT ROWID FROM flights");
     auto flight_list = aDB->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {

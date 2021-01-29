@@ -610,12 +610,12 @@ QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, AData
     return row_ids;
 }
 
-APilotEntry ADatabase::resolveForeignPilot(ForeignKey_T foreign_key)
+APilotEntry ADatabase::resolveForeignPilot(RowId_T foreign_key)
 {
     return aDB->getPilotEntry(foreign_key);
 }
 
-ATailEntry ADatabase::resolveForeignTail(ForeignKey_T foreign_key)
+ATailEntry ADatabase::resolveForeignTail(RowId_T foreign_key)
 {
     return aDB->getTailEntry(foreign_key);
 }

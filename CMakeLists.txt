@@ -64,7 +64,7 @@ set(PROJECT_SOURCES
     src/classes/atailentry.h
     src/database/adatabase.h
     src/database/adatabasesetup.h
-    src/database/declarations.h
+    src/database/adatabasetypes.h
     src/functions/acalc.h
     src/functions/adatetime.h
     src/functions/areadcsv.h

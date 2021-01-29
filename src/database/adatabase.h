@@ -245,13 +245,13 @@ public:
      * \brief Resolves the foreign key in a flight entry
      * \return The Pilot Entry referencted by the foreign key.
      */
-    APilotEntry resolveForeignPilot(ForeignKey_T foreign_key);
+    APilotEntry resolveForeignPilot(RowId_T foreign_key);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
      * \return The Tail Entry referencted by the foreign key.
      */
-    ATailEntry resolveForeignTail(ForeignKey_T foreign_key);
+    ATailEntry resolveForeignTail(RowId_T foreign_key);
 
 
 
