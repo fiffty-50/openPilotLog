@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
+#include <QFontDialog>
 
 namespace Ui {
 class SettingsWidget;
@@ -58,6 +59,14 @@ private slots:
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
     void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
+
+    //void on_fontPushButton_clicked();
+
+    void on_fontComboBox_currentFontChanged(const QFont &f);
+
+    void on_fontSpinBox_valueChanged(int arg1);
+
+    void on_fontCheckBox_stateChanged(int arg1);
 
 private:
     Ui::SettingsWidget *ui;

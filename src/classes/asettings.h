@@ -32,7 +32,9 @@ public:
 
     enum class Main {
         Style,
-        StyleSheet,
+        Font,
+        FontSize,
+        UseSystemFont,
     };
 
     enum class LogBook {

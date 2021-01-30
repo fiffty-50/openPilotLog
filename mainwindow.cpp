@@ -25,15 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    readSettings();
 
     // Set up Toolbar
-    ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    ui->toolBar->setIconSize(QSize(64, 64));
-    auto buttons = ui->toolBar->findChildren<QWidget *>();
-    for (const auto &button : buttons) {
-        button->setMinimumWidth(128);
-    }
-
     ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
     ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
@@ -42,15 +36,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionDebug->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
+    ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
-    // Adds space between toolbar items
+    const auto buttons = ui->toolBar->findChildren<QWidget *>();
+    ui->toolBar->setIconSize(QSize(64, 64));
+    for (const auto &button : buttons) {
+        button->setMinimumWidth(128);
+    }
+
+    // Add spacer
     auto *spacer = new QWidget();
-    spacer->setMinimumWidth(10);
+    spacer->setMinimumWidth(1);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    spacer->setObjectName("spacer");
     ui->toolBar->insertWidget(ui->actionDebug, spacer);
 
-
-    DEB << "Construction MainWindow Widgets\n";
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
@@ -102,7 +102,6 @@ void MainWindow::nope()
     message_box.exec();
 }
 
-
 /*
  * Slots
  */
@@ -139,6 +138,17 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 }
+#include <QFontDatabase>
+void MainWindow::readSettings()
+{
+    DEB << "Use system font?" << ASettings::read(ASettings::Main::UseSystemFont).toBool();
+    if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
+        QFont font(ASettings::read(ASettings::Main::Font).toString());
+        font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
+        qApp->setFont(font);
+        DEB << "Font set:" << font;
+    }
+}
 
 void MainWindow::on_actionSettings_triggered()
 {
@@ -159,7 +169,6 @@ void MainWindow::on_actionNewFlight_triggered()
 {
     NewFlightDialog nf(this);
     nf.exec();
-
 }
 
 void MainWindow::on_actionNewAircraft_triggered()

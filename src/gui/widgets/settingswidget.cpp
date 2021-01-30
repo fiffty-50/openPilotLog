@@ -24,8 +24,6 @@
 #include "src/classes/apilotentry.h"
 #include "src/oplconstants.h"
 
-#include <QStyleFactory>
-
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
@@ -116,6 +114,13 @@ void SettingsWidget::readSettings()
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilSortColumn).toInt());
     ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt());
     ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
+    {
+        const QSignalBlocker font_blocker1(ui->fontSpinBox);
+        const QSignalBlocker font_blocker2(ui->fontComboBox);
+        ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
+        ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
+    }
+    ui->fontCheckBox->setChecked(ASettings::read(ASettings::Main::UseSystemFont).toBool());
 }
 
 void SettingsWidget::setupValidators()
@@ -129,7 +134,6 @@ void SettingsWidget::setupValidators()
         }else{
             DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
         }
-
     }
 }
 
@@ -355,5 +359,49 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
             ASettings::write(ASettings::Main::Style, new_style_setting);
             return;
         }
+    }
+}
+
+void SettingsWidget::on_fontComboBox_currentFontChanged(const QFont &f)
+{
+    qApp->setFont(f);
+    ASettings::write(ASettings::Main::Font, f.toString());
+}
+
+void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
+{
+    QFont f = qApp->font();
+    f.setPointSize(arg1);
+    qApp->setFont(f);
+    ASettings::write(ASettings::Main::FontSize, arg1);
+}
+
+void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::Unchecked:
+    {
+        ui->fontComboBox->setEnabled(true);
+        ui->fontSpinBox->setEnabled(true);
+        ASettings::write(ASettings::Main::UseSystemFont, false);
+        QFont font(ui->fontComboBox->currentFont());
+        font.setPointSize(ui->fontSpinBox->value());
+        qApp->setFont(font);
+        break;
+    }
+    case Qt::Checked:
+    {
+        ui->fontComboBox->setEnabled(false);
+        ui->fontSpinBox->setEnabled(false);
+        ASettings::write(ASettings::Main::UseSystemFont, true);
+        QMessageBox message_box(this);
+        message_box.setText(tr("The application will be restarted for this change to take effect."));
+        message_box.exec();
+        qApp->quit();
+        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    }
+        break;
+    default:
+        break;
     }
 }

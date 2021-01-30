@@ -85,7 +85,7 @@ private:
 
     SettingsWidget* settingsWidget;
 
-    AircraftWidget* aircraftWidget ;
+    AircraftWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
 
@@ -93,11 +93,7 @@ private:
 
     void connectWidgets();
 
-
-
-
-
-
+    void readSettings();
 
 };
 #endif // MAINWINDOW_H

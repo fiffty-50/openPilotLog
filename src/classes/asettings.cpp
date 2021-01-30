@@ -21,6 +21,9 @@
 
 QMap<ASettings::Main, QString> ASettings::mainMap = {
     {Main::Style,                       QStringLiteral("style")},
+    {Main::Font,                        QStringLiteral("font")},
+    {Main::FontSize,                    QStringLiteral("fontSize")},
+    {Main::UseSystemFont,               QStringLiteral("useSystemFont")},
 };
 
 QMap<ASettings::LogBook, QString> ASettings::logBookMap = {
