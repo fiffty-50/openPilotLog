@@ -67,8 +67,8 @@ void SettingsWidget::setupComboBoxes(){
         // Style combo box
         const QSignalBlocker blocker_style(ui->styleComboBox);
         ui->styleComboBox->addItems(AStyle::styles);
-        for (const auto &style_sheet_name : AStyle::styleSheets) {
-            ui->styleComboBox->addItem(style_sheet_name.first);
+        for (const auto &style_sheet : AStyle::styleSheets) {
+            ui->styleComboBox->addItem(style_sheet.styleSheetName);
         }
         ui->styleComboBox->model()->sort(0);
 
@@ -117,10 +117,11 @@ void SettingsWidget::readSettings()
     {
         const QSignalBlocker font_blocker1(ui->fontSpinBox);
         const QSignalBlocker font_blocker2(ui->fontComboBox);
+        const QSignalBlocker font_blocker3(ui->fontCheckBox);
         ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
         ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
+        ui->fontCheckBox->setChecked(ASettings::read(ASettings::Main::UseSystemFont).toBool());
     }
-    ui->fontCheckBox->setChecked(ASettings::read(ASettings::Main::UseSystemFont).toBool());
 }
 
 void SettingsWidget::setupValidators()
@@ -353,9 +354,9 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
         }
     }
 
-    for (const auto &style_sheet_name : AStyle::styleSheets) {
-        if (new_style_setting == style_sheet_name.first) {
-            AStyle::setStyle(style_sheet_name);
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        if (new_style_setting == style_sheet.styleSheetName) {
+            AStyle::setStyle(style_sheet);
             ASettings::write(ASettings::Main::Style, new_style_setting);
             return;
         }
@@ -366,6 +367,7 @@ void SettingsWidget::on_fontComboBox_currentFontChanged(const QFont &f)
 {
     qApp->setFont(f);
     ASettings::write(ASettings::Main::Font, f.toString());
+    DEB << "Setting Font:" << f.toString();
 }
 
 void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
@@ -374,10 +376,18 @@ void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
     f.setPointSize(arg1);
     qApp->setFont(f);
     ASettings::write(ASettings::Main::FontSize, arg1);
+    DEB << "Setting Font:" << f.toString();
 }
 
 void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 {
+    if (usingStylesheet() && arg1 == Qt::Unchecked) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("The style you have currently selected may not be fully compatible "
+                               "with changing to a custom font while the application is running.<br><br>"
+                               "Applying your changes may require restarting the application.<br>"));
+        message_box.exec();
+    }
     switch (arg1) {
     case Qt::Unchecked:
     {
@@ -404,4 +414,17 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
     default:
         break;
     }
+}
+
+/*!
+ * \brief Determines if the user has selected a stylesheet or is using a Qt Style Factory Style
+ * \return
+ */
+bool SettingsWidget::usingStylesheet()
+{
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        if (style_sheet.styleSheetName == ui->styleComboBox->currentText())
+            return true;
+    }
+    return false;
 }

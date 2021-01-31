@@ -79,6 +79,7 @@ private:
 
     void updatePersonalDetails();
 
+    bool usingStylesheet();
 signals:
     void viewSelectionChanged(int view_id);
 };

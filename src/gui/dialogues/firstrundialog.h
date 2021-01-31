@@ -41,14 +41,16 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-private:
+private:    
     Ui::FirstRunDialog *ui;
-
-    void reject() override;
-    bool setupDatabase();
-    bool finish();
     bool useLocalTemplates;
 
+    void writeSettings();
+    bool setupDatabase();
+    bool createUserEntry();
+    bool finishSetup();
+
+    void reject() override;
 };
 
 #endif // FIRSTRUNDIALOG_H

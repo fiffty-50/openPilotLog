@@ -20,6 +20,28 @@
 #include <QString>
 #include <QFileInfo>
 #include <QMap>
+#include <QTextStream>
+
+/*!
+ * \brief The StyleSheet struct holds the Display Name and File Name (in the
+ * resource system) for the available stylesheets.
+ */
+struct StyleSheet
+{
+    StyleSheet(QLatin1String style_sheet_name, QLatin1String file_name)
+        : styleSheetName(style_sheet_name), fileName(file_name)
+    {}
+    QLatin1String styleSheetName;
+    QLatin1String fileName;
+};
+
+static inline QString read_stylesheet(const QString &stylesheet)
+{
+    QFile file(stylesheet);
+    file.open(QFile::ReadOnly | QFile::Text);
+    QTextStream stream(&file);
+    return stream.readAll();
+}
 
 /*!
  * \brief The AStyle class encapsulates style and stylesheet logic.
@@ -30,20 +52,14 @@ class AStyle
 {
 private:
     static QString currentStyle;
-    static QString currentStyleSheet;
 public:
     static const QStringList styles;
     static const QString defaultStyle;
-    /*!
-     * \brief contains a List of the available style sheets and their
-     * file name in the resource system.
-     */
-    static const QList<QPair<QString, QString>> styleSheets;
-    static const QString defaultStyleSheet;
+    static const QList<StyleSheet> styleSheets;
 
     static void setup();
-    static void setStyle(const QString style);
-    static void setStyle(const QPair<QString, QString> stylesheet);
+    static void setStyle(const QString &style);
+    static void setStyle(const StyleSheet &style_sheet);
     static const QString& style();
 };
 

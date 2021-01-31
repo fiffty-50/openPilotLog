@@ -82,7 +82,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
         ui->nextPushButton->setText(tr("Done"));
         break;
     case 2:
-        if(!finish())
+        if(!finishSetup())
             QDialog::reject();
         else
             QDialog::accept();
@@ -91,9 +91,33 @@ void FirstRunDialog::on_nextPushButton_clicked()
     ui->stackedWidget->setCurrentIndex(current_idx + 1);
 }
 
-bool FirstRunDialog::finish()
+bool FirstRunDialog::finishSetup()
 {
+    writeSettings();
 
+    if (!setupDatabase()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable.<br>"
+                                   "The following error has ocurred:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+
+    if (!createUserEntry()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+    return true;
+}
+
+void FirstRunDialog::writeSettings()
+{
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
@@ -104,33 +128,8 @@ bool FirstRunDialog::finish()
     ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
     ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
-
-    QMap<QString, QVariant> data;
+    ASettings::write(ASettings::Main::UseSystemFont, true);
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
-    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
-
-    QMessageBox db_fail_msg_box(QMessageBox::Critical, tr("Database setup failed"),
-                                tr("Errors have ocurred creating the database."
-                                   "Without a working database The application will not be usable."));
-    if (!setupDatabase()) {
-        db_fail_msg_box.exec();
-        return false;
-    }
-
-    aDB->updateLayout();
-
-    auto pilot = APilotEntry(1);
-    pilot.setData(data);
-    if(!aDB->commit(pilot)){
-        db_fail_msg_box.exec();
-        return false;
-    }
-    return true;
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -147,10 +146,11 @@ bool FirstRunDialog::setupDatabase()
         if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
             QMessageBox message_box(this);
             message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
+            message_box.exec();
             useLocalTemplates = true; // fall back
         } else {
-        useLocalTemplates = true;
-    }
+            useLocalTemplates = true;
+        }
     }
 
     aDB->disconnect();
@@ -165,7 +165,24 @@ bool FirstRunDialog::setupDatabase()
 
     if(!ADataBaseSetup::importDefaultData(useLocalTemplates))
         return false;
+    aDB->updateLayout();
     return true;
+}
+
+bool FirstRunDialog::createUserEntry()
+{
+    QMap<QString, QVariant> data;
+    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+
+    auto pilot = APilotEntry(1);
+    pilot.setData(data);
+
+    return aDB->commit(pilot);
 }
 
 void FirstRunDialog::reject()
