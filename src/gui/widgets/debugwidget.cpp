@@ -186,7 +186,6 @@ void DebugWidget::on_debugPushButton_clicked()
 {
     // debug space
     //ASettings::write(ASettings::Setup::SetupComplete, false);
-
 }
 
 /* //Comparing two functions template

@@ -32,8 +32,9 @@ const QString AStyle::defaultStyle = QLatin1String("Fusion");
 const QStringList AStyle::styles = QStyleFactory::keys();
 
 const QList<StyleSheet> AStyle::styleSheets = {
-    {QLatin1String("Breeze"),      QLatin1String(":light.qss")},
-    {QLatin1String("Breeze-Dark"), QLatin1String(":dark.qss")}
+    {QLatin1String("Breeze"),      QLatin1String(":breeze_light.qss")},
+    {QLatin1String("Breeze-Dark"), QLatin1String(":breeze_dark.qss")},
+    {QLatin1String("QDarkStyle"),  QLatin1String(":qdarkstyle/qdarkstyle.qss")},
 };
 
 QString AStyle::currentStyle = defaultStyle;
@@ -65,19 +66,55 @@ void AStyle::setup()
     }
 }
 
-void AStyle::setStyle(const QString &style)
+void AStyle::resetStyle()
 {
-    DEB << "Setting style: " << style;
+    qApp->setStyle(QStyleFactory::create(defaultStyle));
     qApp->setStyleSheet(QString());
-    QApplication::setStyle(QStyleFactory::create(style));
-    currentStyle = style;
+    qApp->setPalette(qApp->style()->standardPalette());
+
+}
+
+void AStyle::setStyle(const QString &style_key)
+{
+    resetStyle();
+    DEB << "Setting style: " << style_key;
+    qApp->setStyleSheet(QString());
+    QApplication::setStyle(QStyleFactory::create(style_key));
+    currentStyle = style_key;
 }
 
 void AStyle::setStyle(const StyleSheet &style_sheet)
 {
+    resetStyle();
     DEB << "Setting stylesheet: " << style_sheet.styleSheetName;
     qApp->setStyleSheet(read_stylesheet(style_sheet.fileName));
     currentStyle = style_sheet.styleSheetName;
+}
+
+void AStyle::setStyle(const QPalette &palette)
+{
+    resetStyle();
+    DEB << "Setting Palette...";
+    qApp->setPalette(palette);
+}
+
+QPalette AStyle::darkPalette()
+{
+    auto palette = QPalette();
+    palette.setColor(QPalette::Window, QColor(53, 53, 53));
+    palette.setColor(QPalette::WindowText, Qt::white);
+    palette.setColor(QPalette::Base, QColor(25, 25, 25));
+    palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
+    palette.setColor(QPalette::ToolTipBase, Qt::black);
+    palette.setColor(QPalette::ToolTipText, Qt::white);
+    palette.setColor(QPalette::Text, Qt::white);
+    palette.setColor(QPalette::Button, QColor(53, 53, 53));
+    palette.setColor(QPalette::ButtonText, Qt::white);
+    palette.setColor(QPalette::BrightText, Qt::red);
+    palette.setColor(QPalette::Link, QColor(42, 130, 218));
+    palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    palette.setColor(QPalette::HighlightedText, Qt::black);
+    return palette;
 }
 
 const QString& AStyle::style()

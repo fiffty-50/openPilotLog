@@ -1,8 +1,8 @@
-credit to https://github.com/Alexhuszagh/BreezeStyleSheets
+https://github.com/ColinDuquesnoy/QDarkStyleSheet
 
-The MIT License (MIT)
+# The MIT License (MIT)
 
-Copyright © <2013-2014> <Colin Duquesnoy> Copyright © <2015-2016> <Alex Huszagh>
+Copyright © <2013-2014> <Colin Duquesnoy>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”),
 to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,

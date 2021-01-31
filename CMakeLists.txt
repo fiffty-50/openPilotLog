@@ -98,8 +98,10 @@ set(PROJECT_SOURCES
     src/gui/widgets/pilotswidget.ui
     src/gui/widgets/settingswidget.ui
     src/gui/widgets/totalswidget.ui
+
     assets/icons.qrc
-    assets/themes/breeze.qrc
+    assets/themes/stylesheets/breeze/breeze.qrc
+    assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
     assets/templates.qrc
 )
 

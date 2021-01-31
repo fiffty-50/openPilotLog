@@ -70,6 +70,7 @@ void SettingsWidget::setupComboBoxes(){
         for (const auto &style_sheet : AStyle::styleSheets) {
             ui->styleComboBox->addItem(style_sheet.styleSheetName);
         }
+        ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
         ui->styleComboBox->model()->sort(0);
 
         // Approach Combo Box
@@ -346,6 +347,9 @@ void SettingsWidget::on_aboutPushButton_clicked()
 
 void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_style_setting)
 {
+    if (new_style_setting == QLatin1String("Dark-Palette")) {
+        AStyle::setStyle(AStyle::darkPalette());
+    }
     for (const auto &style_name : AStyle::styles) {
         if (new_style_setting == style_name) {
             AStyle::setStyle(style_name);
@@ -397,6 +401,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
         QFont font(ui->fontComboBox->currentFont());
         font.setPointSize(ui->fontSpinBox->value());
         qApp->setFont(font);
+        DEB << "Setting Font:" << font.toString();
         break;
     }
     case Qt::Checked:

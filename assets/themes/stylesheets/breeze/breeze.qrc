@@ -83,7 +83,7 @@
     <file>dark/radio_checked_disabled.svg</file>
     <file>dark/radio_unchecked.svg</file>
     <file>dark/radio_unchecked_disabled.svg</file>
-    <file>light.qss</file>
-    <file>dark.qss</file>
+    <file>breeze_light.qss</file>
+    <file>breeze_dark.qss</file>
   </qresource>
 </RCC>

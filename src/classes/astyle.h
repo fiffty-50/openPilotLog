@@ -52,14 +52,17 @@ class AStyle
 {
 private:
     static QString currentStyle;
+    static void resetStyle();
 public:
     static const QStringList styles;
     static const QString defaultStyle;
     static const QList<StyleSheet> styleSheets;
 
     static void setup();
-    static void setStyle(const QString &style);
+    static void setStyle(const QString &style_key);
     static void setStyle(const StyleSheet &style_sheet);
+    static void setStyle(const QPalette &palette);
+    static QPalette darkPalette();
     static const QString& style();
 };
 
