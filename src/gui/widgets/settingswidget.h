@@ -68,6 +68,8 @@ private slots:
 
     void on_fontCheckBox_stateChanged(int arg1);
 
+    void on_resetStylePushButton_clicked();
+
 private:
     Ui::SettingsWidget *ui;
 

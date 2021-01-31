@@ -349,6 +349,7 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
         AStyle::setStyle(AStyle::darkPalette());
+        return;
     }
     for (const auto &style_name : AStyle::styles) {
         if (new_style_setting == style_name) {
@@ -432,4 +433,11 @@ bool SettingsWidget::usingStylesheet()
             return true;
     }
     return false;
+}
+
+void SettingsWidget::on_resetStylePushButton_clicked()
+{
+    DEB << "Resetting style to default...";
+    ui->styleComboBox->setCurrentText(QStringLiteral("Fusion"));
+    ui->fontCheckBox->setChecked(true);
 }
