@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -45,8 +45,6 @@ static inline QString read_stylesheet(const QString &stylesheet)
 
 /*!
  * \brief The AStyle class encapsulates style and stylesheet logic.
- * \todo Agree upon the file naming of the assets that will be read.
- * for now it is assumed that dark means "dark.qss"
  */
 class AStyle
 {

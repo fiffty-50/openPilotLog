@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -424,7 +424,6 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 
 /*!
  * \brief Determines if the user has selected a stylesheet or is using a Qt Style Factory Style
- * \return
  */
 bool SettingsWidget::usingStylesheet()
 {
@@ -438,6 +437,6 @@ bool SettingsWidget::usingStylesheet()
 void SettingsWidget::on_resetStylePushButton_clicked()
 {
     DEB << "Resetting style to default...";
-    ui->styleComboBox->setCurrentText(QStringLiteral("Fusion"));
+    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
     ui->fontCheckBox->setChecked(true);
 }
