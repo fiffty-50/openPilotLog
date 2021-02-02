@@ -120,7 +120,7 @@ void NewPilotDialog::on_buttonBox_accepted()
     if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
         QMessageBox message_box(this);
         message_box.setText(tr("Last Name and First Name are required."));
-        message_box.show();
+        message_box.exec();
     } else {
         submitForm();
     }
