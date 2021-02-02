@@ -51,3 +51,21 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+release/qmake/temp/
+
+release/
+
+out/build/x64-Debug (default)/CMakeFiles/ShowIncludes/
+
+out/build/x64-Debug (default)/
+
+debug/
+
+.vs/
+
+openPilotLog.vcxproj
+
+openPilotLog.vcxproj.filters
+
+openPilotLog.vcxproj.user
