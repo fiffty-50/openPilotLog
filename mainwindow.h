@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ private:
 
     SettingsWidget* settingsWidget;
 
-    AircraftWidget* aircraftWidget ;
+    AircraftWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
 
@@ -93,11 +93,7 @@ private:
 
     void connectWidgets();
 
-
-
-
-
-
+    void readSettings();
 
 };
 #endif // MAINWINDOW_H

@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <QSettings>
 
 /*!
- * \brief Thin (namespace) wrapper for the QSettings class,
+ * \brief Thin wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
 class ASettings {
@@ -32,7 +32,9 @@ public:
 
     enum class Main {
         Style,
-        StyleSheet,
+        Font,
+        FontSize,
+        UseSystemFont,
     };
 
     enum class LogBook {
@@ -89,10 +91,6 @@ public:
     static QVariant read(const NewFlight key);
     static void write(const NewFlight key, const QVariant &val);
 
-    // [G]: enum class may be making it abit too strict perhaps?
-    // a workaround is to use plain enums and have one function takes an int
-    // All enums should be unique of course thats easy. See At the end of the file
-    // for details
     /*!
      * \brief Return string representation of group of key: "ini_header/key"
      */

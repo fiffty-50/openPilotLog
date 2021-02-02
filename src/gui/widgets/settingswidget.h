@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
+#include <QFontDialog>
 
 namespace Ui {
 class SettingsWidget;
@@ -57,8 +58,17 @@ private slots:
     void on_pilotSortComboBox_currentIndexChanged(int index);
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
-    void on_darkStyleCheckBox_stateChanged(int state);
-    void on_styleComboBox_currentTextChanged(const QString& index);
+    void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
+
+    //void on_fontPushButton_clicked();
+
+    void on_fontComboBox_currentFontChanged(const QFont &f);
+
+    void on_fontSpinBox_valueChanged(int arg1);
+
+    void on_fontCheckBox_stateChanged(int arg1);
+
+    void on_resetStylePushButton_clicked();
 
 private:
     Ui::SettingsWidget *ui;
@@ -71,6 +81,7 @@ private:
 
     void updatePersonalDetails();
 
+    bool usingStylesheet();
 signals:
     void viewSelectionChanged(int view_id);
 };

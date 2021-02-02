@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -41,14 +41,16 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-private:
+private:    
     Ui::FirstRunDialog *ui;
-
-    void reject() override;
-    bool setupDatabase();
-    bool finish();
     bool useLocalTemplates;
 
+    void writeSettings();
+    bool setupDatabase();
+    bool createUserEntry();
+    bool finishSetup();
+
+    void reject() override;
 };
 
 #endif // FIRSTRUNDIALOG_H

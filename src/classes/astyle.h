@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -20,34 +20,48 @@
 #include <QString>
 #include <QFileInfo>
 #include <QMap>
+#include <QTextStream>
+
+/*!
+ * \brief The StyleSheet struct holds the Display Name and File Name (in the
+ * resource system) for the available stylesheets.
+ */
+struct StyleSheet
+{
+    StyleSheet(QLatin1String style_sheet_name, QLatin1String file_name)
+        : styleSheetName(style_sheet_name), fileName(file_name)
+    {}
+    QLatin1String styleSheetName;
+    QLatin1String fileName;
+};
+
+static inline QString read_stylesheet(const QString &stylesheet)
+{
+    QFile file(stylesheet);
+    file.open(QFile::ReadOnly | QFile::Text);
+    QTextStream stream(&file);
+    return stream.readAll();
+}
 
 /*!
  * \brief The AStyle class encapsulates style and stylesheet logic.
- * \todo Agree upon the file naming of the assets that will be read.
- * for now it is assumed that dark means "dark.qss"
  */
 class AStyle
 {
-public:
-    enum StyleSheet{
-        Default = 0,
-        Dark,
-        Light
-    };
 private:
     static QString currentStyle;
-    static QString currentStyleSheet;
+    static void resetStyle();
 public:
     static const QStringList styles;
     static const QString defaultStyle;
-    static const QString defaultStyleSheet;
-    static const QMap<StyleSheet, QFileInfo> defaultStyleSheets;
+    static const QList<StyleSheet> styleSheets;
 
     static void setup();
-    static void setStyle(const QString style);
-    static void setStyleSheet(const StyleSheet stylesheet);
+    static void setStyle(const QString &style_key);
+    static void setStyle(const StyleSheet &style_sheet);
+    static void setStyle(const QPalette &palette);
+    static QPalette darkPalette();
     static const QString& style();
-    static const QString& styleSheet();
 };
 
 #endif // ASTYLE_H
