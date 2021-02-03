@@ -72,22 +72,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(debugWidget);
     ui->stackedWidget->setCurrentWidget(debugWidget);
 
-    //// START DEBUG ////
-    /// [F] I understand how it is annoying to not have the database
-    /// working when something has changed. Hopefully this check
-    /// helps to avoid that in the future! 
-    #if DATABASE < 15
-    DEB << "Your database is up to date with the latest revision.";
-    #else
-    DEB << "##########################################";
-    DEB << "Your database is out of date.";
-    DEB << "Current Revision:  " << DATABASE_REVISION_NUMBER;
-    DEB << "You have revision: " << query.value(0).toInt();
-    DEB << "Use of DebugWidget to udpate recommended.";
-    DEB << "##########################################";
-    #endif
-    //// END DEBUG ////
-
+    // check database version (Debug)
+    int db_ver = checkDbVersion();
+    if (db_ver != DATABASE_REVISION) {
+        DEB << "############## WARNING ####################";
+        DEB << "Your database is out of date.";
+        DEB << "Current Revision:\t" << DATABASE_REVISION;
+        DEB << "You have revision:\t" << db_ver;
+        DEB << "############## WARNING ###################";
+        QMessageBox message_box(this); //error box
+        message_box.setText(tr("Database revision out of date!"));
+        message_box.exec();
+    } else {
+        DEB << "Your database is up to date with the latest revision:" << db_ver;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -181,4 +179,13 @@ void MainWindow::on_actionNewPilot_triggered()
 {
     NewPilotDialog np(this);
     np.exec();
+}
+
+// Debug
+
+int MainWindow::checkDbVersion()
+{
+    QSqlQuery query("SELECT COUNT(*) FROM changelog");
+    query.next();
+    return query.value(0).toInt();
 }
