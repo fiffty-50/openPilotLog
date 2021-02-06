@@ -95,5 +95,6 @@ private:
 
     void readSettings();
 
+    int checkDbVersion();
 };
 #endif // MAINWINDOW_H

@@ -13,4 +13,5 @@ revision,comment,date
 12,reworked views to display self or picname according CASE,2020-12-11
 13,Reworked viewEASA to incorporate NULL handling,2020-12-17
 14,Edited tails and aircraft tables - engineClass and weightClass instead of columns for each element,2020-12-19
-15,Renamed some columns to have consistent naming.,2020-12-26
+15,Renamed some columns to have consistent naming,2020-12-26
+16,Added CASE for views to account for occasions where aircraft variant is NULL,2021-02-03

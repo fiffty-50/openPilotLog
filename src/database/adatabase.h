@@ -39,7 +39,6 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
 
-#define DATABASE_VERSION 15
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
 /*!
