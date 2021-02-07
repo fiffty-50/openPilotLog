@@ -47,7 +47,6 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbookwidget.cpp
     src/gui/widgets/pilotswidget.cpp
     src/gui/widgets/settingswidget.cpp
-    src/gui/widgets/totalswidget.cpp
     src/testing/abenchmark.cpp
     src/testing/atimer.cpp
     
@@ -80,7 +79,6 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbookwidget.h
     src/gui/widgets/pilotswidget.h
     src/gui/widgets/settingswidget.h
-    src/gui/widgets/totalswidget.h
     src/oplconstants.h
     src/testing/abenchmark.h
     src/testing/adebug.h
@@ -97,7 +95,6 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbookwidget.ui
     src/gui/widgets/pilotswidget.ui
     src/gui/widgets/settingswidget.ui
-    src/gui/widgets/totalswidget.ui
 
     assets/icons.qrc
     assets/themes/stylesheets/breeze/breeze.qrc

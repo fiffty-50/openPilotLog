@@ -30,11 +30,11 @@ namespace AStat {
  */
 
 
-    enum yearType {allYears, calendarYear, rollingYear};
+    enum TimeFrame {AllTime, CalendarYear, RollingYear, Rolling28Days};
 
-    QString totalTime(yearType);
+    int totalTime(TimeFrame time_frame);
 
-    QVector<QString> currencyTakeOffLanding(int days);
+    QVector<QVariant> currencyTakeOffLanding(int days = 90);
 
     QVector<QPair<QString, QString>> totals();
 

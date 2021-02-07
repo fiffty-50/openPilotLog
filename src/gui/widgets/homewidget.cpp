@@ -16,22 +16,68 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
-#include "ui_homewidget.h"
+#include "ui_totalswidget.h"
 #include "src/testing/adebug.h"
-
+#include "src/database/adatabase.h"
+#include "src/functions/atime.h"
 
 HomeWidget::HomeWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
-    totalsWidget = new TotalsWidget(this);
-    ui->stackedWidget->addWidget(totalsWidget);
-    ui->stackedWidget->setCurrentWidget(totalsWidget);
-    ui->stackedWidget->show();
+    ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
+
+    fillTotals();
+    fillCurrency();
+    fillLimitations();
 }
 
 HomeWidget::~HomeWidget()
 {
     delete ui;
+}
+
+void HomeWidget::onHomeWidget_dataBaseUpdated()
+{
+    fillTotals();
+    fillCurrency();
+    fillLimitations();
+}
+
+void HomeWidget::fillTotals()
+{
+    auto data = AStat::totals();
+    DEB << "Filling Totals Line Edits...";
+    for (const auto &field : data) {
+        auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
+        line_edit->setText(field.second);
+    }
+}
+
+void HomeWidget::fillCurrency()
+{
+    DEB << "Filling currency labels...";
+    auto takeoff_landings = AStat::currencyTakeOffLanding();
+
+    ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
+    ui->LandingsDisplayLabel->setText(takeoff_landings[1].toString());
+}
+
+void HomeWidget::fillLimitations()
+{
+    DEB << "Filling limitations labels...";
+    ui->FlightTime28dDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::Rolling28Days)));
+    ui->FlightTime12mDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::RollingYear)));
+    ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::CalendarYear)));
+}
+
+const QString HomeWidget::userName()
+{
+    auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
+    auto name = aDB->customQuery(statement, 1);
+    if (!name.isEmpty())
+        return name.first().toString();
+
+    return QString();
 }

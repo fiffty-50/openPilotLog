@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFile>
+#include <QKeyEvent>
 
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
@@ -35,6 +36,7 @@
 #include "src/gui/widgets/debugwidget.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
 #include "src/classes/arunguard.h"
 #include "src/testing/atimer.h"
 

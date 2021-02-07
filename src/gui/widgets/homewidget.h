@@ -22,14 +22,8 @@
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include "src/functions/astat.h"
-#include "src/functions/acalc.h"
-#include "src/gui/dialogues/newtaildialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/widgets/totalswidget.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
-
 #include "src/database/adatabase.h"
 
 namespace Ui {
@@ -47,7 +41,16 @@ public:
 private:
     Ui::HomeWidget *ui;
 
-    TotalsWidget* totalsWidget;
+    void fillTotals();
+    void fillCurrency();
+    void fillLimitations();
+
+    /*!
+     * \brief Retreives the users first name from the database.
+     */
+    const QString userName();
+public slots:
+    void onHomeWidget_dataBaseUpdated();
 };
 
 #endif // HOMEWIDGET_H

@@ -620,7 +620,7 @@ ATailEntry ADatabase::resolveForeignTail(RowId_T foreign_key)
     return aDB->getTailEntry(foreign_key);
 }
 
-QVector<QString> ADatabase::customQuery(QString statement, int return_values)
+QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);
     query.exec();
@@ -630,17 +630,16 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
         DEB << "Error: " << query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = query.lastError().text();
-        return QVector<QString>();
+        return QVector<QVariant>();
     } else {
         query.first();
         query.previous();
-        QVector<QString> result;
+        QVector<QVariant> result;
         while (query.next()) {
             for (int i = 0; i < return_values ; i++) {
-                result.append(query.value(i).toString());
+                result.append(query.value(i));
             }
         }
-        emit dataBaseUpdated();
         lastError = QString();
         return result;
     }
