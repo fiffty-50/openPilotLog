@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionDebug->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -44,12 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
         button->setMinimumWidth(128);
     }
 
-    // Add spacer
+    // Add spacer in toolbar to separate left and right parts
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(1);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    spacer->setObjectName("spacer");
-    ui->toolBar->insertWidget(ui->actionDebug, spacer);
+    ui->toolBar->insertWidget(ui->actionSettings, spacer);
 
     // Construct Widgets
     homeWidget = new HomeWidget(this);
@@ -62,15 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(settingsWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
 
     connectWidgets();
 
     // Startup Screen (Home Screen)
-    // ui->stackedWidget->setCurrentWidget(homeWidget);
-    // Debup Widget for now
-    debugWidget = new DebugWidget(this);
-    ui->stackedWidget->addWidget(debugWidget);
-    ui->stackedWidget->setCurrentWidget(debugWidget);
+    ui->stackedWidget->setCurrentWidget(homeWidget);
+
 
     // check database version (Debug)
     int db_ver = checkDbVersion();
@@ -136,7 +133,7 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 }
-#include <QFontDatabase>
+
 void MainWindow::readSettings()
 {
     DEB << "Use system font?" << ASettings::read(ASettings::Main::UseSystemFont).toBool();

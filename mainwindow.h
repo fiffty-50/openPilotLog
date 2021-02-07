@@ -54,8 +54,6 @@ public:
 
 private slots:
 
-    void nope();
-
     void on_actionQuit_triggered();
 
     void on_actionHome_triggered();
@@ -91,10 +89,25 @@ private:
 
     DebugWidget* debugWidget;
 
+    void nope();
+
     void connectWidgets();
 
     void readSettings();
 
     int checkDbVersion();
+
+protected:
+    /*!
+     * \brief Shows the debug widget by pressing <ctrl + Home>
+     */
+    void keyPressEvent(QKeyEvent* keyEvent) override
+    {
+        if(keyEvent->type() == QKeyEvent::KeyPress) {
+            if(keyEvent->matches(QKeySequence::MoveToStartOfDocument)) {
+                on_actionDebug_triggered();
+            }
+        }
+    }
 };
 #endif // MAINWINDOW_H
