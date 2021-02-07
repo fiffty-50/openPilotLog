@@ -30,7 +30,7 @@ namespace AStat {
  */
 
 
-    enum TimeFrame {AllTime, CalendarYear, RollingYear, Rolling28Days};
+    enum TimeFrame {AllTime, CalendarYear, Rolling12Months, Rolling28Days};
 
     int totalTime(TimeFrame time_frame);
 

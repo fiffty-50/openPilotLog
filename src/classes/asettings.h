@@ -26,19 +26,13 @@
  */
 class ASettings {
 public:
-    enum class Setup {
-        SetupComplete,
-    };
-
     enum class Main {
+        SetupComplete,
         Style,
         Font,
         FontSize,
         UseSystemFont,
-    };
-
-    enum class LogBook {
-        View,
+        LogbookView,
     };
 
     enum class UserData {
@@ -46,6 +40,7 @@ public:
         AcftSortColumn,
         PilSortColumn,
         AcAllowIncomplete,
+        FtlWarningThreshold,
     };
 
     enum class FlightLogging {
@@ -60,10 +55,7 @@ public:
         PilotFlying,
         NightAngle,
         Rules,
-        FlightTimeFormat
-    };
-
-    enum class NewFlight {
+        FlightTimeFormat,
         FunctionComboBox,
         CalendarCheckBox,
     };
@@ -72,12 +64,6 @@ public:
      * \brief Should be called after QCoreApplication::set...Name have been called.
      */
     static void setup();
-
-    static QVariant read(const Setup key);
-    static void write(const Setup key, const QVariant &val);
-
-    static QVariant read(const LogBook key);
-    static void write(const LogBook key, const QVariant &val);
 
     static QVariant read(const Main key);
     static void write(const Main key, const QVariant &val);
@@ -88,39 +74,26 @@ public:
     static QVariant read(const UserData key);
     static void write(const FlightLogging key, const QVariant &val);
 
-    static QVariant read(const NewFlight key);
-    static void write(const NewFlight key, const QVariant &val);
-
     /*!
      * \brief Return string representation of group of key: "ini_header/key"
      */
     static QString groupOfKey(const Main key);
-    static QString groupOfKey(const LogBook key);
-    static QString groupOfKey(const NewFlight key);
     static QString groupOfKey(const FlightLogging key);
-    static QString groupOfKey(const Setup key);
     static QString groupOfKey(const UserData key);
 
     /*!
      * \brief Return string representation of key
      */
     static QString stringOfKey(const Main key);
-    static QString stringOfKey(const LogBook key);
-    static QString stringOfKey(const NewFlight key);
     static QString stringOfKey(const FlightLogging key);
-    static QString stringOfKey(const Setup key);
     static QString stringOfKey(const UserData key);
 
     static QSettings settings();
 
 private:
     static QMap<Main, QString> mainMap;
-    static QMap<LogBook, QString> logBookMap;
     static QMap<UserData, QString> userDataMap;
     static QMap<FlightLogging, QString> flightLoggingMap;
-    static QMap<Setup, QString> setupMap;
-    static QMap<NewFlight, QString> newFlightMap;
-
 };
 
 #endif // ASETTINGS_H

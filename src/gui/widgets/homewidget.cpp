@@ -20,6 +20,15 @@
 #include "src/testing/adebug.h"
 #include "src/database/adatabase.h"
 #include "src/functions/atime.h"
+#include "src/classes/asettings.h"
+
+// EASA FTL Limitations
+// 100 hours per 28 days
+static const int ROLLING_28_DAYS = 6000;
+// 900 hours per calendar year
+static const int CALENDAR_YEAR = 54000;
+// 1000 hours per rolling 12 months
+static const int ROLLING_12_MONTHS = 60000;
 
 HomeWidget::HomeWidget(QWidget *parent) :
     QWidget(parent),
@@ -28,6 +37,12 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 
+
+    displayLabels = {ui->TakeOffDisplayLabel, ui->LandingsDisplayLabel,
+                     ui->FlightTime28dDisplayLabel, ui->FlightTimeCalYearDisplayLabel,
+                     ui->FlightTime12mDisplayLabel};
+    warningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
+    DEB << "Filling Home Widget...";
     fillTotals();
     fillCurrency();
     fillLimitations();
@@ -40,6 +55,9 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::onHomeWidget_dataBaseUpdated()
 {
+    for (const auto &label : displayLabels)
+        label->setStyleSheet(QString());
+
     fillTotals();
     fillCurrency();
     fillLimitations();
@@ -48,7 +66,6 @@ void HomeWidget::onHomeWidget_dataBaseUpdated()
 void HomeWidget::fillTotals()
 {
     auto data = AStat::totals();
-    DEB << "Filling Totals Line Edits...";
     for (const auto &field : data) {
         auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
         line_edit->setText(field.second);
@@ -57,19 +74,41 @@ void HomeWidget::fillTotals()
 
 void HomeWidget::fillCurrency()
 {
-    DEB << "Filling currency labels...";
     auto takeoff_landings = AStat::currencyTakeOffLanding();
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
+    if (takeoff_landings[0].toUInt() < 3)
+        setLabelColour(ui->TakeOffDisplayLabel, HomeWidget::Red);
     ui->LandingsDisplayLabel->setText(takeoff_landings[1].toString());
+    if (takeoff_landings[1].toUInt() < 3)
+        setLabelColour(ui->LandingsDisplayLabel, HomeWidget::Red);
 }
 
 void HomeWidget::fillLimitations()
 {
-    DEB << "Filling limitations labels...";
-    ui->FlightTime28dDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::Rolling28Days)));
-    ui->FlightTime12mDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::RollingYear)));
-    ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(AStat::totalTime(AStat::CalendarYear)));
+    int minutes = AStat::totalTime(AStat::Rolling28Days);
+    ui->FlightTime28dDisplayLabel->setText(ATime::toString(minutes));
+    if (minutes >= ROLLING_28_DAYS) {
+        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Red);
+    } else if (minutes >= ROLLING_28_DAYS * warningThreshold) {
+        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Yellow);
+    }
+
+    minutes = AStat::totalTime(AStat::Rolling12Months);
+    ui->FlightTime12mDisplayLabel->setText(ATime::toString(minutes));
+    if (minutes >= ROLLING_12_MONTHS) {
+        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Red);
+    } else if (minutes >= ROLLING_12_MONTHS * warningThreshold) {
+        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Yellow);
+    }
+
+    minutes = AStat::totalTime(AStat::CalendarYear);
+    ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(minutes));
+    if (minutes >= CALENDAR_YEAR) {
+        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Red);
+    } else if (minutes >= CALENDAR_YEAR * warningThreshold) {
+        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Yellow);
+    }
 }
 
 const QString HomeWidget::userName()

@@ -297,7 +297,6 @@ bool ADataBaseSetup::downloadTemplates()
         QFileInfo downloaded_file(template_dir.filePath(table % QStringLiteral(".csv")));
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
-
     }
     return true;
 }

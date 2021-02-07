@@ -45,10 +45,30 @@ private:
     void fillCurrency();
     void fillLimitations();
 
+    double warningThreshold;
+
+    QList<QLabel*> displayLabels;
     /*!
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
+
+    enum Colour {Red, Yellow};
+
+    inline void setLabelColour(QLabel* label, Colour colour)
+    {
+        switch (colour) {
+        case HomeWidget::Red:
+            label->setStyleSheet(QStringLiteral("color: red"));
+            break;
+        case HomeWidget::Yellow:
+            label->setStyleSheet(QStringLiteral("color: yellow"));
+            break;
+        default:
+            label->setStyleSheet(QString());
+            break;
+        }
+    }
 public slots:
     void onHomeWidget_dataBaseUpdated();
 };

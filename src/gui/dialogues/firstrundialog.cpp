@@ -118,6 +118,8 @@ bool FirstRunDialog::finishSetup()
 
 void FirstRunDialog::writeSettings()
 {
+    ASettings::write(ASettings::Main::UseSystemFont, true);
+    ASettings::write(ASettings::Main::LogbookView, 0);
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
@@ -128,8 +130,9 @@ void FirstRunDialog::writeSettings()
     ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
     ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
-    ASettings::write(ASettings::Main::UseSystemFont, true);
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    // To Do: UI option
+    ASettings::write(ASettings::UserData::FtlWarningThreshold, 0.8);
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -143,7 +146,7 @@ bool FirstRunDialog::setupDatabase()
 
     if (confirm.exec() == QMessageBox::Yes) {
         useLocalTemplates = false;
-        if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
+        if (!ADataBaseSetup::downloadTemplates()) {
             QMessageBox message_box(this);
             message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
             message_box.exec();

@@ -107,7 +107,7 @@ void SettingsWidget::readSettings()
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
 
-    ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::LogBook::View).toInt());
+    ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::Main::LogbookView).toInt());
     /*
      * Misc Tab
      */
@@ -265,7 +265,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::LogBook::View, index);
+    ASettings::write(ASettings::Main::LogbookView, index);
     emit viewSelectionChanged(index);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)

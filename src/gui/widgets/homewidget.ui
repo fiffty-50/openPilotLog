@@ -720,6 +720,12 @@
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="TakeOffDisplayLabel">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>
@@ -740,6 +746,12 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="LandingsDisplayLabel">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>

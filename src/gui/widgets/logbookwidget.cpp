@@ -47,9 +47,13 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
 
     //Initialise message Box
     messageBox = new QMessageBox(this);
+    // Initalise the display Model and view
+    displayModel = new QSqlTableModel(this);
+    view = ui->tableView;
 
-    prepareModelAndView(ASettings::read(ASettings::LogBook::View).toInt());
+    prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
+
 }
 
 LogbookWidget::~LogbookWidget()
@@ -65,14 +69,32 @@ void LogbookWidget::prepareModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        setupDefaultView();
+        DEB << "Loading Default View...";
+        displayModel->setTable(QStringLiteral("viewDefault"));
+        displayModel->select();
         break;
     case 1:
-        setupEasaView();
+        DEB << "Loading Default View...";
+        displayModel->setTable(QStringLiteral("viewEASA"));
+        displayModel->select();
         break;
     default:
-        setupDefaultView();
+        DEB << "Loading Default View...";
+        displayModel->setTable(QStringLiteral("viewDefault"));
+        displayModel->select();
     }
+
+    view->setModel(displayModel);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+    view->resizeColumnsToContents();
+    view->show();
 }
 
 void LogbookWidget::connectSignalsAndSlots()
@@ -82,7 +104,8 @@ void LogbookWidget::connectSignalsAndSlots()
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
 
-void LogbookWidget::setupDefaultView()
+// not manually set at the moment
+/*void LogbookWidget::setupDefaultView()
 {
     DEB << "Loading Default View...";
     displayModel = new QSqlTableModel(this);
@@ -157,13 +180,13 @@ void LogbookWidget::setupEasaView()
     view->hideColumn(0);
 
     view->show();
-}
+}*/
 
 /*
  * Slots
  */
 
-void LogbookWidget::flightsTableView_selectionChanged()//
+void LogbookWidget::flightsTableView_selectionChanged()
 {
     selectedFlights.clear();
     for (const auto& row : selectionModel->selectedRows()) {
@@ -302,6 +325,7 @@ void LogbookWidget::onDisplayModel_dataBaseUpdated()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
+    view->resizeColumnsToContents();
 }
 
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(int view_id)

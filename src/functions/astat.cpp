@@ -41,7 +41,7 @@ int AStat::totalTime(TimeFrame time_frame)
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
-    case AStat::RollingYear:
+    case AStat::Rolling12Months:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));

@@ -55,12 +55,12 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    if (!ASettings::read(ASettings::Setup::SetupComplete).toBool()) {
+    if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) {
         if(FirstRunDialog().exec() == QDialog::Rejected){
             DEB << "First run not accepted. Exiting.";
             return 3;
         }
-        ASettings::write(ASettings::Setup::SetupComplete, true);
+        ASettings::write(ASettings::Main::SetupComplete, true);
         DEB << "Wrote setup_commplete?";
     }
 
