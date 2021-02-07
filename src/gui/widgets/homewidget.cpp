@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
-#include "ui_totalswidget.h"
+#include "ui_homewidget.h"
 #include "src/testing/adebug.h"
 #include "src/database/adatabase.h"
 #include "src/functions/atime.h"
