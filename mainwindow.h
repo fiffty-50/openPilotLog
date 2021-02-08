@@ -101,12 +101,12 @@ private:
 
 protected:
     /*!
-     * \brief Shows the debug widget by pressing <ctrl + Home>
+     * \brief Shows the debug widget by pressing <ctrl + t>
      */
     void keyPressEvent(QKeyEvent* keyEvent) override
     {
         if(keyEvent->type() == QKeyEvent::KeyPress) {
-            if(keyEvent->matches(QKeySequence::MoveToStartOfDocument)) {
+            if(keyEvent->matches(QKeySequence::AddTab)) {
                 on_actionDebug_triggered();
             }
         }

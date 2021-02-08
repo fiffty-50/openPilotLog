@@ -31,24 +31,24 @@ int AStat::totalTime(TimeFrame time_frame)
     QString start_date;
 
     switch (time_frame) {
-    case AStat::AllTime:
+    case TimeFrame::AllTime:
         statement = QStringLiteral("SELECT SUM(tblk) FROM flights");
         break;
-    case AStat::CalendarYear:
+    case TimeFrame::CalendarYear:
         start.setDate(QDate::currentDate().year(), 1, 1);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
-    case AStat::Rolling12Months:
+    case TimeFrame::Rolling12Months:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
-    case AStat::Rolling28Days:
+    case TimeFrame::Rolling28Days:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 28);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));
@@ -68,10 +68,10 @@ int AStat::totalTime(TimeFrame time_frame)
 /*!
  * \brief AStat::currencyTakeOffLanding Returns the amount of Take Offs and
  * Landings performed in the last x days. If no vallue for days is provided, 90 is used,
- * as per EASA FTL
+ * as per EASA regulations
  * \return QVector<QString>{#TO,#LDG}
  */
-QVector<QVariant> AStat::currencyTakeOffLanding(int days)
+QVector<QVariant> AStat::countTakeOffLanding(int days)
 {
     QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days);
     QString startdate = start.toString(Qt::ISODate);
@@ -79,14 +79,14 @@ QVector<QVariant> AStat::currencyTakeOffLanding(int days)
     startdate.prepend(QLatin1Char('\''));
 
     QString statement = QLatin1String("SELECT "
-            "CAST(SUM(flights.TOday) + SUM(flights.TOnight) AS INTEGER) AS 'TO', "
-            "CAST(SUM(flights.LDGday) + SUM(flights.LDGnight) AS INTEGER) AS 'LDG' "
-            "FROM flights "
-            "WHERE doft >=") + startdate;
+                                      " SUM(IFNULL(flights.toDay,0) + IFNULL(flights.toNight,0)) AS 'TO', "
+                                      " SUM(IFNULL(flights.ldgDay,0) + IFNULL(flights.ldgNight,0)) AS 'LDG' "
+                                      " FROM flights "
+                                      " WHERE doft >=") + startdate;
 
     QVector<QVariant> result = aDB->customQuery(statement, 2);
     // make sure a value is returned instead of NULL
-    for (const auto var : result) {
+    for (const auto &var : result) {
         if (var.isNull())
             result.replace(result.indexOf(var), 0);
     }
@@ -132,4 +132,38 @@ QVector<QPair<QString, QString>> AStat::totals()
         }
     }
     return output;
+}
+
+/*!
+ * \brief Calculates the date of expiry for the take-off and landing currency.
+ *
+ * The default value for days is 90.
+ * \return
+ */
+QDate AStat::currencyTakeOffLandingExpiry(int expiration_days)
+{
+    int number_of_days = 0;
+    QVector<QVariant> takeoff_landings;
+
+    // Check if enough take-offs and landings exist within the expiration period, if that's not the case
+    // we are out of currency and we can stop right there.
+    takeoff_landings = countTakeOffLanding(expiration_days);
+    if (takeoff_landings[0].toInt() < 3 || takeoff_landings[1].toInt() < 3)
+        return QDate::currentDate();
+
+    // Go back in time to find a point at which number of Take-Offs and Landings >= 3
+    for (int i=0; i <= expiration_days; i++) {
+        takeoff_landings = countTakeOffLanding(i);
+        //DEB << takeoff_landings;
+        if (takeoff_landings[0].toInt() >= 3 && takeoff_landings[1].toInt() >= 3) {
+            number_of_days = i;
+            //DEB << "Loop position i =" << i;
+            break;
+        }
+    }
+    // The expiration date of currency is now currentDate - number of days + expiration_days (default 90)
+    QDate expiration_date = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - number_of_days);
+    //DEB << expiration_date.addDays(expiration_days);
+
+    return expiration_date.addDays(expiration_days);;
 }

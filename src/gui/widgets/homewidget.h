@@ -53,7 +53,7 @@ private:
      */
     const QString userName();
 
-    enum Colour {Red, Yellow};
+    enum Colour {Red, Orange};
 
     inline void setLabelColour(QLabel* label, Colour colour)
     {
@@ -61,8 +61,8 @@ private:
         case HomeWidget::Red:
             label->setStyleSheet(QStringLiteral("color: red"));
             break;
-        case HomeWidget::Yellow:
-            label->setStyleSheet(QStringLiteral("color: yellow"));
+        case HomeWidget::Orange:
+            label->setStyleSheet(QStringLiteral("color: orange"));
             break;
         default:
             label->setStyleSheet(QString());

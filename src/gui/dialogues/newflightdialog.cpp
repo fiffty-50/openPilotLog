@@ -1361,3 +1361,24 @@ void NewFlightDialog::on_FunctionComboBox_currentIndexChanged(int)
     if (updateEnabled)
         fillDeductibleData();
 }
+
+
+// [F]: Not a priority right now.
+void NewFlightDialog::on_deptTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->deptTZComboBox->setCurrentIndex(0);
+    }
+}
+
+void NewFlightDialog::on_destTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->destTZComboBox->setCurrentIndex(0);}
+}

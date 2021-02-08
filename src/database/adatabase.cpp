@@ -286,8 +286,8 @@ bool ADatabase::update(AEntry updated_entry)
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QString()));
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
         }
@@ -330,9 +330,9 @@ bool ADatabase::insert(AEntry new_entry)
     QSqlQuery query;
     query.prepare(statement);
 
-    for (i = data.begin(); i != data.end(); ++i) {
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QString()));
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
         }

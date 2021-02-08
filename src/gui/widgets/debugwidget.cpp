@@ -24,6 +24,7 @@
 #include "src/gui/dialogues/firstrundialog.h"
 #include <QtGlobal>
 #include "src/functions/atime.h"
+#include "src/functions/astat.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -184,6 +185,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
+    DEB << "Expiration Date:" << AStat::currencyTakeOffLandingExpiry();
     // debug space
     //ASettings::write(ASettings::Setup::SetupComplete, false);
 }

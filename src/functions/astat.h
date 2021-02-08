@@ -30,11 +30,15 @@ namespace AStat {
  */
 
 
-    enum TimeFrame {AllTime, CalendarYear, Rolling12Months, Rolling28Days};
+    enum class TimeFrame {AllTime, CalendarYear, Rolling12Months, Rolling28Days};
+
+    enum class ToLdg {Takeoff, Landing};
 
     int totalTime(TimeFrame time_frame);
 
-    QVector<QVariant> currencyTakeOffLanding(int days = 90);
+    QVector<QVariant> countTakeOffLanding(int days = 90);
+
+    QDate currencyTakeOffLandingExpiry(int expiration_days = 90);
 
     QVector<QPair<QString, QString>> totals();
 

@@ -22,7 +22,7 @@
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
 
-// EASA FTL Limitations
+// EASA FTL Limitations in minutes
 // 100 hours per 28 days
 static const int ROLLING_28_DAYS = 6000;
 // 900 hours per calendar year
@@ -74,7 +74,7 @@ void HomeWidget::fillTotals()
 
 void HomeWidget::fillCurrency()
 {
-    auto takeoff_landings = AStat::currencyTakeOffLanding();
+    auto takeoff_landings = AStat::countTakeOffLanding();
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
     if (takeoff_landings[0].toUInt() < 3)
@@ -82,32 +82,37 @@ void HomeWidget::fillCurrency()
     ui->LandingsDisplayLabel->setText(takeoff_landings[1].toString());
     if (takeoff_landings[1].toUInt() < 3)
         setLabelColour(ui->LandingsDisplayLabel, HomeWidget::Red);
+
+    QDate expiration_date = AStat::currencyTakeOffLandingExpiry();
+    if (expiration_date == QDate::currentDate())
+        setLabelColour(ui->currencyExpirationDisplayLabel, HomeWidget::Red);
+    ui->currencyExpirationDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
 }
 
 void HomeWidget::fillLimitations()
 {
-    int minutes = AStat::totalTime(AStat::Rolling28Days);
+    int minutes = AStat::totalTime(AStat::TimeFrame::Rolling28Days);
     ui->FlightTime28dDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= ROLLING_28_DAYS) {
         setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Red);
     } else if (minutes >= ROLLING_28_DAYS * warningThreshold) {
-        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Yellow);
+        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Orange);
     }
 
-    minutes = AStat::totalTime(AStat::Rolling12Months);
+    minutes = AStat::totalTime(AStat::TimeFrame::Rolling12Months);
     ui->FlightTime12mDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= ROLLING_12_MONTHS) {
         setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Red);
     } else if (minutes >= ROLLING_12_MONTHS * warningThreshold) {
-        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Yellow);
+        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Orange);
     }
 
-    minutes = AStat::totalTime(AStat::CalendarYear);
+    minutes = AStat::totalTime(AStat::TimeFrame::CalendarYear);
     ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= CALENDAR_YEAR) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Red);
     } else if (minutes >= CALENDAR_YEAR * warningThreshold) {
-        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Yellow);
+        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Orange);
     }
 }
 
