@@ -37,10 +37,23 @@ public:
 
     enum class UserData {
         DisplaySelfAs,
-        AcftSortColumn,
-        PilSortColumn,
-        AcAllowIncomplete,
+        TailSortColumn,
+        PilotSortColumn,
+        AcftAllowIncomplete,
         FtlWarningThreshold,
+        ShowToLgdCurrency,
+        ShowLicCurrency,
+        ShowTrCurrency,
+        ShowLckCurrency,
+        ShowMedCurrency,
+        ShowCustom1Currency,
+        ShowCustom2Currency,
+        LicCurrencyDate,
+        TrCurrencyDate,
+        LckCurrencyDate,
+        MedCurrencyDate,
+        Custom1CurrencyDate,
+        Custom2CurrencyDate,
     };
 
     enum class FlightLogging {

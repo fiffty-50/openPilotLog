@@ -43,11 +43,13 @@ private:
 
     void fillTotals();
     void fillCurrency();
+    void fillCurrencyTakeOffLanding();
     void fillLimitations();
 
     double warningThreshold;
 
-    QList<QLabel*> displayLabels;
+    QList<QLabel*> limitationDisplayLabels;
+    QList<QPair<QLabel*, QLabel*>> currencyLabels;
     /*!
      * \brief Retreives the users first name from the database.
      */
@@ -68,6 +70,11 @@ private:
             label->setStyleSheet(QString());
             break;
         }
+    }
+
+    inline void hideLabels(QLabel* label1, QLabel* label2) {
+        label1->hide();
+        label2->hide();
     }
 public slots:
     void onHomeWidget_dataBaseUpdated();

@@ -106,14 +106,38 @@ void SettingsWidget::readSettings()
     ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
-
     ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::Main::LogbookView).toInt());
+
+    /*
+     * Currencies Tab
+     */
+    ui->currToLdgCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool());
+
+    ui->currLicDateEdit->setDate(ASettings::read(ASettings::UserData::LicCurrencyDate).toDate());
+    ui->currLicCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowLicCurrency).toBool());
+
+    ui->currTrDateEdit->setDate(ASettings::read(ASettings::UserData::TrCurrencyDate).toDate());
+    ui->currTrCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowTrCurrency).toBool());
+
+    ui->currLckDateEdit->setDate(ASettings::read(ASettings::UserData::LckCurrencyDate).toDate());
+    ui->currLckCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowLckCurrency).toBool());
+
+    ui->currMedDateEdit->setDate(ASettings::read(ASettings::UserData::MedCurrencyDate).toDate());
+    ui->currMedCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowMedCurrency).toBool());
+
+    ui->currCustom1DateEdit->setDate(ASettings::read(ASettings::UserData::Custom1CurrencyDate).toDate());
+    ui->currCustom1CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool());
+
+    ui->currCustom2DateEdit->setDate(ASettings::read(ASettings::UserData::Custom2CurrencyDate).toDate());
+    ui->currCustom2CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool());
+
+
     /*
      * Misc Tab
      */
-    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftSortColumn).toInt());
-    ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilSortColumn).toInt());
-    ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt());
+    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
+    ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
+    ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
     ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
     {
         const QSignalBlocker font_blocker1(ui->fontSpinBox);
@@ -270,17 +294,17 @@ void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::UserData::PilSortColumn, index);
+    ASettings::write(ASettings::UserData::PilotSortColumn, index);
 }
 
 void SettingsWidget::on_acSortComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::UserData::AcftSortColumn, index);
+    ASettings::write(ASettings::UserData::TailSortColumn, index);
 }
 
 void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
+    ASettings::write(ASettings::UserData::AcftAllowIncomplete, index);
     if (index) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::warning(this, tr("Warning"),
@@ -292,7 +316,7 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
                                       "Are you sure you want to proceed?"),
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
-            ASettings::write(ASettings::UserData::AcAllowIncomplete, index);
+            ASettings::write(ASettings::UserData::AcftAllowIncomplete, index);
         } else {
             ui->acAllowIncompleteComboBox->setCurrentIndex(0);
         }
@@ -439,4 +463,138 @@ void SettingsWidget::on_resetStylePushButton_clicked()
     DEB << "Resetting style to default...";
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
     ui->fontCheckBox->setChecked(true);
+}
+
+void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::LicCurrencyDate, date);
+}
+
+void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::TrCurrencyDate, date);
+}
+
+void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::LckCurrencyDate, date);
+}
+
+void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::MedCurrencyDate, date);
+}
+
+void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::Custom1CurrencyDate, date);
+}
+
+void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
+}
+
+void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowToLgdCurrency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowToLgdCurrency, false);
+        break;
+    default:
+        break;
+    }
+}
+
+void SettingsWidget::on_currLicCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowLicCurrency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowLicCurrency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::LicCurrencyDate, ui->currLicDateEdit->date());
+}
+
+void SettingsWidget::on_currTrCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowTrCurrency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowTrCurrency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::TrCurrencyDate, ui->currTrDateEdit->date());
+}
+
+void SettingsWidget::on_currLckCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowLckCurrency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowLckCurrency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::LckCurrencyDate, ui->currLckDateEdit->date());
+}
+
+void SettingsWidget::on_currMedCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowMedCurrency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowMedCurrency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::MedCurrencyDate, ui->currMedDateEdit->date());
+}
+
+void SettingsWidget::on_currCustom1CheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowCustom1Currency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowCustom1Currency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::Custom1CurrencyDate, ui->currCustom1DateEdit->date());
+}
+
+void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::ShowCustom2Currency, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::ShowCustom2Currency, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DateEdit->date());
 }

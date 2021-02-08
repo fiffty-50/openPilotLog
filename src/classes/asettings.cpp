@@ -30,10 +30,23 @@ QMap<ASettings::Main, QString> ASettings::mainMap = {
 
 QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
-    {UserData::AcftSortColumn,          QStringLiteral("acSortColumn")},  // [G]: inconsistent naming
-    {UserData::PilSortColumn,           QStringLiteral("pilSortColumn")},
-    {UserData::AcAllowIncomplete,       QStringLiteral("acAllowIncomplete")},
+    {UserData::TailSortColumn,          QStringLiteral("tailSortColumn")},
+    {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
+    {UserData::AcftAllowIncomplete,     QStringLiteral("acftAllowIncomplete")},
     {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
+    {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
+    {UserData::ShowLicCurrency,         QStringLiteral("showLicCurrency")},
+    {UserData::ShowTrCurrency,          QStringLiteral("showTrCurrency")},
+    {UserData::ShowLckCurrency,         QStringLiteral("showLckCurrency")},
+    {UserData::ShowMedCurrency,         QStringLiteral("showMedCurrency")},
+    {UserData::ShowCustom1Currency,     QStringLiteral("showCustom1Currency")},
+    {UserData::ShowCustom2Currency,     QStringLiteral("showCustom2Currency")},
+    {UserData::LicCurrencyDate,         QStringLiteral("licCurrencyDate")},
+    {UserData::TrCurrencyDate,          QStringLiteral("trCurrencyDate")},
+    {UserData::LckCurrencyDate,         QStringLiteral("lckCurrencyDate")},
+    {UserData::MedCurrencyDate,         QStringLiteral("medCurrencyDate")},
+    {UserData::Custom1CurrencyDate,     QStringLiteral("custom1CurrencyDate")},
+    {UserData::Custom2CurrencyDate,     QStringLiteral("custom2CurrencyDate")},
 };
 
 QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {

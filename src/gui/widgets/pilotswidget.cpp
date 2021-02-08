@@ -37,7 +37,7 @@ PilotsWidget::~PilotsWidget()
 
 void PilotsWidget::setupModelAndView()
 {
-    sortColumn = ASettings::read(ASettings::UserData::PilSortColumn).toInt();
+    sortColumn = ASettings::read(ASettings::UserData::PilotSortColumn).toInt();
 
     model = new QSqlTableModel(this);
     model->setTable(QStringLiteral("viewPilots"));
@@ -114,7 +114,7 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
 void PilotsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write(ASettings::UserData::PilSortColumn, column);
+    ASettings::write(ASettings::UserData::PilotSortColumn, column);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()

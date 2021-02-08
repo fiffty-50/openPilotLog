@@ -266,7 +266,7 @@ void NewTailDialog::on_buttonBox_accepted()
     }
 
     if (!verify()) {
-        if (!ASettings::read(ASettings::UserData::AcAllowIncomplete).toInt()) {
+        if (!ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt()) {
             QMessageBox message_box(this);
             message_box.setIcon(QMessageBox::Warning);
             message_box.setText(tr("Some or all recommended fields are empty.<br>"

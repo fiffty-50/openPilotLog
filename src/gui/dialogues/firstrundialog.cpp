@@ -131,6 +131,7 @@ void FirstRunDialog::writeSettings()
     ASettings::write(ASettings::FlightLogging::PilotFlying, true);
     ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    ASettings::write(ASettings::UserData::ShowToLgdCurrency, true);
     // To Do: UI option
     ASettings::write(ASettings::UserData::FtlWarningThreshold, 0.8);
 }

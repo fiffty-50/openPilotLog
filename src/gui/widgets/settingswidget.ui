@@ -454,8 +454,21 @@
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
@@ -496,8 +509,24 @@
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
@@ -518,7 +547,7 @@
         </widget>
        </item>
        <item row="7" column="0">
-        <widget class="QLabel" name="currTRLabel">
+        <widget class="QLabel" name="currTrLabel">
          <property name="minimumSize">
           <size>
            <width>280</width>
@@ -531,20 +560,36 @@
         </widget>
        </item>
        <item row="7" column="2">
-        <widget class="QDateEdit" name="currTRDateEdit">
+        <widget class="QDateEdit" name="currTrDateEdit">
          <property name="minimumSize">
           <size>
            <width>140</width>
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
        <item row="7" column="3">
-        <widget class="QCheckBox" name="currTRCheckBox">
+        <widget class="QCheckBox" name="currTrCheckBox">
          <property name="minimumSize">
           <size>
            <width>140</width>
@@ -560,7 +605,7 @@
         </widget>
        </item>
        <item row="8" column="0">
-        <widget class="QLabel" name="currLCKLabel">
+        <widget class="QLabel" name="currLckLabel">
          <property name="minimumSize">
           <size>
            <width>280</width>
@@ -573,20 +618,36 @@
         </widget>
        </item>
        <item row="8" column="2">
-        <widget class="QDateEdit" name="currLCKDateEdit">
+        <widget class="QDateEdit" name="currLckDateEdit">
          <property name="minimumSize">
           <size>
            <width>140</width>
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
        <item row="8" column="3">
-        <widget class="QCheckBox" name="currLCKCheckBox">
+        <widget class="QCheckBox" name="currLckCheckBox">
          <property name="minimumSize">
           <size>
            <width>140</width>
@@ -622,8 +683,24 @@
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
@@ -667,8 +744,24 @@
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
@@ -709,8 +802,24 @@
            <height>0</height>
           </size>
          </property>
+         <property name="currentSection">
+          <enum>QDateTimeEdit::YearSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>MM/dd/yyyy</string>
+         </property>
          <property name="calendarPopup">
           <bool>true</bool>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::UTC</enum>
+         </property>
+         <property name="date">
+          <date>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>

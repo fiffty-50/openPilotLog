@@ -38,9 +38,12 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 
 
-    displayLabels = {ui->TakeOffDisplayLabel, ui->LandingsDisplayLabel,
-                     ui->FlightTime28dDisplayLabel, ui->FlightTimeCalYearDisplayLabel,
-                     ui->FlightTime12mDisplayLabel};
+    limitationDisplayLabels = {
+        ui->TakeOffDisplayLabel,       ui->LandingsDisplayLabel,
+        ui->FlightTime28dDisplayLabel, ui->FlightTimeCalYearDisplayLabel,
+        ui->FlightTime12mDisplayLabel
+    };
+
     warningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
     DEB << "Filling Home Widget...";
     fillTotals();
@@ -55,11 +58,11 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::onHomeWidget_dataBaseUpdated()
 {
-    for (const auto &label : displayLabels)
+    for (const auto &label : limitationDisplayLabels)
         label->setStyleSheet(QString());
 
     fillTotals();
-    fillCurrency();
+    fillCurrencyTakeOffLanding();
     fillLimitations();
 }
 
@@ -74,6 +77,41 @@ void HomeWidget::fillTotals()
 
 void HomeWidget::fillCurrency()
 {
+    fillCurrencyTakeOffLanding();
+    ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
+        ui->currLicDisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::LicCurrencyDate
+                                    ).toDate().toString(Qt::TextDate))
+              : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
+    ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
+                ui->currTrDisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::TrCurrencyDate
+                                    ).toDate().toString(Qt::TextDate))
+              : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
+    ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
+                ui->currLckDisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::LckCurrencyDate
+                                    ).toDate().toString())
+              : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
+    ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
+                ui->currMedDisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::MedCurrencyDate
+                                    ).toDate().toString())
+              : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
+    ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
+                ui->currCustom1DisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::Custom1CurrencyDate
+                    ).toDate().toString())
+              : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
+    ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
+                ui->currCustom2DisplayLabel->setText(
+                    ASettings::read(ASettings::UserData::Custom2CurrencyDate
+                    ).toDate().toString())
+              : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
+}
+
+void HomeWidget::fillCurrencyTakeOffLanding()
+{
     auto takeoff_landings = AStat::countTakeOffLanding();
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
@@ -83,10 +121,15 @@ void HomeWidget::fillCurrency()
     if (takeoff_landings[1].toUInt() < 3)
         setLabelColour(ui->LandingsDisplayLabel, HomeWidget::Red);
 
-    QDate expiration_date = AStat::currencyTakeOffLandingExpiry();
-    if (expiration_date == QDate::currentDate())
-        setLabelColour(ui->currencyExpirationDisplayLabel, HomeWidget::Red);
-    ui->currencyExpirationDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
+    if (ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool()) {
+        QDate expiration_date = AStat::currencyTakeOffLandingExpiry();
+        if (expiration_date == QDate::currentDate())
+            setLabelColour(ui->currToLdgDisplayLabel, HomeWidget::Red);
+        ui->currToLdgDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
+    } else {
+        ui->currToLdgLabel->hide();
+        ui->currToLdgDisplayLabel->hide();
+    }
 }
 
 void HomeWidget::fillLimitations()
