@@ -34,6 +34,8 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
     {UserData::AcftAllowIncomplete,     QStringLiteral("acftAllowIncomplete")},
     {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
+    {UserData::CurrWarningEnabled,      QStringLiteral("currWarningEnabled")},
+    {UserData::CurrWarningThreshold,    QStringLiteral("currWarningThreshold")},
     {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
     {UserData::ShowLicCurrency,         QStringLiteral("showLicCurrency")},
     {UserData::ShowTrCurrency,          QStringLiteral("showTrCurrency")},

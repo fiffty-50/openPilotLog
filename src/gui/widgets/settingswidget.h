@@ -96,6 +96,10 @@ private slots:
 
     void on_currCustom2CheckBox_stateChanged(int arg1);
 
+    void on_checkBox_stateChanged(int arg1);
+
+    void on_spinBox_valueChanged(int arg1);
+
 private:
     Ui::SettingsWidget *ui;
 

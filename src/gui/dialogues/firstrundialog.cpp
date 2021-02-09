@@ -134,6 +134,8 @@ void FirstRunDialog::writeSettings()
     ASettings::write(ASettings::UserData::ShowToLgdCurrency, true);
     // To Do: UI option
     ASettings::write(ASettings::UserData::FtlWarningThreshold, 0.8);
+    ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, 30);
 }
 
 bool FirstRunDialog::setupDatabase()

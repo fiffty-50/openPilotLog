@@ -12,5 +12,6 @@
         <file>ionicon-icons/settings-outline.png</file>
         <file>ionicon-icons/power.png</file>
         <file>ionicon-icons/power-outline.png</file>
+        <file>ionicon-icons/pilot.png</file>
     </qresource>
 </RCC>

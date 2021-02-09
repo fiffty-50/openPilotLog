@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
-    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/pilot.png"));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);

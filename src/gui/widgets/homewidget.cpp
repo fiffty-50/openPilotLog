@@ -35,6 +35,9 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
+    today = QDate::currentDate();
+    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
+    ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 
 
@@ -44,10 +47,9 @@ HomeWidget::HomeWidget(QWidget *parent) :
         ui->FlightTime12mDisplayLabel
     };
 
-    warningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
     DEB << "Filling Home Widget...";
     fillTotals();
-    fillCurrency();
+    fillCurrencies();
     fillLimitations();
 }
 
@@ -75,38 +77,44 @@ void HomeWidget::fillTotals()
     }
 }
 
-void HomeWidget::fillCurrency()
+void HomeWidget::fillCurrency(ASettings::UserData date, QLabel* display_label)
+{
+    auto currency_date = ASettings::read(date).toDate();
+    display_label->setText(currency_date.toString(Qt::TextDate));
+    if (today.addDays(currWarningThreshold) >= currency_date) { // expires less than 30 days from today
+        setLabelColour(display_label, Colour::Orange);
+    }
+    if (today >= currency_date) { // is expired
+        setLabelColour(display_label, Colour::Red);
+    }
+}
+
+void HomeWidget::fillCurrencies()
 {
     fillCurrencyTakeOffLanding();
+
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
-        ui->currLicDisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::LicCurrencyDate
-                                    ).toDate().toString(Qt::TextDate))
+                fillCurrency(ASettings::UserData::ShowLicCurrency, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
+
     ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
-                ui->currTrDisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::TrCurrencyDate
-                                    ).toDate().toString(Qt::TextDate))
+                fillCurrency(ASettings::UserData::TrCurrencyDate, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
+
     ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
-                ui->currLckDisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::LckCurrencyDate
-                                    ).toDate().toString())
+                fillCurrency(ASettings::UserData::LckCurrencyDate, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
+
     ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
-                ui->currMedDisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::MedCurrencyDate
-                                    ).toDate().toString())
+                fillCurrency(ASettings::UserData::MedCurrencyDate, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
+
     ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
-                ui->currCustom1DisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::Custom1CurrencyDate
-                    ).toDate().toString())
+                fillCurrency(ASettings::UserData::Custom1CurrencyDate, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
+
     ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
-                ui->currCustom2DisplayLabel->setText(
-                    ASettings::read(ASettings::UserData::Custom2CurrencyDate
-                    ).toDate().toString())
+                fillCurrency(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
 }
 
@@ -116,15 +124,15 @@ void HomeWidget::fillCurrencyTakeOffLanding()
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
     if (takeoff_landings[0].toUInt() < 3)
-        setLabelColour(ui->TakeOffDisplayLabel, HomeWidget::Red);
+        setLabelColour(ui->TakeOffDisplayLabel, Colour::Red);
     ui->LandingsDisplayLabel->setText(takeoff_landings[1].toString());
     if (takeoff_landings[1].toUInt() < 3)
-        setLabelColour(ui->LandingsDisplayLabel, HomeWidget::Red);
+        setLabelColour(ui->LandingsDisplayLabel, Colour::Red);
 
     if (ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool()) {
         QDate expiration_date = AStat::currencyTakeOffLandingExpiry();
-        if (expiration_date == QDate::currentDate())
-            setLabelColour(ui->currToLdgDisplayLabel, HomeWidget::Red);
+        if (expiration_date <= QDate::currentDate())
+            setLabelColour(ui->currToLdgDisplayLabel, Colour::Red);
         ui->currToLdgDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
     } else {
         ui->currToLdgLabel->hide();
@@ -137,25 +145,25 @@ void HomeWidget::fillLimitations()
     int minutes = AStat::totalTime(AStat::TimeFrame::Rolling28Days);
     ui->FlightTime28dDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= ROLLING_28_DAYS) {
-        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Red);
-    } else if (minutes >= ROLLING_28_DAYS * warningThreshold) {
-        setLabelColour(ui->FlightTime28dDisplayLabel, HomeWidget::Orange);
+        setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Red);
+    } else if (minutes >= ROLLING_28_DAYS * ftlWarningThreshold) {
+        setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Orange);
     }
 
     minutes = AStat::totalTime(AStat::TimeFrame::Rolling12Months);
     ui->FlightTime12mDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= ROLLING_12_MONTHS) {
-        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Red);
-    } else if (minutes >= ROLLING_12_MONTHS * warningThreshold) {
-        setLabelColour(ui->FlightTime12mDisplayLabel, HomeWidget::Orange);
+        setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Red);
+    } else if (minutes >= ROLLING_12_MONTHS * ftlWarningThreshold) {
+        setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Orange);
     }
 
     minutes = AStat::totalTime(AStat::TimeFrame::CalendarYear);
     ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(minutes));
     if (minutes >= CALENDAR_YEAR) {
-        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Red);
-    } else if (minutes >= CALENDAR_YEAR * warningThreshold) {
-        setLabelColour(ui->FlightTimeCalYearDisplayLabel, HomeWidget::Orange);
+        setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Red);
+    } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {
+        setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Orange);
     }
 }
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
-    <height>411</height>
+    <width>1114</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -361,8 +361,8 @@
       <attribute name="title">
        <string>Currencies</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="1">
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="2">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -391,7 +391,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="3">
         <widget class="QLabel" name="headerExpirationLabel">
          <property name="minimumSize">
           <size>
@@ -407,7 +407,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item row="1" column="4">
         <widget class="QLabel" name="headerShowLabel">
          <property name="minimumSize">
           <size>
@@ -423,14 +423,14 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="4">
+       <item row="2" column="0" colspan="5">
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" rowspan="3">
+       <item row="3" column="0" rowspan="2">
         <widget class="QLabel" name="currToLdgLabel">
          <property name="minimumSize">
           <size>
@@ -443,7 +443,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2" rowspan="2">
+       <item row="4" column="3" rowspan="2">
         <widget class="QDateEdit" name="currToLdgDateEdit">
          <property name="enabled">
           <bool>false</bool>
@@ -455,7 +455,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -472,7 +472,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="3">
+       <item row="5" column="4">
         <widget class="QCheckBox" name="currToLdgCheckBox">
          <property name="minimumSize">
           <size>
@@ -501,7 +501,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="2">
+       <item row="6" column="3">
         <widget class="QDateEdit" name="currLicDateEdit">
          <property name="minimumSize">
           <size>
@@ -510,7 +510,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -530,7 +530,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="3">
+       <item row="6" column="4">
         <widget class="QCheckBox" name="currLicCheckBox">
          <property name="minimumSize">
           <size>
@@ -559,7 +559,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="2">
+       <item row="7" column="3">
         <widget class="QDateEdit" name="currTrDateEdit">
          <property name="minimumSize">
           <size>
@@ -568,7 +568,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -588,7 +588,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="3">
+       <item row="7" column="4">
         <widget class="QCheckBox" name="currTrCheckBox">
          <property name="minimumSize">
           <size>
@@ -617,7 +617,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="2">
+       <item row="8" column="3">
         <widget class="QDateEdit" name="currLckDateEdit">
          <property name="minimumSize">
           <size>
@@ -626,7 +626,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -646,7 +646,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="3">
+       <item row="8" column="4">
         <widget class="QCheckBox" name="currLckCheckBox">
          <property name="minimumSize">
           <size>
@@ -675,7 +675,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="2">
+       <item row="9" column="3">
         <widget class="QDateEdit" name="currMedDateEdit">
          <property name="minimumSize">
           <size>
@@ -684,7 +684,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -704,7 +704,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="3">
+       <item row="9" column="4">
         <widget class="QCheckBox" name="currMedCheckBox">
          <property name="minimumSize">
           <size>
@@ -736,7 +736,7 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="2">
+       <item row="10" column="3">
         <widget class="QDateEdit" name="currCustom1DateEdit">
          <property name="minimumSize">
           <size>
@@ -745,7 +745,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -765,7 +765,7 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="3">
+       <item row="10" column="4">
         <widget class="QCheckBox" name="currCustom1CheckBox">
          <property name="minimumSize">
           <size>
@@ -794,7 +794,7 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="2">
+       <item row="11" column="3">
         <widget class="QDateEdit" name="currCustom2DateEdit">
          <property name="minimumSize">
           <size>
@@ -803,7 +803,7 @@
           </size>
          </property>
          <property name="currentSection">
-          <enum>QDateTimeEdit::YearSection</enum>
+          <enum>QDateTimeEdit::MonthSection</enum>
          </property>
          <property name="displayFormat">
           <string>MM/dd/yyyy</string>
@@ -823,7 +823,7 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="3">
+       <item row="11" column="4">
         <widget class="QCheckBox" name="currCustom2CheckBox">
          <property name="minimumSize">
           <size>
@@ -839,7 +839,35 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="1">
+       <item row="12" column="0" colspan="5">
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="currWarningCheckBox">
+           <property name="text">
+            <string>Warn me about expiring currencies</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="currWarningThresholdSpinBox"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>days before expiry</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="14" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

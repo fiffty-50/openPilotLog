@@ -41,6 +41,8 @@ public:
         PilotSortColumn,
         AcftAllowIncomplete,
         FtlWarningThreshold,
+        CurrWarningEnabled,
+        CurrWarningThreshold,
         ShowToLgdCurrency,
         ShowLicCurrency,
         ShowTrCurrency,

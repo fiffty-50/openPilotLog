@@ -25,6 +25,7 @@
 #include <QSettings>
 #include "src/functions/astat.h"
 #include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
 
 namespace Ui {
 class HomeWidget;
@@ -41,29 +42,32 @@ public:
 private:
     Ui::HomeWidget *ui;
 
+    QDate today;
+    int currWarningThreshold;
+    double ftlWarningThreshold;
+
     void fillTotals();
-    void fillCurrency();
+    void fillCurrencies();
     void fillCurrencyTakeOffLanding();
     void fillLimitations();
 
-    double warningThreshold;
+
 
     QList<QLabel*> limitationDisplayLabels;
-    QList<QPair<QLabel*, QLabel*>> currencyLabels;
     /*!
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
 
-    enum Colour {Red, Orange};
+    enum class Colour {Red, Orange};
 
     inline void setLabelColour(QLabel* label, Colour colour)
     {
         switch (colour) {
-        case HomeWidget::Red:
+        case Colour::Red:
             label->setStyleSheet(QStringLiteral("color: red"));
             break;
-        case HomeWidget::Orange:
+        case Colour::Orange:
             label->setStyleSheet(QStringLiteral("color: orange"));
             break;
         default:
@@ -76,6 +80,7 @@ private:
         label1->hide();
         label2->hide();
     }
+    void fillCurrency(ASettings::UserData date, QLabel *display_label);
 public slots:
     void onHomeWidget_dataBaseUpdated();
 };

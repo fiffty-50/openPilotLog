@@ -131,6 +131,9 @@ void SettingsWidget::readSettings()
     ui->currCustom2DateEdit->setDate(ASettings::read(ASettings::UserData::Custom2CurrencyDate).toDate());
     ui->currCustom2CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool());
 
+    ui->currWarningCheckBox->setChecked(ASettings::read(ASettings::UserData::CurrWarningEnabled).toBool());
+    ui->currWarningThresholdSpinBox->setValue(ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt());
+
 
     /*
      * Misc Tab
@@ -597,4 +600,24 @@ void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
         break;
     }
     ASettings::write(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DateEdit->date());
+}
+
+void SettingsWidget::on_checkBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void SettingsWidget::on_spinBox_valueChanged(int arg1)
+{
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
 }
