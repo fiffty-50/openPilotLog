@@ -882,9 +882,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="miscTab">
+     <widget class="QWidget" name="appearanceTab">
       <attribute name="title">
-       <string>Misc</string>
+       <string>Appearance</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">

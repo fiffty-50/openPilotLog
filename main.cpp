@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
             return 3;
         }
         ASettings::write(ASettings::Main::SetupComplete, true);
-        DEB << "Wrote setup_commplete?";
+        DEB << "Wrote setup_commplete";
     }
 
     ARunGuard guard(QStringLiteral("opl_single_key"));

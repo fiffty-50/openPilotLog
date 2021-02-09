@@ -104,7 +104,7 @@ void SettingsWidget::readSettings()
     ui->functionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
     ui->rulesComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Rules).toString());
     ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
-    ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLogging).toInt());
+    ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLoggingEnabled).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
     ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::Main::LogbookView).toInt());
 
@@ -141,11 +141,12 @@ void SettingsWidget::readSettings()
     ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
     ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
-    ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
     {
+        const QSignalBlocker style_blocker(ui->styleComboBox);
         const QSignalBlocker font_blocker1(ui->fontSpinBox);
         const QSignalBlocker font_blocker2(ui->fontComboBox);
         const QSignalBlocker font_blocker3(ui->fontCheckBox);
+        ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
         ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
         ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
         ui->fontCheckBox->setChecked(ASettings::read(ASettings::Main::UseSystemFont).toBool());
@@ -267,7 +268,7 @@ void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1
 
 void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
 {
-    ASettings::write(ASettings::FlightLogging::NightLogging, index);
+    ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, index);
     switch (index) {
     case 1:
         ASettings::write(ASettings::FlightLogging::NightAngle, -6);
@@ -376,6 +377,7 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
         AStyle::setStyle(AStyle::darkPalette());
+        ASettings::write(ASettings::Main::Style, new_style_setting);
         return;
     }
     for (const auto &style_name : AStyle::styles) {
@@ -602,7 +604,7 @@ void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
     ASettings::write(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DateEdit->date());
 }
 
-void SettingsWidget::on_checkBox_stateChanged(int arg1)
+void SettingsWidget::on_currWarningCheckBox_stateChanged(int arg1)
 {
     switch (arg1) {
     case Qt::CheckState::Checked:
@@ -617,7 +619,17 @@ void SettingsWidget::on_checkBox_stateChanged(int arg1)
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
 }
 
-void SettingsWidget::on_spinBox_valueChanged(int arg1)
+void SettingsWidget::on_currWarningThresholdSpinBox_valueChanged(int arg1)
 {
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void SettingsWidget::on_currCustom1LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
+}
+
+void SettingsWidget::on_currCustom2LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }

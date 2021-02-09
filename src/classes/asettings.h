@@ -56,12 +56,14 @@ public:
         MedCurrencyDate,
         Custom1CurrencyDate,
         Custom2CurrencyDate,
+        Custom1CurrencyName,
+        Custom2CurrencyName,
     };
 
     enum class FlightLogging {
         Function,
         Approach,
-        NightLogging,
+        NightLoggingEnabled,
         LogIFR,
         FlightNumberPrefix,
         NumberTakeoffs,
@@ -79,6 +81,7 @@ public:
      * \brief Should be called after QCoreApplication::set...Name have been called.
      */
     static void setup();
+    static void resetToDefaults();
 
     static QVariant read(const Main key);
     static void write(const Main key, const QVariant &val);

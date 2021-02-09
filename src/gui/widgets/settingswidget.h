@@ -96,9 +96,13 @@ private slots:
 
     void on_currCustom2CheckBox_stateChanged(int arg1);
 
-    void on_checkBox_stateChanged(int arg1);
+    void on_currWarningCheckBox_stateChanged(int arg1);
 
-    void on_spinBox_valueChanged(int arg1);
+    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
+
+    void on_currCustom1LineEdit_editingFinished();
+
+    void on_currCustom2LineEdit_editingFinished();
 
 private:
     Ui::SettingsWidget *ui;
@@ -112,6 +116,7 @@ private:
     void updatePersonalDetails();
 
     bool usingStylesheet();
+
 signals:
     void viewSelectionChanged(int view_id);
 };

@@ -44,11 +44,12 @@ QString AStyle::currentStyle = defaultStyle;
  */
 void AStyle::setup()
 {
-    QVariant style_setting = ASettings::read(ASettings::Main::Style);
-    if(!style_setting.toBool()){
-        //DEB << "Setting style to default:" << defaultStyle;
-        style_setting = defaultStyle;
+    QString style_setting = ASettings::read(ASettings::Main::Style).toString();
+
+    if (style_setting == QLatin1String("Dark-Palette")) {
+        AStyle::setStyle(AStyle::darkPalette());
         ASettings::write(ASettings::Main::Style, style_setting);
+        return;
     }
     for (const auto &style_name : styles) {
         if (style_setting == style_name) {
@@ -78,7 +79,6 @@ void AStyle::setStyle(const QString &style_key)
 {
     resetStyle();
     DEB << "Setting style: " << style_key;
-    qApp->setStyleSheet(QString());
     QApplication::setStyle(QStyleFactory::create(style_key));
     currentStyle = style_key;
 }

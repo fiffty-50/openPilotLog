@@ -80,6 +80,10 @@ void HomeWidget::fillTotals()
 void HomeWidget::fillCurrency(ASettings::UserData date, QLabel* display_label)
 {
     auto currency_date = ASettings::read(date).toDate();
+
+    if (!currency_date.isValid())
+        return;
+
     display_label->setText(currency_date.toString(Qt::TextDate));
     if (today.addDays(currWarningThreshold) >= currency_date) { // expires less than 30 days from today
         setLabelColour(display_label, Colour::Orange);
@@ -112,10 +116,16 @@ void HomeWidget::fillCurrencies()
     ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
                 fillCurrency(ASettings::UserData::Custom1CurrencyDate, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
+    const QString custom1_text = ASettings::read(ASettings::UserData::Custom1CurrencyName).toString();
+    if (!custom1_text.isEmpty())
+        ui->currCustom1Label->setText(custom1_text);
 
     ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
                 fillCurrency(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
+    const QString custom2_text = ASettings::read(ASettings::UserData::Custom2CurrencyName).toString();
+    if (!custom2_text.isEmpty())
+        ui->currCustom2Label->setText(custom2_text);
 }
 
 void HomeWidget::fillCurrencyTakeOffLanding()

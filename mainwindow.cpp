@@ -19,6 +19,7 @@
 #include "ui_mainwindow.h"
 #include "src/testing/adebug.h"
 #include "src/database/adatabase.h"
+#include "src/classes/astyle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -138,7 +139,27 @@ void MainWindow::connectWidgets()
 
 void MainWindow::readSettings()
 {
-    DEB << "Use system font?" << ASettings::read(ASettings::Main::UseSystemFont).toBool();
+    // Set application style
+    auto style_setting = ASettings::read(ASettings::Main::Style).toString();
+
+    if (style_setting == QLatin1String("Dark-Palette")) {
+        AStyle::setStyle(AStyle::darkPalette());
+        return;
+    }
+    for (const auto &style_name : AStyle::styles) {
+        if (style_setting == style_name) {
+            AStyle::setStyle(style_name);
+            return;
+        }
+    }
+
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        if (style_setting == style_sheet.styleSheetName) {
+            AStyle::setStyle(style_sheet);
+            return;
+        }
+    }
+
     if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
         QFont font(ASettings::read(ASettings::Main::Font).toString());
         font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());

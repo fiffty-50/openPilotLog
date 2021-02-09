@@ -41,7 +41,29 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-private:    
+    void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
+
+    void on_currWarningCheckBox_stateChanged(int arg1);
+
+    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
+
+    void on_currLicDateEdit_userDateChanged(const QDate &date);
+
+    void on_currTrDateEdit_userDateChanged(const QDate &date);
+
+    void on_currLckDateEdit_userDateChanged(const QDate &date);
+
+    void on_currMedDateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom1DateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom2DateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom1LineEdit_editingFinished();
+
+    void on_currCustom2LineEdit_editingFinished();
+
+private:
     Ui::FirstRunDialog *ui;
     bool useLocalTemplates;
 

@@ -49,12 +49,14 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::MedCurrencyDate,         QStringLiteral("medCurrencyDate")},
     {UserData::Custom1CurrencyDate,     QStringLiteral("custom1CurrencyDate")},
     {UserData::Custom2CurrencyDate,     QStringLiteral("custom2CurrencyDate")},
+    {UserData::Custom1CurrencyName,     QStringLiteral("custom1CurrencyName")},
+    {UserData::Custom2CurrencyName,     QStringLiteral("custom2CurrencyName")},
 };
 
 QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     {FlightLogging::Function,           QStringLiteral("function")},
     {FlightLogging::Approach,           QStringLiteral("approach")},
-    {FlightLogging::NightLogging,       QStringLiteral("nightlogging")},
+    {FlightLogging::NightLoggingEnabled,QStringLiteral("nightLoggingEnabled")},
     {FlightLogging::LogIFR,             QStringLiteral("logIfr")},
     {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
     {FlightLogging::NumberTakeoffs,     QStringLiteral("numberTakeoffs")},
@@ -72,6 +74,34 @@ void ASettings::setup()
 {
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings();
+}
+
+/*!
+ * \brief ASettings::resetToDefaults (Re-)sets all settings to the default value
+ */
+void ASettings::resetToDefaults()
+{
+    write(Main::Style, QStringLiteral("Fusion"));
+    write(Main::UseSystemFont, true);
+    write(Main::LogbookView, 0);
+
+    write(UserData::DisplaySelfAs, 0);
+    write(UserData::FtlWarningThreshold, 0.8); // To Do: UI Option
+    write(UserData::CurrWarningEnabled, true);
+    write(UserData::CurrWarningThreshold, 30);
+    write(UserData::ShowToLgdCurrency, true);
+    write(UserData::ShowLicCurrency, false);
+    write(UserData::ShowTrCurrency, false);
+    write(UserData::ShowLckCurrency, false);
+    write(UserData::ShowMedCurrency, false);
+    write(UserData::ShowCustom1Currency, false);
+    write(UserData::ShowCustom2Currency, false);
+
+    write(FlightLogging::NumberTakeoffs, 1);
+    write(FlightLogging::NumberLandings, 1);
+    write(FlightLogging::PopupCalendar, true);
+    write(FlightLogging::PilotFlying, true);
+    write(FlightLogging::NightAngle, -6);
 }
 
 //
