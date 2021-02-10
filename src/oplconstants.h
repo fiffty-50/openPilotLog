@@ -175,7 +175,9 @@ namespace Assets {
 static const auto APP_ICON_FILLED = QLatin1String(":/icons/opl-icons/appicon_round_gradient.svg");
 static const auto APP_ICON_TRANSPARENT = QLatin1String(":/icons/opl-icons/appicon_round_transparent.svg");
 static const auto LOGO = QLatin1String(":/icons/opl-icons/opl_logo.svg");
-static const auto PILOT_ICON = QLatin1String(":/icons/opl-icons/pilot.png");
+static const auto ICON_PILOT = QLatin1String(":/icons/opl-icons/pilot.png");
+static const auto ICON_NEW_FLIGHT = QLatin1String(":/icons/opl-icons/new_flight.png");
+static const auto ICON_AIRCRAFT = QLatin1String(":/icons/opl-icons/aircraft.png");
 
 }
 

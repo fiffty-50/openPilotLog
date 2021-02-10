@@ -72,8 +72,6 @@ private:
 
     void prepareModelAndView(int view_id);
     void connectSignalsAndSlots();
-    //void setupDefaultView();
-    //void setupEasaView();
 };
 
 #endif // LOGBOOKWIDGET_H
