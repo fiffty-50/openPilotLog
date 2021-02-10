@@ -35,6 +35,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->lastnameLineEdit->setFocus();
     ui->previousPushButton->setEnabled(false);
+    ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
 
     // approach Combo Box
     for (const auto &approach : Opl::ApproachTypes){

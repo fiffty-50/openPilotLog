@@ -1374,7 +1374,7 @@
    <item row="1" column="0">
     <widget class="QPushButton" name="cancelButton">
      <property name="styleSheet">
-      <string notr="true">color: rgb(164, 0, 0);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Cancel</string>
@@ -1390,7 +1390,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add your flight to the logbook.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You can only perform this action if all of the mandatory fields are filled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(78, 154, 6);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Submit</string>
