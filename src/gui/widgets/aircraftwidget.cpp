@@ -28,7 +28,6 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AircraftWidget)
 {
-    DEB << "New AircraftWidet";
     ui->setupUi(this);
     ui->stackedWidget->addWidget(this->findChild<QWidget*>("welcomePageTails"));
     ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePageTails"));
@@ -38,7 +37,6 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
 AircraftWidget::~AircraftWidget()
 {
-    DEB << "Deleting NewAircraftWidget";
     delete ui;
 }
 
@@ -140,9 +138,9 @@ void AircraftWidget::onDeleteUnsuccessful()
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(constrained_flights[i].summary() + QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
-                constrained_flights_string.append("<br>[...]<br>");
+                constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
                 break;
             }
         }

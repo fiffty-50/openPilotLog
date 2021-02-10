@@ -12,6 +12,9 @@
         <file>ionicon-icons/settings-outline.png</file>
         <file>ionicon-icons/power.png</file>
         <file>ionicon-icons/power-outline.png</file>
-        <file>ionicon-icons/pilot.png</file>
+        <file>opl-icons/pilot.png</file>
+        <file>opl-icons/appicon_round_transparent.svg</file>
+        <file>opl-icons/appicon_round_gradient.svg</file>
+        <file>opl-icons/opl_logo.svg</file>
     </qresource>
 </RCC>

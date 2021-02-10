@@ -19,6 +19,7 @@
 #include "src/testing/adebug.h"
 #include "src/classes/astandardpaths.h"
 #include "src/oplconstants.h"
+#include "src/functions/alog.h"
 
 
 ADatabaseError::ADatabaseError(QString msg_)
@@ -109,7 +110,7 @@ bool ADatabase::connect()
     if (!db.open())
         return false;
 
-    DEB << "Database connection established." << db.lastError().text();
+    LOG << "Database connection established.\n";
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
@@ -120,7 +121,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    DEB << "Database connection closed.";
+    LOG << "Database connection closed.\n";
 }
 
 QSqlDatabase ADatabase::database()

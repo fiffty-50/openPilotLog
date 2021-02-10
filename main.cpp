@@ -23,6 +23,8 @@
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astyle.h"
+#include "src/oplconstants.h"
+#include "src/functions/alog.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
@@ -42,7 +44,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     if(!AStandardPaths::setup()){
-        DEB << "Standard paths not valid.";
+        LOG << "Unable to create directories.\n";
         return 1;
     }
 
@@ -51,13 +53,13 @@ int main(int argc, char *argv[])
     AStyle::setup();
 
     if (!aDB->connect()) {
-        DEB << "Error establishing database connection";
+        LOG << "Error establishing database connection\n";
         return 2;
     }
 
     if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) {
         if(FirstRunDialog().exec() == QDialog::Rejected){
-            DEB << "First run not accepted. Exiting.";
+            LOG << "Initial setup incomplete or unsuccessfull. Exiting.\n";
             return 3;
         }
         ASettings::write(ASettings::Main::SetupComplete, true);
@@ -66,12 +68,12 @@ int main(int argc, char *argv[])
 
     ARunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
-        DEB << "Another Instance of openPilotLog is already running. Exiting.";
+        LOG << "Another Instance of openPilotLog is already running. Exiting.\n";
         return 0;
     }
 
-
     MainWindow w;
+    w.setWindowIcon(QIcon(Opl::Assets::APP_ICON_FILLED));
     //w.showMaximized();
     w.show();
     return openPilotLog.exec();

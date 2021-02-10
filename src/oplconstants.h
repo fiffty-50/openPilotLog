@@ -170,6 +170,15 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 } // namespace opl::db
 
+namespace Assets {
+
+static const auto APP_ICON_FILLED = QLatin1String(":/icons/opl-icons/appicon_round_gradient.svg");
+static const auto APP_ICON_TRANSPARENT = QLatin1String(":/icons/opl-icons/appicon_round_transparent.svg");
+static const auto LOGO = QLatin1String(":/icons/opl-icons/opl_logo.svg");
+static const auto PILOT_ICON = QLatin1String(":/icons/opl-icons/pilot.png");
+
+}
+
 } // namespace opl
 
 #endif // OPLCONSTANTS_H

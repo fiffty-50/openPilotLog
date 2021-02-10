@@ -23,6 +23,7 @@
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 const QMap<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
@@ -69,17 +70,17 @@ void LogbookWidget::prepareModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        DEB << "Loading Default View...";
+        LOG << "Loading Default View...\n";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
         break;
     case 1:
-        DEB << "Loading Default View...";
+        LOG << "Loading Default View...\n";
         displayModel->setTable(QStringLiteral("viewEASA"));
         displayModel->select();
         break;
     default:
-        DEB << "Loading Default View...";
+        LOG << "Loading Default View...\n";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
     }

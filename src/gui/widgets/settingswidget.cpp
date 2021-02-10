@@ -142,6 +142,7 @@ void SettingsWidget::readSettings()
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
     ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
     {
+        // Block style widgets signals to not trigger style changes during UI setup
         const QSignalBlocker style_blocker(ui->styleComboBox);
         const QSignalBlocker font_blocker1(ui->fontSpinBox);
         const QSignalBlocker font_blocker2(ui->fontComboBox);
@@ -149,13 +150,18 @@ void SettingsWidget::readSettings()
         ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
         ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
         ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
-        ui->fontCheckBox->setChecked(ASettings::read(ASettings::Main::UseSystemFont).toBool());
+        bool use_system_font = ASettings::read(ASettings::Main::UseSystemFont).toBool();
+        ui->fontCheckBox->setChecked(use_system_font);
+        if (!use_system_font) {
+            ui->fontComboBox->setEnabled(true);
+            ui->fontSpinBox->setEnabled(true);
+        }
     }
 }
 
 void SettingsWidget::setupValidators()
 {
-    DEB << "Setting up Validators...";
+    // DEB << "Setting up Validators...";
     for(const auto& pair : LINE_EDIT_VALIDATORS){
         auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
         if(line_edit != nullptr){
@@ -335,12 +341,14 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
+    QPixmap icon = QPixmap(Opl::Assets::APP_ICON_TRANSPARENT);
+    message_box.setIconPixmap(icon.scaledToWidth(64, Qt::TransformationMode::SmoothTransformation));
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 
                        "<h3><center>About openPilotLog</center></h3>"
                        "<br>"
-                       "(c) 2020-2021 Felix Turowsky"
+                       "&#169; 2020-2021 Felix Turowsky"
                        "<br>"
                        "<p>This is a collaboratively developed Free and Open Source Application. "
                        "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"

@@ -65,6 +65,7 @@ HEADERS += \
     src/database/adatabasetypes.h \
     src/functions/acalc.h \
     src/functions/adatetime.h \
+    src/functions/alog.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
     src/functions/atime.h \

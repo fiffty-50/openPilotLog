@@ -24,8 +24,10 @@
 #include <QStyle>
 #include <QStyleFactory>
 #include <QApplication>
+#include <QFont>
 #include "src/testing/adebug.h"
 #include "src/classes/asettings.h"
+#include "src/functions/alog.h"
 
 const QString AStyle::defaultStyle = QLatin1String("Fusion");
 
@@ -40,10 +42,18 @@ const QList<StyleSheet> AStyle::styleSheets = {
 QString AStyle::currentStyle = defaultStyle;
 
 /*!
- * \brief Setup style and stylesheet by reading from openPilotLog.ini
+ * \brief Setup Application style by reading from openPilotLog.ini
  */
 void AStyle::setup()
 {
+    // Set Font
+    if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
+        QFont font(ASettings::read(ASettings::Main::Font).toString());
+        font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
+        qApp->setFont(font);
+        LOG << "Application Font set:\t" << font.toString().splitRef(',').first() << "\n";
+    }
+    // Set style, stylesheet or palette
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();
 
     if (style_setting == QLatin1String("Dark-Palette")) {
@@ -60,7 +70,7 @@ void AStyle::setup()
     }
     for (const auto &style_sheet : styleSheets) {
         if (style_setting == style_sheet.styleSheetName) {
-            setStyle(style_sheet.styleSheetName);
+            setStyle(style_sheet);
             currentStyle = style_sheet.styleSheetName;
             return;
         }
@@ -78,7 +88,7 @@ void AStyle::resetStyle()
 void AStyle::setStyle(const QString &style_key)
 {
     resetStyle();
-    DEB << "Setting style: " << style_key;
+    LOG << "Setting style:\t" << style_key << "\n";
     QApplication::setStyle(QStyleFactory::create(style_key));
     currentStyle = style_key;
 }
@@ -86,7 +96,7 @@ void AStyle::setStyle(const QString &style_key)
 void AStyle::setStyle(const StyleSheet &style_sheet)
 {
     resetStyle();
-    DEB << "Setting stylesheet: " << style_sheet.styleSheetName;
+    LOG << "Setting stylesheet:\t" << style_sheet.styleSheetName << "\n";
     qApp->setStyleSheet(read_stylesheet(style_sheet.fileName));
     currentStyle = style_sheet.styleSheetName;
 }
@@ -94,7 +104,7 @@ void AStyle::setStyle(const StyleSheet &style_sheet)
 void AStyle::setStyle(const QPalette &palette)
 {
     resetStyle();
-    DEB << "Setting Palette...";
+    LOG << "Setting Colour Palette...\n";
     qApp->setPalette(palette);
 }
 

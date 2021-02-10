@@ -26,14 +26,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    readSettings();
 
     // Set up Toolbar
     ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
     ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
-    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/pilot.png"));
+    ui->actionPilots->setIcon(QIcon(Opl::Assets::PILOT_ICON));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -135,37 +134,6 @@ void MainWindow::connectWidgets()
 
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
-}
-
-void MainWindow::readSettings()
-{
-    // Set application style
-    auto style_setting = ASettings::read(ASettings::Main::Style).toString();
-
-    if (style_setting == QLatin1String("Dark-Palette")) {
-        AStyle::setStyle(AStyle::darkPalette());
-        return;
-    }
-    for (const auto &style_name : AStyle::styles) {
-        if (style_setting == style_name) {
-            AStyle::setStyle(style_name);
-            return;
-        }
-    }
-
-    for (const auto &style_sheet : AStyle::styleSheets) {
-        if (style_setting == style_sheet.styleSheetName) {
-            AStyle::setStyle(style_sheet);
-            return;
-        }
-    }
-
-    if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
-        QFont font(ASettings::read(ASettings::Main::Font).toString());
-        font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
-        qApp->setFont(font);
-        DEB << "Font set:" << font;
-    }
 }
 
 void MainWindow::on_actionSettings_triggered()

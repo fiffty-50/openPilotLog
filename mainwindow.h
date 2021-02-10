@@ -95,8 +95,6 @@ private:
 
     void connectWidgets();
 
-    void readSettings();
-
     int checkDbVersion();
 
 protected:
