@@ -25,9 +25,9 @@ bool AStandardPaths::setup()
     directories = {
         {Database, QDir(QStandardPaths::writableLocation(data_location))},
         {Templates, QDir(QStandardPaths::writableLocation(data_location)
-         + QStringLiteral("/templates"))},
+         + QLatin1String("/templates"))},
         {Backup, QDir(QStandardPaths::writableLocation(data_location)
-         + QStringLiteral("/backup"))}
+         + QLatin1String("/backup"))}
     };
     if (scan_directories())
         return true;

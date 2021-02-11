@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="flightDataTab">
       <attribute name="title">
@@ -177,7 +177,7 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QComboBox" name="deptTZ">
+        <widget class="QComboBox" name="deptTZComboBox">
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -379,7 +379,7 @@
         </widget>
        </item>
        <item row="3" column="3">
-        <widget class="QComboBox" name="destTZ">
+        <widget class="QComboBox" name="destTZComboBox">
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -863,7 +863,7 @@
       <zorder>autoPicusLabel</zorder>
       <zorder>tSICLabel</zorder>
       <zorder>tIFRLabel</zorder>
-      <zorder>deptTZ</zorder>
+      <zorder>deptTZComboBox</zorder>
       <zorder>tSPSELabel</zorder>
       <zorder>RemarksLineEdit</zorder>
       <zorder>picLabel</zorder>
@@ -881,7 +881,7 @@
       <zorder>thirdPilotNameLineEdit</zorder>
       <zorder>autoMPLabel</zorder>
       <zorder>picNameLineEdit</zorder>
-      <zorder>destTZ</zorder>
+      <zorder>destTZComboBox</zorder>
       <zorder>RemarksLabel</zorder>
       <zorder>tPICUSLabel</zorder>
       <zorder>autoNightLabel</zorder>
@@ -1374,7 +1374,7 @@
    <item row="1" column="0">
     <widget class="QPushButton" name="cancelButton">
      <property name="styleSheet">
-      <string notr="true">color: rgb(164, 0, 0);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Cancel</string>
@@ -1390,7 +1390,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add your flight to the logbook.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You can only perform this action if all of the mandatory fields are filled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(78, 154, 6);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Submit</string>

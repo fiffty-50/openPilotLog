@@ -22,15 +22,10 @@
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include "src/functions/astat.h"
-#include "src/functions/acalc.h"
-#include "src/gui/dialogues/newtaildialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/widgets/totalswidget.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
-
 #include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
 
 namespace Ui {
 class HomeWidget;
@@ -47,7 +42,47 @@ public:
 private:
     Ui::HomeWidget *ui;
 
-    TotalsWidget* totalsWidget;
+    QDate today;
+    int currWarningThreshold;
+    double ftlWarningThreshold;
+
+    void fillTotals();
+    void fillCurrencies();
+    void fillCurrencyTakeOffLanding();
+    void fillLimitations();
+
+
+
+    QList<QLabel*> limitationDisplayLabels;
+    /*!
+     * \brief Retreives the users first name from the database.
+     */
+    const QString userName();
+
+    enum class Colour {Red, Orange};
+
+    inline void setLabelColour(QLabel* label, Colour colour)
+    {
+        switch (colour) {
+        case Colour::Red:
+            label->setStyleSheet(QStringLiteral("color: red"));
+            break;
+        case Colour::Orange:
+            label->setStyleSheet(QStringLiteral("color: orange"));
+            break;
+        default:
+            label->setStyleSheet(QString());
+            break;
+        }
+    }
+
+    inline void hideLabels(QLabel* label1, QLabel* label2) {
+        label1->hide();
+        label2->hide();
+    }
+    void fillCurrency(ASettings::UserData date, QLabel *display_label);
+public slots:
+    void onHomeWidget_dataBaseUpdated();
 };
 
 #endif // HOMEWIDGET_H

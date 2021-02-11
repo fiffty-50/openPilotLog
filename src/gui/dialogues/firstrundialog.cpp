@@ -25,6 +25,7 @@
 #include "src/classes/asettings.h"
 #include "src/oplconstants.h"
 #include <QErrorMessage>
+#include "src/classes/astyle.h"
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
@@ -34,11 +35,21 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->lastnameLineEdit->setFocus();
     ui->previousPushButton->setEnabled(false);
-    ui->nightComboBox->setCurrentIndex(1);
+    ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
 
+    // approach Combo Box
     for (const auto &approach : Opl::ApproachTypes){
         ui->approachComboBox->addItem(approach);
     }
+    // Style combo box
+    const QSignalBlocker blocker_style(ui->styleComboBox);
+    ui->styleComboBox->addItems(AStyle::styles);
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        ui->styleComboBox->addItem(style_sheet.styleSheetName);
+    }
+    ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
+    ui->styleComboBox->model()->sort(0);
+    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -48,8 +59,8 @@ FirstRunDialog::~FirstRunDialog()
 
 void FirstRunDialog::on_previousPushButton_clicked()
 {
-    auto current_idx = ui->stackedWidget->currentIndex();
-    switch (current_idx) {
+    auto current_index = ui->stackedWidget->currentIndex();
+    switch (current_index) {
     case 0:
         return;
     case 1:
@@ -59,14 +70,14 @@ void FirstRunDialog::on_previousPushButton_clicked()
         ui->nextPushButton->setText(tr("Next"));
         break;
     }
-    ui->stackedWidget->setCurrentIndex(current_idx - 1);
+    ui->stackedWidget->setCurrentIndex(current_index - 1);
 
 }
 
 void FirstRunDialog::on_nextPushButton_clicked()
 {
-    auto current_idx = ui->stackedWidget->currentIndex();
-    switch (current_idx) {
+    auto current_index = ui->stackedWidget->currentIndex();
+    switch (current_index) {
     case 0:
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
@@ -78,17 +89,17 @@ void FirstRunDialog::on_nextPushButton_clicked()
         }
         ui->previousPushButton->setEnabled(true);
         break;
-    case 1:
+    case 3:
         ui->nextPushButton->setText(tr("Done"));
         break;
-    case 2:
+    case 4:
         if(!finishSetup())
             QDialog::reject();
         else
             QDialog::accept();
         return;
     }
-    ui->stackedWidget->setCurrentIndex(current_idx + 1);
+    ui->stackedWidget->setCurrentIndex(current_index + 1);
 }
 
 bool FirstRunDialog::finishSetup()
@@ -118,18 +129,49 @@ bool FirstRunDialog::finishSetup()
 
 void FirstRunDialog::writeSettings()
 {
+    ASettings::resetToDefaults();
     ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::NightLogging, ui->nightComboBox->currentIndex());
+    switch (ui->nightComboBox->currentIndex()) {
+    case 0:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
+        break;
+    case 1:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, false);
+        break;
+    default:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
+        break;
+    }
+    switch (ui->nightRulesComboBox->currentIndex()) {
+    case 0:
+        ASettings::write(ASettings::FlightLogging::NightAngle, 6);
+        break;
+    case 1:
+        ASettings::write(ASettings::FlightLogging::NightAngle, 0);
+        break;
+
+    }
     ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
-    ASettings::write(ASettings::FlightLogging::NumberTakeoffs, 1);
-    ASettings::write(ASettings::FlightLogging::NumberLandings, 1);
-    ASettings::write(ASettings::FlightLogging::PopupCalendar, true);
-    ASettings::write(ASettings::FlightLogging::PilotFlying, true);
     ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
-    ASettings::write(ASettings::Main::UseSystemFont, true);
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
+
+    switch (ui->currWarningCheckBox->checkState()) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, ui->currWarningThresholdSpinBox->value());
+    ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
+    QSettings settings;
+    settings.sync();
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -143,7 +185,7 @@ bool FirstRunDialog::setupDatabase()
 
     if (confirm.exec() == QMessageBox::Yes) {
         useLocalTemplates = false;
-        if (!ADataBaseSetup::downloadTemplates()) { // To do: return true only if size of dl != 0
+        if (!ADataBaseSetup::downloadTemplates()) {
             QMessageBox message_box(this);
             message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
             message_box.exec();
@@ -199,4 +241,88 @@ void FirstRunDialog::reject()
         DEB << "rejected.";
         QDialog::reject();
     }
+}
+
+void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
+{
+    DEB << "style selected:"<<new_style_setting;
+    if (new_style_setting == QLatin1String("Dark-Palette")) {
+        //DEB << "Palette";
+        AStyle::setStyle(AStyle::darkPalette());
+        return;
+    }
+    for (const auto &style_name : AStyle::styles) {
+        if (new_style_setting == style_name) {
+            //DEB << "style";
+            AStyle::setStyle(style_name);
+            return;
+        }
+    }
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        if (new_style_setting == style_sheet.styleSheetName) {
+            //DEB << "stylesheet";
+            AStyle::setStyle(style_sheet);
+            return;
+        }
+    }
+}
+
+void FirstRunDialog::on_currWarningCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
+{
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void FirstRunDialog::on_currLicDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::LicCurrencyDate, date);
+}
+
+void FirstRunDialog::on_currTrDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::TrCurrencyDate, date);
+}
+
+void FirstRunDialog::on_currLckDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::LckCurrencyDate, date);
+}
+
+void FirstRunDialog::on_currMedDateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::MedCurrencyDate, date);
+}
+
+void FirstRunDialog::on_currCustom1DateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::Custom1CurrencyDate, date);
+}
+
+void FirstRunDialog::on_currCustom2DateEdit_userDateChanged(const QDate &date)
+{
+    ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
+}
+
+void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
+}
+
+void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }

@@ -45,7 +45,6 @@ SOURCES += \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/totalswidget.cpp \
     src/testing/abenchmark.cpp \
     src/testing/atimer.cpp
 
@@ -66,6 +65,7 @@ HEADERS += \
     src/database/adatabasetypes.h \
     src/functions/acalc.h \
     src/functions/adatetime.h \
+    src/functions/alog.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
     src/functions/atime.h \
@@ -79,7 +79,6 @@ HEADERS += \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/gui/widgets/totalswidget.h \
     src/oplconstants.h \
     src/testing/abenchmark.h \
     src/testing/adebug.h \
@@ -96,8 +95,7 @@ FORMS += \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
-    src/gui/widgets/settingswidget.ui \
-    src/gui/widgets/totalswidget.ui
+    src/gui/widgets/settingswidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

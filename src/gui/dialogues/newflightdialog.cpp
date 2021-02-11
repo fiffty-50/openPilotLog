@@ -137,11 +137,11 @@ NewFlightDialog::NewFlightDialog(QWidget *parent) :
     ui->setupUi(this);
     flightEntry = AFlightEntry();
     setup();
-    if (ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == QLatin1String("SIC")) {
+    if (ASettings::read(ASettings::FlightLogging::FunctionComboBox).toString() == QLatin1String("SIC")) {
         ui->picNameLineEdit->setText(QString());
         ui->secondPilotNameLineEdit->setText("self");
     }
-    if(ASettings::read(ASettings::NewFlight::FunctionComboBox).toString() == QLatin1String("PIC")){
+    if(ASettings::read(ASettings::FlightLogging::FunctionComboBox).toString() == QLatin1String("PIC")){
         ui->picNameLineEdit->setText(QStringLiteral("self"));
         emit ui->picNameLineEdit->editingFinished();
     }
@@ -1110,7 +1110,7 @@ void NewFlightDialog::onDoftLineEdit_entered()
 
 void NewFlightDialog::on_calendarCheckBox_stateChanged(int arg1)
 {
-    ASettings::write(ASettings::NewFlight::CalendarCheckBox, ui->calendarCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::CalendarCheckBox, ui->calendarCheckBox->isChecked());
     DEB << "Calendar check box state changed.";
     switch (arg1) {
     case 0: // unchecked
@@ -1360,4 +1360,25 @@ void NewFlightDialog::on_FunctionComboBox_currentIndexChanged(int)
 {
     if (updateEnabled)
         fillDeductibleData();
+}
+
+
+// [F]: Not a priority right now.
+void NewFlightDialog::on_deptTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->deptTZComboBox->setCurrentIndex(0);
+    }
+}
+
+void NewFlightDialog::on_destTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->destTZComboBox->setCurrentIndex(0);}
 }

@@ -131,7 +131,7 @@ public:
      * \param query - the full sql query statement
      * \param returnValues - the number of return values
      */
-    QVector<QString> customQuery(QString statement, int return_values);
+    QVector<QVariant> customQuery(QString statement, int return_values);
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data

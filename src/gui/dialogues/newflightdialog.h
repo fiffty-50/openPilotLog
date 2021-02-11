@@ -28,6 +28,7 @@
 #include <QBitArray>
 #include <QLineEdit>
 #include <QCalendarWidget>
+#include <QComboBox>
 #include <QTabWidget>
 #include <QKeyEvent>
 #include "src/functions/atime.h"
@@ -80,6 +81,8 @@ private slots:
     void on_deptLocLineEdit_editingFinished();
     void on_destLocLineEdit_editingFinished();
     void on_acftLineEdit_editingFinished();
+    void on_deptTZComboBox_currentIndexChanged(int index);
+    void on_destTZComboBox_currentIndexChanged(int index);
 
 private:
     Ui::NewFlight *ui;

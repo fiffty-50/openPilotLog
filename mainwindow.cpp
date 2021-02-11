@@ -19,21 +19,20 @@
 #include "ui_mainwindow.h"
 #include "src/testing/adebug.h"
 #include "src/database/adatabase.h"
+#include "src/classes/astyle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    readSettings();
 
     // Set up Toolbar
     ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
-    ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
+    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_NEW_FLIGHT));
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
-    ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
-    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionDebug->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
+    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_AIRCRAFT));
+    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_PILOT));
     ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
     ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -44,12 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
         button->setMinimumWidth(128);
     }
 
-    // Add spacer
+    // Add spacer in toolbar to separate left and right parts
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(1);
     spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    spacer->setObjectName("spacer");
-    ui->toolBar->insertWidget(ui->actionDebug, spacer);
+    ui->toolBar->insertWidget(ui->actionSettings, spacer);
 
     // Construct Widgets
     homeWidget = new HomeWidget(this);
@@ -62,15 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(settingsWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
 
     connectWidgets();
 
     // Startup Screen (Home Screen)
-    // ui->stackedWidget->setCurrentWidget(homeWidget);
-    // Debup Widget for now
-    debugWidget = new DebugWidget(this);
-    ui->stackedWidget->addWidget(debugWidget);
-    ui->stackedWidget->setCurrentWidget(debugWidget);
+    ui->stackedWidget->setCurrentWidget(homeWidget);
+
 
     // check database version (Debug)
     int db_ver = checkDbVersion();
@@ -132,20 +129,11 @@ void MainWindow::connectWidgets()
                      pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
     QObject::connect(aDB, &ADatabase::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
+    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+                     homeWidget, &HomeWidget::onHomeWidget_dataBaseUpdated);
 
     QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
-}
-#include <QFontDatabase>
-void MainWindow::readSettings()
-{
-    DEB << "Use system font?" << ASettings::read(ASettings::Main::UseSystemFont).toBool();
-    if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
-        QFont font(ASettings::read(ASettings::Main::Font).toString());
-        font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
-        qApp->setFont(font);
-        DEB << "Font set:" << font;
-    }
 }
 
 void MainWindow::on_actionSettings_triggered()

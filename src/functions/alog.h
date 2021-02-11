@@ -15,31 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef TOTALSWIDGET_H
-#define TOTALSWIDGET_H
+#ifndef ALOG_H
+#define ALOG_H
 
-#include <QWidget>
-#include <QStackedLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QSettings>
-#include "src/functions/astat.h"
+/* Use QTextStream to print status messages. These messages
+ * are oriented towards end-users and will persist even when
+ * compiling a release without enabling qDebug. As such, LOG
+ * should be used to document "important" enough steps that
+ * the user would care about or that are "milestones" that
+ * the program runs through.
+ */
+#define LOG QTextStream(stdout) << "openPilotLog - "
 
-namespace Ui {
-class TotalsWidget;
-}
-
-class TotalsWidget : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit TotalsWidget(QWidget *parent = nullptr);
-    ~TotalsWidget();
-
-private:
-    Ui::TotalsWidget *ui;
-    const QString userName();
-};
-
-#endif // TOTALSWIDGET_H
+#endif // ALOG_H

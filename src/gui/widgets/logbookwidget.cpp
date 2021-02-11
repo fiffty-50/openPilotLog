@@ -23,6 +23,7 @@
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 const QMap<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
@@ -47,9 +48,13 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
 
     //Initialise message Box
     messageBox = new QMessageBox(this);
+    // Initalise the display Model and view
+    displayModel = new QSqlTableModel(this);
+    view = ui->tableView;
 
-    prepareModelAndView(ASettings::read(ASettings::LogBook::View).toInt());
+    prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
+
 }
 
 LogbookWidget::~LogbookWidget()
@@ -65,14 +70,32 @@ void LogbookWidget::prepareModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        setupDefaultView();
+        LOG << "Loading Default View...\n";
+        displayModel->setTable(QStringLiteral("viewDefault"));
+        displayModel->select();
         break;
     case 1:
-        setupEasaView();
+        LOG << "Loading Default View...\n";
+        displayModel->setTable(QStringLiteral("viewEASA"));
+        displayModel->select();
         break;
     default:
-        setupDefaultView();
+        LOG << "Loading Default View...\n";
+        displayModel->setTable(QStringLiteral("viewDefault"));
+        displayModel->select();
     }
+
+    view->setModel(displayModel);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(0);
+    view->resizeColumnsToContents();
+    view->show();
 }
 
 void LogbookWidget::connectSignalsAndSlots()
@@ -81,89 +104,11 @@ void LogbookWidget::connectSignalsAndSlots()
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
-
-void LogbookWidget::setupDefaultView()
-{
-    DEB << "Loading Default View...";
-    displayModel = new QSqlTableModel(this);
-    displayModel->setTable(QStringLiteral("viewDefault"));
-    displayModel->select();
-
-    view = ui->tableView;
-    view->setModel(displayModel);
-
-    view->setColumnWidth(1, 120);
-    view->setColumnWidth(2, 60);
-    view->setColumnWidth(3, 60);
-    view->setColumnWidth(4, 60);
-    view->setColumnWidth(5, 60);
-    view->setColumnWidth(6, 60);
-    view->setColumnWidth(7, 180);
-    view->setColumnWidth(8, 180);
-    view->setColumnWidth(9, 120);
-    view->setColumnWidth(10, 90);
-
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setContextMenuPolicy(Qt::CustomContextMenu);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-
-    view->show();
-}
-
-void LogbookWidget::setupEasaView()
-{
-    DEB << "Loading EASA View...";
-    displayModel = new QSqlTableModel;
-    displayModel->setTable(QStringLiteral("viewEASA"));
-    displayModel->select();
-
-    view = ui->tableView;
-    view->setModel(displayModel);
-
-    view->setColumnWidth(1,120);
-    view->setColumnWidth(2,60);
-    view->setColumnWidth(3,60);
-    view->setColumnWidth(4,60);
-    view->setColumnWidth(5,60);
-    view->setColumnWidth(6,180);
-    view->setColumnWidth(7,120);
-    view->setColumnWidth(8,30);
-    view->setColumnWidth(9,30);
-    view->setColumnWidth(10,30);
-    view->setColumnWidth(11,30);
-    view->setColumnWidth(12,120);
-    view->setColumnWidth(13,15);
-    view->setColumnWidth(14,15);
-    view->setColumnWidth(15,60);
-    view->setColumnWidth(16,60);
-    view->setColumnWidth(17,60);
-    view->setColumnWidth(18,60);
-    view->setColumnWidth(19,60);
-    view->setColumnWidth(20,60);
-    view->setColumnWidth(21,120);
-
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->setContextMenuPolicy(Qt::CustomContextMenu);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(0);
-
-    view->show();
-}
-
 /*
  * Slots
  */
 
-void LogbookWidget::flightsTableView_selectionChanged()//
+void LogbookWidget::flightsTableView_selectionChanged()
 {
     selectedFlights.clear();
     for (const auto& row : selectionModel->selectedRows()) {
@@ -302,6 +247,7 @@ void LogbookWidget::onDisplayModel_dataBaseUpdated()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
+    view->resizeColumnsToContents();
 }
 
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(int view_id)

@@ -70,6 +70,40 @@ private slots:
 
     void on_resetStylePushButton_clicked();
 
+    void on_currLicDateEdit_userDateChanged(const QDate &date);
+
+    void on_currTrDateEdit_userDateChanged(const QDate &date);
+
+    void on_currLckDateEdit_userDateChanged(const QDate &date);
+
+    void on_currMedDateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom1DateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom2DateEdit_userDateChanged(const QDate &date);
+
+    void on_currToLdgCheckBox_stateChanged(int arg1);
+
+    void on_currLicCheckBox_stateChanged(int arg1);
+
+    void on_currTrCheckBox_stateChanged(int arg1);
+
+    void on_currLckCheckBox_stateChanged(int arg1);
+
+    void on_currMedCheckBox_stateChanged(int arg1);
+
+    void on_currCustom1CheckBox_stateChanged(int arg1);
+
+    void on_currCustom2CheckBox_stateChanged(int arg1);
+
+    void on_currWarningCheckBox_stateChanged(int arg1);
+
+    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
+
+    void on_currCustom1LineEdit_editingFinished();
+
+    void on_currCustom2LineEdit_editingFinished();
+
 private:
     Ui::SettingsWidget *ui;
 
@@ -82,6 +116,7 @@ private:
     void updatePersonalDetails();
 
     bool usingStylesheet();
+
 signals:
     void viewSelectionChanged(int view_id);
 };

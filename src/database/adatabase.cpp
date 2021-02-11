@@ -19,6 +19,7 @@
 #include "src/testing/adebug.h"
 #include "src/classes/astandardpaths.h"
 #include "src/oplconstants.h"
+#include "src/functions/alog.h"
 
 
 ADatabaseError::ADatabaseError(QString msg_)
@@ -109,7 +110,7 @@ bool ADatabase::connect()
     if (!db.open())
         return false;
 
-    DEB << "Database connection established." << db.lastError().text();
+    LOG << "Database connection established.\n";
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
@@ -120,7 +121,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    DEB << "Database connection closed.";
+    LOG << "Database connection closed.\n";
 }
 
 QSqlDatabase ADatabase::database()
@@ -286,8 +287,8 @@ bool ADatabase::update(AEntry updated_entry)
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QString()));
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
         }
@@ -330,9 +331,9 @@ bool ADatabase::insert(AEntry new_entry)
     QSqlQuery query;
     query.prepare(statement);
 
-    for (i = data.begin(); i != data.end(); ++i) {
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QString()));
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
         }
@@ -620,7 +621,7 @@ ATailEntry ADatabase::resolveForeignTail(RowId_T foreign_key)
     return aDB->getTailEntry(foreign_key);
 }
 
-QVector<QString> ADatabase::customQuery(QString statement, int return_values)
+QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);
     query.exec();
@@ -630,17 +631,16 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
         DEB << "Error: " << query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = query.lastError().text();
-        return QVector<QString>();
+        return QVector<QVariant>();
     } else {
         query.first();
         query.previous();
-        QVector<QString> result;
+        QVector<QVariant> result;
         while (query.next()) {
             for (int i = 0; i < return_values ; i++) {
-                result.append(query.value(i).toString());
+                result.append(query.value(i));
             }
         }
-        emit dataBaseUpdated();
         lastError = QString();
         return result;
     }
