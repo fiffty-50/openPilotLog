@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w;
-    w.setWindowIcon(QIcon(Opl::Assets::APP_ICON_FILLED));
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON));
     //w.showMaximized();
     w.show();
     return openPilotLog.exec();

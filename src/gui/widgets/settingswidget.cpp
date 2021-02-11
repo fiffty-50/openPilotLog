@@ -341,8 +341,8 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
-    QPixmap icon = QPixmap(Opl::Assets::APP_ICON_TRANSPARENT);
-    message_box.setIconPixmap(icon.scaledToWidth(64, Qt::TransformationMode::SmoothTransformation));
+    QPixmap icon = QPixmap(Opl::Assets::ICON_ABOUT);
+    message_box.setIconPixmap(icon);
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 
