@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QTableView>
+#include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -53,7 +54,7 @@ private slots:
 
 public slots:
     void onDisplayModel_dataBaseUpdated();
-    void onLogbookWidget_viewSelectionChanged(int);
+    void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
 
 private:
     Ui::LogbookWidget *ui;

@@ -20,6 +20,7 @@ DEFINES *= QT_USE_QSTRINGBUILDER
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/classes/acurrencyentry.cpp \
     src/classes/astyle.cpp \
     src/classes/astandardpaths.cpp \
     src/classes/aaircraftentry.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    src/classes/acurrencyentry.h \
     src/classes/astyle.h \
     src/classes/astandardpaths.h \
     src/classes/aaircraftentry.h \

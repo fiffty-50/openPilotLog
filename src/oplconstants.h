@@ -104,6 +104,7 @@ static const auto TABLE_PILOTS           = QLatin1String("pilots");
 static const auto TABLE_TAILS            = QLatin1String("tails");
 static const auto TABLE_AIRCRAFT         = QLatin1String("aircraft");
 static const auto TABLE_AIRPORTS         = QLatin1String("airports");
+static const auto TABLE_CURRENCIES       = QLatin1String("currencies");
 
 // Flights table columns
 static const auto FLIGHTS_DOFT           = QLatin1String("doft");
@@ -158,6 +159,9 @@ static const auto PILOTS_COMPANY         = QLatin1String("company");
 static const auto PILOTS_EMPLOYEEID      = QLatin1String("employeeid");
 static const auto PILOTS_PHONE           = QLatin1String("phone");
 static const auto PILOTS_EMAIL           = QLatin1String("email");
+
+// Currencies table
+static const auto CURRENCIES_EXPIRYDATE  = QLatin1String("expiryDate");
 
 // all tables
 static const auto ROWID                  = QLatin1String("ROWID");

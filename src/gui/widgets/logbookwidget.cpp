@@ -75,7 +75,7 @@ void LogbookWidget::prepareModelAndView(int view_id)
         displayModel->select();
         break;
     case 1:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading EASA View...\n";
         displayModel->setTable(QStringLiteral("viewEASA"));
         displayModel->select();
         break;
@@ -250,9 +250,10 @@ void LogbookWidget::onDisplayModel_dataBaseUpdated()
     view->resizeColumnsToContents();
 }
 
-void LogbookWidget::onLogbookWidget_viewSelectionChanged(int view_id)
+void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
-    prepareModelAndView(view_id);
+    if (signal == SettingsWidget::SettingSignal::LogbookWidget)
+        prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
 }
 
 void LogbookWidget::on_showAllButton_clicked()

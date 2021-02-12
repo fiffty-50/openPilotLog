@@ -52,6 +52,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     setupComboBoxes();
+    setupDateEdits();
     setupValidators();
     readSettings();
 }
@@ -77,6 +78,30 @@ void SettingsWidget::setupComboBoxes(){
         const QSignalBlocker blocker_approach(ui->approachComboBox);
         for (const auto &approach : Opl::ApproachTypes) {
             ui->approachComboBox->addItem(approach);
+        }
+    }
+}
+
+void SettingsWidget::setupDateEdits()
+{
+    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
+        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
+        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
+        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
+        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
+        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
+        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom2DateEdit}
+    };
+    for (const auto &pair : currencies) {
+        const QSignalBlocker signal_blocker(pair.second);
+        const auto entry = aDB->getCurrencyEntry(pair.first);
+        if (entry.isValid()) { // set date
+            const auto date = QDate::fromString(
+                        entry.tableData.value(Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                        Qt::ISODate);
+            pair.second->setDate(date);
+        } else { // set current date
+            pair.second->setDate(QDate::currentDate());
         }
     }
 }
@@ -112,27 +137,16 @@ void SettingsWidget::readSettings()
      * Currencies Tab
      */
     ui->currToLdgCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool());
-
-    ui->currLicDateEdit->setDate(ASettings::read(ASettings::UserData::LicCurrencyDate).toDate());
     ui->currLicCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowLicCurrency).toBool());
-
-    ui->currTrDateEdit->setDate(ASettings::read(ASettings::UserData::TrCurrencyDate).toDate());
     ui->currTrCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowTrCurrency).toBool());
-
-    ui->currLckDateEdit->setDate(ASettings::read(ASettings::UserData::LckCurrencyDate).toDate());
     ui->currLckCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowLckCurrency).toBool());
-
-    ui->currMedDateEdit->setDate(ASettings::read(ASettings::UserData::MedCurrencyDate).toDate());
     ui->currMedCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowMedCurrency).toBool());
-
-    ui->currCustom1DateEdit->setDate(ASettings::read(ASettings::UserData::Custom1CurrencyDate).toDate());
     ui->currCustom1CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool());
-
-    ui->currCustom2DateEdit->setDate(ASettings::read(ASettings::UserData::Custom2CurrencyDate).toDate());
     ui->currCustom2CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool());
-
-    ui->currWarningCheckBox->setChecked(ASettings::read(ASettings::UserData::CurrWarningEnabled).toBool());
     ui->currWarningThresholdSpinBox->setValue(ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt());
+    ui->currWarningCheckBox->setChecked(ASettings::read(ASettings::UserData::CurrWarningEnabled).toBool());
+    ui->currCustom1LineEdit->setText(ASettings::read(ASettings::UserData::Custom1CurrencyName).toString());
+    ui->currCustom2LineEdit->setText(ASettings::read(ASettings::UserData::Custom2CurrencyName).toString());
 
 
     /*
@@ -300,7 +314,7 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::Main::LogbookView, index);
-    emit viewSelectionChanged(index);
+    emit settingChanged(SettingSignal::LogbookWidget);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
@@ -480,32 +494,39 @@ void SettingsWidget::on_resetStylePushButton_clicked()
 
 void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::LicCurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Licence, date);
+    aDB->commit(entry);
+
 }
 
 void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::TrCurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::TypeRating, date);
+    aDB->commit(entry);
 }
 
 void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::LckCurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::LineCheck, date);
+    aDB->commit(entry);
 }
 
 void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::MedCurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Medical, date);
+    aDB->commit(entry);
 }
 
 void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::Custom1CurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom1, date);
+    aDB->commit(entry);
 }
 
 void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
-    ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
+    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom2, date);
+    aDB->commit(entry);
 }
 
 void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)
@@ -520,6 +541,7 @@ void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)
     default:
         break;
     }
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currLicCheckBox_stateChanged(int arg1)
@@ -534,7 +556,7 @@ void SettingsWidget::on_currLicCheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::LicCurrencyDate, ui->currLicDateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currTrCheckBox_stateChanged(int arg1)
@@ -549,7 +571,7 @@ void SettingsWidget::on_currTrCheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::TrCurrencyDate, ui->currTrDateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currLckCheckBox_stateChanged(int arg1)
@@ -564,7 +586,7 @@ void SettingsWidget::on_currLckCheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::LckCurrencyDate, ui->currLckDateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currMedCheckBox_stateChanged(int arg1)
@@ -579,7 +601,7 @@ void SettingsWidget::on_currMedCheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::MedCurrencyDate, ui->currMedDateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom1CheckBox_stateChanged(int arg1)
@@ -594,7 +616,7 @@ void SettingsWidget::on_currCustom1CheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::Custom1CurrencyDate, ui->currCustom1DateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
@@ -609,7 +631,7 @@ void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DateEdit->date());
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currWarningCheckBox_stateChanged(int arg1)
@@ -624,12 +646,13 @@ void SettingsWidget::on_currWarningCheckBox_stateChanged(int arg1)
     default:
         break;
     }
-    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currWarningThresholdSpinBox_valueChanged(int arg1)
 {
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+    emit settingChanged(SettingSignal::HomeWidget);
 }
 
 void SettingsWidget::on_currCustom1LineEdit_editingFinished()

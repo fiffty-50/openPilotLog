@@ -131,9 +131,12 @@ void MainWindow::connectWidgets()
                      aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
     QObject::connect(aDB, &ADatabase::dataBaseUpdated,
                      homeWidget, &HomeWidget::onHomeWidget_dataBaseUpdated);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     homeWidget, &HomeWidget::onHomeWidget_dataBaseUpdated);
 
-    QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
+
 }
 
 void MainWindow::on_actionSettings_triggered()

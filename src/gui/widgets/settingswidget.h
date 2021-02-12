@@ -38,6 +38,11 @@ public:
     explicit SettingsWidget(QWidget *parent = nullptr);
     ~SettingsWidget();
 
+    /*!
+     * \brief Widgets that need to receive a signal when a setting is updated.
+     */
+    enum SettingSignal {LogbookWidget, HomeWidget};
+
 private slots:
 
 //    void onThemeGroup_buttonClicked(int theme_id);
@@ -113,12 +118,19 @@ private:
 
     void setupComboBoxes();
 
+    void setupDateEdits();
+
     void updatePersonalDetails();
 
     bool usingStylesheet();
 
 signals:
-    void viewSelectionChanged(int view_id);
+
+    /*!
+     * \brief settingChanged is emitted when a setting change shall trigger
+     * an update to another widget.
+     */
+    void settingChanged(SettingSignal widget);
 };
 
 #endif // SETTINGSWIDGET_H

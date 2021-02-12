@@ -37,6 +37,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui->setupUi(this);
     today = QDate::currentDate();
     currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
+    DEB << "Current Warning Threshold:"<< currWarningThreshold;
     ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
     auto logo = QPixmap(Opl::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
@@ -51,7 +52,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
 
     DEB << "Filling Home Widget...";
     fillTotals();
-    fillCurrencies();
+    fillAllCurrencies();
     fillLimitations();
 }
 
@@ -62,11 +63,13 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::onHomeWidget_dataBaseUpdated()
 {
+    DEB << "Updating HomeWidget...";
+    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     for (const auto &label : limitationDisplayLabels)
         label->setStyleSheet(QString());
 
     fillTotals();
-    fillCurrencyTakeOffLanding();
+    fillAllCurrencies();
     fillLimitations();
 }
 
@@ -79,51 +82,52 @@ void HomeWidget::fillTotals()
     }
 }
 
-void HomeWidget::fillCurrency(ASettings::UserData date, QLabel* display_label)
+void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel* display_label)
 {
-    auto currency_date = ASettings::read(date).toDate();
+    auto currency_entry = aDB->getCurrencyEntry(currency_name);
+    if (currency_entry.isValid()) {
+        auto currency_date = QDate::fromString(currency_entry.tableData.value(
+                                               Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                                               Qt::ISODate);
+        display_label->setText(currency_date.toString(Qt::TextDate));
+        setLabelColour(display_label, Colour::None);
 
-    if (!currency_date.isValid())
-        return;
-
-    display_label->setText(currency_date.toString(Qt::TextDate));
-    if (today.addDays(currWarningThreshold) >= currency_date) { // expires less than 30 days from today
-        setLabelColour(display_label, Colour::Orange);
-    }
-    if (today >= currency_date) { // is expired
-        setLabelColour(display_label, Colour::Red);
+        if (today.addDays(currWarningThreshold) >= currency_date) { // expires less than 30 days from today
+            setLabelColour(display_label, Colour::Orange);
+        }
+        if (today >= currency_date) { // is expired
+            setLabelColour(display_label, Colour::Red);
+        }
+    } else {
+        display_label->setText(tr("Invalid Date"));
     }
 }
 
-void HomeWidget::fillCurrencies()
+void HomeWidget::fillAllCurrencies()
 {
     fillCurrencyTakeOffLanding();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
-                fillCurrency(ASettings::UserData::ShowLicCurrency, ui->currLicDisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
-
     ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
-                fillCurrency(ASettings::UserData::TrCurrencyDate, ui->currTrDisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::TypeRating, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
-
     ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
-                fillCurrency(ASettings::UserData::LckCurrencyDate, ui->currLckDisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::LineCheck, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
-
     ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
-                fillCurrency(ASettings::UserData::MedCurrencyDate, ui->currMedDisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::Medical, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
 
     ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
-                fillCurrency(ASettings::UserData::Custom1CurrencyDate, ui->currCustom1DisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
     const QString custom1_text = ASettings::read(ASettings::UserData::Custom1CurrencyName).toString();
     if (!custom1_text.isEmpty())
         ui->currCustom1Label->setText(custom1_text);
-
     ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
-                fillCurrency(ASettings::UserData::Custom2CurrencyDate, ui->currCustom2DisplayLabel)
+                fillCurrency(ACurrencyEntry::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
     const QString custom2_text = ASettings::read(ASettings::UserData::Custom2CurrencyName).toString();
     if (!custom2_text.isEmpty())

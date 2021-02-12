@@ -25,6 +25,7 @@
 #include <QtGlobal>
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
+#include "src/classes/acurrencyentry.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -185,7 +186,8 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    DEB << "Expiration Date:" << AStat::currencyTakeOffLandingExpiry();
+
+    DEB << ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     // debug space
     //ASettings::write(ASettings::Setup::SetupComplete, false);
 }

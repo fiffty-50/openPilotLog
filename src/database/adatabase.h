@@ -38,6 +38,7 @@
 #include "src/classes/aaircraftentry.h"
 #include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
+#include "src/classes/acurrencyentry.h"
 
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
@@ -215,6 +216,11 @@ public:
      * with only the RowId required as input.
      */
     AFlightEntry getFlightEntry(RowId_T row_id);
+
+    /*!
+     * \brief Retreives a currency entry from the database.
+     */
+    ACurrencyEntry getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a

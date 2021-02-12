@@ -3,5 +3,6 @@
         <file>database/templates/aircraft.csv</file>
         <file>database/templates/airports.csv</file>
         <file>database/templates/changelog.csv</file>
+        <file>database/templates/currencies.csv</file>
     </qresource>
 </RCC>

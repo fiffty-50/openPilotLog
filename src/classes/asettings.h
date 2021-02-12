@@ -50,12 +50,6 @@ public:
         ShowMedCurrency,
         ShowCustom1Currency,
         ShowCustom2Currency,
-        LicCurrencyDate,
-        TrCurrencyDate,
-        LckCurrencyDate,
-        MedCurrencyDate,
-        Custom1CurrencyDate,
-        Custom2CurrencyDate,
         Custom1CurrencyName,
         Custom2CurrencyName,
     };

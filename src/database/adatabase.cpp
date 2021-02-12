@@ -449,6 +449,13 @@ AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
     return flight_entry;
 }
 
+ACurrencyEntry ADatabase::getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
+{
+    ACurrencyEntry currency_entry(currency_name);
+    currency_entry.setData(getEntryData(currency_entry.getPosition()));
+    return currency_entry;
+}
+
 const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 {
     QString statement;

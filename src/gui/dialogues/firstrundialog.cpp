@@ -106,6 +106,28 @@ bool FirstRunDialog::finishSetup()
 {
     writeSettings();
 
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                 absoluteFilePath(QStringLiteral("logbook.db")));
+    if (database_file.exists()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database found"),
+                                tr("Warning."
+                                   "An existing database file has been detected on your system.<br>"
+                                   "A backup copy of the existing database will be created at this location:<br>"
+                                   "%1").arg(
+                                    QDir::cleanPath(AStandardPaths::directory(AStandardPaths::Backup).canonicalPath())));
+        message_box.exec();
+        ADataBaseSetup::backupOldData();
+    }
+    if (!aDB->connect()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable.<br>"
+                                   "The following error has ocurred:<br>"
+                                   "Database: Unable to connect"));
+        message_box.exec();
+        return false;
+    }
+
     if (!setupDatabase()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Errors have ocurred creating the database."
@@ -124,6 +146,7 @@ bool FirstRunDialog::finishSetup()
         message_box.exec();
         return false;
     }
+    aDB->disconnect(); // connection will be re-established by main()
     return true;
 }
 
@@ -184,20 +207,16 @@ bool FirstRunDialog::setupDatabase()
     confirm.setDefaultButton(QMessageBox::No);
 
     if (confirm.exec() == QMessageBox::Yes) {
-        useLocalTemplates = false;
+        useRessourceData = false;
         if (!ADataBaseSetup::downloadTemplates()) {
             QMessageBox message_box(this);
             message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
             message_box.exec();
-            useLocalTemplates = true; // fall back
-        } else {
-            useLocalTemplates = true;
+            useRessourceData = true; // fall back
         }
+    } else {
+        useRessourceData = true;
     }
-
-    aDB->disconnect();
-    ADataBaseSetup::backupOldData();
-    aDB->connect();
 
     // [F]: todo: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
@@ -205,7 +224,7 @@ bool FirstRunDialog::setupDatabase()
 
     aDB->updateLayout();
 
-    if(!ADataBaseSetup::importDefaultData(useLocalTemplates))
+    if(!ADataBaseSetup::importDefaultData(useRessourceData))
         return false;
     aDB->updateLayout();
     return true;
@@ -286,7 +305,8 @@ void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
 {
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
 }
-
+// [F:] To Do - WIP
+/*
 void FirstRunDialog::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
     ASettings::write(ASettings::UserData::LicCurrencyDate, date);
@@ -316,6 +336,7 @@ void FirstRunDialog::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
 }
+*/
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 {
