@@ -61,7 +61,7 @@ HomeWidget::~HomeWidget()
     delete ui;
 }
 
-void HomeWidget::onHomeWidget_dataBaseUpdated()
+void HomeWidget::refresh()
 {
     DEB << "Updating HomeWidget...";
     for (const auto label : this->findChildren<QLabel *>())

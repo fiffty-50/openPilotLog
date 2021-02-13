@@ -53,7 +53,7 @@ private slots:
     void on_flightSearchComboBox_currentIndexChanged(int);
 
 public slots:
-    void onDisplayModel_dataBaseUpdated();
+    void refresh();
     void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
 
 private:
@@ -71,7 +71,7 @@ private:
 
     QVector<qint32> selectedFlights;
 
-    void prepareModelAndView(int view_id);
+    void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
 };
 

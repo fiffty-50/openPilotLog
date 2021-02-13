@@ -83,7 +83,7 @@ private:
      */
     const QString userName();
 public slots:
-    void onHomeWidget_dataBaseUpdated();
+    void refresh();
 };
 
 #endif // HOMEWIDGET_H

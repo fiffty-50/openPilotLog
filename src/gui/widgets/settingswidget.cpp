@@ -51,6 +51,9 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
 
+    ui->acAllowIncompleteComboBox->hide(); // [F]: Hidden for now, thinking of removing that option
+    ui->acAllowIncompleteLabel->hide();
+
     setupComboBoxes();
     setupDateEdits();
     setupValidators();
@@ -152,9 +155,9 @@ void SettingsWidget::readSettings()
     /*
      * Misc Tab
      */
-    ui->acSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
+    ui->acftSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
-    ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
+    //ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
     {
         // Block style widgets signals to not trigger style changes during UI setup
         const QSignalBlocker style_blocker(ui->styleComboBox);
@@ -319,13 +322,16 @@ void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::UserData::PilotSortColumn, index);
+    emit settingChanged(PilotsWidget);
 }
 
-void SettingsWidget::on_acSortComboBox_currentIndexChanged(int index)
+void SettingsWidget::on_acftSortComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::UserData::TailSortColumn, index);
+    emit settingChanged(AircraftWidget);
 }
 
+QT_DEPRECATED
 void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::UserData::AcftAllowIncomplete, index);

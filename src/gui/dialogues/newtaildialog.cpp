@@ -234,25 +234,25 @@ void NewTailDialog::submitForm()
 void NewTailDialog::on_operationComboBox_currentIndexChanged(int index)
 {
     if (index != 0)
-        ui->operationComboBox->setStyleSheet("");
+        ui->operationComboBox->setStyleSheet(QString());
 }
 
 void NewTailDialog::on_ppTypeComboBox_currentIndexChanged(int index)
 {
     if (index != 0)
-        ui->ppTypeComboBox->setStyleSheet("");
+        ui->ppTypeComboBox->setStyleSheet(QString());
 }
 
 void NewTailDialog::on_ppNumberComboBox_currentIndexChanged(int index)
 {
     if (index != 0)
-        ui->ppNumberComboBox->setStyleSheet("");
+        ui->ppNumberComboBox->setStyleSheet(QString());
 }
 
 void NewTailDialog::on_weightComboBox_currentIndexChanged(int index)
 {
     if (index != 0)
-        ui->weightComboBox->setStyleSheet("");
+        ui->weightComboBox->setStyleSheet(QString());
 }
 
 void NewTailDialog::on_buttonBox_accepted()
@@ -266,30 +266,14 @@ void NewTailDialog::on_buttonBox_accepted()
     }
 
     if (!verify()) {
-        if (!ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt()) {
-            QMessageBox message_box(this);
-            message_box.setIcon(QMessageBox::Warning);
-            message_box.setText(tr("Some or all recommended fields are empty.<br>"
-                                   "Please go back and complete the form.<br><br>"
-                                   "You can allow logging incomplete tail entries "
-                                   "on the settings page."));
-            message_box.exec();
-            return;
-        } else {
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, tr("Warning"),
-                                          tr("Some recommended fields are empty.<br><br>"
-                                          "If you do not fill out the aircraft details, "
-                                          "it will be impossible to automatically determine "
-                                          "Single/Multi Pilot Times or Single/Multi Engine Time."
-                                          "This will also impact statistics and auto-logging capabilites.<br><br>"
-                                          "It is highly recommended to fill in all the details.<br><br>"
-                                          "Are you sure you want to proceed?"),
-                                          QMessageBox::Yes | QMessageBox::No);
-            if (reply == QMessageBox::Yes) {
-                submitForm();
-            }
-        }
+        QMessageBox message_box(this);
+        message_box.setIcon(QMessageBox::Warning);
+        message_box.setText(tr("Some or all recommended fields are empty.<br>"
+                               "Please fill out the mandatory fields. You can use "
+                               "the search function to automatically fill out all "
+                               "the required fields for a known aircraft type."));
+        message_box.exec();
+        return;
     }
     DEB << "Form verified";
     submitForm();

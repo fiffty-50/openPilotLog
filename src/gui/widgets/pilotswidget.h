@@ -21,15 +21,35 @@
 #include <QWidget>
 #include <QItemSelection>
 #include <QSqlTableModel>
-#include <QDebug>
 #include <QTableView>
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
 class PilotsWidget;
 }
-
+/*!
+ * \class PilotsWidget
+ * \brief The PilotsWidget is used to view, edit, delete or add new pilots.
+ * \abstract The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ *
+ * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a Pilots' Last Name,
+ * First name and Company.
+ *
+ * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as a search box and a QCombobox
+ * holding the possible columns that can be used to filter what is displayed. The text of the QLineEdit is used as a filter for the
+ * QSqlTableModel, so the view is updated in real time.
+ *
+ * The *NewPilotDialog* is used for creating a new entry as well as for editing an existing entry. If the user selects a row
+ * in the QTableView, the NewPilotDialog is displayed on the right side of the Widget, inside the QStackedWidget.
+ * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
+ * The NewPilotDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ *
+ * The logbook owner is not shown in the QTableView as an editable Pilot since `self` is a special reserved alias for the
+ * pilot with ROWID #1 as a way to identify and adequately display the logbook owner in the logbook. Editing personal details
+ * is done via the *SettingsWidget*
+ */
 class PilotsWidget : public QWidget
 {
     Q_OBJECT
@@ -44,11 +64,18 @@ private slots:
     void on_newPilotButton_clicked();
     void on_deletePilotButton_clicked();
     void onDeleteUnsuccessful();
-    void pilot_editing_finished();
+    void onNewPilotDialog_editingFinished();
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
-    void onDisplayModel_dataBaseUpdated();
+    /*!
+     * \brief invokes setupModelAndView() to account for changes the user has made in the SettingsWidget
+     */
+    void onPilotsWidget_settingChanged(SettingsWidget::SettingSignal signal);
+    /*!
+     * \brief Refreshes the view if the Database has been altered from outside the AircraftWidget
+     */
+    void onPilotsWidget_databaseUpdated();
 
 private:
     Ui::PilotsWidget *ui;
@@ -64,6 +91,8 @@ private:
     QVector<qint32> selectedPilots;
 
     void setupModelAndView();
+
+    inline void refreshView(){model->select();}
 };
 
 #endif // PILOTSWIDGET_H
