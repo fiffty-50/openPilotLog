@@ -286,7 +286,7 @@ bool ADataBaseSetup::createDatabase()
 
     aDB->updateLayout();
 
-    DEB << "Database successfully created!";
+    LOG << "Database successfully created!\n";
     return true;
 }
 

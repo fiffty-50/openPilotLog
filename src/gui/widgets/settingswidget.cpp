@@ -496,37 +496,42 @@ void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Licence, date);
     aDB->commit(entry);
-
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::TypeRating, date);
     aDB->commit(entry);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::LineCheck, date);
     aDB->commit(entry);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Medical, date);
     aDB->commit(entry);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom1, date);
     aDB->commit(entry);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
     ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom2, date);
     aDB->commit(entry);
+    emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)

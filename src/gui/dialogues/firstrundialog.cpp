@@ -50,6 +50,9 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
     ui->styleComboBox->model()->sort(0);
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    // Set Date Edits for currencies
+    for (const auto date_edit : this->findChildren<QDateEdit *>())
+        date_edit->setDate(QDate::currentDate());
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -146,6 +149,15 @@ bool FirstRunDialog::finishSetup()
         message_box.exec();
         return false;
     }
+
+    if (!writeCurrencies()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
     aDB->disconnect(); // connection will be re-established by main()
     return true;
 }
@@ -218,7 +230,6 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    // [F]: todo: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
         return false;
 
@@ -233,17 +244,40 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     QMap<QString, QVariant> data;
-    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));
     data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
 
     return aDB->commit(pilot);
+}
+
+bool FirstRunDialog::writeCurrencies()
+{
+    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit*>> currencies_list = {
+        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
+        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
+        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
+        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
+        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
+        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom1DateEdit},
+    };
+
+    QDate today = QDate::currentDate();
+    for (const auto &pair : currencies_list) {
+        // only write dates that have been edited
+        if (pair.second->date() != today) {
+            ACurrencyEntry entry(pair.first, pair.second->date());
+            if (!aDB->commit(entry))
+                return false;
+        }
+    }
+    return true;
 }
 
 void FirstRunDialog::reject()
@@ -305,38 +339,6 @@ void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
 {
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
 }
-// [F:] To Do - WIP
-/*
-void FirstRunDialog::on_currLicDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::LicCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currTrDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::TrCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currLckDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::LckCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currMedDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::MedCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currCustom1DateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::Custom1CurrencyDate, date);
-}
-
-void FirstRunDialog::on_currCustom2DateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
-}
-*/
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 {

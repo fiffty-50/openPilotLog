@@ -18,10 +18,11 @@
         <file>opl-icons/pilot.png</file>
         <file>opl-icons/aircraft.png</file>
         <file>opl-icons/new_flight.png</file>
-	<file>opl-icons/icon_main.svg</file>
-	<file>opl-icons/icon_ios.svg</file>
-	<file>opl-icons/icon_linux.svg</file>
-	<file>opl-icons/icon_linux_light.svg</file>
-	<file>opl-icons/icon_about.png</file>
+	    <file>opl-icons/icon_main.svg</file>
+	    <file>opl-icons/icon_ios.svg</file>
+	    <file>opl-icons/icon_linux.svg</file>
+	    <file>opl-icons/icon_linux_light.svg</file>
+	    <file>opl-icons/icon_about.png</file>
+	    <file>opl-icons/icon_backup.svg</file>
     </qresource>
 </RCC>

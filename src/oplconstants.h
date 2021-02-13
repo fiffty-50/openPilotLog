@@ -176,13 +176,13 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 namespace Assets {
 
-static const auto LOGO = QLatin1String(":/icons/opl-icons/opl_logo.svg");
-static const auto ICON_APPICON = QLatin1String(":/icons/opl-icons/icon_main.svg");
-static const auto ICON_ABOUT = QLatin1String(":/icons/opl-icons/icon_about.png");
-static const auto ICON_PILOT = QLatin1String(":/icons/opl-icons/pilot.png");
-static const auto ICON_NEW_FLIGHT = QLatin1String(":/icons/opl-icons/new_flight.png");
-static const auto ICON_AIRCRAFT = QLatin1String(":/icons/opl-icons/aircraft.png");
-
+static const auto LOGO                  = QLatin1String(":/icons/opl-icons/opl_logo.svg");
+static const auto ICON_APPICON          = QLatin1String(":/icons/opl-icons/icon_main.svg");
+static const auto ICON_ABOUT            = QLatin1String(":/icons/opl-icons/icon_about.png");
+static const auto ICON_PILOT            = QLatin1String(":/icons/opl-icons/pilot.png");
+static const auto ICON_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/new_flight.png");
+static const auto ICON_AIRCRAFT         = QLatin1String(":/icons/opl-icons/aircraft.png");
+static const auto ICON_BACKUP           = QLatin1String(":/icons/opl-icons/icon_backup.svg");
 }
 
 } // namespace opl

@@ -64,6 +64,8 @@ HomeWidget::~HomeWidget()
 void HomeWidget::onHomeWidget_dataBaseUpdated()
 {
     DEB << "Updating HomeWidget...";
+    for (const auto label : this->findChildren<QLabel *>())
+        label->setVisible(true);
     currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     for (const auto &label : limitationDisplayLabels)
         label->setStyleSheet(QString());
@@ -106,6 +108,7 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
 void HomeWidget::fillAllCurrencies()
 {
     fillCurrencyTakeOffLanding();
+    DEB << "Show med currency?" << ASettings::read(ASettings::UserData::ShowMedCurrency).toBool();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
                 fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)
