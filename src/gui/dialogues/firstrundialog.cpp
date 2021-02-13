@@ -50,6 +50,9 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
     ui->styleComboBox->model()->sort(0);
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    // Set Date Edits for currencies
+    for (const auto date_edit : this->findChildren<QDateEdit *>())
+        date_edit->setDate(QDate::currentDate());
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -106,6 +109,28 @@ bool FirstRunDialog::finishSetup()
 {
     writeSettings();
 
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                 absoluteFilePath(QStringLiteral("logbook.db")));
+    if (database_file.exists()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database found"),
+                                tr("Warning."
+                                   "An existing database file has been detected on your system.<br>"
+                                   "A backup copy of the existing database will be created at this location:<br>"
+                                   "%1").arg(
+                                    QDir::cleanPath(AStandardPaths::directory(AStandardPaths::Backup).canonicalPath())));
+        message_box.exec();
+        ADataBaseSetup::backupOldData();
+    }
+    if (!aDB->connect()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable.<br>"
+                                   "The following error has ocurred:<br>"
+                                   "Database: Unable to connect"));
+        message_box.exec();
+        return false;
+    }
+
     if (!setupDatabase()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Errors have ocurred creating the database."
@@ -124,6 +149,16 @@ bool FirstRunDialog::finishSetup()
         message_box.exec();
         return false;
     }
+
+    if (!writeCurrencies()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+    aDB->disconnect(); // connection will be re-established by main()
     return true;
 }
 
@@ -184,28 +219,23 @@ bool FirstRunDialog::setupDatabase()
     confirm.setDefaultButton(QMessageBox::No);
 
     if (confirm.exec() == QMessageBox::Yes) {
-        useLocalTemplates = false;
+        useRessourceData = false;
         if (!ADataBaseSetup::downloadTemplates()) {
             QMessageBox message_box(this);
             message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
             message_box.exec();
-            useLocalTemplates = true; // fall back
-        } else {
-            useLocalTemplates = true;
+            useRessourceData = true; // fall back
         }
+    } else {
+        useRessourceData = true;
     }
 
-    aDB->disconnect();
-    ADataBaseSetup::backupOldData();
-    aDB->connect();
-
-    // [F]: todo: handle unsuccessful steps
     if(!ADataBaseSetup::createDatabase())
         return false;
 
     aDB->updateLayout();
 
-    if(!ADataBaseSetup::importDefaultData(useLocalTemplates))
+    if(!ADataBaseSetup::importDefaultData(useRessourceData))
         return false;
     aDB->updateLayout();
     return true;
@@ -214,17 +244,40 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     QMap<QString, QVariant> data;
-    data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));
     data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);
 
     return aDB->commit(pilot);
+}
+
+bool FirstRunDialog::writeCurrencies()
+{
+    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit*>> currencies_list = {
+        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
+        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
+        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
+        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
+        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
+        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom1DateEdit},
+    };
+
+    QDate today = QDate::currentDate();
+    for (const auto &pair : currencies_list) {
+        // only write dates that have been edited
+        if (pair.second->date() != today) {
+            ACurrencyEntry entry(pair.first, pair.second->date());
+            if (!aDB->commit(entry))
+                return false;
+        }
+    }
+    return true;
 }
 
 void FirstRunDialog::reject()
@@ -285,36 +338,6 @@ void FirstRunDialog::on_currWarningCheckBox_stateChanged(int arg1)
 void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
 {
     ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
-}
-
-void FirstRunDialog::on_currLicDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::LicCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currTrDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::TrCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currLckDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::LckCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currMedDateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::MedCurrencyDate, date);
-}
-
-void FirstRunDialog::on_currCustom1DateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::Custom1CurrencyDate, date);
-}
-
-void FirstRunDialog::on_currCustom2DateEdit_userDateChanged(const QDate &date)
-{
-    ASettings::write(ASettings::UserData::Custom2CurrencyDate, date);
 }
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()

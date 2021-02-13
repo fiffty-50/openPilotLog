@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Set up Toolbar
-    ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
+    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_HOME));
     ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_NEW_FLIGHT));
     ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
     ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_AIRCRAFT));
@@ -124,16 +124,24 @@ void MainWindow::on_actionDebug_triggered()
 void MainWindow::connectWidgets()
 {
     QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     logbookWidget, &LogbookWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     homeWidget, &HomeWidget::onHomeWidget_dataBaseUpdated);
-
-    QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
+                     logbookWidget, &LogbookWidget::refresh);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
+
+    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+                     pilotsWidget, &PilotsWidget::onPilotsWidget_databaseUpdated);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     pilotsWidget, &PilotsWidget::onPilotsWidget_settingChanged);
+
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
+
+    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+                     homeWidget, &HomeWidget::refresh);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     homeWidget, &HomeWidget::refresh);
 }
 
 void MainWindow::on_actionSettings_triggered()

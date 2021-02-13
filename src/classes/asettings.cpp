@@ -43,12 +43,6 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::ShowMedCurrency,         QStringLiteral("showMedCurrency")},
     {UserData::ShowCustom1Currency,     QStringLiteral("showCustom1Currency")},
     {UserData::ShowCustom2Currency,     QStringLiteral("showCustom2Currency")},
-    {UserData::LicCurrencyDate,         QStringLiteral("licCurrencyDate")},
-    {UserData::TrCurrencyDate,          QStringLiteral("trCurrencyDate")},
-    {UserData::LckCurrencyDate,         QStringLiteral("lckCurrencyDate")},
-    {UserData::MedCurrencyDate,         QStringLiteral("medCurrencyDate")},
-    {UserData::Custom1CurrencyDate,     QStringLiteral("custom1CurrencyDate")},
-    {UserData::Custom2CurrencyDate,     QStringLiteral("custom2CurrencyDate")},
     {UserData::Custom1CurrencyName,     QStringLiteral("custom1CurrencyName")},
     {UserData::Custom2CurrencyName,     QStringLiteral("custom2CurrencyName")},
 };

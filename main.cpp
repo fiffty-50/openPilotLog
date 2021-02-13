@@ -52,18 +52,25 @@ int main(int argc, char *argv[])
 
     AStyle::setup();
 
-    if (!aDB->connect()) {
-        LOG << "Error establishing database connection\n";
-        return 2;
-    }
-
-    if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) {
+    if (ASettings::read(ASettings::Main::SetupComplete).toBool()) {
+        QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                     absoluteFilePath(QStringLiteral("logbook.db")));
+        if (!database_file.exists()) {
+            LOG << "Error: Database file not found\n";
+            return 2;
+        }
+    } else {
         if(FirstRunDialog().exec() == QDialog::Rejected){
             LOG << "Initial setup incomplete or unsuccessfull. Exiting.\n";
             return 3;
         }
         ASettings::write(ASettings::Main::SetupComplete, true);
         DEB << "Wrote setup_commplete";
+    }
+
+    if (!aDB->connect()) {
+        LOG << "Error establishing database connection\n";
+        return 4;
     }
 
     ARunGuard guard(QStringLiteral("opl_single_key"));

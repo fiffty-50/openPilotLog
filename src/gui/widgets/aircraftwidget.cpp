@@ -29,8 +29,9 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     ui(new Ui::AircraftWidget)
 {
     ui->setupUi(this);
-    ui->stackedWidget->addWidget(this->findChild<QWidget*>("welcomePageTails"));
-    ui->stackedWidget->setCurrentWidget(this->findChild<QWidget*>("welcomePageTails"));
+
+    ui->tableView->setMinimumWidth(this->width()/2);
+    ui->stackedWidget->setMinimumWidth(this->width()/2);
 
     setupModelAndView();
 }
@@ -40,46 +41,118 @@ AircraftWidget::~AircraftWidget()
     delete ui;
 }
 
-/*
- * Functions
- */
-
 void AircraftWidget::setupModelAndView()
 {
-    sortColumn = ASettings::read(ASettings::UserData::TailSortColumn).toInt();
-
     model = new QSqlTableModel(this);
-    model->setTable("viewTails");
+    model->setTable(QStringLiteral("viewTails"));
     model->select();
 
     view = ui->tableView;
     view->setModel(model);
 
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setSelectionMode(QAbstractItemView::SingleSelection); // For now, editing multiple entries is not supported.
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->hideColumn(0);
-    view->setColumnWidth(1, 180);
-    view->setColumnWidth(2, 180);
+    view->resizeColumnsToContents();
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
+
+    sortColumn = ASettings::read(ASettings::UserData::TailSortColumn).toInt();
     view->setSortingEnabled(true);
     view->sortByColumn(sortColumn, Qt::DescendingOrder);
 
     view->show();
     selection = view->selectionModel();
 
-    QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
-                     this, &AircraftWidget::tableView_selectionChanged);
+    QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
+                     this,                              &AircraftWidget::tableView_selectionChanged);
     QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this, &AircraftWidget::tableView_headerClicked);
+                     this,                              &AircraftWidget::tableView_headerClicked);
 }
 
 /*
  * Slots
  */
-void AircraftWidget::on_deleteButton_clicked()
+
+void AircraftWidget::onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal)
+{
+    if (signal != SettingsWidget::AircraftWidget)
+        return;
+
+    setupModelAndView();
+}
+
+void AircraftWidget::onAircraftWidget_dataBaseUpdated()
+{
+    refreshView();
+}
+
+void AircraftWidget::onNewTailDialog_editingFinished()
+{
+    refreshView();
+}
+
+void AircraftWidget::on_newAircraftButton_clicked()
+{
+    NewTailDialog nt(QString(), this);
+    QObject::connect(&nt,  &QDialog::accepted,
+                     this, &AircraftWidget::onNewTailDialog_editingFinished);
+    QObject::connect(&nt,  &QDialog::rejected,
+                     this, &AircraftWidget::onNewTailDialog_editingFinished);
+    nt.exec();
+}
+
+/*!
+ * \brief Displays a dialog in which the Tail can be edited
+ */
+void AircraftWidget::tableView_selectionChanged()
+{
+    if (this->findChild<NewTailDialog*>() != nullptr)
+        delete this->findChild<NewTailDialog*>();
+
+    selectedTails.clear();
+
+    for (const auto& row : selection->selectedRows()) {
+        selectedTails << row.data().toInt();
+        DEB << "Selected Tails(s) with ID: " << selectedTails;
+    }
+
+    if(selectedTails.length() == 1) {
+        auto* nt = new NewTailDialog(selectedTails.first(), this);
+        QObject::connect(nt,   &QDialog::accepted,
+                         this, &AircraftWidget::onNewTailDialog_editingFinished);
+        QObject::connect(nt,   &QDialog::rejected,
+                         this, &AircraftWidget::onNewTailDialog_editingFinished);
+        ui->stackedWidget->addWidget(nt);
+        ui->stackedWidget->setCurrentWidget(nt);
+        nt->setWindowFlag(Qt::Widget);
+        nt->setAttribute(Qt::WA_DeleteOnClose);
+        nt->exec();
+    }
+}
+
+/*!
+ * \brief Acts as a filter on the display model
+ */
+void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
+{
+    if(ui->aircraftSearchComboBox->currentIndex() == 0){
+        ui->aircraftSearchLineEdit->setText(arg1.toUpper());
+    }
+    model->setFilter(ui->aircraftSearchComboBox->currentText()
+                     + QLatin1String(" LIKE \"%")
+                     + arg1 + QLatin1String("%\""));
+}
+
+void AircraftWidget::tableView_headerClicked(int column)
+{
+    sortColumn = column;
+    ASettings::write(ASettings::UserData::TailSortColumn, column);
+}
+
+void AircraftWidget::on_deleteAircraftButton_clicked()
 {
     if (selectedTails.length() == 0) {
         QMessageBox message_box(this);
@@ -116,10 +189,18 @@ void AircraftWidget::on_deleteButton_clicked()
                 onDeleteUnsuccessful();
         }
     }
-
-    model->select();
+    refreshView();
 }
 
+/*!
+ * \brief Informs the user that deleting a database entry has been unsuccessful
+ *
+ * \abstract Normally, when one of these entries can not be deleted, it is because of
+ * a [foreign key constraint](https://sqlite.org/foreignkeys.html), meaning that a flight
+ * is associated with the aircraft that was supposed to be deleted.
+ *
+ * This function is used to inform the user and give hints on how to solve the problem.
+ */
 void AircraftWidget::onDeleteUnsuccessful()
 {
     QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
@@ -155,70 +236,4 @@ void AircraftWidget::onDeleteUnsuccessful()
         message_box.setIcon(QMessageBox::Critical);
         message_box.exec();
     }
-}
-
-void AircraftWidget::on_newAircraftButton_clicked()
-{
-    NewTailDialog nt(QString(), this);
-    connect(&nt, SIGNAL(accepted()), this, SLOT(acft_editing_finished()));
-    connect(&nt, SIGNAL(rejected()), this, SLOT(acft_editing_finished()));
-    nt.exec();
-}
-
-void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
-{
-    if(ui->aircraftSearchComboBox->currentIndex() == 0){
-        ui->aircraftSearchLineEdit->setText(arg1.toUpper());
-    }
-    model->setFilter(ui->aircraftSearchComboBox->currentText()
-                     + QStringLiteral(" LIKE \"%")
-                     + arg1 + QStringLiteral("%\""));
-}
-
-void AircraftWidget::onDisplayModel_dataBaseUpdated()
-{
-    //refresh view to reflect changes the user has made via a dialog.
-    model->select();
-}
-
-void AircraftWidget::tableView_selectionChanged()
-{
-    if (this->findChild<NewTailDialog*>() != nullptr) {
-        delete this->findChild<NewTailDialog*>();
-        /// [F] if the user changes the selection without making any changes,
-        /// if(selectedTails.length() == 1) spawns a new dialog without the
-        /// old one being deleted, since neither accept() nor reject() was emitted.
-        /// Is this a reasonable way of avoiding pollution? Creating the widgets on the
-        /// stack does not seem to solve the problem since the Dialog does not get destroyed
-        /// until either accept() or reject() is emitted so I went for this solution.
-    }
-    selectedTails.clear();
-
-    for (const auto& row : selection->selectedRows()) {
-        selectedTails << row.data().toInt();
-        DEB << "Selected Tails(s) with ID: " << selectedTails;
-    }
-    if(selectedTails.length() == 1) {
-        auto* nt = new NewTailDialog(selectedTails.first(), this);
-        QObject::connect(nt,   &QDialog::accepted,
-                         this, &AircraftWidget::acft_editing_finished);
-        QObject::connect(nt,   &QDialog::rejected,
-                         this, &AircraftWidget::acft_editing_finished);
-        ui->stackedWidget->addWidget(nt);
-        ui->stackedWidget->setCurrentWidget(nt);
-        nt->setWindowFlag(Qt::Widget);
-        nt->setAttribute(Qt::WA_DeleteOnClose);
-        nt->exec();
-    }
-}
-
-void AircraftWidget::tableView_headerClicked(int column)
-{
-    sortColumn = column;
-    ASettings::write(ASettings::UserData::TailSortColumn, column);
-}
-
-void AircraftWidget::acft_editing_finished()
-{
-    model->select();
 }

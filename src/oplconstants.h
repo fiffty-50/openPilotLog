@@ -104,6 +104,7 @@ static const auto TABLE_PILOTS           = QLatin1String("pilots");
 static const auto TABLE_TAILS            = QLatin1String("tails");
 static const auto TABLE_AIRCRAFT         = QLatin1String("aircraft");
 static const auto TABLE_AIRPORTS         = QLatin1String("airports");
+static const auto TABLE_CURRENCIES       = QLatin1String("currencies");
 
 // Flights table columns
 static const auto FLIGHTS_DOFT           = QLatin1String("doft");
@@ -159,6 +160,9 @@ static const auto PILOTS_EMPLOYEEID      = QLatin1String("employeeid");
 static const auto PILOTS_PHONE           = QLatin1String("phone");
 static const auto PILOTS_EMAIL           = QLatin1String("email");
 
+// Currencies table
+static const auto CURRENCIES_EXPIRYDATE  = QLatin1String("expiryDate");
+
 // all tables
 static const auto ROWID                  = QLatin1String("ROWID");
 static const auto NULL_TIME_hhmm         = QLatin1String("00:00");
@@ -172,13 +176,15 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 namespace Assets {
 
-static const auto LOGO = QLatin1String(":/icons/opl-icons/opl_logo.svg");
-static const auto ICON_APPICON = QLatin1String(":/icons/opl-icons/icon_main.svg");
-static const auto ICON_ABOUT = QLatin1String(":/icons/opl-icons/icon_about.png");
-static const auto ICON_PILOT = QLatin1String(":/icons/opl-icons/pilot.png");
-static const auto ICON_NEW_FLIGHT = QLatin1String(":/icons/opl-icons/new_flight.png");
-static const auto ICON_AIRCRAFT = QLatin1String(":/icons/opl-icons/aircraft.png");
-
+static const auto LOGO                  = QLatin1String(":/icons/opl-icons/opl_logo.svg");
+static const auto ICON_APPICON          = QLatin1String(":/icons/opl-icons/icon_main.svg");
+static const auto ICON_HOME             = QLatin1String(":/icons/opl-icons/icon_home.svg");
+static const auto ICON_ABOUT            = QLatin1String(":/icons/opl-icons/icon_about.png");
+static const auto ICON_PILOT            = QLatin1String(":/icons/opl-icons/pilot.png");
+static const auto ICON_PILOT_DARK       = QLatin1String(":/icons/opl-icons/pilot_dark.png");
+static const auto ICON_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/new_flight.png");
+static const auto ICON_AIRCRAFT         = QLatin1String(":/icons/opl-icons/aircraft.png");
+static const auto ICON_BACKUP           = QLatin1String(":/icons/opl-icons/icon_backup.svg");
 }
 
 } // namespace opl

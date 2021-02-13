@@ -22,7 +22,7 @@
 #include <QStringBuilder>
 #include <QEventLoop>
 
-#define DATABASE_REVISION 16
+#define DATABASE_REVISION 17
 
 const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 

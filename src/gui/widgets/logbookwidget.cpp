@@ -52,7 +52,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
 
-    prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }
@@ -66,7 +66,7 @@ LogbookWidget::~LogbookWidget()
  * Functions
  */
 
-void LogbookWidget::prepareModelAndView(int view_id)
+void LogbookWidget::setupModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
@@ -75,7 +75,7 @@ void LogbookWidget::prepareModelAndView(int view_id)
         displayModel->select();
         break;
     case 1:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading EASA View...\n";
         displayModel->setTable(QStringLiteral("viewEASA"));
         displayModel->select();
         break;
@@ -243,16 +243,17 @@ void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
     emit ui->showAllButton->clicked();
 }
 
-void LogbookWidget::onDisplayModel_dataBaseUpdated()
+void LogbookWidget::refresh()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
     view->resizeColumnsToContents();
 }
 
-void LogbookWidget::onLogbookWidget_viewSelectionChanged(int view_id)
+void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
-    prepareModelAndView(view_id);
+    if (signal == SettingsWidget::SettingSignal::LogbookWidget)
+        setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
 }
 
 void LogbookWidget::on_showAllButton_clicked()

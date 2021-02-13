@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QTableView>
+#include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -52,8 +53,8 @@ private slots:
     void on_flightSearchComboBox_currentIndexChanged(int);
 
 public slots:
-    void onDisplayModel_dataBaseUpdated();
-    void onLogbookWidget_viewSelectionChanged(int);
+    void refresh();
+    void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
 
 private:
     Ui::LogbookWidget *ui;
@@ -70,7 +71,7 @@ private:
 
     QVector<qint32> selectedFlights;
 
-    void prepareModelAndView(int view_id);
+    void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
 };
 

@@ -47,29 +47,18 @@ private slots:
 
     void on_currWarningThresholdSpinBox_valueChanged(int arg1);
 
-    void on_currLicDateEdit_userDateChanged(const QDate &date);
-
-    void on_currTrDateEdit_userDateChanged(const QDate &date);
-
-    void on_currLckDateEdit_userDateChanged(const QDate &date);
-
-    void on_currMedDateEdit_userDateChanged(const QDate &date);
-
-    void on_currCustom1DateEdit_userDateChanged(const QDate &date);
-
-    void on_currCustom2DateEdit_userDateChanged(const QDate &date);
-
     void on_currCustom1LineEdit_editingFinished();
 
     void on_currCustom2LineEdit_editingFinished();
 
 private:
     Ui::FirstRunDialog *ui;
-    bool useLocalTemplates;
+    bool useRessourceData;
 
     void writeSettings();
     bool setupDatabase();
     bool createUserEntry();
+    bool writeCurrencies();
     bool finishSetup();
 
     void reject() override;

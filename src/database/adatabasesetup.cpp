@@ -23,8 +23,9 @@
 #include "src/classes/adownload.h"
 #include "src/oplconstants.h"
 #include "src/functions/adatetime.h"
+#include "src/functions/alog.h"
 
-const auto createTablePilots = QStringLiteral("CREATE TABLE pilots ( "
+const auto createTablePilots = QLatin1String("CREATE TABLE pilots ( "
             " pilot_id       INTEGER NOT NULL, "
             " lastname       TEXT    NOT NULL, "
             " firstname      TEXT, "
@@ -36,7 +37,7 @@ const auto createTablePilots = QStringLiteral("CREATE TABLE pilots ( "
             " PRIMARY KEY(pilot_id AUTOINCREMENT)"
             ")");
 
-const auto createTableTails = QStringLiteral("CREATE TABLE tails ("
+const auto createTableTails = QLatin1String("CREATE TABLE tails ("
             " tail_id        INTEGER NOT NULL,"
             " registration   TEXT NOT NULL,"
             " company        TEXT,"
@@ -50,7 +51,7 @@ const auto createTableTails = QStringLiteral("CREATE TABLE tails ("
             " PRIMARY KEY(tail_id AUTOINCREMENT)"
             ")");
 
-const auto createTableFlights = QStringLiteral("CREATE TABLE flights ("
+const auto createTableFlights = QLatin1String("CREATE TABLE flights ("
             " flight_id      INTEGER NOT NULL, "
             " doft           NUMERIC NOT NULL, "
             " dept           TEXT NOT NULL, "
@@ -87,7 +88,7 @@ const auto createTableFlights = QStringLiteral("CREATE TABLE flights ("
             " PRIMARY KEY(flight_id    AUTOINCREMENT) "
         ")");
 
-const auto createTableAirports = QStringLiteral("CREATE TABLE airports ( "
+const auto createTableAirports = QLatin1String("CREATE TABLE airports ( "
             " airport_id     INTEGER NOT NULL, "
             " icao           TEXT NOT NULL, "
             " iata           TEXT, "
@@ -101,7 +102,7 @@ const auto createTableAirports = QStringLiteral("CREATE TABLE airports ( "
             " PRIMARY KEY(airport_id AUTOINCREMENT) "
             ")");
 
-const auto createTableAircraft = QStringLiteral("CREATE TABLE aircraft ("
+const auto createTableAircraft = QLatin1String("CREATE TABLE aircraft ("
             " aircraft_id   INTEGER NOT NULL,"
             " make          TEXT,"
             " model         TEXT,"
@@ -116,15 +117,22 @@ const auto createTableAircraft = QStringLiteral("CREATE TABLE aircraft ("
             " PRIMARY KEY(aircraft_id AUTOINCREMENT)"
             ")");
 
-const auto createTableChangelog = QStringLiteral("CREATE TABLE changelog ( "
+const auto createTableChangelog = QLatin1String("CREATE TABLE changelog ( "
             " revision   INTEGER NOT NULL, "
             " comment    TEXT, "
             " date       NUMERIC, "
             " PRIMARY KEY(revision) "
             ")");
 
+const auto createTableCurrencies = QLatin1String("CREATE TABLE currencies ( "
+            " currency_id	INTEGER PRIMARY KEY AUTOINCREMENT, "
+            " description	TEXT, "
+            " expiryDate     NUMERIC "
+            ")"
+            );
+
 // Statements for creation of views in the database
-const auto createViewDefault = QStringLiteral("CREATE VIEW viewDefault AS "
+const auto createViewDefault = QLatin1String("CREATE VIEW viewDefault AS "
         " SELECT flight_id, doft as 'Date', "
         " dept AS 'Dept', "
         " printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time', "
@@ -148,7 +156,7 @@ const auto createViewDefault = QStringLiteral("CREATE VIEW viewDefault AS "
         " INNER JOIN tails on flights.acft = tails.tail_id "
         " ORDER BY date DESC ");
 
-const auto createViewEASA = QStringLiteral("CREATE VIEW viewEASA AS "
+const auto createViewEASA = QLatin1String("CREATE VIEW viewEASA AS "
         " SELECT "
         " flight_id, doft as 'Date', "
         " dept AS 'Dept', "
@@ -183,7 +191,7 @@ const auto createViewEASA = QStringLiteral("CREATE VIEW viewEASA AS "
         " INNER JOIN tails on flights.acft = tails.tail_id "
         " ORDER BY date DESC");
 
-const auto createViewTails = QStringLiteral("CREATE VIEW viewTails AS "
+const auto createViewTails = QLatin1String("CREATE VIEW viewTails AS "
         " SELECT "
         " tail_id AS 'ID', "
         " registration AS 'Registration', "
@@ -198,7 +206,7 @@ const auto createViewTails = QStringLiteral("CREATE VIEW viewTails AS "
         " company AS 'Company' "
         " FROM tails WHERE variant IS NOT NULL");
 
-const auto createViewPilots = QStringLiteral("CREATE VIEW viewPilots AS "
+const auto createViewPilots = QLatin1String("CREATE VIEW viewPilots AS "
         " SELECT "
         " pilot_id AS 'ID', "
         " lastname AS 'Last Name', "
@@ -206,14 +214,14 @@ const auto createViewPilots = QStringLiteral("CREATE VIEW viewPilots AS "
         " company AS 'Company' "
         " FROM pilots");
 
-const auto createViewQCompleter = QStringLiteral("CREATE VIEW viewQCompleter AS "
+const auto createViewQCompleter = QLatin1String("CREATE VIEW viewQCompleter AS "
         " SELECT airport_id, icao, iata, tail_id, registration, pilot_id, "
         " lastname||', '||firstname AS 'pilot_name', alias "
         " FROM airports "
         " LEFT JOIN tails ON airports.airport_id = tails.tail_id "
         " LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id");
 
-const auto createViewTotals = QStringLiteral("CREATE VIEW viewTotals AS "
+const auto createViewTotals = QLatin1String("CREATE VIEW viewTotals AS "
         " SELECT "
         " printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) AS \"TOTAL\", "
         " printf(\"%02d\",CAST(SUM(tSPSE) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSPSE) AS INT)%60) AS \"SP SE\", "
@@ -237,6 +245,7 @@ const QStringList tables = {
     createTableFlights,
     createTableAircraft,
     createTableAirports,
+    createTableCurrencies,
     createTableChangelog
 };
 const QStringList views = {
@@ -248,14 +257,15 @@ const QStringList views = {
     createViewQCompleter,
 };
 const QStringList userTables = {
-    "flights",
-    "pilots",
-    "tails"
+    QStringLiteral("flights"),
+    QStringLiteral("pilots"),
+    QStringLiteral("tails")
 };
 const QStringList templateTables= {
-    "aircraft",
-    "airports",
-    "changelog"
+    QStringLiteral("aircraft"),
+    QStringLiteral("airports"),
+    QStringLiteral("currencies"),
+    QStringLiteral("changelog")
 };
 
 
@@ -276,7 +286,7 @@ bool ADataBaseSetup::createDatabase()
 
     aDB->updateLayout();
 
-    DEB << "Database successfully created!";
+    LOG << "Database successfully created!\n";
     return true;
 }
 
@@ -288,13 +298,13 @@ bool ADataBaseSetup::downloadTemplates()
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(TEMPLATE_URL % table % QStringLiteral(".csv")));
-        dl->setFileName(template_dir.absoluteFilePath(table % QStringLiteral(".csv")));
+        dl->setTarget(QUrl(TEMPLATE_URL + table + QLatin1String(".csv")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".csv")));
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table % QStringLiteral(".csv")));
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".csv")));
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
     }
@@ -302,8 +312,10 @@ bool ADataBaseSetup::downloadTemplates()
 }
 bool ADataBaseSetup::backupOldData()
 {
-    DEB << "Backing up old database...";
-    auto database_file = aDB->databaseFile;
+    LOG << "Backing up old database...";
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                       absoluteFilePath(QStringLiteral("logbook.db")));
+    DEB << "File Info:" << database_file;
 
     if(!database_file.exists()) {
         DEB << "No Database to backup, returning.";
@@ -314,16 +326,17 @@ bool ADataBaseSetup::backupOldData()
     auto backup_dir = AStandardPaths::directory(AStandardPaths::Backup);
     QString backup_name = database_file.baseName() + QLatin1String("_bak_")
             + date_string + QLatin1String(".db");
-    QFile file(aDB->databaseFile.absoluteFilePath()); 
+    QFile file(database_file.absoluteFilePath());
+    DEB << "File:" << file;
     if (!file.rename(backup_dir.absoluteFilePath(backup_name))) {
-        DEB << "Unable to backup old database.";
+        LOG << "Unable to backup old database.\n";
         return false;
     }
-    DEB << "Backed up old database as: " << backup_name;
+    LOG << "Backed up old database as: " << backup_name << "\n";
     return true;
 }
 
-bool ADataBaseSetup::importDefaultData(bool use_local_data)
+bool ADataBaseSetup::importDefaultData(bool use_ressource_data)
 {
     QSqlQuery query;
     // reset template tables
@@ -338,20 +351,20 @@ bool ADataBaseSetup::importDefaultData(bool use_local_data)
         QVector<QStringList> data_to_commit;
         QString error_message("Error importing data ");
 
-        if (use_local_data) {
+        if (use_ressource_data) {
             data_to_commit = aReadCsv(QStringLiteral(":templates/database/templates/")
-                                      + table_name + QStringLiteral(".csv"));
-            error_message.append(" (local) ");
+                                      + table_name + QLatin1String(".csv"));
+            error_message.append(" (ressource) ");
         } else {
             data_to_commit = aReadCsv(AStandardPaths::directory(
                                           AStandardPaths::Templates).absoluteFilePath(
-                                          table_name + QStringLiteral(".csv")));
-            error_message.append(" (remote) ");
+                                          table_name + QLatin1String(".csv")));
+            error_message.append(" (downloaded) ");
         }
 
         //fill with data from csv
         if (!commitData(data_to_commit, table_name)) {
-            DEB << error_message;
+            LOG << error_message;
             return false;
         }
     }
@@ -425,7 +438,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
         }
         return false;
     }
-    DEB << "All schemas added successfully";
+    LOG << "All database tables created successfully\n";
     return true;
 }
 /*!

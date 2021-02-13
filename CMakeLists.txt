@@ -22,6 +22,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
+    src/classes/acurrencyentry.cpp
     src/classes/astyle.cpp
     src/classes/astandardpaths.cpp
     src/classes/aaircraftentry.cpp
@@ -51,6 +52,7 @@ set(PROJECT_SOURCES
     src/testing/atimer.cpp
     
     mainwindow.h
+    src/classes/acurrencyentry.h
     src/classes/astyle.h
     src/classes/astandardpaths.h
     src/classes/aaircraftentry.h
