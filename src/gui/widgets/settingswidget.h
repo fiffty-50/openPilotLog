@@ -41,13 +41,13 @@ public:
     /*!
      * \brief Widgets that need to receive a signal when a setting is updated.
      */
-    enum SettingSignal {LogbookWidget, HomeWidget};
+    enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget};
 
 private slots:
 
 //    void onThemeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
-    void on_acSortComboBox_currentIndexChanged(int index);
+    void on_acftSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
     void on_prefixLineEdit_textChanged(const QString &arg1);
     void on_lastnameLineEdit_editingFinished();

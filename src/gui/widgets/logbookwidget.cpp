@@ -52,7 +52,7 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
 
-    prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }
@@ -66,7 +66,7 @@ LogbookWidget::~LogbookWidget()
  * Functions
  */
 
-void LogbookWidget::prepareModelAndView(int view_id)
+void LogbookWidget::setupModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
@@ -243,7 +243,7 @@ void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
     emit ui->showAllButton->clicked();
 }
 
-void LogbookWidget::onDisplayModel_dataBaseUpdated()
+void LogbookWidget::refresh()
 {
     //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
@@ -253,7 +253,7 @@ void LogbookWidget::onDisplayModel_dataBaseUpdated()
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal == SettingsWidget::SettingSignal::LogbookWidget)
-        prepareModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+        setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
 }
 
 void LogbookWidget::on_showAllButton_clicked()
