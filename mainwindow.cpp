@@ -28,13 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Set up Toolbar
-    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_HOME));
-    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_NEW_FLIGHT));
-    ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
-    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_AIRCRAFT));
-    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_PILOT));
-    ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
+    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
+    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+    ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
+    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
+    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
+    ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
+    ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
     const auto buttons = ui->toolBar->findChildren<QWidget *>();

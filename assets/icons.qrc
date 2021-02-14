@@ -12,19 +12,29 @@
         <file>ionicon-icons/settings-outline.png</file>
         <file>ionicon-icons/power.png</file>
         <file>ionicon-icons/power-outline.png</file>
-        <file>opl-icons/opl_logo.svg</file>
-        <file>opl-icons/appicon_round_transparent.svg</file>
-        <file>opl-icons/appicon_round_gradient.svg</file>
-        <file>opl-icons/pilot.png</file>
-        <file>opl-icons/pilot_dark.png</file>
-        <file>opl-icons/aircraft.png</file>
-        <file>opl-icons/new_flight.png</file>
-	    <file>opl-icons/icon_main.svg</file>
-	    <file>opl-icons/icon_ios.svg</file>
-	    <file>opl-icons/icon_linux.svg</file>
-	    <file>opl-icons/icon_linux_light.svg</file>
-	    <file>opl-icons/icon_about.png</file>
-	    <file>opl-icons/icon_backup.svg</file>
-	    <file>opl-icons/icon_home.svg</file>
+        <file>opl-icons/app/icon_about.png</file>
+        <file>opl-icons/app/icon_about.svg</file>
+        <file>opl-icons/app/icon_ios.svg</file>
+        <file>opl-icons/app/icon_linux.svg</file>
+        <file>opl-icons/app/icon_linux_light.svg</file>
+        <file>opl-icons/app/icon_main.svg</file>
+        <file>opl-icons/app/opl_logo.png</file>
+        <file>opl-icons/app/opl_logo.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_airplane_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_backup_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_exit_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_home_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_logbook_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_pilot_dm.svg</file>
+        <file>opl-icons/toolbar/thick/dark/icon_settings_dm.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_airplane.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_backup.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_exit.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_home.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_logbook.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_new_flight.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_pilot.svg</file>
+        <file>opl-icons/toolbar/thick/light/icon_settings.svg</file>
     </qresource>
 </RCC>

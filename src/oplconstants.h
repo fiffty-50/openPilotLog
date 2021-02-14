@@ -1,4 +1,4 @@
-/*
+﻿/*
  *openPilotLog - A FOSS Pilot Logbook Application
  *Copyright (C) 2020-2021 Felix Turowsky
  *
@@ -176,15 +176,30 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 namespace Assets {
 
-static const auto LOGO                  = QLatin1String(":/icons/opl-icons/opl_logo.svg");
-static const auto ICON_APPICON          = QLatin1String(":/icons/opl-icons/icon_main.svg");
-static const auto ICON_HOME             = QLatin1String(":/icons/opl-icons/icon_home.svg");
-static const auto ICON_ABOUT            = QLatin1String(":/icons/opl-icons/icon_about.png");
-static const auto ICON_PILOT            = QLatin1String(":/icons/opl-icons/pilot.png");
-static const auto ICON_PILOT_DARK       = QLatin1String(":/icons/opl-icons/pilot_dark.png");
-static const auto ICON_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/new_flight.png");
-static const auto ICON_AIRCRAFT         = QLatin1String(":/icons/opl-icons/aircraft.png");
-static const auto ICON_BACKUP           = QLatin1String(":/icons/opl-icons/icon_backup.svg");
+static const auto LOGO                          = QLatin1String(":/icons/opl-icons/app/opl_logo.svg");
+static const auto ICON_APPICON                  = QLatin1String(":/icons/opl-icons/app/icon_main.svg");
+static const auto ICON_ABOUT                    = QLatin1String(":/icons/opl-icons/app/icon_about.png");
+
+static const auto ICON_TOOLBAR_HOME             = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
+static const auto ICON_TOOLBAR_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");
+static const auto ICON_TOOLBAR_LOGBOOK          = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_logbook.svg");
+static const auto ICON_TOOLBAR_AIRCRAFT         = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_airplane.svg");
+static const auto ICON_TOOLBAR_PILOT            = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_pilot.svg");
+static const auto ICON_TOOLBAR_SETTINGS         = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_settings.svg");
+static const auto ICON_TOOLBAR_QUIT             = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_exit.svg");
+
+static const auto ICON_TOOLBAR_BACKUP           = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_backup.svg");
+
+static const auto ICON_TOOLBAR_HOME_DARK        = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_home_dm.svg");
+static const auto ICON_TOOLBAR_NEW_FLIGHT_DARK  = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg");
+static const auto ICON_TOOLBAR_LOGBOOK_DARK     = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_logbook_dm.svg");
+static const auto ICON_TOOLBAR_AIRCRAFT_DARK    = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_airplane_dm.svg");
+static const auto ICON_TOOLBAR_PILOT_DARK       = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_pilot_dm.svg");
+static const auto ICON_TOOLBAR_SETTINGS_DARK    = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_settings_dm.svg");
+static const auto ICON_TOOLBAR_QUIT_DARK        = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_exit_dm.svg");
+
+static const auto ICON_TOOLBAR_BACKUP_DARK      = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
+
 }
 
 } // namespace opl
