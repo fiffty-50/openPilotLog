@@ -176,9 +176,11 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 namespace Assets {
 
-static const auto LOGO                          = QLatin1String(":/icons/opl-icons/app/opl_logo.svg");
-static const auto ICON_APPICON                  = QLatin1String(":/icons/opl-icons/app/icon_main.svg");
-static const auto ICON_ABOUT                    = QLatin1String(":/icons/opl-icons/app/icon_about.png");
+static const auto LOGO                          = QLatin1String(":/icons/opl-icons/logos/logo_text.png");
+static const auto ICON_MAIN                     = QLatin1String(":/icons/opl-icons/app/icon_main.png");
+static const auto ICON_APPICON_LINUX            = QLatin1String(":/icons/opl-icons/app/icon_linux.svg");
+static const auto ICON_APPICON_IOS              = QLatin1String(":/icons/opl-icons/app/icon_ios.svg");
+static const auto ICON_APPICON_WIN              = QLatin1String(":/icons/opl-icons/app/icon_windows.ico");
 
 static const auto ICON_TOOLBAR_HOME             = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
 static const auto ICON_TOOLBAR_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");

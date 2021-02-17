@@ -43,6 +43,7 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newtaildialog.cpp
     src/gui/widgets/aircraftwidget.cpp
+    src/gui/widgets/backupwidget.cpp
     src/gui/widgets/debugwidget.cpp
     src/gui/widgets/homewidget.cpp
     src/gui/widgets/logbookwidget.cpp
@@ -77,6 +78,7 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newtaildialog.h
     src/gui/widgets/aircraftwidget.h
+    src/gui/widgets/backupwidget.h
     src/gui/widgets/debugwidget.h
     src/gui/widgets/homewidget.h
     src/gui/widgets/logbookwidget.h
@@ -93,6 +95,7 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newpilot.ui
     src/gui/dialogues/newtail.ui
     src/gui/widgets/aircraftwidget.ui
+    src/gui/widgets/backupwidget.ui
     src/gui/widgets/debugwidget.ui
     src/gui/widgets/homewidget.ui
     src/gui/widgets/logbookwidget.ui

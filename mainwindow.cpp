@@ -27,12 +27,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Create a spacer for the toolbar to separate left and right parts
+    auto *spacer = new QWidget();
+    spacer->setMinimumWidth(1);
+    spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     // Set up Toolbar
     ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
     ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
     ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
     ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
     ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
+    ui->toolBar->insertWidget(ui->actionSettings, spacer); // spacer goes here
+    ui->actionBackup->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_BACKUP));
     ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
     ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
     ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -43,23 +49,20 @@ MainWindow::MainWindow(QWidget *parent)
         button->setMinimumWidth(128);
     }
 
-    // Add spacer in toolbar to separate left and right parts
-    auto *spacer = new QWidget();
-    spacer->setMinimumWidth(1);
-    spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionSettings, spacer);
-
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
-    pilotsWidget = new PilotsWidget(this);
-    ui->stackedWidget->addWidget(pilotsWidget);
     logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
-    settingsWidget = new SettingsWidget(this);
-    ui->stackedWidget->addWidget(settingsWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
+    pilotsWidget = new PilotsWidget(this);
+    ui->stackedWidget->addWidget(pilotsWidget);
+
+    backupWidget = new BackupWidget(this);
+    ui->stackedWidget->addWidget(backupWidget);
+    settingsWidget = new SettingsWidget(this);
+    ui->stackedWidget->addWidget(settingsWidget);
     debugWidget = new DebugWidget(this);
     ui->stackedWidget->addWidget(debugWidget);
 
@@ -97,41 +100,22 @@ void MainWindow::nope()
     message_box.exec();
 }
 
-/*
- * Slots
+/*!
+ * \brief Connect the widgets to signals that are emitted when an update of the widegts' contents,
+ * is required, either because the database has changed (model and view need to be refreshed) or
+ * because a setting that affects the widgets layout has changed.
  */
-
-void MainWindow::on_actionQuit_triggered()
-{
-    QApplication::quit();
-}
-
-void MainWindow::on_actionHome_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(homeWidget);
-}
-
-void MainWindow::on_actionLogbook_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(logbookWidget);
-}
-
-void MainWindow::on_actionDebug_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(debugWidget);
-}
-
 void MainWindow::connectWidgets()
 {
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     logbookWidget, &LogbookWidget::refresh);
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     homeWidget,     &HomeWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
+                     homeWidget,     &HomeWidget::refresh);
 
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     pilotsWidget, &PilotsWidget::onPilotsWidget_databaseUpdated);
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     logbookWidget,  &LogbookWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     pilotsWidget, &PilotsWidget::onPilotsWidget_settingChanged);
+                     logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
     QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
@@ -139,24 +123,18 @@ void MainWindow::connectWidgets()
                      aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
 
     QObject::connect(aDB, &ADatabase::dataBaseUpdated,
-                     homeWidget, &HomeWidget::refresh);
+                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     homeWidget, &HomeWidget::refresh);
+                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
 }
 
-void MainWindow::on_actionSettings_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(settingsWidget);
-}
+/*
+ * Slots
+ */
 
-void MainWindow::on_actionPilots_triggered()
+void MainWindow::on_actionHome_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(pilotsWidget);
-}
-
-void MainWindow::on_actionAircraft_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(aircraftWidget);
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 void MainWindow::on_actionNewFlight_triggered()
@@ -165,16 +143,39 @@ void MainWindow::on_actionNewFlight_triggered()
     nf.exec();
 }
 
-void MainWindow::on_actionNewAircraft_triggered()
+void MainWindow::on_actionLogbook_triggered()
 {
-    NewTailDialog nt(QString(), this);
-    nt.exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
-void MainWindow::on_actionNewPilot_triggered()
+void MainWindow::on_actionAircraft_triggered()
 {
-    NewPilotDialog np(this);
-    np.exec();
+    ui->stackedWidget->setCurrentWidget(aircraftWidget);
+}
+
+void MainWindow::on_actionPilots_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(pilotsWidget);
+}
+
+void MainWindow::on_actionBackup_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(backupWidget);
+}
+
+void MainWindow::on_actionSettings_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(settingsWidget);
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    QApplication::quit();
+}
+
+void MainWindow::on_actionDebug_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
 // Debug
@@ -185,3 +186,17 @@ int MainWindow::checkDbVersion()
     query.next();
     return query.value(0).toInt();
 }
+
+// not used at the moment
+
+/*void MainWindow::on_actionNewAircraft_triggered()
+{
+    NewTailDialog nt(QString(), this);
+    nt.exec();
+}
+
+void MainWindow::on_actionNewPilot_triggered()
+{
+    NewPilotDialog np(this);
+    np.exec();
+}*/
