@@ -32,6 +32,7 @@
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/backupwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/gui/dialogues/newtaildialog.h"
@@ -56,23 +57,25 @@ public:
 
 private slots:
 
-    void on_actionQuit_triggered();
-
     void on_actionHome_triggered();
-
-    void on_actionLogbook_triggered();
-
-    void on_actionSettings_triggered();
 
     void on_actionNewFlight_triggered();
 
+    void on_actionLogbook_triggered();
+
     void on_actionAircraft_triggered();
 
-    void on_actionNewAircraft_triggered();
+    //void on_actionNewAircraft_triggered();
 
     void on_actionPilots_triggered();
 
-    void on_actionNewPilot_triggered();
+    //void on_actionNewPilot_triggered();
+
+    void on_actionBackup_triggered();
+
+    void on_actionSettings_triggered();
+
+    void on_actionQuit_triggered();
 
     void on_actionDebug_triggered();
 
@@ -83,11 +86,13 @@ private:
 
     LogbookWidget* logbookWidget;
 
-    SettingsWidget* settingsWidget;
-
     AircraftWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
+
+    BackupWidget* backupWidget;
+
+    SettingsWidget* settingsWidget;
 
     DebugWidget* debugWidget;
 

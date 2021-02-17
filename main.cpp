@@ -80,7 +80,24 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w;
-    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON));
+
+#ifdef __linux__
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_LINUX));
+#elif defined(_WIN32) || defined(_WIN64)
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_WIN));
+#elif __APPLE__
+    #include <TargetConditionals.h>
+    #if TARGET_IPHONE_SIMULATOR
+         // iOS Simulator
+    #elif TARGET_OS_IPHONE
+        // iOS device
+    #elif TARGET_OS_MAC
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_IOS));
+    #else
+    #   error "Unknown Apple platform"
+    #endif
+#endif
+
     //w.showMaximized();
     w.show();
     return openPilotLog.exec();

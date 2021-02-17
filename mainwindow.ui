@@ -73,12 +73,16 @@
    <addaction name="actionLogbook"/>
    <addaction name="actionAircraft"/>
    <addaction name="actionPilots"/>
+   <addaction name="actionBackup"/>
    <addaction name="actionSettings"/>
    <addaction name="actionQuit"/>
   </widget>
   <action name="actionNewFlight">
    <property name="text">
     <string>NewFlight</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a new flight to the logbook</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -87,6 +91,9 @@
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit the application</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -103,6 +110,9 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Change Settings</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -121,7 +131,7 @@
     <string>Aircraft</string>
    </property>
    <property name="toolTip">
-    <string>Show or edit Aircraft</string>
+    <string>Show or edit your aircraft</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -160,6 +170,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionBackup">
+   <property name="text">
+    <string>Backup</string>
+   </property>
+   <property name="toolTip">
+    <string>Create or restore a backup of the database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>

@@ -12,14 +12,9 @@
         <file>ionicon-icons/settings-outline.png</file>
         <file>ionicon-icons/power.png</file>
         <file>ionicon-icons/power-outline.png</file>
-        <file>opl-icons/app/icon_about.png</file>
-        <file>opl-icons/app/icon_about.svg</file>
         <file>opl-icons/app/icon_ios.svg</file>
         <file>opl-icons/app/icon_linux.svg</file>
-        <file>opl-icons/app/icon_linux_light.svg</file>
         <file>opl-icons/app/icon_main.svg</file>
-        <file>opl-icons/app/opl_logo.png</file>
-        <file>opl-icons/app/opl_logo.svg</file>
         <file>opl-icons/toolbar/thick/dark/icon_airplane_dm.svg</file>
         <file>opl-icons/toolbar/thick/dark/icon_backup_dm.svg</file>
         <file>opl-icons/toolbar/thick/dark/icon_exit_dm.svg</file>
@@ -36,5 +31,11 @@
         <file>opl-icons/toolbar/thick/light/icon_new_flight.svg</file>
         <file>opl-icons/toolbar/thick/light/icon_pilot.svg</file>
         <file>opl-icons/toolbar/thick/light/icon_settings.svg</file>
+        <file>opl-icons/app/icon_windows.ico</file>
+        <file>opl-icons/app/icon_windows.svg</file>
+        <file>opl-icons/logos/logo_text.svg</file>
+        <file>opl-icons/logos/logo_text.png</file>
+        <file>opl-icons/app/icon_main.png</file>
+        <file>opl-icons/toolbar/thick/light/icon_backup.png</file>
     </qresource>
 </RCC>
