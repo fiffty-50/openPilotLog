@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
+#include <QFileSystemModel>
+#include <QFileSystemWatcher>
 
 namespace Ui {
 class BackupWidget;
@@ -32,7 +34,7 @@ private slots:
 private:
     Ui::BackupWidget *ui;
 
-    QStandardItemModel* model;
+    QStandardItemModel *model;
 
     void fillTableWithSampleData();
 };

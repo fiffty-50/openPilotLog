@@ -1,7 +1,9 @@
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
 #include "src/classes/astandardpaths.h"
+#include "src/testing/adebug.h"
 
+#include <QListView>
 #include <QStandardItemModel>
 #include <QFileIconProvider>
 
@@ -75,25 +77,20 @@ void BackupWidget::on_aboutPushButton_clicked()
 void BackupWidget::fillTableWithSampleData()
 {
     // First column in table, would be created by listing the files in backupdir
-    QList<QStandardItem *> filenames{
-    };
-    QStringList filenames_string_list {
-        "logbook_bak_2021_02_12_T_22_03.db",
-        "logbook_bak_2021_01_15_T_18_32.db",
-        "logbook_bak_2020_12_23_T_14_27.db",
-        "logbook_bak_2020_11_21_T_23_43.db",
-        "logbook_bak_2020_10_30_T_17_55.db",
-    };
+    QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
+    QStringList entries = backup_dir.entryList(QStringList{"*.db"});  // [G]: TODO make const but where?
+    QList<QStandardItem*> filenames;
     QFileIconProvider provider;
-    for (const auto &string : filenames_string_list) {
-        auto item = new QStandardItem(string);
+
+    for(auto& entry : entries) {
+        auto item = new QStandardItem(entry);
         item->setIcon(provider.icon(QFileIconProvider::File));
         filenames.append(item);
     }
 
+    // TODO
     // Second column, would be created by reading the details from each file and creating the description string
-    QList<QStandardItem *> descriptions{
-    };
+    QList<QStandardItem *> descriptions{};
     QStringList descriptions_string_list {
         "2020-02-12 - 512 Flights, 25 Aircraft, 44 Pilots, 1640:47 Total Time, Last Flight 2020-01-23",
         "2020-01-15 - 476 Flights, 24 Aircraft, 42 Pilots, 1490:23 Total Time, Last Flight 2019-12-06",
@@ -106,20 +103,10 @@ void BackupWidget::fillTableWithSampleData()
         descriptions.append(item);
     }
 
-    // create and populate the model
     model = new QStandardItemModel(this);
     model->insertColumn(0, filenames);
     model->insertColumn(1, descriptions);
-    model->setHorizontalHeaderLabels(QStringList{"Backup File","Summary"});
-    // prepare and show the view
-    auto view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->resizeColumnsToContents();
-    view->setColumnWidth(0, ui->tableView->columnWidth(0) + 20);
+    model->setHorizontalHeaderLabels(QStringList{"Backup File","Summary"});  // [G]: TODO make const but where?
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
 }
