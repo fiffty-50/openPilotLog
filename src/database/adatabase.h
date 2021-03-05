@@ -101,6 +101,7 @@ public:
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
+
     TableNames_T getTableNames() const;
     ColumnNames_T getTableColumns(TableName_T table_name) const;
     void updateLayout();
@@ -258,7 +259,7 @@ public:
      */
     ATailEntry resolveForeignTail(RowId_T foreign_key);
 
-
+    QStringList databaseSummary(const QString& db_path);
 
 
 

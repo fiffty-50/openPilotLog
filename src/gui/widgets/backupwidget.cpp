@@ -2,6 +2,7 @@
 #include "ui_backupwidget.h"
 #include "src/classes/astandardpaths.h"
 #include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -88,20 +89,16 @@ void BackupWidget::fillTableWithSampleData()
         filenames.append(item);
     }
 
-    // TODO
     // Second column, would be created by reading the details from each file and creating the description string
-    QList<QStandardItem *> descriptions{};
-    QStringList descriptions_string_list {
-        "2020-02-12 - 512 Flights, 25 Aircraft, 44 Pilots, 1640:47 Total Time, Last Flight 2020-01-23",
-        "2020-01-15 - 476 Flights, 24 Aircraft, 42 Pilots, 1490:23 Total Time, Last Flight 2019-12-06",
-        "2020-12-23 - 452 Flights, 19 Aircraft, 39 Pilots, 1460:34 Total Time, Last Flight 2019-11-23",
-        "2020-11-21 - 435 Flights, 17 Aircraft, 33 Pilots, 1373:25 Total Time, Last Flight 2019-10-16",
-        "2020-10-30 - 419 Flights, 15 Aircraft, 12 Pilots, 1337:02 Total Time, Last Flight 2019-09-24",
-    };
-    for (const auto &string : descriptions_string_list) {
-        auto item = new QStandardItem(string);
-        descriptions.append(item);
+    QList<QStandardItem *> descriptions;
+    for (const auto &entry : entries) {
+        QStringList summary = aDB->databaseSummary(entry);
+        auto item = new QStandardItem(summary.join(", "));
+        descriptions.prepend(item);  // Make a O(1) op here and deal with sorting later
     }
+
+    // [G]: Sort entries? based on what? the files are abit inconsistent in their naming atm
+    // but i assume we could sort based on the time in the file name?
 
     model = new QStandardItemModel(this);
     model->insertColumn(0, filenames);
