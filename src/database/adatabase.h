@@ -88,21 +88,27 @@ public:
  */
 class ADatabase : public QObject {
     Q_OBJECT
-public:
 
 private:
-    ADatabase();
-
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;
+    int dbVersion;
+
+    ADatabase();
+    int checkDbVersion() const;
 public:
+    ADatabaseError lastError;
+    //const QDir databaseDir;
+    const QFileInfo databaseFile;
+
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
 
-    int dbVersion();
+    int version() const;
+
     /*!
      * \brief Return the names of all tables in the database
      */
@@ -123,12 +129,7 @@ public:
      * \brief ADatabase::sqliteVersion returns database sqlite version.
      * \return sqlite version string
      */
-    const QString sqliteVersion();
-
-    ADatabaseError lastError;
-    //const QDir databaseDir;
-    const QFileInfo databaseFile;
-
+    const QString sqliteVersion() const;
 
     /*!
      * \brief Connect to the database and populate database information.

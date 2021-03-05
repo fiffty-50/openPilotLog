@@ -33,7 +33,19 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::self = nullptr;
 
-int ADatabase::dbVersion()
+ADatabase::ADatabase()
+    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                             absoluteFilePath(QStringLiteral("logbook.db"))
+                             )
+                   )
+{}
+
+int ADatabase::version() const
+{
+    return dbVersion;
+}
+
+int ADatabase::checkDbVersion() const
 {
     QSqlQuery query("SELECT COUNT(*) FROM changelog");
     query.next();
@@ -78,12 +90,8 @@ ADatabase* ADatabase::instance()
 #endif
 }
 
-ADatabase::ADatabase()
-    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
-                             absoluteFilePath(QStringLiteral("logbook.db"))))
-{}
 
-const QString ADatabase::sqliteVersion()
+const QString ADatabase::sqliteVersion() const
 {
     QSqlQuery query;
     query.prepare(QStringLiteral("SELECT sqlite_version()"));
@@ -107,6 +115,7 @@ bool ADatabase::connect()
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
+    dbVersion = checkDbVersion();
     return true;
 }
 
