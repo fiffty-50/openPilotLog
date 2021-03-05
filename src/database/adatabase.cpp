@@ -33,26 +33,23 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::self = nullptr;
 
-/*!
- * \brief Return the names of a given table in the database.
- */
+int ADatabase::dbVersion()
+{
+    QSqlQuery query("SELECT COUNT(*) FROM changelog");
+    query.next();
+    return query.value(0).toInt();
+}
+
 ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
 {
     return tableColumns.value(table_name);
 }
 
-/*!
- * \brief Return the names of all tables in the database
- */
 TableNames_T ADatabase::getTableNames() const
 {
     return tableNames;
 }
 
-/*!
- * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
- * if the database has been altered. This function is normally only required during database setup or maintenance.
- */
 void ADatabase::updateLayout()
 {
     auto db = ADatabase::database();
@@ -73,7 +70,7 @@ void ADatabase::updateLayout()
 ADatabase* ADatabase::instance()
 {
 #ifdef __GNUC__
-    return self ?: self = new ADatabase();
+    return self ?: self = new ADatabase();  // Cheeky business...
 #else
     if(!self)
         self = new ADatabase();
@@ -86,10 +83,6 @@ ADatabase::ADatabase()
                              absoluteFilePath(QStringLiteral("logbook.db"))))
 {}
 
-/*!
- * \brief ADatabase::sqliteVersion returns database sqlite version.
- * \return sqlite version string
- */
 const QString ADatabase::sqliteVersion()
 {
     QSqlQuery query;

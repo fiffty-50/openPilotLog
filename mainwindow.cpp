@@ -73,13 +73,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // check database version (Debug)
-    int db_ver = checkDbVersion();
+    int db_ver = aDB->dbVersion();
     if (db_ver != DATABASE_REVISION) {
-        DEB << "############## WARNING ####################";
+        DEB << "############## WARNING ##############";
         DEB << "Your database is out of date.";
         DEB << "Current Revision:\t" << DATABASE_REVISION;
         DEB << "You have revision:\t" << db_ver;
-        DEB << "############## WARNING ###################";
+        DEB << "############## WARNING ##############";
         QMessageBox message_box(this); //error box
         message_box.setText(tr("Database revision out of date!"));
         message_box.exec();
@@ -179,13 +179,6 @@ void MainWindow::on_actionDebug_triggered()
 }
 
 // Debug
-
-int MainWindow::checkDbVersion()
-{
-    QSqlQuery query("SELECT COUNT(*) FROM changelog");
-    query.next();
-    return query.value(0).toInt();
-}
 
 // not used at the moment
 

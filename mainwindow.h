@@ -100,8 +100,6 @@ private:
 
     void connectWidgets();
 
-    int checkDbVersion();
-
 protected:
     /*!
      * \brief Shows the debug widget by pressing <ctrl + t>

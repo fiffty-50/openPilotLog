@@ -79,7 +79,7 @@ void BackupWidget::fillTableWithSampleData()
 {
     // First column in table, would be created by listing the files in backupdir
     QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
-    QStringList entries = backup_dir.entryList(QStringList{"*.db"});
+    QStringList entries = backup_dir.entryList(QStringList{"*.db"}, QDir::Files, QDir::Time);
     QList<QStandardItem*> filenames;
     QFileIconProvider provider;
 
@@ -88,6 +88,10 @@ void BackupWidget::fillTableWithSampleData()
         item->setIcon(provider.icon(QFileIconProvider::File));
         filenames.append(item);
     }
+
+    // [G]: works but a bit too hardcoded perhaps? The aviation industry wont change overnight
+    // but still it could be worthwile to at least have the names a bit more encapsulated in the
+    // database so we have them more "centralised" at least.
 
     // Get summary of each db file and populate lists (columns) of data
     QList<QStandardItem *> total_flights, total_tails, total_pilots, max_doft, total_time;

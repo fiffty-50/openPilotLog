@@ -102,9 +102,27 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
 
+    int dbVersion();
+    /*!
+     * \brief Return the names of all tables in the database
+     */
     TableNames_T getTableNames() const;
+
+    /*!
+     * \brief Return the names of a given table in the database.
+     */
     ColumnNames_T getTableColumns(TableName_T table_name) const;
+
+    /*!
+     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+     * if the database has been altered. This function is normally only required during database setup or maintenance.
+     */
     void updateLayout();
+
+    /*!
+     * \brief ADatabase::sqliteVersion returns database sqlite version.
+     * \return sqlite version string
+     */
     const QString sqliteVersion();
 
     ADatabaseError lastError;
