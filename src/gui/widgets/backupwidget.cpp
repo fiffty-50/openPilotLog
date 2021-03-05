@@ -79,7 +79,7 @@ void BackupWidget::fillTableWithSampleData()
 {
     // First column in table, would be created by listing the files in backupdir
     QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
-    QStringList entries = backup_dir.entryList(QStringList{"*.db"});  // [G]: TODO make const but where?
+    QStringList entries = backup_dir.entryList(QStringList{"*.db"});
     QList<QStandardItem*> filenames;
     QFileIconProvider provider;
 
@@ -89,12 +89,15 @@ void BackupWidget::fillTableWithSampleData()
         filenames.append(item);
     }
 
-    // Second column, would be created by reading the details from each file and creating the description string
-    QList<QStandardItem *> descriptions;
+    // Get summary of each db file and populate lists (columns) of data
+    QList<QStandardItem *> total_flights, total_tails, total_pilots, max_doft, total_time;
     for (const auto &entry : entries) {
-        QStringList summary = aDB->databaseSummary(entry);
-        auto item = new QStandardItem(summary.join(", "));
-        descriptions.prepend(item);  // Make a O(1) op here and deal with sorting later
+        QMap<QString, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
+        total_flights.prepend(new QStandardItem(summary["total_flights"]));
+        total_tails.prepend(new QStandardItem(summary["total_tails"]));
+        total_pilots.prepend(new QStandardItem(summary["total_pilots"]));
+        max_doft.prepend(new QStandardItem(summary["max_doft"]));
+        total_time.prepend(new QStandardItem(summary["total_time"]));
     }
 
     // [G]: Sort entries? based on what? the files are abit inconsistent in their naming atm
@@ -102,8 +105,13 @@ void BackupWidget::fillTableWithSampleData()
 
     model = new QStandardItemModel(this);
     model->insertColumn(0, filenames);
-    model->insertColumn(1, descriptions);
-    model->setHorizontalHeaderLabels(QStringList{"Backup File","Summary"});  // [G]: TODO make const but where?
+    model->insertColumn(1, total_flights);  // flight
+    model->insertColumn(2, total_tails);  // tails
+    model->insertColumn(3, total_pilots);  // pilots
+    model->insertColumn(4, max_doft);  // doft
+    model->insertColumn(5, total_time);  // time
+    model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
+                                                 "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
 }

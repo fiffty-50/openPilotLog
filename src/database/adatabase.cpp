@@ -653,49 +653,59 @@ QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
     }
 }
 
-QStringList ADatabase::databaseSummary(const QString &db_path)
+QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
 {
-    const QString connection_name = QStringLiteral("summary_connection");
-    QStringList return_values;
     // List layout: {"# Flights", "# Aircraft", "# Pilots", "ISODate last flight", "Total Time hh:mm"}
-
+    const QString connection_name = QStringLiteral("summary_connection");
+    QMap<QString, QString> return_values;
     { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
         DEB << "Adding temporary connection to database:" << db_path;
         QSqlDatabase temp_database = QSqlDatabase::addDatabase(SQLITE_DRIVER, connection_name); // Don't use default connection
         temp_database.setDatabaseName(db_path);
         if (!temp_database.open())
-            return QStringList();
+            return {};
+
+        QSqlQuery query(temp_database);
+        QString key;  // Used among the queries for verbosity... and sanity
 
         const QStringList table_list = QStringList {
                 QStringLiteral("flights"),
                 QStringLiteral("tails"),
                 QStringLiteral("pilots")};
-        QSqlQuery query(temp_database);
         for (const auto & table : table_list) {
             query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + table);
+            key = QStringLiteral("total_") + table;
             query.exec();
-            if (query.first())
-                return_values.append(query.value(0).toString());
-            else
-                return_values.append(QString());
+            if (query.first()){
+                return_values[key] = query.value(0).toString();
+            }
+            else{
+                return_values[key] = QString();
+            }
         }
 
         query.prepare(QStringLiteral("SELECT MAX(doft) FROM flights"));
+        key = QStringLiteral("max_doft");
         query.exec();
-        if (query.first())
-            return_values.append(query.value(0).toString());
-        else
-            return_values.append(QString());
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
 
         query.prepare(QStringLiteral("SELECT "
                                      "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)"
                                      "||':'||"
                                      "printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) FROM flights"));
+        key = QStringLiteral("total_time");
         query.exec();
-        if (query.first())
-            return_values.append(query.value(0).toString());
-        else
-            return_values.append(QString());
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
     }
 
     QSqlDatabase::removeDatabase(connection_name); // cleanly removes temp connection without leaks since query+db are out of scope

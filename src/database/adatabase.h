@@ -259,7 +259,14 @@ public:
      */
     ATailEntry resolveForeignTail(RowId_T foreign_key);
 
-    QStringList databaseSummary(const QString& db_path);
+    /*!
+     * \brief Return the summary of the DB_PATH as a stringlist
+     * \todo Contemplate whether it should be a more generic function
+     * that may be used for different elements to summarize.
+     * and ADD DOCUMENTATION, theres some specific sql stuff going on.
+     * \return
+     */
+    QMap<QString, QString> databaseSummary(const QString& db_path);
 
 
 
