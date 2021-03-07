@@ -97,11 +97,11 @@ void BackupWidget::fillTableWithSampleData()
     QList<QStandardItem *> total_flights, total_tails, total_pilots, max_doft, total_time;
     for (const auto &entry : entries) {
         QMap<QString, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
-        total_flights.prepend(new QStandardItem(summary["total_flights"]));
-        total_tails.prepend(new QStandardItem(summary["total_tails"]));
-        total_pilots.prepend(new QStandardItem(summary["total_pilots"]));
-        max_doft.prepend(new QStandardItem(summary["max_doft"]));
-        total_time.prepend(new QStandardItem(summary["total_time"]));
+        total_flights.append(new QStandardItem(summary["total_flights"]));
+        total_tails.append(new QStandardItem(summary["total_tails"]));
+        total_pilots.append(new QStandardItem(summary["total_pilots"]));
+        max_doft.append(new QStandardItem(summary["max_doft"]));
+        total_time.append(new QStandardItem(summary["total_time"]));
     }
 
     // [G]: Sort entries? based on what? the files are abit inconsistent in their naming atm

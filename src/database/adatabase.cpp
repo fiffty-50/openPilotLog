@@ -40,9 +40,9 @@ ADatabase::ADatabase()
                    )
 {}
 
-int ADatabase::version() const
+int ADatabase::dbVersion() const
 {
-    return dbVersion;
+    return databaseVersion;
 }
 
 int ADatabase::checkDbVersion() const
@@ -115,7 +115,7 @@ bool ADatabase::connect()
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
-    dbVersion = checkDbVersion();
+    databaseVersion = checkDbVersion();
     return true;
 }
 

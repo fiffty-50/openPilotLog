@@ -93,7 +93,7 @@ private:
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;
-    int dbVersion;
+    int databaseVersion;
 
     ADatabase();
     int checkDbVersion() const;
@@ -107,7 +107,7 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
 
-    int version() const;
+    int dbVersion() const;
 
     /*!
      * \brief Return the names of all tables in the database
