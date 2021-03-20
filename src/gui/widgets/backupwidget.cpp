@@ -7,6 +7,8 @@
 #include <QListView>
 #include <QStandardItemModel>
 #include <QFileIconProvider>
+#include <QMessageBox>
+#include <QFileDialog>
 
 BackupWidget::BackupWidget(QWidget *parent) :
     QWidget(parent),
@@ -31,6 +33,7 @@ BackupWidget::BackupWidget(QWidget *parent) :
      *
      */
 
+
     fillTableWithSampleData();
 }
 
@@ -39,6 +42,11 @@ BackupWidget::~BackupWidget()
     delete ui;
 }
 
+
+void BackupWidget::on_tableView_clicked(const QModelIndex &index) {
+    selected = model->item(index.row(), 0);
+    DEB << "Item at row:" << index.row() << "->" << selected->data(Qt::DisplayRole);
+}
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
@@ -52,22 +60,37 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    // Remove selected backup from list and delete file.
+    DEB << "deleting:" << selected->data(Qt::DisplayRole);
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
 {
+    QString filename = QFileDialog::getSaveFileName(
+                this,
+                "Choose destination file",
+                AStandardPaths::directory(AStandardPaths::Backup).absolutePath(),
+                ".db"
+    );
+    // [G] TODO: get time to properly format filename
     // Open something like a QFileDialog and let the user choose where to save the backup
 }
 
 void BackupWidget::on_restoreExternalPushButton_clicked()
 {
+    QString filename = QFileDialog::getSaveFileName(
+                this,
+                "Choose backup file",
+                QStandardPaths::displayName(QStandardPaths::HomeLocation),
+                ".db"
+    );
     // Open something like a QFileDialog and let the user choose where to load the backup from
 }
 
-void BackupWidget::on_aboutPushButton_clicked()
-{
+void BackupWidget::on_aboutPushButton_clicked() {
     // Shows a message box explaining a little about local and external backups
+    // [G]: Add message text. Could this be predefined in Opl::Assets?
+    QMessageBox msg_box(QMessageBox::Information, "About backups", "...", QMessageBox::Ok);
+    msg_box.exec();
 }
 
 
