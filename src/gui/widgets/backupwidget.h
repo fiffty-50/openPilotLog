@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QFileSystemModel>
 #include <QFileSystemWatcher>
+#include <QTableView>
 
 namespace Ui {
 class BackupWidget;
@@ -19,6 +20,8 @@ public:
     ~BackupWidget();
 
 private slots:
+    void on_tableView_clicked(const QModelIndex &index);
+
     void on_createLocalPushButton_clicked();
 
     void on_restoreLocalPushButton_clicked();
@@ -35,6 +38,7 @@ private:
     Ui::BackupWidget *ui;
 
     QStandardItemModel *model;
+    QStandardItem *selected;
 
     void fillTableWithSampleData();
 };
