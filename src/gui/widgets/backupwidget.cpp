@@ -54,7 +54,6 @@ void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
-    NOT_IMPLEMENTED
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose destination file",
@@ -84,6 +83,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
+    NOT_IMPLEMENTED
     if(selectedBackupName == nullptr) {
         INFO << "No backup selected";
         return;
@@ -96,6 +96,7 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
+    NOT_IMPLEMENTED
     if(selectedBackupName == nullptr) {
         INFO << "No backup was selected";
         return;

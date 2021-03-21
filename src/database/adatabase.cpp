@@ -751,21 +751,21 @@ bool ADatabase::restoreBackup(const QString& backup_file)
     QFile backup(backup_file);
     QFile current_db(databaseFile.absoluteFilePath());
 
-    if(!backup.isWritable()) {
+    // [G]: Wrong permissions would end up making a inf loop
+    // So i go defensively by checking first
+    if(backup.isWritable() == false || current_db.isWritable() == false) {
         WARN << backup << "is not writtable check PERMISSIONS";
         return false;
     }
 
-    // [G]: Wrong permissions would end up making a inf loop
-    // So i go defensively by checking first
-    if (!backup.copy(databaseFile.absoluteFilePath()))
-    {
-        WARN << "Could not copy" << backup << "to" << databaseFile;
+    if (!current_db.remove(databaseFile.absoluteFilePath())) {
+        WARN << current_db.errorString() << "Unable to delete current db file";
         return false;
     }
 
-    if (!current_db.remove(databaseFile.absoluteFilePath())) {
-        WARN << "Unable to restore backup. The following error has ocurred:" << current_db.errorString();
+    if (!backup.copy(databaseFile.absoluteFilePath()))
+    {
+        WARN << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
         return false;
     }
 
