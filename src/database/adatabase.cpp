@@ -715,3 +715,61 @@ QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
 
     return return_values;
 }
+
+/*!
+ * \brief ADatabase::createBackup copies the currently used database to an external backup location provided by the user
+ * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ */
+bool ADatabase::createBackup(const QString& dest_file)
+{
+    INFO << "Backing up current database to: " << dest_file;
+    ADatabase::disconnect();
+    QFile file(databaseFile.absoluteFilePath());
+    DEB << "File:" << file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
+
+    if (!file.copy(dest_file)) {
+        WARN << "Unable to backup old database.";
+        DEB << file.errorString();
+        return false;
+    }
+
+    INFO << "Backed up old database as:" << dest_file;
+    ADatabase::connect();
+    return true;
+}
+
+/*!
+ * \brief ADatabase::restoreBackup restores the database from a given backup file and replaces the currently active database.
+ * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ * \return
+ */
+bool ADatabase::restoreBackup(const QString& backup_file)
+{
+    INFO << "Restoring backup from file:" << backup_file;
+
+    ADatabase::disconnect();
+    QFile backup(backup_file);
+    QFile current_db(databaseFile.absoluteFilePath());
+
+    if(!backup.isWritable()) {
+        WARN << backup << "is not writtable check PERMISSIONS";
+        return false;
+    }
+
+    // [G]: Wrong permissions would end up making a inf loop
+    // So i go defensively by checking first
+    if (!backup.copy(databaseFile.absoluteFilePath()))
+    {
+        WARN << "Could not copy" << backup << "to" << databaseFile;
+        return false;
+    }
+
+    if (!current_db.remove(databaseFile.absoluteFilePath())) {
+        WARN << "Unable to restore backup. The following error has ocurred:" << current_db.errorString();
+        return false;
+    }
+
+    INFO << "Backup successfully restored!";
+    ADatabase::connect();
+    return true;
+}

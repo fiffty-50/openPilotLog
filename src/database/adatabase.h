@@ -287,6 +287,8 @@ public:
      */
     QMap<QString, QString> databaseSummary(const QString& db_path);
 
+    bool restoreBackup(const QString& backup_file);
+    bool createBackup(const QString& dest_file);
 
 
 signals:

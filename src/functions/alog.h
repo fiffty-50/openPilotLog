@@ -18,6 +18,8 @@
 #ifndef ALOG_H
 #define ALOG_H
 
+#include <QDebug>
+
 /* Use QTextStream to print status messages. These messages
  * are oriented towards end-users and will persist even when
  * compiling a release without enabling qDebug. As such, LOG

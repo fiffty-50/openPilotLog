@@ -38,7 +38,8 @@ private:
     Ui::BackupWidget *ui;
 
     QStandardItemModel *model;
-    QStandardItem *selected;
+    QStandardItem *selectedBackupName = nullptr;  // The QStandardItemModel returns QStandardItem
+                                                  // even for single cells
 
     void fillTableWithSampleData();
 };

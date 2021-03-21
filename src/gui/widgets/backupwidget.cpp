@@ -34,6 +34,9 @@ BackupWidget::BackupWidget(QWidget *parent) :
      */
 
 
+    model = new QStandardItemModel(this);
+    model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
+                                                 "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
     fillTableWithSampleData();
 }
 
@@ -43,28 +46,66 @@ BackupWidget::~BackupWidget()
 }
 
 
-void BackupWidget::on_tableView_clicked(const QModelIndex &index) {
-    selected = model->item(index.row(), 0);
-    DEB << "Item at row:" << index.row() << "->" << selected->data(Qt::DisplayRole);
+void BackupWidget::on_tableView_clicked(const QModelIndex &index)
+{
+    selectedBackupName = model->item(index.row(), 0);
+    DEB << "Item at row:" << index.row() << "->" << selectedBackupName->data(Qt::DisplayRole);
 }
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
-    // Copy database to backupdir
+    NOT_IMPLEMENTED
+    QString filename = QFileDialog::getSaveFileName(
+                this,
+                "Choose destination file",
+                AStandardPaths::directory(AStandardPaths::Backup).absolutePath(),
+                "*.db"
+    );
+
+    if(filename.endsWith(".db") == false) {  // [G]: clunky im sure it can be enforced by QFileDialog
+        filename.append(".db");
+    }
+
+    if(aDB->createBackup(filename) == false) {
+        WARN << "Could not create local file:" << filename;
+    }
+
+    // [G] TODO: propably make a function out of this for future tweaks
+    QFileIconProvider provider;
+    QMap<QString, QString> summary = aDB->databaseSummary(filename);
+    model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename).baseName()),
+                      new QStandardItem(summary["total_flights"]),
+                      new QStandardItem(summary["total_tails"]),
+                      new QStandardItem(summary["total_pilots"]),
+                      new QStandardItem(summary["max_doft"]),
+                      new QStandardItem(summary["total_time"])
+                     });
 }
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
-    // Restore the selected entry from the list
+    if(selectedBackupName == nullptr) {
+        INFO << "No backup selected";
+        return;
+    }
+    QString backup_name = selectedBackupName->data(Qt::DisplayRole).toString();
+    if(aDB->restoreBackup(backup_name) == false) {
+        WARN << "Couldnt restore" << backup_name;
+    }
 }
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    DEB << "deleting:" << selected->data(Qt::DisplayRole);
+    if(selectedBackupName == nullptr) {
+        INFO << "No backup was selected";
+        return;
+    }
+    DEB << "deleting:" << selectedBackupName->data(Qt::DisplayRole);
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
 {
+    NOT_IMPLEMENTED
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose destination file",
@@ -78,6 +119,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
 
 void BackupWidget::on_restoreExternalPushButton_clicked()
 {
+    NOT_IMPLEMENTED
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose backup file",
@@ -106,42 +148,28 @@ void BackupWidget::fillTableWithSampleData()
     // First column in table, would be created by listing the files in backupdir
     QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
     QStringList entries = backup_dir.entryList(QStringList{"*.db"}, QDir::Files, QDir::Time);
-    QList<QStandardItem*> filenames;
     QFileIconProvider provider;
-
-    for(auto& entry : entries) {
-        auto item = new QStandardItem(entry);
-        item->setIcon(provider.icon(QFileIconProvider::File));
-        filenames.append(item);
-    }
 
     // [G]: works but a bit too hardcoded perhaps? The aviation industry wont change overnight
     // but still it could be worthwile to at least have the names a bit more encapsulated in the
     // database so we have them more "centralised" at least.
 
     // Get summary of each db file and populate lists (columns) of data
-    QList<QStandardItem *> total_flights, total_tails, total_pilots, max_doft, total_time;
     for (const auto &entry : entries) {
         QMap<QString, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
-        total_flights.append(new QStandardItem(summary["total_flights"]));
-        total_tails.append(new QStandardItem(summary["total_tails"]));
-        total_pilots.append(new QStandardItem(summary["total_pilots"]));
-        max_doft.append(new QStandardItem(summary["max_doft"]));
-        total_time.append(new QStandardItem(summary["total_time"]));
+
+        model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), entry),
+                          new QStandardItem(summary["total_flights"]),
+                          new QStandardItem(summary["total_tails"]),
+                          new QStandardItem(summary["total_pilots"]),
+                          new QStandardItem(summary["max_doft"]),
+                          new QStandardItem(summary["total_time"])
+                         });
     }
 
     // [G]: Sort entries? based on what? the files are abit inconsistent in their naming atm
     // but i assume we could sort based on the time in the file name?
 
-    model = new QStandardItemModel(this);
-    model->insertColumn(0, filenames);
-    model->insertColumn(1, total_flights);  // flight
-    model->insertColumn(2, total_tails);  // tails
-    model->insertColumn(3, total_pilots);  // pilots
-    model->insertColumn(4, max_doft);  // doft
-    model->insertColumn(5, total_time);  // time
-    model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
-                                                 "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
 }
