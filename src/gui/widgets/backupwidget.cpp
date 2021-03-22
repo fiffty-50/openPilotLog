@@ -48,25 +48,23 @@ BackupWidget::~BackupWidget()
 
 void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 {
-    selectedBackupName = model->item(index.row(), 0);
-    DEB << "Item at row:" << index.row() << "->" << selectedBackupName->data(Qt::DisplayRole);
+    selectedFileInfo = static_cast<AFileStandardItem*>(model->item(index.row(), 0));
+    DEB << "Item at row:" << index.row() << "->" << selectedFileInfo->data(Qt::DisplayRole);
 }
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
-    QString filename = QFileDialog::getSaveFileName(
-                this,
-                "Choose destination file",
-                AStandardPaths::directory(AStandardPaths::Backup).absolutePath(),
-                "*.db"
-    );
+    QString filename = AStandardPaths::asChildOfDir(AStandardPaths::Backup, "backup");
 
-    if(filename.endsWith(".db") == false) {  // [G]: clunky im sure it can be enforced by QFileDialog
+    DEB << filename;
+
+    if(filename.endsWith(".db") == false) {  // [G] TODO: get function that generates the name automatically
         filename.append(".db");
     }
 
     if(aDB->createBackup(filename) == false) {
         WARN << "Could not create local file:" << filename;
+        return;
     }
 
     // [G] TODO: propably make a function out of this for future tweaks
@@ -83,12 +81,17 @@ void BackupWidget::on_createLocalPushButton_clicked()
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
-    NOT_IMPLEMENTED
-    if(selectedBackupName == nullptr) {
+    NOT_IMPLEMENTED("TODO");
+
+    if(selectedFileInfo == nullptr) {
         INFO << "No backup selected";
         return;
     }
-    QString backup_name = selectedBackupName->data(Qt::DisplayRole).toString();
+
+    QString backup_name = AStandardPaths::asChildOfDir(
+                AStandardPaths::Backup,
+                selectedFileInfo->data(Qt::DisplayRole).toString()
+                );
     if(aDB->restoreBackup(backup_name) == false) {
         WARN << "Couldnt restore" << backup_name;
     }
@@ -96,21 +99,36 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    NOT_IMPLEMENTED
-    if(selectedBackupName == nullptr) {
+    NOT_IMPLEMENTED("Test external deletion");
+    if(selectedFileInfo == nullptr) {
         INFO << "No backup was selected";
         return;
     }
-    DEB << "deleting:" << selectedBackupName->data(Qt::DisplayRole);
+
+    const QFileInfo& filename = selectedFileInfo->info();
+    QFile file(filename.absoluteFilePath());
+
+    if(file.exists() == false) {
+        WARN << "Selected backup file doesnt exist:" << file;
+        return;
+    }
+
+    DEB << "deleting:" << filename;
+    if(file.remove() == false) {
+        WARN << "Unable to remove file:" << file.errorString();
+        return;
+    }
+
+    model->removeRow(selectedFileInfo->row());
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
 {
-    NOT_IMPLEMENTED
+    NOT_IMPLEMENTED("TODO");
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose destination file",
-                AStandardPaths::directory(AStandardPaths::Backup).absolutePath(),
+                QStandardPaths::displayName(QStandardPaths::HomeLocation),
                 ".db"
     );
     // [G]: The window isn resizable and i cant easily debug the buttons (cant find them xD)
@@ -120,7 +138,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
 
 void BackupWidget::on_restoreExternalPushButton_clicked()
 {
-    NOT_IMPLEMENTED
+    NOT_IMPLEMENTED("TODO");
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose backup file",
@@ -158,8 +176,8 @@ void BackupWidget::fillTableWithSampleData()
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
         QMap<QString, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
-
-        model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), entry),
+//        model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), entry),
+        model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup),
                           new QStandardItem(summary["total_flights"]),
                           new QStandardItem(summary["total_tails"]),
                           new QStandardItem(summary["total_pilots"]),

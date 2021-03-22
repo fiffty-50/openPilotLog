@@ -29,7 +29,8 @@
 #define INFO qInfo() << "info:"
 #define WARN qWarning() << "warning:"
 #define CRIT qCritical() << "critical:"
-#define NOT_IMPLEMENTED qCritical() << FUNC_IDENT << "\n\t" << "~~ NOT IMPLEMENTED ~~";
+//#define NOT_IMPLEMENTED qCritical() << FUNC_IDENT << "\n\t" << "~~ NOT IMPLEMENTED ~~";
+#define NOT_IMPLEMENTED(msg) qCritical() << FUNC_IDENT << "\n\tNOT IMPLEMENTED:" << msg
 
 /*!
  * Representation macro for custom classes.

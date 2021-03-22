@@ -728,8 +728,7 @@ bool ADatabase::createBackup(const QString& dest_file)
     DEB << "File:" << file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
 
     if (!file.copy(dest_file)) {
-        WARN << "Unable to backup old database.";
-        DEB << file.errorString();
+        WARN << "Unable to backup old database:" << file.errorString();
         return false;
     }
 
@@ -751,8 +750,6 @@ bool ADatabase::restoreBackup(const QString& backup_file)
     QFile backup(backup_file);
     QFile current_db(databaseFile.absoluteFilePath());
 
-    // [G]: Wrong permissions would end up making a inf loop
-    // So i go defensively by checking first
     if(backup.isWritable() == false || current_db.isWritable() == false) {
         WARN << backup << "is not writtable check PERMISSIONS";
         return false;

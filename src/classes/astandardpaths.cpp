@@ -40,6 +40,11 @@ const QDir& AStandardPaths::directory(Directories location)
     return directories[location];
 }
 
+const QString AStandardPaths::asChildOfDir(Directories location, const QString &filename)
+{
+    return directories[location].absoluteFilePath(filename);
+}
+
 const QMap<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
 {
     return directories;

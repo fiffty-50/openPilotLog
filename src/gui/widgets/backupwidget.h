@@ -1,6 +1,8 @@
 #ifndef BACKUPWIDGET_H
 #define BACKUPWIDGET_H
 
+#include "src/classes/astandardpaths.h"
+
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QFileSystemModel>
@@ -10,6 +12,28 @@
 namespace Ui {
 class BackupWidget;
 }
+
+/*!
+ * \brief Simple QStandardItem subclass to encapsulate necessary file info.
+ * Using only a QStandardItem would mean that the full path should be inputted
+ * as data and of course displayed by default. However this way we create
+ * the absolute path in the fileInfo attribute for further use while
+ * displaying only the base name.
+ */
+class AFileStandardItem : public QStandardItem {
+private:
+    QFileInfo fileInfo;
+public:
+    AFileStandardItem(const QIcon& icon, const QString& filename, const AStandardPaths::Directories dir)
+        : QStandardItem(icon, filename),
+          fileInfo(QFileInfo(AStandardPaths::asChildOfDir(dir, filename)))
+    {}
+
+    const QFileInfo& info() const
+    {
+        return fileInfo;
+    }
+};
 
 class BackupWidget : public QWidget
 {
@@ -38,9 +62,9 @@ private:
     Ui::BackupWidget *ui;
 
     QStandardItemModel *model;
-    QStandardItem *selectedBackupName = nullptr;  // The QStandardItemModel returns QStandardItem
-                                                  // even for single cells
-
+    AFileStandardItem *selectedFileInfo = nullptr;  // Only the first column is necessary for
+                                                    // any operation and it is encapsulated in the
+                                                    // AFileStandardItem class
     void fillTableWithSampleData();
 };
 
