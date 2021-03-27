@@ -126,6 +126,9 @@ void MainWindow::connectWidgets()
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
+
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     logbookWidget,   &LogbookWidget::repopulateModel);
 }
 
 /*

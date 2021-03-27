@@ -285,3 +285,13 @@ void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
         return;
     }
 }
+
+void LogbookWidget::repopulateModel()
+{
+    // unset the current model and delete it to avoid leak
+    view->setModel(nullptr);
+    delete displayModel;
+    // create a new model and populate it
+    displayModel = new QSqlTableModel(this);
+    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+}

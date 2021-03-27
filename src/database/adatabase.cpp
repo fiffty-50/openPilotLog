@@ -734,6 +734,7 @@ bool ADatabase::createBackup(const QString& dest_file)
 
     INFO << "Backed up old database as:" << dest_file;
     ADatabase::connect();
+    emit connectionReset();
     return true;
 }
 
@@ -768,5 +769,7 @@ bool ADatabase::restoreBackup(const QString& backup_file)
 
     INFO << "Backup successfully restored!";
     ADatabase::connect();
+    emit connectionReset();
     return true;
 }
+

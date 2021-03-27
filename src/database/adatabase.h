@@ -299,6 +299,11 @@ signals:
      * the user interface so that a user is always presented with up-to-date information.
      */
     void dataBaseUpdated();
+    /*!
+     * \brief connectionReset is emitted whenever the database connection is reset, for
+     * example when creating or restoring a backup.
+     */
+    void connectionReset();
 };
 
 #endif // ADATABASE_H
