@@ -68,6 +68,17 @@ enum class ADatabaseTarget
     tails
 };
 
+/*!
+ * \brief Enumerates the QMap keys used when summarising a database
+ */
+enum class ADatabaseSummaryKey {
+    total_flights,
+    total_tails,
+    total_pilots,
+    max_doft,
+    total_time,
+};
+
 // [G]: This is how we should handle custom "events" in the program.
 // In this case a custom error doesnt need to be built from scratch.
 // Find the type of error you want and extend it with a few tweaks.
@@ -285,7 +296,7 @@ public:
      * and ADD DOCUMENTATION, theres some specific sql stuff going on.
      * \return
      */
-    QMap<QString, QString> databaseSummary(const QString& db_path);
+    QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
 
     bool restoreBackup(const QString& backup_file);
     bool createBackup(const QString& dest_file);

@@ -655,11 +655,11 @@ QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
     }
 }
 
-QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
+QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_path)
 {
     // List layout: {"# Flights", "# Aircraft", "# Pilots", "ISODate last flight", "Total Time hh:mm"}
     const QString connection_name = QStringLiteral("summary_connection");
-    QMap<QString, QString> return_values;
+    QMap<ADatabaseSummaryKey, QString> return_values;
     { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
         DEB << "Adding temporary connection to database:" << db_path;
         QSqlDatabase temp_database = QSqlDatabase::addDatabase(SQLITE_DRIVER, connection_name); // Don't use default connection
@@ -668,16 +668,17 @@ QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
             return {};
 
         QSqlQuery query(temp_database);
-        QString key;  // Used among the queries for verbosity... and sanity
+        ADatabaseSummaryKey key;  // Used among the queries for verbosity... and sanity
 
-        const QStringList table_list = QStringList {
-                QStringLiteral("flights"),
-                QStringLiteral("tails"),
-                QStringLiteral("pilots")};
-        for (const auto & table : table_list) {
-            query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + table);
-            key = QStringLiteral("total_") + table;
+        const QVector<QPair<ADatabaseSummaryKey, QString>> key_table_pairs = {
+                {ADatabaseSummaryKey::total_flights, QStringLiteral("flights")},
+                {ADatabaseSummaryKey::total_tails, QStringLiteral("tails")},
+                {ADatabaseSummaryKey::total_pilots, QStringLiteral("pilots")}
+    };
+        for (const auto & pair : key_table_pairs) {
+            query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + pair.second);
             query.exec();
+            key = pair.first;
             if (query.first()){
                 return_values[key] = query.value(0).toString();
             }
@@ -687,8 +688,8 @@ QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
         }
 
         query.prepare(QStringLiteral("SELECT MAX(doft) FROM flights"));
-        key = QStringLiteral("max_doft");
         query.exec();
+        key = ADatabaseSummaryKey::max_doft;
         if (query.first()){
             return_values[key] = query.value(0).toString();
         }
@@ -700,7 +701,7 @@ QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
                                      "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)"
                                      "||':'||"
                                      "printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) FROM flights"));
-        key = QStringLiteral("total_time");
+        key = ADatabaseSummaryKey::total_time;
         query.exec();
         if (query.first()){
             return_values[key] = query.value(0).toString();
@@ -711,7 +712,7 @@ QMap<QString, QString> ADatabase::databaseSummary(const QString &db_path)
     }
 
     QSqlDatabase::removeDatabase(connection_name); // cleanly removes temp connection without leaks since query+db are out of scope
-    DEB << return_values;
+//    DEB << return_values;  // [G]: ADatabaseSummaryKeys cant print
 
     return return_values;
 }

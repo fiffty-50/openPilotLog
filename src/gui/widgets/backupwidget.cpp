@@ -3,6 +3,7 @@
 #include "src/classes/astandardpaths.h"
 #include "src/testing/adebug.h"
 #include "src/database/adatabase.h"
+#include "src/functions/adatetime.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -37,7 +38,7 @@ BackupWidget::BackupWidget(QWidget *parent) :
     model = new QStandardItemModel(this);
     model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
                                                  "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
-    fillTableWithSampleData();
+    refresh();
 }
 
 BackupWidget::~BackupWidget()
@@ -45,6 +46,13 @@ BackupWidget::~BackupWidget()
     delete ui;
 }
 
+QString BackupWidget::absoluteBackupPath()
+{
+    const QString backup_name = QLatin1String("logbook_backup_")
+            + ADateTime::toString(QDateTime::currentDateTime(), Opl::Datetime::Backup)
+            + QLatin1String(".db");
+    return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
+}
 
 void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 {
@@ -54,28 +62,23 @@ void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
-    QString filename = AStandardPaths::asChildOfDir(AStandardPaths::Backup, "backup");
-
+    QString filename = absoluteBackupPath();
     DEB << filename;
 
-    if(filename.endsWith(".db") == false) {  // [G] TODO: get function that generates the name automatically
-        filename.append(".db");
-    }
-
-    if(aDB->createBackup(filename) == false) {
+    if(!aDB->createBackup(filename)) {
         WARN << "Could not create local file:" << filename;
         return;
     }
 
     // [G] TODO: propably make a function out of this for future tweaks
     QFileIconProvider provider;
-    QMap<QString, QString> summary = aDB->databaseSummary(filename);
-    model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename).baseName()),
-                      new QStandardItem(summary["total_flights"]),
-                      new QStandardItem(summary["total_tails"]),
-                      new QStandardItem(summary["total_pilots"]),
-                      new QStandardItem(summary["max_doft"]),
-                      new QStandardItem(summary["total_time"])
+    QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
+    model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                      });
 }
 
@@ -92,7 +95,8 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
                 AStandardPaths::Backup,
                 selectedFileInfo->data(Qt::DisplayRole).toString()
                 );
-    if(aDB->restoreBackup(backup_name) == false) {
+
+    if(!aDB->restoreBackup(backup_name)) {
         WARN << "Couldnt restore" << backup_name;
     }
 }
@@ -120,6 +124,13 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     }
 
     model->removeRow(selectedFileInfo->row());
+    // [G] TODO: figure out selection coordination between view model and selected
+    if(selectedFileInfo->row() - 1 < 0) {
+        selectedFileInfo = nullptr;
+    }
+    else {
+        selectedFileInfo = static_cast<AFileStandardItem*>(model->item(selectedFileInfo->row()-1));
+    }
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
@@ -132,7 +143,6 @@ void BackupWidget::on_createExternalPushButton_clicked()
                 ".db"
     );
     // [G]: The window isn resizable and i cant easily debug the buttons (cant find them xD)
-    // [G] TODO: get time to properly format filename
     // Open something like a QFileDialog and let the user choose where to save the backup
 }
 
@@ -151,7 +161,6 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
 }
 
 void BackupWidget::on_aboutPushButton_clicked() {
-    // Shows a message box explaining a little about local and external backups
     // [G]: Add message text. Could this be predefined in Opl::Assets?
     QMessageBox msg_box(QMessageBox::Information, "About backups", "...", QMessageBox::Ok);
     msg_box.exec();
@@ -162,7 +171,7 @@ void BackupWidget::on_aboutPushButton_clicked() {
 // ===================================================================================
 
 // feel free to delete this as you go along, just here for demonstration purposes
-void BackupWidget::fillTableWithSampleData()
+void BackupWidget::refresh()
 {
     // First column in table, would be created by listing the files in backupdir
     QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
@@ -175,14 +184,13 @@ void BackupWidget::fillTableWithSampleData()
 
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
-        QMap<QString, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
-//        model->appendRow({new QStandardItem(provider.icon(QFileIconProvider::File), entry),
+        QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
         model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup),
-                          new QStandardItem(summary["total_flights"]),
-                          new QStandardItem(summary["total_tails"]),
-                          new QStandardItem(summary["total_pilots"]),
-                          new QStandardItem(summary["max_doft"]),
-                          new QStandardItem(summary["total_time"])
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                          });
     }
 

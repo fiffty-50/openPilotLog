@@ -28,6 +28,11 @@ public:
         : QStandardItem(icon, filename),
           fileInfo(QFileInfo(AStandardPaths::asChildOfDir(dir, filename)))
     {}
+    AFileStandardItem(const QIcon& icon, const QFileInfo file_info)
+        : QStandardItem(icon, file_info.baseName()),
+          fileInfo(QFileInfo(file_info))
+    {}
+
 
     const QFileInfo& info() const
     {
@@ -42,6 +47,11 @@ class BackupWidget : public QWidget
 public:
     explicit BackupWidget(QWidget *parent = nullptr);
     ~BackupWidget();
+
+    /*!
+     * \brief Generates the absolute path for a new backup file.
+     */
+    QString absoluteBackupPath();
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
@@ -65,7 +75,7 @@ private:
     AFileStandardItem *selectedFileInfo = nullptr;  // Only the first column is necessary for
                                                     // any operation and it is encapsulated in the
                                                     // AFileStandardItem class
-    void fillTableWithSampleData();
+    void refresh();
 };
 
 #endif // BACKUPWIDGET_H
