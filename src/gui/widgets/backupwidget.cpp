@@ -80,6 +80,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
                       new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                      });
+    model->sort(0);
 }
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
