@@ -752,11 +752,6 @@ bool ADatabase::restoreBackup(const QString& backup_file)
     QFile backup(backup_file);
     QFile current_db(databaseFile.absoluteFilePath());
 
-    if(backup.isWritable() == false || current_db.isWritable() == false) {
-        WARN << backup << "is not writtable check PERMISSIONS";
-        return false;
-    }
-
     if (!current_db.remove(databaseFile.absoluteFilePath())) {
         WARN << current_db.errorString() << "Unable to delete current db file";
         return false;
