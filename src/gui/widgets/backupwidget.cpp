@@ -113,13 +113,13 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     const QFileInfo& filename = selectedFileInfo->info();
     QFile file(filename.absoluteFilePath());
 
-    if(file.exists() == false) {
+    if(!file.exists()) {
         WARN << "Selected backup file doesnt exist:" << file;
         return;
     }
 
     DEB << "deleting:" << filename;
-    if(file.remove() == false) {
+    if(!file.remove()) {
         WARN << "Unable to remove file:" << file.errorString();
         return;
     }
@@ -140,11 +140,33 @@ void BackupWidget::on_createExternalPushButton_clicked()
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 "Choose destination file",
-                QStandardPaths::displayName(QStandardPaths::HomeLocation),
-                ".db"
+                // [G]: Is this necessary?
+                QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absoluteFilePath("untitled.db"),
+                "*.db"
     );
+
+    if(!filename.endsWith(".db")) {
+        filename.append(".db");
+    }
+
+    if(!aDB->createBackup(filename)) {
+        DEB << "Unable to backup file:" << filename;
+        return;
+    }
+
+    // [G] TODO: propably make a function out of this for future tweaks
+    QFileIconProvider provider;
+    QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
+    model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+                     });
+    model->sort(0);
+
     // [G]: The window isn resizable and i cant easily debug the buttons (cant find them xD)
-    // Open something like a QFileDialog and let the user choose where to save the backup
 }
 
 void BackupWidget::on_restoreExternalPushButton_clicked()

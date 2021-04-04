@@ -725,11 +725,16 @@ bool ADatabase::createBackup(const QString& dest_file)
 {
     INFO << "Backing up current database to: " << dest_file;
     ADatabase::disconnect();
-    QFile file(databaseFile.absoluteFilePath());
-    DEB << "File:" << file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
+    QFile db_file(databaseFile.absoluteFilePath());
+    DEB << "File to Overwrite:" << db_file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
 
-    if (!file.copy(dest_file)) {
-        WARN << "Unable to backup old database:" << file.errorString();
+//    if(!db_file.remove()) {
+//        DEB << "Unable to delete file:" << db_file;
+//        return false;
+//    }
+
+    if (!db_file.copy(dest_file)) {
+        WARN << "Unable to backup old database:" << db_file.errorString();
         return false;
     }
 
