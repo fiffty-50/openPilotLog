@@ -111,7 +111,7 @@ bool ADatabase::connect()
     if (!db.open())
         return false;
 
-    LOG << "Database connection established.\n";
+    LOG << "Database connection established.";
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
@@ -123,7 +123,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    LOG << "Database connection closed.\n";
+    LOG << "Database connection closed.";
 }
 
 QSqlDatabase ADatabase::database()

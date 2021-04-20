@@ -18,27 +18,9 @@ BackupWidget::BackupWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /* This is just a quick and dirty overview to get something into the view so you have an idea.
-     * The goal is that the view does not just display file names, but a String, for example
-     *
-     * Available Backups
-     * =================
-     * 2020-01-01 - 476 Flights, 23 Aircraft, 12 Pilots, 1580:33 Total Time, Last Flight 2019-12-28
-     * 2020-02-02 - 512 Flights, 25 Aircraft, 13 Pilots, 1640:47 Total Time, Last Flight 2020-01-23
-     * ...
-     *
-     * So instead of QFileSystemModel with QListView, which would be the easiest way, using QAbstractItemModel
-     * and QTableView might be preferable since it allows us to customize the data we display.
-     *
-     * Below is just some sample code to fill the table with data to give you an impression of what
-     * the end result is supposed to be like. If you have another idea of how to get there, that's fine as well!
-     *
-     */
-
-
     model = new QStandardItemModel(this);
-    model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
-                                                 "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
+    model->setHorizontalHeaderLabels(QStringList{tr("Backup File"),tr("Flights"), tr("Aircraft"),
+                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?
     view = ui->tableView;
     refresh();
 }
@@ -101,17 +83,15 @@ void BackupWidget::on_createLocalPushButton_clicked()
         return;
     }
 
-    // [G] TODO: propably make a function out of this for future tweaks
     QFileIconProvider provider;
     QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
-    model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+    model->insertRow(0, {new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
                       new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                      });
-    model->sort(0);
 }
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
@@ -126,9 +106,24 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
                 selectedFileInfo->data(Qt::DisplayRole).toString()
                 );
 
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Warning);
+    confirm.setWindowTitle(tr("Restoring Backup"));
+    confirm.setText(tr("The following backup will be restored:<br><br><b><tt>"
+                       "%1</b></tt><br><br>"
+                       "This will replace your currently active database with the backup.<br>This action is irreversible.<br><br>Are you sure?"
+                       ).arg(selectedFileInfo->info().fileName()));
+    if (confirm.exec() == QMessageBox::No)
+        return;
+
     if(!aDB->restoreBackup(backup_name)) {
         WARN(tr("Couldnt restore Backup: %1").arg(backup_name));
     }
+
+    view->clearSelection();
+    selectedFileInfo = nullptr;
 }
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
@@ -147,7 +142,19 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
         return;
     }
 
-    DEB << "deleting:" << filename;
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Delete Backup"));
+    confirm.setText(tr("The following backup will be deleted:<br><br><b><tt>"
+                       "%1</b></tt><br><br>"
+                       "Are you sure?"
+                       ).arg(filename.fileName()));
+    if (confirm.exec() == QMessageBox::No)
+        return;
+
+    LOG << "Deleting backup:" << filename;
     if(!file.remove()) {
         WARN(tr("Unable to remove file %1\nError: %2").arg(filename.fileName(),file.errorString()));
         return;
@@ -204,9 +211,27 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     }
 }
 
-void BackupWidget::on_aboutPushButton_clicked() {
-    // [G]: Add message text. Could this be predefined in Opl::Assets?
-    QMessageBox msg_box(QMessageBox::Information, "About backups", "...", QMessageBox::Ok);
+void BackupWidget::on_aboutPushButton_clicked()
+{
+    TODO << "Implement settings and automatic backups";
+    QString text = tr(
+
+                      "<h3><center>About Backups</center></h3>"
+                      "<br>"
+                      "<p>By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your "
+                      "flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
+                      "later be restored or kept for safekeeping. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
+                      "are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting <b>Create Local backup</b> and restored with "
+                      "<b>Restore Local Backup</b>.<br>"
+                      "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. "
+                      "This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting "
+                      "it with <b>Restore external backup</b>.</p>"
+                      "<p>Frequent backups are recommended to guard against data loss or corruption. It is also recommended to keep a backup copy in a seperate location from your main "
+                      "computer to prevent data loss due to system failures.</p>"
+                      //todo "<p>By default, OpenPilotLog creates a weekly automatic backup. If you would like to change this behaviour, you can adjust it in the settings.</p>"
+                      "<br>"
+                      );
+    QMessageBox msg_box(QMessageBox::Information, "About backups", text, QMessageBox::Ok, this);
     msg_box.exec();
 }
 

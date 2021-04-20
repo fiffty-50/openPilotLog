@@ -88,7 +88,7 @@ void AStyle::resetStyle()
 void AStyle::setStyle(const QString &style_key)
 {
     resetStyle();
-    LOG << "Setting style:\t" << style_key << "\n";
+    LOG << "Setting style:\t" << style_key;
     QApplication::setStyle(QStyleFactory::create(style_key));
     currentStyle = style_key;
 }
@@ -96,7 +96,7 @@ void AStyle::setStyle(const QString &style_key)
 void AStyle::setStyle(const StyleSheet &style_sheet)
 {
     resetStyle();
-    LOG << "Setting stylesheet:\t" << style_sheet.styleSheetName << "\n";
+    LOG << "Setting stylesheet:\t" << style_sheet.styleSheetName;
     qApp->setStyleSheet(read_stylesheet(style_sheet.fileName));
     currentStyle = style_sheet.styleSheetName;
 }

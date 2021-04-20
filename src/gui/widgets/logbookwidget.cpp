@@ -164,7 +164,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             flights_list_string.append(QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
 
-        QMessageBox confirm;
+        QMessageBox confirm(this);
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
         confirm.setIcon(QMessageBox::Question);

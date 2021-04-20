@@ -1,9 +1,26 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "alog.h"
 #include <QMessageBox>
 
 namespace ALog {
 
-static bool logDebug = false;
+static bool logDebug = false; // Debug doesn't log to file by default
 
 /*!
  * \brief setLogFileName sets a log file name ("Log_<Date>_<Time>.txt")
@@ -71,9 +88,7 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
     //check file size and if needed create new log!
     {
         QFile outFileCheck(logFileName);
-        int size = outFileCheck.size();
-
-        if (size > sizeOfLogs) {
+        if (outFileCheck.size() > sizeOfLogs) {
             deleteOldLogs();
             setLogFileName();
         }
@@ -91,7 +106,7 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
             break;
         case QtInfoMsg:
             log_stream << timeNow() << INFO_HEADER << msg.chopped(2) << "\t\t" << function << endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
             break;
         case QtWarningMsg:
             log_stream << timeNow() << WARN_HEADER << msg.chopped(2) << "\t\t" << endl;
