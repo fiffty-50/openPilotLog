@@ -17,7 +17,7 @@
  */
 #include "homewidget.h"
 #include "ui_homewidget.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"

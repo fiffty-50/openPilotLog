@@ -17,7 +17,7 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/astyle.h"
 

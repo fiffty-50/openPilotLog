@@ -21,7 +21,7 @@
 #include <QtCore>
 #include <QTime>
 #include "src/oplconstants.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 namespace ATime {
 

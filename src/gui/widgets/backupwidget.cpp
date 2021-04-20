@@ -1,7 +1,7 @@
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
 #include "src/classes/astandardpaths.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/functions/adatetime.h"
 
@@ -132,7 +132,7 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    NOT_IMPLEMENTED("Test external deletion");
+    TODO << "Test external deletion";
     if(selectedFileInfo == nullptr) {
         INFO << "No backup was selected";
         return;

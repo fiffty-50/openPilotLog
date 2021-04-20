@@ -22,7 +22,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
 const QMap<int, QString> FILTER_MAP = {

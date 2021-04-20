@@ -35,7 +35,7 @@
 
 #include "src/testing/abenchmark.h"
 #include "src/testing/atimer.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 namespace Ui {
 class DebugWidget;

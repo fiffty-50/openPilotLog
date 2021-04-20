@@ -1,6 +1,7 @@
 #ifndef ADEBUG_H
 #define ADEBUG_H
 
+/*
 #include <QDebug>
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -31,7 +32,7 @@
 #define CRIT qCritical() << "critical:"
 //#define NOT_IMPLEMENTED qCritical() << FUNC_IDENT << "\n\t" << "~~ NOT IMPLEMENTED ~~";
 #define NOT_IMPLEMENTED(msg) qCritical() << FUNC_IDENT << "\n\tNOT IMPLEMENTED:" << msg
-
+*/
 /*!
  * Representation macro for custom classes.
  *

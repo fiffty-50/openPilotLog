@@ -17,7 +17,7 @@
  */
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/database/adatabasesetup.h"
 #include "src/classes/apilotentry.h"

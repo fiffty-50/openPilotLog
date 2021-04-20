@@ -25,7 +25,7 @@
 #include <QStyleFactory>
 #include <QApplication>
 #include <QFont>
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/classes/asettings.h"
 #include "src/functions/alog.h"
 

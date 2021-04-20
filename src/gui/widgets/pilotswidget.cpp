@@ -17,7 +17,7 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
 

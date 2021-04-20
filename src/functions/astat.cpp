@@ -17,7 +17,7 @@
  */
 #include "astat.h"
 #include "src/database/adatabase.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 /*!
  * \brief AStat::totalTime Looks up Total Blocktime in the flights database

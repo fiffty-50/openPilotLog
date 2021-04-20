@@ -19,7 +19,7 @@
 #define ABENCHMARK_H
 
 #include <QObject>
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 /*!
  * \brief The ABenchmark class provides quick access to benchmarking two functions for

@@ -17,7 +17,7 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/oplconstants.h"
 
 static const auto REG_VALID = QPair<QString, QRegularExpression> {

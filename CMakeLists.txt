@@ -36,6 +36,7 @@ set(PROJECT_SOURCES
     src/database/adatabase.cpp
     src/database/adatabasesetup.cpp
     src/functions/acalc.cpp
+    src/functions/alog.cpp
     src/functions/areadcsv.cpp
     src/functions/astat.cpp
     src/gui/dialogues/firstrundialog.cpp

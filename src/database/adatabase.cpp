@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabase.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/classes/astandardpaths.h"
 #include "src/oplconstants.h"
 #include "src/functions/alog.h"
