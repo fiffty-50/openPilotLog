@@ -753,21 +753,27 @@ bool ADatabase::restoreBackup(const QString& backup_file)
 {
     INFO << "Restoring backup from file:" << backup_file;
 
+    QString default_loc = databaseFile.absoluteFilePath();
+
     ADatabase::disconnect();
     QFile backup(backup_file);
-    QFile current_db(databaseFile.absoluteFilePath());
+    QFile current_db(default_loc);
 
-    if (!current_db.remove(databaseFile.absoluteFilePath())) {
-        WARN << current_db.errorString() << "Unable to delete current db file";
+    if (!current_db.rename(default_loc + QLatin1String(".tmp"))) { // move previously used db out of the way
+        WARN << current_db.errorString() << "Unable to remove current db file";
         return false;
     }
 
-    if (!backup.copy(databaseFile.absoluteFilePath()))
+    if (!backup.copy(default_loc))
     {
         WARN << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        // try to restore previously used db
+        current_db.rename(default_loc);
         return false;
     }
 
+    // backup has been restored, clean up the previously moved file
+    current_db.remove();
     INFO << "Backup successfully restored!";
     ADatabase::connect();
     emit connectionReset();

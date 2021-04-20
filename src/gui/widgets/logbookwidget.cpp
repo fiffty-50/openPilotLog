@@ -294,4 +294,5 @@ void LogbookWidget::repopulateModel()
     // create a new model and populate it
     displayModel = new QSqlTableModel(this);
     setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    connectSignalsAndSlots();
 }

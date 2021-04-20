@@ -66,6 +66,11 @@ void AircraftWidget::setupModelAndView()
     view->show();
     selection = view->selectionModel();
 
+    connectSignalsAndSlots();
+}
+
+void AircraftWidget::connectSignalsAndSlots()
+{
     QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
                      this,                              &AircraftWidget::tableView_selectionChanged);
     QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
@@ -236,4 +241,15 @@ void AircraftWidget::onDeleteUnsuccessful()
         message_box.setIcon(QMessageBox::Critical);
         message_box.exec();
     }
+}
+
+void AircraftWidget::repopulateModel()
+{
+    // unset the current model and delete it to avoid leak
+    view->setModel(nullptr);
+    delete model;
+    // create a new model and populate it
+    model = new QSqlTableModel(this);
+    setupModelAndView();
+    connectSignalsAndSlots();
 }

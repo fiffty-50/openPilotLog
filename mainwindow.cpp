@@ -129,6 +129,10 @@ void MainWindow::connectWidgets()
 
     QObject::connect(aDB,             &ADatabase::connectionReset,
                      logbookWidget,   &LogbookWidget::repopulateModel);
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     pilotsWidget,    &PilotsWidget::repopulateModel);
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     aircraftWidget,  &AircraftWidget::repopulateModel);
 }
 
 /*

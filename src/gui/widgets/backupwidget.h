@@ -48,11 +48,6 @@ public:
     explicit BackupWidget(QWidget *parent = nullptr);
     ~BackupWidget();
 
-    /*!
-     * \brief Generates the absolute path for a new backup file.
-     */
-    QString absoluteBackupPath();
-
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
 
@@ -72,10 +67,21 @@ private:
     Ui::BackupWidget *ui;
 
     QStandardItemModel *model;
+    QTableView *view;
     AFileStandardItem *selectedFileInfo = nullptr;  // Only the first column is necessary for
                                                     // any operation and it is encapsulated in the
                                                     // AFileStandardItem class
     void refresh();
+
+    /*!
+     * \brief Generates a filename for creating a backup
+     */
+    const QString backupName();
+
+    /*!
+     * \brief Generates the absolute path for a new backup file.
+     */
+    const QString absoluteBackupPath();
 };
 
 #endif // BACKUPWIDGET_H

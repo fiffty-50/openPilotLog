@@ -62,10 +62,15 @@ void PilotsWidget::setupModelAndView()
     view->show();
     selectionModel = view->selectionModel();
 
+    connectSignalsAndSlots();
+}
+
+void PilotsWidget::connectSignalsAndSlots()
+{
     QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
-                     this,                                    &PilotsWidget::tableView_selectionChanged);
+                     this,                              &PilotsWidget::tableView_selectionChanged);
     QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this,                                    &PilotsWidget::tableView_headerClicked);
+                     this,                              &PilotsWidget::tableView_headerClicked);
 }
 
 void PilotsWidget::onPilotsWidget_settingChanged(SettingsWidget::SettingSignal signal)
@@ -185,7 +190,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
  */
 void PilotsWidget::onDeleteUnsuccessful()
 {
-    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
+    const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
                                                                        ADatabaseTarget::pilots);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
@@ -219,4 +224,15 @@ void PilotsWidget::onDeleteUnsuccessful()
         message_box.setIcon(QMessageBox::Critical);
         message_box.exec();
     }
+}
+
+void PilotsWidget::repopulateModel()
+{
+    // unset the current model and delete it to avoid leak
+    view->setModel(nullptr);
+    delete model;
+    // create a new model and populate it
+    model = new QSqlTableModel(this);
+    setupModelAndView();
+    connectSignalsAndSlots();
 }
