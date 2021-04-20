@@ -57,6 +57,10 @@ public:
     static const QDir &directory(Directories location);
 
     /*!
+     * \brief Returns a string of the absolute path to directory location concatenated with filename
+     */
+    static const QString asChildOfDir(Directories location, const QString& filename);
+    /*!
      * \brief returns the static map of all standard directories
      * \return static const QMap<Directories, QDir>
      */

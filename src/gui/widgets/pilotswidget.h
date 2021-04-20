@@ -77,6 +77,11 @@ public slots:
      */
     void onPilotsWidget_databaseUpdated();
 
+    /*!
+     * \brief PilotsWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 private:
     Ui::PilotsWidget *ui;
 
@@ -91,6 +96,8 @@ private:
     QVector<qint32> selectedPilots;
 
     void setupModelAndView();
+
+    void connectSignalsAndSlots();
 
     inline void refreshView(){model->select();}
 };

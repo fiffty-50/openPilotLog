@@ -55,6 +55,11 @@ private slots:
 public slots:
     void refresh();
     void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
+    /*!
+     * \brief LogbookWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 
 private:
     Ui::LogbookWidget *ui;

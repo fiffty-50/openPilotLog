@@ -1,9 +1,15 @@
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
 #include "src/classes/astandardpaths.h"
+#include "src/testing/adebug.h"
+#include "src/database/adatabase.h"
+#include "src/functions/adatetime.h"
 
+#include <QListView>
 #include <QStandardItemModel>
 #include <QFileIconProvider>
+#include <QMessageBox>
+#include <QFileDialog>
 
 BackupWidget::BackupWidget(QWidget *parent) :
     QWidget(parent),
@@ -28,7 +34,12 @@ BackupWidget::BackupWidget(QWidget *parent) :
      *
      */
 
-    fillTableWithSampleData();
+
+    model = new QStandardItemModel(this);
+    model->setHorizontalHeaderLabels(QStringList{"Backup File","Total Flights", "Total Tails",
+                                                 "Total Pilots", "Max Doft", "Total Time"});  // [G]: TODO make const but where?
+    view = ui->tableView;
+    refresh();
 }
 
 BackupWidget::~BackupWidget()
@@ -36,90 +47,166 @@ BackupWidget::~BackupWidget()
     delete ui;
 }
 
+void BackupWidget::refresh()
+{
+    // First column in table, would be created by listing the files in backupdir
+    QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
+    const QStringList entries = backup_dir.entryList(QStringList{"*.db"}, QDir::Files, QDir::Time);
+    QFileIconProvider provider;
+
+    // Get summary of each db file and populate lists (columns) of data
+    for (const auto &entry : entries) {
+        QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
+        model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+                         });
+    }
+
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
+}
+
+const QString BackupWidget::absoluteBackupPath()
+{
+    const QString backup_name = QLatin1String("logbook_backup_")
+            + ADateTime::toString(QDateTime::currentDateTime(), Opl::Datetime::Backup)
+            + QLatin1String(".db");
+    return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
+}
+const QString BackupWidget::backupName()
+{
+    return  QLatin1String("logbook_backup_")
+            + ADateTime::toString(QDateTime::currentDateTime(), Opl::Datetime::Backup)
+            + QLatin1String(".db");
+}
+
+void BackupWidget::on_tableView_clicked(const QModelIndex &index)
+{
+    selectedFileInfo = static_cast<AFileStandardItem*>(model->item(index.row(), 0));
+    DEB << "Item at row:" << index.row() << "->" << selectedFileInfo->data(Qt::DisplayRole);
+}
 
 void BackupWidget::on_createLocalPushButton_clicked()
 {
-    // Copy database to backupdir
+    QString filename = absoluteBackupPath();
+    DEB << filename;
+
+    if(!aDB->createBackup(filename)) {
+        WARN << "Could not create local file:" << filename;
+        return;
+    }
+
+    // [G] TODO: propably make a function out of this for future tweaks
+    QFileIconProvider provider;
+    QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
+    model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+                     });
+    model->sort(0);
 }
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
-    // Restore the selected entry from the list
+    if(selectedFileInfo == nullptr) {
+        INFO << "No backup selected";
+        return;
+    }
+
+    QString backup_name = AStandardPaths::asChildOfDir(
+                AStandardPaths::Backup,
+                selectedFileInfo->data(Qt::DisplayRole).toString()
+                );
+
+    if(!aDB->restoreBackup(backup_name)) {
+        WARN << "Couldnt restore" << backup_name;
+    }
 }
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    // Remove selected backup from list and delete file.
+    NOT_IMPLEMENTED("Test external deletion");
+    if(selectedFileInfo == nullptr) {
+        INFO << "No backup was selected";
+        return;
+    }
+
+    const QFileInfo& filename = selectedFileInfo->info();
+    QFile file(filename.absoluteFilePath());
+
+    if(!file.exists()) {
+        WARN << "Selected backup file doesnt exist:" << file;
+        return;
+    }
+
+    DEB << "deleting:" << filename;
+    if(!file.remove()) {
+        WARN << "Unable to remove file:" << file.errorString();
+        return;
+    }
+
+    model->removeRow(selectedFileInfo->row());
+    view->clearSelection();
+    selectedFileInfo = nullptr;
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
 {
-    // Open something like a QFileDialog and let the user choose where to save the backup
+    QString filename = QFileDialog::getSaveFileName(
+                this,
+                "Choose destination file",
+                // [G]: Is this necessary?
+                //QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absoluteFilePath("untitled.db"),
+                QDir::homePath() + QDir::separator() + backupName(),
+                "*.db"
+    );
+
+    if(filename.isEmpty()) { // QFileDialog has been cancelled
+        return;
+    }
+
+    if(!filename.endsWith(".db")) {
+        filename.append(".db");
+    }
+
+    if(!aDB->createBackup(filename)) {
+        DEB << "Unable to backup file:" << filename;
+        return;
+    }
 }
 
 void BackupWidget::on_restoreExternalPushButton_clicked()
 {
-    // Open something like a QFileDialog and let the user choose where to load the backup from
-}
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                tr("Choose backup file"),
+                QDir::homePath(),
+                "*.db"
+    );
 
-void BackupWidget::on_aboutPushButton_clicked()
-{
-    // Shows a message box explaining a little about local and external backups
-}
-
-
-
-// ===================================================================================
-
-// feel free to delete this as you go along, just here for demonstration purposes
-void BackupWidget::fillTableWithSampleData()
-{
-    // First column in table, would be created by listing the files in backupdir
-    QList<QStandardItem *> filenames{
-    };
-    QStringList filenames_string_list {
-        "logbook_bak_2021_02_12_T_22_03.db",
-        "logbook_bak_2021_01_15_T_18_32.db",
-        "logbook_bak_2020_12_23_T_14_27.db",
-        "logbook_bak_2020_11_21_T_23_43.db",
-        "logbook_bak_2020_10_30_T_17_55.db",
-    };
-    QFileIconProvider provider;
-    for (const auto &string : filenames_string_list) {
-        auto item = new QStandardItem(string);
-        item->setIcon(provider.icon(QFileIconProvider::File));
-        filenames.append(item);
+    if(filename.isEmpty()) { // QFileDialog has been cancelled
+        return;
     }
 
-    // Second column, would be created by reading the details from each file and creating the description string
-    QList<QStandardItem *> descriptions{
-    };
-    QStringList descriptions_string_list {
-        "2020-02-12 - 512 Flights, 25 Aircraft, 44 Pilots, 1640:47 Total Time, Last Flight 2020-01-23",
-        "2020-01-15 - 476 Flights, 24 Aircraft, 42 Pilots, 1490:23 Total Time, Last Flight 2019-12-06",
-        "2020-12-23 - 452 Flights, 19 Aircraft, 39 Pilots, 1460:34 Total Time, Last Flight 2019-11-23",
-        "2020-11-21 - 435 Flights, 17 Aircraft, 33 Pilots, 1373:25 Total Time, Last Flight 2019-10-16",
-        "2020-10-30 - 419 Flights, 15 Aircraft, 12 Pilots, 1337:02 Total Time, Last Flight 2019-09-24",
-    };
-    for (const auto &string : descriptions_string_list) {
-        auto item = new QStandardItem(string);
-        descriptions.append(item);
-    }
+    // Maybe create a Message Box asking for confirmation here and displaying the summary of backup and active DB
 
-    // create and populate the model
-    model = new QStandardItemModel(this);
-    model->insertColumn(0, filenames);
-    model->insertColumn(1, descriptions);
-    model->setHorizontalHeaderLabels(QStringList{"Backup File","Summary"});
-    // prepare and show the view
-    auto view = ui->tableView;
-    view->setModel(model);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->resizeColumnsToContents();
-    view->setColumnWidth(0, ui->tableView->columnWidth(0) + 20);
+    if(!aDB->restoreBackup(filename)) {
+        DEB << "Unable to backup file:" << filename;
+        return;
+    }
 }
+
+void BackupWidget::on_aboutPushButton_clicked() {
+    // [G]: Add message text. Could this be predefined in Opl::Assets?
+    QMessageBox msg_box(QMessageBox::Information, "About backups", "...", QMessageBox::Ok);
+    msg_box.exec();
+}
+
+

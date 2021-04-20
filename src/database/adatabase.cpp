@@ -33,26 +33,35 @@ QString ADatabaseError::text() const
 
 ADatabase* ADatabase::self = nullptr;
 
-/*!
- * \brief Return the names of a given table in the database.
- */
+ADatabase::ADatabase()
+    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                             absoluteFilePath(QStringLiteral("logbook.db"))
+                             )
+                   )
+{}
+
+int ADatabase::dbVersion() const
+{
+    return databaseVersion;
+}
+
+int ADatabase::checkDbVersion() const
+{
+    QSqlQuery query("SELECT COUNT(*) FROM changelog");
+    query.next();
+    return query.value(0).toInt();
+}
+
 ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
 {
     return tableColumns.value(table_name);
 }
 
-/*!
- * \brief Return the names of all tables in the database
- */
 TableNames_T ADatabase::getTableNames() const
 {
     return tableNames;
 }
 
-/*!
- * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
- * if the database has been altered. This function is normally only required during database setup or maintenance.
- */
 void ADatabase::updateLayout()
 {
     auto db = ADatabase::database();
@@ -73,7 +82,7 @@ void ADatabase::updateLayout()
 ADatabase* ADatabase::instance()
 {
 #ifdef __GNUC__
-    return self ?: self = new ADatabase();
+    return self ?: self = new ADatabase();  // Cheeky business...
 #else
     if(!self)
         self = new ADatabase();
@@ -81,16 +90,8 @@ ADatabase* ADatabase::instance()
 #endif
 }
 
-ADatabase::ADatabase()
-    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
-                             absoluteFilePath(QStringLiteral("logbook.db"))))
-{}
 
-/*!
- * \brief ADatabase::sqliteVersion returns database sqlite version.
- * \return sqlite version string
- */
-const QString ADatabase::sqliteVersion()
+const QString ADatabase::sqliteVersion() const
 {
     QSqlQuery query;
     query.prepare(QStringLiteral("SELECT sqlite_version()"));
@@ -114,6 +115,7 @@ bool ADatabase::connect()
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
     updateLayout();
+    databaseVersion = checkDbVersion();
     return true;
 }
 
@@ -652,3 +654,129 @@ QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
         return result;
     }
 }
+
+QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_path)
+{
+    // List layout: {"# Flights", "# Aircraft", "# Pilots", "ISODate last flight", "Total Time hh:mm"}
+    const QString connection_name = QStringLiteral("summary_connection");
+    QMap<ADatabaseSummaryKey, QString> return_values;
+    { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
+        DEB << "Adding temporary connection to database:" << db_path;
+        QSqlDatabase temp_database = QSqlDatabase::addDatabase(SQLITE_DRIVER, connection_name); // Don't use default connection
+        temp_database.setDatabaseName(db_path);
+        if (!temp_database.open())
+            return {};
+
+        QSqlQuery query(temp_database);
+        ADatabaseSummaryKey key;  // Used among the queries for verbosity... and sanity
+
+        const QVector<QPair<ADatabaseSummaryKey, QString>> key_table_pairs = {
+                {ADatabaseSummaryKey::total_flights, QStringLiteral("flights")},
+                {ADatabaseSummaryKey::total_tails, QStringLiteral("tails")},
+                {ADatabaseSummaryKey::total_pilots, QStringLiteral("pilots")}
+    };
+        for (const auto & pair : key_table_pairs) {
+            query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + pair.second);
+            query.exec();
+            key = pair.first;
+            if (query.first()){
+                return_values[key] = query.value(0).toString();
+            }
+            else{
+                return_values[key] = QString();
+            }
+        }
+
+        query.prepare(QStringLiteral("SELECT MAX(doft) FROM flights"));
+        query.exec();
+        key = ADatabaseSummaryKey::max_doft;
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
+
+        query.prepare(QStringLiteral("SELECT "
+                                     "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)"
+                                     "||':'||"
+                                     "printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) FROM flights"));
+        key = ADatabaseSummaryKey::total_time;
+        query.exec();
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
+    }
+
+    QSqlDatabase::removeDatabase(connection_name); // cleanly removes temp connection without leaks since query+db are out of scope
+//    DEB << return_values;  // [G]: ADatabaseSummaryKeys cant print
+
+    return return_values;
+}
+
+/*!
+ * \brief ADatabase::createBackup copies the currently used database to an external backup location provided by the user
+ * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ */
+bool ADatabase::createBackup(const QString& dest_file)
+{
+    INFO << "Backing up current database to: " << dest_file;
+    ADatabase::disconnect();
+    QFile db_file(databaseFile.absoluteFilePath());
+    DEB << "File to Overwrite:" << db_file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
+
+//    if(!db_file.remove()) {
+//        DEB << "Unable to delete file:" << db_file;
+//        return false;
+//    }
+
+    if (!db_file.copy(dest_file)) {
+        WARN << "Unable to backup old database:" << db_file.errorString();
+        return false;
+    }
+
+    INFO << "Backed up old database as:" << dest_file;
+    ADatabase::connect();
+    emit connectionReset();
+    return true;
+}
+
+/*!
+ * \brief ADatabase::restoreBackup restores the database from a given backup file and replaces the currently active database.
+ * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ * \return
+ */
+bool ADatabase::restoreBackup(const QString& backup_file)
+{
+    INFO << "Restoring backup from file:" << backup_file;
+
+    QString default_loc = databaseFile.absoluteFilePath();
+
+    ADatabase::disconnect();
+    QFile backup(backup_file);
+    QFile current_db(default_loc);
+
+    if (!current_db.rename(default_loc + QLatin1String(".tmp"))) { // move previously used db out of the way
+        WARN << current_db.errorString() << "Unable to remove current db file";
+        return false;
+    }
+
+    if (!backup.copy(default_loc))
+    {
+        WARN << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        // try to restore previously used db
+        current_db.rename(default_loc);
+        return false;
+    }
+
+    // backup has been restored, clean up the previously moved file
+    current_db.remove();
+    INFO << "Backup successfully restored!";
+    ADatabase::connect();
+    emit connectionReset();
+    return true;
+}
+

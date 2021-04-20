@@ -68,6 +68,17 @@ enum class ADatabaseTarget
     tails
 };
 
+/*!
+ * \brief Enumerates the QMap keys used when summarising a database
+ */
+enum class ADatabaseSummaryKey {
+    total_flights,
+    total_tails,
+    total_pilots,
+    max_doft,
+    total_time,
+};
+
 // [G]: This is how we should handle custom "events" in the program.
 // In this case a custom error doesnt need to be built from scratch.
 // Find the type of error you want and extend it with a few tweaks.
@@ -88,28 +99,48 @@ public:
  */
 class ADatabase : public QObject {
     Q_OBJECT
-public:
 
 private:
-    ADatabase();
-
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;
-public:
-    // Ensure DB is not copiable or assignable
-    ADatabase(const ADatabase&) = delete;
-    void operator=(const ADatabase&) = delete;
-    static ADatabase* instance();
-    TableNames_T getTableNames() const;
-    ColumnNames_T getTableColumns(TableName_T table_name) const;
-    void updateLayout();
-    const QString sqliteVersion();
+    int databaseVersion;
 
+    ADatabase();
+    int checkDbVersion() const;
+public:
     ADatabaseError lastError;
     //const QDir databaseDir;
     const QFileInfo databaseFile;
 
+    // Ensure DB is not copiable or assignable
+    ADatabase(const ADatabase&) = delete;
+    void operator=(const ADatabase&) = delete;
+    static ADatabase* instance();
+
+    int dbVersion() const;
+
+    /*!
+     * \brief Return the names of all tables in the database
+     */
+    TableNames_T getTableNames() const;
+
+    /*!
+     * \brief Return the names of a given table in the database.
+     */
+    ColumnNames_T getTableColumns(TableName_T table_name) const;
+
+    /*!
+     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+     * if the database has been altered. This function is normally only required during database setup or maintenance.
+     */
+    void updateLayout();
+
+    /*!
+     * \brief ADatabase::sqliteVersion returns database sqlite version.
+     * \return sqlite version string
+     */
+    const QString sqliteVersion() const;
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -258,8 +289,17 @@ public:
      */
     ATailEntry resolveForeignTail(RowId_T foreign_key);
 
+    /*!
+     * \brief Return the summary of the DB_PATH as a stringlist
+     * \todo Contemplate whether it should be a more generic function
+     * that may be used for different elements to summarize.
+     * and ADD DOCUMENTATION, theres some specific sql stuff going on.
+     * \return
+     */
+    QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
 
-
+    bool restoreBackup(const QString& backup_file);
+    bool createBackup(const QString& dest_file);
 
 
 signals:
@@ -270,6 +310,11 @@ signals:
      * the user interface so that a user is always presented with up-to-date information.
      */
     void dataBaseUpdated();
+    /*!
+     * \brief connectionReset is emitted whenever the database connection is reset, for
+     * example when creating or restoring a backup.
+     */
+    void connectionReset();
 };
 
 #endif // ADATABASE_H

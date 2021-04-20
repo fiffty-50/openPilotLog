@@ -76,6 +76,11 @@ public slots:
      */
     void onAircraftWidget_dataBaseUpdated();
 
+    /*!
+     * \brief AircraftWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 private:
     Ui::AircraftWidget *ui;
 
@@ -93,6 +98,8 @@ private:
     QVector<qint32> selectedTails;
 
     void setupModelAndView();
+
+    void connectSignalsAndSlots();
 
     void onDeleteUnsuccessful();
 
