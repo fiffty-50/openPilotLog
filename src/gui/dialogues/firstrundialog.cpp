@@ -23,7 +23,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include <QErrorMessage>
 #include "src/classes/astyle.h"
 

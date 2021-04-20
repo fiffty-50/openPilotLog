@@ -9,21 +9,7 @@
 #include <QFileInfoList>
 #include <iostream>
 #include <QDebug>
-
-#if defined(__GNUC__) || defined(__clang__)
-    #define FUNC_IDENT __PRETTY_FUNCTION__
-#elif defined(_MSC_VER)
-    #define FUNC_IDENT __FUNCSIG__
-#else
-    #define FUNC_IDENT __func__
-#endif
-
-#define DEB qDebug() << FUNC_IDENT << "\n\t"    // Use for debugging
-#define LOG qInfo()                             // Use for logging milestones (silently, will be written to log file and console out only)
-#define INFO qInfo()                            // Use for messages of interest to the user (will be displayed in GUI)
-#define WARN qWarning()                         // Use for warnings (will be displayed in GUI)
-#define CRIT qCritical()                        // Use for critical warnings (will be displayed in GUI)
-#define TODO qCritical() << "!\n\tTo Do:\t"
+#include "src/classes/astandardpaths.h"
 
 /*!
  * \brief The ALog namespace encapsulates constants and functions used to provide logging to files
@@ -46,23 +32,35 @@
  */
 namespace ALog
 {
-    static QString logFolderName = "logs"; // To Do: AStandardpaths
+    static QDir logFolder;
     static QString logFileName;
     const static int numberOfLogs = 10; // max number of log files to keep
     const static int sizeOfLogs = 1024 * 100; // max log size in bytes, = 100kB
 
-    const static auto DEB_HEADER  = QLatin1String("\n[OPL - Deb ]: ");
+    const static auto DEB_HEADER  = QLatin1String(" [OPL - Deb ]: ");
     const static auto INFO_HEADER = QLatin1String(" [OPL - INFO]: ");
     const static auto WARN_HEADER = QLatin1String(" [OPL - WARN]: ");
     const static auto CRIT_HEADER = QLatin1String(" [OPL - CRIT]: ");
+    const static auto DEB_HEADER_CONSOLE  = QLatin1String("\u001b[38;5;69m[OPL - Deb ]: ");
     const static auto INFO_HEADER_CONSOLE = QLatin1String("\033[32m[OPL - INFO]: \033[m");
     const static auto WARN_HEADER_CONSOLE = QLatin1String("\033[33m[OPL - WARN]: \033[m");
     const static auto CRIT_HEADER_CONSOLE = QLatin1String("\033[35m[OPL - CRIT]: \033[m");
 
-    bool init();
+    bool init(bool log_debug = false);
     void setLogFileName();
     void deleteOldLogs();
     void aMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg);
+    inline static const QString timeNow(){return QTime::currentTime().toString(Qt::ISODate);}
+
+    /*!
+     * \brief info - Informs the user of an important program milestone
+     * \param msg - the message to be displayed. Shall be a translatable string (tr)
+     * \abstract This function is used to inform the user about an important step the
+     * program has (successfully) completed. This is achieved by displaying a QMessageBox.
+     *
+     * This function also creates a qInfo message, which will be written to the logfile and
+     * to stdout
+     */
 } // namespace ALog
 
 /*!

@@ -18,7 +18,7 @@
 #include "adatabase.h"
 #include "src/functions/alog.h"
 #include "src/classes/astandardpaths.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include "src/functions/alog.h"
 
 
@@ -661,7 +661,7 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
     const QString connection_name = QStringLiteral("summary_connection");
     QMap<ADatabaseSummaryKey, QString> return_values;
     { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
-        DEB << "Adding temporary connection to database:" << db_path;
+        //DEB << "Adding temporary connection to database:" << db_path;
         QSqlDatabase temp_database = QSqlDatabase::addDatabase(SQLITE_DRIVER, connection_name); // Don't use default connection
         temp_database.setDatabaseName(db_path);
         if (!temp_database.open())
@@ -723,7 +723,7 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
  */
 bool ADatabase::createBackup(const QString& dest_file)
 {
-    INFO << "Backing up current database to: " << dest_file;
+    LOG << "Backing up current database to: " << dest_file;
     ADatabase::disconnect();
     QFile db_file(databaseFile.absoluteFilePath());
     DEB << "File to Overwrite:" << db_file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
@@ -734,11 +734,11 @@ bool ADatabase::createBackup(const QString& dest_file)
 //    }
 
     if (!db_file.copy(dest_file)) {
-        WARN << "Unable to backup old database:" << db_file.errorString();
+        LOG << "Unable to backup old database:" << db_file.errorString();
         return false;
     }
 
-    INFO << "Backed up old database as:" << dest_file;
+    LOG << "Backed up old database as:" << dest_file;
     ADatabase::connect();
     emit connectionReset();
     return true;
@@ -751,7 +751,7 @@ bool ADatabase::createBackup(const QString& dest_file)
  */
 bool ADatabase::restoreBackup(const QString& backup_file)
 {
-    INFO << "Restoring backup from file:" << backup_file;
+    LOG << "Restoring backup from file:" << backup_file;
 
     QString default_loc = databaseFile.absoluteFilePath();
 
@@ -760,13 +760,13 @@ bool ADatabase::restoreBackup(const QString& backup_file)
     QFile current_db(default_loc);
 
     if (!current_db.rename(default_loc + QLatin1String(".tmp"))) { // move previously used db out of the way
-        WARN << current_db.errorString() << "Unable to remove current db file";
+        LOG << current_db.errorString() << "Unable to remove current db file";
         return false;
     }
 
     if (!backup.copy(default_loc))
     {
-        WARN << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        LOG << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
         // try to restore previously used db
         current_db.rename(default_loc);
         return false;
@@ -774,7 +774,7 @@ bool ADatabase::restoreBackup(const QString& backup_file)
 
     // backup has been restored, clean up the previously moved file
     current_db.remove();
-    INFO << "Backup successfully restored!";
+    LOG << "Backup successfully restored!";
     ADatabase::connect();
     emit connectionReset();
     return true;

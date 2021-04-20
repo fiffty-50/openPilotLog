@@ -17,6 +17,7 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
+#include "src/opl.h"
 
 #include "src/database/adatabase.h"
 #include "src/classes/aentry.h"

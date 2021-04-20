@@ -108,7 +108,6 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
 void HomeWidget::fillAllCurrencies()
 {
     fillCurrencyTakeOffLanding();
-    DEB << "Show med currency?" << ASettings::read(ASettings::UserData::ShowMedCurrency).toBool();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
                 fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)

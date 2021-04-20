@@ -34,6 +34,7 @@ SOURCES += \
     src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
     src/functions/acalc.cpp \
+    src/functions/alog.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
     src/gui/dialogues/firstrundialog.cpp \
@@ -47,11 +48,11 @@ SOURCES += \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/testing/abenchmark.cpp \
     src/testing/atimer.cpp
 
 HEADERS += \
     mainwindow.h \
+    src/opl.h \
     src/classes/acurrencyentry.h \
     src/classes/astyle.h \
     src/classes/astandardpaths.h \
@@ -83,10 +84,7 @@ HEADERS += \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/oplconstants.h \
-    src/testing/abenchmark.h \
-    src/testing/adebug.h \
-    src/testing/atimer.h
+    src/testing/atimer.h \
 
 FORMS += \
     mainwindow.ui \

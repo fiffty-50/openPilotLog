@@ -16,6 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
+#include "src/opl.h"
+#include "src/functions/alog.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
 #include "src/database/adatabase.h"
@@ -23,7 +25,6 @@
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astyle.h"
-#include "src/oplconstants.h"
 #include "src/functions/alog.h"
 #include <QApplication>
 #include <QProcess>
@@ -47,6 +48,8 @@ int main(int argc, char *argv[])
         LOG << "Unable to create directories.\n";
         return 1;
     }
+
+    ALog::init(true); // Initialise logging and message handling
 
     ASettings::setup();
 

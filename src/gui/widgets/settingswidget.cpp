@@ -22,7 +22,7 @@
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};

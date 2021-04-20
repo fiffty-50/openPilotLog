@@ -21,7 +21,7 @@
 #include "src/functions/areadcsv.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include "src/functions/adatetime.h"
 #include "src/functions/alog.h"
 

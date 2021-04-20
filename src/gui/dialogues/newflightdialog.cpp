@@ -22,7 +22,7 @@
 #include "src/functions/acalc.h"
 #include "src/testing/atimer.h"
 #include "src/database/adatabase.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 #include "src/functions/alog.h"
 

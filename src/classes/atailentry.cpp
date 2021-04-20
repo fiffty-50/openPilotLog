@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "atailentry.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 ATailEntry::ATailEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION)

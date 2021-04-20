@@ -1,5 +1,5 @@
 #include "acurrencyentry.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 //ACurrencyEntry::ACurrencyEntry()
 //{

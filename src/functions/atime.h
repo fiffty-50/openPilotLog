@@ -20,7 +20,7 @@
 
 #include <QtCore>
 #include <QTime>
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include "src/functions/alog.h"
 
 namespace ATime {

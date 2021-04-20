@@ -21,11 +21,11 @@
  * https://github.com/Alexhuszagh/BreezeStyleSheets
  */
 #include "astyle.h"
+#include "src/opl.h"
 #include <QStyle>
 #include <QStyleFactory>
 #include <QApplication>
 #include <QFont>
-#include "src/functions/alog.h"
 #include "src/classes/asettings.h"
 #include "src/functions/alog.h"
 

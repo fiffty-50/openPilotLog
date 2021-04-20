@@ -1,13 +1,16 @@
 #include "alog.h"
+#include <QMessageBox>
 
 namespace ALog {
+
+static bool logDebug = false;
 
 /*!
  * \brief setLogFileName sets a log file name ("Log_<Date>_<Time>.txt")
  */
 void setLogFileName()
 {
-    logFileName = QString(logFolderName + QLatin1String("/Log_%1_%2.txt")
+    logFileName = QString(logFolder.absolutePath() + QLatin1String("/Log_%1_%2.txt")
                           ).arg(QDate::currentDate().toString(QStringLiteral("yyyy_MM_dd")),
                                 QTime::currentTime().toString(QStringLiteral("hh_mm_ss")));
 }
@@ -17,16 +20,10 @@ void setLogFileName()
  *
  */
 void deleteOldLogs()
-{
-    if(!QDir(logFolderName).exists()) {
-        QDir().mkdir(logFolderName);
-    }
+{  
+    logFolder.setSorting(QDir::Time | QDir::Reversed);
 
-    QDir dir;
-    dir.setSorting(QDir::Time | QDir::Reversed);
-    dir.setPath(logFolderName);
-
-    QFileInfoList logs_list = dir.entryInfoList();
+    QFileInfoList logs_list = logFolder.entryInfoList();
     if (logs_list.size() <= numberOfLogs) {
         return;
     } else {
@@ -39,15 +36,13 @@ void deleteOldLogs()
 }
 
 /*!
- * \brief initialise logging, clean up logfiles and install a QMessageHandler
+ * \brief initialise logging, clean up logfiles and install a QMessageHandler. To enable
+ * logging of debug messages, pass parameter as true.
  */
-bool init()
+bool init(bool log_debug)
 {
-    // Create folder for logfiles if it doesn't exist, move to AStandardPaths later
-    if(!QDir(logFolderName).exists()) {
-        QDir().mkdir(logFolderName);
-    }
-
+    logDebug = log_debug;
+    logFolder = AStandardPaths::directory(AStandardPaths::Log);
     deleteOldLogs();
     setLogFileName();
 
@@ -90,25 +85,27 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
 
     switch (type) {
         case QtDebugMsg:
-            QTextStream(stdout) << "\t\033\[31m" << function << DEB_HEADER << msg << "\033[m" << endl;
+            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << "\n\t" << function << "\033[m" << endl;
+            if(logDebug)
+                log_stream << timeNow() << DEB_HEADER << msg << "\t\t" << function << endl;
             break;
         case QtInfoMsg:
-            log_stream << QTime::currentTime().toString(Qt::ISODate) << INFO_HEADER << msg << function << endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg  << endl;
+            log_stream << timeNow() << INFO_HEADER << msg.chopped(2) << "\t\t" << function << endl;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg;
             break;
         case QtWarningMsg:
-            log_stream << QTime::currentTime().toString(Qt::ISODate) << WARN_HEADER << msg << function << endl;
+            log_stream << timeNow() << WARN_HEADER << msg.chopped(2) << "\t\t" << endl;
             QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << endl;
             break;
         case QtCriticalMsg:
-            log_stream << QTime::currentTime().toString(Qt::ISODate) << CRIT_HEADER << msg << function << endl;
+            log_stream << timeNow() << CRIT_HEADER << msg.chopped(2) << "\t\t" << endl;
             QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << endl;
             break;
     default:
             log_stream << QTime::currentTime().toString(Qt::ISODate) << INFO_HEADER << msg << function << endl;
             QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
             break;
-        }
+    }
 }
 
 } // namespace ALog

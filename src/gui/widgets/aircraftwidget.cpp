@@ -17,6 +17,7 @@
  */
 #include "aircraftwidget.h"
 #include "ui_aircraftwidget.h"
+#include "src/opl.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"

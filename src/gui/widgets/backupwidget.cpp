@@ -1,5 +1,6 @@
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
+#include "src/opl.h"
 #include "src/classes/astandardpaths.h"
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
@@ -96,7 +97,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
     DEB << filename;
 
     if(!aDB->createBackup(filename)) {
-        WARN << "Could not create local file:" << filename;
+        WARN(tr("Could not create local file: %1").arg(filename));
         return;
     }
 
@@ -116,7 +117,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
     if(selectedFileInfo == nullptr) {
-        INFO << "No backup selected";
+        INFO(tr("No backup selected"));
         return;
     }
 
@@ -126,7 +127,7 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
                 );
 
     if(!aDB->restoreBackup(backup_name)) {
-        WARN << "Couldnt restore" << backup_name;
+        WARN(tr("Couldnt restore Backup: %1").arg(backup_name));
     }
 }
 
@@ -134,7 +135,7 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
     TODO << "Test external deletion";
     if(selectedFileInfo == nullptr) {
-        INFO << "No backup was selected";
+        INFO(tr("No backup was selected"));
         return;
     }
 
@@ -142,13 +143,13 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     QFile file(filename.absoluteFilePath());
 
     if(!file.exists()) {
-        WARN << "Selected backup file doesnt exist:" << file;
+        WARN(tr("Selected backup file doesnt exist: %1").arg(filename.absolutePath()));
         return;
     }
 
     DEB << "deleting:" << filename;
     if(!file.remove()) {
-        WARN << "Unable to remove file:" << file.errorString();
+        WARN(tr("Unable to remove file %1\nError: %2").arg(filename.fileName(),file.errorString()));
         return;
     }
 
@@ -161,7 +162,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
 {
     QString filename = QFileDialog::getSaveFileName(
                 this,
-                "Choose destination file",
+                tr("Choose destination file"),
                 // [G]: Is this necessary?
                 //QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absoluteFilePath("untitled.db"),
                 QDir::homePath() + QDir::separator() + backupName(),

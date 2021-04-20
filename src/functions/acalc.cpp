@@ -19,7 +19,7 @@
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 using namespace ACalc;
 

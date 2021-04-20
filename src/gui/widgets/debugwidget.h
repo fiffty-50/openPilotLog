@@ -33,7 +33,6 @@
 #include "src/classes/aentry.h"
 #include "src/classes/apilotentry.h"
 
-#include "src/testing/abenchmark.h"
 #include "src/testing/atimer.h"
 #include "src/functions/alog.h"
 

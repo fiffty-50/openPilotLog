@@ -18,7 +18,6 @@
 #ifndef ASTANDARDPATHS_H
 #define ASTANDARDPATHS_H
 
-#include "src/functions/alog.h"
 #include <QStandardPaths>
 #include <QString>
 #include <QMap>
@@ -33,7 +32,8 @@ public:
     enum Directories {
         Database,
         Templates,
-        Backup
+        Backup,
+        Log
     };
 private:
     static QMap<Directories, QDir> directories;
