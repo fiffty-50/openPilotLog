@@ -48,7 +48,7 @@ namespace Opl {
 
 #define DEB qDebug()                            // Use for debugging
 #define LOG qInfo()                             // Use for logging milestones (silently, will be written to log file and console out only)
-#define TODO qCritical() << "!\n\tTo Do:\t"
+#define TODO qCritical() << "TO DO:\t"
 
 #define INFO(msg) Opl::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
 #define WARN(msg) Opl::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)

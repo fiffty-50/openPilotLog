@@ -70,17 +70,17 @@ void LogbookWidget::setupModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading Default View...";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
         break;
     case 1:
-        LOG << "Loading EASA View...\n";
+        LOG << "Loading EASA View...";
         displayModel->setTable(QStringLiteral("viewEASA"));
         displayModel->select();
         break;
     default:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading Default View...";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
     }

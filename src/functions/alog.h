@@ -54,14 +54,16 @@ namespace ALog
     const static int numberOfLogs = 10; // max number of log files to keep
     const static int sizeOfLogs = 1024 * 100; // max log size in bytes, = 100kB
 
-    const static auto DEB_HEADER  = QLatin1String(" [OPL - Deb ]: ");
-    const static auto INFO_HEADER = QLatin1String(" [OPL - INFO]: ");
-    const static auto WARN_HEADER = QLatin1String(" [OPL - WARN]: ");
-    const static auto CRIT_HEADER = QLatin1String(" [OPL - CRIT]: ");
-    const static auto DEB_HEADER_CONSOLE  = QLatin1String("\u001b[38;5;69m[OPL - Deb ]: ");
-    const static auto INFO_HEADER_CONSOLE = QLatin1String("\033[32m[OPL - INFO]: \033[m");
-    const static auto WARN_HEADER_CONSOLE = QLatin1String("\033[33m[OPL - WARN]: \033[m");
-    const static auto CRIT_HEADER_CONSOLE = QLatin1String("\033[35m[OPL - CRIT]: \033[m");
+    const static auto DEB_HEADER  = QLatin1String(" [DEBG]:\t");
+    const static auto INFO_HEADER = QLatin1String(" [INFO]:\t");
+    const static auto WARN_HEADER = QLatin1String(" [WARN]:\t");
+    const static auto CRIT_HEADER = QLatin1String(" [CRIT]:\t");
+    const static auto DEB_HEADER_CONSOLE  = QLatin1String("\u001b[38;5;75m[DEBG]:\t");
+    const static auto INFO_HEADER_CONSOLE = QLatin1String("\033[32m[INFO]:\t\033[m");
+    const static auto WARN_HEADER_CONSOLE = QLatin1String("\033[33m[WARN]:\t\033[m");
+    const static auto CRIT_HEADER_CONSOLE = QLatin1String("\033[35m[CRIT]:\t\033[m");
+    const static auto SPACER = QLatin1String("\t\t");
+    const static auto D_SPACER = QLatin1String("\t\t\t\t");
 
     bool init(bool log_debug = false);
     void setLogFileName();

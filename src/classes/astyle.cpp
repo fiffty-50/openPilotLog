@@ -51,7 +51,7 @@ void AStyle::setup()
         QFont font(ASettings::read(ASettings::Main::Font).toString());
         font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
         qApp->setFont(font);
-        LOG << "Application Font set:\t" << font.toString().splitRef(',').first() << "\n";
+        LOG << "Application Font set: " << font.toString().splitRef(',').first();
     }
     // Set style, stylesheet or palette
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();
@@ -88,7 +88,7 @@ void AStyle::resetStyle()
 void AStyle::setStyle(const QString &style_key)
 {
     resetStyle();
-    LOG << "Setting style:\t" << style_key;
+    LOG << "Setting style: " << style_key;
     QApplication::setStyle(QStyleFactory::create(style_key));
     currentStyle = style_key;
 }
@@ -96,7 +96,7 @@ void AStyle::setStyle(const QString &style_key)
 void AStyle::setStyle(const StyleSheet &style_sheet)
 {
     resetStyle();
-    LOG << "Setting stylesheet:\t" << style_sheet.styleSheetName;
+    LOG << "Setting stylesheet: " << style_sheet.styleSheetName;
     qApp->setStyleSheet(read_stylesheet(style_sheet.fileName));
     currentStyle = style_sheet.styleSheetName;
 }
@@ -104,7 +104,7 @@ void AStyle::setStyle(const StyleSheet &style_sheet)
 void AStyle::setStyle(const QPalette &palette)
 {
     resetStyle();
-    LOG << "Setting Colour Palette...\n";
+    LOG << "Setting Colour Palette...";
     qApp->setPalette(palette);
 }
 
