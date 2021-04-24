@@ -37,6 +37,37 @@
 #define ORGNAME QStringLiteral("opl")
 #define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
 
+
+void init()
+{
+    LOG << "Setting up / verifying Application Directories...";
+    if(AStandardPaths::setup()) {
+        LOG << "Application Directories... verified";
+    } else {
+        LOG << "Unable to create directories.";
+    }
+    LOG << "Setting up logging facilities...";
+    if(ALog::init(true)) {
+        LOG << "Logging enabled.";
+    } else {
+        LOG << "Unable to initalise logging.";
+    }
+    LOG << "Reading Settings...";
+    ASettings::setup();
+    LOG << "Setting up application style...";
+    AStyle::setup();
+}
+
+void firstRun()
+{
+    if(FirstRunDialog().exec() == QDialog::Rejected){
+        LOG << "Initial setup incomplete or unsuccessfull.";
+        return;
+    }
+    ASettings::write(ASettings::Main::SetupComplete, true);
+    LOG << "Initial Setup Completed successfully";
+}
+
 int main(int argc, char *argv[])
 {
     QApplication openPilotLog(argc, argv);
@@ -44,46 +75,22 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(ORGDOMAIN);
     QCoreApplication::setApplicationName(APPNAME);
 
-    if(!AStandardPaths::setup()){
-        LOG << "Unable to create directories.\n";
-        return 1;
-    }
-
-    ALog::init(true); // Initialise logging and message handling
-
-    ASettings::setup();
-
-    AStyle::setup();
-
-    if (ASettings::read(ASettings::Main::SetupComplete).toBool()) {
-        QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
-                                     absoluteFilePath(QStringLiteral("logbook.db")));
-        if (!database_file.exists()) {
-            LOG << "Error: Database file not found\n";
-            return 2;
-        }
-    } else {
-        if(FirstRunDialog().exec() == QDialog::Rejected){
-            LOG << "Initial setup incomplete or unsuccessfull. Exiting.\n";
-            return 3;
-        }
-        ASettings::write(ASettings::Main::SetupComplete, true);
-        DEB << "Wrote setup_commplete";
-    }
-
-    if (!aDB->connect()) {
-        LOG << "Error establishing database connection\n";
-        return 4;
-    }
-
+    // Check for another instance already running
     ARunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
-        LOG << "Another Instance of openPilotLog is already running. Exiting.\n";
+        LOG << "Another Instance of openPilotLog is already running. Exiting.";
         return 0;
     }
 
-    MainWindow w;
+    // Set Up the Application
+    init();
 
+    // Check for First Run and launch Setup Wizard
+    if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
+        firstRun();
+
+    // Create Main Window and set Window Icon acc. to Platform
+    MainWindow w;
 #ifdef __linux__
     w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_LINUX));
 #elif defined(_WIN32) || defined(_WIN64)

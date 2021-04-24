@@ -26,6 +26,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // connect to the Database
+    TODO << "Create more verbose warning about DB and offer instructions how to fix it.";
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                         absoluteFilePath(QStringLiteral("logbook.db")));
+            if (!database_file.exists()) {
+                WARN(tr("Error: Database file not found."));
+            }
+    if(!aDB->connect()){
+        WARN(tr("Error establishing database connection."));
+    }
 
     // Create a spacer for the toolbar to separate left and right parts
     auto *spacer = new QWidget();
