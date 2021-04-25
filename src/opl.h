@@ -19,6 +19,7 @@
 #define OPLCONSTANTS_H
 
 #include <QtCore>
+#include <QMessageBox>
 #include "src/database/adatabasetypes.h"
 
 /*!
@@ -45,12 +46,43 @@ namespace Opl {
     #define FUNC_IDENT __func__
 #endif
 
-#define DEB qDebug() << FUNC_IDENT << "\n\t"    // Use for debugging
+#define DEB qDebug()                            // Use for debugging
 #define LOG qInfo()                             // Use for logging milestones (silently, will be written to log file and console out only)
-#define INFO qInfo()                            // Use for messages of interest to the user (will be displayed in GUI)
-#define WARN qWarning()                         // Use for warnings (will be displayed in GUI)
-#define CRIT qCritical()                        // Use for critical warnings (will be displayed in GUI)
-#define TODO qCritical() << "!\n\tTo Do:\t"
+#define TODO qCritical() << "TO DO:\t"
+
+#define INFO(msg) Opl::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
+#define WARN(msg) Opl::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
+#define CRIT(msg) Opl::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
+
+/*!
+ * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
+ * information to the user and forwards the displayed message to ALog so it is written
+ * to the console and log files. The INFO, WARN and CRIT makros provide convenient access.
+ */
+class ANotificationHandler {
+public:
+    static inline void info(const QString msg, QWidget *parent = nullptr){
+        qInfo() << msg;
+        QMessageBox mb(parent);
+        mb.setText(msg);
+        mb.setIcon(QMessageBox::Information);
+        mb.exec();
+    };
+    static inline void warn(const QString msg, QWidget *parent = nullptr){
+        qWarning() << msg;
+        QMessageBox mb(parent);
+        mb.setText(msg);
+        mb.setIcon(QMessageBox::Warning);
+        mb.exec();
+    };
+    static inline void crit(const QString msg, QWidget *parent = nullptr){
+        qCritical() << msg;
+        QMessageBox mb(parent);
+        mb.setText(msg);
+        mb.setIcon(QMessageBox::Critical);
+        mb.exec();
+    };
+}; // class ANotificationHandler
 
 static const auto ApproachTypes = QStringList{
         QLatin1String("VISUAL"),

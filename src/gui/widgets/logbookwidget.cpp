@@ -22,7 +22,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
 const QMap<int, QString> FILTER_MAP = {
@@ -70,17 +70,17 @@ void LogbookWidget::setupModelAndView(int view_id)
 {
     switch (view_id) {
     case 0:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading Default View...";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
         break;
     case 1:
-        LOG << "Loading EASA View...\n";
+        LOG << "Loading EASA View...";
         displayModel->setTable(QStringLiteral("viewEASA"));
         displayModel->select();
         break;
     default:
-        LOG << "Loading Default View...\n";
+        LOG << "Loading Default View...";
         displayModel->setTable(QStringLiteral("viewDefault"));
         displayModel->select();
     }
@@ -164,7 +164,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             flights_list_string.append(QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
 
-        QMessageBox confirm;
+        QMessageBox confirm(this);
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
         confirm.setIcon(QMessageBox::Question);

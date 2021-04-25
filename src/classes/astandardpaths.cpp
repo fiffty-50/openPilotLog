@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "src/classes/astandardpaths.h"
+#include "src/opl.h"
 
 QMap<AStandardPaths::Directories, QDir> AStandardPaths::directories;
 
@@ -27,7 +28,9 @@ bool AStandardPaths::setup()
         {Templates, QDir(QStandardPaths::writableLocation(data_location)
          + QLatin1String("/templates"))},
         {Backup, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/backup"))}
+         + QLatin1String("/backup"))},
+        {Log, QDir(QStandardPaths::writableLocation(data_location)
+         + QLatin1String("/log"))}
     };
     if (scan_directories())
         return true;
@@ -52,7 +55,7 @@ const QMap<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
 
 bool AStandardPaths::scan_directories()
 {
-    for(const auto& dir : directories){
+    for(const auto& dir : qAsConst(directories)){
         if(!dir.exists()) {
             DEB << dir << "Does not exist. Creating:" << dir.absolutePath();
             if (!dir.mkpath(dir.absolutePath()))

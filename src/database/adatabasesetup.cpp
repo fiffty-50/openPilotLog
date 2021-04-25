@@ -17,11 +17,11 @@
  */
 #include "adatabasesetup.h"
 #include "src/database/adatabase.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/functions/areadcsv.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/adownload.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include "src/functions/adatetime.h"
 #include "src/functions/alog.h"
 
@@ -432,9 +432,9 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
     }
 
     if (!errors.isEmpty()) {
-        DEB_SRC << "The following errors have ocurred: ";
+        DEB << "The following errors have ocurred: ";
         for (const auto& error : qAsConst(errors)) {
-            DEB_RAW << error;
+            DEB << error;
         }
         return false;
     }

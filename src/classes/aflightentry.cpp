@@ -17,7 +17,7 @@
  */
 #include "aflightentry.h"
 #include "src/database/adatabase.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
 

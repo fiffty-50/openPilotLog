@@ -18,7 +18,7 @@
 #ifndef ADATETIME_H
 #define ADATETIME_H
 #include <QtCore>
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 namespace ADateTime {
 

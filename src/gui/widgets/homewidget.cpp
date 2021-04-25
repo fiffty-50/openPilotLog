@@ -17,7 +17,7 @@
  */
 #include "homewidget.h"
 #include "ui_homewidget.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
@@ -108,7 +108,6 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
 void HomeWidget::fillAllCurrencies()
 {
     fillCurrencyTakeOffLanding();
-    DEB << "Show med currency?" << ASettings::read(ASettings::UserData::ShowMedCurrency).toBool();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
                 fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)

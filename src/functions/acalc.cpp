@@ -16,10 +16,10 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "acalc.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 using namespace ACalc;
 

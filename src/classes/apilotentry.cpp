@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "apilotentry.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 APilotEntry::APilotEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION)

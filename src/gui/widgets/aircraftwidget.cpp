@@ -17,12 +17,13 @@
  */
 #include "aircraftwidget.h"
 #include "ui_aircraftwidget.h"
+#include "src/opl.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/atailentry.h"
 #include "src/classes/aflightentry.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),

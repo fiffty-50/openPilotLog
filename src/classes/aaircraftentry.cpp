@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aaircraftentry.h"
-#include "src/oplconstants.h"
+#include "src/opl.h"
 
 AAircraftEntry::AAircraftEntry()
     : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION)

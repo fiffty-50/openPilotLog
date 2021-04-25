@@ -17,10 +17,11 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
+#include "src/opl.h"
 
 #include "src/database/adatabase.h"
 #include "src/classes/aentry.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva

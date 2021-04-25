@@ -186,10 +186,8 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-
-    DEB << ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
-    // debug space
-    //ASettings::write(ASettings::Setup::SetupComplete, false);
+    WARN("Whoops, a warning!");
+    CRIT("Yikes, this doesn't look good... ");
 }
 
 /* //Comparing two functions template

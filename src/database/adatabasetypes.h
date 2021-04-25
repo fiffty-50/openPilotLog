@@ -19,7 +19,7 @@
 #define DECLARATIONS_H
 
 #include <QtCore>
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 /// \todo Short descriptions
 using RowId_T = int;

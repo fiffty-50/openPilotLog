@@ -24,7 +24,7 @@
 #include <cmath>
 #include <QDateTime>
 #include <QDebug>
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 /*!
  * \brief The ACalc namespace provides various functions for calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
