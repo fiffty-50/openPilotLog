@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -21,23 +21,91 @@
 #include <QSettings>
 
 /*!
- * \brief Thin (namespace) wrapper for the QSettings class,
+ * \brief Thin wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-namespace ASettings
-{
+class ASettings {
+public:
+    enum class Main {
+        SetupComplete,
+        Style,
+        Font,
+        FontSize,
+        UseSystemFont,
+        LogbookView,
+    };
 
-/*!
- * \brief Should be called after QCoreApplication::set...Name have been called.
- */
-void setup();
+    enum class UserData {
+        DisplaySelfAs,
+        TailSortColumn,
+        PilotSortColumn,
+        AcftAllowIncomplete,
+        FtlWarningThreshold,
+        CurrWarningEnabled,
+        CurrWarningThreshold,
+        ShowToLgdCurrency,
+        ShowLicCurrency,
+        ShowTrCurrency,
+        ShowLckCurrency,
+        ShowMedCurrency,
+        ShowCustom1Currency,
+        ShowCustom2Currency,
+        Custom1CurrencyName,
+        Custom2CurrencyName,
+    };
 
-QVariant read(const QString &key);
+    enum class FlightLogging {
+        Function,
+        Approach,
+        NightLoggingEnabled,
+        LogIFR,
+        FlightNumberPrefix,
+        NumberTakeoffs,
+        NumberLandings,
+        PopupCalendar,
+        PilotFlying,
+        NightAngle,
+        Rules,
+        FlightTimeFormat,
+        FunctionComboBox,
+        CalendarCheckBox,
+    };
 
-void write(const QString &key, const QVariant &val);
+    /*!
+     * \brief Should be called after QCoreApplication::set...Name have been called.
+     */
+    static void setup();
+    static void resetToDefaults();
 
-QSettings settings();
+    static QVariant read(const Main key);
+    static void write(const Main key, const QVariant &val);
 
-}
+    static QVariant read(const FlightLogging key);
+    static void write(const UserData key, const QVariant &val);
+
+    static QVariant read(const UserData key);
+    static void write(const FlightLogging key, const QVariant &val);
+
+    /*!
+     * \brief Return string representation of group of key: "ini_header/key"
+     */
+    static QString groupOfKey(const Main key);
+    static QString groupOfKey(const FlightLogging key);
+    static QString groupOfKey(const UserData key);
+
+    /*!
+     * \brief Return string representation of key
+     */
+    static QString stringOfKey(const Main key);
+    static QString stringOfKey(const FlightLogging key);
+    static QString stringOfKey(const UserData key);
+
+    static QSettings settings();
+
+private:
+    static QMap<Main, QString> mainMap;
+    static QMap<UserData, QString> userDataMap;
+    static QMap<FlightLogging, QString> flightLoggingMap;
+};
 
 #endif // ASETTINGS_H

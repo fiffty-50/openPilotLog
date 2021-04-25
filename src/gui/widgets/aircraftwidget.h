@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -21,14 +21,30 @@
 #include <QWidget>
 #include <QItemSelection>
 #include <QSqlTableModel>
-#include <QDebug>
 #include <QTableView>
+#include "src/gui/widgets/settingswidget.h"
 
 
 namespace Ui {
 class AircraftWidget;
 }
-
+/*!
+ * \class AircraftWidget
+ * \brief The AircraftWidget is used to view, edit, delete or add new tails.
+ * \abstract The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ *
+ * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a tails' Registration, Type and
+ * Company.
+ *
+ * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as a search box and a QCombobox
+ * holding the possible columns that can be used to filter what is displayed. The text of the QLineEdit is used as a filter for the
+ * QSqlTableModel, so the view is updated in real time.
+ *
+ * The *NewTailDialog* is used for creating a new entry as well as for editing an existing entry. If the user selects a row
+ * in the QTableView, the NewTailDilog is displayed on the right side of the Widget, inside the QStackedWidget.
+ * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
+ * The NewTailDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ */
 class AircraftWidget : public QWidget
 {
     Q_OBJECT
@@ -42,17 +58,29 @@ private slots:
 
     void tableView_headerClicked(int column);
 
-    void on_deleteButton_clicked();
+    void on_deleteAircraftButton_clicked();
 
     void on_newAircraftButton_clicked();
 
-    void acft_editing_finished();
+    void onNewTailDialog_editingFinished();
 
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
-    void onDisplayModel_dataBaseUpdated();
+    /*!
+     * \brief invokes setupModelAndView() to account for changes the user has made in the SettingsWidget
+     */
+    void onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal);
+    /*!
+     * \brief Refreshes the view if the Database has been altered from outside the AircraftWidget
+     */
+    void onAircraftWidget_dataBaseUpdated();
 
+    /*!
+     * \brief AircraftWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 private:
     Ui::AircraftWidget *ui;
 
@@ -64,11 +92,18 @@ private:
 
     qint32 sortColumn;
 
+    /*!
+     * \brief selectedTails Holds a list of the entries the user has selected
+     */
     QVector<qint32> selectedTails;
 
     void setupModelAndView();
 
+    void connectSignalsAndSlots();
+
     void onDeleteUnsuccessful();
+
+    inline void refreshView(){model->select();}
 };
 
 #endif // AIRCRAFTWIDGET_H

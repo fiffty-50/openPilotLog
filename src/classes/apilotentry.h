@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #define APILOTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 
 struct APilotEntry : public AEntry {
 public:
     APilotEntry();
-    APilotEntry(RowId row_id);
-    APilotEntry(RowData table_data);
+    APilotEntry(RowId_T row_id);
+    APilotEntry(RowData_T table_data);
 
     APilotEntry(const APilotEntry& pe) = default;
     APilotEntry& operator=(const APilotEntry& pe) = default;

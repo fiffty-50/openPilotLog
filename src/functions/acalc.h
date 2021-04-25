@@ -1,9 +1,30 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef ACALC_H
 #define ACALC_H
 
-#include <QDateTime>
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 #include <cmath>
+#include <QDateTime>
 #include <QDebug>
+#include "src/functions/alog.h"
 /*!
  * \brief The ACalc namespace provides various functions for calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
@@ -18,6 +39,7 @@ namespace ACalc {
  * \param tonb QTime Time On Blocks
  * \return Block Time in minutes
  */
+QT_DEPRECATED
 inline QTime blocktime(QTime tofb, QTime tonb)
 {
     QTime blocktime_out(0, 0); // initialise return value at midnight
@@ -39,6 +61,7 @@ inline QTime blocktime(QTime tofb, QTime tonb)
  * \param blockminutes from database
  * \return String hh:mm
  */
+QT_DEPRECATED
 inline QString minutesToString(QString block_minutes)
 {
     int minutes = block_minutes.toInt();
@@ -54,6 +77,7 @@ inline QString minutesToString(QString block_minutes)
     return block_time;
 };
 
+QT_DEPRECATED
 inline QString minutesToString(int block_minutes)
 {
     QString hour = QString::number(block_minutes / 60);
@@ -73,6 +97,7 @@ inline QString minutesToString(int block_minutes)
  * \param time QTime
  * \return int time as number of minutes
  */
+QT_DEPRECATED
 inline int QTimeToMinutes(QTime time)
 {
     QString timestring = time.toString("hh:mm");
@@ -86,6 +111,7 @@ inline int QTimeToMinutes(QTime time)
  * \param timestring "hh:mm"
  * \return String number of minutes
  */
+QT_DEPRECATED
 inline int stringToMinutes(QString timestring)
 {
     int minutes = (timestring.left(2).toInt()) * 60;

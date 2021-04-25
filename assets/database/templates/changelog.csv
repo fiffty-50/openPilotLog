@@ -5,7 +5,7 @@ revision,comment,date
 4,Added viewEASA for EASA logbook like display,2020-11-02
 5,Added Diamond Aircraft to aircraft table,2020-11-19
 6,Added icao/iata codes for Boeing in aircraft table,2020-11-19
-7,"Added autoincrement for flights, pilots and tails tables",2020-11-20
+7,Added autoincrement for flights pilots and tails tables,2020-11-20
 8,changed column tDual to tDUAL in table flights for consistency in naming,2020-11-23
 9,changed column id to flight_id in table flights for consistency in naming,2020-11-23
 10,added viewDefault as a copy of Logbook (deprecated),2020-11-23
@@ -13,4 +13,6 @@ revision,comment,date
 12,reworked views to display self or picname according CASE,2020-12-11
 13,Reworked viewEASA to incorporate NULL handling,2020-12-17
 14,Edited tails and aircraft tables - engineClass and weightClass instead of columns for each element,2020-12-19
-15,Renamed some columns to have consistent naming.,2020-12-26
+15,Renamed some columns to have consistent naming,2020-12-26
+16,Added CASE for views to account for occasions where aircraft variant is NULL,2021-02-03
+17,Added currencies table,2021-02-12

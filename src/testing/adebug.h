@@ -1,10 +1,38 @@
 #ifndef ADEBUG_H
 #define ADEBUG_H
 
+/*
 #include <QDebug>
 
-#define DEB qDebug() << __PRETTY_FUNCTION__ << "\t"
+#if defined(__GNUC__) || defined(__clang__)
+    #define FUNC_IDENT __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+    #define FUNC_IDENT __FUNCSIG__
+#else
+    #define FUNC_IDENT __func__
+#endif
 
+// CAUTION: qDebug() doesnt print for non-DEBUG builds
+#define DEB qDebug() << FUNC_IDENT << "\n\t"
+#define DEB_SRC DEB
+#define DEB_RAW qDebug() << '\t'
+
+
+// [G]: TODO study cross platform terminal coloring
+// might be silly but coloring specific words does increase
+// ease of reading debug output. We dont have to go overboard
+// start with the header.
+// DRAFT:
+// info -> white
+// warning -> yellow
+// critical -> red
+// there is also fatal which even kills the program and could be purple.
+#define INFO qInfo() << "info:"
+#define WARN qWarning() << "warning:"
+#define CRIT qCritical() << "critical:"
+//#define NOT_IMPLEMENTED qCritical() << FUNC_IDENT << "\n\t" << "~~ NOT IMPLEMENTED ~~";
+#define NOT_IMPLEMENTED(msg) qCritical() << FUNC_IDENT << "\n\tNOT IMPLEMENTED:" << msg
+*/
 /*!
  * Representation macro for custom classes.
  *

@@ -1,7 +1,25 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "acalc.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
+#include "src/opl.h"
 
 using namespace ACalc;
 
@@ -12,6 +30,7 @@ using namespace ACalc;
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
  */
+QT_DEPRECATED
 QString ACalc::formatTimeInput(QString user_input)
 {
     QString output; //
@@ -86,9 +105,12 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
 
 double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '"
-            + dept + "' OR icao = '" + dest + "'";
-    auto lat_lon = aDB()->customQuery(statement, 2);
+    QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + dept
+            + QLatin1String("' OR icao = '")
+            + dest
+            + QLatin1String("'");
+    auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
         DEB << "Invalid input. Aborting.";
@@ -205,8 +227,11 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
 {
 
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + dept + "' OR icao = '" + dest + "'";
-    auto lat_lon = aDB()->customQuery(statement, 2);
+    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + dept
+            + QLatin1String("' OR icao = '") + dest
+            + QLatin1String("'");
+    auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
         DEB << "Invalid input. Aborting.";
@@ -233,8 +258,10 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
 
 bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 {
-    auto statement = "SELECT lat, long FROM airports WHERE icao = '" + icao + "'";
-    auto lat_lon = aDB()->customQuery(statement, 2);
+    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
+            + icao
+            + QLatin1String("'");
+    auto lat_lon = aDB->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
         DEB << "Invalid input. Aborting.";
@@ -262,39 +289,39 @@ void ACalc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
     const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
-    auto flight_list = aDB()->customQuery(statement, 1);
+    auto flight_list = aDB->customQuery(statement, 1);
     if (flight_list.isEmpty()) {
         DEB << "No flights for this tail found.";
         return;
     }
     DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
-    auto acft = aDB()->getTailEntry(acft_id);
+    auto acft = aDB->getTailEntry(acft_id);
     auto acft_data = acft.getData();
     for (const auto& item : flight_list) {
-        auto flight = aDB()->getFlightEntry(item.toInt());
+        auto flight = aDB->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
 
-        if(acft_data.value(DB_TAILS_MULTIPILOT).toInt() == 0
-                && acft_data.value(DB_TAILS_MULTIENGINE) == 0) {
+        if(acft_data.value(Opl::Db::TAILS_MULTIPILOT).toInt() == 0
+                && acft_data.value(Opl::Db::TAILS_MULTIENGINE) == 0) {
             DEB << "SPSE";
-            flight_data.insert(DB_FLIGHTS_TSPSE, flight_data.value(DB_FLIGHTS_TBLK));
-            flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
-            flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
-        } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 0
-                    && acft.getData().value(DB_TAILS_MULTIENGINE) == 1)) {
+            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, flight_data.value(Opl::Db::FLIGHTS_TBLK));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TMP, QStringLiteral(""));
+        } else if ((acft_data.value(Opl::Db::TAILS_MULTIPILOT) == 0
+                    && acft.getData().value(Opl::Db::TAILS_MULTIENGINE) == 1)) {
             DEB << "SPME";
-            flight_data.insert(DB_FLIGHTS_TSPME, flight_data.value(DB_FLIGHTS_TBLK));
-            flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
-            flight_data.insert(DB_FLIGHTS_TMP, DB_NULL);
-        } else if ((acft_data.value(DB_TAILS_MULTIPILOT) == 1)) {
+            flight_data.insert(Opl::Db::FLIGHTS_TSPME, flight_data.value(Opl::Db::FLIGHTS_TBLK));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TMP, QStringLiteral(""));
+        } else if ((acft_data.value(Opl::Db::TAILS_MULTIPILOT) == 1)) {
             DEB << "MPME";
-            flight_data.insert(DB_FLIGHTS_TMP, flight_data.value(DB_FLIGHTS_TBLK));
-            flight_data.insert(DB_FLIGHTS_TSPSE, DB_NULL);
-            flight_data.insert(DB_FLIGHTS_TSPME, DB_NULL);
+            flight_data.insert(Opl::Db::FLIGHTS_TMP, flight_data.value(Opl::Db::FLIGHTS_TBLK));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QStringLiteral(""));
         }
         flight.setData(flight_data);
-        aDB()->commit(flight);
+        aDB->commit(flight);
     }
 }
 /*!
@@ -303,11 +330,11 @@ void ACalc::updateAutoTimes(int acft_id)
  */
 void ACalc::updateNightTimes()
 {
-    const int night_angle = ASettings::read(QStringLiteral("flightlogging/nightangle")).toInt();
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
 
     //find all flights for aircraft
-    auto statement = "SELECT ROWID FROM flights";
-    auto flight_list = aDB()->customQuery(statement, 1);
+    auto statement = QStringLiteral("SELECT ROWID FROM flights");
+    auto flight_list = aDB->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {
         DEB << "No flights found.";
@@ -317,19 +344,19 @@ void ACalc::updateNightTimes()
 
     for (const auto& item : flight_list) {
 
-        auto flt = aDB()->getFlightEntry(item.toInt());
+        auto flt = aDB->getFlightEntry(item.toInt());
         auto data = flt.getData();
-        auto dateTime = QDateTime(QDate::fromString(data.value(DB_FLIGHTS_DOFT).toString(), Qt::ISODate),
-                                  QTime().addSecs(data.value(DB_FLIGHTS_TOFB).toInt() * 60),
+        auto dateTime = QDateTime(QDate::fromString(data.value(Opl::Db::FLIGHTS_DOFT).toString(), Qt::ISODate),
+                                  QTime().addSecs(data.value(Opl::Db::FLIGHTS_TOFB).toInt() * 60),
                                   Qt::UTC);
-        data.insert(DB_FLIGHTS_TNIGHT,
-                    calculateNightTime(data.value(DB_FLIGHTS_DEPT).toString(),
-                                       data.value(DB_FLIGHTS_DEST).toString(),
+        data.insert(Opl::Db::FLIGHTS_TNIGHT,
+                    calculateNightTime(data.value(Opl::Db::FLIGHTS_DEPT).toString(),
+                                       data.value(Opl::Db::FLIGHTS_DEST).toString(),
                                        dateTime,
-                                       data.value(DB_FLIGHTS_TBLK).toInt(),
+                                       data.value(Opl::Db::FLIGHTS_TBLK).toInt(),
                                        night_angle));
         flt.setData(data);
-        aDB()->commit(flt);
+        aDB->commit(flt);
     }
 }
 

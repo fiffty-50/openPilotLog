@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,7 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adownload.h"
-#include "src/testing/adebug.h"
+#include "src/opl.h"
+#include "src/functions/alog.h"
 
 
 
@@ -28,7 +29,7 @@ ADownload::ADownload() : QObject(nullptr)
 
 ADownload::~ADownload()
 {
-    DEB << "Deleting Download object" ;
+    DEB << "Deleting ADownload Object";
 }
 
 void ADownload::setTarget(const QUrl &value)
@@ -65,7 +66,7 @@ void ADownload::downloadFinished(QNetworkReply *data)
     const QByteArray sdata = data->readAll();
     localFile.write(sdata);
     localFile.close();
-    DEB << "Download finished. Output file: " << fileName;
+    DEB << "Download finished. Output file: " << fileName << "size: " << localFile.size();
 
     emit done();
 }

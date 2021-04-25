@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -26,15 +26,18 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFile>
+#include <QKeyEvent>
 
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/backupwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
 #include "src/classes/arunguard.h"
 #include "src/testing/atimer.h"
 
@@ -54,25 +57,25 @@ public:
 
 private slots:
 
-    void nope();
-
-    void on_actionQuit_triggered();
-
     void on_actionHome_triggered();
-
-    void on_actionLogbook_triggered();
-
-    void on_actionSettings_triggered();
 
     void on_actionNewFlight_triggered();
 
+    void on_actionLogbook_triggered();
+
     void on_actionAircraft_triggered();
 
-    void on_actionNewAircraft_triggered();
+    //void on_actionNewAircraft_triggered();
 
     void on_actionPilots_triggered();
 
-    void on_actionNewPilot_triggered();
+    //void on_actionNewPilot_triggered();
+
+    void on_actionBackup_triggered();
+
+    void on_actionSettings_triggered();
+
+    void on_actionQuit_triggered();
 
     void on_actionDebug_triggered();
 
@@ -83,21 +86,31 @@ private:
 
     LogbookWidget* logbookWidget;
 
-    SettingsWidget* settingsWidget;
-
-    AircraftWidget* aircraftWidget ;
+    AircraftWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
 
+    BackupWidget* backupWidget;
+
+    SettingsWidget* settingsWidget;
+
     DebugWidget* debugWidget;
+
+    void nope();
 
     void connectWidgets();
 
-
-
-
-
-
-
+protected:
+    /*!
+     * \brief Shows the debug widget by pressing <ctrl + t>
+     */
+    void keyPressEvent(QKeyEvent* keyEvent) override
+    {
+        if(keyEvent->type() == QKeyEvent::KeyPress) {
+            if(keyEvent->matches(QKeySequence::AddTab)) {
+                on_actionDebug_triggered();
+            }
+        }
+    }
 };
 #endif // MAINWINDOW_H

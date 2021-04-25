@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -31,12 +31,25 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 #include "src/classes/aentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/classes/aaircraftentry.h"
 #include "src/classes/aflightentry.h"
+#include "src/classes/astandardpaths.h"
+#include "src/classes/acurrencyentry.h"
+
+#define SQLITE_DRIVER QStringLiteral("QSQLITE")
+
+/*!
+ * \brief Convinience macro that returns instance of DataBase.
+ * Instead of this:
+ * DataBase::getInstance().commit(...)
+ * Write this:
+ * aDB->commit(...)
+ */
+#define aDB ADatabase::instance()
 
 /*!
  * \brief The DBTarget enum lists database items that are
@@ -53,6 +66,17 @@ enum class ADatabaseTarget
     registrations,
     companies,
     tails
+};
+
+/*!
+ * \brief Enumerates the QMap keys used when summarising a database
+ */
+enum class ADatabaseSummaryKey {
+    total_flights,
+    total_tails,
+    total_pilots,
+    max_doft,
+    total_time,
 };
 
 // [G]: This is how we should handle custom "events" in the program.
@@ -75,21 +99,48 @@ public:
  */
 class ADatabase : public QObject {
     Q_OBJECT
+
 private:
-    TableNames tableNames;
-    TableColumns tableColumns;
-    static ADatabase* instance;
-    ADatabase() = default;
+    static ADatabase* self;
+    TableNames_T tableNames;
+    TableColumns_T tableColumns;
+    int databaseVersion;
+
+    ADatabase();
+    int checkDbVersion() const;
 public:
+    ADatabaseError lastError;
+    //const QDir databaseDir;
+    const QFileInfo databaseFile;
+
     // Ensure DB is not copiable or assignable
     ADatabase(const ADatabase&) = delete;
     void operator=(const ADatabase&) = delete;
-    static ADatabase* getInstance();
-    TableNames getTableNames() const;
-    TableColumns getTableColumns() const;
-    const QString sqliteVersion();
+    static ADatabase* instance();
 
-    ADatabaseError lastError;
+    int dbVersion() const;
+
+    /*!
+     * \brief Return the names of all tables in the database
+     */
+    TableNames_T getTableNames() const;
+
+    /*!
+     * \brief Return the names of a given table in the database.
+     */
+    ColumnNames_T getTableColumns(TableName_T table_name) const;
+
+    /*!
+     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+     * if the database has been altered. This function is normally only required during database setup or maintenance.
+     */
+    void updateLayout();
+
+    /*!
+     * \brief ADatabase::sqliteVersion returns database sqlite version.
+     * \return sqlite version string
+     */
+    const QString sqliteVersion() const;
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -112,7 +163,7 @@ public:
      * \param query - the full sql query statement
      * \param returnValues - the number of return values
      */
-    QVector<QString> customQuery(QString statement, int return_values);
+    QVector<QVariant> customQuery(QString statement, int return_values);
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -150,7 +201,7 @@ public:
     /*!
      * \brief retreive entry data from the database to create an entry object
      */
-    RowData getEntryData(DataPosition data_position);
+    RowData_T getEntryData(DataPosition data_position);
 
     /*!
      * \brief retreive an Entry from the database.
@@ -165,7 +216,7 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    APilotEntry getPilotEntry(RowId row_id);
+    APilotEntry getPilotEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -175,7 +226,7 @@ public:
      * instead of an Entry. It allows for easy access to a tail entry
      * with only the RowId required as input.
      */
-    ATailEntry getTailEntry(RowId row_id);
+    ATailEntry getTailEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -185,7 +236,7 @@ public:
      * instead of an AEntry. It allows for easy access to an aircraft entry
      * with only the RowId required as input.
      */
-    AAircraftEntry getAircraftEntry(RowId row_id);
+    AAircraftEntry getAircraftEntry(RowId_T row_id);
 
     /*!
      * \brief retreives a flight entry from the database.
@@ -195,43 +246,60 @@ public:
      * instead of an AEntry. It allows for easy access to a flight entry
      * with only the RowId required as input.
      */
-    AFlightEntry getFlightEntry(RowId row_id);
+    AFlightEntry getFlightEntry(RowId_T row_id);
+
+    /*!
+     * \brief Retreives a currency entry from the database.
+     */
+    ACurrencyEntry getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a
      * QCompleter based on database values
      */
-    const QStringList getCompletionList(ADatabaseTarget);
+    const QStringList getCompletionList(ADatabaseTarget target);
 
     /*!
-     * \brief returns a QMap<QString, int> of a human-readable database value and
+     * \brief returns a QMap<QString, RowId_t> of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
+     * \todo What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString
      */
-    const QMap<QString, int> getIdMap(ADatabaseTarget);
+    const QMap<QString, RowId_T> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTarget);
+    int getLastEntry(ADatabaseTarget target);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<int> getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target);
+    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
      * \return The Pilot Entry referencted by the foreign key.
      */
-    APilotEntry resolveForeignPilot(int foreign_key);
+    APilotEntry resolveForeignPilot(RowId_T foreign_key);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
      * \return The Tail Entry referencted by the foreign key.
      */
-    ATailEntry resolveForeignTail(int foreign_key);
+    ATailEntry resolveForeignTail(RowId_T foreign_key);
 
+    /*!
+     * \brief Return the summary of the DB_PATH as a stringlist
+     * \todo Contemplate whether it should be a more generic function
+     * that may be used for different elements to summarize.
+     * and ADD DOCUMENTATION, theres some specific sql stuff going on.
+     * \return
+     */
+    QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
+
+    bool restoreBackup(const QString& backup_file);
+    bool createBackup(const QString& dest_file);
 
 
 signals:
@@ -242,15 +310,11 @@ signals:
      * the user interface so that a user is always presented with up-to-date information.
      */
     void dataBaseUpdated();
+    /*!
+     * \brief connectionReset is emitted whenever the database connection is reset, for
+     * example when creating or restoring a backup.
+     */
+    void connectionReset();
 };
-
-/*!
- * \brief Convinience function that returns instance of DataBase.
- * Instead of this:
- * DataBase::getInstance().commit(...)
- * Write this:
- * aDB()->commit(...)
- */
-ADatabase* aDB();
 
 #endif // ADATABASE_H

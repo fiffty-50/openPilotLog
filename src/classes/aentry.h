@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #include <QPair>
 #include <QVariant>
 
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 
 // [G]: Define what data is public and what not. For objects such as
 // DataPosition which are consumable its no biggy. Are entries the same?
@@ -41,20 +41,20 @@ class AEntry {
 protected:
     DataPosition position;
 public:
-    RowData tableData;
+    RowData_T tableData;
 public:
     AEntry() = delete; // Demand specificity from default constructor
     AEntry(const AEntry&) = default;
     AEntry& operator=(const AEntry&) = default;
     AEntry(DataPosition position_);
-    AEntry(RowData table_data);
-    AEntry(DataPosition position_, RowData table_data);
+    AEntry(RowData_T table_data);
+    AEntry(DataPosition position_, RowData_T table_data);
 
-    void setData(RowData table_data);
+    void setData(RowData_T table_data);
     void setPosition(DataPosition position_);
 
     const DataPosition& getPosition();
-    const RowData& getData();
+    const RowData_T& getData();
 
 };
 

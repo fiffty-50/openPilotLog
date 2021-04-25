@@ -18,6 +18,19 @@ See https://wiki.qt.io/Qt_Coding_Style for general code style guidelines.
 |Type Alias|follow Qt Convention|`using NewType = QMap<QString, int>`|
 
 
+## Strings in openPilotLog
+
+Aim to construct and use strings in the most efficient way. 
+
+- For all user-facing string use [tr()](), so that the app is translatable.
+
+- Use [QStringLiteral](https://doc-snapshots.qt.io/qt6-dev/qstring.html#QStringLiteral) where possible, except when using a function that has a `char *` overload.
+
+- For string comparisons using the `==` operator, use [QLatin1String](https://wiki.qt.io/Using_QString_Effectively)
+
+- For concatenations, openPilotLog uses [QStringBuilder](https://doc-snapshots.qt.io/qt6-dev/qstring.html#more-efficient-string-construction) globally, so the `+` operator can be used.
+- (Debug etc. can be  `char *`, `QString` or anything else)
+
 ## Examples
 
 ```c++

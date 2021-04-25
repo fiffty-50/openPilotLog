@@ -1,9 +1,27 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef FIRSTRUNDIALOG_H
 #define FIRSTRUNDIALOG_H
 
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QStringBuilder>
 
 namespace Ui {
 class FirstRunDialog;
@@ -23,15 +41,27 @@ private slots:
 
     void on_nextPushButton_clicked();
 
-    void on_themeGroup_toggled(int id);
+    void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
 
-    void on_finishButton_clicked();
+    void on_currWarningCheckBox_stateChanged(int arg1);
 
-    bool finishSetup();
+    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
+
+    void on_currCustom1LineEdit_editingFinished();
+
+    void on_currCustom2LineEdit_editingFinished();
 
 private:
     Ui::FirstRunDialog *ui;
+    bool useRessourceData;
 
+    void writeSettings();
+    bool setupDatabase();
+    bool createUserEntry();
+    bool writeCurrencies();
+    bool finishSetup();
+
+    void reject() override;
 };
 
 #endif // FIRSTRUNDIALOG_H

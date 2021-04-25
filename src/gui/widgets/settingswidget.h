@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
+#include <QFontDialog>
 
 namespace Ui {
 class SettingsWidget;
@@ -37,11 +38,16 @@ public:
     explicit SettingsWidget(QWidget *parent = nullptr);
     ~SettingsWidget();
 
+    /*!
+     * \brief Widgets that need to receive a signal when a setting is updated.
+     */
+    enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget};
+
 private slots:
 
-    void onThemeGroup_buttonClicked(int theme_id);
+//    void onThemeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
-    void on_acSortComboBox_currentIndexChanged(int index);
+    void on_acftSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
     void on_prefixLineEdit_textChanged(const QString &arg1);
     void on_lastnameLineEdit_editingFinished();
@@ -57,6 +63,51 @@ private slots:
     void on_pilotSortComboBox_currentIndexChanged(int index);
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
+    void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
+
+    //void on_fontPushButton_clicked();
+
+    void on_fontComboBox_currentFontChanged(const QFont &f);
+
+    void on_fontSpinBox_valueChanged(int arg1);
+
+    void on_fontCheckBox_stateChanged(int arg1);
+
+    void on_resetStylePushButton_clicked();
+
+    void on_currLicDateEdit_userDateChanged(const QDate &date);
+
+    void on_currTrDateEdit_userDateChanged(const QDate &date);
+
+    void on_currLckDateEdit_userDateChanged(const QDate &date);
+
+    void on_currMedDateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom1DateEdit_userDateChanged(const QDate &date);
+
+    void on_currCustom2DateEdit_userDateChanged(const QDate &date);
+
+    void on_currToLdgCheckBox_stateChanged(int arg1);
+
+    void on_currLicCheckBox_stateChanged(int arg1);
+
+    void on_currTrCheckBox_stateChanged(int arg1);
+
+    void on_currLckCheckBox_stateChanged(int arg1);
+
+    void on_currMedCheckBox_stateChanged(int arg1);
+
+    void on_currCustom1CheckBox_stateChanged(int arg1);
+
+    void on_currCustom2CheckBox_stateChanged(int arg1);
+
+    void on_currWarningCheckBox_stateChanged(int arg1);
+
+    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
+
+    void on_currCustom1LineEdit_editingFinished();
+
+    void on_currCustom2LineEdit_editingFinished();
 
 private:
     Ui::SettingsWidget *ui;
@@ -65,9 +116,21 @@ private:
 
     void setupValidators();
 
+    void setupComboBoxes();
+
+    void setupDateEdits();
+
     void updatePersonalDetails();
+
+    bool usingStylesheet();
+
 signals:
-    void viewSelectionChanged(int view_id);
+
+    /*!
+     * \brief settingChanged is emitted when a setting change shall trigger
+     * an update to another widget.
+     */
+    void settingChanged(SettingSignal widget);
 };
 
 #endif // SETTINGSWIDGET_H

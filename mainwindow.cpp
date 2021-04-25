@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -17,78 +17,85 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
+#include "src/classes/astyle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ATimer timer(this);
     ui->setupUi(this);
+    // connect to the Database
+    TODO << "Create more verbose warning about DB and offer instructions how to fix it.";
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                         absoluteFilePath(QStringLiteral("logbook.db")));
+            if (!database_file.exists()) {
+                WARN(tr("Error: Database file not found."));
+            }
+    if(!aDB->connect()){
+        WARN(tr("Error establishing database connection."));
+    }
 
+    // Create a spacer for the toolbar to separate left and right parts
+    auto *spacer = new QWidget();
+    spacer->setMinimumWidth(1);
+    spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     // Set up Toolbar
-    ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
+    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+    ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
+    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
+    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
+    ui->toolBar->insertWidget(ui->actionSettings, spacer); // spacer goes here
+    ui->actionBackup->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_BACKUP));
+    ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
+    ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
+    ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+    const auto buttons = ui->toolBar->findChildren<QWidget *>();
     ui->toolBar->setIconSize(QSize(64, 64));
-    auto buttons = ui->toolBar->findChildren<QWidget *>();
     for (const auto &button : buttons) {
         button->setMinimumWidth(128);
     }
 
-    ui->actionHome->setIcon(QIcon(":/icons/ionicon-icons/home-outline.png"));
-    ui->actionNewFlight->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
-    ui->actionLogbook->setIcon(QIcon(":/icons/ionicon-icons/book-outline.png"));
-    ui->actionAircraft->setIcon(QIcon(":/icons/ionicon-icons/airplane-outline.png"));
-    ui->actionPilots->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionDebug->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionSettings->setIcon(QIcon(":/icons/ionicon-icons/settings-outline.png"));
-    ui->actionQuit->setIcon(QIcon(":/icons/ionicon-icons/power-outline.png"));
-
-    // Adds space between toolbar items
-    auto *spacer = new QWidget();
-    spacer->setMinimumWidth(10);
-    spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    ui->toolBar->insertWidget(ui->actionDebug, spacer);
-
-
-    DEB << "Construction MainWindow Widgets\n";
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
-    pilotsWidget = new PilotsWidget(this);
-    ui->stackedWidget->addWidget(pilotsWidget);
     logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
-    settingsWidget = new SettingsWidget(this);
-    ui->stackedWidget->addWidget(settingsWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
+    pilotsWidget = new PilotsWidget(this);
+    ui->stackedWidget->addWidget(pilotsWidget);
+
+    backupWidget = new BackupWidget(this);
+    ui->stackedWidget->addWidget(backupWidget);
+    settingsWidget = new SettingsWidget(this);
+    ui->stackedWidget->addWidget(settingsWidget);
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
 
     connectWidgets();
 
     // Startup Screen (Home Screen)
-    // ui->stackedWidget->setCurrentWidget(homeWidget);
-    // Debup Widget for now
-    debugWidget = new DebugWidget(this);
-    ui->stackedWidget->addWidget(debugWidget);
-    ui->stackedWidget->setCurrentWidget(debugWidget);
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 
-    //// START DEBUG ////
-    /// [F] I understand how it is annoying to not have the database
-    /// working when something has changed. Hopefully this check
-    /// helps to avoid that in the future! 
-    #if DATABASE < 15
-    DEB << "Your database is up to date with the latest revision.";
-    #else
-    DEB << "##########################################";
-    DEB << "Your database is out of date.";
-    DEB << "Current Revision:  " << DATABASE_REVISION_NUMBER;
-    DEB << "You have revision: " << query.value(0).toInt();
-    DEB << "Use of DebugWidget to udpate recommended.";
-    DEB << "##########################################";
-    #endif
-    //// END DEBUG ////
 
+    // check database version (Debug)
+    int db_ver = aDB->dbVersion();
+    if (db_ver != DATABASE_REVISION) {
+        DEB << "############## WARNING ##############";
+        DEB << "Your database is out of date.";
+        DEB << "Current Revision:\t" << DATABASE_REVISION;
+        DEB << "You have revision:\t" << db_ver;
+        DEB << "############## WARNING ##############";
+        QMessageBox message_box(this); //error box
+        message_box.setText(tr("Database revision out of date!"));
+        message_box.exec();
+    } else {
+        DEB << "Your database is up to date with the latest revision:" << db_ver;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -98,24 +105,59 @@ MainWindow::~MainWindow()
 
 void MainWindow::nope()
 {
-    QMessageBox nope(this); //error box
-    nope.setText("This feature is not yet available!");
-    nope.exec();
+    QMessageBox message_box(this); //error box
+    message_box.setText(tr("This feature is not yet available!"));
+    message_box.exec();
 }
 
+/*!
+ * \brief Connect the widgets to signals that are emitted when an update of the widegts' contents,
+ * is required, either because the database has changed (model and view need to be refreshed) or
+ * because a setting that affects the widgets layout has changed.
+ */
+void MainWindow::connectWidgets()
+{
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     homeWidget,     &HomeWidget::refresh);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     homeWidget,     &HomeWidget::refresh);
+
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     logbookWidget,  &LogbookWidget::refresh);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
+
+    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+                     aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
+
+    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
+
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     logbookWidget,   &LogbookWidget::repopulateModel);
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     pilotsWidget,    &PilotsWidget::repopulateModel);
+    QObject::connect(aDB,             &ADatabase::connectionReset,
+                     aircraftWidget,  &AircraftWidget::repopulateModel);
+}
 
 /*
  * Slots
  */
 
-void MainWindow::on_actionQuit_triggered()
-{
-    QApplication::quit();
-}
-
 void MainWindow::on_actionHome_triggered()
 {
     ui->stackedWidget->setCurrentWidget(homeWidget);
+}
+
+void MainWindow::on_actionNewFlight_triggered()
+{
+    NewFlightDialog nf(this);
+    nf.exec();
 }
 
 void MainWindow::on_actionLogbook_triggered()
@@ -123,27 +165,9 @@ void MainWindow::on_actionLogbook_triggered()
     ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
-void MainWindow::on_actionDebug_triggered()
+void MainWindow::on_actionAircraft_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(debugWidget);
-}
-
-void MainWindow::connectWidgets()
-{
-    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
-                     logbookWidget, &LogbookWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
-                     pilotsWidget, &PilotsWidget::onDisplayModel_dataBaseUpdated);
-    QObject::connect(aDB(), &ADatabase::dataBaseUpdated,
-                     aircraftWidget, &AircraftWidget::onDisplayModel_dataBaseUpdated);
-
-    QObject::connect(settingsWidget, &SettingsWidget::viewSelectionChanged,
-                     logbookWidget, &LogbookWidget::onLogbookWidget_viewSelectionChanged);
-}
-
-void MainWindow::on_actionSettings_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(settingsWidget);
+    ui->stackedWidget->setCurrentWidget(aircraftWidget);
 }
 
 void MainWindow::on_actionPilots_triggered()
@@ -151,26 +175,38 @@ void MainWindow::on_actionPilots_triggered()
     ui->stackedWidget->setCurrentWidget(pilotsWidget);
 }
 
-void MainWindow::on_actionAircraft_triggered()
+void MainWindow::on_actionBackup_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(aircraftWidget);
+    ui->stackedWidget->setCurrentWidget(backupWidget);
 }
 
-void MainWindow::on_actionNewFlight_triggered()
+void MainWindow::on_actionSettings_triggered()
 {
-    NewFlightDialog nf = NewFlightDialog(this);
-    nf.exec();
-
+    ui->stackedWidget->setCurrentWidget(settingsWidget);
 }
 
-void MainWindow::on_actionNewAircraft_triggered()
+void MainWindow::on_actionQuit_triggered()
 {
-    NewTailDialog nt = NewTailDialog(QString(), this);
+    QApplication::quit();
+}
+
+void MainWindow::on_actionDebug_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(debugWidget);
+}
+
+// Debug
+
+// not used at the moment
+
+/*void MainWindow::on_actionNewAircraft_triggered()
+{
+    NewTailDialog nt(QString(), this);
     nt.exec();
 }
 
 void MainWindow::on_actionNewPilot_triggered()
 {
-    NewPilotDialog np = NewPilotDialog(this);
+    NewPilotDialog np(this);
     np.exec();
-}
+}*/

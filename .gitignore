@@ -63,3 +63,22 @@ openPilotLog.vcxproj.filters
 openPilotLog.vcxproj.user
 
 .vs/openPilotLog/v16/
+=======
+
+release/qmake/temp/
+
+release/
+
+out/build/x64-Debug (default)/CMakeFiles/ShowIncludes/
+
+out/build/x64-Debug (default)/
+
+debug/
+
+.vs/
+
+openPilotLog.vcxproj
+
+openPilotLog.vcxproj.filters
+
+openPilotLog.vcxproj.user

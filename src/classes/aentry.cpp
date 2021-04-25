@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -21,15 +21,15 @@ AEntry::AEntry(DataPosition position_)
     : position(position_)
 {}
 
-AEntry::AEntry(RowData table_data)
+AEntry::AEntry(RowData_T table_data)
     : tableData(table_data)
 {}
 
-AEntry::AEntry(DataPosition position_, RowData table_data)
+AEntry::AEntry(DataPosition position_, RowData_T table_data)
     : position(position_), tableData(table_data)
 {}
 
-void AEntry::setData(RowData table_data)
+void AEntry::setData(RowData_T table_data)
 {
     tableData = table_data;
 }
@@ -39,7 +39,7 @@ const DataPosition& AEntry::getPosition()
     return position;
 }
 
-const RowData& AEntry::getData()
+const RowData_T& AEntry::getData()
 {
     return tableData;
 }

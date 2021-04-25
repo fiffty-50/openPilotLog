@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -22,15 +22,11 @@
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include "src/functions/astat.h"
-#include "src/functions/acalc.h"
-#include "src/gui/dialogues/newtaildialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/widgets/totalswidget.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
-
 #include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
+#include "src/classes/acurrencyentry.h"
 
 namespace Ui {
 class HomeWidget;
@@ -47,7 +43,47 @@ public:
 private:
     Ui::HomeWidget *ui;
 
-    TotalsWidget* totalsWidget;
+    QList<QLabel*> limitationDisplayLabels;
+    QDate          today;
+    int            currWarningThreshold;
+    double         ftlWarningThreshold;
+
+    void fillTotals();
+    void fillAllCurrencies();
+    void fillCurrencyTakeOffLanding();
+    void fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel *display_label);
+    void fillLimitations();
+
+    enum class Colour {Red, Orange, None};
+    inline void setLabelColour(QLabel* label, Colour colour)
+    {
+        switch (colour) {
+        case Colour::None:
+            label->setStyleSheet(QString());
+            break;
+        case Colour::Red:
+            label->setStyleSheet(QStringLiteral("color: red"));
+            break;
+        case Colour::Orange:
+            label->setStyleSheet(QStringLiteral("color: orange"));
+            break;
+        default:
+            label->setStyleSheet(QString());
+            break;
+        }
+    }
+
+    inline void hideLabels(QLabel* label1, QLabel* label2) {
+        label1->hide();
+        label2->hide();
+    }
+
+    /*!
+     * \brief Retreives the users first name from the database.
+     */
+    const QString userName();
+public slots:
+    void refresh();
 };
 
 #endif // HOMEWIDGET_H

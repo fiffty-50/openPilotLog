@@ -1,6 +1,6 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Tail Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,33 +16,34 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "atailentry.h"
+#include "src/opl.h"
 
 ATailEntry::ATailEntry()
-    : AEntry::AEntry(DEFAULT_TAIL_POSITION)
+    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION)
 {}
 
-ATailEntry::ATailEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_TAILS, row_id))
+ATailEntry::ATailEntry(RowId_T row_id)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, row_id))
 {}
 
-ATailEntry::ATailEntry(RowData table_data)
-    : AEntry::AEntry(DEFAULT_TAIL_POSITION, table_data)
+ATailEntry::ATailEntry(RowData_T table_data)
+    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION, table_data)
 {}
 
 const QString ATailEntry::registration()
 {
-    return getData().value(DB_TAILS_REGISTRATION).toString();
+    return getData().value(Opl::Db::TAILS_REGISTRATION).toString();
 }
 
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!tableData.value(DB_TAILS_MAKE).toString().isEmpty())
-        type_string.append(getData().value(DB_TAILS_MAKE).toString() + ' ');
-    if (!tableData.value(DB_TAILS_MODEL).toString().isEmpty())
-        type_string.append(getData().value(DB_TAILS_MODEL).toString());
-    if (!tableData.value(DB_TAILS_VARIANT).toString().isEmpty())
-        type_string.append('-' + getData().value(DB_TAILS_VARIANT).toString() + ' ');
+    if (!tableData.value(Opl::Db::TAILS_MAKE).toString().isEmpty())
+        type_string.append(getData().value(Opl::Db::TAILS_MAKE).toString() + ' ');
+    if (!tableData.value(Opl::Db::TAILS_MODEL).toString().isEmpty())
+        type_string.append(getData().value(Opl::Db::TAILS_MODEL).toString());
+    if (!tableData.value(Opl::Db::TAILS_VARIANT).toString().isEmpty())
+        type_string.append('-' + getData().value(Opl::Db::TAILS_VARIANT).toString());
 
     return type_string;
 }

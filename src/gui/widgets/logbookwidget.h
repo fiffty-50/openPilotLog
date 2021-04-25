@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QTableView>
+#include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -52,8 +53,13 @@ private slots:
     void on_flightSearchComboBox_currentIndexChanged(int);
 
 public slots:
-    void onDisplayModel_dataBaseUpdated();
-    void onLogbookWidget_viewSelectionChanged(int);
+    void refresh();
+    void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
+    /*!
+     * \brief LogbookWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 
 private:
     Ui::LogbookWidget *ui;
@@ -70,10 +76,8 @@ private:
 
     QVector<qint32> selectedFlights;
 
-    void prepareModelAndView(int view_id);
+    void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
-    void setupDefaultView();
-    void setupEasaView();
 };
 
 #endif // LOGBOOKWIDGET_H

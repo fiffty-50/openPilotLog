@@ -1,6 +1,6 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Tail Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,15 +16,16 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aaircraftentry.h"
+#include "src/opl.h"
 
 AAircraftEntry::AAircraftEntry()
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION)
+    : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION)
 {}
 
-AAircraftEntry::AAircraftEntry(RowId row_id)
-    : AEntry::AEntry(DataPosition(DB_TABLE_AIRCRAFT, row_id))
+AAircraftEntry::AAircraftEntry(RowId_T row_id)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_AIRCRAFT, row_id))
 {}
 
-AAircraftEntry::AAircraftEntry(RowData table_data)
-    : AEntry::AEntry(DEFAULT_AIRCRAFT_POSITION, table_data)
+AAircraftEntry::AAircraftEntry(RowData_T table_data)
+    : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION, table_data)
 {}

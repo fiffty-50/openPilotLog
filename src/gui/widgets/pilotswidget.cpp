@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
-#include "src/testing/adebug.h"
+#include "src/opl.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
 
@@ -26,6 +27,9 @@ PilotsWidget::PilotsWidget(QWidget *parent) :
     ui(new Ui::PilotsWidget)
 {
     ui->setupUi(this);
+
+    ui->tableView->setMinimumWidth(this->width()/2);
+    ui->stackedWidget->setMinimumWidth(this->width()/2);
 
     setupModelAndView();
 }
@@ -37,60 +41,69 @@ PilotsWidget::~PilotsWidget()
 
 void PilotsWidget::setupModelAndView()
 {
-    sortColumn = ASettings::read("userdata/pilSortColumn").toInt();
-
     model = new QSqlTableModel(this);
-    model->setTable("viewPilots");
-    model->setFilter("ID > 1");//to not allow editing of self, shall be done via settings
+    model->setTable(QStringLiteral("viewPilots"));
+    model->setFilter(QStringLiteral("ID > 1")); // Don't show self
     model->select();
 
-    view = ui->pilotsTableView;
+    view = ui->tableView;
     view->setModel(model);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->hideColumn(0);
-    view->setColumnWidth(1, 180);
-    view->setColumnWidth(2, 180);
+    view->resizeColumnsToContents();
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
+    sortColumn = ASettings::read(ASettings::UserData::PilotSortColumn).toInt();
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
     selectionModel = view->selectionModel();
 
-    QObject::connect(ui->pilotsTableView->selectionModel(), &QItemSelectionModel::selectionChanged,
-                     this, &PilotsWidget::tableView_selectionChanged);
-    QObject::connect(ui->pilotsTableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this, &PilotsWidget::tableView_headerClicked);
+    connectSignalsAndSlots();
+}
+
+void PilotsWidget::connectSignalsAndSlots()
+{
+    QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
+                     this,                              &PilotsWidget::tableView_selectionChanged);
+    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
+                     this,                              &PilotsWidget::tableView_headerClicked);
+}
+
+void PilotsWidget::onPilotsWidget_settingChanged(SettingsWidget::SettingSignal signal)
+{
+    if (signal == SettingsWidget::PilotsWidget)
+        setupModelAndView();
+}
+
+void PilotsWidget::onPilotsWidget_databaseUpdated()
+{
+    refreshView();
+}
+
+void PilotsWidget::onNewPilotDialog_editingFinished()
+{
+    refreshView();
 }
 
 void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
 {
-    model->setFilter("\"" + ui->pilotsSearchComboBox->currentText() + "\" LIKE \"%" + arg1 + "%\" AND ID > 1");
+    model->setFilter(QLatin1Char('\"') + ui->pilotsSearchComboBox->currentText()
+                     + QLatin1String("\" LIKE '%") + arg1
+                     + QLatin1String("%' AND ID > 1"));
 }
 
-void PilotsWidget::onDisplayModel_dataBaseUpdated()
-{
-    //refresh view to reflect changes the user has made via a dialog.
-    model->select();
-}
-
-void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, const QItemSelection &
+void PilotsWidget::tableView_selectionChanged()
 {
     if (this->findChild<NewPilotDialog*>() != nullptr) {
-        DEB << "Selection changed. Deleting orphaned dialog.";
         delete this->findChild<NewPilotDialog*>();
-        /// [F] if the user changes the selection without making any changes,
-        /// if(selectedPilots.length() == 1) spawns a new dialog without the
-        /// old one being deleted, since neither accept() nor reject() was emitted.
-        /// Is this a reasonable way of avoiding pollution? Creating the widgets on the
-        /// stack does not seem to solve the problem since the Dialog does not get deleted
-        /// until either accept() or reject() is emitted so I went for this solution.
     }
-    auto *selection = ui->pilotsTableView->selectionModel();
+
+    auto *selection = ui->tableView->selectionModel();
     selectedPilots.clear();
 
     for (const auto& row : selection->selectedRows()) {
@@ -100,10 +113,10 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
     if(selectedPilots.length() == 1) {
 
         NewPilotDialog* np = new NewPilotDialog(selectedPilots.first(), this);
-        QObject::connect(np, &QDialog::accepted,
-                         this, &PilotsWidget::pilot_editing_finished);
-        QObject::connect(np, &QDialog::rejected,
-                         this, &PilotsWidget::pilot_editing_finished);
+        QObject::connect(np,   &QDialog::accepted,
+                         this, &PilotsWidget::onNewPilotDialog_editingFinished);
+        QObject::connect(np,   &QDialog::rejected,
+                         this, &PilotsWidget::onNewPilotDialog_editingFinished);
         np->setWindowFlag(Qt::Widget);
         np->setAttribute(Qt::WA_DeleteOnClose);
         ui->stackedWidget->addWidget(np);
@@ -115,16 +128,16 @@ void PilotsWidget::tableView_selectionChanged()//const QItemSelection &index, co
 void PilotsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write("userdata/pilSortColumn", column);
+    ASettings::write(ASettings::UserData::PilotSortColumn, column);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()
 {
     NewPilotDialog* np = new NewPilotDialog(this);
     QObject::connect(np,   &QDialog::accepted,
-                     this, &PilotsWidget::pilot_editing_finished);
+                     this, &PilotsWidget::onNewPilotDialog_editingFinished);
     QObject::connect(np,   &QDialog::rejected,
-                     this, &PilotsWidget::pilot_editing_finished);
+                     this, &PilotsWidget::onNewPilotDialog_editingFinished);
     np->setAttribute(Qt::WA_DeleteOnClose);
     np->exec();
 }
@@ -132,14 +145,14 @@ void PilotsWidget::on_newPilotButton_clicked()
 void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
-        auto mb = QMessageBox(this);
-        mb.setText("No Pilot selected.");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText(tr("No Pilot selected."));
+        message_box.exec();
 
     } else if (selectedPilots.length() > 1) {
-        auto mb = QMessageBox(this);
-        mb.setText("Deleting multiple entries is currently not supported");
-        mb.exec();
+        QMessageBox message_box(this);
+        message_box.setText(tr("Deleting multiple entries is currently not supported"));
+        message_box.exec();
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where
@@ -150,47 +163,77 @@ void PilotsWidget::on_deletePilotButton_clicked()
         /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = aDB()->getPilotEntry(selectedPilots.first());
-        auto message_box = QMessageBox(this);
-        QString message = "You are deleting the following pilot:<br><br><b><tt>";
-        message.append(entry.name());
-        message.append(QStringLiteral("</b></tt><br><br>Are you sure?"));
-        message_box.setText(message);
-        message_box.exec();
-        if(!aDB()->remove(entry))
-            onDeleteUnsuccessful();
+        auto entry = aDB->getPilotEntry(selectedPilots.first());
+        QMessageBox message_box(this);
+        message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        message_box.setDefaultButton(QMessageBox::No);
+        message_box.setIcon(QMessageBox::Question);
+        message_box.setWindowTitle(tr("Delete Pilot"));
+
+        message_box.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
+                               "%1</b></tt><br><br>Are you sure?").arg(entry.name()));
+        if (message_box.exec() == QMessageBox::Yes) {
+            if(!aDB->remove(entry))
+                onDeleteUnsuccessful();
         }
-    model->select();
+    }
+    refreshView();
 }
 
+/*!
+ * \brief Informs the user that deleting a database entry has been unsuccessful
+ *
+ * \abstract Normally, when one of these entries can not be deleted, it is because of
+ * a [foreign key constraint](https://sqlite.org/foreignkeys.html), meaning that a flight
+ * is associated with the Pilot that was supposed to be deleted as Pilot-in-command.
+ *
+ * This function is used to inform the user and give hints on how to solve the problem.
+ */
 void PilotsWidget::onDeleteUnsuccessful()
 {
-    /// [F]: To do: Some logic to display a warning if too many entries exists, so that
-    /// the messagebox doesn't grow too tall.
-    QList<int> foreign_key_constraints = aDB()->getForeignKeyConstraints(selectedPilots.first(), ADatabaseTarget::pilots);
+    const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
+                                                                       ADatabaseTarget::pilots);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
-        constrained_flights.append(aDB()->getFlightEntry(row_id));
+        constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
-    QString message = "<br>Unable to delete.<br><br>";
-    if(!constrained_flights.isEmpty()){
-        message.append(QStringLiteral("This is most likely the case because a flight exists with the Pilot "
-                   "you are trying to delete as PIC.<br>"
-                   "The following flight(s) with this pilot have been found:<br><br><br><b><tt>"));
-        for (auto &flight : constrained_flights) {
-            message.append(flight.summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-        }
-    }
-    message.append(QStringLiteral("</b></tt><br><br>You have to change or remove the conflicting flight(s) "
-                                  "before removing this pilot from the database.<br><br>"));
     QMessageBox message_box(this);
-    message_box.setText(message);
-    message_box.setIcon(QMessageBox::Critical);
-    message_box.exec();
+    if (constrained_flights.isEmpty()) {
+        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
+                               ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return;
+    } else {
+        QString constrained_flights_string;
+        for (int i=0; i<constrained_flights.length(); i++) {
+            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            if (i>10) {
+                constrained_flights_string.append("<br>[...]<br>");
+                break;
+            }
+        }
+        message_box.setText(tr("Unable to delete.<br><br>"
+                               "This is most likely the case because a flight exists with the Pilot "
+                               "you are trying to delete as PIC.<br><br>"
+                               "%1 flight(s) with this pilot have been found:<br><br><br><b><tt>"
+                               "%2"
+                               "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+                               "before removing this pilot from the database.<br><br>"
+                               ).arg(QString::number(constrained_flights.length()),
+                                     constrained_flights_string));
+        message_box.setIcon(QMessageBox::Critical);
+        message_box.exec();
+    }
 }
 
-void PilotsWidget::pilot_editing_finished()
+void PilotsWidget::repopulateModel()
 {
-    model->select();
+    // unset the current model and delete it to avoid leak
+    view->setModel(nullptr);
+    delete model;
+    // create a new model and populate it
+    model = new QSqlTableModel(this);
+    setupModelAndView();
+    connectSignalsAndSlots();
 }

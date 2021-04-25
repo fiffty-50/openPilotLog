@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,11 +16,11 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "adatabase.h"
-#include "src/testing/adebug.h"
-#include "src/astandardpaths.h"
+#include "src/functions/alog.h"
+#include "src/classes/astandardpaths.h"
+#include "src/opl.h"
+#include "src/functions/alog.h"
 
-#define DATABASE_VERSION 15
-const auto SQL_DRIVER = QStringLiteral("QSQLITE");
 
 ADatabaseError::ADatabaseError(QString msg_)
     : QSqlError::QSqlError(msg_)
@@ -31,30 +31,67 @@ QString ADatabaseError::text() const
     return "Database Error: " + QSqlError::text();
 }
 
-ADatabase* ADatabase::instance = nullptr;
+ADatabase* ADatabase::self = nullptr;
 
-TableNames ADatabase::getTableNames() const
+ADatabase::ADatabase()
+    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                             absoluteFilePath(QStringLiteral("logbook.db"))
+                             )
+                   )
+{}
+
+int ADatabase::dbVersion() const
+{
+    return databaseVersion;
+}
+
+int ADatabase::checkDbVersion() const
+{
+    QSqlQuery query("SELECT COUNT(*) FROM changelog");
+    query.next();
+    return query.value(0).toInt();
+}
+
+ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
+{
+    return tableColumns.value(table_name);
+}
+
+TableNames_T ADatabase::getTableNames() const
 {
     return tableNames;
 }
 
-TableColumns ADatabase::getTableColumns() const
+void ADatabase::updateLayout()
 {
-    return tableColumns;
+    auto db = ADatabase::database();
+    tableNames = db.tables();
+
+    tableColumns.clear();
+    for (const auto &table_name : tableNames) {
+        ColumnNames_T table_columns;
+        QSqlRecord fields = db.record(table_name);
+        for (int i = 0; i < fields.count(); i++) {
+            table_columns.append(fields.field(i).name());
+        }
+        tableColumns.insert(table_name, table_columns);
+    }
+    emit dataBaseUpdated();
 }
 
-ADatabase* ADatabase::getInstance()
+ADatabase* ADatabase::instance()
 {
-    if(!instance)
-        instance = new ADatabase();
-    return instance;
+#ifdef __GNUC__
+    return self ?: self = new ADatabase();  // Cheeky business...
+#else
+    if(!self)
+        self = new ADatabase();
+    return self;
+#endif
 }
 
-/*!
- * \brief ADatabase::sqliteVersion returns database sqlite version.
- * \return sqlite version string
- */
-const QString ADatabase::sqliteVersion()
+
+const QString ADatabase::sqliteVersion() const
 {
     QSqlQuery query;
     query.prepare(QStringLiteral("SELECT sqlite_version()"));
@@ -65,35 +102,20 @@ const QString ADatabase::sqliteVersion()
 
 bool ADatabase::connect()
 {
-    if (!QSqlDatabase::isDriverAvailable(SQL_DRIVER))
+    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
         return false;
 
-    QString path = AStandardPaths::getPath(QStandardPaths::AppDataLocation);
-    QDir directory(path);
-    // [G]: Where would it make sense to define the database file?. In the class perhaps?
-    QString databaseLocation = directory.filePath(QStringLiteral("logbook.db"));
-    QSqlDatabase db = QSqlDatabase::addDatabase(SQL_DRIVER);
-    db.setDatabaseName(databaseLocation);
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
+    db.setDatabaseName(databaseFile.absoluteFilePath());
 
     if (!db.open())
         return false;
 
-    DEB << "Database connection established." << db.lastError().text();
+    LOG << "Database connection established.";
     // Enable foreign key restrictions
     QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
-    tableNames = db.tables();
-
-    QStringList column_names;
-    for (const auto &table : tableNames) {
-        column_names.clear();
-        QSqlRecord fields = db.record(table);
-        for (int i = 0; i < fields.count(); i++) {
-            column_names.append(fields.field(i).name());
-            tableColumns.insert(table, column_names);
-        }
-    }
-    DEB << "Database Tables: " << tableNames;
-    DEB << "Tables and Columns: " << tableColumns;
+    updateLayout();
+    databaseVersion = checkDbVersion();
     return true;
 }
 
@@ -101,7 +123,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
-    DEB << "Database connection closed.";
+    LOG << "Database connection closed.";
 }
 
 QSqlDatabase ADatabase::database()
@@ -180,13 +202,17 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             lastError = QString();
             return true;
         } else {
-            lastError = "Transaction unsuccessful (Interrupted). Error count: " + QString::number(errorCount);
+            lastError = ADatabaseError(
+                        "Transaction unsuccessful (Interrupted). Error count: "
+                        + QString::number(errorCount));
             return false;
         }
     } else {
         query.prepare(QStringLiteral("ROLLBACK"));
         query.exec();
-        lastError = "Transaction unsuccessful (no changes have been made). Error count: " + QString::number(errorCount);
+        lastError = ADatabaseError(
+                    "Transaction unsuccessful (no changes have been made). Error count: "
+                    + QString::number(errorCount));
         return false;
     }
 }
@@ -263,7 +289,7 @@ bool ADatabase::update(AEntry updated_entry)
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        if (i.value() == QVariant(QVariant::String)) {
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
             query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
@@ -307,8 +333,8 @@ bool ADatabase::insert(AEntry new_entry)
     QSqlQuery query;
     query.prepare(statement);
 
-    for (i = data.begin(); i != data.end(); ++i) {
-        if (i.value() == "") {
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
             query.addBindValue(QVariant(QVariant::String));
         } else {
             query.addBindValue(i.value());
@@ -333,12 +359,12 @@ bool ADatabase::insert(AEntry new_entry)
 
 }
 
-RowData ADatabase::getEntryData(DataPosition data_position)
+RowData_T ADatabase::getEntryData(DataPosition data_position)
 {
     // check table exists
-    if (!tableNames.contains(data_position.tableName)) {
+    if (!getTableNames().contains(data_position.tableName)) {
         DEB << data_position.tableName << " not a table in the database. Unable to retreive Entry data.";
-        return RowData();
+        return RowData_T();
     }
 
     //Check Database for rowId
@@ -354,14 +380,14 @@ RowData ADatabase::getEntryData(DataPosition data_position)
         DEB << "SQL error: " << check_query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = check_query.lastError().text();
-        return RowData();
+        return RowData_T();
     }
 
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
         DEB << "No Entry found for row id: " << data_position.rowId;
         lastError = ADatabaseError("Database entry not found.");
-        return RowData();
+        return RowData_T();
     }
 
     // Retreive TableData
@@ -378,13 +404,13 @@ RowData ADatabase::getEntryData(DataPosition data_position)
         DEB << "SQL error: " << select_query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = select_query.lastError().text();
-        return RowData();
+        return RowData_T();
     }
 
     select_query.next();
-    RowData entry_data;
+    RowData_T entry_data;
 
-    for (const auto &column : tableColumns.value(data_position.tableName)) {
+    for (const auto &column : getTableColumns(data_position.tableName)) {
         entry_data.insert(column, select_query.value(column));
     }
     return entry_data;
@@ -397,32 +423,39 @@ AEntry ADatabase::getEntry(DataPosition data_position)
     return entry;
 }
 
-APilotEntry ADatabase::getPilotEntry(RowId row_id)
+APilotEntry ADatabase::getPilotEntry(RowId_T row_id)
 {
     APilotEntry pilot_entry(row_id);
     pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
     return pilot_entry;
 }
 
-ATailEntry ADatabase::getTailEntry(RowId row_id)
+ATailEntry ADatabase::getTailEntry(RowId_T row_id)
 {
     ATailEntry tail_entry(row_id);
     tail_entry.setData(getEntryData(tail_entry.getPosition()));
     return tail_entry;
 }
 
-AAircraftEntry ADatabase::getAircraftEntry(RowId row_id)
+AAircraftEntry ADatabase::getAircraftEntry(RowId_T row_id)
 {
     AAircraftEntry aircraft_entry(row_id);
     aircraft_entry.setData(getEntryData(aircraft_entry.getPosition()));
     return aircraft_entry;
 }
 
-AFlightEntry ADatabase::getFlightEntry(RowId row_id)
+AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
 {
     AFlightEntry flight_entry(row_id);
     flight_entry.setData(getEntryData(flight_entry.getPosition()));
     return flight_entry;
+}
+
+ACurrencyEntry ADatabase::getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
+{
+    ACurrencyEntry currency_entry(currency_name);
+    currency_entry.setData(getEntryData(currency_entry.getPosition()));
+    return currency_entry;
 }
 
 const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
@@ -473,7 +506,8 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
     return completer_list;
 }
 
-const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
+const
+QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -500,24 +534,25 @@ const QMap<QString, int> ADatabase::getIdMap(ADatabaseTarget target)
         break;
     default:
         DEB << "Not a valid completer target for this function.";
-        return QMap<QString, int>();
+        return {};  // [G]: Cpp will implicitly create the default map.
+                    // if this is too vague change to QMap<...>()
     }
 
-    auto id_map = QMap<QString, int>();
     auto query = QSqlQuery(statement);
     if (!query.isActive()) {
         DEB << "No result found. Check Query and Error.";
         DEB << "Query: " << statement;
         DEB << "Error: " << query.lastError().text();
         lastError = query.lastError().text();
-        return QMap<QString, int>();
-    } else {
-        QVector<QString> query_result;
-        while (query.next()) {
-            id_map.insert(query.value(1).toString(), query.value(0).toInt());
-        }
-        return id_map;
+        return {};
     }
+
+    // QVector<QString> query_result;  // [G]: unused
+    auto id_map = QMap<QString, RowId_T>();
+    while (query.next()) {
+        id_map.insert(query.value(1).toString(), query.value(0).toInt());
+    }
+    return id_map;
 }
 
 int ADatabase::getLastEntry(ADatabaseTarget target)
@@ -526,13 +561,13 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append(DB_TABLE_PILOTS);
+        statement.append(Opl::Db::TABLE_PILOTS);
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(DB_TABLE_AIRCRAFT);
+        statement.append(Opl::Db::TABLE_AIRCRAFT);
         break;
     case ADatabaseTarget::tails:
-        statement.append(DB_TABLE_TAILS);
+        statement.append(Opl::Db::TABLE_TAILS);
         break;
     default:
         DEB << "Not a valid completer target for this function.";
@@ -548,7 +583,7 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
     }
 }
 
-QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarget target)
+QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target)
 {
     QString statement = "SELECT ROWID FROM flights WHERE ";
 
@@ -585,17 +620,17 @@ QList<int> ADatabase::getForeignKeyConstraints(int foreign_row_id, ADatabaseTarg
     return row_ids;
 }
 
-APilotEntry ADatabase::resolveForeignPilot(int foreign_key)
+APilotEntry ADatabase::resolveForeignPilot(RowId_T foreign_key)
 {
-    return aDB()->getPilotEntry(foreign_key);
+    return aDB->getPilotEntry(foreign_key);
 }
 
-ATailEntry ADatabase::resolveForeignTail(int foreign_key)
+ATailEntry ADatabase::resolveForeignTail(RowId_T foreign_key)
 {
-    return aDB()->getTailEntry(foreign_key);
+    return aDB->getTailEntry(foreign_key);
 }
 
-QVector<QString> ADatabase::customQuery(QString statement, int return_values)
+QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
 {
     QSqlQuery query(statement);
     query.exec();
@@ -605,20 +640,143 @@ QVector<QString> ADatabase::customQuery(QString statement, int return_values)
         DEB << "Error: " << query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = query.lastError().text();
-        return QVector<QString>();
+        return QVector<QVariant>();
     } else {
         query.first();
         query.previous();
-        QVector<QString> result;
+        QVector<QVariant> result;
         while (query.next()) {
             for (int i = 0; i < return_values ; i++) {
-                result.append(query.value(i).toString());
+                result.append(query.value(i));
             }
         }
-        emit dataBaseUpdated();
         lastError = QString();
         return result;
     }
 }
 
-ADatabase* aDB() { return ADatabase::getInstance(); }
+QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_path)
+{
+    // List layout: {"# Flights", "# Aircraft", "# Pilots", "ISODate last flight", "Total Time hh:mm"}
+    const QString connection_name = QStringLiteral("summary_connection");
+    QMap<ADatabaseSummaryKey, QString> return_values;
+    { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
+        //DEB << "Adding temporary connection to database:" << db_path;
+        QSqlDatabase temp_database = QSqlDatabase::addDatabase(SQLITE_DRIVER, connection_name); // Don't use default connection
+        temp_database.setDatabaseName(db_path);
+        if (!temp_database.open())
+            return {};
+
+        QSqlQuery query(temp_database);
+        ADatabaseSummaryKey key;  // Used among the queries for verbosity... and sanity
+
+        const QVector<QPair<ADatabaseSummaryKey, QString>> key_table_pairs = {
+                {ADatabaseSummaryKey::total_flights, QStringLiteral("flights")},
+                {ADatabaseSummaryKey::total_tails, QStringLiteral("tails")},
+                {ADatabaseSummaryKey::total_pilots, QStringLiteral("pilots")}
+    };
+        for (const auto & pair : key_table_pairs) {
+            query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + pair.second);
+            query.exec();
+            key = pair.first;
+            if (query.first()){
+                return_values[key] = query.value(0).toString();
+            }
+            else{
+                return_values[key] = QString();
+            }
+        }
+
+        query.prepare(QStringLiteral("SELECT MAX(doft) FROM flights"));
+        query.exec();
+        key = ADatabaseSummaryKey::max_doft;
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
+
+        query.prepare(QStringLiteral("SELECT "
+                                     "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)"
+                                     "||':'||"
+                                     "printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) FROM flights"));
+        key = ADatabaseSummaryKey::total_time;
+        query.exec();
+        if (query.first()){
+            return_values[key] = query.value(0).toString();
+        }
+        else {
+            return_values[key] = QString();
+        }
+    }
+
+    QSqlDatabase::removeDatabase(connection_name); // cleanly removes temp connection without leaks since query+db are out of scope
+//    DEB << return_values;  // [G]: ADatabaseSummaryKeys cant print
+
+    return return_values;
+}
+
+/*!
+ * \brief ADatabase::createBackup copies the currently used database to an external backup location provided by the user
+ * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ */
+bool ADatabase::createBackup(const QString& dest_file)
+{
+    LOG << "Backing up current database to: " << dest_file;
+    ADatabase::disconnect();
+    QFile db_file(databaseFile.absoluteFilePath());
+    DEB << "File to Overwrite:" << db_file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
+
+//    if(!db_file.remove()) {
+//        DEB << "Unable to delete file:" << db_file;
+//        return false;
+//    }
+
+    if (!db_file.copy(dest_file)) {
+        LOG << "Unable to backup old database:" << db_file.errorString();
+        return false;
+    }
+
+    LOG << "Backed up old database as:" << dest_file;
+    ADatabase::connect();
+    emit connectionReset();
+    return true;
+}
+
+/*!
+ * \brief ADatabase::restoreBackup restores the database from a given backup file and replaces the currently active database.
+ * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+ * \return
+ */
+bool ADatabase::restoreBackup(const QString& backup_file)
+{
+    LOG << "Restoring backup from file:" << backup_file;
+
+    QString default_loc = databaseFile.absoluteFilePath();
+
+    ADatabase::disconnect();
+    QFile backup(backup_file);
+    QFile current_db(default_loc);
+
+    if (!current_db.rename(default_loc + QLatin1String(".tmp"))) { // move previously used db out of the way
+        LOG << current_db.errorString() << "Unable to remove current db file";
+        return false;
+    }
+
+    if (!backup.copy(default_loc))
+    {
+        LOG << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        // try to restore previously used db
+        current_db.rename(default_loc);
+        return false;
+    }
+
+    // backup has been restored, clean up the previously moved file
+    current_db.remove();
+    LOG << "Backup successfully restored!";
+    ADatabase::connect();
+    emit connectionReset();
+    return true;
+}
+

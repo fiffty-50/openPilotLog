@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -17,86 +17,86 @@
  */
 #include "astat.h"
 #include "src/database/adatabase.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 
 /*!
  * \brief AStat::totalTime Looks up Total Blocktime in the flights database
- * \param yearType - Whether the calculation is based on total time, last
- * calendar year or the last rolling year
+ * \param TimeFrame - The timeframe used for the calculations.
  * \return Amount of Total Block Time in minutes
  */
-QString AStat::totalTime(yearType year_type)
+int AStat::totalTime(TimeFrame time_frame)
 {
     QString statement;
     QDate start;
     QString start_date;
 
-    switch (year_type) {
-    case AStat::allYears:
-        statement = "SELECT SUM(tblk) FROM flights";
+    switch (time_frame) {
+    case TimeFrame::AllTime:
+        statement = QStringLiteral("SELECT SUM(tblk) FROM flights");
         break;
-    case AStat::calendarYear:
+    case TimeFrame::CalendarYear:
         start.setDate(QDate::currentDate().year(), 1, 1);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
-        statement = "SELECT SUM(tblk) FROM flights WHERE doft >= " + start_date;
+        statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
-    case AStat::rollingYear:
+    case TimeFrame::Rolling12Months:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
         start_date = start.toString(Qt::ISODate);
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
-        statement = "SELECT SUM(tblk) FROM flights WHERE doft >= " + start_date;
+        statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
+        break;
+    case TimeFrame::Rolling28Days:
+        start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 28);
+        start_date = start.toString(Qt::ISODate);
+        start_date.append(QLatin1Char('\''));
+        start_date.prepend(QLatin1Char('\''));
+        statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
     }
 
-    //QVector<QString> result = Db::customQuery(query, 1);
-    QSqlQuery query(statement);
+    auto db_return = aDB->customQuery(statement, 1);
 
-    if (!query.first()) {
-        DEB << "No result found. Check Query and Error.";
-        DEB << "Error: " << query.lastError().text();
-        return "00:00";
-    } else {
-        query.previous();
-        return query.value(0).toString();
-    }
+    if (!db_return.isEmpty())
+        return db_return.first().toInt();
+
+    return 0;
 }
 
 /*!
  * \brief AStat::currencyTakeOffLanding Returns the amount of Take Offs and
- * Landings performed in the last x days. Normally, 90 would be used. (EASA)
- * \param days Number of days to check
- * \return {TO,LDG}
+ * Landings performed in the last x days. If no vallue for days is provided, 90 is used,
+ * as per EASA regulations
+ * \return QVector<QString>{#TO,#LDG}
  */
-QVector<QString> AStat::currencyTakeOffLanding(int days)
+QVector<QVariant> AStat::countTakeOffLanding(int days)
 {
     QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days);
     QString startdate = start.toString(Qt::ISODate);
     startdate.append(QLatin1Char('\''));
     startdate.prepend(QLatin1Char('\''));
 
+    QString statement = QLatin1String("SELECT "
+                                      " SUM(IFNULL(flights.toDay,0) + IFNULL(flights.toNight,0)) AS 'TO', "
+                                      " SUM(IFNULL(flights.ldgDay,0) + IFNULL(flights.ldgNight,0)) AS 'LDG' "
+                                      " FROM flights "
+                                      " WHERE doft >=") + startdate;
 
-    QString statement = "SELECT "
-            "CAST(SUM(flights.TOday) + SUM(flights.TOnight) AS INTEGER) 'TO', "
-            "CAST(SUM(flights.LDGday) + SUM(flights.LDGnight) AS INTEGER) AS 'LDG' "
-            "FROM flights "
-            "WHERE doft >= \"" + startdate + "\"";
-
-    QVector<QString> result = aDB()->customQuery(statement, 2);
-
-    if (!result.isEmpty()) {
-        return result;
-    } else {
-        return QVector<QString>();
+    QVector<QVariant> result = aDB->customQuery(statement, 2);
+    // make sure a value is returned instead of NULL
+    for (const auto &var : result) {
+        if (var.isNull())
+            result.replace(result.indexOf(var), 0);
     }
 
+    return result;
 }
 
 QVector<QPair<QString, QString>> AStat::totals()
 {
-    QString statement = "SELECT "
+    QString statement = QStringLiteral("SELECT "
             "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
             "printf('%02d',CAST(SUM(tSPSE) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPSE) AS INT)%60) AS 'SP SE', "
             "printf('%02d',CAST(SUM(tSPME) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPME) AS INT)%60) AS 'SP ME', "
@@ -111,10 +111,13 @@ QVector<QPair<QString, QString>> AStat::totals()
             "printf('%02d',CAST(SUM(tMP) AS INT)/60)||':'||printf('%02d',CAST(SUM(tMP) AS INT)%60) AS 'MultPilot', "
             "CAST(SUM(toDay) AS INT) AS 'TO Day', CAST(SUM(toNight) AS INT) AS 'TO Night', "
             "CAST(SUM(ldgDay) AS INT) AS 'LDG Day', CAST(SUM(ldgNight) AS INT) AS 'LDG Night' "
-            "FROM flights";
-    QVector<QString> columns = {"total", "spse", "spme", "night", "ifr",
-                                "pic", "picus", "sic", "dual", "fi", "sim", "multipilot",
-                                "today", "tonight", "ldgday", "ldgnight"
+            "FROM flights");
+    QVector<QString> columns = {QLatin1String("total"), QLatin1String("spse"), QLatin1String("spme"),
+                                QLatin1String("night"), QLatin1String("ifr"),  QLatin1String("pic"),
+                                QLatin1String("picus"), QLatin1String("sic"),  QLatin1String("dual"),
+                                QLatin1String("fi"),    QLatin1String("sim"),  QLatin1String("multipilot"),
+                                QLatin1String("today"), QLatin1String("tonight"), QLatin1String("ldgday"),
+                                QLatin1String("ldgnight")
                                };
     QSqlQuery query(statement);
     QVector<QPair<QString, QString>> output;
@@ -123,10 +126,44 @@ QVector<QPair<QString, QString>> AStat::totals()
     for (const auto &column : columns) {
         value = query.value(columns.indexOf(column)).toString();
         if (!value.isEmpty()) {
-            output << QPair{column, value};
+            output.append(QPair<QString, QString>{column, value});
         } else {
-            output << QPair{column, QString("00:00")};
+            output.append(QPair<QString, QString>{column, QLatin1String("00:00")});
         }
     }
     return output;
+}
+
+/*!
+ * \brief Calculates the date of expiry for the take-off and landing currency.
+ *
+ * The default value for days is 90.
+ * \return
+ */
+QDate AStat::currencyTakeOffLandingExpiry(int expiration_days)
+{
+    int number_of_days = 0;
+    QVector<QVariant> takeoff_landings;
+
+    // Check if enough take-offs and landings exist within the expiration period, if that's not the case
+    // we are out of currency and we can stop right there.
+    takeoff_landings = countTakeOffLanding(expiration_days);
+    if (takeoff_landings[0].toInt() < 3 || takeoff_landings[1].toInt() < 3)
+        return QDate::currentDate();
+
+    // Go back in time to find a point at which number of Take-Offs and Landings >= 3
+    for (int i=0; i <= expiration_days; i++) {
+        takeoff_landings = countTakeOffLanding(i);
+        //DEB << takeoff_landings;
+        if (takeoff_landings[0].toInt() >= 3 && takeoff_landings[1].toInt() >= 3) {
+            number_of_days = i;
+            //DEB << "Loop position i =" << i;
+            break;
+        }
+    }
+    // The expiration date of currency is now currentDate - number of days + expiration_days (default 90)
+    QDate expiration_date = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - number_of_days);
+    //DEB << expiration_date.addDays(expiration_days);
+
+    return expiration_date.addDays(expiration_days);;
 }

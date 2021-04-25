@@ -1,6 +1,6 @@
 /*
- *openTail Log - A FOSS Tail Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Tail Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,15 +19,15 @@
 #define ATAILENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/declarations.h"
+#include "src/database/adatabasetypes.h"
 
 struct ATailEntry : public AEntry {
 public:
     ATailEntry();
     ATailEntry(const ATailEntry& te) = default;
     ATailEntry& operator=(const ATailEntry& te) = default;
-    ATailEntry(RowId row_id);
-    ATailEntry(RowData table_data);
+    ATailEntry(RowId_T row_id);
+    ATailEntry(RowData_T table_data);
 
     const QString registration();
 

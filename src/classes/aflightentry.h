@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,13 +19,12 @@
 #define AFLIGHTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/functions/acalc.h"
 
 class AFlightEntry : public AEntry {
 public:
     AFlightEntry();
-    AFlightEntry(RowId row_id);
-    AFlightEntry(RowData table_data);
+    AFlightEntry(RowId_T row_id);
+    AFlightEntry(RowData_T table_data);
 
     AFlightEntry(const AFlightEntry& pe) = default;
     AFlightEntry& operator=(const AFlightEntry& pe) = default;

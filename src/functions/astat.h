@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -30,11 +30,15 @@ namespace AStat {
  */
 
 
-    enum yearType {allYears, calendarYear, rollingYear};
+    enum class TimeFrame {AllTime, CalendarYear, Rolling12Months, Rolling28Days};
 
-    QString totalTime(yearType);
+    enum class ToLdg {Takeoff, Landing};
 
-    QVector<QString> currencyTakeOffLanding(int days);
+    int totalTime(TimeFrame time_frame);
+
+    QVector<QVariant> countTakeOffLanding(int days = 90);
+
+    QDate currencyTakeOffLandingExpiry(int expiration_days = 90);
 
     QVector<QPair<QString, QString>> totals();
 

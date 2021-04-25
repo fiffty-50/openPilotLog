@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -28,12 +28,15 @@
 #include <QBitArray>
 #include <QLineEdit>
 #include <QCalendarWidget>
+#include <QComboBox>
 #include <QTabWidget>
 #include <QKeyEvent>
+#include "src/functions/atime.h"
 
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
+#include "src/database/adatabase.h"
 
 namespace Ui {
 class NewFlight;
@@ -42,7 +45,6 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-
 public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
@@ -55,10 +57,6 @@ public:
     ~NewFlightDialog();
 
 private slots:
-
-    /////// DEBUG
-        void onInputRejected();
-    /////// DEBUG
 
     void onToUpperTriggered_textChanged(const QString&);
     void onPilotNameLineEdit_editingFinished();
@@ -83,6 +81,8 @@ private slots:
     void on_deptLocLineEdit_editingFinished();
     void on_destLocLineEdit_editingFinished();
     void on_acftLineEdit_editingFinished();
+    void on_deptTZComboBox_currentIndexChanged(int index);
+    void on_destTZComboBox_currentIndexChanged(int index);
 
 private:
     Ui::NewFlight *ui;
@@ -94,15 +94,32 @@ private:
      */
     AFlightEntry flightEntry;
 
-    QList<QLineEdit*> mandatoryLineEdits;
-    QList<QLineEdit*> primaryTimeLineEdits;
-    QList<QLineEdit*> pilotsLineEdits;
-
+    // [G]: Initial refactoring based on previous use.
     /*!
-     * \brief holds a bit for each mandatory line edit that is flipped
-     * according to its validity state
+     * \brief Wrapper around Vector of mandatory line edits and their corresponding
+     * "ok" QBitArray.
      */
-    QBitArray mandatoryLineEditsGood;
+    struct MandatoryLineEdits {
+        QVector<QLineEdit*> lineEdits;
+        QBitArray lineEditsValid;
+
+        MandatoryLineEdits() = default;
+        MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list);
+        void operator= (std::initializer_list<QLineEdit*> init_list);
+
+        bool contains(QLineEdit* line_edit);
+        void validate(QLineEdit* line_edit);
+        void unvalidate(QLineEdit* line_edit);
+        int countValid();
+        int size();
+        bool validAt(int idx);
+        bool allValid();
+        QLineEdit* operator[] (int idx);
+
+    } mandatoryLineEdits;
+
+    QVector<QLineEdit*> primaryTimeLineEdits;
+    QVector<QLineEdit*> pilotsLineEdits;
 
     /*!
      * To be used by the QCompleters
@@ -114,11 +131,13 @@ private:
     /*!
      * \brief Used to map user input to database keys
      */
-    QMap<QString, int> pilotsIdMap;
-    QMap<QString, int> tailsIdMap;
-    QMap<QString, int> airportIcaoIdMap;
-    QMap<QString, int> airportIataIdMap;
-    QMap<QString, int> airportNameIdMap;
+    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
+    QMap<TailRegistration_T, TailId_T> tailsIdMap;
+    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
+    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
+    QMap<AirportName_T, AirportId_T> airportNameIdMap;
+
+    Opl::Time::FlightTimeFormat flightTimeFormat;
 
     /*!
      * \brief If the user elects to manually edit function times, automatic updating
@@ -145,7 +164,25 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
-    RowData collectInput();
+    RowData_T collectInput();
+
+    /*!
+     * \brief converts a time string as used in the UI to an integer of minutes for
+     * use in the database based on the format in use in the Dialog
+     */
+    inline int stringToMinutes(const QString &time_string, Opl::Time::FlightTimeFormat format)
+    {
+        return ATime::toMinutes(ATime::fromString(time_string, format));
+    }
+
+    /*!
+     * \brief minutesToString converts an integer of minutes as received from the database
+     * to a String to be displayed in the UI, based on the format in use in the Dialog.
+     */
+    inline QString minutesToString(const int minutes, Opl::Time::FlightTimeFormat format)
+    {
+        return ATime::toString(ATime::fromMinutes(minutes), format);
+    }
 };
 
 

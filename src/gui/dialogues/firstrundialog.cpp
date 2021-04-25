@@ -1,29 +1,58 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
-#include "src/testing/adebug.h"
+#include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/database/adatabasesetup.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-const auto TEMPLATE_URL = QLatin1String("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
+#include "src/opl.h"
+#include <QErrorMessage>
+#include "src/classes/astyle.h"
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FirstRunDialog)
 {
     ui->setupUi(this);
-    ui->tabWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(0);
     ui->lastnameLineEdit->setFocus();
-    ui->nightComboBox->setCurrentIndex(1);
+    ui->previousPushButton->setEnabled(false);
+    ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
 
-    auto *themeGroup = new QButtonGroup;
-    themeGroup->addButton(ui->systemThemeCheckBox, 0);
-    themeGroup->addButton(ui->lightThemeCheckBox, 1);
-    themeGroup->addButton(ui->darkThemeCheckBox, 2);
-
-    QObject::connect(themeGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-                     this, &FirstRunDialog::on_themeGroup_toggled);
+    // approach Combo Box
+    for (const auto &approach : Opl::ApproachTypes){
+        ui->approachComboBox->addItem(approach);
+    }
+    // Style combo box
+    const QSignalBlocker blocker_style(ui->styleComboBox);
+    ui->styleComboBox->addItems(AStyle::styles);
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        ui->styleComboBox->addItem(style_sheet.styleSheetName);
+    }
+    ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
+    ui->styleComboBox->model()->sort(0);
+    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    // Set Date Edits for currencies
+    for (const auto date_edit : this->findChildren<QDateEdit *>())
+        date_edit->setDate(QDate::currentDate());
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -33,149 +62,290 @@ FirstRunDialog::~FirstRunDialog()
 
 void FirstRunDialog::on_previousPushButton_clicked()
 {
-    if(ui->tabWidget->currentIndex()>0)
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex()-1);
+    auto current_index = ui->stackedWidget->currentIndex();
+    switch (current_index) {
+    case 0:
+        return;
+    case 1:
+        ui->previousPushButton->setEnabled(false);
+        break;
+    case 2:
+        ui->nextPushButton->setText(tr("Next"));
+        break;
+    }
+    ui->stackedWidget->setCurrentIndex(current_index - 1);
+
 }
 
 void FirstRunDialog::on_nextPushButton_clicked()
 {
-    if(ui->tabWidget->currentIndex()<2){
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex()+1);
-    } else {
-        emit ui->finishButton->clicked();
+    auto current_index = ui->stackedWidget->currentIndex();
+    switch (current_index) {
+    case 0:
+        if(ui->firstnameLineEdit->text().isEmpty()
+           || ui->lastnameLineEdit->text().isEmpty())
+        {
+            QMessageBox(QMessageBox::Warning, tr("Error"),
+                        tr("Please enter first and last name")
+                        ).exec();
+            return;
+        }
+        ui->previousPushButton->setEnabled(true);
+        break;
+    case 3:
+        ui->nextPushButton->setText(tr("Done"));
+        break;
+    case 4:
+        if(!finishSetup())
+            QDialog::reject();
+        else
+            QDialog::accept();
+        return;
     }
-
-}
-
-void FirstRunDialog::on_themeGroup_toggled(int id)
-{
-    ASettings::write("main/theme", id);
-}
-
-void FirstRunDialog::on_finishButton_clicked()
-{
-    if(ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()){
-        auto mb = new QMessageBox(this);
-        mb->setText("You have to enter a valid first and last name for the logbook.");
-        mb->show();
-    } else {
-        ASettings::write("userdata/lastname", ui->lastnameLineEdit->text());
-        ASettings::write("userdata/firstname", ui->firstnameLineEdit->text());
-        ASettings::write("userdata/employeeid", ui->employeeidLineEdit->text());
-        ASettings::write("userdata/phone", ui->phoneLineEdit->text());
-        ASettings::write("userdata/email", ui->emailLineEdit->text());
-
-        ASettings::write("flightlogging/function", ui->functionComboBox->currentText());
-        ASettings::write("flightlogging/approach", ui->approachComboBox->currentText());
-        ASettings::write("flightlogging/nightlogging", ui->nightComboBox->currentIndex());
-        ASettings::write("flightlogging/logIfr", ui->rulesComboBox->currentIndex());
-        ASettings::write("flightlogging/flightnumberPrefix", ui->prefixLineEdit->text());
-
-        ASettings::write("flightlogging/numberTakeoffs", 1);
-        ASettings::write("flightlogging/numberLandings", 1);
-        ASettings::write("flightlogging/popupCalendar", true);
-        ASettings::write("flightlogging/pilotFlying", true);
-
-
-        QMap<QString, QVariant> data;
-        switch (ui->aliasComboBox->currentIndex()) {
-        case 0:
-            ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-            break;
-        case 1:
-            ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-            break;
-        case 2:{
-            ASettings::write("userdata/displayselfas", ui->aliasComboBox->currentIndex());
-        }
-            break;
-        default:
-            break;
-        }
-        data.insert("lastname", ui->lastnameLineEdit->text());
-        data.insert("firstname", ui->firstnameLineEdit->text());
-        data.insert("alias", "self");
-        data.insert("employeeid", ui->employeeidLineEdit->text());
-        data.insert("phone", ui->phoneLineEdit->text());
-        data.insert("email", ui->emailLineEdit->text());
-
-        if (!finishSetup()) {
-            QMessageBox message_box(this);
-            message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
-        }
-        ASettings::write("setup/setup_complete", true);
-        aDB()->disconnect(); // reset db connection to refresh layout after initial setup.
-        aDB()->connect();
-        auto pilot = APilotEntry(1);
-        pilot.setData(data);
-        if (aDB()->commit(pilot)) {
-            qApp->quit();
-            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-        } else {
-            QMessageBox message_box(this);
-            message_box.setText("Errors have ocurred creating the database. Without a working database The application will not be usable.");
-        }
-
-    }
+    ui->stackedWidget->setCurrentIndex(current_index + 1);
 }
 
 bool FirstRunDialog::finishSetup()
 {
+    writeSettings();
 
-    //check if template dir exists and create if needed.
-    QDir dir("data/templates");
-    DEB << dir.path();
-    if (!dir.exists())
-        dir.mkpath(".");
+    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+                                 absoluteFilePath(QStringLiteral("logbook.db")));
+    if (database_file.exists()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database found"),
+                                tr("Warning."
+                                   "An existing database file has been detected on your system.<br>"
+                                   "A backup copy of the existing database will be created at this location:<br>"
+                                   "%1").arg(
+                                    QDir::cleanPath(AStandardPaths::directory(AStandardPaths::Backup).canonicalPath())));
+        message_box.exec();
+        ADataBaseSetup::backupOldData();
+    }
+    if (!aDB->connect()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable.<br>"
+                                   "The following error has ocurred:<br>"
+                                   "Database: Unable to connect"));
+        message_box.exec();
+        return false;
+    }
 
-    QMessageBox confirm;
-    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    if (!setupDatabase()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Errors have ocurred creating the database."
+                                   "Without a working database The application will not be usable.<br>"
+                                   "The following error has ocurred:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+
+    if (!createUserEntry()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+
+    if (!writeCurrencies()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+    aDB->disconnect(); // connection will be re-established by main()
+    return true;
+}
+
+void FirstRunDialog::writeSettings()
+{
+    ASettings::resetToDefaults();
+    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
+    switch (ui->nightComboBox->currentIndex()) {
+    case 0:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
+        break;
+    case 1:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, false);
+        break;
+    default:
+        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
+        break;
+    }
+    switch (ui->nightRulesComboBox->currentIndex()) {
+    case 0:
+        ASettings::write(ASettings::FlightLogging::NightAngle, 6);
+        break;
+    case 1:
+        ASettings::write(ASettings::FlightLogging::NightAngle, 0);
+        break;
+
+    }
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
+    ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
+
+    switch (ui->currWarningCheckBox->checkState()) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, ui->currWarningThresholdSpinBox->value());
+    ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
+    QSettings settings;
+    settings.sync();
+}
+
+bool FirstRunDialog::setupDatabase()
+{
+    QMessageBox confirm(QMessageBox::Question, tr("Create Database"),
+                               tr("We are now going to create the database.<br>"
+                                              "Would you like to download the latest database information?"
+                                              "<br>(Recommended, Internet connection required)"),
+                               QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle("Create Database");
-    confirm.setText("We are now going to create the database. Would you like to download the latest database information?\n(Recommended, Internet connection required)\n");
-    int reply = confirm.exec();
-    if (reply == QMessageBox::Yes) {
-        // download latest csv
-        QStringList templateTables = {"aircraft", "airports", "changelog"};
-        QString linkStub = TEMPLATE_URL;
-        for (const auto& table : templateTables) {
-            QEventLoop loop;
-            ADownload* dl = new ADownload;
-            connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-            dl->setTarget(QUrl(linkStub + table + ".csv"));
-            dl->setFileName("data/templates/" + table + ".csv");
-            dl->download();
-            loop.exec(); // event loop waits for download done signal before allowing loop to continue
-            dl->deleteLater();
-        }
-    }
 
-    //close database connection
-    aDB()->disconnect();
-
-    // back up old database
-    auto oldDatabase = QFile("data/logbook.db");
-    if (oldDatabase.exists()) {
-        auto dateString = QDateTime::currentDateTime().toString(Qt::ISODate);
-        DEB << "Backing up old database as: " << "logbook-backup-" + dateString;
-        if (!oldDatabase.rename("data/logbook-backup-" + dateString)) {
-            DEB << "Warning: Creating backup of old database has failed.";
-        }
-    }
-    // re-connect and create new database
-    aDB()->connect();
-
-    if (ADataBaseSetup::createDatabase()) {
-        if (ADataBaseSetup::importDefaultData()) {
-            ASettings::write("setup/setup_complete", true);
-            return true;
-        } else {
-            return false;
+    if (confirm.exec() == QMessageBox::Yes) {
+        useRessourceData = false;
+        if (!ADataBaseSetup::downloadTemplates()) {
+            QMessageBox message_box(this);
+            message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
+            message_box.exec();
+            useRessourceData = true; // fall back
         }
     } else {
+        useRessourceData = true;
+    }
+
+    if(!ADataBaseSetup::createDatabase())
         return false;
+
+    aDB->updateLayout();
+
+    if(!ADataBaseSetup::importDefaultData(useRessourceData))
+        return false;
+    aDB->updateLayout();
+    return true;
+}
+
+bool FirstRunDialog::createUserEntry()
+{
+    QMap<QString, QVariant> data;
+    data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));
+    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(Opl::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
+    data.insert(Opl::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
+
+    auto pilot = APilotEntry(1);
+    pilot.setData(data);
+
+    return aDB->commit(pilot);
+}
+
+bool FirstRunDialog::writeCurrencies()
+{
+    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit*>> currencies_list = {
+        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
+        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
+        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
+        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
+        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
+        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom1DateEdit},
+    };
+
+    QDate today = QDate::currentDate();
+    for (const auto &pair : currencies_list) {
+        // only write dates that have been edited
+        if (pair.second->date() != today) {
+            ACurrencyEntry entry(pair.first, pair.second->date());
+            if (!aDB->commit(entry))
+                return false;
+        }
+    }
+    return true;
+}
+
+void FirstRunDialog::reject()
+{
+    QMessageBox confirm(QMessageBox::Critical,
+                               tr("Setup incomplete"),
+                               tr("Without completing the initial setup"
+                                              " you cannot use the application.<br><br>"
+                                              "Quit anyway?"),
+                               QMessageBox::Yes | QMessageBox::No, this);
+    confirm.setDefaultButton(QMessageBox::No);
+
+    if (confirm.exec() == QMessageBox::Yes) {
+        DEB << "rejected.";
+        QDialog::reject();
     }
 }
 
+void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
+{
+    DEB << "style selected:"<<new_style_setting;
+    if (new_style_setting == QLatin1String("Dark-Palette")) {
+        //DEB << "Palette";
+        AStyle::setStyle(AStyle::darkPalette());
+        return;
+    }
+    for (const auto &style_name : AStyle::styles) {
+        if (new_style_setting == style_name) {
+            //DEB << "style";
+            AStyle::setStyle(style_name);
+            return;
+        }
+    }
+    for (const auto &style_sheet : AStyle::styleSheets) {
+        if (new_style_setting == style_sheet.styleSheetName) {
+            //DEB << "stylesheet";
+            AStyle::setStyle(style_sheet);
+            return;
+        }
+    }
+}
 
+void FirstRunDialog::on_currWarningCheckBox_stateChanged(int arg1)
+{
+    switch (arg1) {
+    case Qt::CheckState::Checked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
+        break;
+    case Qt::CheckState::Unchecked:
+        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
+        break;
+    default:
+        break;
+    }
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
+{
+    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
+}
+
+void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
+}
+
+void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
+{
+    ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+}

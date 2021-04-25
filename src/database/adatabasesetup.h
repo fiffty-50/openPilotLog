@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,6 +19,12 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
+#include <QStringBuilder>
+#include <QEventLoop>
+
+#define DATABASE_REVISION 17
+
+const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 /*!
  * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
@@ -33,13 +39,17 @@ public:
 
     static bool createDatabase();
 
+    static bool downloadTemplates();
+
+    static bool backupOldData();
+
     static bool fillTemplates();
 
-    static bool importDefaultData();
+    static bool importDefaultData(bool use_local_data);
 
     static bool resetToDefault();
 
-    static bool commitData(QVector<QStringList> fromCSV, const QString &tableName);
+    static bool commitData(QVector<QStringList> from_csv, const QString &table_name);
 
 private:
 
