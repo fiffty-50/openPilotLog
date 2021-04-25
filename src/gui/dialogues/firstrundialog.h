@@ -22,6 +22,7 @@
 #include <QButtonGroup>
 #include <QMessageBox>
 #include <QStringBuilder>
+#include <QDateEdit>
 
 namespace Ui {
 class FirstRunDialog;
@@ -51,6 +52,8 @@ private slots:
 
     void on_currCustom2LineEdit_editingFinished();
 
+    void on_dateFormatComboBox_currentIndexChanged(int index);
+
 private:
     Ui::FirstRunDialog *ui;
     bool useRessourceData;
@@ -60,6 +63,8 @@ private:
     bool createUserEntry();
     bool writeCurrencies();
     bool finishSetup();
+
+    QList<QDateEdit*> dateEdits;
 
     void reject() override;
 };

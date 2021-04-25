@@ -24,6 +24,7 @@
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/opl.h"
+#include "src/functions/adate.h"
 #include <QErrorMessage>
 #include "src/classes/astyle.h"
 
@@ -50,9 +51,16 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
     ui->styleComboBox->model()->sort(0);
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    // Prepare Date Edits
+    dateEdits = this->findChildren<QDateEdit *>();
+    for (const auto &date_format : ADate::getDisplayNames())
+        ui->dateFormatComboBox->addItem(date_format);
     // Set Date Edits for currencies
-    for (const auto date_edit : this->findChildren<QDateEdit *>())
+    for (const auto &date_edit : qAsConst(dateEdits)) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
+    }
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -96,6 +104,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
         ui->nextPushButton->setText(tr("Done"));
         break;
     case 4:
+        ui->nextPushButton->setDisabled(true);
         if(!finishSetup())
             QDialog::reject();
         else
@@ -348,4 +357,15 @@ void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+}
+
+void FirstRunDialog::on_dateFormatComboBox_currentIndexChanged(int index)
+{
+    Opl::Date::ADateFormat format = (Opl::Date::ADateFormat)index;
+
+    for (const auto &date_edit : qAsConst(dateEdits)) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(format));
+    }
+    ASettings::write(ASettings::Main::DateFormat, index);
 }

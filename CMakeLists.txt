@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
     src/functions/alog.cpp
     src/functions/areadcsv.cpp
     src/functions/astat.cpp
+    src/functions/adate.cpp
     src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/newflightdialog.cpp
     src/gui/dialogues/newpilotdialog.cpp
@@ -73,6 +74,7 @@ set(PROJECT_SOURCES
     src/functions/alog.h
     src/functions/areadcsv.h
     src/functions/astat.h
+    src/functions/adate.h
     src/functions/atime.h
     src/gui/dialogues/firstrundialog.h
     src/gui/dialogues/newflightdialog.h

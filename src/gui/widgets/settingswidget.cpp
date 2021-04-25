@@ -23,6 +23,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
 #include "src/opl.h"
+#include "src/functions/adate.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};
@@ -87,6 +88,19 @@ void SettingsWidget::setupComboBoxes(){
 
 void SettingsWidget::setupDateEdits()
 {
+    // Read Display Format Setting
+    int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
+    const QString date_format_string = ADate::getFormatString(
+                static_cast<Opl::Date::ADateFormat>(date_format_index));
+    // Set Up Date Format Combo Box
+    const QSignalBlocker blocker_date(ui->dateFormatComboBox);
+    for (const auto &date_format : ADate::getDisplayNames())
+        ui->dateFormatComboBox->addItem(date_format);
+    ui->dateFormatComboBox->setCurrentIndex(date_format_index);
+    for (const auto & date_edit : this->findChildren<QDateEdit*>()) {
+        date_edit->setDisplayFormat(date_format_string);
+    }
+    // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
         {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
@@ -204,7 +218,7 @@ void SettingsWidget::updatePersonalDetails()
         QString name;
         name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().left(1));
+        name.append(ui->firstnameLineEdit->text().leftRef(1));
         name.append(QLatin1Char('.'));
         user_data.insert(Opl::Db::PILOTS_ALIAS, name);
     }
@@ -674,4 +688,15 @@ void SettingsWidget::on_currCustom1LineEdit_editingFinished()
 void SettingsWidget::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+}
+
+void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
+{
+    ASettings::write(ASettings::Main::DateFormat, index);
+
+    for (const auto & date_edit : this->findChildren<QDateEdit*>()) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(
+                        static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));
+    }
 }
