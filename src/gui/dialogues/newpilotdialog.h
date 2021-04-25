@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -23,8 +23,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCompleter>
-#include "src/classes/pilot.h"
-#include "src/classes/completionlist.h"
+#include "src/classes/apilotentry.h"
 
 namespace Ui {
 class NewPilot;
@@ -33,29 +32,24 @@ class NewPilot;
 class NewPilotDialog : public QDialog
 {
     Q_OBJECT
-
 public:
-    explicit NewPilotDialog(Db::editRole, QWidget *parent = nullptr);
-    explicit NewPilotDialog(Pilot, Db::editRole, QWidget *parent = nullptr);
+    explicit NewPilotDialog(QWidget *parent = nullptr);
+    explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
     ~NewPilotDialog();
 
 private slots:
     void on_buttonBox_accepted();
-
 private:
     Ui::NewPilot *ui;
 
-    Db::editRole role;
+    APilotEntry pilotEntry;
 
-    Pilot oldEntry;
-
-    void setupValidators();
-
-    void setupCompleter();
+    inline void setup();
 
     void formFiller();
 
     void submitForm();
 };
+
 
 #endif // NEWPILOT_H

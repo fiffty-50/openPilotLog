@@ -1,6 +1,6 @@
-/*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+﻿/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -17,91 +17,144 @@
  */
 #include "newflightdialog.h"
 #include "ui_newflight.h"
+#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/functions/acalc.h"
+#include "src/testing/atimer.h"
+#include "src/database/adatabase.h"
+#include "src/opl.h"
 
-#include <QSqlRelationalTableModel>
+#include "src/functions/alog.h"
 
-/// =======================================================
-/// Debug / WIP section
-/// =======================================================
-#define DEBUG(expr) \
-    qDebug() << "~DEBUG" << __func__ << expr
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                                         constants                                           ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void NewFlightDialog::on_verifyButton_clicked()//debug button
+static const auto NAME_RX     = QLatin1String("((\\p{L}+)?('|\\-|,)?(\\p{L}+)?)");
+static const auto ADD_NAME_RX = QLatin1String("(\\s?(\\p{L}+('|\\-|,)?\\p{L}+?))?");
+
+static const auto TIME_VALID_RGX       = QRegularExpression(
+            "([01]?[0-9]|2[0-3]):?[0-5][0-9]?");
+static const auto LOC_VALID_RGX        = QRegularExpression(
+            "[a-zA-Z0-9]{1,4}");
+static const auto AIRCRAFT_VALID_RGX   = QRegularExpression(
+            "\\w+\\-?(\\w+)?");
+static const auto NAME_VALID_RGX       = QRegularExpression(
+            NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",?\\s?" // up to 4 first names
+            + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );         // up to 4 last names
+static const auto DATE_VALID_RGX       = QRegularExpression(
+            "^([1-9][0-9]{3}).?(1[0-2]|0[1-9]).?(3[01]|0[1-9]|[12][0-9])?$");
+static const auto SELF_RX              = QRegularExpression(
+            "self", QRegularExpression::CaseInsensitiveOption);
+
+static const auto MANDATORY_LINE_EDITS_DISPLAY_NAMES = QMap<int, QString> {
+    {0, QObject::tr("Date of Flight")},      {1, QObject::tr("Departure Airport")},
+    {2, QObject::tr("Destination Airport")}, {3, QObject::tr("Time Off Blocks")},
+    {4, QObject::tr("Time on Blocks")},      {5, QObject::tr("PIC Name")},
+    {6, QObject::tr("Aircraft Registration")}
+};
+
+//
+// MandatoryLineEdits definition
+// Ugly but works
+NewFlightDialog::MandatoryLineEdits::MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list)
+    : lineEdits(init_list), lineEditsValid(QBitArray(init_list.size()))
+{}
+void NewFlightDialog::MandatoryLineEdits::operator= (std::initializer_list<QLineEdit*> init_list)
 {
-    //fillExtrasLineEdits();
-    collectBasicData();
-    collectAdditionalData();
+    lineEdits = init_list;
+    lineEditsValid.resize(init_list.size());
+}
+bool NewFlightDialog::MandatoryLineEdits::contains(QLineEdit* line_edit)
+{
+    return lineEdits.contains(line_edit);
+}
+void NewFlightDialog::MandatoryLineEdits::validate(QLineEdit* line_edit)
+{
+    lineEditsValid.setBit(lineEdits.indexOf(line_edit), true);
+}
+void NewFlightDialog::MandatoryLineEdits::unvalidate(QLineEdit* line_edit)
+{
+    lineEditsValid.setBit(lineEdits.indexOf(line_edit), false);
+}
+int NewFlightDialog::MandatoryLineEdits::countValid()
+{
+    return lineEditsValid.count(true);
+}
+int NewFlightDialog::MandatoryLineEdits::size()
+{
+    return lineEditsValid.size();
+}
+bool NewFlightDialog::MandatoryLineEdits::validAt(int idx)
+{
+    return lineEditsValid[idx];
+}
+bool NewFlightDialog::MandatoryLineEdits::allValid()
+{
+    return lineEditsValid.count(true) == lineEdits.size();
+}
+QLineEdit* NewFlightDialog::MandatoryLineEdits::operator[] (int idx)
+{
+    return lineEdits[idx];
 }
 
-static const auto IATA_RX = QLatin1String("[a-zA-Z0-9]{3}");
-static const auto ICAO_RX = QLatin1String("[a-zA-Z0-9]{4}");
-static const auto NAME_RX = QLatin1String("(\\p{L}+('|\\-)?)");//(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)
-static const auto ADD_NAME_RX = QLatin1String("(\\s?(\\p{L}+('|\\-)?))?");
-static const auto SELF_RX = QLatin1String("(self|SELF)");
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                                      Construction                                           ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// Raw Input validation
-static const auto TIME_VALID_RGX       = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");// We only want to allow inputs that make sense as a time, e.g. 99:99 is not a valid time
-static const auto LOC_VALID_RGX        = QRegularExpression(IATA_RX + "|" + ICAO_RX);
-static const auto AIRCRAFT_VALID_RGX   = QRegularExpression("[A-Z0-9]+\\-?[A-Z0-9]+");
-static const auto PILOT_NAME_VALID_RGX = QRegularExpression(SELF_RX + QLatin1Char('|')
-                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ",?\\s?" // up to 4 first names
-                                                     + NAME_RX + ADD_NAME_RX + ADD_NAME_RX + ADD_NAME_RX );// up to 4 last names
-static const auto DATE_VALID_RGX       = QRegularExpression("^([1-9][0-9]{3}).?(1[0-2]|0[1-9]).?(3[01]|0[1-9]|[12][0-9])?$");// . allows all seperators, still allows for 2020-02-31, additional verification via QDate::isValid()
+/// [F] The general idea for this dialog is this:
+/// - Most line edits have validators and completers.
+/// - Validators are based on regular expressions, serving as raw input validation
+/// - The Completers are based off the database and provide auto-completion
+/// - mandatory line edits only emit editing finished if their content has passed
+///   raw input validation or focus is lost.
+/// - Editing finished triggers validating inputs by mapping them to Database values
+///   where required and results in either pass or fail.
+/// - A QBitArray is mainained containing the state of validity of the mandatory line edits
+/// - The deducted entries are automatically filled if all mandatory entries
+/// are valid.
+/// - Comitting an entry to the database is only allowed if all mandatory inputs are valid.
+///
+/// if the user presses "OK", check if all mandatory inputs are valid,
+/// check if optional user inputs are valid and commit.
+///
+/// For the completion and mapping, I have settled on a more low-level approach using
+/// Completers based on QStringLists and mapping with QMaps.
+///
+/// I implemented the Completers and mapping based on a QSqlTableModel which would
+/// have been quite nice, since it would keep all data in one place, providing both completion
+/// and mapping in one model.
+/// But as we have seen before with the more high-level qt classes, they are quite slow on execution
+/// when used for tasks they were probably not designed to do.
+/// Mapping a registration to an ID for example took around 300ms, which is very
+/// noticeable in the UI and not an acceptable user experience. Using QStringLists and QMaps
+/// this goes down to around 5ms.
 
-/// Invalid characters (validators keep text even if it returns Invalid, see `onInputRejected` below)
-static const auto TIME_INVALID_RGX       = QRegularExpression("[^0-9:]");
-static const auto LOC_INVALID_RGX        = QRegularExpression("[^A-Z0-9]");
-static const auto AIRCRAFT_INVALID_RGX   = QRegularExpression("[^a-zA-Z0-9\\-]");
-static const auto PILOT_NAME_INVALID_RGX = QRegularExpression("[^\\p{L}|\\s|,]");
-static const auto DATE_INVALID_RGX       = QRegularExpression("[^0-9|:|\\.|/|-]");
-static const auto INVALID_CHARS_RGX      = QRegularExpression("[^\\p{L}|\\s|,|\\-|'|0-9|:|\\.]");
-
-/// Sql columns
-static const auto LOC_SQL_COL        = SqlColumnNum(1);  // TODO: locations are iata/icao so 1,2 merge columns in sql?
-static const auto AIRCRAFT_SQL_COL   = SqlColumnNum(4);
-static const auto PILOT_NAME_SQL_COL = SqlColumnNum(6);
-
-
-
-/*
- * Window Construction
- */
-//For adding a new Flight to the logbook
-NewFlightDialog::NewFlightDialog(QWidget *parent, Db::editRole edRole) :
+NewFlightDialog::NewFlightDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
-    role = edRole;
-    doUpdate = true;
+    flightEntry = AFlightEntry();
     setup();
-    //set date
-    auto date = QDate::currentDate();
-    ui->doftLineEdit->setText(date.toString(Qt::ISODate));
-    emit ui->doftLineEdit->editingFinished();
-
-
-    // Visually mark mandatory fields
-    ui->deptLocLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->destLocLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->tofbTimeLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->tonbTimeLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->picNameLineEdit->setStyleSheet("border: 1px solid orange");
-    ui->acftLineEdit->setStyleSheet("border: 1px solid orange");
-
-    readSettings();
+    if (ASettings::read(ASettings::FlightLogging::FunctionComboBox).toString() == QLatin1String("SIC")) {
+        ui->picNameLineEdit->setText(QString());
+        ui->secondPilotNameLineEdit->setText("self");
+    }
+    if(ASettings::read(ASettings::FlightLogging::FunctionComboBox).toString() == QLatin1String("PIC")){
+        ui->picNameLineEdit->setText(QStringLiteral("self"));
+        emit ui->picNameLineEdit->editingFinished();
+    }
 }
-//For editing an existing flight
-NewFlightDialog::NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole) :
+
+NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewFlight)
 {
     ui->setupUi(this);
-    role=edRole;
-    entry = oldFlight;
-    doUpdate = true;
+    flightEntry = aDB->getFlightEntry(row_id);
     setup();
-    formFiller(oldFlight);
+    formFiller();
 }
 
 NewFlightDialog::~NewFlightDialog()
@@ -109,46 +162,142 @@ NewFlightDialog::~NewFlightDialog()
     delete ui;
 }
 
-bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                        Methods - setup and maintenance of dialog                            ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+void NewFlightDialog::setup()
 {
-    if(object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
-        on_doftLineEditEntered();
-        return false; // let the event continue to the edit
-    } /*else if (object == this && event->type() == QEvent::Leave) {
-        DEBUG("calendarWidget left.");
-        //ui->doftLineEdit->blockSignals(false);
-        //ui->calendarWidget->hide();
-        //ui->placeLabel1->resize(ui->placeLabel2->size());
-        //ui->doftLineEdit->setFocus();
-        return false;
-    }*/
-    return false;
+    for (const auto & approach : Opl::ApproachTypes){
+        ui->ApproachComboBox->addItem(approach);
+    }
+    updateEnabled = true;
+    setupButtonGroups();
+    setupRawInputValidation();
+    setupSignalsAndSlots();
+    readSettings();
+
+    // Visually mark mandatory fields
+    ui->deptLocLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->destLocLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->tofbTimeLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->tonbTimeLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->picNameLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+    ui->acftLineEdit->setStyleSheet(QStringLiteral("border: 0.1ex solid #3daee9"));
+
+    ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
+    emit ui->doftLineEdit->editingFinished();
+    ui->deptLocLineEdit->setFocus();
+}
+void NewFlightDialog::readSettings()
+{
+    DEB << "Reading Settings...";
+    QSettings settings;
+    ui->FunctionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
+    ui->ApproachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
+
+    ASettings::read(ASettings::FlightLogging::PilotFlying).toBool() ? ui->PilotFlyingCheckBox->setChecked(true)
+                                                          : ui->PilotMonitoringCheckBox->setChecked(true);
+
+    ui->TakeoffSpinBox->setValue(ASettings::read(ASettings::FlightLogging::NumberTakeoffs).toInt());
+    ui->TakeoffSpinBox->value() > 0 ? ui->TakeoffCheckBox->setChecked(true)
+                                    : ui->TakeoffCheckBox->setChecked(false);
+    ui->LandingSpinBox->setValue(ASettings::read(ASettings::FlightLogging::NumberLandings).toInt());
+    ui->LandingSpinBox->value() > 0 ? ui->LandingCheckBox->setChecked(true)
+                                    : ui->LandingCheckBox->setChecked(false);
+    if (ASettings::read(ASettings::FlightLogging::LogIFR).toBool()) {
+        ui->IfrCheckBox->setChecked(true);
+    } else {
+        ui->VfrCheckBox->setChecked(true);
+    }
+
+    ui->FlightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
+    ui->calendarCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PopupCalendar).toBool());
+
+    // Debug
+    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
+    //[F]: Support for Decimal Logging is not implemented yet.
+    flightTimeFormat = static_cast<Opl::Time::FlightTimeFormat>(
+                ASettings::read(ASettings::FlightLogging::FlightTimeFormat).toInt());
+
+
 }
 
-void NewFlightDialog::setup(){
-    auto db = Db::Database();
+void NewFlightDialog::writeSettings()
+{
+    DEB << "Writing Settings...";
 
-    const auto location_settings = \
-         LineEditSettings(LOC_VALID_RGX, LOC_INVALID_RGX, LOC_SQL_COL);
-    const auto aircraft_settings = \
-         LineEditSettings(AIRCRAFT_VALID_RGX, AIRCRAFT_INVALID_RGX, AIRCRAFT_SQL_COL);
-    const auto pilot_name_settings = \
-         LineEditSettings(PILOT_NAME_VALID_RGX, PILOT_NAME_INVALID_RGX, PILOT_NAME_SQL_COL);
-    const auto time_settings = \
-         LineEditSettings(TIME_VALID_RGX, TIME_INVALID_RGX, SqlColumnNum());
-    const auto doft_settings = \
-         LineEditSettings(DATE_VALID_RGX, DATE_INVALID_RGX, SqlColumnNum());
+    ASettings::write(ASettings::FlightLogging::Function, ui->FunctionComboBox->currentText());
+    ASettings::write(ASettings::FlightLogging::Approach, ui->ApproachComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::PilotFlying, ui->PilotFlyingCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::NumberTakeoffs, ui->TakeoffSpinBox->value());
+    ASettings::write(ASettings::FlightLogging::NumberLandings, ui->LandingSpinBox->value());
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->IfrCheckBox->isChecked());
+    ASettings::write(ASettings::FlightLogging::PopupCalendar, ui->calendarCheckBox->isChecked());
+}
 
-//     Set up Line Edits with QValidators, QCompleters
+void NewFlightDialog::setupButtonGroups()
+{
+    QButtonGroup *FlightRulesGroup = new QButtonGroup(this);
+    FlightRulesGroup->addButton(ui->IfrCheckBox);
+    FlightRulesGroup->addButton(ui->VfrCheckBox);
+
+    QButtonGroup *PilotTaskGroup = new QButtonGroup(this);
+    PilotTaskGroup->addButton(ui->PilotFlyingCheckBox);
+    PilotTaskGroup->addButton(ui->PilotMonitoringCheckBox);
+}
+
+void NewFlightDialog::setupRawInputValidation()
+{
+    // get Maps
+    pilotsIdMap      = aDB->getIdMap(ADatabaseTarget::pilots);
+    tailsIdMap       = aDB->getIdMap(ADatabaseTarget::tails);
+    airportIcaoIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_icao);
+    airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
+    airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
+    //get Completer Lists
+    pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
+    tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
+    airportList = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
+    auto tempList = QStringList();
+    // define tuples
+    const std::tuple<QString, QStringList*, QRegularExpression>
+            location_line_edit_settings {QStringLiteral("Loc"), &airportList, LOC_VALID_RGX};
+    const std::tuple<QString, QStringList*, QRegularExpression>
+            name_line_edit_settings {QStringLiteral("Name"), &pilotList, NAME_VALID_RGX};
+    const std::tuple<QString, QStringList*, QRegularExpression>
+            acft_line_edit_settings {QStringLiteral("acft"), &tailsList, AIRCRAFT_VALID_RGX};
+    const std::tuple<QString, QStringList*, QRegularExpression>
+            time_line_edit_settings {QStringLiteral("Time"), &tempList, TIME_VALID_RGX};
+    const QList<std::tuple<QString, QStringList*, QRegularExpression>> line_edit_settings = {
+        location_line_edit_settings,
+        name_line_edit_settings,
+        acft_line_edit_settings,
+        time_line_edit_settings
+    };
+    //get line edits, set up completers and validators
     auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>();
-    auto le_size = line_edits.size();
-    for(auto i = 0; i < le_size; ++i){
-//        auto bit_array = new QBitArray(le_size);
-//        bit_array->setBit(i, true);
-        this->lineEditBitMap[line_edits[i]] = i;
+
+    for (const auto &item : line_edit_settings) {
+        for (const auto &line_edit : line_edits) {
+            if(line_edit->objectName().contains(std::get<0>(item))) {
+                DEB << "Setting up: " << line_edit->objectName();
+                // Set Validator
+                auto validator = new QRegularExpressionValidator(std::get<2>(item), line_edit);
+                line_edit->setValidator(validator);
+                // Set Completer
+                auto completer = new QCompleter(*std::get<1>(item), line_edit);
+                completer->setCaseSensitivity(Qt::CaseInsensitive);
+                completer->setCompletionMode(QCompleter::PopupCompletion);
+                completer->setFilterMode(Qt::MatchContains);
+                line_edit->setCompleter(completer);
+            }
+        }
     }
-    this->allOkBits.resize(line_edits.size());
-    this->mandatoryLineEdits = {
+
+    // [G]: TODO cleanup
+    // populate Mandatory Line Edits list and prepare QBitArray
+    mandatoryLineEdits = {
         ui->doftLineEdit,
         ui->deptLocLineEdit,
         ui->destLocLineEdit,
@@ -158,129 +307,435 @@ void NewFlightDialog::setup(){
         ui->acftLineEdit,
     };
 
-    for(auto line_edit : line_edits)
-    {
-        auto le_name = line_edit->objectName();
-        if(QRegularExpression("Loc").match(le_name).hasMatch()){
-            setupLineEdit(line_edit, location_settings);
-        }
-        else if (QRegularExpression("Time").match(le_name).hasMatch()) {
-            setupLineEdit(line_edit, time_settings);
-        }
-        else if (QRegularExpression("acft").match(le_name).hasMatch()) {
-            setupLineEdit(line_edit, aircraft_settings);
-        }
-        else if (QRegularExpression("Name").match(le_name).hasMatch()) {
-            setupLineEdit(line_edit, pilot_name_settings);
-        }
-        else if(QRegularExpression("doft").match(le_name).hasMatch()) {
-            setupLineEdit(line_edit, doft_settings);
-        }
-    }
-    //fill Lists
-    pilots = CompletionList(CompleterTarget::pilots).list;
-    tails = CompletionList(CompleterTarget::registrations).list;
-    airports = CompletionList(CompleterTarget::airports).list;
-    QString statement = "SELECT iata, icao FROM airports";
-    auto result = Db::customQuery(statement,2);
-    for(int i=0; i<result.length()-2; i += 2){
-        airportMap.insert(result[i],result[i+1]);
-    }
+    primaryTimeLineEdits = {
+        ui->tofbTimeLineEdit,
+        ui->tonbTimeLineEdit
+    };
+    pilotsLineEdits = {
+        ui->picNameLineEdit,
+        ui->secondPilotNameLineEdit,
+        ui->thirdPilotNameLineEdit
+    };
 
-    // Groups for CheckBoxes
-    QButtonGroup *FlightRulesGroup = new QButtonGroup(this);
-    FlightRulesGroup->addButton(ui->IfrCheckBox);
-    FlightRulesGroup->addButton(ui->VfrCheckBox);
-
-    QButtonGroup *PilotTaskGroup = new QButtonGroup(this);
-    PilotTaskGroup->addButton(ui->PilotFlyingCheckBox);
-    PilotTaskGroup->addButton(ui->PilotMonitoringCheckBox);
-
-    ui->flightDataTabWidget->setCurrentIndex(0);
-    ui->flightDataTabWidget->removeTab(2); // hide calendar widget
-    ui->calendarWidget->installEventFilter(this);
-    ui->placeLabel1->installEventFilter(this);
-    ui->doftLineEdit->installEventFilter(this);
-    ui->deptLocLineEdit->setFocus();
-
-    connect(ui->calendarWidget, SIGNAL(clicked(const QDate &)), this, SLOT(date_clicked(const QDate &)));
-    connect(ui->calendarWidget, SIGNAL(activated(const QDate &)), this, SLOT(date_selected(const QDate &)));
 }
 
-void NewFlightDialog::formFiller(Flight oldFlight)
+void NewFlightDialog::setupSignalsAndSlots()
 {
-    DEBUG("Filling Line Edits...");
-    DEBUG("With Data: " << oldFlight.data);
-    // Date
-    //ui->doftLineEdit->setDate(QDate::fromString(oldFlight.data.value("doft"), Qt::ISODate));
-    QStringList filled;
+    auto line_edits = this->findChildren<QLineEdit*>();
 
-    // Line Edits
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    for (const auto &line_edit : line_edits){
+        line_edit->installEventFilter(this);
+        if(line_edit->objectName().contains(QStringLiteral("Loc"))){
+            QObject::connect(line_edit, &QLineEdit::textChanged,
+                             this, &NewFlightDialog::onToUpperTriggered_textChanged);
+        }
+        if(line_edit->objectName().contains(QStringLiteral("acft"))){
+            QObject::connect(line_edit, &QLineEdit::textChanged,
+                             this, &NewFlightDialog::onToUpperTriggered_textChanged);
+        }
+        if(line_edit->objectName().contains(QStringLiteral("Name"))){
+            QObject::connect(line_edit, &QLineEdit::editingFinished,
+                             this, &NewFlightDialog::onPilotNameLineEdit_editingFinished);
+        }
+        if(line_edit->objectName().contains(QStringLiteral("Time"))){
+            QObject::connect(line_edit, &QLineEdit::editingFinished,
+                             this, &NewFlightDialog::onTimeLineEdit_editingFinished);
+        }
+    }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits.lineEdits)) {
+        if(line_edit->objectName().contains(QStringLiteral("doft")))
+            break;
+        QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::highlighted),
+                         this, &NewFlightDialog::onCompleter_highlighted);
+        QObject::connect(line_edit->completer(), QOverload<const QString &>::of(&QCompleter::activated),
+                         this, &NewFlightDialog::onCompleter_activated);
+    }
+#endif
+}
+
+
+void NewFlightDialog::setPopUpCalendarEnabled(bool state)
+{
+    ui->flightDataTabWidget->setCurrentIndex(0);
+    ui->flightDataTabWidget->removeTab(2); // hide calendar widget
+
+    if (state) {
+        DEB << "Enabling pop-up calendar widget...";
+        ui->calendarWidget->installEventFilter(this);
+        ui->placeLabel1->installEventFilter(this);
+        ui->doftLineEdit->installEventFilter(this);
+
+        QObject::connect(ui->calendarWidget, &QCalendarWidget::clicked,
+                         this, &NewFlightDialog::onCalendarWidget_clicked);
+        QObject::connect(ui->calendarWidget, &QCalendarWidget::activated,
+                         this, &NewFlightDialog::onCalendarWidget_selected);
+    } else {
+        DEB << "Disabling pop-up calendar widget...";
+        ui->calendarWidget->removeEventFilter(this);
+        ui->placeLabel1->removeEventFilter(this);
+        ui->doftLineEdit->removeEventFilter(this);
+        QObject::disconnect(ui->calendarWidget, &QCalendarWidget::clicked,
+                            this, &NewFlightDialog::onCalendarWidget_clicked);
+        QObject::disconnect(ui->calendarWidget, &QCalendarWidget::activated,
+                            this, &NewFlightDialog::onCalendarWidget_selected);
+    }
+}
+
+bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == ui->doftLineEdit && event->type() == QEvent::MouseButtonPress) {
+        onDoftLineEdit_entered();
+        return false; // let the event continue to the edit
+    }
+
+    auto line_edit = qobject_cast<QLineEdit*>(object);
+    if (line_edit != nullptr) {
+        if (mandatoryLineEdits.contains(line_edit) && event->type() == QEvent::FocusIn) {
+            mandatoryLineEdits.unvalidate(line_edit);
+            DEB << "Editing " << line_edit->objectName();
+            // set verification bit to false when entering a mandatory line edit
+            return false;
+        }
+        if (mandatoryLineEdits.contains(line_edit) && event->type() == QEvent::KeyPress) {
+            // show completion menu when pressing down arrow
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->key() == Qt::Key_Down) {
+                DEB << "Key down event.";
+                line_edit->completer()->complete();
+            }
+            return false;
+        }
+        if (line_edit->objectName().contains("Name") && event->type() == QEvent::KeyPress) {
+            // show completion menu when pressing down arrow
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->key() == Qt::Key_Down) {
+                DEB << "Key down event.";
+                line_edit->completer()->complete();
+            }
+            return false;
+        }
+    }
+    return false;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                                 Methods - Input Processing                                  ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/*!
+ * \brief Fills the deductable items in the Dialog based on mandatory data ui selections.
+ */
+void NewFlightDialog::fillDeductibleData()
+{
+    // check if mandatory line edits are valid
+    if (!mandatoryLineEdits.allValid()) {
+        return;
+    }
+
+    //zero out labels and line edits to delete previous calculations
+    QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
+                              ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
+                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
+    QList<QLabel*>      LB = {ui->tSPSELabel, ui->tSPMELabel,  ui->tMPLabel,  ui->tIFRLabel,  ui->tNIGHTLabel,
+                              ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDUALLabel, ui->tFILabel};
+    for(const auto& widget : LE) {widget->setText(QString());}
+    for(const auto& widget : LB) {widget->setText(Opl::Db::NULL_TIME_hhmm);}
+    //Calculate block time
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
+    const auto tblk = ATime::blocktime(tofb, tonb);
+    const auto block_time_string = ATime::toString(tblk, flightTimeFormat);
+    const auto block_minutes = ATime::toMinutes(tblk);
+
+    ui->tblkTimeLineEdit->setText(block_time_string);
+    // get acft data and fill deductible entries
+    auto acft = aDB->getTailEntry(tailsIdMap.value(ui->acftLineEdit->text()));
+    if (acft.getData().isEmpty())
+        DEB << "Error: No valid aircraft object available, unable to deterime auto times.";
+
+
+    // SP SE
+    if(acft.getData().value(Opl::Db::TAILS_MULTIPILOT).toInt() == 0
+            && acft.getData().value(Opl::Db::TAILS_MULTIENGINE).toInt() == 0){
+        ui->tSPSETimeLineEdit->setText(block_time_string);
+        ui->tSPSELabel->setText(block_time_string);
+    }
+    // SP ME
+    if(acft.getData().value(Opl::Db::TAILS_MULTIPILOT).toInt() == 0
+            && acft.getData().value(Opl::Db::TAILS_MULTIENGINE).toInt() == 1){
+        ui->tSPMETimeLineEdit->setText(block_time_string);
+        ui->tSPMELabel->setText(block_time_string);
+    }
+    // MP
+    if(acft.getData().value(Opl::Db::TAILS_MULTIPILOT).toInt() == 1){
+        ui->tMPTimeLineEdit->setText(block_time_string);
+        ui->tMPLabel->setText(block_time_string);
+    }
+    // TOTAL
+    ui->tblkLabel->setText(QLatin1String("<b>") + block_time_string
+                           + QLatin1String("</b>"));
+    // IFR
+    if(ui->IfrCheckBox->isChecked()){
+        ui->tIFRTimeLineEdit->setText(block_time_string);
+        ui->tIFRLabel->setText(block_time_string);
+    }
+    // Night
+    QString dept_date = ui->doftLineEdit->text() + 'T'
+            + ATime::toString(tofb);
+    auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
+    auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
+                                             ui->deptLocLineEdit->text(),
+                                             ui->destLocLineEdit->text(),
+                                             dept_date_time,
+                                             block_minutes,
+                                             night_angle));
+
+    ui->tNIGHTTimeLineEdit->setText(ATime::toString(night_time, flightTimeFormat));
+    ui->tNIGHTLabel->setText(ATime::toString(night_time, flightTimeFormat));
+    // Function times
+    switch (ui->FunctionComboBox->currentIndex()) {
+    case 0://PIC
+        ui->tPICTimeLineEdit->setText(block_time_string);
+        ui->tPICLabel->setText(block_time_string);
+        break;
+    case 1://PICus
+        ui->tPICUSTimeLineEdit->setText(block_time_string);
+        ui->tPICUSLabel->setText(block_time_string);
+        break;
+    case 2://Co-Pilot
+        ui->tSICTimeLineEdit->setText(block_time_string);
+        ui->tSICLabel->setText(block_time_string);
+        break;
+    case 3://Dual
+        ui->tDUALTimeLineEdit->setText(block_time_string);
+        ui->tDUALLabel->setText(block_time_string);
+        break;
+    case 4://Instructor
+        ui->tFITimeLineEdit->setText(block_time_string);
+        ui->tFILabel->setText(block_time_string);
+        ui->tPICTimeLineEdit->setText(block_time_string);
+        ui->tPICLabel->setText(block_time_string);
+    }
+}
+
+/*!
+ * \brief Collect input and create a Data map for the entry object.
+ *
+ * This function should only be called if input validation has been passed, since
+ * no input validation is done in this step and input data is assumed to be valid.
+ * \return
+ */
+RowData_T NewFlightDialog::collectInput()
+{
+    RowData_T newData;
+    DEB << "Collecting Input...";
+    //Block Time
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
+    const auto tblk = ATime::blocktime(tofb, tonb);
+    const auto block_minutes = ATime::toMinutes(tblk);
+    // Mandatory data
+    newData.insert(Opl::Db::FLIGHTS_DOFT, ui->doftLineEdit->text());
+    newData.insert(Opl::Db::FLIGHTS_DEPT, ui->deptLocLineEdit->text());
+    newData.insert(Opl::Db::FLIGHTS_TOFB, ATime::toMinutes(tofb));
+    newData.insert(Opl::Db::FLIGHTS_DEST, ui->destLocLineEdit->text());
+    newData.insert(Opl::Db::FLIGHTS_TONB, ATime::toMinutes(tonb));
+    newData.insert(Opl::Db::FLIGHTS_TBLK, block_minutes);
+    // Aircraft
+    newData.insert(Opl::Db::FLIGHTS_ACFT, tailsIdMap.value(ui->acftLineEdit->text()));
+    // Pilots
+    newData.insert(Opl::Db::FLIGHTS_PIC, pilotsIdMap.value(ui->picNameLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_SECONDPILOT, pilotsIdMap.value(ui->secondPilotNameLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_THIRDPILOT, pilotsIdMap.value(ui->thirdPilotNameLineEdit->text()));
+
+    // Extra Times
+    ui->tSPSETimeLineEdit->text().isEmpty() ?
+                newData.insert(Opl::Db::FLIGHTS_TSPSE, QString())
+              : newData.insert(Opl::Db::FLIGHTS_TSPSE, stringToMinutes(
+                                   ui->tSPSETimeLineEdit->text(), flightTimeFormat));
+
+    ui->tSPMETimeLineEdit->text().isEmpty() ?
+                newData.insert(Opl::Db::FLIGHTS_TSPME, QString())
+              : newData.insert(Opl::Db::FLIGHTS_TSPME, stringToMinutes(
+                                   ui->tSPMETimeLineEdit->text(), flightTimeFormat));
+    ui->tMPTimeLineEdit->text().isEmpty() ?
+                newData.insert(Opl::Db::FLIGHTS_TMP, QString())
+              : newData.insert(Opl::Db::FLIGHTS_TMP, stringToMinutes(
+                                   ui->tMPTimeLineEdit->text(), flightTimeFormat));
+
+    if (ui->IfrCheckBox->isChecked()) {
+        newData.insert(Opl::Db::FLIGHTS_TIFR, block_minutes);
+    } else {
+        newData.insert(Opl::Db::FLIGHTS_TIFR, QString());
+    }
+    // Night
+    const QString dept_date = ui->doftLineEdit->text() + 'T'
+            + ATime::toString(tofb);
+    const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
+    const auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
+                                             ui->deptLocLineEdit->text(),
+                                             ui->destLocLineEdit->text(),
+                                             dept_date_time,
+                                             block_minutes,
+                                             night_angle));
+    const auto night_minutes = ATime::toMinutes(night_time);
+    newData.insert(Opl::Db::FLIGHTS_TNIGHT, night_minutes);
+
+    // Function times - This is a little explicit but these are mutually exclusive so its better to be safe than sorry here.
+    switch (ui->FunctionComboBox->currentIndex()) {
+    case 0://PIC
+        newData.insert(Opl::Db::FLIGHTS_TPIC, block_minutes);
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
+        break;
+    case 1://PICUS
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, block_minutes);
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
+        break;
+    case 2://Co-Pilot
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, block_minutes);
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
+        break;
+    case 3://Dual
+        newData.insert(Opl::Db::FLIGHTS_TPIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, block_minutes);
+        newData.insert(Opl::Db::FLIGHTS_TFI, QString());
+        break;
+    case 4://Instructor
+        newData.insert(Opl::Db::FLIGHTS_TPIC, block_minutes);
+        newData.insert(Opl::Db::FLIGHTS_TPICUS, QString());
+        newData.insert(Opl::Db::FLIGHTS_TSIC, QString());
+        newData.insert(Opl::Db::FLIGHTS_TDUAL, QString());
+        newData.insert(Opl::Db::FLIGHTS_TFI, block_minutes);
+    }
+    // Pilot Flying
+    newData.insert(Opl::Db::FLIGHTS_PILOTFLYING, ui->PilotFlyingCheckBox->isChecked());
+    // TO and LDG - again a bit explicit, but we  need to check for both night to day as well as day to night transitions.
+    if (ui->TakeoffCheckBox->isChecked()) {
+        if (night_minutes == 0) { // all day
+            newData.insert(Opl::Db::FLIGHTS_TODAY, ui->TakeoffSpinBox->value());
+            newData.insert(Opl::Db::FLIGHTS_TONIGHT, 0);
+        } else if (night_minutes == block_minutes) { // all night
+            newData.insert(Opl::Db::FLIGHTS_TODAY, 0);
+            newData.insert(Opl::Db::FLIGHTS_TONIGHT, ui->TakeoffSpinBox->value());
+        } else {
+            if(ACalc::isNight(ui->deptLocLineEdit->text(), dept_date_time,  night_angle)) {
+                newData.insert(Opl::Db::FLIGHTS_TODAY, 0);
+                newData.insert(Opl::Db::FLIGHTS_TONIGHT, ui->TakeoffSpinBox->value());
+            } else {
+                newData.insert(Opl::Db::FLIGHTS_TODAY, ui->TakeoffSpinBox->value());
+                newData.insert(Opl::Db::FLIGHTS_TONIGHT, 0);
+            }
+        }
+    } else {
+        newData.insert(Opl::Db::FLIGHTS_TODAY, 0);
+        newData.insert(Opl::Db::FLIGHTS_TONIGHT, 0);
+    }
+
+    if (ui->LandingCheckBox->isChecked()) {
+        if (night_minutes == 0) { // all day
+            newData.insert(Opl::Db::FLIGHTS_LDGDAY, ui->LandingSpinBox->value());
+            newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, 0);
+        } else if (night_minutes == block_minutes) { // all night
+            newData.insert(Opl::Db::FLIGHTS_LDGDAY, 0);
+            newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
+        } else { //check
+            const QString dest_date = ui->doftLineEdit->text() + 'T'
+                    + ATime::toString(tonb);
+            const auto dest_date_time = QDateTime::fromString(dest_date, QStringLiteral("yyyy-MM-ddThh:mm"));
+            if (ACalc::isNight(ui->destLocLineEdit->text(), dest_date_time,  night_angle)) {
+                newData.insert(Opl::Db::FLIGHTS_LDGDAY, 0);
+                newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, ui->LandingSpinBox->value());
+            } else {
+                newData.insert(Opl::Db::FLIGHTS_LDGDAY, ui->LandingSpinBox->value());
+                newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, 0);
+            }
+        }
+    } else {
+        newData.insert(Opl::Db::FLIGHTS_LDGDAY, 0);
+        newData.insert(Opl::Db::FLIGHTS_LDGNIGHT, 0);
+    }
+
+    newData.insert(Opl::Db::FLIGHTS_AUTOLAND, ui->AutolandSpinBox->value());
+    newData.insert(Opl::Db::FLIGHTS_APPROACHTYPE, ui->ApproachComboBox->currentText());
+    newData.insert(Opl::Db::FLIGHTS_FLIGHTNUMBER, ui->FlightNumberLineEdit->text());
+    newData.insert(Opl::Db::FLIGHTS_REMARKS, ui->RemarksLineEdit->text());
+
+    DEB << "New Flight Data: " << newData;
+
+    return newData;
+}
+
+void NewFlightDialog::formFiller()
+{
+    DEB << "Filling Line Edits...";
+    // get Line Edits
+    auto line_edits = this->findChildren<QLineEdit *>();
     QStringList line_edits_names;
-    for(const auto& le : line_edits){
+    for (const auto& le : line_edits) {
         line_edits_names << le->objectName();
     }
-    const QString& acft = Db::singleSelect("registration", "tails", "tail_id",
-                                    oldFlight.data.value("acft"),
-                                    Db::exactMatch);
-    ui->acftLineEdit->setText(acft);
-    line_edits_names.removeOne("acftLineEdit");
 
-    for(const auto& key : oldFlight.data.keys()){
-        auto rx = QRegularExpression(key + "LineEdit");//acftLineEdit
-        for(const auto& leName : line_edits_names){
+    ui->acftLineEdit->setText(flightEntry.getRegistration());
+    line_edits_names.removeOne(QStringLiteral("acftLineEdit"));
+
+    for (const auto& data_key : flightEntry.getData().keys()) {
+        auto rx = QRegularExpression(data_key + QStringLiteral("LineEdit"));//acftLineEdit
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
-                //DEBUG("Loc Match found: " << key << " - " << leName);
-                auto le = parent()->findChild<QLineEdit *>(leName);
-                if(le != nullptr){
-                    le->setText(oldFlight.data.value(key));
-                    filled << leName;
+                //DEB << "Loc Match found: " << key << " - " << leName);
+                auto line_edit = this->findChild<QLineEdit *>(leName);
+                if(line_edit != nullptr){
+                    line_edit->setText(flightEntry.getData().value(data_key).toString());
                     line_edits_names.removeOne(leName);
                 }
                 break;
             }
         }
-        rx = QRegularExpression(key + "Loc\\w+?");
-        for(const auto& leName : line_edits_names){
+        rx = QRegularExpression(data_key + QStringLiteral("Loc\\w+?"));
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
-                //DEBUG("Loc Match found: " << key << " - " << leName);
-                auto le = parent()->findChild<QLineEdit *>(leName);
-                if(le != nullptr){
-                    le->setText(oldFlight.data.value(key));
-                    filled << leName;
+                //DEB << "Loc Match found: " << key << " - " << leName);
+                auto line_edit = this->findChild<QLineEdit *>(leName);
+                if(line_edit != nullptr){
+                    line_edit->setText(flightEntry.getData().value(data_key).toString());
                     line_edits_names.removeOne(leName);
                 }
                 break;
             }
         }
-        rx = QRegularExpression(key + "Time\\w+?");
-        for(const auto& leName : line_edits_names){
+        rx = QRegularExpression(data_key + QStringLiteral("Time\\w+?"));
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
-                //DEBUG("Time Match found: " << key << " - " << leName);
-                auto le = parent()->findChild<QLineEdit *>(leName);
-                if(le != nullptr){
-                    DEBUG("Setting " << le->objectName() << " to " << Calc::minutesToString(oldFlight.data.value(key)));
-                    le->setText(Calc::minutesToString(
-                                oldFlight.data.value(key)));
-                    filled << leName;
+                //DEB << "Time Match found: " << key << " - " << leName);
+                auto line_edits = this->findChild<QLineEdit *>(leName);
+                if(line_edits != nullptr){
+                    DEB << "Setting " << line_edits->objectName() << " to " << ATime::toString(flightEntry.getData().value(data_key).toInt(), flightTimeFormat);
+                    line_edits->setText(ATime::toString(flightEntry.getData().value(data_key).toInt(),
+                                                        flightTimeFormat));
                     line_edits_names.removeOne(leName);
                 }
                 break;
             }
         }
-        rx = QRegularExpression(key + "Name\\w+?");
-        for(const auto& leName : line_edits_names){
+        rx = QRegularExpression(data_key + QStringLiteral("Name\\w+?"));
+        for(const auto& leName : qAsConst(line_edits_names)){
             if(rx.match(leName).hasMatch())  {
-                //DEBUG("Time Match found: " << key << " - " << leName);
-                auto le = parent()->findChild<QLineEdit *>(leName);
-                if(le != nullptr){
-                    const QString& column = "piclastname||', '||picfirstname";
-                    const QString& name = Db::singleSelect(column, "pilots", "pilot_id",
-                                                    oldFlight.data.value(key),
-                                                    Db::exactMatch);
-                    le->setText(name);
-                    filled << leName;
+                auto line_edits = this->findChild<QLineEdit *>(leName);
+                if(line_edits != nullptr){
+                    DEB << pilotsIdMap.key(1);
+                    line_edits->setText(pilotsIdMap.key(flightEntry.getData().value(data_key).toInt()));
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -288,39 +743,41 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         }
     }
     //FunctionComboBox
-    QList<QLineEdit*> FCB = {ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                             ui->tDUALTimeLineEdit, ui->tFITimeLineEdit};
-    for(const auto& le : FCB){
-        if(le->text() != "00:00"){
-            QString name = le->objectName();
+    QList<QLineEdit*> function_combo_boxes = {ui->tPICTimeLineEdit, ui->tPICUSTimeLineEdit,
+                                              ui->tSICTimeLineEdit, ui->tDUALTimeLineEdit,
+                                              ui->tFITimeLineEdit};
+    for(const auto& line_edit : function_combo_boxes){
+        if(line_edit->text() != QStringLiteral("00:00")){
+            QString name = line_edit->objectName();
             name.chop(12);
             name.remove(0,1);
             ui->FunctionComboBox->setCurrentText(name);
         }
     }
     // Approach Combo Box
-    const QString& app = oldFlight.data.value("ApproachType");
-    if(app != " "){
+    const QString& app = flightEntry.getData().value(Opl::Db::FLIGHTS_APPROACHTYPE).toString();
+    if(app != QString()){
         ui->ApproachComboBox->setCurrentText(app);
     }
     // Task and Rules
-    qint8 PF = oldFlight.data.value("pilotFlying").toInt();
+    qint8 PF = flightEntry.getData().value(Opl::Db::FLIGHTS_PILOTFLYING).toInt();
     if (PF > 0) {
         ui->PilotFlyingCheckBox->setChecked(true);
     } else {
         ui->PilotMonitoringCheckBox->setChecked(true);
     }
-    qint8 FR = oldFlight.data.value("tIFR").toInt();
+    qint8 FR = flightEntry.getData().value(Opl::Db::FLIGHTS_TIFR).toInt();
     if (FR > 0) {
         ui->IfrCheckBox->setChecked(true);
     } else {
-        ui->tIFRTimeLineEdit->setText("00:00");
+        ui->tIFRTimeLineEdit->setText(QString());
         ui->VfrCheckBox->setChecked(true);
     }
     // Take Off and Landing
-    qint8 TO = oldFlight.data.value("toDay").toInt() + oldFlight.data.value("toNight").toInt();
-    qint8 LDG = oldFlight.data.value("ldgDay").toInt() + oldFlight.data.value("ldgNight").toInt();
-    DEBUG("TO and LDG:" << TO << LDG);
+    qint8 TO = flightEntry.getData().value(Opl::Db::FLIGHTS_TODAY).toInt()
+            + flightEntry.getData().value(Opl::Db::FLIGHTS_TONIGHT).toInt();
+    qint8 LDG = flightEntry.getData().value(Opl::Db::FLIGHTS_LDGDAY).toInt()
+            + flightEntry.getData().value(Opl::Db::FLIGHTS_LDGNIGHT).toInt();
     if(TO > 0) {
         ui->TakeoffCheckBox->setChecked(true);
         ui->TakeoffSpinBox->setValue(TO);
@@ -335,630 +792,292 @@ void NewFlightDialog::formFiller(Flight oldFlight)
         ui->LandingCheckBox->setChecked(false);
         ui->LandingSpinBox->setValue(0);
     }
-    qint8 AL = oldFlight.data.value("autoland").toInt();
+    qint8 AL = flightEntry.getData().value(Opl::Db::FLIGHTS_AUTOLAND).toInt();
     if(AL > 0) {
         ui->AutolandCheckBox->setChecked(true);
         ui->AutolandSpinBox->setValue(AL);
     }
 
-    for(const auto& le : mandatoryLineEdits){
+    for(const auto& le : qAsConst(mandatoryLineEdits.lineEdits)){
         emit le->editingFinished();
     }
 }
 
-/*
- * ============================================================================
- * Functions
- * ============================================================================
- */
-
-/*!
- * \brief setLineEditValidator set Validators for QLineEdits that end with Time, Loc,
- * Aircraft or Name
- */
-inline void NewFlightDialog::setupLineEdit(QLineEdit* line_edit, LineEditSettings settings)
+bool NewFlightDialog::isLessOrEqualThanBlockTime(const QString time_string)
 {
-    auto db = QSqlDatabase::database("qt_sql_default_connection");
-    auto line_edit_objectName = line_edit->objectName();
-    DEBUG("Setting validators for " << line_edit_objectName);
-    auto [valid_rgx, invalid_rgx, sql_col] = settings.getAll();
-
-    auto validator = new StrictRxValidator(valid_rgx, line_edit);
-
-    auto comp_model = new QSqlRelationalTableModel(line_edit, db);
-    comp_model->database().open();
-    comp_model->setTable("QCompleterView");
-    comp_model->select();
-
-    auto completer = new QCompleter(comp_model, line_edit);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCompletionColumn(sql_col.column());
-    completer->setFilterMode(Qt::MatchContains);
-    //if(QRegularExpression("\\w+Loc").match(line_edit_objectName).hasMatch()) { completer->setFilterMode(Qt::MatchContains); }
-
-
-    line_edit->setValidator(validator);
-    line_edit->setCompleter(completer);
-}
-
-/*!
- * \brief NewFlight::writeSettings Writes current selection for auto-logging
- * to settings file.
- */
-void NewFlightDialog::writeSettings()
-{
-    DEBUG("Writing Settings...");
-
-    Settings::write("NewFlight/FunctionComboBox",ui->FunctionComboBox->currentText());
-    Settings::write("NewFlight/ApproachComboBox",ui->ApproachComboBox->currentText());
-    Settings::write("NewFlight/PilotFlyingCheckBox",ui->PilotFlyingCheckBox->isChecked());
-    Settings::write("NewFlight/PilotMonitoringCheckBox",ui->PilotMonitoringCheckBox->isChecked());
-    Settings::write("NewFlight/TakeoffSpinBox",ui->TakeoffSpinBox->value());
-    Settings::write("NewFlight/TakeoffCheckBox",ui->TakeoffCheckBox->isChecked());
-    Settings::write("NewFlight/LandingSpinBox",ui->LandingSpinBox->value());
-    Settings::write("NewFlight/LandingCheckBox",ui->LandingCheckBox->isChecked());
-    Settings::write("NewFlight/AutolandSpinBox",ui->AutolandSpinBox->value());
-    Settings::write("NewFlight/AutolandCheckBox",ui->AutolandCheckBox->isChecked());
-    Settings::write("NewFlight/IfrCheckBox",ui->IfrCheckBox->isChecked());
-    Settings::write("NewFlight/VfrCheckBox",ui->VfrCheckBox->isChecked());
-}
-
-/*!
- * \brief NewFlight::readSettings Retreives auto-logging settings
- * and sets up ui accordingly
- */
-void NewFlightDialog::readSettings()
-{
-    DEBUG("Reading Settings...");
-    QSettings settings;
-
-    ui->FunctionComboBox->setCurrentText(Settings::read("NewFlight/FunctionComboBox").toString());
-    ui->ApproachComboBox->setCurrentText(Settings::read("NewFlight/ApproachComboBox").toString());
-    ui->PilotFlyingCheckBox->setChecked(Settings::read("NewFlight/PilotFlyingCheckBox").toBool());
-    ui->PilotMonitoringCheckBox->setChecked(Settings::read("NewFlight/PilotMonitoringCheckBox").toBool());
-    ui->TakeoffSpinBox->setValue(Settings::read("NewFlight/TakeoffSpinBox").toInt());
-    ui->TakeoffCheckBox->setChecked(Settings::read("NewFlight/TakeoffCheckBox").toBool());
-    ui->LandingSpinBox->setValue(Settings::read("NewFlight/LandingSpinBox").toInt());
-    ui->LandingCheckBox->setChecked(Settings::read("NewFlight/LandingCheckBox").toBool());
-    ui->AutolandSpinBox->setValue(Settings::read("NewFlight/AutolandSpinBox").toInt());
-    ui->AutolandCheckBox->setChecked(Settings::read("NewFlight/AutolandCheckBox").toBool());
-    ui->IfrCheckBox->setChecked(Settings::read("NewFlight/IfrCheckBox").toBool());
-    ui->VfrCheckBox->setChecked(Settings::read("NewFlight/VfrCheckBox").toBool());
-    ui->FlightNumberLineEdit->setText(Settings::read("flightlogging/flightnumberPrefix").toString());
-
-    if(Settings::read("NewFlight/FunctionComboBox").toString() == "PIC"){
-        ui->picNameLineEdit->setText("self");
-        ui->secondPilotNameLineEdit->setText("");
-    }else if (Settings::read("NewFlight/FunctionComboBox").toString() == "Co-Pilot") {
-        ui->picNameLineEdit->setText("");
-        ui->secondPilotNameLineEdit->setText("self");
-    }
-}
-/*!
- * \brief NewFlight::addNewPilotMessageBox If the user input is not in the pilotNameList, the user
- * is prompted if he wants to add a new entry to the database
- */
-void NewFlightDialog::addNewPilotMessageBox(QLineEdit *parent)
-{
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "No Pilot found",
-                                  "No pilot found.<br>Please enter the Name as"
-                                  "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
-                                  "If this is the first time you log a flight with this pilot, you have to "
-                                  "add the name to the database first.<br><br>Would you like to add a new pilot to the database?",
-                                  QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes)
-    {
-        qDebug() << "Add new pilot selected";
-        // create and open new pilot dialog
-        auto np = NewPilotDialog(Db::createNew, this);
-        np.exec();
-        QString statement = "SELECT MAX(pilot_id)  FROM pilots";
-        QString id = Db::customQuery(statement,1).first();
-        Pilot newPilot = Pilot(id.toInt());
-        parent->setText(newPilot.data.value("displayname"));
-        emit parent->editingFinished();
-    }
-}
-/*!
- * \brief NewFlight::addNewAircraftMessageBox If the user input is not in the aircraftList, the user
- * is prompted if he wants to add a new entry to the database
- */
-void NewFlightDialog::addNewAircraftMessageBox(QLineEdit *parent)
-{
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "No Aircraft found",
-                                  "No aircraft with this registration found.<br>"
-                                  "If this is the first time you log a flight with this aircraft, you have to "
-                                  "add the registration to the database first.<br><br>Would you like to add a new aircraft to the database?",
-                                  QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes)
-    {
-        DEBUG("Add new aircraft selected");
-        // create and open new aircraft dialog
-        auto na = NewTailDialog(ui->acftLineEdit->text(), Db::createNew, this);
-        na.exec();
-        QString statement = "SELECT MAX(tail_id)  FROM tails";
-        QString id = Db::customQuery(statement,1).first();
-        auto newAcft = Aircraft(id.toInt());
-        parent->setText(newAcft.data.value("registration"));
-        emit parent->editingFinished();
-    }
-}
-/// Input Verification and Collection
-
-/*!
- * \brief NewFlight::update check if needed inputs are available and update form
- */
-void NewFlightDialog::update()
-{
-    if(doUpdate){
-        QVector<QLineEdit*> notFilled;
-        for(auto lineEdit : mandatoryLineEdits)
-        {
-            if(!allOkBits.testBit(lineEditBitMap[lineEdit]))
-            {
-                notFilled.push_back(lineEdit);
-            }
-        }
-        if(notFilled.empty()){
-            collectBasicData();
-            fillExtras();
-        } else {
-            DEBUG("No update - not enough variables known.");
-        }
-    }
-}
-
-/*!
- * \brief NewFlight::collectBasicInput After mandatory inputs have passed
- * validation, collect values from line edits and combo boxes to create new Data
- * for flight object.
- */
-void NewFlightDialog::collectBasicData()
-{
-    // purge old data to ensure database integrity
-    newData.clear();
-    DEBUG("Collecting Basic Input...");
-    // Date of Flight
-    if(QDate::fromString(ui->doftLineEdit->text(),Qt::ISODate).isValid()) {
-        auto doft = ui->doftLineEdit->text();
-        newData.insert("doft",doft);
-    }
-
-    // Departure Loc
-    newData.insert("dept",ui->deptLocLineEdit->text());
-    // Time Off Blocks
-    auto timeOff = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
-    if(timeOff.isValid()){
-        int tofb = timeOff.hour() * 60 + timeOff.minute();
-        newData.insert("tofb",QString::number(tofb));
-    }
-    // Destination Loc
-    newData.insert("dest",ui->destLocLineEdit->text());
-    // Time On Blocks
-    auto timeOn = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    if(timeOn.isValid()){
-        int tonb = timeOn.hour() * 60 + timeOn.minute();
-        newData.insert("tonb",QString::number(tonb));
-    }
-    //Block Time
-    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
-    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
-    newData.insert("tblk",blockMinutes);
-
-    // Aircraft
-    QString reg = ui->acftLineEdit->text();
-    QString acft = Db::singleSelect("tail_id","tails","registration",reg,Db::exactMatch);
-    if(!acft.isEmpty()){
-        newData.insert("acft",acft);
-    } else {
-        emit ui->acftLineEdit->inputRejected();
-    }
-    // Pilot
-    if(ui->picNameLineEdit->text() == "self" || ui->picNameLineEdit->text() == "self"){
-        newData.insert("pic","1");
-    } else {
-        QString name = ui->picNameLineEdit->text();
-        QStringList names = name.split(',');
-        if(names.length()==2){
-            QString firstNames = names[1].simplified();
-            QString lastNames = names[0].simplified();
-            QString query = "SELECT pilot_id FROM pilots WHERE piclastname = \"" + lastNames
-                    + "\" AND picfirstname = \"" + firstNames + "\"";
-            QVector<QString> pic = Db::customQuery(query,1);
-            if(!pic.isEmpty()){
-                newData.insert("pic",pic.first());
-            }else {
-                emit ui->picNameLineEdit->inputRejected();
-            }
-        }
-    }
-}
-
-void NewFlightDialog::collectAdditionalData()
-{
-    // Pilot 2
-    if(!ui->secondPilotNameLineEdit->text().isEmpty()){
-        if(ui->secondPilotNameLineEdit->text() == "self" || ui->secondPilotNameLineEdit->text() == "self"){
-            newData.insert("secondPilot","1");
-        } else {
-            QString name = ui->secondPilotNameLineEdit->text();
-            QStringList names = name.split(',');
-            if(names.length()==2){
-                QString firstNames = names[1].simplified();
-                QString lastNames = names[0].simplified();
-                QString query = "SELECT pilot_id FROM pilots WHERE piclastname = \"" + lastNames
-                        + "\" AND picfirstname = \"" + firstNames + "\"";
-                QVector<QString> pic = Db::customQuery(query,1);
-                if(!pic.isEmpty()){
-                    newData.insert("secondPilot",pic.first());
-                }else {
-                    emit ui->secondPilotNameLineEdit->inputRejected();
-                }
-            }
-        }
-    }
-
-    // Pilot 3
-    if(!ui->thirdPilotNameLineEdit->text().isEmpty()){
-        if(ui->thirdPilotNameLineEdit->text() == "self" || ui->thirdPilotNameLineEdit->text() == "self"){
-            newData.insert("thirdPilot","1");
-        } else {
-            QString name = ui->thirdPilotNameLineEdit->text();
-            QStringList names = name.split(',');
-            if(names.length()==2){
-                QString firstNames = names[1].simplified();
-                QString lastNames = names[0].simplified();
-                QString query = "SELECT pilot_id FROM pilots WHERE piclastname = \"" + lastNames
-                        + "\" AND picfirstname = \"" + firstNames + "\"";
-                QVector<QString> pic = Db::customQuery(query,1);
-                if(!pic.isEmpty()){
-                    newData.insert("thirdPilot",pic.first());
-                }else {
-                    emit ui->thirdPilotNameLineEdit->inputRejected();
-                }
-            }
-        }
-    }
-
-    // Extra Times
-    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
-    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
-
-    auto acft = Aircraft(newData.value("acft").toInt());
-
-    if(!acft.data.isEmpty()){// valid aircraft
-        // SP SE
-        if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1"){
-            newData.insert("tSPSE", blockMinutes);
-            newData.insert("tSPME", "");
-            newData.insert("tMP", "");
-        }
-        // SP ME
-        if(acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1"){
-            newData.insert("tSPSE", "");
-            newData.insert("tSPME", blockMinutes);
-            newData.insert("tMP", "");
-        }
-        // MP
-        if(acft.data.value("multipilot") == "1"){
-            newData.insert("tSPSE", "");
-            newData.insert("tSPME", "");
-            newData.insert("tMP", blockMinutes);
-        }
-    }else{DEBUG("Aircraft Details Empty");}//invalid aircraft
-
-    // IFR
-    if(ui->IfrCheckBox->isChecked()){
-        newData.insert("tIFR",blockMinutes);
-    } else {
-        newData.insert("tIFR","");
-    }
-    // Night
-    QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
-    QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
-    int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
-
-    QString nightTime = QString::number(
-                        Calc::calculateNightTime(
-                        newData.value("dept"), newData.value("dest"),
-                        deptDateTime, tblk, nightAngle));
-    newData.insert("tNIGHT", nightTime);
-    // Function times
-    switch (ui->FunctionComboBox->currentIndex()) {
-    case 0://PIC
-        newData.insert("tPIC", blockMinutes);
-        newData.insert("tPICUS", "");
-        newData.insert("tSIC", "");
-        newData.insert("tDUAL", "");
-        newData.insert("tFI", "");
-        break;
-    case 1://PICUS
-        newData.insert("tPIC", "");
-        newData.insert("tPICUS", blockMinutes);
-        newData.insert("tSIC", "");
-        newData.insert("tDUAL", "");
-        newData.insert("tFI", "");
-        break;
-    case 2://Co-Pilot
-        newData.insert("tPIC", "");
-        newData.insert("tPICUS", "");
-        newData.insert("tSIC", blockMinutes);
-        newData.insert("tDUAL", "");
-        newData.insert("tFI", "");
-        break;
-    case 3://Dual
-        newData.insert("tPIC", "");
-        newData.insert("tPICUS", "");
-        newData.insert("tSIC", "");
-        newData.insert("tDUAL", blockMinutes);
-        newData.insert("tFI", "");
-        break;
-    case 4://Instructor
-        newData.insert("tPIC", "");
-        newData.insert("tPICUS", "");
-        newData.insert("tSIC", "");
-        newData.insert("tDUAL", "");
-        newData.insert("tFI", blockMinutes);
-    }
-    // Pilot Flying
-    newData.insert("pilotFlying", QString::number(ui->PilotFlyingCheckBox->isChecked()));
-    // TO and LDG
-    if(ui->TakeoffCheckBox->isChecked()) {
-        if(nightTime == "0"){ // all day
-            newData.insert("toDay", QString::number(ui->TakeoffSpinBox->value()));
-            newData.insert("toNight", "0");
-        }else if (nightTime == blockTime) { // all night
-            newData.insert("toDay", "0");
-            newData.insert("toNight", QString::number(ui->TakeoffSpinBox->value()));
-        } else { //check
-            if(Calc::isNight(ui->deptLocLineEdit->text(), deptDateTime,  nightAngle)){
-                newData.insert("toDay", "0");
-                newData.insert("toNight", QString::number(ui->TakeoffSpinBox->value()));
-            }else{
-                newData.insert("toDay", QString::number(ui->TakeoffSpinBox->value()));
-                newData.insert("toNight", "0");
-            }
-        }
-    } else {
-        newData.insert("toDay", "0");
-        newData.insert("toNight", "0");
-    }
-
-    if(ui->LandingCheckBox->isChecked()) {
-        if(nightTime == "0"){ // all day
-            newData.insert("ldgDay", QString::number(ui->LandingSpinBox->value()));
-            newData.insert("ldgNight", "0");
-        }else if (nightTime == blockTime) { // all night
-            newData.insert("ldgDay", "0");
-            newData.insert("ldgNight", QString::number(ui->LandingSpinBox->value()));
-        } else { //check
-            QString destDate = ui->doftLineEdit->text() + 'T' + tonb.toString("hh:mm");
-            QDateTime destDateTime = QDateTime::fromString(destDate,"yyyy-MM-ddThh:mm");
-            if(Calc::isNight(ui->destLocLineEdit->text(), destDateTime,  nightAngle)){
-                newData.insert("ldgDay", "0");
-                newData.insert("ldgNight", QString::number(ui->LandingSpinBox->value()));
-            }else{
-                newData.insert("ldgDay", QString::number(ui->LandingSpinBox->value()));
-                newData.insert("ldgNight", "0");
-            }
-        }
-    } else {
-        newData.insert("ldgDay", "0");
-        newData.insert("ldgNight", "0");
-    }
-
-    newData.insert("autoland", QString::number(ui->AutolandSpinBox->value()));
-    newData.insert("ApproachType", ui->ApproachComboBox->currentText());
-    newData.insert("FlightNumber", ui->FlightNumberLineEdit->text());
-    newData.insert("Remarks", ui->RemarksLineEdit->text());
-}
-/*!
- * \brief NewFlight::fillExtrasLineEdits Fills the deductable items in the newData map and
- * additional flight time line edits according to ui selections.
- * Neccessary prerequisites are valid Date, Departure Time and Place, Destination Time and Place,
- * PIC name (pilot_id) and Aircraft (tail_id)
- */
-void NewFlightDialog::fillExtras()
-{
-    //zero labels and line edits
-    QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
-                              ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
-    QList<QLabel*>      LB = {ui->tSPSELabel, ui->tSPMELabel,  ui->tMPLabel,  ui->tIFRLabel,  ui->tNIGHTLabel,
-                              ui->tPICLabel,  ui->tPICUSLabel, ui->tSICLabel, ui->tDUALLabel, ui->tFILabel};
-    for(const auto& widget : LE) {widget->setText("");}
-    for(const auto& widget : LB) {widget->setText("00:00");}
-    //Times
-    auto tofb = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
-    auto tonb = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
-    QString blockTime = Calc::blocktime(tofb, tonb).toString("hh:mm");
-    QString blockMinutes = QString::number(Calc::stringToMinutes(blockTime));
-    ui->tblkTimeLineEdit->setText(blockTime);
-    auto acft = Aircraft(newData.value("acft").toInt());
-
-    if(!acft.data.isEmpty()){// valid aircraft
-        // SP SE
-        if(acft.data.value("singlepilot") == "1" && acft.data.value("singleengine") == "1"){
-            ui->tSPSETimeLineEdit->setText(blockTime);
-            ui->tSPSELabel->setText(blockTime);
-        }
-        // SP ME
-        if(acft.data.value("singlepilot") == "1" && acft.data.value("multiengine") == "1"){
-            ui->tSPMETimeLineEdit->setText(blockTime);
-            ui->tSPMELabel->setText(blockTime);
-        }
-        // MP
-        if(acft.data.value("multipilot") == "1"){
-            ui->tMPTimeLineEdit->setText(blockTime);
-            ui->tMPLabel->setText(blockTime);
-        }
-    }else{DEBUG("Aircraft Details Empty");}//invalid aircraft
-
-    // TOTAL
-    ui->tblkLabel->setText("<b>" + blockTime + "</b>");
-    ui->tblkLabel->setStyleSheet("color: green;");
-    // IFR
-    if(ui->IfrCheckBox->isChecked()){
-        ui->tIFRTimeLineEdit->setText(blockTime);
-        ui->tIFRLabel->setText(blockTime);
-    }
-    // Night
-    QString deptDate = ui->doftLineEdit->text() + 'T' + tofb.toString("hh:mm");
-    QDateTime deptDateTime = QDateTime::fromString(deptDate,"yyyy-MM-ddThh:mm");
-    int tblk = blockMinutes.toInt();
-    const int nightAngle = Settings::read("flightlogging/nightangle").toInt();
-
-    QString nightTime = QString::number(
-                        Calc::calculateNightTime(
-                        newData.value("dept"), newData.value("dest"),
-                        deptDateTime, tblk, nightAngle));
-    ui->tNIGHTTimeLineEdit->setText(Calc::minutesToString(nightTime));
-    ui->tNIGHTLabel->setText(Calc::minutesToString(nightTime));
-    // Function times
-    switch (ui->FunctionComboBox->currentIndex()) {
-    case 0://PIC
-        ui->tPICTimeLineEdit->setText(blockTime);
-        ui->tPICLabel->setText(blockTime);
-        break;
-    case 1://PICus
-        ui->tPICUSTimeLineEdit->setText(blockTime);
-        ui->tPICUSLabel->setText(blockTime);
-        break;
-    case 2://Co-Pilot
-        ui->tSICTimeLineEdit->setText(blockTime);
-        ui->tSICLabel->setText(blockTime);
-        break;
-    case 3://Dual
-        ui->tDUALTimeLineEdit->setText(blockTime);
-        ui->tDUALLabel->setText(blockTime);
-        break;
-    case 4://Instructor
-        ui->tFITimeLineEdit->setText(blockTime);
-        ui->tFILabel->setText(blockTime);
-    }
-}
-
-bool NewFlightDialog::verifyInput()
-{
-    QVector<QLineEdit*> notFilled;
-    for(auto lineEdit : mandatoryLineEdits)
-    {
-        if(!allOkBits.testBit(lineEditBitMap[lineEdit]))
-        {
-            notFilled.push_back(lineEdit);
-        }
-    }
-    if(!notFilled.empty()){
-        QMessageBox notFilledMessageBox(this);
-        auto errorMsg = QString("Not all required fields are filled out.\n\n"
-                                "Plase make sure the following are not empty:\n\n"
-                                "Departure\nDestination\nTime Off Blocks\nTime On Blocks\n"
-                                "Pilot in Command\nAircraft Registration\n\n");
-        notFilledMessageBox.setText(errorMsg);
-        notFilledMessageBox.exec();
+    if (!mandatoryLineEdits.allValid()){
+        QMessageBox message_box(this);
+        message_box.setText(tr("Unable to determine total block time.<br>"
+                               "Please fill out all Mandatory Fields<br>"
+                               "before manually editing these times."));
+        message_box.exec();
         return false;
-    } else {
-        QStringList lineEditText;
-        for(auto line_edit : mandatoryLineEdits)
-        {
-            lineEditText.push_back(line_edit->text());
-        }
-        emit mandatoryFieldsValid(this);
+    }
+
+    auto extra_time = ATime::fromString(time_string, flightTimeFormat);
+    auto block_time = ATime::blocktime(ATime::fromString(
+                                           ui->tofbTimeLineEdit->text(), flightTimeFormat),
+                                       ATime::fromString(
+                                           ui->tonbTimeLineEdit->text(), flightTimeFormat));
+    if (extra_time <= block_time) {
         return true;
+    } else {
+        QMessageBox message_box(this);
+        message_box.setWindowTitle(tr("Error"));
+        message_box.setText(tr("The flight time you have entered is longer than the total blocktime:"
+                               "<br><center><b>%1</b></center>"
+                               ).arg(ATime::toString(block_time, flightTimeFormat)));
+        message_box.exec();
+        return false;
     }
 }
 
 /*!
- * ============================================================================
- * ============================================================================
- * Slots
- * ============================================================================
- * ============================================================================
+ * \brief NewFlight::addNewTailMessageBox If the user input is not in the aircraftList, the user
+ * is prompted if he wants to add a new entry to the database
  */
-
-void NewFlightDialog::on_buttonBox_accepted()
+void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
 {
-    DEBUG("OK pressed");
-    if(verifyInput()){
-        DEBUG("Input verified");
-        collectBasicData();
-        collectAdditionalData();
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("No Aircraft found"),
+                                  tr("No aircraft with this registration found.<br>"
+                                     "If this is the first time you log a flight with this aircraft, "
+                                     "you have to add the registration to the database first."
+                                     "<br><br>Would you like to add a new aircraft to the database?"),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        DEB << "Add new aircraft selected";
+        // create and open new aircraft dialog
+        NewTailDialog na(ui->acftLineEdit->text(), this);
+        na.exec();
+        // update map and list, set line edit
+        tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
+        tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
 
-        switch (role) {
-        case Db::editExisting:
-            entry.setData(newData);
-            DEBUG("Editing entry: " << entry.position.first << " - " << entry.position.second);
-            DEBUG("with Data: " << newData);
-            DEBUG("Function Times: " << newData.value("tPIC") << newData.value("tPICus") << newData.value("tSIC")
-                  << newData.value("tDUAL") << newData.value("tFI"));
-            break;
-        case Db::createNew:
-            entry = Flight(newData);
-            DEBUG("Creating New entry: " << entry.position.first << " - " << entry.position.second);
-            DEBUG("with Data: " << newData);
-            break;
-        }
+        DEB << "New Entry added. Id:" << aDB->getLastEntry(ADatabaseTarget::tails);
+        DEB << "AC Map: " << tailsIdMap;
 
-        if(entry.commit()){
-            accept();
-        }else{
-            auto mb = new QMessageBox(this);
-            auto errorMsg = QString("Unable to commit Flight to Logbook."
-                                    "The following error has ocurred:\n\n");
-            errorMsg.append(entry.error);
-            mb->setText(errorMsg);
-            mb->show();
-        }
+        parent_line_edit->setText(tailsIdMap.key(aDB->getLastEntry(ADatabaseTarget::tails)));
+        emit parent_line_edit->editingFinished();
+    } else {
+        parent_line_edit->setText(QString());
     }
 }
 
-void NewFlightDialog::on_buttonBox_rejected()
+/*!
+ * \brief NewFlight::addNewPilot If the user input is not in the pilotNameList, the user
+ * is prompted if he wants to add a new entry to the database
+ */
+void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
 {
-    DEBUG("CANCEL pressed." << newData);
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("No Pilot found"),
+                                  tr("No pilot found.<br>Please enter the Name as"
+                                     "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+                                     "If this is the first time you log a flight with this pilot, "
+                                     "you have to add the pilot to the database first."
+                                     "<br><br>Would you like to add a new pilot to the database?"),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        DEB << "Add new pilot selected";
+        // create and open new pilot dialog
+        NewPilotDialog np(this);
+        np.exec();
+        // update map and list, set line edit
+        pilotsIdMap  = aDB->getIdMap(ADatabaseTarget::pilots);
+        pilotList    = aDB->getCompletionList(ADatabaseTarget::pilots);
+        DEB << "Setting new entry: " << pilotsIdMap.key(aDB->getLastEntry(ADatabaseTarget::pilots));
+        parent_line_edit->setText(pilotsIdMap.key(aDB->getLastEntry(ADatabaseTarget::pilots)));
+        emit parent_line_edit->editingFinished();
+    } else {
+        parent_line_edit->setText(QString());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                               Flight Data Tab Slots                                         ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+void NewFlightDialog::on_cancelButton_clicked()
+{
+    DEB << "Cancel Button clicked.";
     reject();
 }
-/*!
- * \brief onInputRejected Set `line_edit`'s border to red and check if `rgx` matches
- * in order to keep text on line. Ensures corresponding LineEdit bit is 0. Only
- * valid characters are kept on the line edit.
- */
-void NewFlightDialog::onInputRejected(QLineEdit* line_edit, QRegularExpression rgx){
-    DEBUG("Input rejected" << line_edit->text());
-    line_edit->setStyleSheet("border: 1px solid red");
-    this->allOkBits.setBit(this->lineEditBitMap[line_edit], false);
-    auto text = line_edit->text();
-    if(!rgx.match(text).hasMatch())
-    {
-        line_edit->setText(text);
-    }
-    if(INVALID_CHARS_RGX.match(text).hasMatch()){//remove globaly inacceptable chars
-        DEBUG("Removing invalid char: " << text[text.length()-1]);
-        text.chop(1);
-        line_edit->setText(text);
-    }
-}
 
-/*!
- * \brief onEditingFinishedCleanup resets styles and sets the corresponding bit to 1
- */
-void NewFlightDialog::onEditingFinishedCleanup(QLineEdit* line_edit)
+void NewFlightDialog::on_submitButton_clicked()
 {
-    //DEBUG("Input accepted" << line_edit << line_edit->text());
-    line_edit->setStyleSheet("");
-    this->allOkBits.setBit(this->lineEditBitMap[line_edit], true);
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits.lineEdits)) {
+        emit line_edit->editingFinished();
+    }
+    DEB << "editing finished emitted. good count: " << mandatoryLineEdits.countValid();
+    if (!mandatoryLineEdits.allValid()) {
+        QString missing_items;
+        for (int i=0; i < mandatoryLineEdits.size(); i++) {
+            if (!mandatoryLineEdits.validAt(i)){
+                missing_items.append(MANDATORY_LINE_EDITS_DISPLAY_NAMES.value(i) + "<br>");
+                mandatoryLineEdits[i]->setStyleSheet(QStringLiteral("border: 1px solid red"));
+            }
+        }
+
+        QMessageBox message_box(this);
+        message_box.setText(tr("Not all mandatory entries are valid.<br>"
+                               "The following item(s) are empty or missing:"
+                               "<br><br><center><b>%1</b></center><br>"
+                               "Please go back and fill in the required data."
+                               ).arg(missing_items));
+        message_box.exec();
+        return;
+    }
+
+    DEB << "Submit Button clicked. Mandatory good " << mandatoryLineEdits.size() << "out of: " << mandatoryLineEdits.countValid();
+    auto newData = collectInput();
+    DEB << "Setting Data for flightEntry...";
+    flightEntry.setData(newData);
+    DEB << "Committing...";
+    if (!aDB->commit(flightEntry)) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("The following error has ocurred:"
+                               "<br><br>%1<br><br>"
+                               "The entry has not been saved."
+                               ).arg(aDB->lastError.text()));
+        message_box.setIcon(QMessageBox::Warning);
+        message_box.exec();
+        return;
+    } else {
+        QDialog::accept();
+    }
 }
 
-/// Date
 
-void NewFlightDialog::on_doftLineEditEntered()
+
+/*
+ * Shared Slots
+ */
+
+void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
+{
+    DEB << line_edit->objectName() << " - Good input received - " << line_edit->text();
+    line_edit->setStyleSheet(QString());
+
+    if (mandatoryLineEdits.contains(line_edit))
+        mandatoryLineEdits.validate(line_edit);
+
+    if (mandatoryLineEdits.allValid())
+        onMandatoryLineEditsFilled();
+
+    DEB << "Mandatory good: " << mandatoryLineEdits.countValid()
+        << " out of " << mandatoryLineEdits.size()
+        << " : " << mandatoryLineEdits.lineEdits;
+}
+
+void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
+{
+    DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
+    line_edit->setStyleSheet(QStringLiteral("border: 1px solid red"));
+
+    DEB << "Mandatory Good: " << mandatoryLineEdits.countValid() << " out of "
+        << mandatoryLineEdits.size() << ". Array: " << mandatoryLineEdits.lineEditsValid;
+}
+
+// capitalize input for dept, dest and registration input
+void NewFlightDialog::onToUpperTriggered_textChanged(const QString &text)
+{
+    auto sender_object = sender();
+    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
+    DEB << "Text changed - " << line_edit->objectName() << line_edit->text();
+    {
+        const QSignalBlocker blocker(line_edit);
+        line_edit->setText(text.toUpper());
+    }
+}
+
+// update is disabled if the user chose to manually edit extra times
+void NewFlightDialog::onMandatoryLineEditsFilled()
+{
+    if (!mandatoryLineEdits.allValid()) {
+        DEB << "erroneously called.";
+        return;
+    };
+
+    if (updateEnabled)
+        fillDeductibleData();
+    DEB << mandatoryLineEdits.lineEditsValid;
+}
+
+// make sure that when using keyboard to scroll through completer sugggestions, line edit is up to date
+void NewFlightDialog::onCompleter_highlighted(const QString &completion)
+{
+    auto sender_object = sender();
+    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
+    DEB << "Completer highlighted - " << line_edit->objectName() << completion;
+    line_edit->setText(completion);
+}
+
+void NewFlightDialog::onCompleter_activated(const QString &)
+{
+    auto sender_object = sender();
+    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
+    DEB << "Line edit " << line_edit->objectName() << "completer activated.";
+    emit line_edit->editingFinished();
+}
+
+/*
+ *  Date of Flight
+ */
+
+void NewFlightDialog::on_doftLineEdit_editingFinished()
+{
+    auto line_edit = ui->doftLineEdit;
+    auto text = ui->doftLineEdit->text();
+    auto label = ui->doftDisplayLabel;
+    DEB << line_edit->objectName() << "Editing finished - " << text;
+
+    auto date = QDate::fromString(text, Qt::ISODate);
+    if (date.isValid()) {
+        label->setText(date.toString(Qt::TextDate));
+        onGoodInputReceived(line_edit);
+        return;
+    }
+
+    //try to correct input if only numbers are entered, eg 20200101
+    if(text.length() == 8) {
+        DEB << "Trying to fix input...";
+        text.insert(4,'-');
+        text.insert(7,'-');
+        date = QDate::fromString(text, Qt::ISODate);
+        if (date.isValid()) {
+            line_edit->setText(date.toString(Qt::ISODate));
+            label->setText(date.toString(Qt::TextDate));
+            onGoodInputReceived(line_edit);
+            return;
+        }
+    }
+    label->setText("Invalid Date.");
+    onBadInputReceived(line_edit);
+}
+
+void NewFlightDialog::onCalendarWidget_clicked(const QDate &date)
+{
+    const auto& le = ui->doftLineEdit;
+    le->blockSignals(false);
+    ui->calendarWidget->hide();
+    ui->placeLabel1->resize(ui->placeLabel2->size());
+    le->setText(date.toString(Qt::ISODate));
+    le->setFocus();
+}
+
+void NewFlightDialog::onCalendarWidget_selected(const QDate &date)
+{
+    ui->calendarWidget->hide();
+    ui->placeLabel1->resize(ui->placeLabel2->size());
+    ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
+    const auto& le = ui->doftLineEdit;
+    le->setText(date.toString(Qt::ISODate));
+    le->setFocus();
+    le->blockSignals(false);
+}
+
+void NewFlightDialog::onDoftLineEdit_entered()
 {
     const auto& cw = ui->calendarWidget;
     const auto& le = ui->doftLineEdit;
@@ -966,13 +1085,11 @@ void NewFlightDialog::on_doftLineEditEntered()
 
     if(cw->isVisible()){
         le->blockSignals(false);
-        DEBUG("cw visible. Enabling line edit signals for: " << le->objectName());
         cw->hide();
         anchor->resize(ui->placeLabel2->size());
         le->setFocus();
     } else {
         le->blockSignals(true);
-        DEBUG("Disabling line edit signals for: " << le->objectName());
         // Determine size based on layout coordinates
         int c1 = anchor->pos().rx();
         int c2 = le->pos().rx();
@@ -991,370 +1108,166 @@ void NewFlightDialog::on_doftLineEditEntered()
     }
 }
 
-void NewFlightDialog::date_clicked(const QDate &date)
+void NewFlightDialog::on_calendarCheckBox_stateChanged(int arg1)
 {
-    DEBUG("Date clicked: " << date);
-    const auto& le = ui->doftLineEdit;
-    le->blockSignals(false);
-    ui->calendarWidget->hide();
-    ui->placeLabel1->resize(ui->placeLabel2->size());
-    le->setText(date.toString(Qt::ISODate));
-    le->setFocus();
-}
-
-void NewFlightDialog::date_selected(const QDate &date)
-{
-    ui->calendarWidget->hide();
-    ui->placeLabel1->resize(ui->placeLabel2->size());
-    ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
-    DEBUG("Date selected: " << date);
-    const auto& le = ui->doftLineEdit;
-    le->setText(date.toString(Qt::ISODate));
-    le->setFocus();
-    le->blockSignals(false);
-    DEBUG("Enabling line edit signals for: " << le->objectName());
-}
-
-void NewFlightDialog::on_doftLineEdit_inputRejected()
-{
-    onInputRejected(ui->doftLineEdit, DATE_INVALID_RGX);
-    ui->placeLabel1->resize(ui->placeLabel2->size());
-    ui->calendarWidget->hide();
-}
-
-void NewFlightDialog::on_doftLineEdit_editingFinished()
-{
-    DEBUG(sender()->objectName() << "EDITING FINISHED.");
-    auto line_edit = ui->doftLineEdit;
-    auto text = ui->doftLineEdit->text();
-
-    {//try to correct input if only numbers are entered, eg 20200101
-        const QSignalBlocker blocker(line_edit);
-        if(text.length() == 8) {
-            text.insert(4,'-');
-            text.insert(7,'-');
-            DEBUG("editet text: " << text);
-            auto date = QDate::fromString(text, Qt::ISODate);
-            if(date.isValid()) {
-                line_edit->setText(date.toString(Qt::ISODate));
-                ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
-            }
-        }
-    }
-    auto date = QDate::fromString(text, Qt::ISODate);
-    if(date.isValid()){
-        onEditingFinishedCleanup(line_edit);
-        const QSignalBlocker blocker(line_edit);
-        ui->doftDisplayLabel->setText(date.toString(Qt::TextDate));
-    } else {
-        ui->doftDisplayLabel->setText("Invalid Date");
-        emit line_edit->inputRejected();
+    ASettings::write(ASettings::FlightLogging::CalendarCheckBox, ui->calendarCheckBox->isChecked());
+    DEB << "Calendar check box state changed.";
+    switch (arg1) {
+    case 0: // unchecked
+        setPopUpCalendarEnabled(false);
+        break;
+    case 2: // checked
+        setPopUpCalendarEnabled(true);
+        break;
+    default:
+        break;
     }
 }
 
-void NewFlightDialog::on_deptTZ_currentTextChanged(const QString &arg1)
-{
-    DEBUG(arg1);
-    // currently only UTC time logging is supported
-    ui->deptTZ->setCurrentIndex(0);
-}
-
-void NewFlightDialog::on_destTZ_currentIndexChanged(const QString &arg1)
-{
-    DEBUG(arg1);
-    // currently only UTC time logging is supported
-    ui->destTZ->setCurrentIndex(0);
-}
-
-/// Departure
-
-void NewFlightDialog::on_deptLocLineEdit_inputRejected()
-{
-    //DEBUG("SENDER --->" << sender());
-    ui->deptLocLineEdit->setText(ui->deptLocLineEdit->text().toUpper());
-    onInputRejected(ui->deptLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
-}
-
-void NewFlightDialog::on_deptLocLineEdit_textEdited(const QString &arg1)
-{
-    ui->deptLocLineEdit->setText(arg1.toUpper());
-}
+/*
+ * Location Line Edits
+ */
 
 void NewFlightDialog::on_deptLocLineEdit_editingFinished()
 {
-    //DEBUG(sender()->objectName() << "EDITING FINISHED");
-    auto line_edit = ui->deptLocLineEdit;
-    auto text = ui->deptLocLineEdit->text();
-
-    // check if iata exists, replace with icao code if it does.
-    if(text.length() == 3){
-        text = airportMap.value(text);
-    }
-    // Check if 4-letter code is in locationList
-    if(text.length() == 4 && airports.indexOf(text) == -1){
-        //DEBUG("Airport not found.");
-        emit line_edit->inputRejected();
-        return;
-    }else{
-        //DEBUG("Departure accepted: " << text);
-        line_edit->setText(text);
-        onEditingFinishedCleanup(line_edit); //reset style sheet
-        ui->deptNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
-        update();
-    }
-}
-
-void NewFlightDialog::on_tofbTimeLineEdit_inputRejected()
-{
-    onInputRejected(ui->tofbTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
-}
-
-void NewFlightDialog::on_tofbTimeLineEdit_editingFinished()
-{
-    ui->tofbTimeLineEdit->setText(Calc::formatTimeInput(ui->tofbTimeLineEdit->text()));
-    const auto time = QTime::fromString(ui->tofbTimeLineEdit->text(),"hh:mm");
-
-    auto line_edit = ui->tofbTimeLineEdit;
-    onEditingFinishedCleanup(line_edit);
-
-    if(time.isValid()){
-        int minutes = time.hour() * 60 + time.minute();
-        QString tofb = QString::number(minutes);
-        //DEBUG("Time Off Blocks accepted: " << tofb << " minutes - " << Calc::minutesToString(tofb));
-    }else{
-        emit line_edit->inputRejected();
-    }
-    onEditingFinishedCleanup(line_edit);
-    update();
-}
-
-/// Destination
-
-void NewFlightDialog::on_destLocLineEdit_inputRejected()
-{
-    ui->destLocLineEdit->setText(ui->destLocLineEdit->text().toUpper());
-    onInputRejected(ui->destLocLineEdit, QRegularExpression(LOC_INVALID_RGX));
-}
-
-void NewFlightDialog::on_destLocLineEdit_textEdited(const QString &arg1)
-{
-    ui->destLocLineEdit->setText(arg1.toUpper());
+    onLocationEditingFinished(ui->deptLocLineEdit, ui->deptNameLabel);
 }
 
 void NewFlightDialog::on_destLocLineEdit_editingFinished()
 {
-    //DEBUG(sender()->objectName() << "EDITING FINISHED");
-    auto line_edit = ui->destLocLineEdit;
-    auto text = ui->destLocLineEdit->text();
+    onLocationEditingFinished(ui->destLocLineEdit, ui->destNameLabel);
+}
 
-    // check if iata exists, replace with icao code if it does.
-    if(text.length() == 3){
-        text = airportMap.value(text);
+void NewFlightDialog::onLocationEditingFinished(QLineEdit *line_edit, QLabel *name_label)
+{
+    const auto &text = line_edit->text();
+    //DEB << line_edit->objectName() << " Editing finished. " << text);
+    int airport_id = 0;
+
+    // try to map iata or icao code to airport id;
+    if (text.length() == 3) {
+        airport_id = airportIataIdMap.value(text);
+    } else {
+        airport_id = airportIcaoIdMap.value(text);
     }
-    // Check if 4-letter code is in locationList
-    if(text.length() == 4 && airports.indexOf(text) == -1){
-        //DEBUG("Airport not found.");
-        emit line_edit->inputRejected();
+    // check result
+    if (airport_id == 0) {
+        // to do: prompt user how to handle unknown airport
+        name_label->setText(tr("Unknown airport identifier"));
+        onBadInputReceived(line_edit);
         return;
-    }else{
-        //DEBUG("Destination accepted: " << text);
-        line_edit->setText(text);
-        onEditingFinishedCleanup(line_edit); //reset style sheet
-        ui->destNameLabel->setText(Db::singleSelect("name","airports","icao",text,Db::exactMatch));
-        update();
     }
+    line_edit->setText(airportIcaoIdMap.key(airport_id));
+    name_label->setText(airportNameIdMap.key(airport_id));
+    onGoodInputReceived(line_edit);
 }
 
-void NewFlightDialog::on_tonbTimeLineEdit_inputRejected()
-{
-    onInputRejected(ui->tonbTimeLineEdit, QRegularExpression(TIME_INVALID_RGX));
-}
+/*
+ * Time Line Edits
+ */
 
-void NewFlightDialog::on_tonbTimeLineEdit_editingFinished()
+void NewFlightDialog::onTimeLineEdit_editingFinished()
 {
-    ui->tonbTimeLineEdit->setText(Calc::formatTimeInput(ui->tonbTimeLineEdit->text()));
-    auto line_edit = ui->tonbTimeLineEdit;
-    const auto time = QTime::fromString(ui->tonbTimeLineEdit->text(),"hh:mm");
+    auto sender_object = sender();
+    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
+    DEB << line_edit->objectName() << "Editing Finished -" << line_edit->text();
+
+    line_edit->setText(ATime::formatTimeInput(line_edit->text()));
+    const auto time = ATime::fromString(line_edit->text());
     if(time.isValid()){
-        int minutes = time.hour() * 60 + time.minute();
-        QString tonb = QString::number(minutes);
-        newData.insert("tonb",tonb);
-        //DEBUG("Time On Blocks accepted: " << tonb << " minutes - " << Calc::minutesToString(tonb));
-    }else{
-        emit line_edit->inputRejected();
+        if(primaryTimeLineEdits.contains(line_edit)) {
+            onGoodInputReceived(line_edit);
+        } else { // is extra time line edit
+            if (!isLessOrEqualThanBlockTime(line_edit->text())) {
+                line_edit->setText(QString());
+                line_edit->setFocus();
+                return;
+            }
+        }
+    } else {
+        if (!line_edit->text().isEmpty())
+            onBadInputReceived(line_edit);
     }
-    onEditingFinishedCleanup(line_edit);
-    update();
 }
 
-/// Date
-
-void NewFlightDialog::on_doftTimeEdit_editingFinished()
-{
-    update();
-}
-
-/// Aircraft
-
-void NewFlightDialog::on_acftLineEdit_inputRejected()
-{
-    ui->acftLineEdit->setText(ui->acftLineEdit->text().toUpper());
-    onInputRejected(ui->acftLineEdit, QRegularExpression(AIRCRAFT_INVALID_RGX));
-}
+/*
+ * Aircraft Line Edit
+ */
 
 void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
-    auto registrationList = CompletionList(CompleterTarget::registrations).list;
     auto line_edit = ui->acftLineEdit;
-    auto text = ui->acftLineEdit->text();
+    //DEB << line_edit->objectName() << "Editing Finished!" << line_edit->text());
 
-    QStringList match = registrationList.filter(line_edit->text(), Qt::CaseInsensitive);
-    //DEBUG("aircraft accepted: " << match);
-    if(match.length() != 0) {
-        text = match[0];
-        line_edit->setText(text.toUpper());
-        onEditingFinishedCleanup(line_edit);
-        QString column = "make||' '||model||'-'||variant";
-        ui->acftTypeLabel->setText(
-                    Db::singleSelect(column,"tails","registration",text,Db::exactMatch));
-        update();
-    }else{
-        emit line_edit->inputRejected();
-        addNewAircraftMessageBox(line_edit);
-    }
-}
-
-/// Pilot(s)
-
-void NewFlightDialog::on_picNameLineEdit_inputRejected()
-{
-    onInputRejected(ui->picNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
-}
-
-void NewFlightDialog::on_picNameLineEdit_editingFinished()
-{
-    auto line_edit = ui->picNameLineEdit;
-    auto text = line_edit->text();
-    if(text == "self" || text == "SELF") // Logbook owner is PIC
-    {
-        //DEBUG("Pilot selected: " << text);
-        onEditingFinishedCleanup(line_edit);
-        ui->FunctionComboBox->setCurrentIndex(0);
-        update();
+    if (tailsIdMap.value(line_edit->text()) != 0) {
+        DEB << "Mapped: " << line_edit->text() << tailsIdMap.value(line_edit->text());
+        auto acft = aDB->getTailEntry(tailsIdMap.value(line_edit->text()));
+        ui->acftTypeLabel->setText(acft.type());
+        onGoodInputReceived(line_edit);
         return;
-    }else //check if entry is in pilotList
-    {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
-
-        if(match.length()!= 0)
-        {
-            QString pic = match[0];
-            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
-            //DEBUG("Pilot selected: " << pic);
-            onEditingFinishedCleanup(line_edit);
-            update();
-        }else
-        {
-            DEBUG("Pilot not found.");
-            emit line_edit->inputRejected();
-            addNewPilotMessageBox(line_edit);
-        }
     }
-}
 
+    // try to fix input
+    if (!line_edit->completer()->currentCompletion().isEmpty()
+            && !line_edit->text().isEmpty()) {
+        DEB << "Trying to fix input...";
+        line_edit->setText(line_edit->completer()->currentCompletion());
+        emit line_edit->editingFinished();
+        return;
+    }
+
+    // to do: promp user to add new
+    onBadInputReceived(line_edit);
+    ui->acftTypeLabel->setText(tr("Unknown Registration."));
+    addNewTail(line_edit);
+}
 
 /*
- * ============================================================================
- * The above entris are mandatory for logging a flight,
- * the rest of the entries are either optional or can
- * be determined from the entries already made.
- * ============================================================================
+ * Pilot Line Edits
  */
 
-void NewFlightDialog::on_secondPilotNameLineEdit_inputRejected()
+void NewFlightDialog::onPilotNameLineEdit_editingFinished()
 {
-    onInputRejected(ui->secondPilotNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
-}
+    auto sender_object = sender();
+    auto line_edit = this->findChild<QLineEdit*>(sender_object->objectName());
+    //DEB << line_edit->objectName() << "Editing Finished -" << line_edit->text());
 
-void NewFlightDialog::on_secondPilotNameLineEdit_editingFinished()
-{
-    auto line_edit = ui->secondPilotNameLineEdit;
-    auto text = line_edit->text();
-    if(text == "self" || text == "SELF") // Logbook owner is Pilot
-    {
-        //DEBUG("Pilot selected: " << text);
-        onEditingFinishedCleanup(line_edit);
-        ui->FunctionComboBox->setCurrentIndex(1);
+    if(line_edit->text().contains(SELF_RX)) {
+        DEB << "self recognized.";
+        line_edit->setText(pilotsIdMap.key(1));
+        auto pilot = aDB->getPilotEntry(1);
+        ui->picCompanyLabel->setText(pilot.getData().value(Opl::Db::TAILS_COMPANY).toString());
+        onGoodInputReceived(line_edit);
         return;
-    }else //check if entry is in pilotList
-    {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
-
-        if(match.length()!= 0)
-        {
-            QString pic = match[0];
-            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
-            //DEBUG("Pilot selected: " << pic);
-            onEditingFinishedCleanup(line_edit);
-        }else
-        {
-            DEBUG("Pilot not found.");
-            emit line_edit->inputRejected();
-            addNewPilotMessageBox(line_edit);
-        }
     }
-}
 
-void NewFlightDialog::on_thirdPilotNameLineEdit_inputRejected()
-{
-    onInputRejected(ui->thirdPilotNameLineEdit, QRegularExpression(PILOT_NAME_INVALID_RGX));
-}
-
-void NewFlightDialog::on_thirdPilotNameLineEdit_editingFinished()
-{
-    auto line_edit = ui->thirdPilotNameLineEdit;
-    auto text = line_edit->text();
-    if(text == "self" || text == "SELF") // Logbook owner is Pilot
-    {
-        //DEBUG("Pilot selected: " << text);
-        onEditingFinishedCleanup(line_edit);
+    if(pilotsIdMap.value(line_edit->text()) != 0) {
+        DEB << "Mapped: " << line_edit->text() << pilotsIdMap.value(line_edit->text());
+        auto pilot = aDB->getPilotEntry(pilotsIdMap.value(line_edit->text()));
+        ui->picCompanyLabel->setText(pilot.getData().value(Opl::Db::TAILS_COMPANY).toString());
+        onGoodInputReceived(line_edit);
         return;
-    }else //check if entry is in pilotList
-    {
-        QStringList pilotList = CompletionList(CompleterTarget::pilots).list;
-        QStringList match = pilotList.filter(line_edit->text().remove(" "), Qt::CaseInsensitive);
-
-        if(match.length()!= 0)
-        {
-            QString pic = match[0];
-            line_edit->setText(pic.insert(pic.indexOf(',')+1," "));
-            //DEBUG("Pilot selected: " << pic);
-            onEditingFinishedCleanup(line_edit);
-        }else
-        {
-            DEBUG("Pilot not found.");
-            emit line_edit->inputRejected();
-            addNewPilotMessageBox(line_edit);
-        }
     }
+
+    if (line_edit->text().isEmpty()) {
+        return;
+    }
+
+    if (!line_edit->completer()->currentCompletion().isEmpty()) {
+        DEB << "Trying to fix input...";
+        line_edit->setText(line_edit->completer()->currentCompletion());
+        emit line_edit->editingFinished();
+        return;
+    }
+
+    // to do: prompt user to add new
+    onBadInputReceived(line_edit);
+    addNewPilot(line_edit);
 }
 
-void NewFlightDialog::on_FlightNumberLineEdit_textChanged(const QString &arg1)
-{
-    ui->FlightNumberLineEdit->setText(arg1.toUpper());
-}
-
-
-/*
- * ============================================================================
- * Extras Tab - These are for user convenience. From many of
- * these selections, determinations can be made on how to log
- * details, so that the user does not have to enter each item
- * manually. See also fillExtrasLineEdits()
- * ============================================================================
- */
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                               Auto Logging Tab Slots                                        ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 void NewFlightDialog::on_setAsDefaultButton_clicked()
 {
@@ -1366,14 +1279,9 @@ void NewFlightDialog::on_restoreDefaultButton_clicked()
     readSettings();
 }
 
-/*!
- * \brief On a given flight, time can either be logged as Pilot Flying (PF) or
- * Pilot Monitoring (PM). Cases where controls are changed during the flight
- * are rare and can be logged by manually editing the extras.
- */
 void NewFlightDialog::on_PilotFlyingCheckBox_stateChanged(int)
 {
-    DEBUG("PF checkbox state changed.");
+    DEB << "PF checkbox state changed.";
     if(ui->PilotFlyingCheckBox->isChecked()){
         ui->TakeoffSpinBox->setValue(1);
         ui->TakeoffCheckBox->setCheckState(Qt::Checked);
@@ -1388,280 +1296,89 @@ void NewFlightDialog::on_PilotFlyingCheckBox_stateChanged(int)
     }
 }
 
-void NewFlightDialog::on_IfrCheckBox_stateChanged()
+void NewFlightDialog::on_IfrCheckBox_stateChanged(int)
 {
-    update();
+    if (mandatoryLineEdits.allValid() && updateEnabled)
+        onMandatoryLineEditsFilled();
 }
-
-void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1)
-{
-    if(arg1 == "ILS CAT III"){  //for a CAT III approach an Autoland is mandatory, so we can preselect it.
-        ui->AutolandCheckBox->setCheckState(Qt::Checked);
-        ui->AutolandSpinBox->setValue(1);
-    }else{
-        ui->AutolandCheckBox->setCheckState(Qt::Unchecked);
-        ui->AutolandSpinBox->setValue(0);
-    }
-}
-
-/*
- * Extra Times - These line edits should be filled out automatically,
- * based on the ui selections and the user provided input. However,
- * manual adjustments are possible to cater for situations where for
- * example one portion of the flight is logged under different rules
- * than the rest of it.
- *
- * For example,
- * if we know the aircraft details we can determine how to log these times.
- * Some times are mutually exclusive, others can be combined.
- *
- * For example,
- * for a commercial Passenger flight, the commander can log all time as
- * Total Time and PIC time. If the aircraft is a multi-engine jet he can
- * also log Multi-Pilot time, and if he is an instructor, instructor time.
- *
- * It is not possible, however to log flight time as VFR or IFR time
- * simultaneously, as a flight at any given point in time can only follow
- * one set of rules. It is possible, to change flight rules and log the first
- * x minutes as VFR and the rest of it as IFR, for example. Hence the need
- * for the possibility to edit these times manually.
- *
- * The most complex time to determine is night time, see documentation of
- * the calc class for details.
- *
- * In General, the idea is to automatically fill as much as possible, but
- * if the user decides to change these times, accept the inputs, as long as
- * they are generally valid. We cannot cater for all possibilities, so as long
- * as the time the user has put in is a valid time <= Total Time, it can be
- * accepted to the database.
- */
-
-inline bool NewFlightDialog::isLessOrEqualToTotalTime(QString timeString)
-{
-    if(newData.value("tblk").isEmpty()){
-        DEBUG("Total Time not set.");
-        auto mb = new QMessageBox(this);
-        mb->setText("Please fill out Departure and Arrival Time\n"
-                    "before manually editing these times.");
-        mb->show();
-        return false;
-    } else {
-        int minutes = Calc::stringToMinutes(timeString);
-        if (minutes <= newData.value("tblk").toInt()) {
-            return true;
-        } else {
-            auto mb = new QMessageBox(this);
-            mb->setText("Cannot be more than Total Time of Flight:<br><br><center><b>"
-                        + Calc::minutesToString(newData.value("tblk"))
-                        + "</b></center><br>");
-            mb->show();
-            return false;
-        }
-    }
-
-}
-
-void NewFlightDialog::on_tblkTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tblkTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    newData.insert("tblk",QString::number(Calc::stringToMinutes(text)));
-    le->setText(QString());
-}
-
-void NewFlightDialog::on_tSPSETimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tSPSETimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSPSE",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tSPMETimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tSPMETimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSPME",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tMPTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tMPTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tMP",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-void NewFlightDialog::on_tIFRTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tIFRTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tIFR",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tNIGHTTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tNIGHTTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tNIGHT",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tPICTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tPICTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tPIC",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tSICTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tSICTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tSIC",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tDUALTimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tDUALTimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tDUAL",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
-void NewFlightDialog::on_tFITimeLineEdit_editingFinished()
-{
-    const auto &le = ui->tFITimeLineEdit;
-    le->setText(Calc::formatTimeInput(le->text()));
-    const auto &text = le->text();
-
-    if(isLessOrEqualToTotalTime(text)){
-        newData.insert("tFI",QString::number(Calc::stringToMinutes(text)));
-    } else {
-        le->setText(QString());
-    }
-}
-
 
 void NewFlightDialog::on_manualEditingCheckBox_stateChanged(int arg1)
 {
+    if (!(mandatoryLineEdits.allValid()) && ui->manualEditingCheckBox->isChecked()) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Before editing times manually, please fill out the required fields "
+                               "in the flight data tab, so that total time can be calculated."));
+        message_box.exec();
+        ui->manualEditingCheckBox->setChecked(false);
+        return;
+    }
     QList<QLineEdit*>   LE = {ui->tSPSETimeLineEdit, ui->tSPMETimeLineEdit, ui->tMPTimeLineEdit,    ui->tIFRTimeLineEdit,
                               ui->tNIGHTTimeLineEdit,ui->tPICTimeLineEdit,  ui->tPICUSTimeLineEdit, ui->tSICTimeLineEdit,
-                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit,};
+                              ui->tDUALTimeLineEdit, ui->tFITimeLineEdit};
     switch (arg1) {
     case 0:
         for(const auto& le : LE){
             le->setFocusPolicy(Qt::NoFocus);
-            doUpdate = true;
-            update();
+            le->setStyleSheet("");
         }
+        updateEnabled = true;
+        if (mandatoryLineEdits.allValid() && updateEnabled)
+            onMandatoryLineEditsFilled();
         break;
     case 2:
         for(const auto& le : LE){
             le->setFocusPolicy(Qt::StrongFocus);
-            doUpdate = false;
         }
+        updateEnabled = false;
         break;
     default:
         break;
     }
 }
 
-void NewFlightDialog::on_FunctionComboBox_currentTextChanged()
+void NewFlightDialog::on_ApproachComboBox_currentTextChanged(const QString &arg1)
 {
-    DEBUG("Current Index:" << ui->FunctionComboBox->currentIndex());
-    update();
-}
-
-void NewFlightDialog::on_TakeoffSpinBox_valueChanged(int arg1)
-{
-    if(arg1 > 0) {
-        ui->TakeoffCheckBox->setChecked(true);
-    }
-}
-
-void NewFlightDialog::on_LandingSpinBox_valueChanged(int arg1)
-{
-    if(arg1 > 0) {
-        ui->LandingCheckBox->setChecked(true);
-    }
-}
-
-void NewFlightDialog::on_AutolandSpinBox_valueChanged(int arg1)
-{
-    if(arg1 > 0) {
-        ui->AutolandCheckBox->setChecked(true);
-    }
-}
-
-void NewFlightDialog::on_TakeoffCheckBox_stateChanged(int arg1)
-{
-    if(arg1 == 0) {
-        ui->TakeoffSpinBox->setValue(0);
-    } else if ( arg1 == 2) {
-        ui->TakeoffSpinBox->setValue(1);
-    }
-}
-
-void NewFlightDialog::on_LandingCheckBox_stateChanged(int arg1)
-{
-    if(arg1 == 0) {
-        ui->LandingSpinBox->setValue(0);
-    } else if ( arg1 == 2) {
-        ui->LandingSpinBox->setValue(1);
-    }
-}
-
-void NewFlightDialog::on_AutolandCheckBox_stateChanged(int arg1)
-{
-    if(arg1 == 0) {
-        ui->AutolandSpinBox->setValue(0);
-    } else if ( arg1 == 2) {
+    if(arg1 == QLatin1String("ILS CAT III")){  //for a CAT III approach an Autoland is mandatory, so we can preselect it.
+        ui->AutolandCheckBox->setCheckState(Qt::Checked);
         ui->AutolandSpinBox->setValue(1);
+    }else{
+        ui->AutolandCheckBox->setCheckState(Qt::Unchecked);
+        ui->AutolandSpinBox->setValue(0);
     }
+
+    if (arg1 != QLatin1String("VISUAL"))
+        ui->IfrCheckBox->setChecked(true);
+
+    if (arg1 == QLatin1String("OTHER")) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("You can specify the approach type in the Remarks field."));
+        message_box.exec();
+    }
+}
+
+void NewFlightDialog::on_FunctionComboBox_currentIndexChanged(int)
+{
+    if (updateEnabled)
+        fillDeductibleData();
+}
+
+
+// [F]: Not a priority right now.
+void NewFlightDialog::on_deptTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->deptTZComboBox->setCurrentIndex(0);
+    }
+}
+
+void NewFlightDialog::on_destTZComboBox_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Currently only logging in UTC time is supported."));
+        message_box.exec();
+        ui->destTZComboBox->setCurrentIndex(0);}
 }

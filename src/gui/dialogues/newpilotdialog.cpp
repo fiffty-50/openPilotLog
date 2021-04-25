@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -17,9 +17,11 @@
  */
 #include "newpilotdialog.h"
 #include "ui_newpilot.h"
-// Debug Makro
-#define DEB(expr) \
-    qDebug() << __PRETTY_FUNCTION__ << "\t" << expr
+#include "src/opl.h"
+
+#include "src/database/adatabase.h"
+#include "src/classes/aentry.h"
+#include "src/functions/alog.h"
 
 /* Examples for names around the world:
  * José Eduardo Santos Tavares Melo Silva
@@ -35,142 +37,131 @@
  * Mathias d'Arras
  * Martin Luther King, Jr.
  */
+
 static const auto NAME_RX = QLatin1String("(\\p{L}+(\\s|'|\\-)?\\s?(\\p{L}+)?\\s?)");
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    "picfirstnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     QStringLiteral("firstnameLineEdit"), QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    "piclastnameLineEdit", QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
+     QStringLiteral("lastnameLineEdit"), QRegularExpression(NAME_RX + NAME_RX + NAME_RX)};
 static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
-    "phoneLineEdit", QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
+     QStringLiteral("phoneLineEdit"), QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
 static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-    "emailLineEdit", QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
-                                        "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
+     QStringLiteral("emailLineEdit"), QRegularExpression(
+                "\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+                "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
 static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-    "companyLineEdit", QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
+     QStringLiteral("companyLineEdit"), QRegularExpression("\\w+(\\s|\\-)?(\\w+(\\s|\\-)?)?(\\w+(\\s|\\-)?)?")};
 static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
-    "employeeidLineEdit", QRegularExpression("\\w+")};
+     QStringLiteral("employeeidLineEdit"), QRegularExpression("\\w+")};
 
+static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>> {
+        FIRSTNAME_VALID,
+        LASTNAME_VALID,
+        PHONE_VALID,
+        EMAIL_VALID,
+        COMPANY_VALID,
+        EMPLOYEENR_VALID
+};
 
-static const auto LINE_EDIT_VALIDATORS = QVector({FIRSTNAME_VALID, LASTNAME_VALID,
-                                           PHONE_VALID,     EMAIL_VALID,
-                                           COMPANY_VALID,     EMPLOYEENR_VALID});
 // For creating a new entry
-NewPilotDialog::NewPilotDialog(Db::editRole edRole, QWidget *parent) :
+NewPilotDialog::NewPilotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewPilot)
 {
-    role = edRole;
-    ui->setupUi(this);
-    setupValidators();
-    setupCompleter();
-}
-// For editing an existing entry
-NewPilotDialog::NewPilotDialog(Pilot existingEntry, Db::editRole edRole, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewPilot)
-{
-    oldEntry = existingEntry;
-    role = edRole;
-    ui->setupUi(this);
-    setupValidators();
-    setupCompleter();
+    DEB << "New NewPilotDialog (newEntry)";
+    setup();
 
+    pilotEntry = APilotEntry();
+    ui->lastnameLineEdit->setFocus();
+}
+
+NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewPilot)
+{
+    DEB << "New NewPilotDialog (editEntry)";
+    setup();
+
+    pilotEntry = aDB->getPilotEntry(rowId);
+    DEB << "Pilot Entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
     formFiller();
-    ui->piclastnameLineEdit->setFocus();
+    ui->lastnameLineEdit->setFocus();
 }
 
 NewPilotDialog::~NewPilotDialog()
 {
+    DEB << "Deleting New NewPilotDialog";
     delete ui;
+}
+
+void NewPilotDialog::setup()
+{
+    ui->setupUi(this);
+
+    DEB << "Setting up Validators...";
+    for (const auto& pair : LINE_EDIT_VALIDATORS) {
+        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
+        if (line_edit != nullptr) {
+            auto validator = new QRegularExpressionValidator(pair.second,line_edit);
+            line_edit->setValidator(validator);
+        } else {
+            DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
+        }
+    }
+
+    DEB << "Setting up completer...";
+    auto completer = new QCompleter(aDB->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
 {
-    if (ui->piclastnameLineEdit->text().isEmpty() || ui->picfirstnameLineEdit->text().isEmpty()) {
-        auto mb = new QMessageBox(this);
-        mb->setText("Last Name and First Name are required.");
-        mb->show();
+    if (ui->lastnameLineEdit->text().isEmpty() || ui->firstnameLineEdit->text().isEmpty()) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("Last Name and First Name are required."));
+        message_box.exec();
     } else {
         submitForm();
-        accept();
     }
-}
-
-void NewPilotDialog::setupValidators()
-{
-    DEB("Setting up Validators...");
-    for(const auto& pair : LINE_EDIT_VALIDATORS){
-        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
-        if(line_edit != nullptr){
-            auto validator = new QRegularExpressionValidator(pair.second,line_edit);
-            line_edit->setValidator(validator);
-        }else{
-            DEB("Error: Line Edit not found: "<< pair.first << " - skipping.");
-        }
-    }
-}
-
-void NewPilotDialog::setupCompleter()
-{
-    DEB("Setting up completer...");
-
-    auto companies = new CompletionList(CompleterTarget::companies);
-    auto completer = new QCompleter(companies->list, ui->companyLineEdit);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
-    completer->setCaseSensitivity(Qt::CaseSensitive);
-
-    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::formFiller()
 {
-    DEB("Filling Form...");
-    DEB(oldEntry);
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    DEB << "Filling Form...";
+    auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = oldEntry.data.value(key);
-        if (!value.isEmpty()) {
-            le->setText(value);
-        }
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
+        le->setText(pilotEntry.getData().value(key).toString());
     }
 }
 
 void NewPilotDialog::submitForm()
 {
-    DEB("Creating Database Object...");
-    QMap<QString, QString> newData;
+    DEB << "Collecting User Input...";
 
-    auto line_edits = parent()->findChildren<QLineEdit *>();
+    RowData_T new_data;
+    auto line_edits = this->findChildren<QLineEdit *>();
+    for(auto& le : line_edits) {
+        auto key = le->objectName().remove(QStringLiteral("LineEdit"));
+        auto value = le->text();
+        new_data.insert(key, value);
+    }
 
-    for (const auto &le : line_edits) {
-        QString key = le->objectName();
-        key.chop(8);//remove "LineEdit"
-        QString value = le->text();
-        if (!key.isEmpty()) {
-            newData.insert(key, value);
-        }
-    }
-    QString displayName;
-    displayName.append(ui->piclastnameLineEdit->text());
-    displayName.append(QLatin1String(", "));
-    displayName.append(ui->picfirstnameLineEdit->text().left(1));
-    displayName.append(QLatin1Char('.'));
-    newData.insert("displayname",displayName);
-    //create db object
-    switch (role) {
-    case Db::createNew: {
-        auto newEntry = Pilot(newData);;
-        DEB("New Object: " << newEntry);
-        newEntry.commit();
-        break;
-    }
-    case Db::editExisting:
-        oldEntry.setData(newData);
-        DEB("updated entry: " << oldEntry);
-        oldEntry.commit();
-        break;
+    pilotEntry.setData(new_data);
+    DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
+    DEB << "Pilot entry data: " << pilotEntry.getData();
+    if (!aDB->commit(pilotEntry)) {
+        QMessageBox message_box(this);
+        message_box.setText(tr("The following error has ocurred:"
+                               "<br><br>%1<br><br>"
+                               "The entry has not been saved."
+                               ).arg(aDB->lastError.text()));
+        message_box.exec();
+        return;
+    } else {
+        QDialog::accept();
     }
 }

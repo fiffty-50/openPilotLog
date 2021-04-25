@@ -1,0 +1,54 @@
+.TH "experimental::UserInput" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+experimental::UserInput \- The EntryData struct\&. Contains ALL possible data\&. However depending on who is constructing it, different types are initialised\&. FUTURE: Would it be necessary to able to change data? George: I would say no because we dont want to fuck around with the entry\&. Collect data from user -> Pack it up in the entry -> Consume it\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <UserInput\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBMetaTag\fP { \fBPilot\fP, \fBFlight\fP, \fBAircraft\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBUserInput\fP (EntryData new_data, MetaTag tag)"
+.br
+.ti -1c
+.RI "QString \fBonly\fP (QString data_type) const"
+.br
+.ti -1c
+.RI "const EntryData & \fBall\fP () const"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "enum experimental::UserInput::MetaTag \fBmeta_tag\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The EntryData struct\&. Contains ALL possible data\&. However depending on who is constructing it, different types are initialised\&. FUTURE: Would it be necessary to able to change data? George: I would say no because we dont want to fuck around with the entry\&. Collect data from user -> Pack it up in the entry -> Consume it\&. 
+
+
+.PP
+\fBTodo\fP
+.RS 4
+Figure out exactly what the database would prefer as return value George: I would assume key: value pairs where the keys are what you would put in the queries\&. This will affect data aswell (and propably simplify it) 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

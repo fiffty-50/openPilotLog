@@ -16,6 +16,12 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="7" column="0">
     <widget class="QLabel" name="operationLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Operation</string>
      </property>
@@ -43,6 +49,12 @@
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="variantLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Variant</string>
      </property>
@@ -82,6 +94,12 @@
    </item>
    <item row="10" column="0">
     <widget class="QLabel" name="weightLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Weight Class</string>
      </property>
@@ -118,6 +136,12 @@
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="registrationLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Registration</string>
      </property>
@@ -125,6 +149,12 @@
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="modelLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Model</string>
      </property>
@@ -132,6 +162,12 @@
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="companyLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Company</string>
      </property>
@@ -157,7 +193,7 @@
    <item row="0" column="1">
     <widget class="QLineEdit" name="searchLineEdit">
      <property name="maxLength">
-      <number>20</number>
+      <number>40</number>
      </property>
      <property name="placeholderText">
       <string>start typing to search for aircraft types</string>
@@ -176,6 +212,12 @@
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="searchLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <weight>75</weight>
@@ -224,6 +266,12 @@
    </item>
    <item row="8" column="0">
     <widget class="QLabel" name="powerPlantLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Power Plant</string>
      </property>
@@ -231,6 +279,12 @@
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="makeLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Make</string>
      </property>

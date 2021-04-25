@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>openPilotLog Base Files</DisplayName>
+    <Description>Install openPilotLog.</Description>
+    <Version>0.6.0</Version>
+    <ReleaseDate>2021-02-20</ReleaseDate>
+    <Licenses>
+        <License name="GPL v3" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+    <UserInterfaces>
+        <UserInterface>page.ui</UserInterface>
+    </UserInterfaces>
+</Package>

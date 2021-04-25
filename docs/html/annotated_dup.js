@@ -1,0 +1,28 @@
+var annotated_dup =
+[
+    [ "experimental", "namespaceexperimental.html", "namespaceexperimental" ],
+    [ "ABenchmark", "class_a_benchmark.html", "class_a_benchmark" ],
+    [ "ADataBaseSetup", "class_a_data_base_setup.html", null ],
+    [ "ADownload", "class_a_download.html", "class_a_download" ],
+    [ "Aircraft", "class_aircraft.html", "class_aircraft" ],
+    [ "AircraftWidget", "class_aircraft_widget.html", "class_aircraft_widget" ],
+    [ "ARunGuard", "class_a_run_guard.html", "class_a_run_guard" ],
+    [ "ASettings", "class_a_settings.html", null ],
+    [ "AStrictRxValidator", "class_a_strict_rx_validator.html", "class_a_strict_rx_validator" ],
+    [ "ATimer", "class_a_timer.html", "class_a_timer" ],
+    [ "Db", "class_db.html", "class_db" ],
+    [ "DbInfo", "class_db_info.html", "class_db_info" ],
+    [ "DebugWidget", "class_debug_widget.html", "class_debug_widget" ],
+    [ "Entry_deprecated", "class_entry__deprecated.html", "class_entry__deprecated" ],
+    [ "FirstRunDialog", "class_first_run_dialog.html", "class_first_run_dialog" ],
+    [ "Flight", "class_flight.html", "class_flight" ],
+    [ "HomeWidget", "class_home_widget.html", "class_home_widget" ],
+    [ "LogbookWidget", "class_logbook_widget.html", "class_logbook_widget" ],
+    [ "NewFlightDialog", "class_new_flight_dialog.html", "class_new_flight_dialog" ],
+    [ "NewPilotDialog", "class_new_pilot_dialog.html", "class_new_pilot_dialog" ],
+    [ "NewTailDialog", "class_new_tail_dialog.html", "class_new_tail_dialog" ],
+    [ "Pilot", "class_pilot.html", "class_pilot" ],
+    [ "PilotsWidget", "class_pilots_widget.html", "class_pilots_widget" ],
+    [ "SettingsWidget", "class_settings_widget.html", "class_settings_widget" ],
+    [ "TotalsWidget", "class_totals_widget.html", "class_totals_widget" ]
+];

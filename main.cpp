@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,82 +16,98 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
+#include "src/opl.h"
+#include "src/functions/alog.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/classes/runguard.h"
+#include "src/classes/arunguard.h"
+#include "src/database/adatabase.h"
+#include "src/classes/asettings.h"
+#include "src/classes/astandardpaths.h"
+#include "src/classes/asettings.h"
+#include "src/classes/astyle.h"
+#include "src/functions/alog.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
+#include <QStandardPaths>
+#include <QDebug>
 
-const auto DATA_DIR = QLatin1String("data");
-/*!
- * \brief setup checks if data folder and settings files exists.
- * \return
- */
-bool setup()
+#define APPNAME QStringLiteral("openPilotLog")
+#define ORGNAME QStringLiteral("opl")
+#define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
+
+
+void init()
 {
-    if (!QDir(DATA_DIR).exists())
-        QDir().mkdir(DATA_DIR);
+    LOG << "Setting up / verifying Application Directories...";
+    if(AStandardPaths::setup()) {
+        LOG << "Application Directories... verified";
+    } else {
+        LOG << "Unable to create directories.";
+    }
+    LOG << "Setting up logging facilities...";
+    if(ALog::init(true)) {
+        LOG << "Logging enabled.";
+    } else {
+        LOG << "Unable to initalise logging.";
+    }
+    LOG << "Reading Settings...";
+    ASettings::setup();
+    LOG << "Setting up application style...";
+    AStyle::setup();
+}
 
-    QDir      settingspath(DATA_DIR + QLatin1Char('/') + QCoreApplication::organizationName());
-    QString   settingsfile = QCoreApplication::applicationName() + QLatin1String(".ini");
-    QFileInfo check_file(settingspath,settingsfile);
-
-    return check_file.exists() && check_file.isFile();
-};
+void firstRun()
+{
+    if(FirstRunDialog().exec() == QDialog::Rejected){
+        LOG << "Initial setup incomplete or unsuccessfull.";
+        return;
+    }
+    ASettings::write(ASettings::Main::SetupComplete, true);
+    LOG << "Initial Setup Completed successfully";
+}
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("openPilotLog");
-    QCoreApplication::setOrganizationDomain("https://github.com/fiffty-50/openpilotlog");
-    QCoreApplication::setApplicationName("openPilotLog");
-
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, DATA_DIR);
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings settings;
-
-    Db::connect();
-
     QApplication openPilotLog(argc, argv);
-    if(!setup()){
-        FirstRunDialog dialog;
-        dialog.exec();
+    QCoreApplication::setOrganizationName(ORGNAME);
+    QCoreApplication::setOrganizationDomain(ORGDOMAIN);
+    QCoreApplication::setApplicationName(APPNAME);
+
+    // Check for another instance already running
+    ARunGuard guard(QStringLiteral("opl_single_key"));
+    if ( !guard.tryToRun() ){
+        LOG << "Another Instance of openPilotLog is already running. Exiting.";
+        return 0;
     }
 
+    // Set Up the Application
+    init();
 
-    //Theming
-    int selectedtheme = settings.value("main/theme").toInt();
-    QDir::setCurrent("/themes");
-    switch (selectedtheme) {
-    case 1:{
-        qDebug() << "main :: Loading light theme";
-        QFile file(":light.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        openPilotLog.setStyleSheet(stream.readAll());
-        break;
-    }
-    case 2:{
-        qDebug() << "Loading dark theme";
-        QFile file(":dark.qss");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QTextStream stream(&file);
-        openPilotLog.setStyleSheet(stream.readAll());
-        break;
-    }
-    default:
-        break;
-    }
+    // Check for First Run and launch Setup Wizard
+    if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
+        firstRun();
 
-
-    //sqlite does not deal well with multiple connections, ensure only one instance is running
-    RunGuard guard("opl_single_key");
-        if ( !guard.tryToRun() ){
-            qDebug() << "Another Instance is already running. Exiting.";
-            return 0;
-        }
-
+    // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;
+#ifdef __linux__
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_LINUX));
+#elif defined(_WIN32) || defined(_WIN64)
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_WIN));
+#elif __APPLE__
+    #include <TargetConditionals.h>
+    #if TARGET_IPHONE_SIMULATOR
+         // iOS Simulator
+    #elif TARGET_OS_IPHONE
+        // iOS device
+    #elif TARGET_OS_MAC
+    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_IOS));
+    #else
+    #   error "Unknown Apple platform"
+    #endif
+#endif
+
     //w.showMaximized();
     w.show();
     return openPilotLog.exec();

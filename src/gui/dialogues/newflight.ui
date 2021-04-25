@@ -14,7 +14,7 @@
    <string>New Flight</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="flightDataTabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -177,7 +177,7 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QComboBox" name="deptTZ">
+        <widget class="QComboBox" name="deptTZComboBox">
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -379,7 +379,7 @@
         </widget>
        </item>
        <item row="3" column="3">
-        <widget class="QComboBox" name="destTZ">
+        <widget class="QComboBox" name="destTZComboBox">
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
@@ -788,11 +788,19 @@
            <height>20</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>DejaVu Sans</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Once all the required items are filled out, the total time of flight will be displayed here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: yellow;</string>
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -814,6 +822,20 @@
        </item>
        <item row="0" column="5">
         <widget class="QLabel" name="doftDisplayLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="calendarCheckBox">
+         <property name="text">
+          <string>Calendar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="5">
+        <widget class="QLabel" name="picCompanyLabel">
          <property name="text">
           <string/>
          </property>
@@ -841,7 +863,7 @@
       <zorder>autoPicusLabel</zorder>
       <zorder>tSICLabel</zorder>
       <zorder>tIFRLabel</zorder>
-      <zorder>deptTZ</zorder>
+      <zorder>deptTZComboBox</zorder>
       <zorder>tSPSELabel</zorder>
       <zorder>RemarksLineEdit</zorder>
       <zorder>picLabel</zorder>
@@ -859,7 +881,7 @@
       <zorder>thirdPilotNameLineEdit</zorder>
       <zorder>autoMPLabel</zorder>
       <zorder>picNameLineEdit</zorder>
-      <zorder>destTZ</zorder>
+      <zorder>destTZComboBox</zorder>
       <zorder>RemarksLabel</zorder>
       <zorder>tPICUSLabel</zorder>
       <zorder>autoNightLabel</zorder>
@@ -873,6 +895,8 @@
       <zorder>FlightNumberLabel</zorder>
       <zorder>doftDisplayLabel</zorder>
       <zorder>placeLabel1</zorder>
+      <zorder>calendarCheckBox</zorder>
+      <zorder>picCompanyLabel</zorder>
      </widget>
      <widget class="QWidget" name="autoLoggingTab">
       <attribute name="title">
@@ -963,73 +987,8 @@
           </size>
          </property>
          <property name="currentText">
-          <string>ILS CAT I</string>
+          <string/>
          </property>
-         <item>
-          <property name="text">
-           <string>ILS CAT I</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT II</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ILS CAT III</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Visual</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RNAV (RNP AR)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>VOR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NDB</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LOC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>GLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>MLS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SRA</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="4">
@@ -1413,26 +1372,28 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="verifyButton">
+    <widget class="QPushButton" name="cancelButton">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>DebugButton</string>
+      <string>Cancel</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="verifyEdit">
-     <property name="placeholderText">
-      <string>Debug Text</string>
+    <widget class="QPushButton" name="submitButton">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add your flight to the logbook.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You can only perform this action if all of the mandatory fields are filled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Submit</string>
      </property>
     </widget>
    </item>
@@ -1466,8 +1427,6 @@
   <tabstop>restoreDefaultButton</tabstop>
   <tabstop>manualEditingCheckBox</tabstop>
   <tabstop>tblkTimeLineEdit</tabstop>
-  <tabstop>verifyButton</tabstop>
-  <tabstop>verifyEdit</tabstop>
   <tabstop>calendarWidget</tabstop>
   <tabstop>flightDataTabWidget</tabstop>
  </tabstops>

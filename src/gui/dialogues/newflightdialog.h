@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -23,55 +23,20 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QCompleter>
-#include <QLatin1Char>
 #include <QStringList>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
 #include <QButtonGroup>
 #include <QBitArray>
 #include <QLineEdit>
 #include <QCalendarWidget>
+#include <QComboBox>
 #include <QTabWidget>
+#include <QKeyEvent>
+#include "src/functions/atime.h"
 
-
-#include "src/database/db.h"
-#include "src/classes/flight.h"
-#include "src/classes/aircraft.h"
-#include "src/classes/strictrxvalidator.h"
-#include "src/classes/settings.h"
-#include "src/classes/completionlist.h"
-#include "src/classes/calc.h"
-
-#include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/dialogues/newtaildialog.h"
-
-class SqlColumnNum{
-public:
-    SqlColumnNum() : _column(-1) {}
-    explicit
-    SqlColumnNum(int column) : _column(column) {}
-    int column() const { return _column; }
-private:
-    int _column;
-};
-
-class LineEditSettings {
-public:
-    LineEditSettings() = default;
-    explicit LineEditSettings(QRegularExpression input_valid_rgx, QRegularExpression input_invalid_rgx,
-                              SqlColumnNum sql_column)
-        : _input_valid_rgx(input_valid_rgx), _input_invalid_rgx(input_invalid_rgx),
-          _sql_column(sql_column) {}
-
-    const std::tuple<QRegularExpression, QRegularExpression, SqlColumnNum> getAll() const
-    {
-        return {_input_valid_rgx, _input_invalid_rgx, _sql_column};
-    }
-private:
-    QRegularExpression _input_valid_rgx = QRegularExpression("");
-    QRegularExpression _input_invalid_rgx = QRegularExpression("");
-    SqlColumnNum _sql_column = SqlColumnNum(-1);
-};
+#include "src/classes/aflightentry.h"
+#include "src/classes/apilotentry.h"
+#include "src/classes/atailentry.h"
+#include "src/database/adatabase.h"
 
 namespace Ui {
 class NewFlight;
@@ -80,155 +45,145 @@ class NewFlight;
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
-
 public:
-    explicit NewFlightDialog(QWidget *parent, Db::editRole edRole);
-    explicit NewFlightDialog(QWidget *parent, Flight oldFlight, Db::editRole edRole);
+    /*!
+     * \brief NewFlightDialog create a new flight and add it to the logbook.
+     */
+    explicit NewFlightDialog(QWidget *parent = nullptr);
+    /*!
+     * \brief NewFlightDialog Edit an existing logbook entry.
+     */
+    explicit NewFlightDialog(int row_id, QWidget *parent = nullptr);
     ~NewFlightDialog();
-
-    //QStringList* getResult();
-
-private:
-
-    bool eventFilter(QObject* object, QEvent* event);
-
-    void setup();
-
-    void formFiller(Flight oldFlight);
-
-    void setupLineEdit(QLineEdit* line_edit, LineEditSettings settings);
-
-    void addNewPilotMessageBox(QLineEdit *parent);
-
-    void addNewAircraftMessageBox(QLineEdit *parent);
-
-    void readSettings();
-
-    void writeSettings();
-
-    void collectBasicData();
-
-    void collectAdditionalData();
-
-    void fillExtras();
-
-    bool verifyInput();
-
-    void onInputRejected(QLineEdit* line_edit, QRegularExpression rgx);
-
-    void onEditingFinishedCleanup(QLineEdit* line_edit);
-
-    void update();
-
-    bool isLessOrEqualToTotalTime(QString timeString);
 
 private slots:
 
-    void on_verifyButton_clicked(); //debug button
-
-    void on_deptTZ_currentTextChanged(const QString &arg1);
-    void on_destTZ_currentIndexChanged(const QString &arg1);
-
-    void on_tofbTimeLineEdit_editingFinished();
-    void on_tonbTimeLineEdit_editingFinished();
-    void on_tofbTimeLineEdit_inputRejected();
-    void on_tonbTimeLineEdit_inputRejected();
-
-    void on_deptLocLineEdit_editingFinished();
-    void on_destLocLineEdit_editingFinished();
-    void on_destLocLineEdit_inputRejected();
-    void on_deptLocLineEdit_inputRejected();
-
-    void on_deptLocLineEdit_textEdited(const QString &arg1);
-    void on_destLocLineEdit_textEdited(const QString &arg1);
-
-    void on_doftTimeEdit_editingFinished();
-
-    void on_acftLineEdit_inputRejected();
-    void on_acftLineEdit_editingFinished();
-
-    void on_picNameLineEdit_inputRejected();
-    void on_picNameLineEdit_editingFinished();
-    void on_secondPilotNameLineEdit_editingFinished();
-    void on_secondPilotNameLineEdit_inputRejected();
-    void on_thirdPilotNameLineEdit_editingFinished();
-    void on_thirdPilotNameLineEdit_inputRejected();
-
+    void onToUpperTriggered_textChanged(const QString&);
+    void onPilotNameLineEdit_editingFinished();
+    void onLocationEditingFinished(QLineEdit*, QLabel*);
+    void onTimeLineEdit_editingFinished();
+    void onCompleter_highlighted(const QString&);
+    void onCompleter_activated(const QString &);
+    void onCalendarWidget_clicked(const QDate &date);
+    void onCalendarWidget_selected(const QDate &date);
+    void onDoftLineEdit_entered();
+    void on_calendarCheckBox_stateChanged(int arg1);
+    void on_doftLineEdit_editingFinished();
+    void on_cancelButton_clicked();
+    void on_submitButton_clicked();
     void on_setAsDefaultButton_clicked();
     void on_restoreDefaultButton_clicked();
-
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-
-    void on_PilotFlyingCheckBox_stateChanged(int);
-
-    void on_ApproachComboBox_currentTextChanged(const QString &arg1);
-
-    void on_tSPSETimeLineEdit_editingFinished();
-    void on_tSPMETimeLineEdit_editingFinished();
-
-    void on_tMPTimeLineEdit_editingFinished();
-
-    void on_tIFRTimeLineEdit_editingFinished();
-    void on_tNIGHTTimeLineEdit_editingFinished();
-    void on_tPICTimeLineEdit_editingFinished();
-    void on_tSICTimeLineEdit_editingFinished();
-    void on_tDUALTimeLineEdit_editingFinished();
-    void on_tFITimeLineEdit_editingFinished();
-    void on_FlightNumberLineEdit_textChanged(const QString &arg1);
-
-
+    void on_PilotFlyingCheckBox_stateChanged(int arg1);
+    void on_IfrCheckBox_stateChanged(int);
     void on_manualEditingCheckBox_stateChanged(int arg1);
-
-    void on_FunctionComboBox_currentTextChanged();
-
-    void on_tblkTimeLineEdit_editingFinished();
-
-    void on_IfrCheckBox_stateChanged();
-
-    void on_TakeoffSpinBox_valueChanged(int arg1);
-
-    void on_LandingSpinBox_valueChanged(int arg1);
-
-    void on_AutolandSpinBox_valueChanged(int arg1);
-
-    void on_TakeoffCheckBox_stateChanged(int arg1);
-
-    void on_LandingCheckBox_stateChanged(int arg1);
-
-    void on_AutolandCheckBox_stateChanged(int arg1);
-
-    //void on_doftToolButton_clicked();
-
-    void date_clicked(const QDate &date);
-
-    void date_selected(const QDate &date);
-
-    void on_doftLineEdit_inputRejected();
-
-    void on_doftLineEdit_editingFinished();
-
-    void on_doftLineEditEntered();
-
-signals:
-    void mandatoryFieldsValid(NewFlightDialog* nf);
+    void on_ApproachComboBox_currentTextChanged(const QString &arg1);
+    void on_FunctionComboBox_currentIndexChanged(int index);
+    void on_deptLocLineEdit_editingFinished();
+    void on_destLocLineEdit_editingFinished();
+    void on_acftLineEdit_editingFinished();
+    void on_deptTZComboBox_currentIndexChanged(int index);
+    void on_destTZComboBox_currentIndexChanged(int index);
 
 private:
-    Db::editRole role;
-    Flight entry;
-    bool doUpdate;
     Ui::NewFlight *ui;
-    QMap<QLineEdit*, int> lineEditBitMap;
-    QVector<QLineEdit*> mandatoryLineEdits;
-    QBitArray allOkBits;
-    QMessageBox messageBox;
-    QDate clickedDate;
-    // For Flight Object
-    QMap<QString, QString> airportMap;
-    QStringList airports;
-    QStringList pilots;
-    QStringList tails;
-    QMap<QString, QString> newData;
+
+    /*!
+     * \brief a AFlightEntry object that is used to store either position data
+     * from an old entry, is used to fill the form for editing an entry, or is
+     * filled with new data for adding a new entry to the logbook.
+     */
+    AFlightEntry flightEntry;
+
+    // [G]: Initial refactoring based on previous use.
+    /*!
+     * \brief Wrapper around Vector of mandatory line edits and their corresponding
+     * "ok" QBitArray.
+     */
+    struct MandatoryLineEdits {
+        QVector<QLineEdit*> lineEdits;
+        QBitArray lineEditsValid;
+
+        MandatoryLineEdits() = default;
+        MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list);
+        void operator= (std::initializer_list<QLineEdit*> init_list);
+
+        bool contains(QLineEdit* line_edit);
+        void validate(QLineEdit* line_edit);
+        void unvalidate(QLineEdit* line_edit);
+        int countValid();
+        int size();
+        bool validAt(int idx);
+        bool allValid();
+        QLineEdit* operator[] (int idx);
+
+    } mandatoryLineEdits;
+
+    QVector<QLineEdit*> primaryTimeLineEdits;
+    QVector<QLineEdit*> pilotsLineEdits;
+
+    /*!
+     * To be used by the QCompleters
+     */
+    QStringList pilotList;
+    QStringList tailsList;
+    QStringList airportList;
+
+    /*!
+     * \brief Used to map user input to database keys
+     */
+    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
+    QMap<TailRegistration_T, TailId_T> tailsIdMap;
+    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
+    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
+    QMap<AirportName_T, AirportId_T> airportNameIdMap;
+
+    Opl::Time::FlightTimeFormat flightTimeFormat;
+
+    /*!
+     * \brief If the user elects to manually edit function times, automatic updating
+     * is disabled.
+     */
+    bool updateEnabled;
+
+    void setup();
+    void readSettings();
+    void writeSettings();
+    void setupButtonGroups();
+    void setPopUpCalendarEnabled(bool state);
+    void setupRawInputValidation();
+    void setupSignalsAndSlots();
+    void formFiller();
+    void fillDeductibleData();
+
+    void onMandatoryLineEditsFilled();
+    void onGoodInputReceived(QLineEdit*);
+    void onBadInputReceived(QLineEdit *);
+    bool eventFilter(QObject *object, QEvent *event);
+    bool isLessOrEqualThanBlockTime(const QString time_string);
+
+    void addNewTail(QLineEdit*);
+    void addNewPilot(QLineEdit *);
+
+    RowData_T collectInput();
+
+    /*!
+     * \brief converts a time string as used in the UI to an integer of minutes for
+     * use in the database based on the format in use in the Dialog
+     */
+    inline int stringToMinutes(const QString &time_string, Opl::Time::FlightTimeFormat format)
+    {
+        return ATime::toMinutes(ATime::fromString(time_string, format));
+    }
+
+    /*!
+     * \brief minutesToString converts an integer of minutes as received from the database
+     * to a String to be displayed in the UI, based on the format in use in the Dialog.
+     */
+    inline QString minutesToString(const int minutes, Opl::Time::FlightTimeFormat format)
+    {
+        return ATime::toString(ATime::fromMinutes(minutes), format);
+    }
 };
+
 
 #endif // NEWFLIGHT_H

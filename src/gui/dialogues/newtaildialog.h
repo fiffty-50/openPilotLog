@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -22,13 +22,13 @@
 #include <QCompleter>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QComboBox>
 
-#include "src/classes/settings.h"
-#include "src/classes/completionlist.h"
-#include "src/classes/aircraft.h"
-#include "src/classes/strictrxvalidator.h"
-#include "src/classes/calc.h"
-#include "src/database/entry.h"
+#include "src/classes/asettings.h"
+#include "src/functions/acalc.h"
+#include "src/database/adatabase.h"
+#include "src/classes/atailentry.h"
+#include "src/classes/aaircraftentry.h"
 
 namespace Ui {
 class NewTail;
@@ -45,49 +45,37 @@ class NewTailDialog : public QDialog
     Q_OBJECT
 
 public:
-    //to create new tail from scratch
-    explicit NewTailDialog(QString reg, Db::editRole edRole, QWidget *parent = nullptr);
-    //to edit existing tail
-    explicit NewTailDialog(Aircraft dbentry, Db::editRole edRole, QWidget *parent = nullptr);
+    //create new tail
+    explicit NewTailDialog(QString new_registration, QWidget *parent = nullptr);
+    //edit existing tail
+    explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();
-private slots:
-
-    void on_searchLineEdit_textChanged(const QString &arg1);
-
-    void on_buttonBox_accepted();
-
-    void on_operationComboBox_currentIndexChanged(int index);
-
-    void on_ppTypeComboBox_currentIndexChanged(int index);
-
-    void on_ppNumberComboBox_currentIndexChanged(int index);
-
-    void on_weightComboBox_currentIndexChanged(int index);
-
-    void on_registrationLineEdit_textChanged(const QString &arg1);
-
 private:
 
     Ui::NewTail *ui;
 
-    Db::editRole role;
+    ATailEntry entry;
 
-    Aircraft oldEntry;
-
-    QStringList aircraftlist;
+    QStringList aircraftList;
 
     QMap<QString, int> idMap;
 
-    void submitForm(Db::editRole edRole);
-
     void setupCompleter();
-
     void setupValidators();
-
-    void formFiller(Entry);
-
+    void fillForm(AEntry entry, bool is_template);
     bool verify();
+    void submitForm();
+
+private slots:
+    void on_operationComboBox_currentIndexChanged(int index);
+    void on_ppTypeComboBox_currentIndexChanged(int index);
+    void on_ppNumberComboBox_currentIndexChanged(int index);
+    void on_weightComboBox_currentIndexChanged(int index);
+    void on_registrationLineEdit_textChanged(const QString &arg1);
+    void on_buttonBox_accepted();
+    void onSearchCompleterActivated();
+
 };
 
 #endif // NEWTAIL_H

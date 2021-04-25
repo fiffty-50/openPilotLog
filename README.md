@@ -18,4 +18,12 @@ For developers, the code documentation can be found at our [doxygen](https://fif
 
 # How does it look like?
 
-You can check out some screenshots in the [development branch](https://github.com/fiffty-50/openpilotlog/tree/develop/screenshots).
+Here are some early screenshots:
+
+![Alt Screenshot 1](assets/screenshots/logbookwidget_light.png)
+
+![Alt Screenshot 2](assets/screenshots/newflight_1_dark.png)
+
+![Alt Screenshot 3](assets/screenshots/newflight_2_light.png)
+
+![Alt Screenshot 4](assets/screenshots/pilotsdialog_dark.png)

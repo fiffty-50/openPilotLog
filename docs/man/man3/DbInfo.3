@@ -1,0 +1,37 @@
+.TH "DbInfo" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DbInfo
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBgetColumnNames\fP ()"
+.br
+.RI "\fBDbInfo::getColumnNames\fP Looks up column names for all tables in the database\&. "
+.ti -1c
+.RI "void \fBsqliteversion\fP ()"
+.br
+.RI "db::sqliteversion queries database version\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QString \fBversion\fP = QString()"
+.br
+.ti -1c
+.RI "QMap< QString, QVector< QString > > \fBformat\fP"
+.br
+.ti -1c
+.RI "QVector< QString > \fBtables\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

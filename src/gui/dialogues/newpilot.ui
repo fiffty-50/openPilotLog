@@ -15,28 +15,28 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="picfirstnameLabel">
+    <widget class="QLabel" name="lastnameLabel">
      <property name="text">
-      <string>First Name</string>
+      <string>Last Name</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="picfirstnameLineEdit">
+    <widget class="QLineEdit" name="lastnameLineEdit">
      <property name="maxLength">
       <number>40</number>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="piclastnameLabel">
+    <widget class="QLabel" name="firstnameLabel">
      <property name="text">
-      <string>Last Name</string>
+      <string>First Name</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="piclastnameLineEdit">
+    <widget class="QLineEdit" name="firstnameLineEdit">
      <property name="maxLength">
       <number>40</number>
      </property>
@@ -128,8 +128,8 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>picfirstnameLineEdit</tabstop>
-  <tabstop>piclastnameLineEdit</tabstop>
+  <tabstop>lastnameLineEdit</tabstop>
+  <tabstop>firstnameLineEdit</tabstop>
   <tabstop>companyLineEdit</tabstop>
   <tabstop>aliasLineEdit</tabstop>
   <tabstop>employeeidLineEdit</tabstop>

@@ -1,6 +1,6 @@
 /*
- *openPilot Log - A FOSS Pilot Logbook Application
- *Copyright (C) 2020  Felix Turowsky
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -22,67 +22,62 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QMessageBox>
-#include <chrono>
 #include <QDebug>
 #include <QMenu>
-
-#include "src/classes/settings.h"
-#include "src/database/db.h"
-#include "src/classes/flight.h"
-#include "src/gui/dialogues/newflightdialog.h"
+#include <QTableView>
+#include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
 class LogbookWidget;
 }
 
-
-
 class LogbookWidget : public QWidget
 {
     Q_OBJECT
-
 
 public:
     explicit LogbookWidget(QWidget *parent = nullptr);
     ~LogbookWidget();
 
-    QVector<qint32> selectedFlights;
-
 private slots:
     void on_newFlightButton_clicked();
-
     void on_editFlightButton_clicked();
-
     void on_deleteFlightPushButton_clicked();
-
-    void on_filterFlightsByDateButton_clicked();
-
     void on_showAllButton_clicked();
-
-    void tableView_selectionChanged();
-
+    void flightsTableView_selectionChanged();
     void on_tableView_customContextMenuRequested(const QPoint &pos);
-
     void on_actionDelete_Flight_triggered();
-
     void on_actionEdit_Flight_triggered();
-
     void on_tableView_doubleClicked();
+    void on_flightSearchLlineEdit_textChanged(const QString &arg1);
+    void on_flightSearchComboBox_currentIndexChanged(int);
+
+public slots:
+    void refresh();
+    void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
+    /*!
+     * \brief LogbookWidget::repopulateModel (public slot) - re-populates the model to cater for a change
+     * to the database connection (for example, when a backup is created)
+     */
+    void repopulateModel();
 
 private:
     Ui::LogbookWidget *ui;
 
-    QMenu* menu = new QMenu(this);
+    QTableView* view;
 
-    QMessageBox* nope = new QMessageBox(this);
+    QSqlTableModel* displayModel;
 
-    void refreshView(int view_id);
+    QItemSelectionModel* selectionModel;
 
-    void defaultView();
+    QMenu* menu;
 
-    void easaView();
+    QMessageBox* messageBox;
 
+    QVector<qint32> selectedFlights;
 
+    void setupModelAndView(int view_id);
+    void connectSignalsAndSlots();
 };
 
 #endif // LOGBOOKWIDGET_H

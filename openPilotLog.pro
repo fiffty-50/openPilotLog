@@ -1,8 +1,8 @@
-QT       += core gui sql
+QT       += core gui sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++1z
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -13,58 +13,78 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+DEFINES *= QT_USE_QSTRINGBUILDER
 
+# [G]: need to fix this. There must be a src/* command or smth
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    src/classes/aircraft.cpp \
-    src/classes/calc.cpp \
-    src/classes/completionlist.cpp \
-    src/classes/flight.cpp \
-    src/classes/pilot.cpp \
-    src/classes/runguard.cpp \
-    src/classes/settings.cpp \
-    src/classes/stat.cpp \
-    src/classes/strictrxvalidator.cpp \
-    src/database/db.cpp \
-    src/database/dbinfo.cpp \
-    src/database/entry.cpp \
+    src/classes/acurrencyentry.cpp \
+    src/classes/astyle.cpp \
+    src/classes/astandardpaths.cpp \
+    src/classes/aaircraftentry.cpp \
+    src/classes/adownload.cpp \
+    src/classes/aentry.cpp \
+    src/classes/aflightentry.cpp \
+    src/classes/apilotentry.cpp \
+    src/classes/arunguard.cpp \
+    src/classes/asettings.cpp \
+    src/classes/atailentry.cpp \
+    src/database/adatabase.cpp \
+    src/database/adatabasesetup.cpp \
+    src/functions/acalc.cpp \
+    src/functions/alog.cpp \
+    src/functions/areadcsv.cpp \
+    src/functions/astat.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
     src/gui/dialogues/newtaildialog.cpp \
     src/gui/widgets/aircraftwidget.cpp \
+    src/gui/widgets/backupwidget.cpp \
+    src/gui/widgets/debugwidget.cpp \
     src/gui/widgets/homewidget.cpp \
     src/gui/widgets/logbookwidget.cpp \
     src/gui/widgets/pilotswidget.cpp \
     src/gui/widgets/settingswidget.cpp \
-    src/gui/widgets/totalswidget.cpp
+    src/testing/atimer.cpp
 
 HEADERS += \
     mainwindow.h \
-    src/classes/aircraft.h \
-    src/classes/calc.h \
-    src/classes/completionlist.h \
-    src/classes/flight.h \
-    src/classes/pilot.h \
-    src/classes/runguard.h \
-    src/classes/settings.h \
-    src/classes/stat.h \
-    src/classes/strictrxvalidator.h \
-    src/database/db.h \
-    src/database/dbinfo.h \
-    src/database/entry.h \
+    src/opl.h \
+    src/classes/acurrencyentry.h \
+    src/classes/astyle.h \
+    src/classes/astandardpaths.h \
+    src/classes/aaircraftentry.h \
+    src/classes/adownload.h \
+    src/classes/aentry.h \
+    src/classes/aflightentry.h \
+    src/classes/apilotentry.h \
+    src/classes/arunguard.h \
+    src/classes/asettings.h \
+    src/classes/atailentry.h \
+    src/database/adatabase.h \
+    src/database/adatabasesetup.h \
+    src/database/adatabasetypes.h \
+    src/functions/acalc.h \
+    src/functions/adatetime.h \
+    src/functions/alog.h \
+    src/functions/areadcsv.h \
+    src/functions/astat.h \
+    src/functions/atime.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
     src/gui/dialogues/newpilotdialog.h \
     src/gui/dialogues/newtaildialog.h \
     src/gui/widgets/aircraftwidget.h \
+    src/gui/widgets/backupwidget.h \
+    src/gui/widgets/debugwidget.h \
     src/gui/widgets/homewidget.h \
     src/gui/widgets/logbookwidget.h \
     src/gui/widgets/pilotswidget.h \
     src/gui/widgets/settingswidget.h \
-    src/gui/widgets/totalswidget.h
+    src/testing/atimer.h \
 
 FORMS += \
     mainwindow.ui \
@@ -73,11 +93,12 @@ FORMS += \
     src/gui/dialogues/newpilot.ui \
     src/gui/dialogues/newtail.ui \
     src/gui/widgets/aircraftwidget.ui \
+    src/gui/widgets/backupwidget.ui \
+    src/gui/widgets/debugwidget.ui \
     src/gui/widgets/homewidget.ui \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
-    src/gui/widgets/settingswidget.ui \
-    src/gui/widgets/totalswidget.ui
+    src/gui/widgets/settingswidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -88,7 +109,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     assets/icons.qrc \
-    assets/themes/breeze.qrc
+    assets/templates.qrc \
+    assets/themes/stylesheets/breeze/breeze.qrc \
+    assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
 
 DISTFILES += \
     assets/themes/dark.qss \

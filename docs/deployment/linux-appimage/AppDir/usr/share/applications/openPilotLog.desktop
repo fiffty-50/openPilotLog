@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=openPilotLog
+Comment=The FOSS pilot logbook
+Exec=openPilotLog
+Icon=openPilotLog
+Categories=Office;
