@@ -111,7 +111,10 @@ static const auto ApproachTypes = QStringList{
 
 namespace Date {
 
-enum DateFormat {Default, Text};
+/*!
+ * \brief ADateFormats enumerates the accepted date formats for QDateEdits
+ */
+enum class ADateFormat {ISODate, DE, EN };
 
 } // namespace opl::date
 

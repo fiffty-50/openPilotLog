@@ -33,6 +33,7 @@ public:
         FontSize,
         UseSystemFont,
         LogbookView,
+        DateFormat,
     };
 
     enum class UserData {

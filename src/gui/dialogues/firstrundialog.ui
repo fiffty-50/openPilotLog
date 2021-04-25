@@ -17,7 +17,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="personalDataPage">
       <layout class="QGridLayout" name="gridLayout_9">
@@ -133,54 +133,10 @@
      </widget>
      <widget class="QWidget" name="currencyPage">
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QCheckBox" name="currWarningCheckBox">
-           <property name="text">
-            <string>Warn me about expiring currencies</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="currWarningThresholdSpinBox">
-           <property name="maximum">
-            <number>365</number>
-           </property>
-           <property name="value">
-            <number>30</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>days before expiry</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
+       <item row="3" column="0" colspan="2">
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="1" column="1">
-          <widget class="QDateEdit" name="currTrDateEdit">
+         <item row="0" column="1">
+          <widget class="QDateEdit" name="currLicDateEdit">
            <property name="minimumSize">
             <size>
              <width>140</width>
@@ -205,32 +161,6 @@
              <month>1</month>
              <day>1</day>
             </date>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="currMedLabel">
-           <property name="minimumSize">
-            <size>
-             <width>280</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Medical</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLineEdit" name="currCustom2LineEdit">
-           <property name="minimumSize">
-            <size>
-             <width>280</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="placeholderText">
-            <string>custom currency</string>
            </property>
           </widget>
          </item>
@@ -247,48 +177,6 @@
            </property>
            <property name="placeholderText">
             <string>custom currency</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="currTrLabel">
-           <property name="minimumSize">
-            <size>
-             <width>280</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Type Rating</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QDateEdit" name="currCustom1DateEdit">
-           <property name="minimumSize">
-            <size>
-             <width>140</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
-           </property>
-           <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-           <property name="timeSpec">
-            <enum>Qt::UTC</enum>
-           </property>
-           <property name="date">
-            <date>
-             <year>2020</year>
-             <month>1</month>
-             <day>1</day>
-            </date>
            </property>
           </widget>
          </item>
@@ -350,8 +238,60 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QDateEdit" name="currLicDateEdit">
+         <item row="2" column="0">
+          <widget class="QLabel" name="currLckLabel">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Line Check</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="currMedLabel">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Medical</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="currLicLabel">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Licence</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="currTrLabel">
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Type Rating</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QDateEdit" name="currCustom1DateEdit">
            <property name="minimumSize">
             <size>
              <width>140</width>
@@ -408,33 +348,110 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="currLckLabel">
+         <item row="1" column="1">
+          <widget class="QDateEdit" name="currTrDateEdit">
            <property name="minimumSize">
             <size>
-             <width>280</width>
+             <width>140</width>
              <height>0</height>
             </size>
            </property>
-           <property name="text">
-            <string>Line Check</string>
+           <property name="currentSection">
+            <enum>QDateTimeEdit::MonthSection</enum>
+           </property>
+           <property name="displayFormat">
+            <string>MM/dd/yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+           <property name="timeSpec">
+            <enum>Qt::UTC</enum>
+           </property>
+           <property name="date">
+            <date>
+             <year>2020</year>
+             <month>1</month>
+             <day>1</day>
+            </date>
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="currLicLabel">
+         <item row="5" column="0">
+          <widget class="QLineEdit" name="currCustom2LineEdit">
            <property name="minimumSize">
             <size>
              <width>280</width>
              <height>0</height>
             </size>
            </property>
-           <property name="text">
-            <string>Licence</string>
+           <property name="placeholderText">
+            <string>custom currency</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="dateFormatComboBox"/>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="dateFormatLabel">
+         <property name="text">
+          <string>Date Format</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="currWarningCheckBox">
+           <property name="text">
+            <string>Warn me about expiring currencies</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="currWarningThresholdSpinBox">
+           <property name="maximum">
+            <number>365</number>
+           </property>
+           <property name="value">
+            <number>30</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>days before expiry</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

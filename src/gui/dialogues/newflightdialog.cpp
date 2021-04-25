@@ -23,7 +23,7 @@
 #include "src/testing/atimer.h"
 #include "src/database/adatabase.h"
 #include "src/opl.h"
-
+#include "src/functions/adate.h"
 #include "src/functions/alog.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1032,26 +1032,37 @@ void NewFlightDialog::on_doftLineEdit_editingFinished()
     auto label = ui->doftDisplayLabel;
     DEB << line_edit->objectName() << "Editing finished - " << text;
 
-    auto date = QDate::fromString(text, Qt::ISODate);
+    TODO << "Implement other Date Formats";
+    Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
+    TODO << "Remove calendar or fix implementation... too hacky as it is";
+    auto date = ADate::formatInput(text, date_format);
     if (date.isValid()) {
         label->setText(date.toString(Qt::TextDate));
+        line_edit->setText(ADate::toString(date, date_format));
         onGoodInputReceived(line_edit);
         return;
     }
 
-    //try to correct input if only numbers are entered, eg 20200101
-    if(text.length() == 8) {
-        DEB << "Trying to fix input...";
-        text.insert(4,'-');
-        text.insert(7,'-');
-        date = QDate::fromString(text, Qt::ISODate);
-        if (date.isValid()) {
-            line_edit->setText(date.toString(Qt::ISODate));
-            label->setText(date.toString(Qt::TextDate));
-            onGoodInputReceived(line_edit);
-            return;
-        }
-    }
+    //auto date = QDate::fromString(text, Qt::ISODate);
+    //if (date.isValid()) {
+    //    label->setText(date.toString(Qt::TextDate));
+    //    onGoodInputReceived(line_edit);
+    //    return;
+    //}
+    //
+    ////try to correct input if only numbers are entered, eg 20200101
+    //if(text.length() == 8) {
+    //    DEB << "Trying to fix input...";
+    //    text.insert(4,'-');
+    //    text.insert(7,'-');
+    //    date = QDate::fromString(text, Qt::ISODate);
+    //    if (date.isValid()) {
+    //        line_edit->setText(date.toString(Qt::ISODate));
+    //        label->setText(date.toString(Qt::TextDate));
+    //        onGoodInputReceived(line_edit);
+    //        return;
+    //    }
+    //}
     label->setText("Invalid Date.");
     onBadInputReceived(line_edit);
 }

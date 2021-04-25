@@ -109,6 +109,8 @@ private slots:
 
     void on_currCustom2LineEdit_editingFinished();
 
+    void on_dateFormatComboBox_currentIndexChanged(int index);
+
 private:
     Ui::SettingsWidget *ui;
 
