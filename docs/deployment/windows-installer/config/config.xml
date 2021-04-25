@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>openPilotLog</Name>
+    <Version>0.6.0</Version>
+    <Title>openPilotLog Installer</Title>
+    <Publisher>opl</Publisher>
+    <StartMenuDir>openPilotLog</StartMenuDir>
+    <TargetDir>@ApplicationsDir@/openPilotLog</TargetDir>
+</Installer>
