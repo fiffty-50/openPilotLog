@@ -49,7 +49,7 @@ private:
     double         ftlWarningThreshold;
 
     void fillTotals();
-    void fillAllCurrencies();
+    void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
     void fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel *display_label);
     void fillLimitations();
@@ -82,6 +82,7 @@ private:
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
+    void checkAllCurrencies();
 public slots:
     void refresh();
 };

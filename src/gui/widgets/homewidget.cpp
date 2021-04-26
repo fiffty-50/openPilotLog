@@ -52,8 +52,9 @@ HomeWidget::HomeWidget(QWidget *parent) :
 
     DEB << "Filling Home Widget...";
     fillTotals();
-    fillAllCurrencies();
+    fillSelectedCurrencies();
     fillLimitations();
+    checkAllCurrencies();
 }
 
 HomeWidget::~HomeWidget()
@@ -64,20 +65,21 @@ HomeWidget::~HomeWidget()
 void HomeWidget::refresh()
 {
     DEB << "Updating HomeWidget...";
-    for (const auto label : this->findChildren<QLabel *>())
+    const auto label_list = this->findChildren<QLabel *>();
+    for (const auto label : label_list)
         label->setVisible(true);
     currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
-    for (const auto &label : limitationDisplayLabels)
+    for (const auto &label : qAsConst(limitationDisplayLabels))
         label->setStyleSheet(QString());
 
     fillTotals();
-    fillAllCurrencies();
+    fillSelectedCurrencies();
     fillLimitations();
 }
 
 void HomeWidget::fillTotals()
 {
-    auto data = AStat::totals();
+    const auto data = AStat::totals();
     for (const auto &field : data) {
         auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
         line_edit->setText(field.second);
@@ -89,23 +91,24 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
     auto currency_entry = aDB->getCurrencyEntry(currency_name);
     if (currency_entry.isValid()) {
         auto currency_date = QDate::fromString(currency_entry.tableData.value(
-                                               Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                                                   Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);
 
-        if (today.addDays(currWarningThreshold) >= currency_date) { // expires less than 30 days from today
-            setLabelColour(display_label, Colour::Orange);
-        }
         if (today >= currency_date) { // is expired
             setLabelColour(display_label, Colour::Red);
+            return;
+        } else if (today.addDays(currWarningThreshold) >=currency_date) { // expires less than <currWarningThreshold> days from current Date
+
+            setLabelColour(display_label, Colour::Orange);
         }
     } else {
         display_label->setText(tr("Invalid Date"));
     }
 }
 
-void HomeWidget::fillAllCurrencies()
+void HomeWidget::fillSelectedCurrencies()
 {
     fillCurrencyTakeOffLanding();
 
@@ -138,7 +141,7 @@ void HomeWidget::fillAllCurrencies()
 
 void HomeWidget::fillCurrencyTakeOffLanding()
 {
-    auto takeoff_landings = AStat::countTakeOffLanding();
+    const auto takeoff_landings = AStat::countTakeOffLanding();
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
     if (takeoff_landings[0].toUInt() < 3)
@@ -185,10 +188,42 @@ void HomeWidget::fillLimitations()
     }
 }
 
+/*!
+ * \brief HomeWidget::checkAllCurrencies loops through all the currencies and warns the user about
+ * impending expiries.
+ */
+void HomeWidget::checkAllCurrencies()
+{
+    for (int i = 1 ; i <= 6; i++) {
+        // Get the Currency entry
+        auto entry = aDB->getCurrencyEntry(ACurrencyEntry::CurrencyName(i));
+        const auto currency_date = entry.getData().value(Opl::Db::CURRENCIES_EXPIRYDATE).toDate();
+        if (!currency_date.isValid())
+            continue;
+        const auto currency_name = entry.getData().value(Opl::Db::CURRENCIES_DESCRIPTION).toString();
+
+        // check expiration dates
+        if (today >= currency_date) {
+            // is expired
+            WARN(tr("Your currency <b>%1</b> is expired since %2.<br><br>")
+                 .arg(currency_name,
+                      currency_date.toString(Qt::TextDate)));
+            continue;
+        } else if (today.addDays(currWarningThreshold) >=currency_date) {
+            // expires less than <currWarningThreshold> days from current Date
+            QString days_to_expiry = QString::number(today.daysTo(currency_date));
+            WARN(tr("Your currency <b>%1</b> expires in <b>%2</b> days (%3).<br><br>")
+                 .arg(currency_name,
+                      days_to_expiry,
+                      currency_date.toString(Qt::TextDate)));
+        }
+    }
+}
+
 const QString HomeWidget::userName()
 {
-    auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
-    auto name = aDB->customQuery(statement, 1);
+    const auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
+    const auto name = aDB->customQuery(statement, 1);
     if (!name.isEmpty())
         return name.first().toString();
 

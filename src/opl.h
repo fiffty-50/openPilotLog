@@ -212,6 +212,7 @@ static const auto PILOTS_EMAIL           = QLatin1String("email");
 
 // Currencies table
 static const auto CURRENCIES_EXPIRYDATE  = QLatin1String("expiryDate");
+static const auto CURRENCIES_DESCRIPTION = QLatin1String("description");
 
 // all tables
 static const auto ROWID                  = QLatin1String("ROWID");
