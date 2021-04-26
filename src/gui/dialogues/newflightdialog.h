@@ -65,9 +65,6 @@ private slots:
     void onCompleter_highlighted(const QString&);
     void onCompleter_activated(const QString &);
     void onCalendarWidget_clicked(const QDate &date);
-    void onCalendarWidget_selected(const QDate &date);
-    void onDoftLineEdit_entered();
-    void on_calendarCheckBox_stateChanged(int arg1);
     void on_doftLineEdit_editingFinished();
     void on_cancelButton_clicked();
     void on_submitButton_clicked();
@@ -83,6 +80,8 @@ private slots:
     void on_acftLineEdit_editingFinished();
     void on_deptTZComboBox_currentIndexChanged(int index);
     void on_destTZComboBox_currentIndexChanged(int index);
+
+    void on_calendarPushButton_clicked();
 
 private:
     Ui::NewFlight *ui;
@@ -149,7 +148,6 @@ private:
     void readSettings();
     void writeSettings();
     void setupButtonGroups();
-    void setPopUpCalendarEnabled(bool state);
     void setupRawInputValidation();
     void setupSignalsAndSlots();
     void formFiller();

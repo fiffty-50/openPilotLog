@@ -56,13 +56,11 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
     {FlightLogging::NumberTakeoffs,     QStringLiteral("numberTakeoffs")},
     {FlightLogging::NumberLandings,     QStringLiteral("numberLandings")},
-    {FlightLogging::PopupCalendar,      QStringLiteral("popupCalendar")},
     {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
     {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
     {FlightLogging::Rules,              QStringLiteral("rules")},
     {FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
     {FlightLogging::FunctionComboBox,   QStringLiteral("functionComboBox")},
-    {FlightLogging::CalendarCheckBox,   QStringLiteral("calendarCheckBox")},
 };
 
 void ASettings::setup()
@@ -95,7 +93,6 @@ void ASettings::resetToDefaults()
 
     write(FlightLogging::NumberTakeoffs, 1);
     write(FlightLogging::NumberLandings, 1);
-    write(FlightLogging::PopupCalendar, true);
     write(FlightLogging::PilotFlying, true);
     write(FlightLogging::NightAngle, -6);
 }
