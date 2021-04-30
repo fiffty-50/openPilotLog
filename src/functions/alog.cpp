@@ -75,7 +75,7 @@ bool init(bool log_debug)
 /*!
  * \brief aMessageHandler Intercepts Messages and prints to console and log file
  *
- * \abstract The message handler is responsible for intercepting the output from
+ * \details The message handler is responsible for intercepting the output from
  * qDebug(), qInfo(), qWarning() and qCritical(), formatting them and printing them
  * to the standard console out and to a logfile using QTextStream. Debug messages are
  * not written to the log file.

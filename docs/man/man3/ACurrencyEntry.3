@@ -1,0 +1,62 @@
+.TH "ACurrencyEntry" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACurrencyEntry
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBAEntry\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBCurrencyName\fP { \fBLicence\fP = 1, \fBTypeRating\fP = 2, \fBLineCheck\fP = 3, \fBMedical\fP = 4, \fBCustom1\fP = 5, \fBCustom2\fP = 6 }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBACurrencyEntry\fP (CurrencyName name)"
+.br
+.RI "ACurrencyEntry::ACurrencyEntry Creates an ACurrenyEntry object\&. "
+.ti -1c
+.RI "\fBACurrencyEntry\fP (CurrencyName name, QDate expiration_date)"
+.br
+.ti -1c
+.RI "\fBACurrencyEntry\fP (const \fBACurrencyEntry\fP &te)=default"
+.br
+.ti -1c
+.RI "\fBACurrencyEntry\fP & \fBoperator=\fP (const \fBACurrencyEntry\fP &te)=default"
+.br
+.ti -1c
+.RI "bool \fBisValid\fP () const"
+.br
+.RI "\fBACurrencyEntry::isValid\fP returns true if the object holds a valid expiration date\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ACurrencyEntry::ACurrencyEntry (ACurrencyEntry::CurrencyName currency_name)"
+
+.PP
+ACurrencyEntry::ACurrencyEntry Creates an ACurrenyEntry object\&. The Data Position is initalized by using the strongly typed enum CurrencyName, which maps to the static row id for the currency\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ACurrencyEntry::isValid () const"
+
+.PP
+\fBACurrencyEntry::isValid\fP returns true if the object holds a valid expiration date\&. Unless a user has previously entered an expiration date, this will return false\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

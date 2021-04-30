@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['calculatenighttime_126',['calculateNightTime',['../namespace_a_calc.html#a55ede99d0f9f6e8a2f3a467859c0f192',1,'ACalc']]],
-  ['commit_127',['commit',['../classexperimental_1_1_a_database.html#a041619c4931943406dff1be52eb77434',1,'experimental::ADatabase']]],
-  ['commitdata_128',['commitData',['../class_a_data_base_setup.html#aa05e875621bd9c01319b545746dd4936',1,'ADataBaseSetup']]],
-  ['connect_129',['connect',['../class_db.html#af9dd776816e7941fec7b631eb2ff40b7',1,'Db::connect()'],['../classexperimental_1_1_a_database.html#aa45ad744482ae94d8f639e5837c9c221',1,'experimental::ADatabase::connect()']]],
-  ['customquery_130',['customQuery',['../class_db.html#aaccb09bc96d531bbc7019a7df81859ca',1,'Db::customQuery()'],['../classexperimental_1_1_a_database.html#ae536aeb620c52f873f1f0943cfeb9db0',1,'experimental::ADatabase::customQuery()']]]
+  ['calculatenighttime_151',['calculateNightTime',['../namespace_a_calc.html#a55ede99d0f9f6e8a2f3a467859c0f192',1,'ACalc']]],
+  ['commit_152',['commit',['../class_a_database.html#a652472c747c0ce68940b17c9c23666dd',1,'ADatabase']]],
+  ['commitdata_153',['commitData',['../class_a_data_base_setup.html#a7108c7f8fd28ff33df095062c5ab40c3',1,'ADataBaseSetup']]],
+  ['connect_154',['connect',['../class_a_database.html#aa6080200aa3f229251480bc416755fed',1,'ADatabase']]],
+  ['connectionreset_155',['connectionReset',['../class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7',1,'ADatabase']]],
+  ['createbackup_156',['createBackup',['../class_a_database.html#a5ab838a62a83974f9e40c62f66adfa99',1,'ADatabase']]],
+  ['customquery_157',['customQuery',['../class_a_database.html#a2a43936d3ae28993f9f7eda0fdf4664d',1,'ADatabase']]]
 ];

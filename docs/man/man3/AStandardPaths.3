@@ -1,0 +1,58 @@
+.TH "AStandardPaths" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AStandardPaths \- The AStandardAppPaths class encapsulates a static QMap holding the standard paths of the application\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <astandardpaths\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBDirectories\fP { \fBDatabase\fP, \fBTemplates\fP, \fBBackup\fP, \fBLog\fP }"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBsetup\fP ()"
+.br
+.RI "Creates and verifies a static map of the standard paths used in the app\&. "
+.ti -1c
+.RI "static const QDir & \fBdirectory\fP (Directories location)"
+.br
+.RI "Returns the QDir for the standard directory referenced by the Directories enum 'loc'\&. "
+.ti -1c
+.RI "static const QString \fBasChildOfDir\fP (Directories location, const QString &filename)"
+.br
+.RI "Returns a string of the absolute path to directory location concatenated with filename\&. "
+.ti -1c
+.RI "static const QMap< Directories, QDir > & \fBallDirectories\fP ()"
+.br
+.RI "returns the static map of all standard directories "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The AStandardAppPaths class encapsulates a static QMap holding the standard paths of the application\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "const QMap< AStandardPaths::Directories, QDir > & AStandardPaths::allDirectories ()\fC [static]\fP"
+
+.PP
+returns the static map of all standard directories 
+.PP
+\fBReturns\fP
+.RS 4
+static const QMap<Directories, QDir> 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

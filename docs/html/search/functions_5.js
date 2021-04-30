@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['formattimeinput_137',['formatTimeInput',['../namespace_a_calc.html#a362d1ab22d757e4c14d9cf143afec234',1,'ACalc']]]
+  ['formatinput_167',['formatInput',['../class_a_date.html#aa1c79d62d44ab503ccbc984f6f681a2d',1,'ADate']]],
+  ['formattimeinput_168',['formatTimeInput',['../namespace_a_calc.html#ad088e5dd93d1938ff97f88032dc0adec',1,'ACalc']]]
 ];

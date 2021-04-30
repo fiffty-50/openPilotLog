@@ -1,12 +1,13 @@
 var searchData=
 [
-  ['database_26',['database',['../classexperimental_1_1_a_database.html#a5a1d594fadb083e97aa8d50f736ab0ea',1,'experimental::ADatabase::database()'],['../class_db.html#aca719513ddc25d3628761da143cfde9e',1,'Db::Database()']]],
-  ['databaseupdated_27',['dataBaseUpdated',['../classexperimental_1_1_a_database.html#a202981d0d39b5b3dbc88af65e17ed42a',1,'experimental::ADatabase']]],
-  ['dataposition_28',['DataPosition',['../structexperimental_1_1_data_position.html',1,'experimental']]],
-  ['db_29',['Db',['../class_db.html',1,'']]],
-  ['dbinfo_30',['DbInfo',['../class_db_info.html',1,'']]],
-  ['debug_31',['debug',['../class_a_data_base_setup.html#ac9c061c0d18777537dcf6273683c5468',1,'ADataBaseSetup']]],
-  ['debugwidget_32',['DebugWidget',['../class_debug_widget.html',1,'']]],
-  ['degtorad_33',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
-  ['disconnect_34',['disconnect',['../class_db.html#a9bc721f0e6cd55a0dc4b6a690794f05a',1,'Db::disconnect()'],['../classexperimental_1_1_a_database.html#a5e331e329bc21980d3e2f63c7ca01559',1,'experimental::ADatabase::disconnect()']]]
+  ['database_33',['database',['../class_a_database.html#a2379c9da900da8e96add932e4024389a',1,'ADatabase']]],
+  ['databasesummary_34',['databaseSummary',['../class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c',1,'ADatabase']]],
+  ['databaseupdated_35',['dataBaseUpdated',['../class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911',1,'ADatabase']]],
+  ['dataposition_36',['DataPosition',['../struct_data_position.html',1,'']]],
+  ['debug_37',['debug',['../class_a_data_base_setup.html#ac9c061c0d18777537dcf6273683c5468',1,'ADataBaseSetup']]],
+  ['debugwidget_38',['DebugWidget',['../class_debug_widget.html',1,'']]],
+  ['degtorad_39',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
+  ['deleteoldlogs_40',['deleteOldLogs',['../namespace_a_log.html#ae110fbae5b42a1dd106a9c53be104b13',1,'ALog']]],
+  ['directory_41',['directory',['../class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe',1,'AStandardPaths']]],
+  ['disconnect_42',['disconnect',['../class_a_database.html#abc461aaa66304ca638e546f67a694935',1,'ADatabase']]]
 ];

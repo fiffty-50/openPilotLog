@@ -1,4 +1,4 @@
-.TH "SettingsWidget" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "SettingsWidget" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,12 +8,21 @@ SettingsWidget
 .PP
 .PP
 Inherits QWidget\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBSettingSignal\fP { \fBLogbookWidget\fP, \fBHomeWidget\fP, \fBAircraftWidget\fP, \fBPilotsWidget\fP }"
+.br
+.RI "Widgets that need to receive a signal when a setting is updated\&. "
+.in -1c
 .SS "Signals"
 
 .in +1c
 .ti -1c
-.RI "void \fBviewSelectionChanged\fP (int view_id)"
+.RI "void \fBsettingChanged\fP (\fBSettingSignal\fP widget)"
 .br
+.RI "settingChanged is emitted when a setting change shall trigger an update to another widget\&. "
 .in -1c
 .SS "Public Member Functions"
 

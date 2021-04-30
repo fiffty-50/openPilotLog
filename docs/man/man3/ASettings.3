@@ -1,27 +1,83 @@
-.TH "ASettings" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "ASettings" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ASettings \- The Settings class is a thin wrapper for the QSettings class, simplifying reading and writing of settings\&.  
+ASettings \- Thin wrapper for the QSettings class, simplifying reading and writing of settings\&.  
 
 .SH SYNOPSIS
 .br
 .PP
 .PP
 \fC#include <asettings\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBMain\fP { \fBSetupComplete\fP, \fBStyle\fP, \fBFont\fP, \fBFontSize\fP, \fBUseSystemFont\fP, \fBLogbookView\fP, \fBDateFormat\fP }"
+.br
+.ti -1c
+.RI "enum \fBUserData\fP { \fBDisplaySelfAs\fP, \fBTailSortColumn\fP, \fBPilotSortColumn\fP, \fBAcftAllowIncomplete\fP, \fBFtlWarningThreshold\fP, \fBCurrWarningEnabled\fP, \fBCurrWarningThreshold\fP, \fBShowToLgdCurrency\fP, \fBShowLicCurrency\fP, \fBShowTrCurrency\fP, \fBShowLckCurrency\fP, \fBShowMedCurrency\fP, \fBShowCustom1Currency\fP, \fBShowCustom2Currency\fP, \fBCustom1CurrencyName\fP, \fBCustom2CurrencyName\fP }"
+.br
+.ti -1c
+.RI "enum \fBFlightLogging\fP { \fBFunction\fP, \fBApproach\fP, \fBNightLoggingEnabled\fP, \fBLogIFR\fP, \fBFlightNumberPrefix\fP, \fBNumberTakeoffs\fP, \fBNumberLandings\fP, \fBPilotFlying\fP, \fBNightAngle\fP, \fBRules\fP, \fBFlightTimeFormat\fP, \fBFunctionComboBox\fP }"
+.br
+.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "static QVariant \fBread\fP (const QString &key)"
+.RI "static void \fBsetup\fP ()"
+.br
+.RI "Should be called after QCoreApplication::set\&.\&.\&.Name have been called\&. "
+.ti -1c
+.RI "static void \fBresetToDefaults\fP ()"
+.br
+.RI "\fBASettings::resetToDefaults\fP (Re-)sets all settings to the default value\&. "
+.ti -1c
+.RI "static QVariant \fBread\fP (const Main key)"
 .br
 .ti -1c
-.RI "static void \fBwrite\fP (const QString &key, const QVariant &val)"
+.RI "static void \fBwrite\fP (const Main key, const QVariant &val)"
+.br
+.ti -1c
+.RI "static QVariant \fBread\fP (const FlightLogging key)"
+.br
+.ti -1c
+.RI "static void \fBwrite\fP (const UserData key, const QVariant &val)"
+.br
+.ti -1c
+.RI "static QVariant \fBread\fP (const UserData key)"
+.br
+.ti -1c
+.RI "static void \fBwrite\fP (const FlightLogging key, const QVariant &val)"
+.br
+.ti -1c
+.RI "static QString \fBgroupOfKey\fP (const Main key)"
+.br
+.RI "Return string representation of group of key: 'ini_header/key'\&. "
+.ti -1c
+.RI "static QString \fBgroupOfKey\fP (const FlightLogging key)"
+.br
+.ti -1c
+.RI "static QString \fBgroupOfKey\fP (const UserData key)"
+.br
+.ti -1c
+.RI "static QString \fBstringOfKey\fP (const Main key)"
+.br
+.RI "Return string representation of key\&. "
+.ti -1c
+.RI "static QString \fBstringOfKey\fP (const FlightLogging key)"
+.br
+.ti -1c
+.RI "static QString \fBstringOfKey\fP (const UserData key)"
+.br
+.ti -1c
+.RI "static QSettings \fBsettings\fP ()"
 .br
 .in -1c
 .SH "Detailed Description"
 .PP 
-The Settings class is a thin wrapper for the QSettings class, simplifying reading and writing of settings\&. 
+Thin wrapper for the QSettings class, simplifying reading and writing of settings\&. 
 
 .SH "Author"
 .PP 

@@ -1,0 +1,36 @@
+.TH "Opl" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Opl \- A namespace to collect constants and enums used throughout the application\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBDb\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBANotificationHandler\fP"
+.br
+.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user and forwards the displayed message to \fBALog\fP so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+A namespace to collect constants and enums used throughout the application\&. 
+
+The opl namespace collects enums and constants that are used throughout the application and provide uniform access\&.
+.PP
+The date, time and datetime namespaces include enums used to differentiate date and time formats for QDate, QTime and QDateTime that deviate from standard values included in the Qt Framework like Qt::ISODate and are to be used in conjunction with the \&.toString() members of these classes\&.
+.PP
+The db namespace contains constants for programatically accessing the database in a fast and uniform manner\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

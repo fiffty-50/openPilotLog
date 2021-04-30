@@ -31,7 +31,7 @@ class AircraftWidget;
 /*!
  * \class AircraftWidget
  * \brief The AircraftWidget is used to view, edit, delete or add new tails.
- * \abstract The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ * \details The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
  *
  * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a tails' Registration, Type and
  * Company.

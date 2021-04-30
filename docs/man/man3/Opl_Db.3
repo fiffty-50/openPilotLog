@@ -1,0 +1,20 @@
+.TH "Opl::Db" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Opl::Db
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+The opl::db namespace provides string literals to programatically access the database
+.PP
+Example usage, do: newData\&.insert(opl::db::FLIGHTS_DEP, ui->deptLocLineEdit->text()); newData\&.value(opl::db::AIRCRAFT_MULTIPILOT);
+.PP
+instead of: newData\&.insert('dept', ui->deptLocLineEdit->text()); newData\&.value('multipilot');
+.PP
+Declaring these literals here avoids memory allocation at runtime for construction of temporary qstrings like ('dept')\&. See https://doc.qt.io/qt-5/qstring.html#QStringLiteral and ensures uniform use throughout the application\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['insert_153',['insert',['../classexperimental_1_1_a_database.html#a328fb63a110c9ada4af7ff2e4b240dfe',1,'experimental::ADatabase']]],
-  ['intermediatepointsongreatcircle_154',['intermediatePointsOnGreatCircle',['../namespace_a_calc.html#a4a071a5788f00c98834127f9c5721383',1,'ACalc']]]
+  ['init_187',['init',['../namespace_a_log.html#ac797ea9883ac75b58c2b08a64bcc26d7',1,'ALog']]],
+  ['insert_188',['insert',['../class_a_database.html#a4ecb6d0c9b3813c90b3165c993e69ad5',1,'ADatabase']]],
+  ['intermediatepointsongreatcircle_189',['intermediatePointsOnGreatCircle',['../namespace_a_calc.html#a4a071a5788f00c98834127f9c5721383',1,'ACalc']]],
+  ['isvalid_190',['isValid',['../struct_a_currency_entry.html#a17202e44445755d9136335201758a8d4',1,'ACurrencyEntry']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['adatabasetarget_175',['ADatabaseTarget',['../namespaceexperimental.html#a4ae0b93d398c270c979a8eec17545b8a',1,'experimental']]]
+  ['settingsignal_222',['SettingSignal',['../class_settings_widget.html#af15eec9fd55841ec02041a1114da54d4',1,'SettingsWidget']]]
 ];

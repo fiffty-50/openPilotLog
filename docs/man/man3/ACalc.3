@@ -1,4 +1,4 @@
-.TH "ACalc" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "ACalc" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,22 +11,22 @@ ACalc \- The \fBACalc\fP namespace provides various functions for calculations t
 
 .in +1c
 .ti -1c
-.RI "QTime \fBblocktime\fP (QTime tofb, QTime tonb)"
+.RI "QT_DEPRECATED QTime \fBblocktime\fP (QTime tofb, QTime tonb)"
 .br
 .RI "\fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. "
 .ti -1c
-.RI "QString \fBminutesToString\fP (QString block_minutes)"
+.RI "QT_DEPRECATED QString \fBminutesToString\fP (QString block_minutes)"
 .br
 .RI "ACalc::minutes_to_string Converts database time to String Time\&. "
 .ti -1c
-.RI "QString \fBminutesToString\fP (int block_minutes)"
+.RI "QT_DEPRECATED QString \fBminutesToString\fP (int block_minutes)"
 .br
 .ti -1c
-.RI "int \fBQTimeToMinutes\fP (QTime time)"
+.RI "QT_DEPRECATED int \fBQTimeToMinutes\fP (QTime time)"
 .br
 .RI "ACalc::time_to_minutes converts QTime to int minutes\&. "
 .ti -1c
-.RI "int \fBstringToMinutes\fP (QString timestring)"
+.RI "QT_DEPRECATED int \fBstringToMinutes\fP (QString timestring)"
 .br
 .RI "ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. "
 .ti -1c
@@ -73,9 +73,6 @@ ACalc \- The \fBACalc\fP namespace provides various functions for calculations t
 .br
 .RI "\fBACalc::updateAutoTimes\fP When the details of an aircraft are changed, this function recalculates deductable times for this aircraft and updates the database accordingly\&. "
 .ti -1c
-.RI "void \fBautoTimes\fP (\fBFlight\fP, \fBAircraft\fP)"
-.br
-.ti -1c
 .RI "void \fBupdateNightTimes\fP ()"
 .br
 .RI "\fBACalc::updateNightTimes\fP updates the night times in the database, used when changing night angle setting for example\&. "
@@ -85,7 +82,7 @@ ACalc \- The \fBACalc\fP namespace provides various functions for calculations t
 The \fBACalc\fP namespace provides various functions for calculations that are performed outside of the database\&. This includes tasks like converting different units and formats, or functions calculating block time or night time\&. 
 .SH "Function Documentation"
 .PP 
-.SS "QTime ACalc::blocktime (QTime tofb, QTime tonb)\fC [inline]\fP"
+.SS "QT_DEPRECATED QTime ACalc::blocktime (QTime tofb, QTime tonb)\fC [inline]\fP"
 
 .PP
 \fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. 
@@ -143,10 +140,22 @@ radians
 .RE
 .PP
 
-.SS "QString ACalc::formatTimeInput (QString user_input)"
+.SS "QT_DEPRECATED QString ACalc::formatTimeInput (QString user_input)\fC [inline]\fP"
 
 .PP
 \fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserinput\fP from a QLineEdit 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+formatted QString 'hh:mm' or Empty String
+.RE
+.PP
+\fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -232,7 +241,7 @@ coordinates {lat,lon} along the Great Circle Track
 .RE
 .PP
 
-.SS "QString ACalc::minutesToString (QString block_minutes)\fC [inline]\fP"
+.SS "QT_DEPRECATED QString ACalc::minutesToString (QString block_minutes)\fC [inline]\fP"
 
 .PP
 ACalc::minutes_to_string Converts database time to String Time\&. 
@@ -248,7 +257,7 @@ String hh:mm
 .RE
 .PP
 
-.SS "int ACalc::QTimeToMinutes (QTime time)\fC [inline]\fP"
+.SS "QT_DEPRECATED int ACalc::QTimeToMinutes (QTime time)\fC [inline]\fP"
 
 .PP
 ACalc::time_to_minutes converts QTime to int minutes\&. 
@@ -320,7 +329,7 @@ elevation - double of solar elevation in degrees\&.
 .RE
 .PP
 
-.SS "int ACalc::stringToMinutes (QString timestring)\fC [inline]\fP"
+.SS "QT_DEPRECATED int ACalc::stringToMinutes (QString timestring)\fC [inline]\fP"
 
 .PP
 ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. 

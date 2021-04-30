@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['qtimetominutes_69',['QTimeToMinutes',['../namespace_a_calc.html#ab9a4beeaf2f02314adef0dc6c0dc2ccd',1,'ACalc']]]
+  ['pilotswidget_81',['PilotsWidget',['../class_pilots_widget.html',1,'']]]
 ];

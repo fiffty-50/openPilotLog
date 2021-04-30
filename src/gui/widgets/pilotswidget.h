@@ -32,7 +32,7 @@ class PilotsWidget;
 /*!
  * \class PilotsWidget
  * \brief The PilotsWidget is used to view, edit, delete or add new pilots.
- * \abstract The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ * \details The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
  *
  * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a Pilots' Last Name,
  * First name and Company.

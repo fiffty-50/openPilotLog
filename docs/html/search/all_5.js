@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['firstrundialog_39',['FirstRunDialog',['../class_first_run_dialog.html',1,'']]],
-  ['flight_40',['Flight',['../class_flight.html',1,'']]],
-  ['formattimeinput_41',['formatTimeInput',['../namespace_a_calc.html#a362d1ab22d757e4c14d9cf143afec234',1,'ACalc']]]
+  ['firstrundialog_44',['FirstRunDialog',['../class_first_run_dialog.html',1,'']]],
+  ['formatinput_45',['formatInput',['../class_a_date.html#aa1c79d62d44ab503ccbc984f6f681a2d',1,'ADate']]],
+  ['formattimeinput_46',['formatTimeInput',['../namespace_a_calc.html#ad088e5dd93d1938ff97f88032dc0adec',1,'ACalc']]]
 ];

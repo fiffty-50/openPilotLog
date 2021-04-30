@@ -1,4 +1,4 @@
-.TH "LogbookWidget" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "LogbookWidget" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,11 +12,15 @@ Inherits QWidget\&.
 
 .in +1c
 .ti -1c
-.RI "void \fBonDisplayModel_dataBaseUpdated\fP ()"
+.RI "void \fBrefresh\fP ()"
 .br
 .ti -1c
-.RI "void \fBonLogbookWidget_viewSelectionChanged\fP (int)"
+.RI "void \fBonLogbookWidget_viewSelectionChanged\fP (\fBSettingsWidget::SettingSignal\fP signal)"
 .br
+.ti -1c
+.RI "void \fBrepopulateModel\fP ()"
+.br
+.RI "\fBLogbookWidget::repopulateModel\fP (public slot) - re-populates the model to cater for a change to the database connection (for example, when a backup is created) "
 .in -1c
 .SS "Public Member Functions"
 

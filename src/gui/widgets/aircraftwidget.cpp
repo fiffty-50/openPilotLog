@@ -201,7 +201,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
 /*!
  * \brief Informs the user that deleting a database entry has been unsuccessful
  *
- * \abstract Normally, when one of these entries can not be deleted, it is because of
+ * \details Normally, when one of these entries can not be deleted, it is because of
  * a [foreign key constraint](https://sqlite.org/foreignkeys.html), meaning that a flight
  * is associated with the aircraft that was supposed to be deleted.
  *

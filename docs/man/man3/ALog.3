@@ -1,0 +1,55 @@
+.TH "ALog" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ALog \- The \fBALog\fP namespace encapsulates constants and functions used to provide logging to files and logging to console (stdout)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetLogFileName\fP ()"
+.br
+.RI "setLogFileName sets a log file name ('Log_<Date>_<Time>\&.txt') "
+.ti -1c
+.RI "void \fBdeleteOldLogs\fP ()"
+.br
+.RI "Cleans up old logs and initializes logging by preparing and installing a QMessageHandler\&. "
+.ti -1c
+.RI "bool \fBinit\fP (bool log_debug)"
+.br
+.RI "initialise logging, clean up logfiles and install a QMessageHandler\&. To enable logging of debug messages, pass parameter as true\&. "
+.ti -1c
+.RI "void \fBaMessageHandler\fP (QtMsgType type, const QMessageLogContext &context, const QString &msg)"
+.br
+.RI "aMessageHandler Intercepts Messages and prints to console and log file "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBALog\fP namespace encapsulates constants and functions used to provide logging to files and logging to console (stdout) 
+
+The console output is color coded - green, amber, magenta for info, warn and crit messages, whereas the log files are just plain text\&.
+.PP
+There is a maximum of <numberOfLogs> log files with a maximum size of <sizeOfLogs>, at the moment, up to 10 logs of up to 100kB in size are kept, older logs are automatically deleted\&.
+.PP
+Debug output is not written to the logfile\&.
+.PP
+In order to start logging, the \fBALog::init()\fP function has to be called
+.PP
+Credits to \fCAndy Dunkel\fP for his excellent blog post on Qt Log File Rotation! 
+.SH "Function Documentation"
+.PP 
+.SS "void ALog::aMessageHandler (QtMsgType type, const QMessageLogContext & context, const QString & msg)"
+
+.PP
+aMessageHandler Intercepts Messages and prints to console and log file The message handler is responsible for intercepting the output from qDebug(), qInfo(), qWarning() and qCritical(), formatting them and printing them to the standard console out and to a logfile using QTextStream\&. Debug messages are not written to the log file\&. 
+.SS "void ALog::deleteOldLogs ()"
+
+.PP
+Cleans up old logs and initializes logging by preparing and installing a QMessageHandler\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

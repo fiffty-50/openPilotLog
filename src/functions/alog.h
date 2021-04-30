@@ -32,7 +32,7 @@
  * \brief The ALog namespace encapsulates constants and functions used to provide logging to files
  * and logging to console (stdout)
  *
- * \abstract
+ * \details
  *
  * The console output is color coded - green, amber, magenta for info, warn and crit messages, whereas
  * the log files are just plain text.

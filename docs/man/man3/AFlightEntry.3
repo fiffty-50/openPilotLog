@@ -1,0 +1,79 @@
+.TH "AFlightEntry" 3 "Fri Apr 30 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AFlightEntry
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBAEntry\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpilotPosition\fP { \fBpic\fP, \fBsecondPilot\fP, \fBthirdPilot\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAFlightEntry\fP (RowId_T row_id)"
+.br
+.ti -1c
+.RI "\fBAFlightEntry\fP (RowData_T table_data)"
+.br
+.ti -1c
+.RI "\fBAFlightEntry\fP (const \fBAFlightEntry\fP &pe)=default"
+.br
+.ti -1c
+.RI "\fBAFlightEntry\fP & \fBoperator=\fP (const \fBAFlightEntry\fP &pe)=default"
+.br
+.ti -1c
+.RI "const QString \fBsummary\fP ()"
+.br
+.RI "Returs a summary of the flight data, if struct holds data\&. "
+.ti -1c
+.RI "const QString \fBgetRegistration\fP ()"
+.br
+.RI "Returns the tails' registration from the database\&. "
+.ti -1c
+.RI "const QString \fBgetPilotName\fP (pilotPosition)"
+.br
+.RI "Returns the pilots name from the Database\&. "
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "const QString AFlightEntry::getPilotName (pilotPosition pilot_)"
+
+.PP
+Returns the pilots name from the Database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpilot_number\fP - 1=pic, 2=second Pilot, 3 = third Pilot 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'Lastname, Firstname' 
+.RE
+.PP
+
+.SS "const QString AFlightEntry::summary ()"
+
+.PP
+Returs a summary of the flight data, if struct holds data\&. 
+.PP
+\fBReturns\fP
+.RS 4
+'doft, dept, tofb, dest, tonb' 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

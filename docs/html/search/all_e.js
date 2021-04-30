@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['radtodeg_70',['radToDeg',['../namespace_a_calc.html#a2a540662e22840e4b58e8e760611b4f2',1,'ACalc']]],
-  ['radtonauticalmiles_71',['radToNauticalMiles',['../namespace_a_calc.html#a37c52e8b522b233087b8c4d94f30fca5',1,'ACalc']]],
-  ['remove_72',['remove',['../classexperimental_1_1_a_database.html#aeeb82d8057f36436fd793a242627668e',1,'experimental::ADatabase']]],
-  ['removemany_73',['removeMany',['../classexperimental_1_1_a_database.html#ab4fe26545b5fd05fa6b63486f2d234e3',1,'experimental::ADatabase']]],
-  ['resettodefault_74',['resetToDefault',['../class_a_data_base_setup.html#a89fee11dbb1510262a783ee97d946ab7',1,'ADataBaseSetup']]]
+  ['qtimetominutes_82',['QTimeToMinutes',['../namespace_a_calc.html#a9568b0d72cd6b0f91f686342bc624e1f',1,'ACalc']]]
 ];
