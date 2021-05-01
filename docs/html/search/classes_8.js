@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['settingswidget_140',['SettingsWidget',['../class_settings_widget.html',1,'']]],
-  ['stylesheet_141',['StyleSheet',['../struct_style_sheet.html',1,'']]]
+  ['settingswidget_141',['SettingsWidget',['../class_settings_widget.html',1,'']]],
+  ['stylesheet_142',['StyleSheet',['../struct_style_sheet.html',1,'']]]
 ];

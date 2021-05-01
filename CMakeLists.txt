@@ -18,6 +18,7 @@ MESSAGE ("Enabling QStringBuilder")
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
+# find_package(OpenSSL REQUIRED) # Pending testing
 
 set(PROJECT_SOURCES
     main.cpp
@@ -118,6 +119,7 @@ else()
     )
 endif()
 
+# target_link_libraries(openPilotLog PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Network OpenSSL::SSL)
 target_link_libraries(openPilotLog PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Network)
 
 install(TARGETS openPilotLog DESTINATION bin)
