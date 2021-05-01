@@ -44,6 +44,10 @@ class AircraftWidget;
  * in the QTableView, the NewTailDilog is displayed on the right side of the Widget, inside the QStackedWidget.
  * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
  * The NewTailDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ *
+ * Note: The ATailEntry class is used to operate on individual aircraft, whereas the AAircraftEntry class is used to retreive
+ * templates of aircraft types. For example, 'D-ABCD' and 'N-XYZ' are different tails (Registrations), but they might be the same type of aircraft,
+ * for example 'Boeing 737-800'.
  */
 class AircraftWidget : public QWidget
 {

@@ -145,14 +145,9 @@ void PilotsWidget::on_newPilotButton_clicked()
 void PilotsWidget::on_deletePilotButton_clicked()
 {
     if (selectedPilots.length() == 0) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("No Pilot selected."));
-        message_box.exec();
-
+        INFO(tr("No Pilot selected."));
     } else if (selectedPilots.length() > 1) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("Deleting multiple entries is currently not supported"));
-        message_box.exec();
+        WARN(tr("Deleting multiple entries is currently not supported"));
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where
@@ -164,15 +159,15 @@ void PilotsWidget::on_deletePilotButton_clicked()
 
     } else if (selectedPilots.length() == 1) {
         auto entry = aDB->getPilotEntry(selectedPilots.first());
-        QMessageBox message_box(this);
-        message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        message_box.setDefaultButton(QMessageBox::No);
-        message_box.setIcon(QMessageBox::Question);
-        message_box.setWindowTitle(tr("Delete Pilot"));
+        QMessageBox confirm(this);
+        confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        confirm.setDefaultButton(QMessageBox::No);
+        confirm.setIcon(QMessageBox::Question);
+        confirm.setWindowTitle(tr("Delete Pilot"));
 
-        message_box.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
+        confirm.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
                                "%1</b></tt><br><br>Are you sure?").arg(entry.name()));
-        if (message_box.exec() == QMessageBox::Yes) {
+        if (confirm.exec() == QMessageBox::Yes) {
             if(!aDB->remove(entry))
                 onDeleteUnsuccessful();
         }
@@ -198,11 +193,9 @@ void PilotsWidget::onDeleteUnsuccessful()
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
 
-    QMessageBox message_box(this);
     if (constrained_flights.isEmpty()) {
-        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
+        WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
                                ).arg(aDB->lastError.text()));
-        message_box.exec();
         return;
     } else {
         QString constrained_flights_string;
@@ -213,7 +206,7 @@ void PilotsWidget::onDeleteUnsuccessful()
                 break;
             }
         }
-        message_box.setText(tr("Unable to delete.<br><br>"
+        WARN(tr("Unable to delete.<br><br>"
                                "This is most likely the case because a flight exists with the Pilot "
                                "you are trying to delete as PIC.<br><br>"
                                "%1 flight(s) with this pilot have been found:<br><br><br><b><tt>"
@@ -222,8 +215,6 @@ void PilotsWidget::onDeleteUnsuccessful()
                                "before removing this pilot from the database.<br><br>"
                                ).arg(QString::number(constrained_flights.length()),
                                      constrained_flights_string));
-        message_box.setIcon(QMessageBox::Critical);
-        message_box.exec();
     }
 }
 

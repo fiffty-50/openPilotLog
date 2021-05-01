@@ -86,6 +86,7 @@ void SettingsWidget::setupComboBoxes(){
     }
 }
 
+
 void SettingsWidget::setupDateEdits()
 {
     // Read Display Format Setting
@@ -97,7 +98,8 @@ void SettingsWidget::setupDateEdits()
     for (const auto &date_format : ADate::getDisplayNames())
         ui->dateFormatComboBox->addItem(date_format);
     ui->dateFormatComboBox->setCurrentIndex(date_format_index);
-    for (const auto & date_edit : this->findChildren<QDateEdit*>()) {
+    const auto date_edits = this->findChildren<QDateEdit*>();
+    for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
     }
     // Fill currencies
@@ -123,6 +125,9 @@ void SettingsWidget::setupDateEdits()
     }
 }
 
+/*!
+ * \brief SettingsWidget::readSettings Reads settings from ASettings and sets up the UI accordingly
+ */
 void SettingsWidget::readSettings()
 {
     /*
@@ -204,6 +209,9 @@ void SettingsWidget::setupValidators()
     }
 }
 
+/*!
+ * \brief SettingsWidget::updatePersonalDetails Updates the database with the users personal details.
+ */
 void SettingsWidget::updatePersonalDetails()
 {
     RowData_T user_data;
@@ -371,7 +379,9 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
  * About Tab
  */
 
-
+/*!
+ * \brief SettingsWidget::on_aboutPushButton_clicked Displays Application Version and Licensing information
+ */
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
@@ -458,11 +468,9 @@ void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
 void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 {
     if (usingStylesheet() && arg1 == Qt::Unchecked) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("The style you have currently selected may not be fully compatible "
-                               "with changing to a custom font while the application is running.<br><br>"
-                               "Applying your changes may require restarting the application.<br>"));
-        message_box.exec();
+        WARN(tr("The style you have currently selected may not be fully compatible "
+                "with changing to a custom font while the application is running.<br><br>"
+                "Applying your changes may require restarting the application.<br>"));
     }
     switch (arg1) {
     case Qt::Unchecked:
@@ -473,7 +481,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
         QFont font(ui->fontComboBox->currentFont());
         font.setPointSize(ui->fontSpinBox->value());
         qApp->setFont(font);
-        DEB << "Setting Font:" << font.toString();
+        LOG << "Setting Font:" << font.toString();
         break;
     }
     case Qt::Checked:
@@ -481,9 +489,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
         ui->fontComboBox->setEnabled(false);
         ui->fontSpinBox->setEnabled(false);
         ASettings::write(ASettings::Main::UseSystemFont, true);
-        QMessageBox message_box(this);
-        message_box.setText(tr("The application will be restarted for this change to take effect."));
-        message_box.exec();
+        INFO(tr("The application will be restarted for this change to take effect."));
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     }
@@ -507,7 +513,7 @@ bool SettingsWidget::usingStylesheet()
 
 void SettingsWidget::on_resetStylePushButton_clicked()
 {
-    DEB << "Resetting style to default...";
+    LOG << "Resetting style to default...";
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
     ui->fontCheckBox->setChecked(true);
 }
@@ -693,8 +699,8 @@ void SettingsWidget::on_currCustom2LineEdit_editingFinished()
 void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
 {
     ASettings::write(ASettings::Main::DateFormat, index);
-
-    for (const auto & date_edit : this->findChildren<QDateEdit*>()) {
+    const auto date_edits = this->findChildren<QDateEdit*>();
+    for (const auto & date_edit : date_edits) {
         date_edit->setDisplayFormat(
                     ADate::getFormatString(
                         static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));

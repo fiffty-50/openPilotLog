@@ -40,6 +40,11 @@ public:
     }
 };
 
+/*!
+ * \brief The BackupWidget is the interface for the user to create and restore backups of the
+ * database.
+ * \details To Do...
+ */
 class BackupWidget : public QWidget
 {
     Q_OBJECT

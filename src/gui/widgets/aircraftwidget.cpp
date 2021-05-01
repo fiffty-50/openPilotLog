@@ -119,8 +119,8 @@ void AircraftWidget::tableView_selectionChanged()
         delete this->findChild<NewTailDialog*>();
 
     selectedTails.clear();
-
-    for (const auto& row : selection->selectedRows()) {
+    const auto selected_rows = selection->selectedRows();
+    for (const auto& row : selected_rows) {
         selectedTails << row.data().toInt();
         DEB << "Selected Tails(s) with ID: " << selectedTails;
     }
@@ -161,14 +161,10 @@ void AircraftWidget::tableView_headerClicked(int column)
 void AircraftWidget::on_deleteAircraftButton_clicked()
 {
     if (selectedTails.length() == 0) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("No Aircraft selected."));
-        message_box.exec();
+        INFO(tr("No Aircraft selected."));
 
     } else if (selectedTails.length() > 1) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("Deleting multiple entries is currently not supported"));
-        message_box.exec();
+        WARN(tr("Deleting multiple entries is currently not supported"));
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where
