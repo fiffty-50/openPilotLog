@@ -2,10 +2,13 @@
 .ad l
 .nh
 .SH NAME
-HomeWidget
+HomeWidget \- The \fBHomeWidget\fP is the welcome screen of the application\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <homewidget\&.h>\fP
 .PP
 Inherits QWidget\&.
 .SS "Public Slots"
@@ -22,6 +25,11 @@ Inherits QWidget\&.
 .RI "\fBHomeWidget\fP (QWidget *parent=nullptr)"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+The \fBHomeWidget\fP is the welcome screen of the application\&. 
+
+The \fBHomeWidget\fP shows total flight times and a user-configurable set of currencies (expiry dates for licenses, ratings, medicals,\&.\&.\&.)\&. Most data is provided by the AStat class and the \fBACurrencyEntry\fP class\&. Notifications are provided by means of pop-up warnings on application start via QMessageBox and the INFO/WARN interfaces, as well as by colouring the labels according to the warning level (orange/red)\&. 
 
 .SH "Author"
 .PP 

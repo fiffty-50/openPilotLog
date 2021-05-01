@@ -29,6 +29,7 @@ static const int ROLLING_28_DAYS = 6000;
 static const int CALENDAR_YEAR = 54000;
 // 1000 hours per rolling 12 months
 static const int ROLLING_12_MONTHS = 60000;
+// Todo: Encapsulate and plan to also use non-EASA (FAA,...) options
 
 HomeWidget::HomeWidget(QWidget *parent) :
     QWidget(parent),
@@ -50,7 +51,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
         ui->FlightTime12mDisplayLabel
     };
 
-    DEB << "Filling Home Widget...";
+    LOG << "Filling Home Widget...";
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
@@ -64,7 +65,7 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::refresh()
 {
-    DEB << "Updating HomeWidget...";
+    LOG << "Updating HomeWidget...";
     const auto label_list = this->findChildren<QLabel *>();
     for (const auto label : label_list)
         label->setVisible(true);
@@ -77,6 +78,10 @@ void HomeWidget::refresh()
     fillLimitations();
 }
 
+/*!
+ * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the AStat::totals
+ * function and parses the return to fill out the QLineEdits.
+ */
 void HomeWidget::fillTotals()
 {
     const auto data = AStat::totals();
@@ -108,6 +113,10 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
     }
 }
 
+/*!
+ * \brief HomeWidget::fillSelectedCurrencies Checks whether a currency is selected and
+ * retreives and displays relevant data.
+ */
 void HomeWidget::fillSelectedCurrencies()
 {
     fillCurrencyTakeOffLanding();
@@ -139,6 +148,11 @@ void HomeWidget::fillSelectedCurrencies()
         ui->currCustom2Label->setText(custom2_text);
 }
 
+/*!
+ * \brief HomeWidget::fillCurrencyTakeOffLanding Uses AStat::countTakeOffLandings to determine
+ * the amount of Take-Offs and Landings in the last 90 days and displays data and notifications
+ * as required.
+ */
 void HomeWidget::fillCurrencyTakeOffLanding()
 {
     const auto takeoff_landings = AStat::countTakeOffLanding();
@@ -161,6 +175,10 @@ void HomeWidget::fillCurrencyTakeOffLanding()
     }
 }
 
+/*!
+ * \brief HomeWidget::fillLimitations Queries AStat to obtain information regarding cumulative
+ * Flight Times and Calculates and Notifies about approaching Flight Time Limitations
+ */
 void HomeWidget::fillLimitations()
 {
     int minutes = AStat::totalTime(AStat::TimeFrame::Rolling28Days);

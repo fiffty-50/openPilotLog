@@ -46,8 +46,6 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     menu->addAction(ui->actionEdit_Flight);
     menu->addAction(ui->actionDelete_Flight);
 
-    //Initialise message Box
-    messageBox = new QMessageBox(this);
     // Initalise the display Model and view
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
@@ -66,6 +64,11 @@ LogbookWidget::~LogbookWidget()
  * Functions
  */
 
+/*!
+ * \brief LogbookWidget::setupModelAndView configures the QTableView and populates the model with data
+ * according to the current view.
+ * \param view_id - retreived from ASettings::Main::LogbookView
+ */
 void LogbookWidget::setupModelAndView(int view_id)
 {
     switch (view_id) {
@@ -108,6 +111,10 @@ void LogbookWidget::connectSignalsAndSlots()
  * Slots
  */
 
+/*!
+ * \brief LogbookWidget::flightsTableView_selectionChanged saves the selected row(s)
+ * to the selectedFlights member variable.
+ */
 void LogbookWidget::flightsTableView_selectionChanged()
 {
     selectedFlights.clear();
@@ -117,6 +124,9 @@ void LogbookWidget::flightsTableView_selectionChanged()
     }
 }
 
+/*!
+ * \brief LogbookWidget::on_newFlightButton_clicked opens a NewFlightDialog
+ */
 void LogbookWidget::on_newFlightButton_clicked()
 {
     auto nf = new NewFlightDialog(this);
@@ -125,6 +135,10 @@ void LogbookWidget::on_newFlightButton_clicked()
     displayModel->select();
 }
 
+/*!
+ * \brief LogbookWidget::on_editFlightButton_clicked opens a NewFlightDialog and
+ * pre-fills the data from the selected flight.
+ */
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
@@ -133,27 +147,27 @@ void LogbookWidget::on_editFlightButton_clicked()
         ef->exec();
         displayModel->select();
     } else if (selectedFlights.isEmpty()) {
-        messageBox->setText(tr("<br>No flight selected.<br>"));
-        messageBox->exec();
+        WARN(tr("<br>No flight selected.<br>"));
     } else {
-        messageBox->setText(tr("<br>More than one flight selected."
+        WARN(tr("<br>More than one flight selected."
                                "<br><br>Editing multiple entries is not yet supported."));
-        messageBox->exec();
     }
 }
 
+/*!
+ * \brief LogbookWidget::on_deleteFlightPushButton_clicked If a row is selected, query information
+ * about the affected row(s) and ask the user to confirm deletion.
+ */
 void LogbookWidget::on_deleteFlightPushButton_clicked()
 {
     DEB << "Flights selected: " << selectedFlights.length();
     if (selectedFlights.length() == 0) {
-        messageBox->setIcon(QMessageBox::Information);
-        messageBox->setText(tr("<br>No flight selected.<br>"));
-        messageBox->exec();
+        WARN(tr("<br>No flight selected.<br>"));
         return;
     } else if (selectedFlights.length() > 0 && selectedFlights.length() <= 10) {
-        QList<AFlightEntry> flights_list;
+        QVector<AFlightEntry> flights_list;
 
-        for (const auto &flight_id : selectedFlights) {
+        for (const auto &flight_id : qAsConst(selectedFlights)) {
             flights_list.append(aDB->getFlightEntry(flight_id));
         }
 
@@ -177,15 +191,13 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
             for (auto& flight : flights_list) {
                 DEB << "Deleting flight: " << flight.summary();
                 if(!aDB->remove(flight)) {
-                    confirm.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
+                    WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
                                        ).arg(aDB->lastError.text()));
-                    messageBox->exec();
                     return;
                 }
             }
-            messageBox->setText(tr("%1 flights have been deleted successfully."
+            INFO(tr("%1 flights have been deleted successfully."
                                    ).arg(QString::number(selectedFlights.length())));
-            messageBox->exec();
             displayModel->select();
         }
     } else if (selectedFlights.length() > 10) {
@@ -204,13 +216,11 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                 selected_flights.append({QStringLiteral("flights"), flight_id});
             }
             if (!aDB->removeMany(selected_flights)) {
-                messageBox->setText(aDB->lastError.text()); // [F]: To Do: error info
-                messageBox->exec();
+                WARN(tr("Unable to delete. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
                 return;
             }
-            messageBox->setText(tr("%1 flights have been deleted successfully."
+            INFO(tr("%1 flights have been deleted successfully."
                                    ).arg(QString::number(selectedFlights.length())));
-            messageBox->exec();
             displayModel->select();
         }
         displayModel->select();
@@ -243,9 +253,11 @@ void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
     emit ui->showAllButton->clicked();
 }
 
+/*!
+ * \brief LogbookWidget::refresh Refreshes the view to reflect changes in the database.
+ */
 void LogbookWidget::refresh()
 {
-    //refresh view to reflect changes the user has made via a dialog.
     displayModel->select();
     view->resizeColumnsToContents();
 }
@@ -263,6 +275,11 @@ void LogbookWidget::on_showAllButton_clicked()
     displayModel->select();
 }
 
+/*!
+ * \brief LogbookWidget::on_flightSearchLlineEdit_textChanged applies a filter to the
+ * display model allowing the user to search for flights by specified elements (date, aircraft,
+ * Pilot Name)
+ */
 void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
 {
     if(arg1.length() == 0) {
@@ -273,19 +290,23 @@ void LogbookWidget::on_flightSearchLlineEdit_textChanged(const QString &arg1)
 
     if (ui->flightSearchComboBox->currentIndex() < 3) {
         displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
-                                + arg1 + QStringLiteral("%\""));
+                                + arg1 + QLatin1String("%\""));
         return;
     } else if (ui->flightSearchComboBox->currentIndex() == 3) { // registration
         displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
-                                + arg1 + QStringLiteral("%\""));
+                                + arg1 + QLatin1String("%\""));
         return;
     } else if (ui->flightSearchComboBox->currentIndex() == 4) { // Name Pic
         displayModel->setFilter(FILTER_MAP.value(ui->flightSearchComboBox->currentIndex())
-                                + arg1 + QStringLiteral("%\""));
+                                + arg1 + QLatin1String("%\""));
         return;
     }
 }
 
+/*!
+ * \brief LogbookWidget::repopulateModel (public slot) - cleanly re-populates the model to cater for a change
+ * to the database connection (for example, when a backup is created or restored)
+ */
 void LogbookWidget::repopulateModel()
 {
     // unset the current model and delete it to avoid leak

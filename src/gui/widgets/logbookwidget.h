@@ -31,6 +31,17 @@ namespace Ui {
 class LogbookWidget;
 }
 
+/*!
+ * \brief The LogbookWidget displays data from the database in a QSqlTableView fed by a QSqlQuery Model
+ *
+ * \details The LogbookWidget is the primary display interface for flights logged in the database. It fetches and stores
+ * flight data from the database via a QSqlQueryModel and displays it in a QTableView. With the way the flight data is
+ * written in the database, it would not be human-readable, so some processing is done on the database side to present
+ * a nicely formatted, human-readable display. This is achieved by means of a [SQL View](https://sqlite.org/lang_createview.html).
+ *
+ * The user can select a view from a list of available views in the SettingsWidget.
+ *
+ */
 class LogbookWidget : public QWidget
 {
     Q_OBJECT
@@ -55,10 +66,6 @@ private slots:
 public slots:
     void refresh();
     void onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal);
-    /*!
-     * \brief LogbookWidget::repopulateModel (public slot) - re-populates the model to cater for a change
-     * to the database connection (for example, when a backup is created)
-     */
     void repopulateModel();
 
 private:
@@ -71,8 +78,6 @@ private:
     QItemSelectionModel* selectionModel;
 
     QMenu* menu;
-
-    QMessageBox* messageBox;
 
     QVector<qint32> selectedFlights;
 

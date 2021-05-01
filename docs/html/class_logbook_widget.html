@@ -91,6 +91,11 @@ $(document).ready(function(){initNavTree('class_logbook_widget.html',''); initRe
 <div class="title">LogbookWidget Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="class_logbook_widget.html" title="The LogbookWidget displays data from the database in a QSqlTableView fed by a QSqlQuery Model.">LogbookWidget</a> displays data from the database in a QSqlTableView fed by a QSqlQuery Model.  
+ <a href="class_logbook_widget.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="logbookwidget_8h_source.html">logbookwidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for LogbookWidget:</div>
 <div class="dyncontent">
@@ -101,14 +106,15 @@ Inheritance diagram for LogbookWidget:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-slots"></a>
 Public Slots</h2></td></tr>
 <tr class="memitem:a45048f4dd6ffb82da6a725503df97cf1"><td class="memItemLeft" align="right" valign="top"><a id="a45048f4dd6ffb82da6a725503df97cf1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>refresh</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_logbook_widget.html#a45048f4dd6ffb82da6a725503df97cf1">refresh</a> ()</td></tr>
+<tr class="memdesc:a45048f4dd6ffb82da6a725503df97cf1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_logbook_widget.html#a45048f4dd6ffb82da6a725503df97cf1" title="LogbookWidget::refresh Refreshes the view to reflect changes in the database.">LogbookWidget::refresh</a> Refreshes the view to reflect changes in the database. <br /></td></tr>
 <tr class="separator:a45048f4dd6ffb82da6a725503df97cf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72b4eb07e8517a138ad731c32e8a3aff"><td class="memItemLeft" align="right" valign="top"><a id="a72b4eb07e8517a138ad731c32e8a3aff"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onLogbookWidget_viewSelectionChanged</b> (<a class="el" href="class_settings_widget.html#af15eec9fd55841ec02041a1114da54d4">SettingsWidget::SettingSignal</a> signal)</td></tr>
 <tr class="separator:a72b4eb07e8517a138ad731c32e8a3aff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac64b38cc2f5dd012ec1d12647457a8f1"><td class="memItemLeft" align="right" valign="top"><a id="ac64b38cc2f5dd012ec1d12647457a8f1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1">repopulateModel</a> ()</td></tr>
-<tr class="memdesc:ac64b38cc2f5dd012ec1d12647457a8f1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1" title="LogbookWidget::repopulateModel (public slot) - re-populates the model to cater for a change to the da...">LogbookWidget::repopulateModel</a> (public slot) - re-populates the model to cater for a change to the database connection (for example, when a backup is created) <br /></td></tr>
+<tr class="memdesc:ac64b38cc2f5dd012ec1d12647457a8f1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1" title="LogbookWidget::repopulateModel (public slot) - cleanly re-populates the model to cater for a change t...">LogbookWidget::repopulateModel</a> (public slot) - cleanly re-populates the model to cater for a change to the database connection (for example, when a backup is created or restored) <br /></td></tr>
 <tr class="separator:ac64b38cc2f5dd012ec1d12647457a8f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -117,7 +123,11 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>LogbookWidget</b> (QWidget *parent=nullptr)</td></tr>
 <tr class="separator:aaf8316b43f9bddae7c9ad5cb6b993887"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="class_logbook_widget.html" title="The LogbookWidget displays data from the database in a QSqlTableView fed by a QSqlQuery Model.">LogbookWidget</a> displays data from the database in a QSqlTableView fed by a QSqlQuery Model. </p>
+<p>The <a class="el" href="class_logbook_widget.html" title="The LogbookWidget displays data from the database in a QSqlTableView fed by a QSqlQuery Model.">LogbookWidget</a> is the primary display interface for flights logged in the database. It fetches and stores flight data from the database via a QSqlQueryModel and displays it in a QTableView. With the way the flight data is written in the database, it would not be human-readable, so some processing is done on the database side to present a nicely formatted, human-readable display. This is achieved by means of a <a href="https://sqlite.org/lang_createview.html">SQL View</a>.</p>
+<p>The user can select a view from a list of available views in the <a class="el" href="class_settings_widget.html">SettingsWidget</a>. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/gui/widgets/<a class="el" href="logbookwidget_8h_source.html">logbookwidget.h</a></li>
 <li>src/gui/widgets/logbookwidget.cpp</li>
 </ul>
