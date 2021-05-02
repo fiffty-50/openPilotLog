@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // check database version (Debug)
-    int db_ver = aDB->dbVersion();
+    int db_ver = aDB->dbRevision();
     if (db_ver != DATABASE_REVISION) {
         DEB << "############## WARNING ##############";
         DEB << "Your database is out of date.";

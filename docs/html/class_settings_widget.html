@@ -92,6 +92,11 @@ $(document).ready(function(){initNavTree('class_settings_widget.html',''); initR
 <div class="title">SettingsWidget Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="class_settings_widget.html" title="The SettingsWidget is used to to display and alter Settings.">SettingsWidget</a> is used to to display and alter Settings.  
+ <a href="class_settings_widget.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="settingswidget_8h_source.html">settingswidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for SettingsWidget:</div>
 <div class="dyncontent">
@@ -106,14 +111,14 @@ Public Types</h2></td></tr>
 <b>AircraftWidget</b>, 
 <b>PilotsWidget</b>
  }</td></tr>
-<tr class="memdesc:af15eec9fd55841ec02041a1114da54d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Widgets that need to receive a signal when a setting is updated. <br /></td></tr>
+<tr class="memdesc:af15eec9fd55841ec02041a1114da54d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumerates Widgets that need to receive a signal when a setting is updated. <br /></td></tr>
 <tr class="separator:af15eec9fd55841ec02041a1114da54d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="signals"></a>
 Signals</h2></td></tr>
 <tr class="memitem:a0f6af11e71177c5f62ecd2ff325e8d2b"><td class="memItemLeft" align="right" valign="top"><a id="a0f6af11e71177c5f62ecd2ff325e8d2b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_settings_widget.html#a0f6af11e71177c5f62ecd2ff325e8d2b">settingChanged</a> (<a class="el" href="class_settings_widget.html#af15eec9fd55841ec02041a1114da54d4">SettingSignal</a> widget)</td></tr>
-<tr class="memdesc:a0f6af11e71177c5f62ecd2ff325e8d2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">settingChanged is emitted when a setting change shall trigger an update to another widget. <br /></td></tr>
+<tr class="memdesc:a0f6af11e71177c5f62ecd2ff325e8d2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">settingChanged is emitted when a setting change occurs that needs to trigger an update (repaint) to another widget. <br /></td></tr>
 <tr class="separator:a0f6af11e71177c5f62ecd2ff325e8d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -122,7 +127,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>SettingsWidget</b> (QWidget *parent=nullptr)</td></tr>
 <tr class="separator:ad6b264d0455806fd3761a7f0e7b75dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="class_settings_widget.html" title="The SettingsWidget is used to to display and alter Settings.">SettingsWidget</a> is used to to display and alter Settings. </p>
+<p>Most Inputs are collected and processed in various slots and written to the settings file via the <a class="el" href="class_a_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">ASettings</a> class. In the <code>Personal</code> Settings tab, the user can edit his personal details, which are then written to the Database (The Logbook owner is registered in the Pilots Database with <code>pilot_id = 1</code>). </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/gui/widgets/<a class="el" href="settingswidget_8h_source.html">settingswidget.h</a></li>
 <li>src/gui/widgets/settingswidget.cpp</li>
 </ul>

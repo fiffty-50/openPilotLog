@@ -28,7 +28,7 @@ ADatabaseError::ADatabaseError(QString msg_)
 
 QString ADatabaseError::text() const
 {
-    return "Database Error: " + QSqlError::text();
+    return QLatin1String("Database Error: ") + QSqlError::text();
 }
 
 ADatabase* ADatabase::self = nullptr;
@@ -40,14 +40,14 @@ ADatabase::ADatabase()
                    )
 {}
 
-int ADatabase::dbVersion() const
+int ADatabase::dbRevision() const
 {
-    return databaseVersion;
+    return databaseRevision;
 }
 
 int ADatabase::checkDbVersion() const
 {
-    QSqlQuery query("SELECT COUNT(*) FROM changelog");
+    QSqlQuery query(QStringLiteral("SELECT COUNT(*) FROM changelog"));
     query.next();
     return query.value(0).toInt();
 }
@@ -68,7 +68,7 @@ void ADatabase::updateLayout()
     tableNames = db.tables();
 
     tableColumns.clear();
-    for (const auto &table_name : tableNames) {
+    for (const auto &table_name : qAsConst(tableNames)) {
         ColumnNames_T table_columns;
         QSqlRecord fields = db.record(table_name);
         for (int i = 0; i < fields.count(); i++) {
@@ -102,20 +102,29 @@ const QString ADatabase::sqliteVersion() const
 
 bool ADatabase::connect()
 {
-    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER))
+    DEB << "Connecting...";
+    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
+        LOG << "Error: No SQLITE Driver availabe.";
         return false;
+    }
 
     QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
     db.setDatabaseName(databaseFile.absoluteFilePath());
 
-    if (!db.open())
+    if (!db.open()) {
+        LOG << QString("Unable to establish database connection.<br>The following error has ocurred:<br><br>%1")
+               .arg(db.lastError().databaseText());
         return false;
+    }
+
 
     LOG << "Database connection established.";
     // Enable foreign key restrictions
-    QSqlQuery query(QStringLiteral("PRAGMA foreign_keys = ON;"));
+    QSqlQuery query;
+    query.prepare(QStringLiteral("PRAGMA foreign_keys = ON;"));
+    query.exec();
     updateLayout();
-    databaseVersion = checkDbVersion();
+    databaseRevision = checkDbVersion();
     return true;
 }
 
@@ -148,8 +157,8 @@ bool ADatabase::remove(AEntry entry)
         return false;
     }
 
-    QString statement = "DELETE FROM " + entry.getPosition().tableName +
-            " WHERE ROWID=?";
+    QString statement = QLatin1String("DELETE FROM ") + entry.getPosition().tableName
+            + QLatin1String(" WHERE ROWID=?");
 
     QSqlQuery query;
     query.prepare(statement);
@@ -183,8 +192,8 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
             lastError = ADatabaseError("Database entry not found.");
             errorCount++;
         }
-        QString statement = "DELETE FROM " + data_position.tableName +
-                " WHERE ROWID=?";
+        QString statement = QLatin1String("DELETE FROM ") + data_position.tableName +
+                QLatin1String(" WHERE ROWID=?");
 
         query.prepare(statement);
         query.addBindValue(data_position.rowId);
@@ -223,8 +232,8 @@ bool ADatabase::exists(AEntry entry)
         return false;
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + entry.getPosition().tableName +
-            " WHERE ROWID=?";
+    QString statement = QLatin1String("SELECT COUNT(*) FROM ") + entry.getPosition().tableName
+            + QLatin1String(" WHERE ROWID=?");
     QSqlQuery query;
     query.prepare(statement);
     query.addBindValue(entry.getPosition().rowId);
@@ -253,8 +262,8 @@ bool ADatabase::exists(DataPosition data_position)
         return false;
 
     //Check database for row id
-    QString statement = "SELECT COUNT(*) FROM " + data_position.tableName +
-            " WHERE ROWID=?";
+    QString statement = QLatin1String("SELECT COUNT(*) FROM ") + data_position.tableName
+            + QLatin1String(" WHERE ROWID=?");
     QSqlQuery query;
     query.prepare(statement);
     query.addBindValue(data_position.rowId);
@@ -280,12 +289,12 @@ bool ADatabase::exists(DataPosition data_position)
 bool ADatabase::update(AEntry updated_entry)
 {
     auto data = updated_entry.getData();
-    QString statement = "UPDATE " + updated_entry.getPosition().tableName + " SET ";
+    QString statement = QLatin1String("UPDATE ") + updated_entry.getPosition().tableName + QLatin1String(" SET ");
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
         statement.append(i.key() + "=?,");
     }
     statement.chop(1);
-    statement.append(" WHERE ROWID=?");
+    statement.append(QLatin1String(" WHERE ROWID=?"));
     QSqlQuery query;
     query.prepare(statement);
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
@@ -316,7 +325,7 @@ bool ADatabase::update(AEntry updated_entry)
 bool ADatabase::insert(AEntry new_entry)
 {
     auto data = new_entry.getData();
-    QString statement = "INSERT INTO " + new_entry.getPosition().tableName + QLatin1String(" (");
+    QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");
     QMap<QString, QVariant>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement.append(i.key() + ',');
@@ -368,8 +377,8 @@ RowData_T ADatabase::getEntryData(DataPosition data_position)
     }
 
     //Check Database for rowId
-    QString statement = "SELECT COUNT(*) FROM " + data_position.tableName
-                      + " WHERE ROWID=?";
+    QString statement = QLatin1String("SELECT COUNT(*) FROM ") + data_position.tableName
+                      + QLatin1String(" WHERE ROWID=?");
     QSqlQuery check_query;
     check_query.prepare(statement);
     check_query.addBindValue(data_position.rowId);
@@ -391,8 +400,8 @@ RowData_T ADatabase::getEntryData(DataPosition data_position)
     }
 
     // Retreive TableData
-    statement = "SELECT * FROM " + data_position.tableName
-              + " WHERE ROWID=?";
+    statement = QLatin1String("SELECT * FROM ") + data_position.tableName
+              + QLatin1String(" WHERE ROWID=?");
 
     QSqlQuery select_query;
     select_query.prepare(statement);
@@ -500,7 +509,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
         completer_list.append(query.value(0).toString());
 
     completer_list.sort();
-    completer_list.removeAll(QString(""));
+    completer_list.removeAll(QString());
     completer_list.removeDuplicates();
 
     return completer_list;
@@ -534,8 +543,7 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         break;
     default:
         DEB << "Not a valid completer target for this function.";
-        return {};  // [G]: Cpp will implicitly create the default map.
-                    // if this is too vague change to QMap<...>()
+        return {};
     }
 
     auto query = QSqlQuery(statement);
@@ -547,7 +555,6 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         return {};
     }
 
-    // QVector<QString> query_result;  // [G]: unused
     auto id_map = QMap<QString, RowId_T>();
     while (query.next()) {
         id_map.insert(query.value(1).toString(), query.value(0).toInt());
@@ -557,7 +564,7 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
 
 int ADatabase::getLastEntry(ADatabaseTarget target)
 {
-    QString statement = "SELECT MAX(ROWID) FROM ";
+    QString statement = QLatin1String("SELECT MAX(ROWID) FROM ");
 
     switch (target) {
     case ADatabaseTarget::pilots:
@@ -585,14 +592,14 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
 
 QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target)
 {
-    QString statement = "SELECT ROWID FROM flights WHERE ";
+    QString statement = QLatin1String("SELECT ROWID FROM flights WHERE ");
 
     switch (target) {
     case ADatabaseTarget::pilots:
-        statement.append("pic=?");
+        statement.append(QLatin1String("pic=?"));
         break;
     case ADatabaseTarget::tails:
-        statement.append("acft=?");
+        statement.append(QLatin1String("acft=?"));
         break;
     default:
         DEB << "Not a valid target for this function.";
@@ -657,7 +664,6 @@ QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
 
 QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_path)
 {
-    // List layout: {"# Flights", "# Aircraft", "# Pilots", "ISODate last flight", "Total Time hh:mm"}
     const QString connection_name = QStringLiteral("summary_connection");
     QMap<ADatabaseSummaryKey, QString> return_values;
     { // scope for a temporary database connection, ensures proper cleanup when removeDatabase() is called.
@@ -667,14 +673,15 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
         if (!temp_database.open())
             return {};
 
-        QSqlQuery query(temp_database);
+        QSqlQuery query(temp_database); // Query object using the temporary connection
         ADatabaseSummaryKey key;  // Used among the queries for verbosity... and sanity
 
         const QVector<QPair<ADatabaseSummaryKey, QString>> key_table_pairs = {
-                {ADatabaseSummaryKey::total_flights, QStringLiteral("flights")},
-                {ADatabaseSummaryKey::total_tails, QStringLiteral("tails")},
-                {ADatabaseSummaryKey::total_pilots, QStringLiteral("pilots")}
-    };
+            {ADatabaseSummaryKey::total_flights, QStringLiteral("flights")},
+            {ADatabaseSummaryKey::total_tails, QStringLiteral("tails")},
+            {ADatabaseSummaryKey::total_pilots, QStringLiteral("pilots")}
+        };
+        // retreive amount of flights, tails and pilots
         for (const auto & pair : key_table_pairs) {
             query.prepare(QLatin1String("SELECT COUNT (*) FROM ") + pair.second);
             query.exec();
@@ -686,17 +693,17 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
                 return_values[key] = QString();
             }
         }
-
+        // retreive date of last flight
         query.prepare(QStringLiteral("SELECT MAX(doft) FROM flights"));
         query.exec();
-        key = ADatabaseSummaryKey::max_doft;
+        key = ADatabaseSummaryKey::last_flight;
         if (query.first()){
             return_values[key] = query.value(0).toString();
         }
         else {
             return_values[key] = QString();
         }
-
+        // retreive total flight time as a string "hh:mm"
         query.prepare(QStringLiteral("SELECT "
                                      "printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)"
                                      "||':'||"
@@ -712,7 +719,6 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
     }
 
     QSqlDatabase::removeDatabase(connection_name); // cleanly removes temp connection without leaks since query+db are out of scope
-//    DEB << return_values;  // [G]: ADatabaseSummaryKeys cant print
 
     return return_values;
 }
@@ -726,12 +732,7 @@ bool ADatabase::createBackup(const QString& dest_file)
     LOG << "Backing up current database to: " << dest_file;
     ADatabase::disconnect();
     QFile db_file(databaseFile.absoluteFilePath());
-    DEB << "File to Overwrite:" << db_file;  // [G]: Check adebug.h got INFO WARN, ... additions and discuss convention of use.
-
-//    if(!db_file.remove()) {
-//        DEB << "Unable to delete file:" << db_file;
-//        return false;
-//    }
+    DEB << "File to Overwrite:" << db_file;
 
     if (!db_file.copy(dest_file)) {
         LOG << "Unable to backup old database:" << db_file.errorString();
@@ -747,7 +748,6 @@ bool ADatabase::createBackup(const QString& dest_file)
 /*!
  * \brief ADatabase::restoreBackup restores the database from a given backup file and replaces the currently active database.
  * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
- * \return
  */
 bool ADatabase::restoreBackup(const QString& backup_file)
 {

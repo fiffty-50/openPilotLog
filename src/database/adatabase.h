@@ -75,13 +75,10 @@ enum class ADatabaseSummaryKey {
     total_flights,
     total_tails,
     total_pilots,
-    max_doft,
+    last_flight,
     total_time,
 };
 
-// [G]: This is how we should handle custom "events" in the program.
-// In this case a custom error doesnt need to be built from scratch.
-// Find the type of error you want and extend it with a few tweaks.
 /*!
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
@@ -104,13 +101,17 @@ private:
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;
-    int databaseVersion;
+    int databaseRevision;
 
     ADatabase();
     int checkDbVersion() const;
 public:
+    /*!
+     * \brief lastError extends QSqlError. Holds information about the last error that ocurred during
+     * a SQL operation.
+     */
     ADatabaseError lastError;
-    //const QDir databaseDir;
+
     const QFileInfo databaseFile;
 
     // Ensure DB is not copiable or assignable
@@ -118,7 +119,12 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
 
-    int dbVersion() const;
+    /*!
+     * \brief dbRevision returns the database Revision Number. The Revision refers to what iteration
+     * of the database layout is used. For the sqlite version of the database refer to sqliteVersion()
+     * \return
+     */
+    int dbRevision() const;
 
     /*!
      * \brief Return the names of all tables in the database
@@ -137,7 +143,7 @@ public:
     void updateLayout();
 
     /*!
-     * \brief ADatabase::sqliteVersion returns database sqlite version.
+     * \brief ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()
      * \return sqlite version string
      */
     const QString sqliteVersion() const;
@@ -290,11 +296,12 @@ public:
     ATailEntry resolveForeignTail(RowId_T foreign_key);
 
     /*!
-     * \brief Return the summary of the DB_PATH as a stringlist
-     * \todo Contemplate whether it should be a more generic function
-     * that may be used for different elements to summarize.
-     * and ADD DOCUMENTATION, theres some specific sql stuff going on.
-     * \return
+     * \brief Return a summary of a database
+     * \details Creates a summary of the database giving a quick overview of the relevant contents. The
+     * function runs several specialised SQL queries to create a QMap<ADatabaseSummaryKey, QString> containing
+     * Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary
+     * database connection separate from the default connection in order to not tamper with the currently active
+     * database connection.
      */
     QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
 

@@ -124,9 +124,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3c3e1c6b74a9e92f26f7118a6a130a64"><td class="memItemLeft" align="right" valign="top"><a id="a3c3e1c6b74a9e92f26f7118a6a130a64"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_a_database.html">ADatabase</a> &amp;)=delete</td></tr>
 <tr class="separator:a3c3e1c6b74a9e92f26f7118a6a130a64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af26b4f4d0dbf13aff8beea15fb7d9d00"><td class="memItemLeft" align="right" valign="top"><a id="af26b4f4d0dbf13aff8beea15fb7d9d00"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>dbVersion</b> () const</td></tr>
-<tr class="separator:af26b4f4d0dbf13aff8beea15fb7d9d00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c026e7784b03fc5822077c7d0071330"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a1c026e7784b03fc5822077c7d0071330">dbRevision</a> () const</td></tr>
+<tr class="memdesc:a1c026e7784b03fc5822077c7d0071330"><td class="mdescLeft">&#160;</td><td class="mdescRight">dbRevision returns the database Revision Number. The Revision refers to what iteration of the database layout is used. For the sqlite version of the database refer to <a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()">sqliteVersion()</a>  <a href="class_a_database.html#a1c026e7784b03fc5822077c7d0071330">More...</a><br /></td></tr>
+<tr class="separator:a1c026e7784b03fc5822077c7d0071330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f0df6cc04e6d9b563db874a989ebc61"><td class="memItemLeft" align="right" valign="top"><a id="a4f0df6cc04e6d9b563db874a989ebc61"></a>
 TableNames_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a4f0df6cc04e6d9b563db874a989ebc61">getTableNames</a> () const</td></tr>
 <tr class="memdesc:a4f0df6cc04e6d9b563db874a989ebc61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the names of all tables in the database. <br /></td></tr>
@@ -140,7 +140,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a3c0fdc84000ad397d61f0efabd032194"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered. This function is normally only required during database setup or maintenance. <br /></td></tr>
 <tr class="separator:a3c0fdc84000ad397d61f0efabd032194"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a491415273a771dd7ea41452c331a34b0"><td class="memItemLeft" align="right" valign="top">const QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0">sqliteVersion</a> () const</td></tr>
-<tr class="memdesc:a491415273a771dd7ea41452c331a34b0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns database sqlite version.">ADatabase::sqliteVersion</a> returns database sqlite version.  <a href="class_a_database.html#a491415273a771dd7ea41452c331a34b0">More...</a><br /></td></tr>
+<tr class="memdesc:a491415273a771dd7ea41452c331a34b0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()">ADatabase::sqliteVersion</a> returns the database sqlite version. See also <a class="el" href="class_a_database.html#a1c026e7784b03fc5822077c7d0071330" title="dbRevision returns the database Revision Number. The Revision refers to what iteration of the databas...">dbRevision()</a>  <a href="class_a_database.html#a491415273a771dd7ea41452c331a34b0">More...</a><br /></td></tr>
 <tr class="separator:a491415273a771dd7ea41452c331a34b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6080200aa3f229251480bc416755fed"><td class="memItemLeft" align="right" valign="top"><a id="aa6080200aa3f229251480bc416755fed"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#aa6080200aa3f229251480bc416755fed">connect</a> ()</td></tr>
@@ -226,7 +226,7 @@ QList&lt; RowId_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a cla
 <tr class="memdesc:a5878bcd4bc19e4c3fc5275ca7252860d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves the foreign key in a flight entry.  <a href="class_a_database.html#a5878bcd4bc19e4c3fc5275ca7252860d">More...</a><br /></td></tr>
 <tr class="separator:a5878bcd4bc19e4c3fc5275ca7252860d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56baf4eaf25922030f3cfa6906963f7c"><td class="memItemLeft" align="right" valign="top">QMap&lt; ADatabaseSummaryKey, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c">databaseSummary</a> (const QString &amp;db_path)</td></tr>
-<tr class="memdesc:a56baf4eaf25922030f3cfa6906963f7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the summary of the DB_PATH as a stringlist.  <a href="class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c">More...</a><br /></td></tr>
+<tr class="memdesc:a56baf4eaf25922030f3cfa6906963f7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a summary of a database.  <a href="class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c">More...</a><br /></td></tr>
 <tr class="separator:a56baf4eaf25922030f3cfa6906963f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bda52064f005f1463e56b60cd23b164"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a0bda52064f005f1463e56b60cd23b164">restoreBackup</a> (const QString &amp;backup_file)</td></tr>
 <tr class="memdesc:a0bda52064f005f1463e56b60cd23b164"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_a_database.html#a0bda52064f005f1463e56b60cd23b164" title="ADatabase::restoreBackup restores the database from a given backup file and replaces the currently ac...">ADatabase::restoreBackup</a> restores the database from a given backup file and replaces the currently active database.  <a href="class_a_database.html#a0bda52064f005f1463e56b60cd23b164">More...</a><br /></td></tr>
@@ -247,7 +247,8 @@ static <a class="el" href="class_a_database.html">ADatabase</a> *&#160;</td><td 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a95d05441d87fa291acb96e37b029409e"><td class="memItemLeft" align="right" valign="top"><a id="a95d05441d87fa291acb96e37b029409e"></a>
-<a class="el" href="class_a_database_error.html">ADatabaseError</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lastError</b></td></tr>
+<a class="el" href="class_a_database_error.html">ADatabaseError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a95d05441d87fa291acb96e37b029409e">lastError</a></td></tr>
+<tr class="memdesc:a95d05441d87fa291acb96e37b029409e"><td class="mdescLeft">&#160;</td><td class="mdescRight">lastError extends QSqlError. Holds information about the last error that ocurred during a SQL operation. <br /></td></tr>
 <tr class="separator:a95d05441d87fa291acb96e37b029409e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1da0311f588fd269dec80389aea8644"><td class="memItemLeft" align="right" valign="top"><a id="ae1da0311f588fd269dec80389aea8644"></a>
 const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFile</b></td></tr>
@@ -363,8 +364,27 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
       </table>
 </div><div class="memdoc">
 
-<p>Return the summary of the DB_PATH as a stringlist. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Contemplate whether it should be a more generic function that may be used for different elements to summarize. and ADD DOCUMENTATION, theres some specific sql stuff going on. </dd></dl>
+<p>Return a summary of a database. </p>
+<p>Creates a summary of the database giving a quick overview of the relevant contents. The function runs several specialised SQL queries to create a QMap&lt;ADatabaseSummaryKey, QString&gt; containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection. </p>
+
+</div>
+</div>
+<a id="a1c026e7784b03fc5822077c7d0071330"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c026e7784b03fc5822077c7d0071330">&#9670;&nbsp;</a></span>dbRevision()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ADatabase::dbRevision </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>dbRevision returns the database Revision Number. The Revision refers to what iteration of the database layout is used. For the sqlite version of the database refer to <a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()">sqliteVersion()</a> </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
@@ -539,7 +559,6 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -558,7 +577,7 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns database sqlite version.">ADatabase::sqliteVersion</a> returns database sqlite version. </p>
+<p><a class="el" href="class_a_database.html#a491415273a771dd7ea41452c331a34b0" title="ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()">ADatabase::sqliteVersion</a> returns the database sqlite version. See also <a class="el" href="class_a_database.html#a1c026e7784b03fc5822077c7d0071330" title="dbRevision returns the database Revision Number. The Revision refers to what iteration of the databas...">dbRevision()</a> </p>
 <dl class="section return"><dt>Returns</dt><dd>sqlite version string </dd></dl>
 
 </div>

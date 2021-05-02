@@ -29,6 +29,7 @@ var NAVTREEINDEX0 =
 "class_a_database.html":[3,0,3],
 "class_a_database.html#a0bda52064f005f1463e56b60cd23b164":[3,0,3,31],
 "class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7":[3,0,3,3],
+"class_a_database.html#a1c026e7784b03fc5822077c7d0071330":[3,0,3,8],
 "class_a_database.html#a22ce31ddea49c144d85c05658f49fec5":[3,0,3,11],
 "class_a_database.html#a24f938e4c8d20afddb5e5651e041a7a6":[3,0,3,10],
 "class_a_database.html#a264fea56cd3fbc31463c587f196ce576":[3,0,3,20],
@@ -62,7 +63,6 @@ var NAVTREEINDEX0 =
 "class_a_database.html#ad977866124a3c7f7184e165c02a68931":[3,0,3,22],
 "class_a_database.html#ae0a3c9273431195df6295b9da24b3a3a":[3,0,3,12],
 "class_a_database.html#ae1da0311f588fd269dec80389aea8644":[3,0,3,35],
-"class_a_database.html#af26b4f4d0dbf13aff8beea15fb7d9d00":[3,0,3,8],
 "class_a_database.html#afc39f6136fc822e0649964fa22b84bf9":[3,0,3,16],
 "class_a_database_error.html":[3,0,4],
 "class_a_database_error.html#a0fbc2036f577ba78e79ab0b0eef6fdf0":[3,0,4,2],
@@ -230,8 +230,9 @@ var NAVTREEINDEX0 =
 "files.html":[4,0],
 "firstrundialog_8h_source.html":[4,0,0,3,0,0],
 "functions.html":[3,3,0],
-"functions_enum.html":[3,3,2],
+"functions_enum.html":[3,3,3],
 "functions_func.html":[3,3,1],
+"functions_vars.html":[3,3,2],
 "hierarchy.html":[3,2],
 "homewidget_8h_source.html":[4,0,0,3,1,3],
 "index.html":[],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "namespace_opl.html":[3,0,0],
 "namespace_opl.html":[2,0,2],
 "namespace_opl_1_1_db.html":[2,0,2,0],
-"namespacemembers.html":[2,1,0],
-"namespacemembers_func.html":[2,1,1]
+"namespacemembers.html":[2,1,0]
 };

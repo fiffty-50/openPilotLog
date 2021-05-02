@@ -1,4 +1,4 @@
-.TH "ADatabase" 3 "Sat May 1 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADatabase" 3 "Sun May 2 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -33,8 +33,9 @@ Inherits QObject\&.
 .RI "void \fBoperator=\fP (const \fBADatabase\fP &)=delete"
 .br
 .ti -1c
-.RI "int \fBdbVersion\fP () const"
+.RI "int \fBdbRevision\fP () const"
 .br
+.RI "dbRevision returns the database Revision Number\&. The Revision refers to what iteration of the database layout is used\&. For the sqlite version of the database refer to \fBsqliteVersion()\fP "
 .ti -1c
 .RI "TableNames_T \fBgetTableNames\fP () const"
 .br
@@ -50,7 +51,7 @@ Inherits QObject\&.
 .ti -1c
 .RI "const QString \fBsqliteVersion\fP () const"
 .br
-.RI "\fBADatabase::sqliteVersion\fP returns database sqlite version\&. "
+.RI "\fBADatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP "
 .ti -1c
 .RI "bool \fBconnect\fP ()"
 .br
@@ -145,7 +146,7 @@ Inherits QObject\&.
 .ti -1c
 .RI "QMap< ADatabaseSummaryKey, QString > \fBdatabaseSummary\fP (const QString &db_path)"
 .br
-.RI "Return the summary of the DB_PATH as a stringlist\&. "
+.RI "Return a summary of a database\&. "
 .ti -1c
 .RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
 .br
@@ -172,6 +173,7 @@ Inherits QObject\&.
 .ti -1c
 .RI "\fBADatabaseError\fP \fBlastError\fP"
 .br
+.RI "lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. "
 .ti -1c
 .RI "const QFileInfo \fBdatabaseFile\fP"
 .br
@@ -219,15 +221,15 @@ The QSqlDatabase object pertaining to the connection\&.
 .SS "QMap< ADatabaseSummaryKey, QString > ADatabase::databaseSummary (const QString & db_path)"
 
 .PP
-Return the summary of the DB_PATH as a stringlist\&. 
+Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QMap<ADatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. 
+.SS "int ADatabase::dbRevision () const"
+
 .PP
-\fBTodo\fP
-.RS 4
-Contemplate whether it should be a more generic function that may be used for different elements to summarize\&. and ADD DOCUMENTATION, theres some specific sql stuff going on\&. 
-.RE
+dbRevision returns the database Revision Number\&. The Revision refers to what iteration of the database layout is used\&. For the sqlite version of the database refer to \fBsqliteVersion()\fP 
 .PP
 \fBReturns\fP
 .RS 4
+
 .RE
 .PP
 
@@ -290,15 +292,11 @@ The Tail Entry referencted by the foreign key\&.
 \fIbackup_file\fP This is the full path and filename of the backup, e\&.g\&. 'home/Sully/myBackups/backupFromOpl\&.db' 
 .RE
 .PP
-\fBReturns\fP
-.RS 4
-.RE
-.PP
 
 .SS "const QString ADatabase::sqliteVersion () const"
 
 .PP
-\fBADatabase::sqliteVersion\fP returns database sqlite version\&. 
+\fBADatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP 
 .PP
 \fBReturns\fP
 .RS 4

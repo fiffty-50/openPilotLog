@@ -8,7 +8,7 @@ var class_a_database =
     [ "customQuery", "class_a_database.html#a2a43936d3ae28993f9f7eda0fdf4664d", null ],
     [ "databaseSummary", "class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c", null ],
     [ "dataBaseUpdated", "class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911", null ],
-    [ "dbVersion", "class_a_database.html#af26b4f4d0dbf13aff8beea15fb7d9d00", null ],
+    [ "dbRevision", "class_a_database.html#a1c026e7784b03fc5822077c7d0071330", null ],
     [ "disconnect", "class_a_database.html#abc461aaa66304ca638e546f67a694935", null ],
     [ "exists", "class_a_database.html#a24f938e4c8d20afddb5e5651e041a7a6", null ],
     [ "exists", "class_a_database.html#a22ce31ddea49c144d85c05658f49fec5", null ],

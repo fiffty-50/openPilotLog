@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['db_75',['Db',['../namespace_opl_1_1_db.html',1,'Opl']]],
-  ['onaircraftwidget_5fdatabaseupdated_76',['onAircraftWidget_dataBaseUpdated',['../class_aircraft_widget.html#ac5a5e720c80e49796930f8715b0a51e0',1,'AircraftWidget']]],
-  ['onaircraftwidget_5fsettingchanged_77',['onAircraftWidget_settingChanged',['../class_aircraft_widget.html#a8e78830530971eeb4a3913b1d8356498',1,'AircraftWidget']]],
-  ['onpilotswidget_5fdatabaseupdated_78',['onPilotsWidget_databaseUpdated',['../class_pilots_widget.html#abbcd659b4eb6ed17a7d484138b319fab',1,'PilotsWidget']]],
-  ['onpilotswidget_5fsettingchanged_79',['onPilotsWidget_settingChanged',['../class_pilots_widget.html#a201b8f8af06bfd1a8716dbc052a0927f',1,'PilotsWidget']]],
-  ['opl_80',['Opl',['../namespace_opl.html',1,'']]]
+  ['db_77',['Db',['../namespace_opl_1_1_db.html',1,'Opl']]],
+  ['onaircraftwidget_5fdatabaseupdated_78',['onAircraftWidget_dataBaseUpdated',['../class_aircraft_widget.html#ac5a5e720c80e49796930f8715b0a51e0',1,'AircraftWidget']]],
+  ['onaircraftwidget_5fsettingchanged_79',['onAircraftWidget_settingChanged',['../class_aircraft_widget.html#a8e78830530971eeb4a3913b1d8356498',1,'AircraftWidget']]],
+  ['onpilotswidget_5fdatabaseupdated_80',['onPilotsWidget_databaseUpdated',['../class_pilots_widget.html#abbcd659b4eb6ed17a7d484138b319fab',1,'PilotsWidget']]],
+  ['onpilotswidget_5fsettingchanged_81',['onPilotsWidget_settingChanged',['../class_pilots_widget.html#a201b8f8af06bfd1a8716dbc052a0927f',1,'PilotsWidget']]],
+  ['opl_82',['Opl',['../namespace_opl.html',1,'']]]
 ];
