@@ -37,10 +37,9 @@ BackupWidget::BackupWidget(QWidget *parent) :
 
     model = new QStandardItemModel(this);
     model->setHorizontalHeaderLabels(QStringList{tr("Backup File"),tr("Flights"), tr("Aircraft"),
-                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?
+                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?    
     view = ui->tableView;
     refresh();
-    TODO << "Update Documentation";
 }
 
 BackupWidget::~BackupWidget()
@@ -67,8 +66,8 @@ void BackupWidget::refresh()
                          });
     }
 
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
+    view->setModel(model);
+    view->resizeColumnsToContents();
 }
 
 const QString BackupWidget::absoluteBackupPath()
@@ -132,7 +131,7 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     confirm.setText(tr("The following backup will be restored:<br><br><b><tt>"
                        "%1</b></tt><br><br>"
                        "This will replace your currently active database with the backup.<br>This action is irreversible.<br><br>Are you sure?"
-                       ).arg(selectedFileInfo->info().fileName()));
+                       ).arg(aDB->databaseSummaryString(backup_name)));
     if (confirm.exec() == QMessageBox::No)
         return;
 
@@ -220,9 +219,21 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
 
     // Maybe create a Message Box asking for confirmation here and displaying the summary of backup and active DB
 
-    if(!aDB->restoreBackup(filename)) {
-        WARN(tr("Unable to backup file:").arg(filename));
-        return;
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Import Database"));
+    confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
+                       "%1<br></b></tt>"
+                       "<br>Is this correct?"
+                       ).arg(aDB->databaseSummaryString(filename)));
+    if (confirm.exec() == QMessageBox::Yes) {
+        if(!aDB->restoreBackup(filename)) {
+            WARN(tr("Unable to import database file:").arg(filename));
+            return;
+        }
+        INFO(tr("Database successfully imported."));
     }
 }
 

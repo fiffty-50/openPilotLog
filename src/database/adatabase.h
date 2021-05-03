@@ -305,6 +305,11 @@ public:
      */
     QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
 
+    /*!
+     * \brief returns a short summary string of the database, containing total time and date of last flight.
+     */
+    const QString databaseSummaryString(const QString& db_path);
+
     bool restoreBackup(const QString& backup_file);
     bool createBackup(const QString& dest_file);
 

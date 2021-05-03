@@ -26,6 +26,7 @@
 #include "src/opl.h"
 #include "src/functions/adate.h"
 #include <QErrorMessage>
+#include <QFileDialog>
 #include "src/classes/astyle.h"
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
@@ -368,4 +369,39 @@ void FirstRunDialog::on_dateFormatComboBox_currentIndexChanged(int index)
                     ADate::getFormatString(format));
     }
     ASettings::write(ASettings::Main::DateFormat, index);
+}
+
+void FirstRunDialog::on_importPushButton_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                tr("Choose backup file"),
+                QDir::homePath(),
+                "*.db"
+    );
+
+    if(filename.isEmpty()) { // QFileDialog has been cancelled
+        WARN(tr("No Database has been selected."));
+        return;
+    }
+
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Import Database"));
+    confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
+                       "%1<br></b></tt>"
+                       "<br>Is this correct?"
+                       ).arg(aDB->databaseSummaryString(filename)));
+    if (confirm.exec() == QMessageBox::Yes) {
+        if(!aDB->restoreBackup(filename)) {
+            WARN(tr("Unable to import database file:").arg(filename));
+            return;
+        }
+        INFO(tr("Database successfully imported."));
+        QDialog::accept(); // quit the dialog as if a database was successfully created
+    } else {
+        return;
+    }
 }

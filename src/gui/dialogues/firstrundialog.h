@@ -54,6 +54,11 @@ private slots:
 
     void on_dateFormatComboBox_currentIndexChanged(int index);
 
+    /*!
+     * \brief Import an existing database instead of creating a new one
+     */
+    void on_importPushButton_clicked();
+
 private:
     Ui::FirstRunDialog *ui;
     bool useRessourceData;

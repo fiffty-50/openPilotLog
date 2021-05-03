@@ -723,6 +723,20 @@ QMap<ADatabaseSummaryKey, QString> ADatabase::databaseSummary(const QString &db_
     return return_values;
 }
 
+const QString ADatabase::databaseSummaryString(const QString &db_path)
+{
+    auto summary_map = databaseSummary(db_path);
+    QString out = QLatin1String("<table>");
+    out.append(tr("<tr><td>Total Time: </td><td>%1</td>").arg(summary_map[ADatabaseSummaryKey::total_time]));
+    out.append(tr("<tr><td>Last Flight: </td><td>%1</td>").arg(summary_map[ADatabaseSummaryKey::last_flight]));
+    out.append(tr("<tr><td>Number of flights: </td><td>%1</td>").arg(summary_map[ADatabaseSummaryKey::total_flights]));
+    out.append(tr("<tr><td>Number of aircraft: </td><td>%1</td>").arg(summary_map[ADatabaseSummaryKey::total_tails]));
+    out.append(tr("<tr><td>Number of Pilots: </td><td>%1</td>").arg(summary_map[ADatabaseSummaryKey::total_pilots]));
+    out.append("</table>");
+
+    return out;
+}
+
 /*!
  * \brief ADatabase::createBackup copies the currently used database to an external backup location provided by the user
  * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'

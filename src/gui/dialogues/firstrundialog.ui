@@ -14,26 +14,27 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0">
+    <widget class="QPushButton" name="previousPushButton">
+     <property name="text">
+      <string>Previous</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="nextPushButton">
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="personalDataPage">
       <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook.&lt;/p&gt;&lt;p&gt;OpenPilotLog does not collect, sell or use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="0" rowspan="2">
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
@@ -128,6 +129,45 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="importPushButton">
+         <property name="text">
+          <string>Import Database</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook.&lt;/p&gt;&lt;p&gt;OpenPilotLog does not collect, sell or use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="importLabel">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>If you already have been using openPilotLog before and wish to continue your logbook, skip this initial setup process and import your database instead.</string>
+         </property>
+         <property name="text">
+          <string>Already have a logbook database?</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -798,20 +838,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="previousPushButton">
-     <property name="text">
-      <string>Previous</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="nextPushButton">
-     <property name="text">
-      <string>Next</string>
-     </property>
     </widget>
    </item>
    <item row="0" column="0" colspan="2">

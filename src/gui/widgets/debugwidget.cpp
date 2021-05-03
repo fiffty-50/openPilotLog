@@ -187,19 +187,9 @@ void DebugWidget::on_importCsvPushButton_clicked()
 #include "src/functions/adate.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    QMap<QString, Opl::Date::ADateFormat> dates = {
-        {"2020-01-01", Opl::Date::ADateFormat::ISODate},
-        {"20200101", Opl::Date::ADateFormat::ISODate},
-        {"03.01.2020", Opl::Date::ADateFormat::DE},
-        {"03012020", Opl::Date::ADateFormat::DE},
-        {"01/04/2020", Opl::Date::ADateFormat::EN},
-        {"01042020", Opl::Date::ADateFormat::EN},
-        {"01", Opl::Date::ADateFormat::EN}
-    };
-    QMap<QString, Opl::Date::ADateFormat>::iterator i;
-    for (i = dates.begin(); i != dates.end(); i++) {
-        DEB << ADate::formatInput(i.key(), i.value());
-    }
+    auto frdl = new FirstRunDialog(this);
+    frdl->exec();
+
 }
 
 /* //Comparing two functions template
