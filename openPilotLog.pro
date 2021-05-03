@@ -31,6 +31,7 @@ SOURCES += \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
     src/classes/atailentry.cpp \
+    src/classes/atranslator.cpp \
     src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
     src/functions/acalc.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     src/classes/asettings.h \
     src/classes/atailentry.h \
     src/database/adatabase.h \
+    src/classes/atranslator.h \
     src/database/adatabasesetup.h \
     src/database/adatabasetypes.h \
     src/functions/acalc.h \
@@ -101,6 +103,12 @@ FORMS += \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
     src/gui/widgets/settingswidget.ui
+
+TRANSLATIONS = \
+    l10n/openpilotlog_main.ts \
+    l10n/openpilotlog_de.ts \
+    l10n/openpilotlog_es.ts
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

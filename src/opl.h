@@ -84,6 +84,8 @@ public:
     };
 }; // class ANotificationHandler
 
+enum class Translations {English, German, Spanish};
+
 static const auto ApproachTypes = QStringList{
         QLatin1String("VISUAL"),
         QLatin1String("ILS CAT I"),
