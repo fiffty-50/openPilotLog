@@ -23,5 +23,6 @@ var searchData=
   ['astandardpaths_20',['AStandardPaths',['../class_a_standard_paths.html',1,'']]],
   ['astyle_21',['AStyle',['../class_a_style.html',1,'']]],
   ['atailentry_22',['ATailEntry',['../struct_a_tail_entry.html',1,'']]],
-  ['atimer_23',['ATimer',['../class_a_timer.html',1,'']]]
+  ['atimer_23',['ATimer',['../class_a_timer.html',1,'']]],
+  ['atranslator_24',['ATranslator',['../class_a_translator.html',1,'']]]
 ];

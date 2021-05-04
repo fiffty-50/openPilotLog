@@ -110,6 +110,7 @@ Compiling the project</h1>
 Known issues</h2>
 <ul>
 <li>The setup wizard for the database requires openSSL to download the most recent data. In order for this to work on Windows, you need to place the <a href="https://wiki.openssl.org/index.php/Binaries">openSSL dll's</a> in the application directory. On Linux, this is normally not an issue. If you are running into problems there, try installing the <code>openssl-dev</code> package or similar from your distribution's package manager.</li>
+<li>When compiling with CMake, instead of updating the translations, there is a bug that might instead delete them. See <a href="https://bugreports.qt.io/browse/QTBUG-41736">here</a> and <a href="https://bugreports.qt.io/browse/QTBUG-76410">here</a>. Long story short, make sure to use a version of CMake that is 3.16 or earlier, or 3.19.2 or later if you want to use localisations other than English (once they're implemented).</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Implementation Overview</h1>

@@ -1,0 +1,28 @@
+.TH "ATranslator" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ATranslator \- The \fBATranslator\fP class is responsible for managing the QTranslator used for providing localisations\&. Translations are planned, but are not currently being worked on\&. The way QT language tools are working with CMAKE, there are some considerations for when works on translation actually start\&. See \fChere\fP and \fChere\fP\&. Long story short, make sure to use a version of CMake that is 3\&.16 or earlier, or 3\&.19\&.2 or later\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atranslator\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBinstallTranslator\fP (Opl::Translations language=Opl::Translations::English)"
+.br
+.RI "Installs a QTranslator with the selected language\&. Defaults to English\&. Call this function before constructing the Main Window\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBATranslator\fP class is responsible for managing the QTranslator used for providing localisations\&. Translations are planned, but are not currently being worked on\&. The way QT language tools are working with CMAKE, there are some considerations for when works on translation actually start\&. See \fChere\fP and \fChere\fP\&. Long story short, make sure to use a version of CMake that is 3\&.16 or earlier, or 3\&.19\&.2 or later\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

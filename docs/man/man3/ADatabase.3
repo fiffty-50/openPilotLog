@@ -1,4 +1,4 @@
-.TH "ADatabase" 3 "Sun May 2 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADatabase" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -147,6 +147,10 @@ Inherits QObject\&.
 .RI "QMap< ADatabaseSummaryKey, QString > \fBdatabaseSummary\fP (const QString &db_path)"
 .br
 .RI "Return a summary of a database\&. "
+.ti -1c
+.RI "const QString \fBdatabaseSummaryString\fP (const QString &db_path)"
+.br
+.RI "returns a short summary string of the database, containing total time and date of last flight\&. "
 .ti -1c
 .RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
 .br

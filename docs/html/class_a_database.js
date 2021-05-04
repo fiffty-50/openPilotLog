@@ -7,6 +7,7 @@ var class_a_database =
     [ "createBackup", "class_a_database.html#a5ab838a62a83974f9e40c62f66adfa99", null ],
     [ "customQuery", "class_a_database.html#a2a43936d3ae28993f9f7eda0fdf4664d", null ],
     [ "databaseSummary", "class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c", null ],
+    [ "databaseSummaryString", "class_a_database.html#a2c54b7506faf0f15f5323ed53ff12099", null ],
     [ "dataBaseUpdated", "class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911", null ],
     [ "dbRevision", "class_a_database.html#a1c026e7784b03fc5822077c7d0071330", null ],
     [ "disconnect", "class_a_database.html#abc461aaa66304ca638e546f67a694935", null ],
