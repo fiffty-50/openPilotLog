@@ -19,13 +19,6 @@ public:
 
 private:
     static QTranslator *translator;
-
-signals:
-    /*!
-     * \brief languageChanged() is emitted whenever the active translator is reset. This signal can be
-     * connected to a slot triggering ui->retranslateUi(this) for the widgets. (To Do)
-     */
-    void languageChanged();
 };
 
 #endif // ATRANSLATOR_H

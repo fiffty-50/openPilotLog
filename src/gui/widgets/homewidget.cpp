@@ -78,6 +78,13 @@ void HomeWidget::refresh()
     fillLimitations();
 }
 
+void HomeWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 /*!
  * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the AStat::totals
  * function and parses the return to fill out the QLineEdits.

@@ -47,6 +47,13 @@ BackupWidget::~BackupWidget()
     delete ui;
 }
 
+void BackupWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void BackupWidget::refresh()
 {
     // First column in table, would be created by listing the files in backupdir
@@ -77,6 +84,7 @@ const QString BackupWidget::absoluteBackupPath()
             + QLatin1String(".db");
     return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
 }
+
 const QString BackupWidget::backupName()
 {
     return  QLatin1String("logbook_backup_")

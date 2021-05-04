@@ -99,8 +99,15 @@ private:
      */
     const QString userName();
     void checkAllCurrencies();
+
 public slots:
     void refresh();
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // HOMEWIDGET_H

@@ -126,6 +126,12 @@ private:
      * \brief Generates the absolute path for a new backup file.
      */
     const QString absoluteBackupPath();
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // BACKUPWIDGET_H

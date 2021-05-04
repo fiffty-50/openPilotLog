@@ -191,7 +191,14 @@ void DebugWidget::on_debugPushButton_clicked()
     //auto frdl = new FirstRunDialog(this);
     //frdl->exec();
     ATranslator::installTranslator(Opl::Translations::Spanish);
-    ui->retranslateUi(this);
+    //ui->retranslateUi(this);
+}
+
+void DebugWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
 }
 
 /* //Comparing two functions template

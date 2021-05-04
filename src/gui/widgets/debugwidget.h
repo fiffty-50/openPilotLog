@@ -67,6 +67,9 @@ private:
     Ui::DebugWidget *ui;
 
     bool downloadComplete = false;
+
+protected:
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // DEBUGWIDGET_H

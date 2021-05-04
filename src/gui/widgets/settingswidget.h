@@ -139,6 +139,12 @@ signals:
      * an update (repaint) to another widget.
      */
     void settingChanged(SettingSignal widget);
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // SETTINGSWIDGET_H

@@ -67,6 +67,13 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
+void SettingsWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void SettingsWidget::setupComboBoxes(){
     {
         // Style combo box
