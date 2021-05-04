@@ -80,9 +80,12 @@ void SettingsWidget::setupComboBoxes(){
 
         // Approach Combo Box
         const QSignalBlocker blocker_approach(ui->approachComboBox);
-        for (const auto &approach : Opl::ApproachTypes) {
+        for (const auto &approach : Opl::ApproachTypes)
             ui->approachComboBox->addItem(approach);
-        }
+        // Language Combo Box
+        const QSignalBlocker blocker_language(ui->languageComboBox);
+        for (const auto &lang : Opl::Translations_Strings)
+            ui->languageComboBox->addItem(lang);
     }
 }
 
@@ -704,5 +707,15 @@ void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
         date_edit->setDisplayFormat(
                     ADate::getFormatString(
                         static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));
+    }
+}
+
+void SettingsWidget::on_languageComboBox_activated(const QString &arg1)
+{
+    if (arg1 != Opl::Translations_Strings[Opl::Translations::English]) {
+        INFO(tr("Translations are not yet available. If you are interested in making openPilotLog available in your native "
+             "language, visit us <a href=\"https://%1/\">here</a> for more information."
+             ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
+        ui->languageComboBox->setCurrentIndex(0);
     }
 }

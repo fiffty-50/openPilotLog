@@ -1981,7 +1981,7 @@ Error: %2</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="391"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="393"/>
         <source>&lt;h3&gt;&lt;center&gt;About openPilotLog&lt;/center&gt;&lt;/h3&gt;&lt;br&gt;&amp;#169; 2020-2021 Felix Turowsky&lt;br&gt;&lt;p&gt;This is a collaboratively developed Free and Open Source Application. Visit us &lt;a href=&quot;https://%1/&quot;&gt;here&lt;/a&gt; for more information.&lt;/p&gt;&lt;p&gt;This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&lt;/p&gt; &lt;p&gt;You should have received a copy of the GNU General Public License along with this program.  If not, please click &lt;a href=&quot;https://%2&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;br&gt;&lt;p&gt;This program uses &lt;a href=&quot;http://%3/&quot;&gt;Qt&lt;/a&gt; version %4 and &lt;a href=&quot;https://%5/&quot;&gt;SQLite&lt;/a&gt; version %6&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2038,7 +2038,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="30"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1003"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="929"/>
         <source>Last Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2050,14 +2050,14 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="47"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1008"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="934"/>
         <source>First Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="64"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1013"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1081"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="939"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1016"/>
         <source>Company</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2304,129 +2304,134 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="925"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="985"/>
         <source>Use System Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="941"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="944"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="999"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="912"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="915"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="925"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="947"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="918"/>
         <source>Sort Pilots by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="960"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="963"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1067"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1002"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1030"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1033"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="966"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1036"/>
         <source>Sort Aircraft by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="979"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1089"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="975"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1043"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="982"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="978"/>
         <source>Allow incomplete Entries </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1021"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1079"/>
         <source>Reset to Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1034"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1109"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1047"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1050"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1106"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1066"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1069"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1086"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1053"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1072"/>
         <source>Logbook Dispay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1060"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="995"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1071"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1006"/>
         <source>Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1076"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1011"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1093"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1047"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1098"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1052"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1110"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1090"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1115"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1095"/>
         <source>EASA Part-FCL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1124"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1126"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1134"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1143"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1153"/>
         <source>About openPilotLog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="362"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="364"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="363"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="365"/>
         <source>Enabling incomplete logging will enable you to add aircraft with incomplete data.&lt;br&gt;&lt;br&gt;If you do not fill out the aircraft details, it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time. This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.&lt;br&gt;&lt;br&gt;It is highly recommended to keep this option off unless you have a specific reason not to.&lt;br&gt;&lt;br&gt;Are you sure you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="471"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="473"/>
         <source>The style you have currently selected may not be fully compatible with changing to a custom font while the application is running.&lt;br&gt;&lt;br&gt;Applying your changes may require restarting the application.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="492"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="494"/>
         <source>The application will be restarted for this change to take effect.</source>
         <translation type="unfinished"></translation>
     </message>

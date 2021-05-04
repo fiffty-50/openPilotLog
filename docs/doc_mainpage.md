@@ -27,6 +27,10 @@ On first launch, you will run through a setup wizard for the database. If you wa
 
 - The setup wizard for the database requires openSSL to download the most recent data. In order for this to work on Windows, you need to place the [openSSL dll's](https://wiki.openssl.org/index.php/Binaries) in the application directory. On Linux, this is normally not an issue. If you are running into problems there, try installing the `openssl-dev` package or similar from your distribution's package manager.
 
+- When compiling with CMake, instead of updating the translations, there is a bug that might instead delete them. See [here](https://bugreports.qt.io/browse/QTBUG-41736)
+  and [here](https://bugreports.qt.io/browse/QTBUG-76410). Long story short, make sure to use a version of CMake that is 3.16 or earlier, or 3.19.2 or later if you want
+  to use localisations other than English (once they're implemented).
+
 # Implementation Overview
 
 Keeping a logbook of flights is a quintessential database task. This program could thus be seen as a user-friendly front-end to a database. The database is a sqlite3-Database, which is described in detail on the [Database](https://github.com/fiffty-50/openpilotlog/wiki/Database-Layout-and-Description) Wiki Page.

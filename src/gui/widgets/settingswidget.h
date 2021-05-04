@@ -115,6 +115,8 @@ private slots:
 
     void on_dateFormatComboBox_currentIndexChanged(int index);
 
+    void on_languageComboBox_activated(const QString &arg1);
+
 private:
     Ui::SettingsWidget *ui;
 

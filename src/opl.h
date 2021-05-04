@@ -85,6 +85,12 @@ public:
 }; // class ANotificationHandler
 
 enum class Translations {English, German, Spanish};
+static const QMap<Translations, QString> Translations_Strings {
+    {Translations::English, QStringLiteral("English")},
+    {Translations::German, QStringLiteral("Deutsch")},
+    {Translations::Spanish, QStringLiteral("Español")},
+    //[...]
+};
 
 static const auto ApproachTypes = QStringList{
         QLatin1String("VISUAL"),
