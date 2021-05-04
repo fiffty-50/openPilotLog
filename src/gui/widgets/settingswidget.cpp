@@ -91,7 +91,7 @@ void SettingsWidget::setupComboBoxes(){
             ui->approachComboBox->addItem(approach);
         // Language Combo Box
         const QSignalBlocker blocker_language(ui->languageComboBox);
-        for (const auto &lang : Opl::Translations_Strings)
+        for (const auto &lang : Opl::L10N_NAMES)
             ui->languageComboBox->addItem(lang);
     }
 }
@@ -719,7 +719,7 @@ void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
 
 void SettingsWidget::on_languageComboBox_activated(const QString &arg1)
 {
-    if (arg1 != Opl::Translations_Strings[Opl::Translations::English]) {
+    if (arg1 != Opl::L10N_NAMES[Opl::Translations::English]) {
         INFO(tr("Translations are not yet available. If you are interested in making openPilotLog available in your native "
              "language, visit us <a href=\"https://%1/\">here</a> for more information."
              ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
