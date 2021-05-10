@@ -73,32 +73,32 @@
     </message>
     <message>
         <location filename="../src/gui/widgets/aircraftwidget.ui" line="195"/>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="183"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="190"/>
         <source>Delete Aircraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="164"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="171"/>
         <source>No Aircraft selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="167"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="174"/>
         <source>Deleting multiple entries is currently not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="184"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="191"/>
         <source>You are deleting the following aircraft:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1 - (%2)&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="217"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="224"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="230"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="237"/>
         <source>Unable to delete.&lt;br&gt;&lt;br&gt;This is most likely the case because a flight exists with the aircraft you are trying to delete.&lt;br&gt;&lt;br&gt;%1 flight(s) with this aircraft have been found:&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%2&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;You have to change or remove the conflicting flight(s) before removing this aircraft from the database.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -176,93 +176,93 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="99"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="107"/>
         <source>Could not create local file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="117"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="125"/>
         <source>No backup selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="130"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="138"/>
         <source>Restoring Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="131"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="139"/>
         <source>The following backup will be restored:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;This will replace your currently active database with the backup.&lt;br&gt;This action is irreversible.&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="139"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="147"/>
         <source>Unable to restore Backup file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="149"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="157"/>
         <source>No backup was selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="157"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="165"/>
         <source>Selected backup file (&lt;tt&gt;%1&lt;/tt&gt;) does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="165"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="173"/>
         <source>Delete Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="166"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="174"/>
         <source>The following backup will be deleted:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="175"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="183"/>
         <source>Unable to remove file %1
 Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="188"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="196"/>
         <source>Choose destination file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="202"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="210"/>
         <source>Unable to backup file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="211"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="219"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="226"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="234"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="227"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="235"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="233"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="241"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="236"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="244"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="243"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="251"/>
         <source>&lt;h3&gt;&lt;center&gt;About Backups&lt;/center&gt;&lt;/h3&gt;&lt;br&gt;&lt;p&gt;By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can later be restored or kept for safekeeping. OpenPilotLog offers two kinds of backups: Local and External Backups.&lt;br&gt;&lt;br&gt;Local backups are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting &lt;b&gt;Create Local backup&lt;/b&gt; and restored with &lt;b&gt;Restore Local Backup&lt;/b&gt;.&lt;br&gt;When using &lt;b&gt;Create External Backup&lt;/b&gt;, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting it with &lt;b&gt;Restore external backup&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Frequent backups are recommended to guard against data loss or corruption. It is also recommended to keep a backup copy in a seperate location from your main computer to prevent data loss due to system failures.&lt;/p&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -918,17 +918,17 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="112"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="119"/>
         <source>Invalid Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="226"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="233"/>
         <source>Your currency &lt;b&gt;%1&lt;/b&gt; is expired since %2.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="233"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="240"/>
         <source>Your currency &lt;b&gt;%1&lt;/b&gt; expires in &lt;b&gt;%2&lt;/b&gt; days (%3).&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1008,39 +1008,39 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="150"/>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="165"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="157"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="172"/>
         <source>&lt;br&gt;No flight selected.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="152"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="159"/>
         <source>&lt;br&gt;More than one flight selected.&lt;br&gt;&lt;br&gt;Editing multiple entries is not yet supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="186"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="193"/>
         <source>The following flight(s) will be deleted:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;Deleting flights is irreversible.&lt;br&gt;Do you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="194"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="201"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="199"/>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="222"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="206"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="229"/>
         <source>%1 flights have been deleted successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="209"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="216"/>
         <source>You have selected %1 flights.&lt;br&gt;&lt;br&gt;Deleting flights is irreversible.&lt;br&gt;&lt;br&gt;Are you sure you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="219"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="226"/>
         <source>Unable to delete. The following error has ocurred:&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1948,32 +1948,32 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/widgets/pilotswidget.ui" line="217"/>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="166"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="173"/>
         <source>Delete Pilot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="148"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="155"/>
         <source>No Pilot selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="150"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="157"/>
         <source>Deleting multiple entries is currently not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="168"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="175"/>
         <source>You are deleting the following pilot:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="197"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="204"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="209"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="216"/>
         <source>Unable to delete.&lt;br&gt;&lt;br&gt;This is most likely the case because a flight exists with the Pilot you are trying to delete as PIC.&lt;br&gt;&lt;br&gt;%1 flight(s) with this pilot have been found:&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%2&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;You have to change or remove the conflicting flight(s) before removing this pilot from the database.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1981,7 +1981,7 @@ Error: %2</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="393"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="401"/>
         <source>&lt;h3&gt;&lt;center&gt;About openPilotLog&lt;/center&gt;&lt;/h3&gt;&lt;br&gt;&amp;#169; 2020-2021 Felix Turowsky&lt;br&gt;&lt;p&gt;This is a collaboratively developed Free and Open Source Application. Visit us &lt;a href=&quot;https://%1/&quot;&gt;here&lt;/a&gt; for more information.&lt;/p&gt;&lt;p&gt;This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&lt;/p&gt; &lt;p&gt;You should have received a copy of the GNU General Public License along with this program.  If not, please click &lt;a href=&quot;https://%2&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;br&gt;&lt;p&gt;This program uses &lt;a href=&quot;http://%3/&quot;&gt;Qt&lt;/a&gt; version %4 and &lt;a href=&quot;https://%5/&quot;&gt;SQLite&lt;/a&gt; version %6&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2416,23 +2416,28 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="364"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="372"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="365"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="373"/>
         <source>Enabling incomplete logging will enable you to add aircraft with incomplete data.&lt;br&gt;&lt;br&gt;If you do not fill out the aircraft details, it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time. This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.&lt;br&gt;&lt;br&gt;It is highly recommended to keep this option off unless you have a specific reason not to.&lt;br&gt;&lt;br&gt;Are you sure you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="473"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="481"/>
         <source>The style you have currently selected may not be fully compatible with changing to a custom font while the application is running.&lt;br&gt;&lt;br&gt;Applying your changes may require restarting the application.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="494"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="502"/>
         <source>The application will be restarted for this change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="723"/>
+        <source>Translations are not yet available. If you are interested in making openPilotLog available in your native language, visit us &lt;a href=&quot;https://%1/&quot;&gt;here&lt;/a&gt; for more information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

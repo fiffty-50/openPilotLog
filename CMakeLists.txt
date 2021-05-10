@@ -111,7 +111,11 @@ set(PROJECT_SOURCES
     assets/templates.qrc
 )
 
-
+# This is currently a bit buggy, see
+# https://bugreports.qt.io/browse/QTBUG-41736
+# https://bugreports.qt.io/browse/QTBUG-76410
+# Before working on the translations themselves, check for updates and consider not updating for
+# every build due to danger of loss of translations...
 set(TS_FILES
     l10n/openpilotlog_en.ts
     l10n/openpilotlog_de.ts
@@ -119,16 +123,6 @@ set(TS_FILES
 )
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "l10n")
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-# This is currently a bit buggy, see
-# https://bugreports.qt.io/browse/QTBUG-41736
-# https://bugreports.qt.io/browse/QTBUG-76410
-# Before working on the translations themselves, check for updates
-
-# Call lrelease on the ts files and place them in output/l10n/
-#qt5_add_translation(QM_FILES ${TS_FILES})
-#qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} l10n/openpilotlog_en.ts l10n/openpilotlog_de.ts l10n/openpilotlog_es.ts)
-
-
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
