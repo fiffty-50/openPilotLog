@@ -35,6 +35,7 @@ set(PROJECT_SOURCES
     src/classes/asettings.cpp
     src/classes/atailentry.cpp
     src/classes/atranslator.cpp
+    src/classes/ajson.cpp
     src/database/adatabase.cpp
     src/database/adatabasesetup.cpp
     src/functions/acalc.cpp
@@ -69,6 +70,7 @@ set(PROJECT_SOURCES
     src/classes/asettings.h
     src/classes/atailentry.h
     src/classes/atranslator.h
+    src/classes/ajson.h
     src/database/adatabase.h
     src/database/adatabasesetup.h
     src/database/adatabasetypes.h

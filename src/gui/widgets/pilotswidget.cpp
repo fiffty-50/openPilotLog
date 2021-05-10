@@ -194,7 +194,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
 void PilotsWidget::onDeleteUnsuccessful()
 {
     const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
-                                                                       ADatabaseTarget::pilots);
+                                                                       ADatabaseTables::pilots);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
         constrained_flights.append(aDB->getFlightEntry(row_id));

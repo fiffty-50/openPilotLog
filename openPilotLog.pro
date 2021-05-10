@@ -32,6 +32,7 @@ SOURCES += \
     src/classes/asettings.cpp \
     src/classes/atailentry.cpp \
     src/classes/atranslator.cpp \
+    src/classes/ajson.cpp \
     src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
     src/functions/acalc.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/classes/atailentry.h \
     src/database/adatabase.h \
     src/classes/atranslator.h \
+    src/classes/ajson.h \
     src/database/adatabasesetup.h \
     src/database/adatabasetypes.h \
     src/functions/acalc.h \

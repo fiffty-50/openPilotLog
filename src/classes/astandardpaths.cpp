@@ -30,7 +30,9 @@ bool AStandardPaths::setup()
         {Backup, QDir(QStandardPaths::writableLocation(data_location)
          + QLatin1String("/backup"))},
         {Log, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/log"))}
+         + QLatin1String("/log"))},
+        {JSON, QDir(QStandardPaths::writableLocation(data_location)
+         + QLatin1String("/json"))}
     };
     if (scan_directories())
         return true;

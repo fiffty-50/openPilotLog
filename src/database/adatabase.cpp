@@ -52,12 +52,12 @@ int ADatabase::checkDbVersion() const
     return query.value(0).toInt();
 }
 
-ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
+const ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
 {
     return tableColumns.value(table_name);
 }
 
-TableNames_T ADatabase::getTableNames() const
+const TableNames_T ADatabase::getTableNames() const
 {
     return tableNames;
 }
@@ -562,18 +562,18 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
     return id_map;
 }
 
-int ADatabase::getLastEntry(ADatabaseTarget target)
+int ADatabase::getLastEntry(ADatabaseTables table)
 {
     QString statement = QLatin1String("SELECT MAX(ROWID) FROM ");
 
-    switch (target) {
-    case ADatabaseTarget::pilots:
+    switch (table) {
+    case ADatabaseTables::pilots:
         statement.append(Opl::Db::TABLE_PILOTS);
         break;
-    case ADatabaseTarget::aircraft:
+    case ADatabaseTables::aircraft:
         statement.append(Opl::Db::TABLE_AIRCRAFT);
         break;
-    case ADatabaseTarget::tails:
+    case ADatabaseTables::tails:
         statement.append(Opl::Db::TABLE_TAILS);
         break;
     default:
@@ -590,15 +590,15 @@ int ADatabase::getLastEntry(ADatabaseTarget target)
     }
 }
 
-QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target)
+QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTables target)
 {
     QString statement = QLatin1String("SELECT ROWID FROM flights WHERE ");
 
     switch (target) {
-    case ADatabaseTarget::pilots:
+    case ADatabaseTables::pilots:
         statement.append(QLatin1String("pic=?"));
         break;
-    case ADatabaseTarget::tails:
+    case ADatabaseTables::tails:
         statement.append(QLatin1String("acft=?"));
         break;
     default:
@@ -757,6 +757,52 @@ bool ADatabase::createBackup(const QString& dest_file)
     ADatabase::connect();
     emit connectionReset();
     return true;
+}
+
+QVector<RowData_T> ADatabase::getTable(ADatabaseTables table_name)
+{
+    auto query_str = QStringLiteral("SELECT * FROM ");
+    switch (table_name) {
+    case ADatabaseTables::pilots:
+        query_str.append(Opl::Db::TABLE_PILOTS);
+        break;
+    case ADatabaseTables::tails:
+        query_str.append(Opl::Db::TABLE_TAILS);
+        break;
+    case ADatabaseTables::flights:
+        query_str.append(Opl::Db::TABLE_FLIGHTS);
+        break;
+    case ADatabaseTables::currencies:
+        query_str.append(Opl::Db::TABLE_CURRENCIES);
+    default:
+        break;
+    }
+
+    QSqlQuery q;
+    q.prepare(query_str);
+    q.setForwardOnly(true);
+    q.exec();
+
+    if (q.lastError().type() != QSqlError::NoError) {
+        LOG << "SQL error: " << q.lastError().text();
+        LOG << "Statement: " << query_str;
+        lastError = q.lastError().text();
+        return {};
+    }
+
+    QVector<RowData_T> entry_data;
+    while(q.next()) { // iterate through records
+        auto r = q.record();
+        //DEB << r;
+        RowData_T row;
+        for (int i = 0; i < r.count(); i++){
+            if(!r.value(i).isNull()) {
+                row.insert(r.fieldName(i), r.value(i));
+            }
+        }
+        entry_data.append(row);
+    }
+    return entry_data;
 }
 
 /*!

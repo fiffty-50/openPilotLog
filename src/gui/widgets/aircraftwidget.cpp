@@ -213,7 +213,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
 void AircraftWidget::onDeleteUnsuccessful()
 {
     QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
-                                                                       ADatabaseTarget::tails);
+                                                                       ADatabaseTables::tails);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(aDB->getFlightEntry(row_id));

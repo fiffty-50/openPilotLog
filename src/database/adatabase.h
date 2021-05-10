@@ -57,15 +57,25 @@
  */
 enum class ADatabaseTarget
 {
-    aircraft,
+
     airport_identifier_icao,
     airport_identifier_iata,
     airport_identifier_all,
     airport_names,
-    pilots,
     registrations,
     companies,
-    tails
+    tails,
+    pilots,
+    aircraft
+};
+
+enum class ADatabaseTables
+{
+    tails,
+    flights,
+    currencies,
+    aircraft,
+    pilots,
 };
 
 /*!
@@ -129,12 +139,12 @@ public:
     /*!
      * \brief Return the names of all tables in the database
      */
-    TableNames_T getTableNames() const;
+    const TableNames_T getTableNames() const;
 
     /*!
      * \brief Return the names of a given table in the database.
      */
-    ColumnNames_T getTableColumns(TableName_T table_name) const;
+    const ColumnNames_T getTableColumns(TableName_T table_name) const;
 
     /*!
      * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
@@ -275,13 +285,13 @@ public:
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTarget target);
+    int getLastEntry(ADatabaseTables table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target);
+    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTables target);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
@@ -312,6 +322,12 @@ public:
 
     bool restoreBackup(const QString& backup_file);
     bool createBackup(const QString& dest_file);
+
+    /*!
+     * \brief getTable returns all contents of a given table from the database
+     * \return
+     */
+    QVector<RowData_T> getTable(ADatabaseTables table_name);
 
 
 signals:

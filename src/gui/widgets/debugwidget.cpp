@@ -28,6 +28,14 @@
 #include "src/classes/acurrencyentry.h"
 #include "src/classes/atranslator.h"
 
+#include "src/classes/ajson.h"
+void DebugWidget::on_debugPushButton_clicked()
+{
+
+    AJson::exportDatabase();
+    DEB << AStandardPaths::asChildOfDir(AStandardPaths::JSON,"file_name");
+}
+
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DebugWidget)
@@ -183,15 +191,6 @@ void DebugWidget::on_importCsvPushButton_clicked()
         message_box.setText("Please select a valid file.");
         message_box.exec();
     }
-}
-
-#include "src/functions/adate.h"
-void DebugWidget::on_debugPushButton_clicked()
-{
-    //auto frdl = new FirstRunDialog(this);
-    //frdl->exec();
-    ATranslator::installTranslator(Opl::Translations::Spanish);
-    //ui->retranslateUi(this);
 }
 
 void DebugWidget::changeEvent(QEvent *event)
