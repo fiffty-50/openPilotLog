@@ -108,6 +108,12 @@ private:
     void onDeleteUnsuccessful();
 
     inline void refreshView(){model->select();}
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // AIRCRAFTWIDGET_H

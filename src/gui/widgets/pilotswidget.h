@@ -100,6 +100,12 @@ private:
     void connectSignalsAndSlots();
 
     inline void refreshView(){model->select();}
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // PILOTSWIDGET_H

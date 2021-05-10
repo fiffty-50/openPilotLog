@@ -24,7 +24,8 @@ var hierarchy =
     [ "QObject", null, [
       [ "ADatabase", "class_a_database.html", null ],
       [ "ADownload", "class_a_download.html", null ],
-      [ "ATimer", "class_a_timer.html", null ]
+      [ "ATimer", "class_a_timer.html", null ],
+      [ "ATranslator", "class_a_translator.html", null ]
     ] ],
     [ "QSqlError", null, [
       [ "ADatabaseError", "class_a_database_error.html", null ]

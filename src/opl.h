@@ -84,6 +84,19 @@ public:
     };
 }; // class ANotificationHandler
 
+enum class Translations {English, German, Spanish};
+
+const static QMap<Opl::Translations, QString> L10N_FILES {
+    {Opl::Translations::English, QStringLiteral("l10n/openpilotlog_en")},
+    {Opl::Translations::German,  QStringLiteral("l10n/openpilotlog_de")},
+    {Opl::Translations::Spanish, QStringLiteral("l10n/openpilotlog_es")},
+};
+static const QMap<Translations, QString> L10N_NAMES {
+    {Opl::Translations::English, QStringLiteral("English")},
+    {Opl::Translations::German,  QStringLiteral("Deutsch")},
+    {Opl::Translations::Spanish, QStringLiteral("Español")},
+};
+
 static const auto ApproachTypes = QStringList{
         QLatin1String("VISUAL"),
         QLatin1String("ILS CAT I"),

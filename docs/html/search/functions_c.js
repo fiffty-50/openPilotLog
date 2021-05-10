@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['radtodeg_203',['radToDeg',['../namespace_a_calc.html#a2a540662e22840e4b58e8e760611b4f2',1,'ACalc']]],
-  ['radtonauticalmiles_204',['radToNauticalMiles',['../namespace_a_calc.html#a37c52e8b522b233087b8c4d94f30fca5',1,'ACalc']]],
-  ['refresh_205',['refresh',['../class_logbook_widget.html#a45048f4dd6ffb82da6a725503df97cf1',1,'LogbookWidget']]],
-  ['remove_206',['remove',['../class_a_database.html#a4903909a28daed708e1a335d3be4f57b',1,'ADatabase']]],
-  ['removemany_207',['removeMany',['../class_a_database.html#a863d30e9e3a7c14adfe72787363618c8',1,'ADatabase']]],
-  ['repopulatemodel_208',['repopulateModel',['../class_aircraft_widget.html#a1b1faca35af681e28472d0b84ad52c4f',1,'AircraftWidget::repopulateModel()'],['../class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1',1,'LogbookWidget::repopulateModel()'],['../class_pilots_widget.html#a4997160bff58f13ea78e5894dcbf61e2',1,'PilotsWidget::repopulateModel()']]],
-  ['resettodefault_209',['resetToDefault',['../class_a_data_base_setup.html#a89fee11dbb1510262a783ee97d946ab7',1,'ADataBaseSetup']]],
-  ['resettodefaults_210',['resetToDefaults',['../class_a_settings.html#a2dbc2e3510363c09e45223f4bbdc5e59',1,'ASettings']]],
-  ['resolveforeignpilot_211',['resolveForeignPilot',['../class_a_database.html#a4640a4348dad468a0ff65bad05b07227',1,'ADatabase']]],
-  ['resolveforeigntail_212',['resolveForeignTail',['../class_a_database.html#a5878bcd4bc19e4c3fc5275ca7252860d',1,'ADatabase']]],
-  ['restorebackup_213',['restoreBackup',['../class_a_database.html#a0bda52064f005f1463e56b60cd23b164',1,'ADatabase']]]
+  ['radtodeg_211',['radToDeg',['../namespace_a_calc.html#a2a540662e22840e4b58e8e760611b4f2',1,'ACalc']]],
+  ['radtonauticalmiles_212',['radToNauticalMiles',['../namespace_a_calc.html#a37c52e8b522b233087b8c4d94f30fca5',1,'ACalc']]],
+  ['refresh_213',['refresh',['../class_logbook_widget.html#a45048f4dd6ffb82da6a725503df97cf1',1,'LogbookWidget']]],
+  ['remove_214',['remove',['../class_a_database.html#a4903909a28daed708e1a335d3be4f57b',1,'ADatabase']]],
+  ['removemany_215',['removeMany',['../class_a_database.html#a863d30e9e3a7c14adfe72787363618c8',1,'ADatabase']]],
+  ['repopulatemodel_216',['repopulateModel',['../class_aircraft_widget.html#a1b1faca35af681e28472d0b84ad52c4f',1,'AircraftWidget::repopulateModel()'],['../class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1',1,'LogbookWidget::repopulateModel()'],['../class_pilots_widget.html#a4997160bff58f13ea78e5894dcbf61e2',1,'PilotsWidget::repopulateModel()']]],
+  ['resettodefault_217',['resetToDefault',['../class_a_data_base_setup.html#a89fee11dbb1510262a783ee97d946ab7',1,'ADataBaseSetup']]],
+  ['resettodefaults_218',['resetToDefaults',['../class_a_settings.html#a2dbc2e3510363c09e45223f4bbdc5e59',1,'ASettings']]],
+  ['resolveforeignpilot_219',['resolveForeignPilot',['../class_a_database.html#a4640a4348dad468a0ff65bad05b07227',1,'ADatabase']]],
+  ['resolveforeigntail_220',['resolveForeignTail',['../class_a_database.html#a5878bcd4bc19e4c3fc5275ca7252860d',1,'ADatabase']]],
+  ['restorebackup_221',['restoreBackup',['../class_a_database.html#a0bda52064f005f1463e56b60cd23b164',1,'ADatabase']]]
 ];

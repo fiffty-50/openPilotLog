@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_USE_QSTRINGBUILDER")
 MESSAGE ("Enabling QStringBuilder")
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools REQUIRED)
 # find_package(OpenSSL REQUIRED) # Pending testing
 
 set(PROJECT_SOURCES
@@ -34,6 +34,7 @@ set(PROJECT_SOURCES
     src/classes/arunguard.cpp
     src/classes/asettings.cpp
     src/classes/atailentry.cpp
+    src/classes/atranslator.cpp
     src/database/adatabase.cpp
     src/database/adatabasesetup.cpp
     src/functions/acalc.cpp
@@ -67,6 +68,7 @@ set(PROJECT_SOURCES
     src/classes/arunguard.h
     src/classes/asettings.h
     src/classes/atailentry.h
+    src/classes/atranslator.h
     src/database/adatabase.h
     src/database/adatabasesetup.h
     src/database/adatabasetypes.h
@@ -109,13 +111,29 @@ set(PROJECT_SOURCES
     assets/templates.qrc
 )
 
+# This is currently a bit buggy, see
+# https://bugreports.qt.io/browse/QTBUG-41736
+# https://bugreports.qt.io/browse/QTBUG-76410
+# Before working on the translations themselves, check for updates and consider not updating for
+# every build due to danger of loss of translations...
+set(TS_FILES
+    l10n/openpilotlog_en.ts
+    l10n/openpilotlog_de.ts
+    l10n/openpilotlog_es.ts
+)
+set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "l10n")
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(openPilotLog
         ${PROJECT_SOURCES}
+        ${QM_FILES}
     )
 else()
     add_executable(openPilotLog
         ${PROJECT_SOURCES}
+        ${QM_FILES}
     )
 endif()
 

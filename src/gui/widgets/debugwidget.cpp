@@ -26,6 +26,7 @@
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
 #include "src/classes/acurrencyentry.h"
+#include "src/classes/atranslator.h"
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -187,9 +188,17 @@ void DebugWidget::on_importCsvPushButton_clicked()
 #include "src/functions/adate.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    auto frdl = new FirstRunDialog(this);
-    frdl->exec();
+    //auto frdl = new FirstRunDialog(this);
+    //frdl->exec();
+    ATranslator::installTranslator(Opl::Translations::Spanish);
+    //ui->retranslateUi(this);
+}
 
+void DebugWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
 }
 
 /* //Comparing two functions template

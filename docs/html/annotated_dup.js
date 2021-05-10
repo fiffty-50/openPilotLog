@@ -19,6 +19,7 @@ var annotated_dup =
     [ "AStyle", "class_a_style.html", null ],
     [ "ATailEntry", "struct_a_tail_entry.html", "struct_a_tail_entry" ],
     [ "ATimer", "class_a_timer.html", "class_a_timer" ],
+    [ "ATranslator", "class_a_translator.html", null ],
     [ "BackupWidget", "class_backup_widget.html", "class_backup_widget" ],
     [ "DataPosition", "struct_data_position.html", "struct_data_position" ],
     [ "DebugWidget", "class_debug_widget.html", "class_debug_widget" ],

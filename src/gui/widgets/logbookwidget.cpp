@@ -107,6 +107,13 @@ void LogbookWidget::connectSignalsAndSlots()
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
+
+void LogbookWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
 /*
  * Slots
  */

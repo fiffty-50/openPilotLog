@@ -83,6 +83,12 @@ private:
 
     void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // LOGBOOKWIDGET_H

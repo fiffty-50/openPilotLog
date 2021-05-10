@@ -74,6 +74,13 @@ void PilotsWidget::connectSignalsAndSlots()
                      this,                              &PilotsWidget::tableView_headerClicked);
 }
 
+void PilotsWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void PilotsWidget::onPilotsWidget_settingChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal == SettingsWidget::PilotsWidget)

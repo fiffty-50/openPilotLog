@@ -115,6 +115,8 @@ private slots:
 
     void on_dateFormatComboBox_currentIndexChanged(int index);
 
+    void on_languageComboBox_activated(const QString &arg1);
+
 private:
     Ui::SettingsWidget *ui;
 
@@ -137,6 +139,12 @@ signals:
      * an update (repaint) to another widget.
      */
     void settingChanged(SettingSignal widget);
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // SETTINGSWIDGET_H

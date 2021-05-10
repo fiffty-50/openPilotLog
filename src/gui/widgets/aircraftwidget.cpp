@@ -95,6 +95,13 @@ void AircraftWidget::onAircraftWidget_dataBaseUpdated()
     refreshView();
 }
 
+void AircraftWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void AircraftWidget::onNewTailDialog_editingFinished()
 {
     refreshView();
