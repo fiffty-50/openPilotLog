@@ -51,6 +51,13 @@ public:
 
     static bool commitData(QVector<QStringList> from_csv, const QString &table_name);
 
+    /*!
+     * \brief commitDataJson Commits data read from a JSON array to the database.
+     * \param json_arr
+     * \param table_name The table that will be written to
+     */
+    static bool commitDataJson(const QJsonArray &json_arr, const QString &table_name);
+
 private:
 
     static bool createSchemata(const QStringList &statements);

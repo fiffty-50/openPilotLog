@@ -31,7 +31,9 @@
 #include "src/classes/ajson.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    DEB << aDB->getEntryData(DataPosition("tails",1));
+    //AJson::exportDatabase();
+    AJson::importDatabase();
+    emit aDB->dataBaseUpdated();
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :

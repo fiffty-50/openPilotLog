@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef AJSON_H
 #define AJSON_H
 #include "src/opl.h"
@@ -22,8 +39,17 @@ public:
      */
     static void exportDatabase();
 
+    /*!
+     * \brief importDatabase imports a dataset from JSON. Files need to be at AStanardPaths::JSON for now.
+     */
+    static void importDatabase();
+
 private:
 
+    /*!
+     * \brief holds the tables with userdata that need to be processed.
+     */
+    const static QList<QPair<QLatin1String, ADatabaseTable>> tables;
     /*!
      * \brief writes a QJsonDocument to a file
      */
@@ -32,7 +58,7 @@ private:
     /*!
      * \brief To Do - Reads a file into a QJasonDocument
      */
-    static void readJson(const QString& file_name);
+    static QJsonDocument readJson(const QString& file_name);
 };
 
 #endif // AJSON_H

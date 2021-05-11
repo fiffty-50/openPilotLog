@@ -565,18 +565,18 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
     return id_map;
 }
 
-int ADatabase::getLastEntry(ADatabaseTables table)
+int ADatabase::getLastEntry(ADatabaseTable table)
 {
     QString statement = QLatin1String("SELECT MAX(ROWID) FROM ");
 
     switch (table) {
-    case ADatabaseTables::pilots:
+    case ADatabaseTable::pilots:
         statement.append(Opl::Db::TABLE_PILOTS);
         break;
-    case ADatabaseTables::aircraft:
+    case ADatabaseTable::aircraft:
         statement.append(Opl::Db::TABLE_AIRCRAFT);
         break;
-    case ADatabaseTables::tails:
+    case ADatabaseTable::tails:
         statement.append(Opl::Db::TABLE_TAILS);
         break;
     default:
@@ -593,15 +593,15 @@ int ADatabase::getLastEntry(ADatabaseTables table)
     }
 }
 
-QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTables target)
+QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTable target)
 {
     QString statement = QLatin1String("SELECT ROWID FROM flights WHERE ");
 
     switch (target) {
-    case ADatabaseTables::pilots:
+    case ADatabaseTable::pilots:
         statement.append(QLatin1String("pic=?"));
         break;
-    case ADatabaseTables::tails:
+    case ADatabaseTable::tails:
         statement.append(QLatin1String("acft=?"));
         break;
     default:
@@ -762,20 +762,20 @@ bool ADatabase::createBackup(const QString& dest_file)
     return true;
 }
 
-QVector<RowData_T> ADatabase::getTable(ADatabaseTables table_name)
+QVector<RowData_T> ADatabase::getTable(ADatabaseTable table_name)
 {
     auto query_str = QStringLiteral("SELECT * FROM ");
     switch (table_name) {
-    case ADatabaseTables::pilots:
+    case ADatabaseTable::pilots:
         query_str.append(Opl::Db::TABLE_PILOTS);
         break;
-    case ADatabaseTables::tails:
+    case ADatabaseTable::tails:
         query_str.append(Opl::Db::TABLE_TAILS);
         break;
-    case ADatabaseTables::flights:
+    case ADatabaseTable::flights:
         query_str.append(Opl::Db::TABLE_FLIGHTS);
         break;
-    case ADatabaseTables::currencies:
+    case ADatabaseTable::currencies:
         query_str.append(Opl::Db::TABLE_CURRENCIES);
     default:
         break;

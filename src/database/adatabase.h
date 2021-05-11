@@ -68,7 +68,7 @@ enum class ADatabaseTarget
     aircraft
 };
 
-enum class ADatabaseTables
+enum class ADatabaseTable
 {
     tails,
     flights,
@@ -284,13 +284,13 @@ public:
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTables table);
+    int getLastEntry(ADatabaseTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTables target);
+    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTable target);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
@@ -326,7 +326,7 @@ public:
      * \brief getTable returns all contents of a given table from the database
      * \return
      */
-    QVector<RowData_T> getTable(ADatabaseTables table_name);
+    QVector<RowData_T> getTable(ADatabaseTable table_name);
 
 
 signals:
