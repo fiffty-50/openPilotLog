@@ -43,7 +43,7 @@
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
 /*!
- * \brief Convinience macro that returns instance of DataBase.
+ * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
@@ -57,7 +57,6 @@
  */
 enum class ADatabaseTarget
 {
-
     airport_identifier_icao,
     airport_identifier_iata,
     airport_identifier_all,

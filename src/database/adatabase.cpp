@@ -328,7 +328,7 @@ bool ADatabase::insert(AEntry new_entry)
     QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");
     QMap<QString, QVariant>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
-        statement.append(i.key() + ',');
+        statement.append(i.key() + QLatin1Char(','));
     }
     statement.chop(1);
     statement += QLatin1String(") VALUES (");
@@ -337,7 +337,7 @@ bool ADatabase::insert(AEntry new_entry)
         statement += QLatin1String("?,");
     }
     statement.chop(1);
-    statement += ')';
+    statement += QLatin1Char(')');
 
     QSqlQuery query;
     query.prepare(statement);
@@ -413,14 +413,17 @@ RowData_T ADatabase::getEntryData(DataPosition data_position)
         DEB << "SQL error: " << select_query.lastError().text();
         DEB << "Statement: " << statement;
         lastError = select_query.lastError().text();
-        return RowData_T();
+        return {};
     }
 
-    select_query.next();
     RowData_T entry_data;
-
-    for (const auto &column : getTableColumns(data_position.tableName)) {
-        entry_data.insert(column, select_query.value(column));
+    if(select_query.next()) { // retreive records
+        auto r = select_query.record();
+        for (int i = 0; i < r.count(); i++){
+            if(!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
     }
     return entry_data;
 }

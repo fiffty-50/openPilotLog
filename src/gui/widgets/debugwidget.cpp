@@ -31,9 +31,7 @@
 #include "src/classes/ajson.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-
-    AJson::exportDatabase();
-    DEB << AStandardPaths::asChildOfDir(AStandardPaths::JSON,"file_name");
+    DEB << aDB->getEntryData(DataPosition("tails",1));
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :

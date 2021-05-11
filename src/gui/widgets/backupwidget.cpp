@@ -106,6 +106,8 @@ void BackupWidget::on_createLocalPushButton_clicked()
     if(!aDB->createBackup(filename)) {
         WARN(tr("Could not create local file: %1").arg(filename));
         return;
+    } else {
+        INFO(tr("Backup successfully created."));
     }
 
     QFileIconProvider provider;
@@ -145,6 +147,8 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
     if(!aDB->restoreBackup(backup_name)) {
        WARN(tr("Unable to restore Backup file: %1").arg(backup_name));
+    } else {
+        INFO(tr("Backup successfully restored."));
     }
 
     view->clearSelection();
@@ -182,6 +186,8 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     if(!file.remove()) {
         WARN(tr("Unable to remove file %1\nError: %2").arg(filename.fileName(),file.errorString()));
         return;
+    } else {
+        INFO(tr("Backup successfully deleted."));
     }
 
     model->removeRow(selectedFileInfo->row());
@@ -209,6 +215,8 @@ void BackupWidget::on_createExternalPushButton_clicked()
     if(!aDB->createBackup(filename)) {
         WARN(tr("Unable to backup file:").arg(filename));
         return;
+    } else {
+        INFO(tr("Backup successfully created."));
     }
 }
 
