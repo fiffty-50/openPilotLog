@@ -274,15 +274,15 @@ bool createDatabase()
 
     aDB->updateLayout();
 
-    if (!errors.isEmpty()) {
+    if (errors.isEmpty()) {
+        LOG << "Database succesfully created.";
+        return true;
+    } else {
         LOG << "Database creation has failed. The following error(s) have ocurred: ";
         for (const auto &error : qAsConst(errors)) {
             LOG << error.type() << error.text();
         }
         return false;
-    } else {
-        LOG << "Database succesfully created.";
-        return true;
     }
 }
 
