@@ -4,27 +4,27 @@
 <context>
     <name>ADatabase</name>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="790"/>
+        <location filename="../src/database/adatabase.cpp" line="733"/>
         <source>&lt;tr&gt;&lt;td&gt;Total Time: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="791"/>
+        <location filename="../src/database/adatabase.cpp" line="734"/>
         <source>&lt;tr&gt;&lt;td&gt;Last Flight: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="792"/>
+        <location filename="../src/database/adatabase.cpp" line="735"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of flights: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="793"/>
+        <location filename="../src/database/adatabase.cpp" line="736"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of aircraft: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="794"/>
+        <location filename="../src/database/adatabase.cpp" line="737"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of Pilots: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -181,88 +181,104 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="125"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="110"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="219"/>
+        <source>Backup successfully created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="127"/>
         <source>No backup selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="138"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="140"/>
         <source>Restoring Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="139"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="141"/>
         <source>The following backup will be restored:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;This will replace your currently active database with the backup.&lt;br&gt;This action is irreversible.&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="147"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="149"/>
         <source>Unable to restore Backup file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="157"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="151"/>
+        <source>Backup successfully restored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="161"/>
         <source>No backup was selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="165"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="169"/>
         <source>Selected backup file (&lt;tt&gt;%1&lt;/tt&gt;) does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="173"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="177"/>
         <source>Delete Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="174"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="178"/>
         <source>The following backup will be deleted:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="183"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="187"/>
         <source>Unable to remove file %1
 Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="196"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="190"/>
+        <source>Backup successfully deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="202"/>
         <source>Choose destination file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="210"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="216"/>
         <source>Unable to backup file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="219"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="227"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="234"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="242"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="235"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="243"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="241"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="249"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="244"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="252"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="251"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="259"/>
         <source>&lt;h3&gt;&lt;center&gt;About Backups&lt;/center&gt;&lt;/h3&gt;&lt;br&gt;&lt;p&gt;By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can later be restored or kept for safekeeping. OpenPilotLog offers two kinds of backups: Local and External Backups.&lt;br&gt;&lt;br&gt;Local backups are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting &lt;b&gt;Create Local backup&lt;/b&gt; and restored with &lt;b&gt;Restore Local Backup&lt;/b&gt;.&lt;br&gt;When using &lt;b&gt;Create External Backup&lt;/b&gt;, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting it with &lt;b&gt;Restore external backup&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Frequent backups are recommended to guard against data loss or corruption. It is also recommended to keep a backup copy in a seperate location from your main computer to prevent data loss due to system failures.&lt;/p&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -346,12 +362,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="187"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="166"/>
         <source>Open CSV File for import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="189"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="168"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>

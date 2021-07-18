@@ -23,8 +23,6 @@
 #include <QJsonValue>
 #include <QJsonObject>
 
-
-
 /*!
  * \brief The AJSON class is responsible for parsing the database (sqlite) to and from JSON.
  */
@@ -35,7 +33,11 @@ public:
     AJson(QFileInfo database_file);
 
     /*!
-     * \brief exportDatabase exports the currently active database to JSON. Files are created at AStandardPaths::JSON.
+     * \brief exportDatabase exports the currently active database to JSON.
+     *
+     * \details QJsonObject can be constructed from QMap<QString, QVariant> aka QVariantmap.
+     * All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which
+     * can be exported. The files are created at AStandardPaths::JSON.
      */
     static void exportDatabase();
 
@@ -49,7 +51,8 @@ private:
     /*!
      * \brief holds the tables with userdata that need to be processed.
      */
-    const static QList<QPair<QLatin1String, ADatabaseTable>> tables;
+    const static QList<QPair<TableName_T, ADatabaseTable>> tables;
+
     /*!
      * \brief writes a QJsonDocument to a file
      */

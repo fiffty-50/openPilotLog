@@ -4,5 +4,9 @@
         <file>database/templates/airports.csv</file>
         <file>database/templates/changelog.csv</file>
         <file>database/templates/currencies.csv</file>
+        <file>database/templates/aircraft.json</file>
+        <file>database/templates/airports.json</file>
+        <file>database/templates/changelog.json</file>
+        <file>database/templates/currencies.json</file>
     </qresource>
 </RCC>

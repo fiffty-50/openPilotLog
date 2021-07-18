@@ -18,7 +18,7 @@
 #include "ajson.h"
 #include "src/database/adatabasesetup.h"
 
-const QList<QPair<QLatin1String, ADatabaseTable>> AJson::tables {
+const QList<QPair<TableName_T, ADatabaseTable>> AJson::tables {
     qMakePair(Opl::Db::TABLE_TAILS, ADatabaseTable::tails),
     qMakePair(Opl::Db::TABLE_PILOTS, ADatabaseTable::pilots),
     qMakePair(Opl::Db::TABLE_CURRENCIES, ADatabaseTable::currencies),
@@ -28,11 +28,13 @@ const QList<QPair<QLatin1String, ADatabaseTable>> AJson::tables {
 void AJson::exportDatabase()
 {
     for (const auto &pair : tables){
-        QJsonArray arr;
+        QJsonArray array;
         const auto rows = aDB->getTable(pair.second);
+
         for (const auto & row : rows)
-            arr.append(QJsonObject::fromVariantMap(row));
-        QJsonDocument doc(arr);
+            array.append(QJsonObject::fromVariantMap(row));
+
+        QJsonDocument doc(array);
         writeJson(doc, pair.first + QLatin1String(".json"));
     }
 }
@@ -40,10 +42,11 @@ void AJson::exportDatabase()
 void AJson::importDatabase()
 {
     TODO << "Another function should do some checking here if data exists etc...";
+    TODO << "Make the function take a list of files/fileinfo as arguments";
     // clear tables
     QSqlQuery q;
     // make sure flights is cleared first due to foreign key contstraints
-    q.prepare(QLatin1String("DELETE FROM FLIGHTS"));
+    q.prepare(QStringLiteral("DELETE FROM FLIGHTS"));
     q.exec();
     for (const auto & pair : tables) {
         q.prepare(QLatin1String("DELETE FROM ") + pair.first);
@@ -51,16 +54,15 @@ void AJson::importDatabase()
         const auto doc = readJson(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
                                                                pair.first + QLatin1String(".json")));
         ADataBaseSetup::commitDataJson(doc.array(), pair.first);
-
     }
 }
 
 void AJson::writeJson(const QJsonDocument &doc, const QString &file_name)
 {
-    QFile pilots_out(AStandardPaths::asChildOfDir(AStandardPaths::JSON,file_name));
-    pilots_out.open(QFile::WriteOnly);
-    pilots_out.write(doc.toJson());
-    pilots_out.close();
+    QFile out(AStandardPaths::asChildOfDir(AStandardPaths::JSON,file_name));
+    out.open(QFile::WriteOnly);
+    out.write(doc.toJson());
+    out.close();
 }
 
 QJsonDocument AJson::readJson(const QString &file_path)
