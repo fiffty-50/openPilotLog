@@ -57,6 +57,17 @@ void AJson::importDatabase()
     }
 }
 
+QJsonDocument AJson::readJsonToDocument(const QString &file_path)
+{
+    QFile file(file_path);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString raw = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(raw.toUtf8());
+    return doc;
+}
+
 void AJson::writeJson(const QJsonDocument &doc, const QString &file_name)
 {
     QFile out(AStandardPaths::asChildOfDir(AStandardPaths::JSON,file_name));
@@ -65,6 +76,7 @@ void AJson::writeJson(const QJsonDocument &doc, const QString &file_name)
     out.close();
 }
 
+QT_DEPRECATED
 QJsonDocument AJson::readJson(const QString &file_path)
 {
     QFile file(file_path);

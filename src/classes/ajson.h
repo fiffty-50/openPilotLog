@@ -46,6 +46,12 @@ public:
      */
     static void importDatabase();
 
+    /*!
+     * \brief readJsonToDocument reads data from a JSON file into a QJSonDocument and returns the document
+     * \param file_path
+     */
+    static QJsonDocument readJsonToDocument(const QString &file_path);
+
 private:
 
     /*!

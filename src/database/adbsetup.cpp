@@ -2,6 +2,7 @@
 #include "src/opl.h"
 #include "src/database/adatabase.h"
 #include "src/functions/alog.h"
+#include "src/classes/ajson.h"
 
 namespace aDbSetup {
 
@@ -286,4 +287,92 @@ bool createDatabase()
     }
 }
 
-} //namespace aDbSetup
+void clear()
+{
+    QSqlQuery q;
+
+    for (const auto &table_name : USER_TABLE_NAMES) {
+        q.prepare("DELETE FROM " + table_name);
+        if (!q.exec()) {
+            DEB << "Error: " << q.lastError().text();
+        }
+    }
+}
+
+bool commitData(const QJsonArray &json_arr, const QString &table_name)
+{
+    //aDB->updateLayout(); // needed?
+    QSqlQuery q;
+
+    // create insert statement
+    QString statement = QLatin1String("INSERT INTO ") + table_name + QLatin1String(" (");
+    QString placeholder = QStringLiteral(") VALUES (");
+    for (const auto &column_name : aDB->getTableColumns(table_name)) {
+        statement += column_name + ',';
+        placeholder.append(QLatin1Char(':') + column_name + QLatin1Char(','));
+    }
+
+    statement.chop(1);
+    placeholder.chop(1);
+    placeholder.append(')');
+    statement.append(placeholder);
+
+    q.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
+    q.exec();
+    //DEB << statement;
+    for (const auto &entry : json_arr) {
+        q.prepare(statement);
+
+        auto object = entry.toObject();
+        const auto keys = object.keys();
+        for (const auto &key : keys){
+            object.value(key).isNull() ? q.bindValue(key, QVariant(QVariant::String)) :
+                                         q.bindValue(QLatin1Char(':') + key, object.value(key).toVariant());
+        }
+
+        q.exec();
+    }
+
+    q.prepare(QStringLiteral("COMMIT"));
+    if (q.exec())
+        return true;
+    else
+        return false;
+}
+
+bool importTemplateData(bool use_local_ressources)
+{
+    QSqlQuery q;
+    // reset template tables
+    for (const auto& table_name : TEMPLATE_TABLE_NAMES) {
+        //clear table
+        q.prepare(QLatin1String("DELETE FROM ") + table_name);
+        if (!q.exec()) {
+            DEB << "Error: " << q.lastError().text();
+            return false;
+        }
+        //Prepare data
+        QJsonArray data_to_commit;
+        QString error_message("Error importing data ");
+
+        if (use_local_ressources) {
+            data_to_commit = AJson::readJsonToDocument(QStringLiteral(":templates/database/templates/")
+                                      + table_name + QLatin1String(".json")).array();
+            error_message.append(" (ressource) ");
+        } else {
+            data_to_commit = AJson::readJsonToDocument(AStandardPaths::directory(
+                                          AStandardPaths::Templates).absoluteFilePath(
+                                          table_name + QLatin1String(".json"))).array();
+            error_message.append(" (downloaded) ");
+        }
+
+        // commit Data from Array
+        if (!commitData(data_to_commit, table_name)) {
+            LOG << error_message;
+            return false;
+        }
+    } // for table_name
+    return false;
+}
+
+} // namespace aDbSetup
