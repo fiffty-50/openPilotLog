@@ -47,10 +47,15 @@ public:
     static void importDatabase();
 
     /*!
-     * \brief readJsonToDocument reads data from a JSON file into a QJSonDocument and returns the document
+     * \brief readToDocument reads data from a JSON file into a QJSonDocument
      * \param file_path
      */
-    static QJsonDocument readJsonToDocument(const QString &file_path);
+    static QJsonDocument readFileToDoc(const QString &file_path);
+
+    /*!
+     * \brief writes a QJsonDocument to a file
+     */
+    static void writeDocToFile(const QJsonDocument &doc, const QString& file_name);
 
 private:
 
@@ -59,15 +64,6 @@ private:
      */
     const static QList<QPair<TableName_T, ADatabaseTable>> tables;
 
-    /*!
-     * \brief writes a QJsonDocument to a file
-     */
-    static void writeJson(const QJsonDocument &doc, const QString& file_name);
-
-    /*!
-     * \brief To Do - Reads a file into a QJasonDocument
-     */
-    static QJsonDocument readJson(const QString& file_name);
 };
 
 #endif // AJSON_H

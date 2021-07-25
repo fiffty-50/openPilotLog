@@ -31,9 +31,15 @@
 #include "src/classes/ajson.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    //AJson::exportDatabase();
-    AJson::importDatabase();
-    emit aDB->dataBaseUpdated();
+    // Debug
+    QString query = "Invalid";
+    aDB->getAircraftEntry(4444);
+    DEB << aDB->lastError.type();
+    aDB->customQuery(query, 3);
+    DEB << aDB->lastError.type();
+    aDB->customQuery("SELECT * FROM FLIGHTS", 1);
+    DEB << aDB->lastError.type();
+
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :

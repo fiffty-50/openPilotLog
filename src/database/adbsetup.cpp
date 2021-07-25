@@ -6,7 +6,6 @@
 
 namespace aDbSetup {
 
-static inline const auto DATABASE_REVISION = 17;
 // const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/tree/main/assets/database/templates/");
 const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
@@ -242,17 +241,6 @@ const QStringList DATABASE_VIEWS = {
     CREATE_VIEW_TOTALS,
     CREATE_VIEW_QCOMPLETER,
 };
-const QStringList USER_TABLE_NAMES = {
-    QStringLiteral("flights"),
-    QStringLiteral("pilots"),
-    QStringLiteral("tails")
-};
-const QStringList TEMPLATE_TABLE_NAMES = {
-    QStringLiteral("aircraft"),
-    QStringLiteral("airports"),
-    QStringLiteral("currencies"),
-    QStringLiteral("changelog")
-};
 
 bool createDatabase()
 {
@@ -261,15 +249,13 @@ bool createDatabase()
     // Create Tables
     for (const auto &query_string : DATABASE_TABLES) {
         q.prepare(query_string);
-        q.exec();
-        if (!q.isActive())
+        if (!q.exec())
             errors.append(q.lastError());
     }
     // Create Views
     for (const auto &query_string : DATABASE_VIEWS) {
         q.prepare(query_string);
-        q.exec();
-        if (!q.isActive())
+        if (!q.exec())
             errors.append(q.lastError());
     }
 
@@ -284,18 +270,6 @@ bool createDatabase()
             LOG << error.type() << error.text();
         }
         return false;
-    }
-}
-
-void clear()
-{
-    QSqlQuery q;
-
-    for (const auto &table_name : USER_TABLE_NAMES) {
-        q.prepare("DELETE FROM " + table_name);
-        if (!q.exec()) {
-            DEB << "Error: " << q.lastError().text();
-        }
     }
 }
 
@@ -342,28 +316,31 @@ bool commitData(const QJsonArray &json_arr, const QString &table_name)
 
 bool importTemplateData(bool use_local_ressources)
 {
-    QSqlQuery q;
+    //QSqlQuery q;
     // reset template tables
-    for (const auto& table_name : TEMPLATE_TABLE_NAMES) {
+    const auto table_names = aDB->getTemplateTableNames();
+    for (const auto& table_name : table_names) {
+
         //clear table
-        q.prepare(QLatin1String("DELETE FROM ") + table_name);
-        if (!q.exec()) {
-            DEB << "Error: " << q.lastError().text();
-            return false;
-        }
+        //q.prepare(QLatin1String("DELETE FROM ") + table_name);
+        //if (!q.exec()) {
+        //    DEB << "Error: " << q.lastError().text();
+        //    return false;
+        //}
+
         //Prepare data
         QJsonArray data_to_commit;
         QString error_message("Error importing data ");
 
         if (use_local_ressources) {
-            data_to_commit = AJson::readJsonToDocument(QStringLiteral(":templates/database/templates/")
+            data_to_commit = AJson::readFileToDoc(QLatin1String(":templates/database/templates/")
                                       + table_name + QLatin1String(".json")).array();
-            error_message.append(" (ressource) ");
+            error_message.append(QLatin1String(" (ressource) "));
         } else {
-            data_to_commit = AJson::readJsonToDocument(AStandardPaths::directory(
+            data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
                                           AStandardPaths::Templates).absoluteFilePath(
                                           table_name + QLatin1String(".json"))).array();
-            error_message.append(" (downloaded) ");
+            error_message.append(QLatin1String(" (downloaded) "));
         }
 
         // commit Data from Array

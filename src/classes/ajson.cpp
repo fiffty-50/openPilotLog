@@ -31,11 +31,11 @@ void AJson::exportDatabase()
         QJsonArray array;
         const auto rows = aDB->getTable(pair.second);
 
-        for (const auto & row : rows)
+        for (const auto &row : rows)
             array.append(QJsonObject::fromVariantMap(row));
 
         QJsonDocument doc(array);
-        writeJson(doc, pair.first + QLatin1String(".json"));
+        writeDocToFile(doc, pair.first + QLatin1String(".json"));
     }
 }
 
@@ -51,13 +51,13 @@ void AJson::importDatabase()
     for (const auto & pair : tables) {
         q.prepare(QLatin1String("DELETE FROM ") + pair.first);
         q.exec();
-        const auto doc = readJson(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
+        const auto doc = readFileToDoc(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
                                                                pair.first + QLatin1String(".json")));
         ADataBaseSetup::commitDataJson(doc.array(), pair.first);
     }
 }
 
-QJsonDocument AJson::readJsonToDocument(const QString &file_path)
+QJsonDocument AJson::readFileToDoc(const QString &file_path)
 {
     QFile file(file_path);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -68,22 +68,10 @@ QJsonDocument AJson::readJsonToDocument(const QString &file_path)
     return doc;
 }
 
-void AJson::writeJson(const QJsonDocument &doc, const QString &file_name)
+void AJson::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
 {
     QFile out(AStandardPaths::asChildOfDir(AStandardPaths::JSON,file_name));
     out.open(QFile::WriteOnly);
     out.write(doc.toJson());
     out.close();
-}
-
-QT_DEPRECATED
-QJsonDocument AJson::readJson(const QString &file_path)
-{
-    QFile file(file_path);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString raw = file.readAll();
-    file.close();
-
-    QJsonDocument doc = QJsonDocument::fromJson(raw.toUtf8());
-    return doc;
 }

@@ -4,27 +4,27 @@
 <context>
     <name>ADatabase</name>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="733"/>
+        <location filename="../src/database/adatabase.cpp" line="768"/>
         <source>&lt;tr&gt;&lt;td&gt;Total Time: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="734"/>
+        <location filename="../src/database/adatabase.cpp" line="769"/>
         <source>&lt;tr&gt;&lt;td&gt;Last Flight: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="735"/>
+        <location filename="../src/database/adatabase.cpp" line="770"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of flights: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="736"/>
+        <location filename="../src/database/adatabase.cpp" line="771"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of aircraft: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="737"/>
+        <location filename="../src/database/adatabase.cpp" line="772"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of Pilots: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>

@@ -91,12 +91,16 @@ enum class ADatabaseSummaryKey {
 /*!
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
+ * Errors that are related to SQL are assigned their respective error codes.
+ * Errors that occur with data in the database are handled with the error code "opl"
+ * and QSqlError::UnknownError
  */
 class ADatabaseError : public QSqlError {
 public:
-  ADatabaseError() = default;
-  ADatabaseError(QString msg);
-  QString text() const;
+    ADatabaseError() = default;
+    ADatabaseError(QString msg);
+    QString text() const;
+    ADatabaseError(QSqlError);
 };
 
 /*!
@@ -114,12 +118,19 @@ private:
 
     ADatabase();
     int checkDbVersion() const;
+
+    const static QStringList userTableNames;
+    const static QStringList templateTableNames;
 public:
     /*!
      * \brief lastError extends QSqlError. Holds information about the last error that ocurred during
-     * a SQL operation.
+     * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
+     * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
+     * case error.type() provides further information.
+     *
+     * If the error type is QSqlError::NoError, the last executed database query was successful.
      */
-    ADatabaseError lastError;
+    QSqlError lastError;
 
     const QFileInfo databaseFile;
 
@@ -185,6 +196,12 @@ public:
      */
     bool exists(AEntry entry);
     bool exists(DataPosition data_position);
+
+    /*!
+     * \brief clear resets the database, i.e. deletes all content in the tables containing
+     * userdata (pilots, flights, tails)
+     */
+    bool clear();
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
@@ -328,6 +345,9 @@ public:
      */
     QVector<RowData_T> getTable(ADatabaseTable table_name);
 
+    QStringList getUserTableNames();
+
+    QStringList getTemplateTableNames();
 
 signals:
     /*!
