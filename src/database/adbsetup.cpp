@@ -349,7 +349,7 @@ bool importTemplateData(bool use_local_ressources)
             return false;
         }
     } // for table_name
-    return false;
+    return true;
 }
 
 } // namespace aDbSetup

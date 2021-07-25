@@ -345,8 +345,18 @@ public:
      */
     QVector<RowData_T> getTable(ADatabaseTable table_name);
 
+    /*!
+     * \brief getUserTableNames returns a list of the table names of tables that contain user-created data
+     * (flights, pilots,..)
+     * \return
+     */
     QStringList getUserTableNames();
 
+    /*!
+     * \brief getTemplateTableNames returns a list of the table names of tables that contain template data
+     * (aiports, aircraft,..)
+     * \return
+     */
     QStringList getTemplateTableNames();
 
 signals:

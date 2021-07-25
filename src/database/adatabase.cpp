@@ -385,7 +385,7 @@ bool ADatabase::insert(AEntry new_entry)
     }
 
     //check result.
-    if (!query.exec())
+    if (query.exec())
     {
         DEB << "Entry successfully committed.";
         emit dataBaseUpdated();

@@ -68,10 +68,22 @@ private:
     bool createUserEntry();
     bool writeCurrencies();
     bool finishSetup();
+    bool downloadTemplates(QString branch_name);
 
     QList<QDateEdit*> dateEdits;
 
+protected:
     void reject() override;
+    /*!
+     * \brief Shows the debug widget by pressing <ctrl + t>
+     */
+
+    /*!
+     * \brief keyPressEvent ctrl + t enables debug mode, showing the branch selector
+     * which is used to select a git branch other than main for downloading the templates
+     * \param keyEvent
+     */
+    void keyPressEvent(QKeyEvent* keyEvent) override;
 };
 
 #endif // FIRSTRUNDIALOG_H

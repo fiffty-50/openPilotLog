@@ -22,6 +22,7 @@
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
+#include "src/gui/widgets/backupwidget.h"
 #include <QtGlobal>
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
@@ -32,13 +33,8 @@
 void DebugWidget::on_debugPushButton_clicked()
 {
     // Debug
-    QString query = "Invalid";
-    aDB->getAircraftEntry(4444);
-    DEB << aDB->lastError.type();
-    aDB->customQuery(query, 3);
-    DEB << aDB->lastError.type();
-    aDB->customQuery("SELECT * FROM FLIGHTS", 1);
-    DEB << aDB->lastError.type();
+    auto frd = new FirstRunDialog(this);
+    frd->exec();
 
 }
 

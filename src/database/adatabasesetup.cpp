@@ -290,6 +290,7 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
+QT_DEPRECATED
 bool ADataBaseSetup::downloadTemplates()
 {
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
