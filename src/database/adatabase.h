@@ -121,6 +121,7 @@ private:
 
     const static QStringList userTableNames;
     const static QStringList templateTableNames;
+    const static int minimumDatabaseRevision;
 public:
     /*!
      * \brief lastError extends QSqlError. Holds information about the last error that ocurred during
@@ -348,16 +349,19 @@ public:
     /*!
      * \brief getUserTableNames returns a list of the table names of tables that contain user-created data
      * (flights, pilots,..)
-     * \return
      */
     QStringList getUserTableNames();
 
     /*!
      * \brief getTemplateTableNames returns a list of the table names of tables that contain template data
      * (aiports, aircraft,..)
-     * \return
      */
     QStringList getTemplateTableNames();
+
+    /*!
+     * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.
+     */
+    static int getMinimumDatabaseRevision();
 
 signals:
     /*!

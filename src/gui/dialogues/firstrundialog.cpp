@@ -20,7 +20,6 @@
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/gui/widgets/backupwidget.h"
-//#include "src/database/adatabasesetup.h"
 #include "src/database/adbsetup.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
@@ -227,6 +226,18 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
             return false; // ssl/network error
     }
     return true;
+}
+
+bool FirstRunDialog::verifyTemplates()
+{
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    const QStringList entries = template_dir.entryList(QStringList{"*.md5"}, QDir::Files, QDir::Time);
+
+    //QVector<QFile> json_files;
+    //for (const auto &table_name : aDB->getTemplateTableNames()) {
+    //    json_files.append(QFile(AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name)));
+    //}
+
 }
 
 void FirstRunDialog::writeSettings()

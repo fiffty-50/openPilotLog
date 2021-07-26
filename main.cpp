@@ -39,7 +39,6 @@
 #define ORGNAME QStringLiteral("opl")
 #define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
 
-
 void init()
 {
     LOG << "Setting up / verifying Application Directories...";

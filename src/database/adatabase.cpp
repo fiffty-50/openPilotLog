@@ -21,6 +21,8 @@
 #include "src/opl.h"
 #include "src/functions/alog.h"
 
+const int ADatabase::minimumDatabaseRevision = 0;
+
 const QStringList ADatabase::userTableNames = {
     QStringLiteral("flights"),
     QStringLiteral("pilots"),
@@ -66,6 +68,11 @@ int ADatabase::checkDbVersion() const
     QSqlQuery query(QStringLiteral("SELECT COUNT(*) FROM changelog"));
     query.next();
     return query.value(0).toInt();
+}
+
+int ADatabase::getMinimumDatabaseRevision()
+{
+    return minimumDatabaseRevision;
 }
 
 QStringList ADatabase::getTemplateTableNames()

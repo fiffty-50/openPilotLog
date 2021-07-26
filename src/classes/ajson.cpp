@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "ajson.h"
-#include "src/database/adatabasesetup.h"
+#include "src/database/adbsetup.h"
 
 const QList<QPair<TableName_T, ADatabaseTable>> AJson::tables {
     qMakePair(Opl::Db::TABLE_TAILS, ADatabaseTable::tails),
@@ -53,7 +53,7 @@ void AJson::importDatabase()
         q.exec();
         const auto doc = readFileToDoc(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
                                                                pair.first + QLatin1String(".json")));
-        ADataBaseSetup::commitDataJson(doc.array(), pair.first);
+        aDbSetup::commitData(doc.array(), pair.first);
     }
 }
 

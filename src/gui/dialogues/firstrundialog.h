@@ -69,6 +69,7 @@ private:
     bool writeCurrencies();
     bool finishSetup();
     bool downloadTemplates(QString branch_name);
+    bool verifyTemplates();
 
     QList<QDateEdit*> dateEdits;
 
