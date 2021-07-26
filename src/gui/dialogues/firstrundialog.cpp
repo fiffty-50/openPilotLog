@@ -31,6 +31,7 @@
 #include <QKeyEvent>
 #include "src/classes/astyle.h"
 #include "src/functions/adatetime.h"
+#include "src/classes/ahash.h"
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
@@ -131,7 +132,7 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
                                    tr("An existing database file has been detected on your system.<br>"
                                    "Would you like to create a backup of the existing database?<br><br>"
-                                   "Note: if you select no, the existing database will be overwritten. This"
+                                   "Note: if you select no, the existing database will be overwritten. This "
                                    "action is irreversible."),
                                    QMessageBox::Yes | QMessageBox::No, this);
         message_box.setDefaultButton(QMessageBox::Yes);
@@ -207,6 +208,7 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
     const auto template_tables = aDB->getTemplateTableNames();
+    // Download json files
     for (const auto& table : template_tables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
@@ -225,19 +227,44 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
     }
-    return true;
+    // Download checksum files
+    for (const auto& table : template_tables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+
+        DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+        DEB << "To:" << AStandardPaths::directory(AStandardPaths::Templates);
+
+        dl->download();
+        dl->deleteLater();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
+        if (downloaded_file.size() == 0)
+            return false; // ssl/network error
+    }
+    // check downloadad files
+    return verifyTemplates();
 }
 
 bool FirstRunDialog::verifyTemplates()
 {
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
-    const QStringList entries = template_dir.entryList(QStringList{"*.md5"}, QDir::Files, QDir::Time);
+    const auto table_names = aDB->getTemplateTableNames();
+    for (const auto &table_name : table_names) {
+        const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
 
-    //QVector<QFile> json_files;
-    //for (const auto &table_name : aDB->getTemplateTableNames()) {
-    //    json_files.append(QFile(AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name)));
-    //}
+        QFileInfo check_file(path + QLatin1String(".json"));
+        AHash hash(check_file);
 
+        QFileInfo md5_file(path + QLatin1String(".md5"));
+        if (!hash.compare(md5_file))
+            return false;
+    }
+    return true;
 }
 
 void FirstRunDialog::writeSettings()
@@ -300,7 +327,7 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = false;
         if (!downloadTemplates(ui->branchLineEdit->text())) {
             QMessageBox message_box(this);
-            message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
+            message_box.setText(tr("Downloading or verifying latest data has failed.<br><br>Using local data instead."));
             message_box.exec();
             useRessourceData = true; // fall back
         }

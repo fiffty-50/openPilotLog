@@ -33,6 +33,7 @@ SOURCES += \
     src/classes/atailentry.cpp \
     src/classes/atranslator.cpp \
     src/classes/ajson.cpp \
+    src/classes/ahash.cpp \
     src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
     src/database/adbsetup.cpp \
@@ -71,6 +72,7 @@ HEADERS += \
     src/database/adatabase.h \
     src/classes/atranslator.h \
     src/classes/ajson.h \
+    src/classes/ahash.h \
     src/database/adatabasesetup.h \
     src/database/adbsetup.h \
     src/database/adatabasetypes.h \

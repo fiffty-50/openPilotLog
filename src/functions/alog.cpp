@@ -17,6 +17,7 @@
  */
 #include "alog.h"
 #include <QMessageBox>
+#include <QTextStream>
 
 namespace ALog {
 
@@ -100,25 +101,25 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
 
     switch (type) {
         case QtDebugMsg:
-            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << Qt::endl << D_SPACER << function << "\033[m" << Qt::endl;
+            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << endl << D_SPACER << function << "\033[m" << endl;
             if(logDebug)
-                log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << Qt::endl;
+                log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << endl;
             break;
         case QtInfoMsg:
-            log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << Qt::endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << Qt::endl;
+            log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << endl;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
             break;
         case QtWarningMsg:
-            log_stream << timeNow() << WARN_HEADER << msg << SPACER << Qt::endl;
-            QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << Qt::endl;
+            log_stream << timeNow() << WARN_HEADER << msg << SPACER << endl;
+            QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << endl;
             break;
         case QtCriticalMsg:
-            log_stream << timeNow() << CRIT_HEADER << msg << SPACER << Qt::endl;
-            QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << Qt::endl;
+            log_stream << timeNow() << CRIT_HEADER << msg << SPACER << endl;
+            QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << endl;
             break;
     default:
-            log_stream << timeNow() << INFO_HEADER << msg << function << Qt::endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << Qt::endl;
+            log_stream << timeNow() << INFO_HEADER << msg << function << endl;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
             break;
     }
 }
