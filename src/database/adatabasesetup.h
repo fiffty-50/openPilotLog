@@ -26,6 +26,7 @@
 
 const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
+
 /*!
  * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
  * the application is first launched. It creates the database in the specified default
@@ -50,6 +51,13 @@ public:
     static bool resetToDefault();
 
     static bool commitData(QVector<QStringList> from_csv, const QString &table_name);
+
+    /*!
+     * \brief commitDataJson Commits data read from a JSON array to the database.
+     * \param json_arr
+     * \param table_name The table that will be written to
+     */
+    static bool commitDataJson(const QJsonArray &json_arr, const QString &table_name);
 
 private:
 

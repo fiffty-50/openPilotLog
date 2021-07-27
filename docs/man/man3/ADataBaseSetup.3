@@ -1,4 +1,4 @@
-.TH "ADataBaseSetup" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "ADataBaseSetup" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,26 +20,36 @@ ADataBaseSetup \- The \fBADataBaseSetup\fP class is responsible for the inital s
 .RI "static bool \fBcreateDatabase\fP ()"
 .br
 .ti -1c
+.RI "static bool \fBdownloadTemplates\fP ()"
+.br
+.ti -1c
+.RI "static bool \fBbackupOldData\fP ()"
+.br
+.ti -1c
 .RI "static bool \fBfillTemplates\fP ()"
 .br
 .ti -1c
-.RI "static bool \fBimportDefaultData\fP ()"
+.RI "static bool \fBimportDefaultData\fP (bool use_local_data)"
 .br
 .ti -1c
 .RI "static bool \fBresetToDefault\fP ()"
 .br
 .RI "DbSetup::resetToDefault Empties all user-generated content in the database\&. "
 .ti -1c
-.RI "static bool \fBcommitData\fP (QVector< QStringList > fromCSV, const QString &tableName)"
+.RI "static bool \fBcommitData\fP (QVector< QStringList > from_csv, const QString &table_name)"
 .br
 .RI "DbSetup::commitData inserts the data parsed from a csv file into the database\&. The first line of the csv file has to contain the column names of the corresponding table in the database\&. "
+.ti -1c
+.RI "static bool \fBcommitDataJson\fP (const QJsonArray &json_arr, const QString &table_name)"
+.br
+.RI "commitDataJson Commits data read from a JSON array to the database\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
 The \fBADataBaseSetup\fP class is responsible for the inital setup of the database when the application is first launched\&. It creates the database in the specified default location and creates all required tables and views\&. It can also be used to reset the database currently used\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool ADataBaseSetup::commitData (QVector< QStringList > fromCSV, const QString & tableName)\fC [static]\fP"
+.SS "QT_DEPRECATED bool ADataBaseSetup::commitData (QVector< QStringList > from_csv, const QString & table_name)\fC [static]\fP"
 
 .PP
 DbSetup::commitData inserts the data parsed from a csv file into the database\&. The first line of the csv file has to contain the column names of the corresponding table in the database\&. 
@@ -56,7 +66,20 @@ DbSetup::commitData inserts the data parsed from a csv file into the database\&.
 .RE
 .PP
 
-.SS "bool ADataBaseSetup::resetToDefault ()\fC [static]\fP"
+.SS "QT_DEPRECATED bool ADataBaseSetup::commitDataJson (const QJsonArray & json_arr, const QString & table_name)\fC [static]\fP"
+
+.PP
+commitDataJson Commits data read from a JSON array to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIjson_arr\fP 
+.br
+\fItable_name\fP The table that will be written to 
+.RE
+.PP
+
+.SS "QT_DEPRECATED bool ADataBaseSetup::resetToDefault ()\fC [static]\fP"
 
 .PP
 DbSetup::resetToDefault Empties all user-generated content in the database\&. 

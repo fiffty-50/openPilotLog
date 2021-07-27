@@ -22,10 +22,45 @@
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
 #include "src/gui/dialogues/firstrundialog.h"
+#include "src/gui/widgets/backupwidget.h"
 #include <QtGlobal>
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
 #include "src/classes/acurrencyentry.h"
+#include "src/classes/atranslator.h"
+#include "src/database/adatabasesetup.h"
+#include "src/classes/ahash.h"
+
+#include "src/classes/ajson.h"
+void DebugWidget::on_debugPushButton_clicked()
+{
+    // Debug
+    QFileInfo check_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.json");
+    AHash hash(check_file);
+
+    QFileInfo md5_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.md5");
+    DEB << "Sums are equal?" << hash.compare(md5_file);
+    //test_file2.open(QFile::ReadOnly);
+    //QTextStream in(&test_file2);
+    //auto read = in.read(32);
+    //auto array = read.toUtf8();
+    //test_file2.close();
+    //DEB << read;
+    //DEB << (read == hash.hashToHex());
+    //DEB << array;
+
+
+    //for (const auto &table_name : aDB->getTemplateTableNames()) {
+    //    //json_files.append(QFile(AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name)));
+    //    QString json_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".json");
+    //    QString md5_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".md5");
+    //    DEB << json_path << md5_path;
+    //    QFileInfo json_fi(json_path);
+    //    QFileInfo md5_fi(md5_path);
+    //    DEB << "Exists? " << json_fi.exists() << md5_fi.exists();
+    //}
+
+}
 
 DebugWidget::DebugWidget(QWidget *parent) :
     QWidget(parent),
@@ -184,10 +219,11 @@ void DebugWidget::on_importCsvPushButton_clicked()
     }
 }
 
-void DebugWidget::on_debugPushButton_clicked()
+void DebugWidget::changeEvent(QEvent *event)
 {
-    WARN("Whoops, a warning!");
-    CRIT("Yikes, this doesn't look good... ");
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
 }
 
 /* //Comparing two functions template

@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['singleselect_164',['singleSelect',['../class_db.html#addcbd285617f8ef82f79c276d7bddfe1',1,'Db']]],
-  ['singleupdate_165',['singleUpdate',['../class_db.html#a939456015e76b398af918656791e3951',1,'Db']]],
-  ['solarelevation_166',['solarElevation',['../namespace_a_calc.html#acfa830e821e2f9e20bebffda67d393b1',1,'ACalc']]],
-  ['sqliteversion_167',['sqliteversion',['../class_db_info.html#a1ffc87d62fc7c2745c085622b20d6f2c',1,'DbInfo']]],
-  ['stringtominutes_168',['stringToMinutes',['../namespace_a_calc.html#a0354672c538f003b4f7624ad38b6a42b',1,'ACalc']]],
-  ['summary_169',['summary',['../classexperimental_1_1_a_flight_entry.html#a8ea56a97aa4a51cfffc13773eb8627bd',1,'experimental::AFlightEntry']]]
+  ['onaircraftwidget_5fdatabaseupdated_245',['onAircraftWidget_dataBaseUpdated',['../class_aircraft_widget.html#ac5a5e720c80e49796930f8715b0a51e0',1,'AircraftWidget']]],
+  ['onaircraftwidget_5fsettingchanged_246',['onAircraftWidget_settingChanged',['../class_aircraft_widget.html#a8e78830530971eeb4a3913b1d8356498',1,'AircraftWidget']]],
+  ['onpilotswidget_5fdatabaseupdated_247',['onPilotsWidget_databaseUpdated',['../class_pilots_widget.html#abbcd659b4eb6ed17a7d484138b319fab',1,'PilotsWidget']]],
+  ['onpilotswidget_5fsettingchanged_248',['onPilotsWidget_settingChanged',['../class_pilots_widget.html#a201b8f8af06bfd1a8716dbc052a0927f',1,'PilotsWidget']]]
 ];

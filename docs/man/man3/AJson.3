@@ -1,0 +1,62 @@
+.TH "AJson" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AJson \- The AJSON class is responsible for parsing the database (sqlite) to and from JSON\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ajson\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAJson\fP (QFileInfo database_file)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBexportDatabase\fP ()"
+.br
+.RI "exportDatabase exports the currently active database to JSON\&. "
+.ti -1c
+.RI "static void \fBimportDatabase\fP ()"
+.br
+.RI "importDatabase imports a dataset from JSON\&. Files need to be at AStanardPaths::JSON for now\&. "
+.ti -1c
+.RI "static QJsonDocument \fBreadFileToDoc\fP (const QString &file_path)"
+.br
+.RI "readToDocument reads data from a JSON file into a QJSonDocument "
+.ti -1c
+.RI "static void \fBwriteDocToFile\fP (const QJsonDocument &doc, const QString &file_name)"
+.br
+.RI "writes a QJsonDocument to a file "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The AJSON class is responsible for parsing the database (sqlite) to and from JSON\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void AJson::exportDatabase ()\fC [static]\fP"
+
+.PP
+exportDatabase exports the currently active database to JSON\&. QJsonObject can be constructed from QMap<QString, QVariant> aka QVariantmap\&. All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which can be exported\&. The files are created at AStandardPaths::JSON\&. 
+.SS "QJsonDocument AJson::readFileToDoc (const QString & file_path)\fC [static]\fP"
+
+.PP
+readToDocument reads data from a JSON file into a QJSonDocument 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_path\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

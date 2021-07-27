@@ -19,13 +19,19 @@
 #include "ui_firstrundialog.h"
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
-#include "src/database/adatabasesetup.h"
+#include "src/gui/widgets/backupwidget.h"
+#include "src/database/adbsetup.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/opl.h"
+#include "src/functions/adate.h"
 #include <QErrorMessage>
+#include <QFileDialog>
+#include <QKeyEvent>
 #include "src/classes/astyle.h"
+#include "src/functions/adatetime.h"
+#include "src/classes/ahash.h"
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
@@ -50,9 +56,18 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
     ui->styleComboBox->model()->sort(0);
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    // Prepare Date Edits
+    dateEdits = this->findChildren<QDateEdit *>();
+    for (const auto &date_format : ADate::getDisplayNames())
+        ui->dateFormatComboBox->addItem(date_format);
     // Set Date Edits for currencies
-    for (const auto date_edit : this->findChildren<QDateEdit *>())
+    for (const auto &date_edit : qAsConst(dateEdits)) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
+    }
+    // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
+    ui->branchLineEdit->setVisible(false);
 }
 
 FirstRunDialog::~FirstRunDialog()
@@ -96,6 +111,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
         ui->nextPushButton->setText(tr("Done"));
         break;
     case 4:
+        ui->nextPushButton->setDisabled(true);
         if(!finishSetup())
             QDialog::reject();
         else
@@ -112,15 +128,35 @@ bool FirstRunDialog::finishSetup()
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                  absoluteFilePath(QStringLiteral("logbook.db")));
     if (database_file.exists()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database found"),
-                                tr("Warning."
-                                   "An existing database file has been detected on your system.<br>"
-                                   "A backup copy of the existing database will be created at this location:<br>"
-                                   "%1").arg(
-                                    QDir::cleanPath(AStandardPaths::directory(AStandardPaths::Backup).canonicalPath())));
-        message_box.exec();
-        ADataBaseSetup::backupOldData();
-    }
+
+        QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
+                                   tr("An existing database file has been detected on your system.<br>"
+                                   "Would you like to create a backup of the existing database?<br><br>"
+                                   "Note: if you select no, the existing database will be overwritten. This "
+                                   "action is irreversible."),
+                                   QMessageBox::Yes | QMessageBox::No, this);
+        message_box.setDefaultButton(QMessageBox::Yes);
+
+        if(message_box.exec() == QMessageBox::Yes) {
+            // Create Backup
+            const QString backup_name = BackupWidget::absoluteBackupPath();
+            QFile old_db_file(database_file.absoluteFilePath());
+            if (!old_db_file.copy(backup_name)) {
+                WARN(tr("Unable to backup old database:<br>%1").arg(old_db_file.errorString()));
+                return false;
+            } else {
+                INFO(tr("Backup successfully created."));
+            }
+        }
+
+        //delete existing DB file
+        QFile db_file(database_file.absoluteFilePath());
+        if (!db_file.remove()) {
+            WARN(tr("Unable to delete existing database file."));
+            return false;
+        }
+    } // if database file exists
+
     if (!aDB->connect()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Errors have ocurred creating the database."
@@ -159,6 +195,75 @@ bool FirstRunDialog::finishSetup()
         return false;
     }
     aDB->disconnect(); // connection will be re-established by main()
+    return true;
+}
+
+bool FirstRunDialog::downloadTemplates(QString branch_name)
+{
+    // Create url string
+    auto template_url_string = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    template_url_string.append(branch_name);
+    template_url_string.append(QLatin1String("/assets/database/templates/"));
+
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+
+    const auto template_tables = aDB->getTemplateTableNames();
+    // Download json files
+    for (const auto& table : template_tables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
+
+        DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
+        DEB << "To:" << AStandardPaths::directory(AStandardPaths::Templates);
+
+        dl->download();
+        dl->deleteLater();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".json")));
+        if (downloaded_file.size() == 0)
+            return false; // ssl/network error
+    }
+    // Download checksum files
+    for (const auto& table : template_tables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+
+        DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+        DEB << "To:" << AStandardPaths::directory(AStandardPaths::Templates);
+
+        dl->download();
+        dl->deleteLater();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
+        if (downloaded_file.size() == 0)
+            return false; // ssl/network error
+    }
+    // check downloadad files
+    return verifyTemplates();
+}
+
+bool FirstRunDialog::verifyTemplates()
+{
+    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    const auto table_names = aDB->getTemplateTableNames();
+    for (const auto &table_name : table_names) {
+        const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
+
+        QFileInfo check_file(path + QLatin1String(".json"));
+        AHash hash(check_file);
+
+        QFileInfo md5_file(path + QLatin1String(".md5"));
+        if (!hash.compare(md5_file))
+            return false;
+    }
     return true;
 }
 
@@ -220,9 +325,9 @@ bool FirstRunDialog::setupDatabase()
 
     if (confirm.exec() == QMessageBox::Yes) {
         useRessourceData = false;
-        if (!ADataBaseSetup::downloadTemplates()) {
+        if (!downloadTemplates(ui->branchLineEdit->text())) {
             QMessageBox message_box(this);
-            message_box.setText(tr("Downloading latest data has failed.<br><br>Using local data instead."));
+            message_box.setText(tr("Downloading or verifying latest data has failed.<br><br>Using local data instead."));
             message_box.exec();
             useRessourceData = true; // fall back
         }
@@ -230,14 +335,19 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    if(!ADataBaseSetup::createDatabase())
+    if(!aDbSetup::createDatabase()) {
+        WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1")
+             .arg(aDB->lastError.text()));
         return false;
+    }
 
-    aDB->updateLayout();
 
-    if(!ADataBaseSetup::importDefaultData(useRessourceData))
+    if(!aDbSetup::importTemplateData(useRessourceData)) {
+        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
+             .arg(aDB->lastError.text()));
         return false;
-    aDB->updateLayout();
+    }
+
     return true;
 }
 
@@ -296,6 +406,16 @@ void FirstRunDialog::reject()
     }
 }
 
+void FirstRunDialog::keyPressEvent(QKeyEvent *keyEvent)
+{
+    if(keyEvent->type() == QKeyEvent::KeyPress) {
+        if(keyEvent->matches(QKeySequence::AddTab)) {
+            ui->branchLineEdit->setVisible(true);
+            ui->branchLineEdit->setEnabled(true);
+        }
+    }
+}
+
 void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
 {
     DEB << "style selected:"<<new_style_setting;
@@ -348,4 +468,50 @@ void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+}
+
+void FirstRunDialog::on_dateFormatComboBox_currentIndexChanged(int index)
+{
+    Opl::Date::ADateFormat format = (Opl::Date::ADateFormat)index;
+
+    for (const auto &date_edit : qAsConst(dateEdits)) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(format));
+    }
+    ASettings::write(ASettings::Main::DateFormat, index);
+}
+
+void FirstRunDialog::on_importPushButton_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                tr("Choose backup file"),
+                QDir::homePath(),
+                "*.db"
+    );
+
+    if(filename.isEmpty()) { // QFileDialog has been cancelled
+        WARN(tr("No Database has been selected."));
+        return;
+    }
+
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Import Database"));
+    confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
+                       "%1<br></b></tt>"
+                       "<br>Is this correct?"
+                       ).arg(aDB->databaseSummaryString(filename)));
+    if (confirm.exec() == QMessageBox::Yes) {
+        if(!aDB->restoreBackup(filename)) {
+            WARN(tr("Unable to import database file:").arg(filename));
+            return;
+        }
+        INFO(tr("Database successfully imported."));
+        QDialog::accept(); // quit the dialog as if a database was successfully created
+    } else {
+        return;
+    }
 }

@@ -51,14 +51,14 @@ PROJECT_BRIEF          =
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = /home/felix/git/openpilotlog/assets/opl-icons/app/icon_main.png 
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = /home/kotzaboss/Git/openpilotlog/docs
+OUTPUT_DIRECTORY       = /home/felix/git/openpilotlog/docs
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -843,8 +843,10 @@ WARN_LOGFILE           =
 # directories like /usr/src/myproject. Separate the files or directories with
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
-
-INPUT                  = /home/kotzaboss/Git/openpilotlog/src
+INPUT                  += /home/felix/git/openpilotlog/docs/doc_mainpage.md 
+# INPUT                  += /home/felix/git/openpilotlog/README.md
+INPUT                  += /home/felix/git/openpilotlog/src
+USE_MDFILE_AS_MAINPAGE = doc_mainpage.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

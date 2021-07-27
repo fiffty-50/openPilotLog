@@ -22,6 +22,7 @@
 #include <QButtonGroup>
 #include <QMessageBox>
 #include <QStringBuilder>
+#include <QDateEdit>
 
 namespace Ui {
 class FirstRunDialog;
@@ -51,6 +52,13 @@ private slots:
 
     void on_currCustom2LineEdit_editingFinished();
 
+    void on_dateFormatComboBox_currentIndexChanged(int index);
+
+    /*!
+     * \brief Import an existing database instead of creating a new one
+     */
+    void on_importPushButton_clicked();
+
 private:
     Ui::FirstRunDialog *ui;
     bool useRessourceData;
@@ -60,8 +68,23 @@ private:
     bool createUserEntry();
     bool writeCurrencies();
     bool finishSetup();
+    bool downloadTemplates(QString branch_name);
+    bool verifyTemplates();
 
+    QList<QDateEdit*> dateEdits;
+
+protected:
     void reject() override;
+    /*!
+     * \brief Shows the debug widget by pressing <ctrl + t>
+     */
+
+    /*!
+     * \brief keyPressEvent ctrl + t enables debug mode, showing the branch selector
+     * which is used to select a git branch other than main for downloading the templates
+     * \param keyEvent
+     */
+    void keyPressEvent(QKeyEvent* keyEvent) override;
 };
 
 #endif // FIRSTRUNDIALOG_H

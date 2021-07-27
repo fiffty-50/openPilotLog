@@ -25,7 +25,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
-#include "src/database/adatabasesetup.h"
 #include "src/classes/adownload.h"
 #include "src/functions/areadcsv.h"
 
@@ -67,6 +66,9 @@ private:
     Ui::DebugWidget *ui;
 
     bool downloadComplete = false;
+
+protected:
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // DEBUGWIDGET_H

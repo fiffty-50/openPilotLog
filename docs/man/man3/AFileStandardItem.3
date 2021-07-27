@@ -1,0 +1,33 @@
+.TH "AFileStandardItem" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AFileStandardItem \- Simple QStandardItem subclass to encapsulate necessary file info\&. Using only a QStandardItem would mean that the full path should be inputted as data and of course displayed by default\&. However this way we create the absolute path in the fileInfo attribute for further use while displaying only the base name\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <backupwidget\&.h>\fP
+.PP
+Inherits QStandardItem\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAFileStandardItem\fP (const QIcon &icon, const QString &filename, const AStandardPaths::Directories dir)"
+.br
+.ti -1c
+.RI "\fBAFileStandardItem\fP (const QIcon &icon, const QFileInfo file_info)"
+.br
+.ti -1c
+.RI "const QFileInfo & \fBinfo\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Simple QStandardItem subclass to encapsulate necessary file info\&. Using only a QStandardItem would mean that the full path should be inputted as data and of course displayed by default\&. However this way we create the absolute path in the fileInfo attribute for further use while displaying only the base name\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

@@ -1,4 +1,4 @@
-.TH "FirstRunDialog" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "FirstRunDialog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,6 +15,30 @@ Inherits QDialog\&.
 .RI "\fBFirstRunDialog\fP (QWidget *parent=nullptr)"
 .br
 .in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBreject\fP () override"
+.br
+.ti -1c
+.RI "void \fBkeyPressEvent\fP (QKeyEvent *keyEvent) override"
+.br
+.RI "Shows the debug widget by pressing <ctrl + t> "
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void FirstRunDialog::keyPressEvent (QKeyEvent * keyEvent)\fC [override]\fP, \fC [protected]\fP"
+
+.PP
+Shows the debug widget by pressing <ctrl + t> keyPressEvent ctrl + t enables debug mode, showing the branch selector which is used to select a git branch other than main for downloading the templates 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkeyEvent\fP 
+.RE
+.PP
+
 
 .SH "Author"
 .PP 

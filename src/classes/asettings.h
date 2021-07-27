@@ -33,6 +33,7 @@ public:
         FontSize,
         UseSystemFont,
         LogbookView,
+        DateFormat,
     };
 
     enum class UserData {
@@ -62,13 +63,11 @@ public:
         FlightNumberPrefix,
         NumberTakeoffs,
         NumberLandings,
-        PopupCalendar,
         PilotFlying,
         NightAngle,
         Rules,
         FlightTimeFormat,
         FunctionComboBox,
-        CalendarCheckBox,
     };
 
     /*!

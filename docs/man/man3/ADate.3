@@ -1,0 +1,49 @@
+.TH "ADate" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ADate \- The \fBADate\fP class is responsible for input/output of Dates and handling the different Date Formats\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <adate\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static QDate \fBformatInput\fP (QString user_input, Opl::Date::ADateFormat format)"
+.br
+.RI "formatInput takes a user-provided input and tries to convert it to a QDate\&. "
+.ti -1c
+.RI "static QString \fBtoString\fP (const QDate &date, Opl::Date::ADateFormat format=Opl::Date::ADateFormat::ISODate)"
+.br
+.RI "Reimplements QDate::toString to accept Opl::Date::ADateFormat enums\&. "
+.ti -1c
+.RI "static const QStringList & \fBgetDisplayNames\fP ()"
+.br
+.ti -1c
+.RI "static const QString \fBgetFormatString\fP (Opl::Date::ADateFormat format)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBADate\fP class is responsible for input/output of Dates and handling the different Date Formats\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "QDate ADate::formatInput (QString user_input, Opl::Date::ADateFormat format)\fC [static]\fP"
+
+.PP
+formatInput takes a user-provided input and tries to convert it to a QDate\&. 
+.PP
+\fBReturns\fP
+.RS 4
+QDate (invalid if input not recognized) 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

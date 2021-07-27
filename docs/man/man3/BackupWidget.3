@@ -1,0 +1,55 @@
+.TH "BackupWidget" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BackupWidget \- The \fBBackupWidget\fP is the interface for the user to create and restore backups of the database\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <backupwidget\&.h>\fP
+.PP
+Inherits QWidget\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBackupWidget\fP (QWidget *parent=nullptr)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static const QString \fBbackupName\fP ()"
+.br
+.RI "Generates a filename for creating a backup\&. "
+.ti -1c
+.RI "static const QString \fBabsoluteBackupPath\fP ()"
+.br
+.RI "Generates the absolute path for a new local backup file\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBchangeEvent\fP (QEvent *event) override"
+.br
+.RI "Handles change events, like updating the UI to new localisation\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBBackupWidget\fP is the interface for the user to create and restore backups of the database\&. 
+
+OpenPilotLog offers two kinds of backups: Local and External Backups\&.
+.br
+
+.br
+Local backups are automatically stored in a folder determined by AStandardpaths and automatically presented to the user in a List\&. \fBCreate Local backup\fP and \fBRestore Local Backup\fP\&. are convenient shortcuts\&.
+.br
+ When using \fBCreate External Backup\fP, the user will be asked where to save the backup file\&. This can be a pen drive, a cloud location or any other location of his choice\&. This functionality can also be used to sync the database across devices\&. External backup files con be restored with \fBRestore external backup\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

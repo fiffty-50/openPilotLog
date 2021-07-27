@@ -1,19 +1,31 @@
-.TH "PilotsWidget" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "PilotsWidget" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-PilotsWidget
+PilotsWidget \- The \fBPilotsWidget\fP is used to view, edit, delete or add new pilots\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <pilotswidget\&.h>\fP
 .PP
 Inherits QWidget\&.
 .SS "Public Slots"
 
 .in +1c
 .ti -1c
-.RI "void \fBonDisplayModel_dataBaseUpdated\fP ()"
+.RI "void \fBonPilotsWidget_settingChanged\fP (\fBSettingsWidget::SettingSignal\fP signal)"
 .br
+.RI "invokes setupModelAndView() to account for changes the user has made in the \fBSettingsWidget\fP "
+.ti -1c
+.RI "void \fBonPilotsWidget_databaseUpdated\fP ()"
+.br
+.RI "Refreshes the view if the Database has been altered from outside the \fBAircraftWidget\fP\&. "
+.ti -1c
+.RI "void \fBrepopulateModel\fP ()"
+.br
+.RI "\fBPilotsWidget::repopulateModel\fP (public slot) - re-populates the model to cater for a change to the database connection (for example, when a backup is created) "
 .in -1c
 .SS "Public Member Functions"
 
@@ -22,6 +34,27 @@ Inherits QWidget\&.
 .RI "\fBPilotsWidget\fP (QWidget *parent=nullptr)"
 .br
 .in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBchangeEvent\fP (QEvent *event) override"
+.br
+.RI "Handles change events, like updating the UI to new localisation\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBPilotsWidget\fP is used to view, edit, delete or add new pilots\&. 
+
+The widget consists of two main parts, a \fIQTableView\fP on the left side and a \fIQStackedWidget\fP on the right side\&.
+.PP
+In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a Pilots' Last Name, First name and Company\&.
+.PP
+The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as a search box and a QCombobox holding the possible columns that can be used to filter what is displayed\&. The text of the QLineEdit is used as a filter for the QSqlTableModel, so the view is updated in real time\&.
+.PP
+The \fI\fBNewPilotDialog\fP\fP is used for creating a new entry as well as for editing an existing entry\&. If the user selects a row in the QTableView, the \fBNewPilotDialog\fP is displayed on the right side of the Widget, inside the QStackedWidget\&. In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created\&. The \fBNewPilotDialog\fP's \fCaccepted\fP and \fCrejected\fP signals are connected to refresh the view as required\&.
+.PP
+The logbook owner is not shown in the QTableView as an editable Pilot since \fCself\fP is a special reserved alias for the pilot with ROWID #1 as a way to identify and adequately display the logbook owner in the logbook\&. Editing personal details is done via the \fI\fBSettingsWidget\fP\fP 
 
 .SH "Author"
 .PP 

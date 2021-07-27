@@ -26,17 +26,18 @@
 #include "src/classes/asettings.h"
 #include "src/classes/astyle.h"
 #include "src/functions/alog.h"
+#include "src/classes/atranslator.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QTranslator>
 
 #define APPNAME QStringLiteral("openPilotLog")
 #define ORGNAME QStringLiteral("opl")
 #define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
-
 
 void init()
 {
@@ -56,6 +57,8 @@ void init()
     ASettings::setup();
     LOG << "Setting up application style...";
     AStyle::setup();
+    LOG << "Installing translator...";
+    ATranslator::installTranslator(Opl::Translations::English);
 }
 
 void firstRun()

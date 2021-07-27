@@ -1,0 +1,65 @@
+.TH "AEntry" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AEntry \- The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries in the database to operate on\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <aentry\&.h>\fP
+.PP
+Inherited by \fBAAircraftEntry\fP, \fBACurrencyEntry\fP, \fBAFlightEntry\fP, \fBAPilotEntry\fP, and \fBATailEntry\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAEntry\fP (const \fBAEntry\fP &)=default"
+.br
+.ti -1c
+.RI "\fBAEntry\fP & \fBoperator=\fP (const \fBAEntry\fP &)=default"
+.br
+.ti -1c
+.RI "\fBAEntry\fP (\fBDataPosition\fP position_)"
+.br
+.ti -1c
+.RI "\fBAEntry\fP (RowData_T table_data)"
+.br
+.ti -1c
+.RI "\fBAEntry\fP (\fBDataPosition\fP position_, RowData_T table_data)"
+.br
+.ti -1c
+.RI "void \fBsetData\fP (RowData_T table_data)"
+.br
+.ti -1c
+.RI "void \fBsetPosition\fP (\fBDataPosition\fP position_)"
+.br
+.ti -1c
+.RI "const \fBDataPosition\fP & \fBgetPosition\fP ()"
+.br
+.ti -1c
+.RI "const RowData_T & \fBgetData\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "RowData_T \fBtableData\fP"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBDataPosition\fP \fBposition\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries in the database to operate on\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

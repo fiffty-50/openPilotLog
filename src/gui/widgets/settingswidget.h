@@ -21,7 +21,6 @@
 #include <QWidget>
 #include <QButtonGroup>
 #include <QValidator>
-#include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
 #include <QFontDialog>
@@ -30,6 +29,14 @@ namespace Ui {
 class SettingsWidget;
 }
 
+/*!
+ * \brief The SettingsWidget is used to to display and alter Settings.
+ *
+ * \details Most Inputs are collected and processed in various slots and
+ * written to the settings file via the ASettings class. In the `Personal` Settings
+ * tab, the user can edit his personal details, which are then written to the Database
+ * (The Logbook owner is registered in the Pilots Database with `pilot_id = 1`).
+ */
 class SettingsWidget : public QWidget
 {
     Q_OBJECT
@@ -39,13 +46,12 @@ public:
     ~SettingsWidget();
 
     /*!
-     * \brief Widgets that need to receive a signal when a setting is updated.
+     * \brief enumerates Widgets that need to receive a signal when a setting is updated.
      */
     enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget};
 
 private slots:
 
-//    void onThemeGroup_buttonClicked(int theme_id);
     void on_aboutPushButton_clicked();
     void on_acftSortComboBox_currentIndexChanged(int index);
     void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
@@ -64,8 +70,6 @@ private slots:
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
     void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
-
-    //void on_fontPushButton_clicked();
 
     void on_fontComboBox_currentFontChanged(const QFont &f);
 
@@ -109,6 +113,10 @@ private slots:
 
     void on_currCustom2LineEdit_editingFinished();
 
+    void on_dateFormatComboBox_currentIndexChanged(int index);
+
+    void on_languageComboBox_activated(const QString &arg1);
+
 private:
     Ui::SettingsWidget *ui;
 
@@ -127,10 +135,16 @@ private:
 signals:
 
     /*!
-     * \brief settingChanged is emitted when a setting change shall trigger
-     * an update to another widget.
+     * \brief settingChanged is emitted when a setting change occurs that needs to trigger
+     * an update (repaint) to another widget.
      */
     void settingChanged(SettingSignal widget);
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // SETTINGSWIDGET_H

@@ -1,22 +1,30 @@
-.TH "LogbookWidget" 3 "Sun Dec 27 2020" "openPilotLog" \" -*- nroff -*-
+.TH "LogbookWidget" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-LogbookWidget
+LogbookWidget \- The \fBLogbookWidget\fP displays data from the database in a QSqlTableView fed by a QSqlQuery Model\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <logbookwidget\&.h>\fP
 .PP
 Inherits QWidget\&.
 .SS "Public Slots"
 
 .in +1c
 .ti -1c
-.RI "void \fBonDisplayModel_dataBaseUpdated\fP ()"
+.RI "void \fBrefresh\fP ()"
+.br
+.RI "\fBLogbookWidget::refresh\fP Refreshes the view to reflect changes in the database\&. "
+.ti -1c
+.RI "void \fBonLogbookWidget_viewSelectionChanged\fP (\fBSettingsWidget::SettingSignal\fP signal)"
 .br
 .ti -1c
-.RI "void \fBonLogbookWidget_viewSelectionChanged\fP (int)"
+.RI "void \fBrepopulateModel\fP ()"
 .br
+.RI "\fBLogbookWidget::repopulateModel\fP (public slot) - cleanly re-populates the model to cater for a change to the database connection (for example, when a backup is created or restored) "
 .in -1c
 .SS "Public Member Functions"
 
@@ -25,6 +33,21 @@ Inherits QWidget\&.
 .RI "\fBLogbookWidget\fP (QWidget *parent=nullptr)"
 .br
 .in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBchangeEvent\fP (QEvent *event) override"
+.br
+.RI "Handles change events, like updating the UI to new localisation\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBLogbookWidget\fP displays data from the database in a QSqlTableView fed by a QSqlQuery Model\&. 
+
+The \fBLogbookWidget\fP is the primary display interface for flights logged in the database\&. It fetches and stores flight data from the database via a QSqlQueryModel and displays it in a QTableView\&. With the way the flight data is written in the database, it would not be human-readable, so some processing is done on the database side to present a nicely formatted, human-readable display\&. This is achieved by means of a \fCSQL View\fP\&.
+.PP
+The user can select a view from a list of available views in the \fBSettingsWidget\fP\&. 
 
 .SH "Author"
 .PP 

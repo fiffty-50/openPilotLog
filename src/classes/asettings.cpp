@@ -26,6 +26,7 @@ QMap<ASettings::Main, QString> ASettings::mainMap = {
     {Main::FontSize,                    QStringLiteral("fontSize")},
     {Main::UseSystemFont,               QStringLiteral("useSystemFont")},
     {Main::LogbookView,                 QStringLiteral("logbookView")},
+    {Main::DateFormat,                  QStringLiteral("dateFormat")},
 };
 
 QMap<ASettings::UserData, QString> ASettings::userDataMap = {
@@ -55,13 +56,11 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
     {FlightLogging::NumberTakeoffs,     QStringLiteral("numberTakeoffs")},
     {FlightLogging::NumberLandings,     QStringLiteral("numberLandings")},
-    {FlightLogging::PopupCalendar,      QStringLiteral("popupCalendar")},
     {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
     {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
     {FlightLogging::Rules,              QStringLiteral("rules")},
     {FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
     {FlightLogging::FunctionComboBox,   QStringLiteral("functionComboBox")},
-    {FlightLogging::CalendarCheckBox,   QStringLiteral("calendarCheckBox")},
 };
 
 void ASettings::setup()
@@ -78,6 +77,7 @@ void ASettings::resetToDefaults()
     write(Main::Style, QStringLiteral("Fusion"));
     write(Main::UseSystemFont, true);
     write(Main::LogbookView, 0);
+    write(Main::DateFormat, 0);
 
     write(UserData::DisplaySelfAs, 0);
     write(UserData::FtlWarningThreshold, 0.8); // To Do: UI Option
@@ -93,7 +93,6 @@ void ASettings::resetToDefaults()
 
     write(FlightLogging::NumberTakeoffs, 1);
     write(FlightLogging::NumberLandings, 1);
-    write(FlightLogging::PopupCalendar, true);
     write(FlightLogging::PilotFlying, true);
     write(FlightLogging::NightAngle, -6);
 }

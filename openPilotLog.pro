@@ -31,12 +31,17 @@ SOURCES += \
     src/classes/arunguard.cpp \
     src/classes/asettings.cpp \
     src/classes/atailentry.cpp \
+    src/classes/atranslator.cpp \
+    src/classes/ajson.cpp \
+    src/classes/ahash.cpp \
     src/database/adatabase.cpp \
     src/database/adatabasesetup.cpp \
+    src/database/adbsetup.cpp \
     src/functions/acalc.cpp \
     src/functions/alog.cpp \
     src/functions/areadcsv.cpp \
     src/functions/astat.cpp \
+    src/functions/adate.cpp \
     src/gui/dialogues/firstrundialog.cpp \
     src/gui/dialogues/newflightdialog.cpp \
     src/gui/dialogues/newpilotdialog.cpp \
@@ -65,13 +70,18 @@ HEADERS += \
     src/classes/asettings.h \
     src/classes/atailentry.h \
     src/database/adatabase.h \
+    src/classes/atranslator.h \
+    src/classes/ajson.h \
+    src/classes/ahash.h \
     src/database/adatabasesetup.h \
+    src/database/adbsetup.h \
     src/database/adatabasetypes.h \
     src/functions/acalc.h \
     src/functions/adatetime.h \
     src/functions/alog.h \
     src/functions/areadcsv.h \
     src/functions/astat.h \
+    src/functions/adate.h \
     src/functions/atime.h \
     src/gui/dialogues/firstrundialog.h \
     src/gui/dialogues/newflightdialog.h \
@@ -99,6 +109,12 @@ FORMS += \
     src/gui/widgets/logbookwidget.ui \
     src/gui/widgets/pilotswidget.ui \
     src/gui/widgets/settingswidget.ui
+
+TRANSLATIONS = \
+    l10n/openpilotlog_main.ts \
+    l10n/openpilotlog_de.ts \
+    l10n/openpilotlog_es.ts
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

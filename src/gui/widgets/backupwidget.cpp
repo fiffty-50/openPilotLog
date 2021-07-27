@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2021 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
 #include "src/opl.h"
@@ -20,7 +37,7 @@ BackupWidget::BackupWidget(QWidget *parent) :
 
     model = new QStandardItemModel(this);
     model->setHorizontalHeaderLabels(QStringList{tr("Backup File"),tr("Flights"), tr("Aircraft"),
-                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?
+                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?    
     view = ui->tableView;
     refresh();
 }
@@ -28,6 +45,13 @@ BackupWidget::BackupWidget(QWidget *parent) :
 BackupWidget::~BackupWidget()
 {
     delete ui;
+}
+
+void BackupWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
 }
 
 void BackupWidget::refresh()
@@ -44,13 +68,13 @@ void BackupWidget::refresh()
                           new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
                           new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
                           new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                          new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
                           new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                          });
     }
 
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();  // [G]: Bit hacky couldnt do it by default
+    view->setModel(model);
+    view->resizeColumnsToContents();
 }
 
 const QString BackupWidget::absoluteBackupPath()
@@ -60,6 +84,7 @@ const QString BackupWidget::absoluteBackupPath()
             + QLatin1String(".db");
     return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
 }
+
 const QString BackupWidget::backupName()
 {
     return  QLatin1String("logbook_backup_")
@@ -81,6 +106,8 @@ void BackupWidget::on_createLocalPushButton_clicked()
     if(!aDB->createBackup(filename)) {
         WARN(tr("Could not create local file: %1").arg(filename));
         return;
+    } else {
+        INFO(tr("Backup successfully created."));
     }
 
     QFileIconProvider provider;
@@ -89,7 +116,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
                       new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::max_doft]),
+                      new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
                       new QStandardItem(summary[ADatabaseSummaryKey::total_time])
                      });
 }
@@ -114,12 +141,14 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     confirm.setText(tr("The following backup will be restored:<br><br><b><tt>"
                        "%1</b></tt><br><br>"
                        "This will replace your currently active database with the backup.<br>This action is irreversible.<br><br>Are you sure?"
-                       ).arg(selectedFileInfo->info().fileName()));
+                       ).arg(aDB->databaseSummaryString(backup_name)));
     if (confirm.exec() == QMessageBox::No)
         return;
 
     if(!aDB->restoreBackup(backup_name)) {
-        WARN(tr("Couldnt restore Backup: %1").arg(backup_name));
+       WARN(tr("Unable to restore Backup file: %1").arg(backup_name));
+    } else {
+        INFO(tr("Backup successfully restored."));
     }
 
     view->clearSelection();
@@ -128,7 +157,6 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    TODO << "Test external deletion";
     if(selectedFileInfo == nullptr) {
         INFO(tr("No backup was selected"));
         return;
@@ -138,7 +166,7 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     QFile file(filename.absoluteFilePath());
 
     if(!file.exists()) {
-        WARN(tr("Selected backup file doesnt exist: %1").arg(filename.absolutePath()));
+        WARN(tr("Selected backup file (<tt>%1</tt>) does not exist.").arg(filename.absolutePath()));
         return;
     }
 
@@ -158,6 +186,8 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     if(!file.remove()) {
         WARN(tr("Unable to remove file %1\nError: %2").arg(filename.fileName(),file.errorString()));
         return;
+    } else {
+        INFO(tr("Backup successfully deleted."));
     }
 
     model->removeRow(selectedFileInfo->row());
@@ -170,8 +200,6 @@ void BackupWidget::on_createExternalPushButton_clicked()
     QString filename = QFileDialog::getSaveFileName(
                 this,
                 tr("Choose destination file"),
-                // [G]: Is this necessary?
-                //QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absoluteFilePath("untitled.db"),
                 QDir::homePath() + QDir::separator() + backupName(),
                 "*.db"
     );
@@ -185,8 +213,10 @@ void BackupWidget::on_createExternalPushButton_clicked()
     }
 
     if(!aDB->createBackup(filename)) {
-        DEB << "Unable to backup file:" << filename;
+        WARN(tr("Unable to backup file:").arg(filename));
         return;
+    } else {
+        INFO(tr("Backup successfully created."));
     }
 }
 
@@ -205,9 +235,21 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
 
     // Maybe create a Message Box asking for confirmation here and displaying the summary of backup and active DB
 
-    if(!aDB->restoreBackup(filename)) {
-        DEB << "Unable to backup file:" << filename;
-        return;
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Import Database"));
+    confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
+                       "%1<br></b></tt>"
+                       "<br>Is this correct?"
+                       ).arg(aDB->databaseSummaryString(filename)));
+    if (confirm.exec() == QMessageBox::Yes) {
+        if(!aDB->restoreBackup(filename)) {
+            WARN(tr("Unable to import database file:").arg(filename));
+            return;
+        }
+        INFO(tr("Database successfully imported."));
     }
 }
 
@@ -234,5 +276,3 @@ void BackupWidget::on_aboutPushButton_clicked()
     QMessageBox msg_box(QMessageBox::Information, "About backups", text, QMessageBox::Ok, this);
     msg_box.exec();
 }
-
-

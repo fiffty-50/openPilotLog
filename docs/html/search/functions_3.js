@@ -1,8 +1,13 @@
 var searchData=
 [
-  ['database_131',['database',['../classexperimental_1_1_a_database.html#a5a1d594fadb083e97aa8d50f736ab0ea',1,'experimental::ADatabase::database()'],['../class_db.html#aca719513ddc25d3628761da143cfde9e',1,'Db::Database()']]],
-  ['databaseupdated_132',['dataBaseUpdated',['../classexperimental_1_1_a_database.html#a202981d0d39b5b3dbc88af65e17ed42a',1,'experimental::ADatabase']]],
-  ['debug_133',['debug',['../class_a_data_base_setup.html#ac9c061c0d18777537dcf6273683c5468',1,'ADataBaseSetup']]],
-  ['degtorad_134',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
-  ['disconnect_135',['disconnect',['../class_db.html#a9bc721f0e6cd55a0dc4b6a690794f05a',1,'Db::disconnect()'],['../classexperimental_1_1_a_database.html#a5e331e329bc21980d3e2f63c7ca01559',1,'experimental::ADatabase::disconnect()']]]
+  ['database_198',['database',['../class_a_database.html#a2379c9da900da8e96add932e4024389a',1,'ADatabase']]],
+  ['databasesummary_199',['databaseSummary',['../class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c',1,'ADatabase']]],
+  ['databasesummarystring_200',['databaseSummaryString',['../class_a_database.html#a2c54b7506faf0f15f5323ed53ff12099',1,'ADatabase']]],
+  ['databaseupdated_201',['dataBaseUpdated',['../class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911',1,'ADatabase']]],
+  ['dbrevision_202',['dbRevision',['../class_a_database.html#a1c026e7784b03fc5822077c7d0071330',1,'ADatabase']]],
+  ['debug_203',['debug',['../class_a_data_base_setup.html#a1f04a0306314faa3c34bdd3cc8192448',1,'ADataBaseSetup']]],
+  ['degtorad_204',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
+  ['deleteoldlogs_205',['deleteOldLogs',['../namespace_a_log.html#ae110fbae5b42a1dd106a9c53be104b13',1,'ALog']]],
+  ['directory_206',['directory',['../class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe',1,'AStandardPaths']]],
+  ['disconnect_207',['disconnect',['../class_a_database.html#abc461aaa66304ca638e546f67a694935',1,'ADatabase']]]
 ];

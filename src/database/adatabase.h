@@ -43,7 +43,7 @@
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
 /*!
- * \brief Convinience macro that returns instance of DataBase.
+ * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
@@ -57,15 +57,24 @@
  */
 enum class ADatabaseTarget
 {
-    aircraft,
     airport_identifier_icao,
     airport_identifier_iata,
     airport_identifier_all,
     airport_names,
-    pilots,
     registrations,
     companies,
-    tails
+    tails,
+    pilots,
+    aircraft
+};
+
+enum class ADatabaseTable
+{
+    tails,
+    flights,
+    currencies,
+    aircraft,
+    pilots,
 };
 
 /*!
@@ -75,22 +84,23 @@ enum class ADatabaseSummaryKey {
     total_flights,
     total_tails,
     total_pilots,
-    max_doft,
+    last_flight,
     total_time,
 };
 
-// [G]: This is how we should handle custom "events" in the program.
-// In this case a custom error doesnt need to be built from scratch.
-// Find the type of error you want and extend it with a few tweaks.
 /*!
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
+ * Errors that are related to SQL are assigned their respective error codes.
+ * Errors that occur with data in the database are handled with the error code "opl"
+ * and QSqlError::UnknownError
  */
 class ADatabaseError : public QSqlError {
 public:
-  ADatabaseError() = default;
-  ADatabaseError(QString msg);
-  QString text() const;
+    ADatabaseError() = default;
+    ADatabaseError(QString msg);
+    QString text() const;
+    ADatabaseError(QSqlError);
 };
 
 /*!
@@ -104,13 +114,25 @@ private:
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;
-    int databaseVersion;
+    int databaseRevision;
 
     ADatabase();
     int checkDbVersion() const;
+
+    const static QStringList userTableNames;
+    const static QStringList templateTableNames;
+    const static int minimumDatabaseRevision;
 public:
-    ADatabaseError lastError;
-    //const QDir databaseDir;
+    /*!
+     * \brief lastError extends QSqlError. Holds information about the last error that ocurred during
+     * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
+     * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
+     * case error.type() provides further information.
+     *
+     * If the error type is QSqlError::NoError, the last executed database query was successful.
+     */
+    QSqlError lastError;
+
     const QFileInfo databaseFile;
 
     // Ensure DB is not copiable or assignable
@@ -118,17 +140,22 @@ public:
     void operator=(const ADatabase&) = delete;
     static ADatabase* instance();
 
-    int dbVersion() const;
+    /*!
+     * \brief dbRevision returns the database Revision Number. The Revision refers to what iteration
+     * of the database layout is used. For the sqlite version of the database refer to sqliteVersion()
+     * \return
+     */
+    int dbRevision() const;
 
     /*!
      * \brief Return the names of all tables in the database
      */
-    TableNames_T getTableNames() const;
+    const TableNames_T getTableNames() const;
 
     /*!
      * \brief Return the names of a given table in the database.
      */
-    ColumnNames_T getTableColumns(TableName_T table_name) const;
+    const ColumnNames_T getTableColumns(TableName_T table_name) const;
 
     /*!
      * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
@@ -137,7 +164,7 @@ public:
     void updateLayout();
 
     /*!
-     * \brief ADatabase::sqliteVersion returns database sqlite version.
+     * \brief ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()
      * \return sqlite version string
      */
     const QString sqliteVersion() const;
@@ -170,6 +197,12 @@ public:
      */
     bool exists(AEntry entry);
     bool exists(DataPosition data_position);
+
+    /*!
+     * \brief clear resets the database, i.e. deletes all content in the tables containing
+     * userdata (pilots, flights, tails)
+     */
+    bool clear();
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
@@ -269,13 +302,13 @@ public:
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTarget target);
+    int getLastEntry(ADatabaseTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTarget target);
+    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTable target);
 
     /*!
      * \brief Resolves the foreign key in a flight entry
@@ -290,17 +323,45 @@ public:
     ATailEntry resolveForeignTail(RowId_T foreign_key);
 
     /*!
-     * \brief Return the summary of the DB_PATH as a stringlist
-     * \todo Contemplate whether it should be a more generic function
-     * that may be used for different elements to summarize.
-     * and ADD DOCUMENTATION, theres some specific sql stuff going on.
-     * \return
+     * \brief Return a summary of a database
+     * \details Creates a summary of the database giving a quick overview of the relevant contents. The
+     * function runs several specialised SQL queries to create a QMap<ADatabaseSummaryKey, QString> containing
+     * Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary
+     * database connection separate from the default connection in order to not tamper with the currently active
+     * database connection.
      */
     QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
+
+    /*!
+     * \brief returns a short summary string of the database, containing total time and date of last flight.
+     */
+    const QString databaseSummaryString(const QString& db_path);
 
     bool restoreBackup(const QString& backup_file);
     bool createBackup(const QString& dest_file);
 
+    /*!
+     * \brief getTable returns all contents of a given table from the database
+     * \return
+     */
+    QVector<RowData_T> getTable(ADatabaseTable table_name);
+
+    /*!
+     * \brief getUserTableNames returns a list of the table names of tables that contain user-created data
+     * (flights, pilots,..)
+     */
+    QStringList getUserTableNames();
+
+    /*!
+     * \brief getTemplateTableNames returns a list of the table names of tables that contain template data
+     * (aiports, aircraft,..)
+     */
+    QStringList getTemplateTableNames();
+
+    /*!
+     * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.
+     */
+    static int getMinimumDatabaseRevision();
 
 signals:
     /*!

@@ -31,7 +31,7 @@ class AircraftWidget;
 /*!
  * \class AircraftWidget
  * \brief The AircraftWidget is used to view, edit, delete or add new tails.
- * \abstract The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ * \details The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
  *
  * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a tails' Registration, Type and
  * Company.
@@ -44,6 +44,10 @@ class AircraftWidget;
  * in the QTableView, the NewTailDilog is displayed on the right side of the Widget, inside the QStackedWidget.
  * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
  * The NewTailDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ *
+ * Note: The ATailEntry class is used to operate on individual aircraft, whereas the AAircraftEntry class is used to retreive
+ * templates of aircraft types. For example, 'D-ABCD' and 'N-XYZ' are different tails (Registrations), but they might be the same type of aircraft,
+ * for example 'Boeing 737-800'.
  */
 class AircraftWidget : public QWidget
 {
@@ -104,6 +108,12 @@ private:
     void onDeleteUnsuccessful();
 
     inline void refreshView(){model->select();}
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // AIRCRAFTWIDGET_H

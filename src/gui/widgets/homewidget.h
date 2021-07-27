@@ -32,6 +32,14 @@ namespace Ui {
 class HomeWidget;
 }
 
+/*!
+ * \brief The HomeWidget is the welcome screen of the application.
+ * \details The HomeWidget shows total flight times and a user-configurable set of currencies
+ * (expiry dates for licenses, ratings, medicals,...). Most data is provided by the AStat class
+ * and the ACurrencyEntry class. Notifications are provided by means of pop-up warnings on application
+ * start via QMessageBox and the INFO/WARN interfaces, as well as by colouring the labels according
+ * to the warning level (orange/red).
+ */
 class HomeWidget : public QWidget
 {
     Q_OBJECT
@@ -45,11 +53,19 @@ private:
 
     QList<QLabel*> limitationDisplayLabels;
     QDate          today;
+    /*!
+     * \brief currWarningThreshold - Retreived from ASettings::UserData::CurrWarningThreshold, the number
+     * of days before expiry that the user gets notified about impending expiries.
+     */
     int            currWarningThreshold;
+    /*!
+     * \brief ftlWarningThreshold - Retreived from ASettings::UserData::FtlWarningThreshold, the percentage
+     * of how close the user has to be to reaching a Flight Time Limitation before getting notified.
+     */
     double         ftlWarningThreshold;
 
     void fillTotals();
-    void fillAllCurrencies();
+    void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
     void fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel *display_label);
     void fillLimitations();
@@ -82,8 +98,16 @@ private:
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
+    void checkAllCurrencies();
+
 public slots:
     void refresh();
+
+protected:
+    /*!
+     * \brief Handles change events, like updating the UI to new localisation
+     */
+    void changeEvent(QEvent* event) override;
 };
 
 #endif // HOMEWIDGET_H

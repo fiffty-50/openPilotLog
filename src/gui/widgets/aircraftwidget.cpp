@@ -95,6 +95,13 @@ void AircraftWidget::onAircraftWidget_dataBaseUpdated()
     refreshView();
 }
 
+void AircraftWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void AircraftWidget::onNewTailDialog_editingFinished()
 {
     refreshView();
@@ -119,8 +126,8 @@ void AircraftWidget::tableView_selectionChanged()
         delete this->findChild<NewTailDialog*>();
 
     selectedTails.clear();
-
-    for (const auto& row : selection->selectedRows()) {
+    const auto selected_rows = selection->selectedRows();
+    for (const auto& row : selected_rows) {
         selectedTails << row.data().toInt();
         DEB << "Selected Tails(s) with ID: " << selectedTails;
     }
@@ -161,14 +168,10 @@ void AircraftWidget::tableView_headerClicked(int column)
 void AircraftWidget::on_deleteAircraftButton_clicked()
 {
     if (selectedTails.length() == 0) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("No Aircraft selected."));
-        message_box.exec();
+        INFO(tr("No Aircraft selected."));
 
     } else if (selectedTails.length() > 1) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("Deleting multiple entries is currently not supported"));
-        message_box.exec();
+        WARN(tr("Deleting multiple entries is currently not supported"));
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
         /// On the one hand, deleting many entries could be useful in a scenario where
@@ -201,7 +204,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
 /*!
  * \brief Informs the user that deleting a database entry has been unsuccessful
  *
- * \abstract Normally, when one of these entries can not be deleted, it is because of
+ * \details Normally, when one of these entries can not be deleted, it is because of
  * a [foreign key constraint](https://sqlite.org/foreignkeys.html), meaning that a flight
  * is associated with the aircraft that was supposed to be deleted.
  *
@@ -210,7 +213,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
 void AircraftWidget::onDeleteUnsuccessful()
 {
     QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
-                                                                       ADatabaseTarget::tails);
+                                                                       ADatabaseTable::tails);
     QList<AFlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(aDB->getFlightEntry(row_id));

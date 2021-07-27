@@ -33,7 +33,8 @@ public:
         Database,
         Templates,
         Backup,
-        Log
+        Log,
+        JSON
     };
 private:
     static QMap<Directories, QDir> directories;

@@ -23,6 +23,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/apilotentry.h"
 #include "src/opl.h"
+#include "src/functions/adate.h"
 
 static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
     QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};
@@ -66,6 +67,13 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
+void SettingsWidget::changeEvent(QEvent *event)
+{
+    if (event != nullptr)
+        if(event->type() == QEvent::LanguageChange)
+            ui->retranslateUi(this);
+}
+
 void SettingsWidget::setupComboBoxes(){
     {
         // Style combo box
@@ -79,14 +87,32 @@ void SettingsWidget::setupComboBoxes(){
 
         // Approach Combo Box
         const QSignalBlocker blocker_approach(ui->approachComboBox);
-        for (const auto &approach : Opl::ApproachTypes) {
+        for (const auto &approach : Opl::ApproachTypes)
             ui->approachComboBox->addItem(approach);
-        }
+        // Language Combo Box
+        const QSignalBlocker blocker_language(ui->languageComboBox);
+        for (const auto &lang : Opl::L10N_NAMES)
+            ui->languageComboBox->addItem(lang);
     }
 }
 
+
 void SettingsWidget::setupDateEdits()
 {
+    // Read Display Format Setting
+    int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
+    const QString date_format_string = ADate::getFormatString(
+                static_cast<Opl::Date::ADateFormat>(date_format_index));
+    // Set Up Date Format Combo Box
+    const QSignalBlocker blocker_date(ui->dateFormatComboBox);
+    for (const auto &date_format : ADate::getDisplayNames())
+        ui->dateFormatComboBox->addItem(date_format);
+    ui->dateFormatComboBox->setCurrentIndex(date_format_index);
+    const auto date_edits = this->findChildren<QDateEdit*>();
+    for (const auto &date_edit : date_edits) {
+        date_edit->setDisplayFormat(date_format_string);
+    }
+    // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
         {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
@@ -109,6 +135,9 @@ void SettingsWidget::setupDateEdits()
     }
 }
 
+/*!
+ * \brief SettingsWidget::readSettings Reads settings from ASettings and sets up the UI accordingly
+ */
 void SettingsWidget::readSettings()
 {
     /*
@@ -190,6 +219,9 @@ void SettingsWidget::setupValidators()
     }
 }
 
+/*!
+ * \brief SettingsWidget::updatePersonalDetails Updates the database with the users personal details.
+ */
 void SettingsWidget::updatePersonalDetails()
 {
     RowData_T user_data;
@@ -204,7 +236,7 @@ void SettingsWidget::updatePersonalDetails()
         QString name;
         name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().left(1));
+        name.append(ui->firstnameLineEdit->text().leftRef(1));
         name.append(QLatin1Char('.'));
         user_data.insert(Opl::Db::PILOTS_ALIAS, name);
     }
@@ -357,7 +389,9 @@ void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
  * About Tab
  */
 
-
+/*!
+ * \brief SettingsWidget::on_aboutPushButton_clicked Displays Application Version and Licensing information
+ */
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
@@ -444,11 +478,9 @@ void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
 void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 {
     if (usingStylesheet() && arg1 == Qt::Unchecked) {
-        QMessageBox message_box(this);
-        message_box.setText(tr("The style you have currently selected may not be fully compatible "
-                               "with changing to a custom font while the application is running.<br><br>"
-                               "Applying your changes may require restarting the application.<br>"));
-        message_box.exec();
+        WARN(tr("The style you have currently selected may not be fully compatible "
+                "with changing to a custom font while the application is running.<br><br>"
+                "Applying your changes may require restarting the application.<br>"));
     }
     switch (arg1) {
     case Qt::Unchecked:
@@ -459,7 +491,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
         QFont font(ui->fontComboBox->currentFont());
         font.setPointSize(ui->fontSpinBox->value());
         qApp->setFont(font);
-        DEB << "Setting Font:" << font.toString();
+        LOG << "Setting Font:" << font.toString();
         break;
     }
     case Qt::Checked:
@@ -467,9 +499,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
         ui->fontComboBox->setEnabled(false);
         ui->fontSpinBox->setEnabled(false);
         ASettings::write(ASettings::Main::UseSystemFont, true);
-        QMessageBox message_box(this);
-        message_box.setText(tr("The application will be restarted for this change to take effect."));
-        message_box.exec();
+        INFO(tr("The application will be restarted for this change to take effect."));
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     }
@@ -493,7 +523,7 @@ bool SettingsWidget::usingStylesheet()
 
 void SettingsWidget::on_resetStylePushButton_clicked()
 {
-    DEB << "Resetting style to default...";
+    LOG << "Resetting style to default...";
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
     ui->fontCheckBox->setChecked(true);
 }
@@ -674,4 +704,25 @@ void SettingsWidget::on_currCustom1LineEdit_editingFinished()
 void SettingsWidget::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+}
+
+void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
+{
+    ASettings::write(ASettings::Main::DateFormat, index);
+    const auto date_edits = this->findChildren<QDateEdit*>();
+    for (const auto & date_edit : date_edits) {
+        date_edit->setDisplayFormat(
+                    ADate::getFormatString(
+                        static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));
+    }
+}
+
+void SettingsWidget::on_languageComboBox_activated(const QString &arg1)
+{
+    if (arg1 != Opl::L10N_NAMES[Opl::Translations::English]) {
+        INFO(tr("Translations are not yet available. If you are interested in making openPilotLog available in your native "
+             "language, visit us <a href=\"https://%1/\">here</a> for more information."
+             ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
+        ui->languageComboBox->setCurrentIndex(0);
+    }
 }
