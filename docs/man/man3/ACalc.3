@@ -1,4 +1,4 @@
-.TH "ACalc" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ACalc" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -140,10 +140,22 @@ radians
 .RE
 .PP
 
-.SS "QT_DEPRECATED QString ACalc::formatTimeInput (QString user_input)"
+.SS "QT_DEPRECATED QString ACalc::formatTimeInput (QString user_input)\fC [inline]\fP"
 
 .PP
 \fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuserinput\fP from a QLineEdit 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+formatted QString 'hh:mm' or Empty String
+.RE
+.PP
+\fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&.
 .PP
 \fBParameters\fP
 .RS 4

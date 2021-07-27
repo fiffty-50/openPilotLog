@@ -1,8 +1,8 @@
-.TH "ADatabaseError" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADatabaseError" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ADatabaseError \- Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&.  
+ADatabaseError \- Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&. Errors that are related to SQL are assigned their respective error codes\&. Errors that occur with data in the database are handled with the error code 'opl' and QSqlError::UnknownError\&.  
 
 .SH SYNOPSIS
 .br
@@ -20,10 +20,13 @@ Inherits QSqlError\&.
 .ti -1c
 .RI "QString \fBtext\fP () const"
 .br
+.ti -1c
+.RI "\fBADatabaseError\fP (QSqlError)"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
-Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&. 
+Custom Database Error derived from QSqlError\&. Extends text() adding 'Database Error: ' before the text\&. Errors that are related to SQL are assigned their respective error codes\&. Errors that occur with data in the database are handled with the error code 'opl' and QSqlError::UnknownError\&. 
 
 .SH "Author"
 .PP 

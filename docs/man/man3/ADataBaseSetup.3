@@ -1,4 +1,4 @@
-.TH "ADataBaseSetup" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADataBaseSetup" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -39,6 +39,10 @@ ADataBaseSetup \- The \fBADataBaseSetup\fP class is responsible for the inital s
 .RI "static bool \fBcommitData\fP (QVector< QStringList > from_csv, const QString &table_name)"
 .br
 .RI "DbSetup::commitData inserts the data parsed from a csv file into the database\&. The first line of the csv file has to contain the column names of the corresponding table in the database\&. "
+.ti -1c
+.RI "static bool \fBcommitDataJson\fP (const QJsonArray &json_arr, const QString &table_name)"
+.br
+.RI "commitDataJson Commits data read from a JSON array to the database\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -59,6 +63,19 @@ DbSetup::commitData inserts the data parsed from a csv file into the database\&.
 .PP
 \fBReturns\fP
 .RS 4
+.RE
+.PP
+
+.SS "bool ADataBaseSetup::commitDataJson (const QJsonArray & json_arr, const QString & table_name)\fC [static]\fP"
+
+.PP
+commitDataJson Commits data read from a JSON array to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIjson_arr\fP 
+.br
+\fItable_name\fP The table that will be written to 
 .RE
 .PP
 

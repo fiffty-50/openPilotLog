@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['lasterror_75',['lastError',['../class_a_database.html#a95d05441d87fa291acb96e37b029409e',1,'ADatabase']]],
-  ['logbookwidget_76',['LogbookWidget',['../class_logbook_widget.html',1,'']]]
+  ['keypressevent_92',['keyPressEvent',['../class_first_run_dialog.html#a314dfc62070d7d88b9a98a5c18c31e74',1,'FirstRunDialog']]]
 ];

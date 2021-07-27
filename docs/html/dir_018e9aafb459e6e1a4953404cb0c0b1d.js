@@ -5,6 +5,8 @@ var dir_018e9aafb459e6e1a4953404cb0c0b1d =
     [ "adownload.h", "adownload_8h_source.html", null ],
     [ "aentry.h", "aentry_8h_source.html", null ],
     [ "aflightentry.h", "aflightentry_8h_source.html", null ],
+    [ "ahash.h", "ahash_8h_source.html", null ],
+    [ "ajson.h", "ajson_8h_source.html", null ],
     [ "apilotentry.h", "apilotentry_8h_source.html", null ],
     [ "arunguard.h", "arunguard_8h_source.html", null ],
     [ "asettings.h", "asettings_8h_source.html", null ],

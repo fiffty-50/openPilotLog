@@ -9,6 +9,8 @@ var hierarchy =
       [ "APilotEntry", "struct_a_pilot_entry.html", null ],
       [ "ATailEntry", "struct_a_tail_entry.html", null ]
     ] ],
+    [ "AHash", "class_a_hash.html", null ],
+    [ "AJson", "class_a_json.html", null ],
     [ "Opl::ANotificationHandler", "class_opl_1_1_a_notification_handler.html", null ],
     [ "ARunGuard", "class_a_run_guard.html", null ],
     [ "ASettings", "class_a_settings.html", null ],
