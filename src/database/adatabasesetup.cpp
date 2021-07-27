@@ -268,7 +268,7 @@ const QStringList templateTables= {
     QStringLiteral("changelog")
 };
 
-
+QT_DEPRECATED
 bool ADataBaseSetup::createDatabase()
 {
 
@@ -339,6 +339,7 @@ bool ADataBaseSetup::backupOldData()
     return true;
 }
 
+QT_DEPRECATED
 bool ADataBaseSetup::importDefaultData(bool use_ressource_data)
 {
     QSqlQuery query;
@@ -375,6 +376,7 @@ bool ADataBaseSetup::importDefaultData(bool use_ressource_data)
     return true;
 };
 
+QT_DEPRECATED
 /*!
  * \brief DbSetup::resetToDefault Empties all user-generated content in the database.
  * \return true on success
@@ -393,6 +395,7 @@ bool ADataBaseSetup::resetToDefault()
     return true;
 }
 
+QT_DEPRECATED
 /*!
  * \brief dbSetup::debug prints Database Layout
  */
@@ -414,6 +417,7 @@ void ADataBaseSetup::debug()
     }
 }
 
+QT_DEPRECATED
 /*!
  * \brief dbSetup::createTables Create the required tables for the database
  * \return true on success
@@ -444,6 +448,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
     LOG << "All database tables created successfully\n";
     return true;
 }
+QT_DEPRECATED
 /*!
  * \brief DbSetup::commitData inserts the data parsed from a csv file into the
  * database. The first line of the csv file has to contain the column names
@@ -506,6 +511,7 @@ bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &ta
     }
 }
 
+QT_DEPRECATED
 bool ADataBaseSetup::commitDataJson(const QJsonArray &json_arr, const QString &table_name)
 {
     aDB->updateLayout();

@@ -6,7 +6,7 @@ var searchData=
   ['databaseupdated_47',['dataBaseUpdated',['../class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911',1,'ADatabase']]],
   ['dataposition_48',['DataPosition',['../struct_data_position.html',1,'']]],
   ['dbrevision_49',['dbRevision',['../class_a_database.html#a1c026e7784b03fc5822077c7d0071330',1,'ADatabase']]],
-  ['debug_50',['debug',['../class_a_data_base_setup.html#ac9c061c0d18777537dcf6273683c5468',1,'ADataBaseSetup']]],
+  ['debug_50',['debug',['../class_a_data_base_setup.html#a1f04a0306314faa3c34bdd3cc8192448',1,'ADataBaseSetup']]],
   ['debugwidget_51',['DebugWidget',['../class_debug_widget.html',1,'']]],
   ['degtorad_52',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
   ['deleteoldlogs_53',['deleteOldLogs',['../namespace_a_log.html#ae110fbae5b42a1dd106a9c53be104b13',1,'ALog']]],

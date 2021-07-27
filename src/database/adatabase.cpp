@@ -135,7 +135,6 @@ const QString ADatabase::sqliteVersion() const
 
 bool ADatabase::connect()
 {
-    DEB << "Connecting...";
     if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
         LOG << "Error: No SQLITE Driver availabe.";
         return false;

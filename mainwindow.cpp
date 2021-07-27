@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     // connect to the Database
-    TODO << "Create more verbose warning about DB and offer instructions how to fix it.";
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                          absoluteFilePath(QStringLiteral("logbook.db")));
             if (!database_file.exists()) {
