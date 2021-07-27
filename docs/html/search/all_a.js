@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['minutestostring_77',['minutesToString',['../namespace_a_calc.html#ac5e39b538ea3663556c820d237f242a2',1,'ACalc']]]
+  ['lasterror_93',['lastError',['../class_a_database.html#a88c8cb3d573d46c1ee8e5af61cf63224',1,'ADatabase']]],
+  ['logbookwidget_94',['LogbookWidget',['../class_logbook_widget.html',1,'']]]
 ];

@@ -4,27 +4,27 @@
 <context>
     <name>ADatabase</name>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="730"/>
+        <location filename="../src/database/adatabase.cpp" line="774"/>
         <source>&lt;tr&gt;&lt;td&gt;Total Time: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="731"/>
+        <location filename="../src/database/adatabase.cpp" line="775"/>
         <source>&lt;tr&gt;&lt;td&gt;Last Flight: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="732"/>
+        <location filename="../src/database/adatabase.cpp" line="776"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of flights: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="733"/>
+        <location filename="../src/database/adatabase.cpp" line="777"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of aircraft: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="734"/>
+        <location filename="../src/database/adatabase.cpp" line="778"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of Pilots: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -181,88 +181,104 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="125"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="110"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="219"/>
+        <source>Backup successfully created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="127"/>
         <source>No backup selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="138"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="140"/>
         <source>Restoring Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="139"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="141"/>
         <source>The following backup will be restored:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;This will replace your currently active database with the backup.&lt;br&gt;This action is irreversible.&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="147"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="149"/>
         <source>Unable to restore Backup file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="157"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="151"/>
+        <source>Backup successfully restored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="161"/>
         <source>No backup was selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="165"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="169"/>
         <source>Selected backup file (&lt;tt&gt;%1&lt;/tt&gt;) does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="173"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="177"/>
         <source>Delete Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="174"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="178"/>
         <source>The following backup will be deleted:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="183"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="187"/>
         <source>Unable to remove file %1
 Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="196"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="190"/>
+        <source>Backup successfully deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="202"/>
         <source>Choose destination file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="210"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="216"/>
         <source>Unable to backup file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="219"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="227"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="234"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="242"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="235"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="243"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="241"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="249"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="244"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="252"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/backupwidget.cpp" line="251"/>
+        <location filename="../src/gui/widgets/backupwidget.cpp" line="259"/>
         <source>&lt;h3&gt;&lt;center&gt;About Backups&lt;/center&gt;&lt;/h3&gt;&lt;br&gt;&lt;p&gt;By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can later be restored or kept for safekeeping. OpenPilotLog offers two kinds of backups: Local and External Backups.&lt;br&gt;&lt;br&gt;Local backups are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting &lt;b&gt;Create Local backup&lt;/b&gt; and restored with &lt;b&gt;Restore Local Backup&lt;/b&gt;.&lt;br&gt;When using &lt;b&gt;Create External Backup&lt;/b&gt;, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting it with &lt;b&gt;Restore external backup&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Frequent backups are recommended to guard against data loss or corruption. It is also recommended to keep a backup copy in a seperate location from your main computer to prevent data loss due to system failures.&lt;/p&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -346,12 +362,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="158"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="190"/>
         <source>Open CSV File for import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="160"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="192"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -370,7 +386,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="27"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="82"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="87"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
@@ -415,7 +431,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="136"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="392"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="475"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -633,101 +649,131 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="97"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="845"/>
+        <source>main</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="102"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="98"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="103"/>
         <source>Please enter first and last name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="105"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="110"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="125"/>
-        <source>Database found</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="131"/>
+        <source>Existing Database found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="126"/>
-        <source>Warning.An existing database file has been detected on your system.&lt;br&gt;A backup copy of the existing database will be created at this location:&lt;br&gt;%1</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="132"/>
+        <source>An existing database file has been detected on your system.&lt;br&gt;Would you like to create a backup of the existing database?&lt;br&gt;&lt;br&gt;Note: if you select no, the existing database will be overwritten. Thisaction is irreversible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="135"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="145"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="155"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="164"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="144"/>
+        <source>Unable to backup old database:&lt;br&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="147"/>
+        <source>Backup successfully created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="154"/>
+        <source>Unable to delete existing database file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="160"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="170"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="180"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="189"/>
         <source>Database setup failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="136"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="161"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;Database: Unable to connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="146"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="171"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="156"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="165"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="181"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="190"/>
         <source>Unable to execute database query&lt;br&gt;The following error has occured:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="224"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="292"/>
         <source>Create Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="225"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="293"/>
         <source>We are now going to create the database.&lt;br&gt;Would you like to download the latest database information?&lt;br&gt;(Recommended, Internet connection required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="235"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="303"/>
         <source>Downloading latest data has failed.&lt;br&gt;&lt;br&gt;Using local data instead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="296"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="312"/>
+        <source>Database creation has been unsuccessful. The following error has ocurred:&lt;br&gt;&lt;br&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="319"/>
+        <source>Database creation has been unsuccessful. Unable to fill template data.&lt;br&gt;&lt;br&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="369"/>
         <source>Setup incomplete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="297"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="370"/>
         <source>Without completing the initial setup you cannot use the application.&lt;br&gt;&lt;br&gt;Quit anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="378"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="461"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="384"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="467"/>
         <source>No Database has been selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="393"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="476"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="399"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="482"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="402"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="485"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1208,12 +1254,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="94"/>
-        <source>Database revision out of date!</source>
+        <location filename="../mainwindow.cpp" line="87"/>
+        <source>Your database is out of date.Minimum required revision: %1&lt;br&gt;You have revision: %2&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="109"/>
+        <location filename="../mainwindow.cpp" line="103"/>
         <source>This feature is not yet available!</source>
         <translation type="unfinished"></translation>
     </message>

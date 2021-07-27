@@ -1,4 +1,4 @@
-.TH "ADatabase" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADatabase" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -37,11 +37,11 @@ Inherits QObject\&.
 .br
 .RI "dbRevision returns the database Revision Number\&. The Revision refers to what iteration of the database layout is used\&. For the sqlite version of the database refer to \fBsqliteVersion()\fP "
 .ti -1c
-.RI "TableNames_T \fBgetTableNames\fP () const"
+.RI "const TableNames_T \fBgetTableNames\fP () const"
 .br
 .RI "Return the names of all tables in the database\&. "
 .ti -1c
-.RI "ColumnNames_T \fBgetTableColumns\fP (TableName_T table_name) const"
+.RI "const ColumnNames_T \fBgetTableColumns\fP (TableName_T table_name) const"
 .br
 .RI "Return the names of a given table in the database\&. "
 .ti -1c
@@ -71,6 +71,10 @@ Inherits QObject\&.
 .ti -1c
 .RI "bool \fBexists\fP (\fBDataPosition\fP data_position)"
 .br
+.ti -1c
+.RI "bool \fBclear\fP ()"
+.br
+.RI "clear resets the database, i\&.e\&. deletes all content in the tables containing userdata (pilots, flights, tails) "
 .ti -1c
 .RI "bool \fBcommit\fP (\fBAEntry\fP entry)"
 .br
@@ -128,11 +132,11 @@ Inherits QObject\&.
 .br
 .RI "returns a QMap<QString, RowId_t> of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
 .ti -1c
-.RI "int \fBgetLastEntry\fP (ADatabaseTarget target)"
+.RI "int \fBgetLastEntry\fP (ADatabaseTable table)"
 .br
 .RI "returns the ROWID for the newest entry in the respective database\&. "
 .ti -1c
-.RI "QList< RowId_T > \fBgetForeignKeyConstraints\fP (RowId_T foreign_row_id, ADatabaseTarget target)"
+.RI "QList< RowId_T > \fBgetForeignKeyConstraints\fP (RowId_T foreign_row_id, ADatabaseTable target)"
 .br
 .RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
 .ti -1c
@@ -159,6 +163,18 @@ Inherits QObject\&.
 .RI "bool \fBcreateBackup\fP (const QString &dest_file)"
 .br
 .RI "\fBADatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
+.ti -1c
+.RI "QVector< RowData_T > \fBgetTable\fP (ADatabaseTable table_name)"
+.br
+.RI "getTable returns all contents of a given table from the database "
+.ti -1c
+.RI "QStringList \fBgetUserTableNames\fP ()"
+.br
+.RI "getUserTableNames returns a list of the table names of tables that contain user-created data (flights, pilots,\&.\&.) "
+.ti -1c
+.RI "QStringList \fBgetTemplateTableNames\fP ()"
+.br
+.RI "getTemplateTableNames returns a list of the table names of tables that contain template data (aiports, aircraft,\&.\&.) "
 .in -1c
 .SS "Static Public Member Functions"
 
@@ -170,14 +186,18 @@ Inherits QObject\&.
 .RI "static QSqlDatabase \fBdatabase\fP ()"
 .br
 .RI "Can be used to access the database connection\&. "
+.ti -1c
+.RI "static int \fBgetMinimumDatabaseRevision\fP ()"
+.br
+.RI "getMinimumDatabaseRevision returns the minimum required database revision number required by the application\&. "
 .in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "\fBADatabaseError\fP \fBlastError\fP"
+.RI "QSqlError \fBlastError\fP"
 .br
-.RI "lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. "
+.RI "lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. "
 .ti -1c
 .RI "const QFileInfo \fBdatabaseFile\fP"
 .br
@@ -260,6 +280,17 @@ What is this QString semantically? As i understand its a 'QueryResult' QVariant 
 
 .PP
 retreives a PilotEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a PilotEntry instead of an Entry\&. It allows for easy access to a pilot entry with only the RowId required as input\&. 
+.SS "QVector< RowData_T > ADatabase::getTable (ADatabaseTable table_name)"
+
+.PP
+getTable returns all contents of a given table from the database 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
 .SS "\fBATailEntry\fP ADatabase::getTailEntry (RowId_T row_id)"
 
 .PP
@@ -308,6 +339,12 @@ sqlite version string
 .RE
 .PP
 
+.SH "Member Data Documentation"
+.PP 
+.SS "QSqlError ADatabase::lastError"
+
+.PP
+lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. If the error type is QSqlError::NoError, the last executed database query was successful\&. 
 
 .SH "Author"
 .PP 

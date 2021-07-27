@@ -1,4 +1,4 @@
-.TH "BackupWidget" 3 "Tue May 4 2021" "openPilotLog" \" -*- nroff -*-
+.TH "BackupWidget" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,6 +17,18 @@ Inherits QWidget\&.
 .ti -1c
 .RI "\fBBackupWidget\fP (QWidget *parent=nullptr)"
 .br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static const QString \fBbackupName\fP ()"
+.br
+.RI "Generates a filename for creating a backup\&. "
+.ti -1c
+.RI "static const QString \fBabsoluteBackupPath\fP ()"
+.br
+.RI "Generates the absolute path for a new local backup file\&. "
 .in -1c
 .SS "Protected Member Functions"
 

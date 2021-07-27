@@ -74,6 +74,16 @@ public:
     explicit BackupWidget(QWidget *parent = nullptr);
     ~BackupWidget();
 
+    /*!
+     * \brief Generates a filename for creating a backup
+     */
+    static const QString backupName();
+
+    /*!
+     * \brief Generates the absolute path for a new local backup file.
+     */
+    static const QString absoluteBackupPath();
+
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
 
@@ -116,16 +126,6 @@ private:
                                                     // any operation and it is encapsulated in the
                                                     // AFileStandardItem class
     void refresh();
-
-    /*!
-     * \brief Generates a filename for creating a backup
-     */
-    const QString backupName();
-
-    /*!
-     * \brief Generates the absolute path for a new backup file.
-     */
-    const QString absoluteBackupPath();
 
 protected:
     /*!

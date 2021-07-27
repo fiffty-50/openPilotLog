@@ -268,7 +268,7 @@ const QStringList templateTables= {
     QStringLiteral("changelog")
 };
 
-
+QT_DEPRECATED
 bool ADataBaseSetup::createDatabase()
 {
 
@@ -290,6 +290,7 @@ bool ADataBaseSetup::createDatabase()
     return true;
 }
 
+QT_DEPRECATED
 bool ADataBaseSetup::downloadTemplates()
 {
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
@@ -310,6 +311,8 @@ bool ADataBaseSetup::downloadTemplates()
     }
     return true;
 }
+
+QT_DEPRECATED
 bool ADataBaseSetup::backupOldData()
 {
     LOG << "Backing up old database...";
@@ -336,6 +339,7 @@ bool ADataBaseSetup::backupOldData()
     return true;
 }
 
+QT_DEPRECATED
 bool ADataBaseSetup::importDefaultData(bool use_ressource_data)
 {
     QSqlQuery query;
@@ -372,6 +376,7 @@ bool ADataBaseSetup::importDefaultData(bool use_ressource_data)
     return true;
 };
 
+QT_DEPRECATED
 /*!
  * \brief DbSetup::resetToDefault Empties all user-generated content in the database.
  * \return true on success
@@ -390,6 +395,7 @@ bool ADataBaseSetup::resetToDefault()
     return true;
 }
 
+QT_DEPRECATED
 /*!
  * \brief dbSetup::debug prints Database Layout
  */
@@ -411,6 +417,7 @@ void ADataBaseSetup::debug()
     }
 }
 
+QT_DEPRECATED
 /*!
  * \brief dbSetup::createTables Create the required tables for the database
  * \return true on success
@@ -441,6 +448,7 @@ bool ADataBaseSetup::createSchemata(const QStringList &statements)
     LOG << "All database tables created successfully\n";
     return true;
 }
+QT_DEPRECATED
 /*!
  * \brief DbSetup::commitData inserts the data parsed from a csv file into the
  * database. The first line of the csv file has to contain the column names
@@ -501,4 +509,46 @@ bool ADataBaseSetup::commitData(QVector<QStringList> from_csv, const QString &ta
         qDebug() << table_name << "Database successfully updated!";
         return true;
     }
+}
+
+QT_DEPRECATED
+bool ADataBaseSetup::commitDataJson(const QJsonArray &json_arr, const QString &table_name)
+{
+    aDB->updateLayout();
+    QSqlQuery q;
+
+    // create insert statement
+    QString statement = QLatin1String("INSERT INTO ") + table_name + QLatin1String(" (");
+    QString placeholder = QStringLiteral(") VALUES (");
+    for (const auto &column_name : aDB->getTableColumns(table_name)) {
+        statement += column_name + ',';
+        placeholder.append(QLatin1Char(':') + column_name + QLatin1Char(','));
+    }
+
+    statement.chop(1);
+    placeholder.chop(1);
+    placeholder.append(')');
+    statement.append(placeholder);
+
+    q.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
+    q.exec();
+    //DEB << statement;
+    for (const auto &entry : json_arr) {
+        q.prepare(statement);
+
+        auto object = entry.toObject();
+        const auto keys = object.keys();
+        for (const auto &key : keys){
+            object.value(key).isNull() ? q.bindValue(key, QVariant(QVariant::String)) :
+                                         q.bindValue(QLatin1Char(':') + key, object.value(key).toVariant());
+        }
+
+        q.exec();
+    }
+
+    q.prepare(QStringLiteral("COMMIT"));
+    if (q.exec())
+        return true;
+    else
+        return false;
 }

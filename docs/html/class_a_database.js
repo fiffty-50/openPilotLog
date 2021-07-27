@@ -1,6 +1,7 @@
 var class_a_database =
 [
     [ "ADatabase", "class_a_database.html#aad08b473425d508107bc6c872cb53334", null ],
+    [ "clear", "class_a_database.html#a73382f7e897f8381371cd3da458f72cc", null ],
     [ "commit", "class_a_database.html#a652472c747c0ce68940b17c9c23666dd", null ],
     [ "connect", "class_a_database.html#aa6080200aa3f229251480bc416755fed", null ],
     [ "connectionReset", "class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7", null ],
@@ -19,13 +20,16 @@ var class_a_database =
     [ "getEntry", "class_a_database.html#a8959b406b97d9520981890d92850b1ba", null ],
     [ "getEntryData", "class_a_database.html#afc39f6136fc822e0649964fa22b84bf9", null ],
     [ "getFlightEntry", "class_a_database.html#a7bb44738362582e4f54f68e3aa30d40a", null ],
-    [ "getForeignKeyConstraints", "class_a_database.html#a6006c47c82b2c72f7ab6b5cc319c5fbf", null ],
+    [ "getForeignKeyConstraints", "class_a_database.html#a0f88e121d421043f35e321d5dc49ba19", null ],
     [ "getIdMap", "class_a_database.html#a5dba46567089112b28b16aaf985af0ba", null ],
-    [ "getLastEntry", "class_a_database.html#a264fea56cd3fbc31463c587f196ce576", null ],
+    [ "getLastEntry", "class_a_database.html#abc8c302d07f5f14cf246c8b2fd1ba366", null ],
     [ "getPilotEntry", "class_a_database.html#a426026d641a594863995ec5db8312259", null ],
-    [ "getTableColumns", "class_a_database.html#ad977866124a3c7f7184e165c02a68931", null ],
-    [ "getTableNames", "class_a_database.html#a4f0df6cc04e6d9b563db874a989ebc61", null ],
+    [ "getTable", "class_a_database.html#a8b38405b535d603cce2b36ca2d56368f", null ],
+    [ "getTableColumns", "class_a_database.html#a9c0dcd8c35087c8256b75d8aafa64880", null ],
+    [ "getTableNames", "class_a_database.html#a3deb081c5abe832a65e1792c106eb083", null ],
     [ "getTailEntry", "class_a_database.html#a356df159542705635dc3898d90682039", null ],
+    [ "getTemplateTableNames", "class_a_database.html#ad688f0e48bea4879a81e17a584f189b1", null ],
+    [ "getUserTableNames", "class_a_database.html#a692d7ba3abc763ee7c0d1a47236f021f", null ],
     [ "insert", "class_a_database.html#a4ecb6d0c9b3813c90b3165c993e69ad5", null ],
     [ "operator=", "class_a_database.html#a3c3e1c6b74a9e92f26f7118a6a130a64", null ],
     [ "remove", "class_a_database.html#a4903909a28daed708e1a335d3be4f57b", null ],
@@ -37,5 +41,5 @@ var class_a_database =
     [ "update", "class_a_database.html#a910bc0c1717e9301911343c082aa1aaa", null ],
     [ "updateLayout", "class_a_database.html#a3c0fdc84000ad397d61f0efabd032194", null ],
     [ "databaseFile", "class_a_database.html#ae1da0311f588fd269dec80389aea8644", null ],
-    [ "lastError", "class_a_database.html#a95d05441d87fa291acb96e37b029409e", null ]
+    [ "lastError", "class_a_database.html#a88c8cb3d573d46c1ee8e5af61cf63224", null ]
 ];

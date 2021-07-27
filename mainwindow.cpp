@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     // connect to the Database
-    TODO << "Create more verbose warning about DB and offer instructions how to fix it.";
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                          absoluteFilePath(QStringLiteral("logbook.db")));
             if (!database_file.exists()) {
@@ -83,18 +82,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // check database version (Debug)
-    int db_ver = aDB->dbRevision();
-    if (db_ver != DATABASE_REVISION) {
-        DEB << "############## WARNING ##############";
-        DEB << "Your database is out of date.";
-        DEB << "Current Revision:\t" << DATABASE_REVISION;
-        DEB << "You have revision:\t" << db_ver;
-        DEB << "############## WARNING ##############";
-        QMessageBox message_box(this); //error box
-        message_box.setText(tr("Database revision out of date!"));
-        message_box.exec();
-    } else {
-        DEB << "Your database is up to date with the latest revision:" << db_ver;
+    if (aDB->dbRevision() < aDB->getMinimumDatabaseRevision()) {
+        QString message = tr("Your database is out of date."
+                             "Minimum required revision: %1<br>"
+                             "You have revision: %2<br>")
+                             .arg(aDB->getMinimumDatabaseRevision(), aDB->dbRevision());
+        WARN(message);
     }
 }
 

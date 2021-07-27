@@ -808,10 +808,10 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
         tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
         tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
 
-        DEB << "New Entry added. Id:" << aDB->getLastEntry(ADatabaseTarget::tails);
+        DEB << "New Entry added. Id:" << aDB->getLastEntry(ADatabaseTable::tails);
         DEB << "AC Map: " << tailsIdMap;
 
-        parent_line_edit->setText(tailsIdMap.key(aDB->getLastEntry(ADatabaseTarget::tails)));
+        parent_line_edit->setText(tailsIdMap.key(aDB->getLastEntry(ADatabaseTable::tails)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(QString());
@@ -840,8 +840,8 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
         // update map and list, set line edit
         pilotsIdMap  = aDB->getIdMap(ADatabaseTarget::pilots);
         pilotList    = aDB->getCompletionList(ADatabaseTarget::pilots);
-        DEB << "Setting new entry: " << pilotsIdMap.key(aDB->getLastEntry(ADatabaseTarget::pilots));
-        parent_line_edit->setText(pilotsIdMap.key(aDB->getLastEntry(ADatabaseTarget::pilots)));
+        DEB << "Setting new entry: " << pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots));
+        parent_line_edit->setText(pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(QString());

@@ -1,0 +1,59 @@
+.TH "AHash" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AHash \- The \fBAHash\fP class is responsible for calculating cryptographic hashes of files (used to verify downloads)  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ahash\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAHash\fP (QFileInfo &file_info)"
+.br
+.RI "\fBAHash\fP - calculates the MD5-checksum for the parameter given in the constructor and saves the result in the checksum member variable\&. "
+.ti -1c
+.RI "const QString \fBhashToHex\fP ()"
+.br
+.RI "hashString returns a hex representation of the hash "
+.ti -1c
+.RI "bool \fBcompare\fP (QFileInfo &md5_file)"
+.br
+.RI "compare reads the pre-calculated md5-sum from a checkfile and compares the hashes\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QByteArray \fBchecksum\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBAHash\fP class is responsible for calculating cryptographic hashes of files (used to verify downloads) 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool AHash::compare (QFileInfo & md5_file)"
+
+.PP
+compare reads the pre-calculated md5-sum from a checkfile and compares the hashes\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImd5_file\fP - the checkfile containing the md5 checksum in hex format 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if hashes match 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

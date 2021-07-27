@@ -25,7 +25,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
-#include "src/database/adatabasesetup.h"
 #include "src/classes/adownload.h"
 #include "src/functions/areadcsv.h"
 

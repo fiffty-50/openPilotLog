@@ -17,6 +17,7 @@
  */
 #include "alog.h"
 #include <QMessageBox>
+#include <QTextStream>
 
 namespace ALog {
 
