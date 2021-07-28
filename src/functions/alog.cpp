@@ -73,6 +73,14 @@ bool init(bool log_debug)
     }
 }
 
+// Maintain compatibility with older Qt versions using QTextStream::flush() but avoiding deprecation
+// warning with newer versions using Qt::endl
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#define end_line Qt::endl
+#else
+#define end_line '\n' << flush
+#endif
+
 /*!
  * \brief aMessageHandler Intercepts Messages and prints to console and log file
  *
@@ -101,25 +109,25 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
 
     switch (type) {
         case QtDebugMsg:
-            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << endl << D_SPACER << function << "\033[m" << endl;
+            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << end_line << D_SPACER << function << "\033[m" << end_line;
             if(logDebug)
-                log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << endl;
+                log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << end_line;
             break;
         case QtInfoMsg:
-            log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
+            log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << end_line;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
             break;
         case QtWarningMsg:
-            log_stream << timeNow() << WARN_HEADER << msg << SPACER << endl;
-            QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << endl;
+            log_stream << timeNow() << WARN_HEADER << msg << SPACER << end_line;
+            QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << end_line;
             break;
         case QtCriticalMsg:
-            log_stream << timeNow() << CRIT_HEADER << msg << SPACER << endl;
-            QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << endl;
+            log_stream << timeNow() << CRIT_HEADER << msg << SPACER << end_line;
+            QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << end_line;
             break;
     default:
-            log_stream << timeNow() << INFO_HEADER << msg << function << endl;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << endl;
+            log_stream << timeNow() << INFO_HEADER << msg << function << end_line;
+            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
             break;
     }
 }

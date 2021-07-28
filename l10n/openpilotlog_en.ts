@@ -4,27 +4,27 @@
 <context>
     <name>ADatabase</name>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="774"/>
+        <location filename="../src/database/adatabase.cpp" line="773"/>
         <source>&lt;tr&gt;&lt;td&gt;Total Time: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="775"/>
+        <location filename="../src/database/adatabase.cpp" line="774"/>
         <source>&lt;tr&gt;&lt;td&gt;Last Flight: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="776"/>
+        <location filename="../src/database/adatabase.cpp" line="775"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of flights: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="777"/>
+        <location filename="../src/database/adatabase.cpp" line="776"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of aircraft: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="778"/>
+        <location filename="../src/database/adatabase.cpp" line="777"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of Pilots: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -362,12 +362,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="190"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="192"/>
         <source>Open CSV File for import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="192"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="194"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -386,7 +386,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="27"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="87"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="88"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
@@ -431,7 +431,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="136"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="475"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="502"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -654,126 +654,126 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="102"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="103"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="103"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="104"/>
         <source>Please enter first and last name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="110"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="111"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="131"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="132"/>
         <source>Existing Database found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="132"/>
-        <source>An existing database file has been detected on your system.&lt;br&gt;Would you like to create a backup of the existing database?&lt;br&gt;&lt;br&gt;Note: if you select no, the existing database will be overwritten. Thisaction is irreversible.</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="133"/>
+        <source>An existing database file has been detected on your system.&lt;br&gt;Would you like to create a backup of the existing database?&lt;br&gt;&lt;br&gt;Note: if you select no, the existing database will be overwritten. This action is irreversible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="144"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="145"/>
         <source>Unable to backup old database:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="147"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="148"/>
         <source>Backup successfully created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="154"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="155"/>
         <source>Unable to delete existing database file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="160"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="170"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="180"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="189"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="161"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="171"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="181"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="190"/>
         <source>Database setup failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="161"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="162"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;Database: Unable to connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="171"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="172"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="181"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="190"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="182"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="191"/>
         <source>Unable to execute database query&lt;br&gt;The following error has occured:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="292"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="319"/>
         <source>Create Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="293"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="320"/>
         <source>We are now going to create the database.&lt;br&gt;Would you like to download the latest database information?&lt;br&gt;(Recommended, Internet connection required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="303"/>
-        <source>Downloading latest data has failed.&lt;br&gt;&lt;br&gt;Using local data instead.</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="330"/>
+        <source>Downloading or verifying latest data has failed.&lt;br&gt;&lt;br&gt;Using local data instead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="312"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="339"/>
         <source>Database creation has been unsuccessful. The following error has ocurred:&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="319"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="346"/>
         <source>Database creation has been unsuccessful. Unable to fill template data.&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="369"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="396"/>
         <source>Setup incomplete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="370"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="397"/>
         <source>Without completing the initial setup you cannot use the application.&lt;br&gt;&lt;br&gt;Quit anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="461"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="488"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="467"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="494"/>
         <source>No Database has been selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="476"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="503"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="482"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="509"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="485"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="512"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -959,22 +959,22 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="45"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="44"/>
         <source>Welcome to openPilotLog, %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="119"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="118"/>
         <source>Invalid Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="233"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="232"/>
         <source>Your currency &lt;b&gt;%1&lt;/b&gt; is expired since %2.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="240"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="239"/>
         <source>Your currency &lt;b&gt;%1&lt;/b&gt; expires in &lt;b&gt;%2&lt;/b&gt; days (%3).&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1244,22 +1244,22 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="34"/>
+        <location filename="../mainwindow.cpp" line="33"/>
         <source>Error: Database file not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="37"/>
+        <location filename="../mainwindow.cpp" line="36"/>
         <source>Error establishing database connection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="87"/>
+        <location filename="../mainwindow.cpp" line="86"/>
         <source>Your database is out of date.Minimum required revision: %1&lt;br&gt;You have revision: %2&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="103"/>
+        <location filename="../mainwindow.cpp" line="102"/>
         <source>This feature is not yet available!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2350,11 +2350,6 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="985"/>
-        <source>Use System Font</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="912"/>
         <location filename="../src/gui/widgets/settingswidget.ui" line="915"/>
         <location filename="../src/gui/widgets/settingswidget.ui" line="925"/>
@@ -2364,18 +2359,6 @@ Error: %2</source>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="918"/>
         <source>Sort Pilots by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1002"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1030"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1033"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1036"/>
-        <source>Sort Aircraft by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2390,13 +2373,45 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1079"/>
-        <source>Reset to Default</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="985"/>
+        <source>Use System Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1109"/>
-        <source>Style</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="995"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1002"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1030"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1033"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1006"/>
+        <source>Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1011"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1036"/>
+        <source>Sort Aircraft by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1047"/>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1052"/>
+        <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2412,28 +2427,8 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="995"/>
-        <source>Font</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1006"/>
-        <source>Registration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1011"/>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1047"/>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1052"/>
-        <source>Yes</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1079"/>
+        <source>Reset to Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2444,6 +2439,11 @@ Error: %2</source>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="1095"/>
         <source>EASA Part-FCL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1109"/>
+        <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
