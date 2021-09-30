@@ -136,10 +136,10 @@ void LogbookWidget::flightsTableView_selectionChanged()
  */
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    auto nf = new NewFlightDialog(this);
-    nf->setAttribute(Qt::WA_DeleteOnClose);
-    nf->exec();
-    displayModel->select();
+    //auto nf = new NewFlightDialog(this);
+    //nf->setAttribute(Qt::WA_DeleteOnClose);
+    //nf->exec();
+    //displayModel->select();
 }
 
 /*!

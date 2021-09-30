@@ -130,9 +130,26 @@ QLineEdit* NewFlightDialog::MandatoryLineEdits::operator[] (int idx)
 /// noticeable in the UI and not an acceptable user experience. Using QStringLists and QMaps
 /// this goes down to around 5ms.
 
-NewFlightDialog::NewFlightDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewFlight)
+NewFlightDialog::NewFlightDialog(
+                                 QMap<PilotName_T, PilotRowId_T> pilotsIdMap_,
+                                 QMap<TailRegistration_T, TailId_T> tailsIdMap_,
+                                 QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap_,
+                                 QMap<AirportIATA_T, AirportId_T> airportIataIdMap_,
+                                 QMap<AirportName_T, AirportId_T> airportNameIdMap_,
+                                 QStringList pilotList_,
+                                 QStringList tailsList_,
+                                 QStringList airportList_,
+                                 QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::NewFlight),
+      pilotList(pilotList_),
+      tailsList(tailsList_),
+      airportList(airportList_),
+      pilotsIdMap(pilotsIdMap_),
+      tailsIdMap(tailsIdMap_),
+      airportIcaoIdMap(airportIcaoIdMap_),
+      airportIataIdMap(airportIataIdMap_),
+      airportNameIdMap(airportNameIdMap_)
 {
     ui->setupUi(this);
     flightEntry = AFlightEntry();
@@ -241,16 +258,17 @@ void NewFlightDialog::setupButtonGroups()
 
 void NewFlightDialog::setupRawInputValidation()
 {
+    // [F] Now done outside NewFlightDialog for more snappiness in application
     // get Maps
-    pilotsIdMap      = aDB->getIdMap(ADatabaseTarget::pilots);
-    tailsIdMap       = aDB->getIdMap(ADatabaseTarget::tails);
-    airportIcaoIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_icao);
-    airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
-    airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
+    //pilotsIdMap      = aDB->getIdMap(ADatabaseTarget::pilots);
+    //tailsIdMap       = aDB->getIdMap(ADatabaseTarget::tails);
+    //airportIcaoIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_icao);
+    //airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
+    //airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
     //get Completer Lists
-    pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
-    tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
-    airportList = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
+    //pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
+    //tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
+    //airportList = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
     auto tempList = QStringList();
     // define tuples
     const std::tuple<QString, QStringList*, QRegularExpression>

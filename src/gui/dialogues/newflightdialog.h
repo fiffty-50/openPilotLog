@@ -49,7 +49,7 @@ public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
      */
-    explicit NewFlightDialog(QWidget *parent = nullptr);
+    explicit NewFlightDialog(QMap<PilotName_T, PilotRowId_T> pilotsIdMap, QMap<TailRegistration_T, TailId_T> tailsIdMap, QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap, QMap<AirportIATA_T, AirportId_T> airportIataIdMap, QMap<AirportName_T, AirportId_T> airportNameIdMap, QStringList pilotList, QStringList tailsList, QStringList airportList, QWidget *parent = nullptr);
     /*!
      * \brief NewFlightDialog Edit an existing logbook entry.
      */

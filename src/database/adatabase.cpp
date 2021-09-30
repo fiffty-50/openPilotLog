@@ -80,6 +80,22 @@ QStringList ADatabase::getTemplateTableNames()
     return templateTableNames;
 }
 
+UserDataState ADatabase::getUserDataState()
+{
+    QSqlQuery q;
+    q.prepare(QStringLiteral("SELECT COUNT (*) FROM tails"));
+    q.exec();
+    q.first();
+    int tails = q.value(0).toInt();
+
+    q.prepare(QStringLiteral("SELECT COUNT (*) FROM pilots"));
+    q.exec();
+    q.first();
+    int pilots = q.value(0).toInt();
+
+    return UserDataState(tails, pilots);
+}
+
 QStringList ADatabase::getUserTableNames()
 {
     return userTableNames;
@@ -553,7 +569,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 
     return completer_list;
 }
-
+#include "src/testing/atimer.h"
 const
 QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
 {
@@ -585,7 +601,11 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         return {};
     }
 
-    auto query = QSqlQuery(statement);
+    QSqlQuery query;
+    query.setForwardOnly(true);
+    query.prepare(statement);
+    query.exec();
+    //auto query = QSqlQuery(statement);
     if (!query.isActive()) {
         DEB << "No result found. Check Query and Error.";
         DEB << "Query: " << statement;
@@ -593,10 +613,10 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         lastError = query.lastError();
         return {};
     }
-
     auto id_map = QMap<QString, RowId_T>();
     while (query.next()) {
         id_map.insert(query.value(1).toString(), query.value(0).toInt());
+        continue;
     }
     return id_map;
 }

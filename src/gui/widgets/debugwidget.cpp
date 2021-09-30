@@ -35,30 +35,10 @@
 void DebugWidget::on_debugPushButton_clicked()
 {
     // Debug
-    QFileInfo check_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.json");
-    AHash hash(check_file);
-
-    QFileInfo md5_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.md5");
-    DEB << "Sums are equal?" << hash.compare(md5_file);
-    //test_file2.open(QFile::ReadOnly);
-    //QTextStream in(&test_file2);
-    //auto read = in.read(32);
-    //auto array = read.toUtf8();
-    //test_file2.close();
-    //DEB << read;
-    //DEB << (read == hash.hashToHex());
-    //DEB << array;
-
-
-    //for (const auto &table_name : aDB->getTemplateTableNames()) {
-    //    //json_files.append(QFile(AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name)));
-    //    QString json_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".json");
-    //    QString md5_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".md5");
-    //    DEB << json_path << md5_path;
-    //    QFileInfo json_fi(json_path);
-    //    QFileInfo md5_fi(md5_path);
-    //    DEB << "Exists? " << json_fi.exists() << md5_fi.exists();
-    //}
+    auto state = aDB->getUserDataState();
+    DEB << "Tails:" << state.numTails << "Pilots:" << state.numPilots;
+    UserDataState state2 = aDB->getUserDataState();
+    DEB << "inequal?" << (state != state2);
 
 }
 

@@ -89,6 +89,29 @@ enum class ADatabaseSummaryKey {
 };
 
 /*!
+ * \brief The UserDateState struct caches the current number of entries in relevant database tables
+ * for fast access
+ * \param numTails - Number of tails in the database
+ * \param numPilots - Number of pilots in the database
+ */
+struct UserDataState {
+    UserDataState(int numTails_, int numPilots_)
+        : numTails(numTails_), numPilots(numPilots_){}
+
+    bool operator==(const UserDataState& other)
+    {
+        return numTails == other.numTails && numPilots == other.numPilots;
+    }
+    bool operator!=(const UserDataState& other)
+    {
+        return numTails != other.numTails || numPilots != other.numPilots;
+    }
+
+    int numTails;
+    int numPilots;
+};
+
+/*!
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
  * Errors that are related to SQL are assigned their respective error codes.
@@ -357,6 +380,13 @@ public:
      * (aiports, aircraft,..)
      */
     QStringList getTemplateTableNames();
+
+    /*!
+     * \brief getUserDataState returns a struct containing the current amount of entries in the tails and
+     * pilots tables.
+     * \return
+     */
+    UserDataState getUserDataState();
 
     /*!
      * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.
