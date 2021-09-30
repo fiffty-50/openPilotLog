@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // retreive completion lists and maps
-    updateCompleters();
+    completionData = ACompletionData();
 
     // Create a spacer for the toolbar to separate left and right parts
     auto *spacer = new QWidget();
@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
-    logbookWidget = new LogbookWidget(this);
+    logbookWidget = new LogbookWidget(completionData, this);
     ui->stackedWidget->addWidget(logbookWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
@@ -153,37 +153,12 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionNewFlight_triggered()
 {
     auto old_state = aDB->getUserDataState();
-    NewFlightDialog nf(pilotsIdMap,
-                       tailsIdMap,
-                       airportIcaoIdMap,
-                       airportIataIdMap,
-                       airportNameIdMap,
-                       pilotList,
-                       tailsList,
-                       airportList,
+    NewFlightDialog nf(completionData,
                        this);
     nf.exec();
     auto new_state = aDB->getUserDataState();
     if (old_state != new_state)
-        updateCompleters(false); // partial update only
-}
-
-void MainWindow::updateCompleters(bool full_update)
-{
-    DEB << "Retreiving completion data. Full Update?" << full_update;
-    // retreive user modifiable data
-    pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
-    tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
-    pilotsIdMap = aDB->getIdMap(ADatabaseTarget::pilots);
-    tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
-
-    // retreive default data
-    if (full_update) {
-        airportIcaoIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_icao);
-        airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
-        airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
-        airportList      = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
-    }
+        completionData.update();
 }
 
 void MainWindow::on_actionLogbook_triggered()

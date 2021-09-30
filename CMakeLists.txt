@@ -23,6 +23,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools 
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
+    src/classes/acompletiondata.cpp
     src/classes/acurrencyentry.cpp
     src/classes/astyle.cpp
     src/classes/astandardpaths.cpp
@@ -60,6 +61,7 @@ set(PROJECT_SOURCES
     
     src/opl.h
     mainwindow.h
+    src/classes/acompletiondata.h
     src/classes/acurrencyentry.h
     src/classes/astyle.h
     src/classes/astandardpaths.h

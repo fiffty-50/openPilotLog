@@ -569,7 +569,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 
     return completer_list;
 }
-#include "src/testing/atimer.h"
+
 const
 QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
 {
@@ -616,7 +616,6 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
     auto id_map = QMap<QString, RowId_T>();
     while (query.next()) {
         id_map.insert(query.value(1).toString(), query.value(0).toInt());
-        continue;
     }
     return id_map;
 }

@@ -37,6 +37,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/database/adatabase.h"
+#include "src/classes/acompletiondata.h"
 
 namespace Ui {
 class NewFlight;
@@ -49,11 +50,11 @@ public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
      */
-    explicit NewFlightDialog(QMap<PilotName_T, PilotRowId_T> pilotsIdMap, QMap<TailRegistration_T, TailId_T> tailsIdMap, QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap, QMap<AirportIATA_T, AirportId_T> airportIataIdMap, QMap<AirportName_T, AirportId_T> airportNameIdMap, QStringList pilotList, QStringList tailsList, QStringList airportList, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData &completion_data, QWidget *parent = nullptr);
     /*!
      * \brief NewFlightDialog Edit an existing logbook entry.
      */
-    explicit NewFlightDialog(int row_id, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData &completion_data, int row_id, QWidget *parent = nullptr);
     ~NewFlightDialog();
 
 private slots:
@@ -93,7 +94,6 @@ private:
      */
     AFlightEntry flightEntry;
 
-    // [G]: Initial refactoring based on previous use.
     /*!
      * \brief Wrapper around Vector of mandatory line edits and their corresponding
      * "ok" QBitArray.
@@ -121,20 +121,10 @@ private:
     QVector<QLineEdit*> pilotsLineEdits;
 
     /*!
-     * To be used by the QCompleters
+     * Completion data for QCompleters and mapping user input
      */
-    QStringList pilotList;
-    QStringList tailsList;
-    QStringList airportList;
+    ACompletionData completionData;
 
-    /*!
-     * \brief Used to map user input to database keys
-     */
-    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
-    QMap<TailRegistration_T, TailId_T> tailsIdMap;
-    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
-    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
-    QMap<AirportName_T, AirportId_T> airportNameIdMap;
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 

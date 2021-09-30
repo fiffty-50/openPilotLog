@@ -130,26 +130,11 @@ QLineEdit* NewFlightDialog::MandatoryLineEdits::operator[] (int idx)
 /// noticeable in the UI and not an acceptable user experience. Using QStringLists and QMaps
 /// this goes down to around 5ms.
 
-NewFlightDialog::NewFlightDialog(
-                                 QMap<PilotName_T, PilotRowId_T> pilotsIdMap_,
-                                 QMap<TailRegistration_T, TailId_T> tailsIdMap_,
-                                 QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap_,
-                                 QMap<AirportIATA_T, AirportId_T> airportIataIdMap_,
-                                 QMap<AirportName_T, AirportId_T> airportNameIdMap_,
-                                 QStringList pilotList_,
-                                 QStringList tailsList_,
-                                 QStringList airportList_,
+NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
                                  QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewFlight),
-      pilotList(pilotList_),
-      tailsList(tailsList_),
-      airportList(airportList_),
-      pilotsIdMap(pilotsIdMap_),
-      tailsIdMap(tailsIdMap_),
-      airportIcaoIdMap(airportIcaoIdMap_),
-      airportIataIdMap(airportIataIdMap_),
-      airportNameIdMap(airportNameIdMap_)
+      completionData(completion_data)
 {
     ui->setupUi(this);
     flightEntry = AFlightEntry();
@@ -164,9 +149,12 @@ NewFlightDialog::NewFlightDialog(
     }
 }
 
-NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewFlight)
+NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
+                                 int row_id,
+                                 QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::NewFlight),
+      completionData(completion_data)
 {
     ui->setupUi(this);
     flightEntry = aDB->getFlightEntry(row_id);
@@ -258,25 +246,14 @@ void NewFlightDialog::setupButtonGroups()
 
 void NewFlightDialog::setupRawInputValidation()
 {
-    // [F] Now done outside NewFlightDialog for more snappiness in application
-    // get Maps
-    //pilotsIdMap      = aDB->getIdMap(ADatabaseTarget::pilots);
-    //tailsIdMap       = aDB->getIdMap(ADatabaseTarget::tails);
-    //airportIcaoIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_icao);
-    //airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
-    //airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
-    //get Completer Lists
-    //pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
-    //tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
-    //airportList = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
     auto tempList = QStringList();
     // define tuples
     const std::tuple<QString, QStringList*, QRegularExpression>
-            location_line_edit_settings {QStringLiteral("Loc"), &airportList, LOC_VALID_RGX};
+            location_line_edit_settings {QStringLiteral("Loc"), &completionData.airportList, LOC_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
-            name_line_edit_settings {QStringLiteral("Name"), &pilotList, NAME_VALID_RGX};
+            name_line_edit_settings {QStringLiteral("Name"), &completionData.pilotList, NAME_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
-            acft_line_edit_settings {QStringLiteral("acft"), &tailsList, AIRCRAFT_VALID_RGX};
+            acft_line_edit_settings {QStringLiteral("acft"), &completionData.tailsList, AIRCRAFT_VALID_RGX};
     const std::tuple<QString, QStringList*, QRegularExpression>
             time_line_edit_settings {QStringLiteral("Time"), &tempList, TIME_VALID_RGX};
     const QList<std::tuple<QString, QStringList*, QRegularExpression>> line_edit_settings = {
@@ -426,7 +403,7 @@ void NewFlightDialog::fillDeductibleData()
 
     ui->tblkTimeLineEdit->setText(block_time_string);
     // get acft data and fill deductible entries
-    auto acft = aDB->getTailEntry(tailsIdMap.value(ui->acftLineEdit->text()));
+    auto acft = aDB->getTailEntry(completionData.tailsIdMap.value(ui->acftLineEdit->text()));
     if (acft.getData().isEmpty())
         DEB << "Error: No valid aircraft object available, unable to deterime auto times.";
 
@@ -519,11 +496,11 @@ RowData_T NewFlightDialog::collectInput()
     newData.insert(Opl::Db::FLIGHTS_TONB, ATime::toMinutes(tonb));
     newData.insert(Opl::Db::FLIGHTS_TBLK, block_minutes);
     // Aircraft
-    newData.insert(Opl::Db::FLIGHTS_ACFT, tailsIdMap.value(ui->acftLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_ACFT, completionData.tailsIdMap.value(ui->acftLineEdit->text()));
     // Pilots
-    newData.insert(Opl::Db::FLIGHTS_PIC, pilotsIdMap.value(ui->picNameLineEdit->text()));
-    newData.insert(Opl::Db::FLIGHTS_SECONDPILOT, pilotsIdMap.value(ui->secondPilotNameLineEdit->text()));
-    newData.insert(Opl::Db::FLIGHTS_THIRDPILOT, pilotsIdMap.value(ui->thirdPilotNameLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_PIC, completionData.pilotsIdMap.value(ui->picNameLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_SECONDPILOT, completionData.pilotsIdMap.value(ui->secondPilotNameLineEdit->text()));
+    newData.insert(Opl::Db::FLIGHTS_THIRDPILOT, completionData.pilotsIdMap.value(ui->thirdPilotNameLineEdit->text()));
 
     // Extra Times
     ui->tSPSETimeLineEdit->text().isEmpty() ?
@@ -711,8 +688,8 @@ void NewFlightDialog::formFiller()
             if(rx.match(leName).hasMatch())  {
                 auto line_edits = this->findChild<QLineEdit *>(leName);
                 if(line_edits != nullptr){
-                    DEB << pilotsIdMap.key(1);
-                    line_edits->setText(pilotsIdMap.key(flightEntry.getData().value(data_key).toInt()));
+                    DEB << completionData.pilotsIdMap.key(1);
+                    line_edits->setText(completionData.pilotsIdMap.key(flightEntry.getData().value(data_key).toInt()));
                     line_edits_names.removeOne(leName);
                 }
                 break;
@@ -823,13 +800,12 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
         NewTailDialog na(ui->acftLineEdit->text(), this);
         na.exec();
         // update map and list, set line edit
-        tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
-        tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
+        completionData.updateTails();
 
         DEB << "New Entry added. Id:" << aDB->getLastEntry(ADatabaseTable::tails);
-        DEB << "AC Map: " << tailsIdMap;
+        DEB << "AC Map: " << completionData.tailsIdMap;
 
-        parent_line_edit->setText(tailsIdMap.key(aDB->getLastEntry(ADatabaseTable::tails)));
+        parent_line_edit->setText(completionData.tailsIdMap.key(aDB->getLastEntry(ADatabaseTable::tails)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(QString());
@@ -856,10 +832,9 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
         NewPilotDialog np(this);
         np.exec();
         // update map and list, set line edit
-        pilotsIdMap  = aDB->getIdMap(ADatabaseTarget::pilots);
-        pilotList    = aDB->getCompletionList(ADatabaseTarget::pilots);
-        DEB << "Setting new entry: " << pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots));
-        parent_line_edit->setText(pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots)));
+        completionData.updatePilots();
+        DEB << "Setting new entry: " << completionData.pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots));
+        parent_line_edit->setText(completionData.pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots)));
         emit parent_line_edit->editingFinished();
     } else {
         parent_line_edit->setText(QString());
@@ -1075,9 +1050,9 @@ void NewFlightDialog::onLocationEditingFinished(QLineEdit *line_edit, QLabel *na
 
     // try to map iata or icao code to airport id;
     if (text.length() == 3) {
-        airport_id = airportIataIdMap.value(text);
+        airport_id = completionData.airportIataIdMap.value(text);
     } else {
-        airport_id = airportIcaoIdMap.value(text);
+        airport_id = completionData.airportIcaoIdMap.value(text);
     }
     // check result
     if (airport_id == 0) {
@@ -1086,8 +1061,8 @@ void NewFlightDialog::onLocationEditingFinished(QLineEdit *line_edit, QLabel *na
         onBadInputReceived(line_edit);
         return;
     }
-    line_edit->setText(airportIcaoIdMap.key(airport_id));
-    name_label->setText(airportNameIdMap.key(airport_id));
+    line_edit->setText(completionData.airportIcaoIdMap.key(airport_id));
+    name_label->setText(completionData.airportNameIdMap.key(airport_id));
     onGoodInputReceived(line_edit);
 }
 
@@ -1128,9 +1103,9 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     auto line_edit = ui->acftLineEdit;
     //DEB << line_edit->objectName() << "Editing Finished!" << line_edit->text());
 
-    if (tailsIdMap.value(line_edit->text()) != 0) {
-        DEB << "Mapped: " << line_edit->text() << tailsIdMap.value(line_edit->text());
-        auto acft = aDB->getTailEntry(tailsIdMap.value(line_edit->text()));
+    if (completionData.tailsIdMap.value(line_edit->text()) != 0) {
+        DEB << "Mapped: " << line_edit->text() << completionData.tailsIdMap.value(line_edit->text());
+        auto acft = aDB->getTailEntry(completionData.tailsIdMap.value(line_edit->text()));
         ui->acftTypeLabel->setText(acft.type());
         onGoodInputReceived(line_edit);
         return;
@@ -1163,16 +1138,16 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinished()
 
     if(line_edit->text().contains(SELF_RX)) {
         DEB << "self recognized.";
-        line_edit->setText(pilotsIdMap.key(1));
+        line_edit->setText(completionData.pilotsIdMap.key(1));
         auto pilot = aDB->getPilotEntry(1);
         ui->picCompanyLabel->setText(pilot.getData().value(Opl::Db::TAILS_COMPANY).toString());
         onGoodInputReceived(line_edit);
         return;
     }
 
-    if(pilotsIdMap.value(line_edit->text()) != 0) {
-        DEB << "Mapped: " << line_edit->text() << pilotsIdMap.value(line_edit->text());
-        auto pilot = aDB->getPilotEntry(pilotsIdMap.value(line_edit->text()));
+    if(completionData.pilotsIdMap.value(line_edit->text()) != 0) {
+        DEB << "Mapped: " << line_edit->text() << completionData.pilotsIdMap.value(line_edit->text());
+        auto pilot = aDB->getPilotEntry(completionData.pilotsIdMap.value(line_edit->text()));
         ui->picCompanyLabel->setText(pilot.getData().value(Opl::Db::TAILS_COMPANY).toString());
         onGoodInputReceived(line_edit);
         return;

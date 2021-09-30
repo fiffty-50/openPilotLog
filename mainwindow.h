@@ -39,7 +39,9 @@
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/classes/arunguard.h"
+#include "src/classes/acompletiondata.h"
 #include "src/testing/atimer.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -100,22 +102,8 @@ private:
 
     void connectWidgets();
 
-    // Completion Lists for children
-    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
-    QMap<TailRegistration_T, TailId_T> tailsIdMap;
-    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
-    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
-    QMap<AirportName_T, AirportId_T> airportNameIdMap;
-    QStringList pilotList;
-    QStringList tailsList;
-    QStringList airportList;
-
-    /*!
-     * \brief Retreives template and user data used for QCompleters and key to entry mapping
-     * from the database. Full update retreives all needed data, partial update only refreshes
-     * data from the user modifiable tables
-     */
-    void updateCompleters(bool full_update = true);
+    // Completion Data for QCompleters and Mapping
+    ACompletionData completionData;
 
 protected:
     /*!
