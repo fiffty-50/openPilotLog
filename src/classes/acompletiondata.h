@@ -10,8 +10,11 @@
  */
 class ACompletionData
 {
-public:
-    ACompletionData();
+public:  
+    /*!
+     * \brief init Retrieves Data and populates Lists and Maps
+     */
+    void init();
 
     /*!
      * \brief updates data from the user modifiable tables

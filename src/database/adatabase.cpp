@@ -213,7 +213,7 @@ bool ADatabase::remove(AEntry entry)
     query.prepare(statement);
     query.addBindValue(entry.getPosition().rowId);
 
-    if (!query.exec())
+    if (query.exec())
     {
         DEB << "Entry " << entry.getPosition() << " removed.";
         emit dataBaseUpdated();

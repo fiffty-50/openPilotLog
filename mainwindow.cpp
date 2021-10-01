@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // retreive completion lists and maps
-    completionData = ACompletionData();
+    completionData.init();
 
     // Create a spacer for the toolbar to separate left and right parts
     auto *spacer = new QWidget();

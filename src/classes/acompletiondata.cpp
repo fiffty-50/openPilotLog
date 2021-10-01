@@ -1,6 +1,6 @@
 #include "acompletiondata.h"
 
-ACompletionData::ACompletionData()
+void ACompletionData::init()
 {
     // retreive user modifiable data
     pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
@@ -13,7 +13,6 @@ ACompletionData::ACompletionData()
     airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
     airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
     airportList      = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
-
 }
 
 void ACompletionData::update()

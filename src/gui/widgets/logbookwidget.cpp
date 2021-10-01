@@ -140,7 +140,6 @@ void LogbookWidget::on_newFlightButton_clicked()
     auto old_state = aDB->getUserDataState();
 
     NewFlightDialog nf(completionData, this);
-    nf.setAttribute(Qt::WA_DeleteOnClose);
     nf.exec();
 
     auto new_state = aDB->getUserDataState();
@@ -160,7 +159,6 @@ void LogbookWidget::on_editFlightButton_clicked()
         auto old_state = aDB->getUserDataState();
 
         auto ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
-        ef->setAttribute(Qt::WA_DeleteOnClose);
         ef->exec();
 
         auto new_state = aDB->getUserDataState();

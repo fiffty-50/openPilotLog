@@ -164,6 +164,7 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
 
 NewFlightDialog::~NewFlightDialog()
 {
+    LOG << "Closing NF Dialog";
     delete ui;
 }
 
@@ -268,7 +269,7 @@ void NewFlightDialog::setupRawInputValidation()
     for (const auto &item : line_edit_settings) {
         for (const auto &line_edit : line_edits) {
             if(line_edit->objectName().contains(std::get<0>(item))) {
-                DEB << "Setting up: " << line_edit->objectName();
+                // DEB << "Setting up: " << line_edit->objectName();
                 // Set Validator
                 auto validator = new QRegularExpressionValidator(std::get<2>(item), line_edit);
                 line_edit->setValidator(validator);
@@ -348,7 +349,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
     if (line_edit != nullptr) {
         if (mandatoryLineEdits.contains(line_edit) && event->type() == QEvent::FocusIn) {
             mandatoryLineEdits.unvalidate(line_edit);
-            DEB << "Editing " << line_edit->objectName();
+            //DEB << "Editing " << line_edit->objectName();
             // set verification bit to false when entering a mandatory line edit
             return false;
         }
@@ -356,7 +357,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
             // show completion menu when pressing down arrow
             QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
             if (keyEvent->key() == Qt::Key_Down) {
-                DEB << "Key down event.";
+                //DEB << "Key down event.";
                 line_edit->completer()->complete();
             }
             return false;
@@ -365,7 +366,7 @@ bool NewFlightDialog::eventFilter(QObject* object, QEvent* event)
             // show completion menu when pressing down arrow
             QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
             if (keyEvent->key() == Qt::Key_Down) {
-                DEB << "Key down event.";
+                //DEB << "Key down event.";
                 line_edit->completer()->complete();
             }
             return false;
@@ -482,7 +483,7 @@ void NewFlightDialog::fillDeductibleData()
 RowData_T NewFlightDialog::collectInput()
 {
     RowData_T newData;
-    DEB << "Collecting Input...";
+    //DEB << "Collecting Input...";
     //Block Time
     const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
     const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
@@ -795,20 +796,28 @@ void NewFlightDialog::addNewTail(QLineEdit *parent_line_edit)
                                      "<br><br>Would you like to add a new aircraft to the database?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        DEB << "Add new aircraft selected";
         // create and open new aircraft dialog
         NewTailDialog na(ui->acftLineEdit->text(), this);
-        na.exec();
+        int ret = na.exec();
         // update map and list, set line edit
-        completionData.updateTails();
+        if (ret == QDialog::Accepted) {
+            DEB << "New Tail Entry added. Id:" << aDB->getLastEntry(ADatabaseTable::tails);
 
-        DEB << "New Entry added. Id:" << aDB->getLastEntry(ADatabaseTable::tails);
-        DEB << "AC Map: " << completionData.tailsIdMap;
+            // update completion Data and Completer
+            completionData.updateTails();
+            auto new_model = new QStringListModel(completionData.tailsList, parent_line_edit->completer());
+            parent_line_edit->completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
 
-        parent_line_edit->setText(completionData.tailsIdMap.key(aDB->getLastEntry(ADatabaseTable::tails)));
-        emit parent_line_edit->editingFinished();
+            // update Line Edit
+            parent_line_edit->setText(completionData.tailsIdMap.key(aDB->getLastEntry(ADatabaseTable::tails)));
+            emit parent_line_edit->editingFinished();
+        } else {
+            parent_line_edit->setText(QString());
+            parent_line_edit->setFocus();
+        }
     } else {
         parent_line_edit->setText(QString());
+        parent_line_edit->setFocus();
     }
 }
 
@@ -827,15 +836,24 @@ void NewFlightDialog::addNewPilot(QLineEdit *parent_line_edit)
                                      "<br><br>Would you like to add a new pilot to the database?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        DEB << "Add new pilot selected";
         // create and open new pilot dialog
         NewPilotDialog np(this);
-        np.exec();
+        int ret = np.exec();
         // update map and list, set line edit
-        completionData.updatePilots();
-        DEB << "Setting new entry: " << completionData.pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots));
-        parent_line_edit->setText(completionData.pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots)));
-        emit parent_line_edit->editingFinished();
+        if (ret == QDialog::Accepted) {
+            DEB << "New Pilot Entry added. Id:" << aDB->getLastEntry(ADatabaseTable::pilots);
+            // update completion Data and Completer
+            completionData.updatePilots();
+            auto new_model = new QStringListModel(completionData.pilotList, parent_line_edit->completer());
+            parent_line_edit->completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
+
+            // update Line Edit
+            parent_line_edit->setText(completionData.pilotsIdMap.key(aDB->getLastEntry(ADatabaseTable::pilots)));
+            emit parent_line_edit->editingFinished();
+        } else {
+            parent_line_edit->setText(QString());
+            parent_line_edit->setFocus();
+        }
     } else {
         parent_line_edit->setText(QString());
     }
