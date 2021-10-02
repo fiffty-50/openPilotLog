@@ -57,8 +57,9 @@ void init()
     ASettings::setup();
     LOG << "Setting up application style...";
     AStyle::setup();
-    LOG << "Installing translator...";
-    ATranslator::installTranslator(Opl::Translations::English);
+    // Translations to be done at a later stage
+    //LOG << "Installing translator...";
+    //ATranslator::installTranslator(Opl::Translations::English);
 }
 
 void firstRun()
