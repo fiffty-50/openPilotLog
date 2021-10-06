@@ -87,6 +87,7 @@ void NewFlightDialog::setup()
     ui->flightDataTabWidget->removeTab(2); // hide calendar widget
     ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
     emit ui->doftLineEdit->editingFinished();
+    ui->doftLineEdit->setToolTip(tr("Date Format: %1").arg(ADate::getFormatString(Opl::Date::ADateFormat::ISODate)));
     ui->deptLocLineEdit->setFocus();
 }
 void NewFlightDialog::readSettings()
@@ -909,9 +910,9 @@ void NewFlightDialog::on_doftLineEdit_editingFinished()
     auto label = ui->doftDisplayLabel;
     //DEB << line_edit->objectName() << "Editing finished - " << text;
 
-    TODO << "Implement other Date Formats";
+    TODO << "Non-default Date formats not implemented yet.";
     Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
-    auto date = ADate::formatInput(text, date_format);
+    auto date = ADate::parseInput(text, date_format);
     if (date.isValid()) {
         label->setText(date.toString(Qt::TextDate));
         line_edit->setText(ADate::toString(date, date_format));
@@ -966,6 +967,7 @@ void NewFlightDialog::on_calendarPushButton_clicked()
 
 void NewFlightDialog::validationStatus()
 {
+
     QString deb_string("Validation State:\n");
     deb_string += "doft: \t" + QString::number(mandatoryLineEditsValid[0]) + "\n";
     deb_string += "dept: \t" + QString::number(mandatoryLineEditsValid[1]) + "\n";

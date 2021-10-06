@@ -98,22 +98,31 @@ private:
 
     DebugWidget* debugWidget;
 
+    // Completion Data for QCompleters and Mapping
+    ACompletionData completionData;
+
     void nope();
 
     void connectWidgets();
 
-    // Completion Data for QCompleters and Mapping
-    ACompletionData completionData;
+    // Prompts the user to fix a broken database or import a backup
+    void onDatabaseInvalid();
+
+    //
+    void doDebugStuff();
 
 protected:
     /*!
      * \brief Shows the debug widget by pressing <ctrl + t>
+     * <Shift+Enter for a quick and dirty debug>
      */
     void keyPressEvent(QKeyEvent* keyEvent) override
     {
         if(keyEvent->type() == QKeyEvent::KeyPress) {
             if(keyEvent->matches(QKeySequence::AddTab)) {
                 on_actionDebug_triggered();
+            } else if (keyEvent->matches(QKeySequence::InsertLineSeparator)) {
+                doDebugStuff();
             }
         }
     }

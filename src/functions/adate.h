@@ -27,10 +27,26 @@ class ADate
 {
 public:
     /*!
-     * \brief formatInput takes a user-provided input and tries to convert it to a QDate.
+     * \brief takes a user-provided input and tries to convert it to a (valid) QDate.
      * \return QDate (invalid if input not recognized)
      */
-    static QDate formatInput(QString user_input, Opl::Date::ADateFormat format);
+    static QDate parseInput(QString &io_user_input, Opl::Date::ADateFormat format);
+
+    static void tryToFix(QString &io_user_input, Opl::Date::ADateFormat format);
+
+    /*!
+     * \brief padCentury adds the century to a date where it was omitted
+     */
+    static void padCentury(QString &io_user_input, Opl::Date::ADateFormat format);
+
+    /*!
+     * \brief pads a user-provided date string with 0s to facilitate conversion to QDate
+     */
+    static void padZeroes(QString &io_user_input);
+
+    static void addSeperators(QString &io_user_input, const Opl::Date::ADateFormat &format);
+
+    static bool containsSeperator(const QString &user_input);
 
     /*!
      * \brief Reimplements QDate::toString to accept Opl::Date::ADateFormat enums

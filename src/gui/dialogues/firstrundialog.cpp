@@ -66,6 +66,8 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
                     ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
+    // De-activate non-default date formats for now, implement in future version
+    ui->dateFormatComboBox->setVisible(false);
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
     ui->branchLineEdit->setVisible(false);
 }

@@ -112,6 +112,9 @@ void SettingsWidget::setupDateEdits()
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
     }
+    // De-activate non-default date settings for now, implement in future release
+    ui->dateFormatComboBox->setVisible(false);
+    ui->dateFormatLabel->setVisible(false);
     // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},

@@ -21,6 +21,14 @@
 #include "src/database/adatabase.h"
 #include "src/classes/astyle.h"
 
+// Quick and dirty Debug area
+#include "src/gui/dialogues/firstrundialog.h"
+void MainWindow::doDebugStuff()
+{
+    auto fr = new FirstRunDialog(this);
+    fr->exec();
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -29,9 +37,20 @@ MainWindow::MainWindow(QWidget *parent)
     // connect to the Database
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                          absoluteFilePath(QStringLiteral("logbook.db")));
-            if (!database_file.exists()) {
-                WARN(tr("Error: Database file not found."));
-            }
+    bool db_invalid = false;
+    if (!database_file.exists()) {
+        WARN(tr("Error: Database file not found."));
+        db_invalid = true;
+    }
+    if (database_file.size() == 0) {
+        WARN(tr("Database file invalid."));
+        db_invalid = true;
+    }
+
+    if (db_invalid)
+        onDatabaseInvalid();
+
+
     if(!aDB->connect()){
         WARN(tr("Error establishing database connection."));
     }
@@ -139,6 +158,47 @@ void MainWindow::connectWidgets()
                      pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(aDB,             &ADatabase::connectionReset,
                      aircraftWidget,  &AircraftWidget::repopulateModel);
+}
+
+void MainWindow::onDatabaseInvalid()
+{
+    QMessageBox db_error(this);
+    //db_error.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    db_error.addButton(tr("Restore Backup"), QMessageBox::ButtonRole::AcceptRole);
+    db_error.addButton(tr("Create New Database"), QMessageBox::ButtonRole::RejectRole);
+    db_error.addButton(tr("Abort"), QMessageBox::ButtonRole::DestructiveRole);
+    db_error.setIcon(QMessageBox::Warning);
+    db_error.setWindowTitle(tr("No valid database found"));
+    db_error.setText(tr("No valid database has been found.<br>"
+                       "Would you like to create a new database or import a backup?"));
+
+    int ret = db_error.exec();
+    if (ret == QMessageBox::DestructiveRole) {
+        DEB << "No valid database found. Exiting.";
+        on_actionQuit_triggered();
+    } else if (ret == QMessageBox::ButtonRole::AcceptRole) {
+        DEB << "Yes(Import Backup)";
+        QString db_path = QFileDialog::getOpenFileName(this,
+                                                       tr("Select Database"),
+                                                       AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
+                                                       tr("Database file (*.db)"));
+        if (!db_path.isEmpty()) {
+            if(!aDB->restoreBackup(db_path)) {
+               WARN(tr("Unable to restore Backup file: %1").arg(db_path));
+               on_actionQuit_triggered();
+            } else {
+                INFO(tr("Backup successfully restored."));
+            }
+        }
+    } else if (ret == QMessageBox::ButtonRole::RejectRole){
+        DEB << "No(Create New)";
+        if(FirstRunDialog().exec() == QDialog::Rejected){
+            LOG << "Initial setup incomplete or unsuccessfull.";
+            on_actionQuit_triggered();
+        }
+        ASettings::write(ASettings::Main::SetupComplete, true);
+        LOG << "Initial Setup Completed successfully";
+    }
 }
 
 /*

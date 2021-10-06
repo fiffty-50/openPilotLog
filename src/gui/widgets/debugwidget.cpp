@@ -30,16 +30,12 @@
 #include "src/classes/atranslator.h"
 #include "src/database/adatabasesetup.h"
 #include "src/classes/ahash.h"
-
 #include "src/classes/ajson.h"
+#include "src/functions/adate.h"
+
 void DebugWidget::on_debugPushButton_clicked()
 {
     // Debug
-    auto state = aDB->getUserDataState();
-    DEB << "Tails:" << state.numTails << "Pilots:" << state.numPilots;
-    UserDataState state2 = aDB->getUserDataState();
-    DEB << "inequal?" << (state != state2);
-
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :
