@@ -180,6 +180,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
         }
     }
     refreshView();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 /*!
