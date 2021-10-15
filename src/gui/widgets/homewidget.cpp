@@ -38,6 +38,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
     ui->setupUi(this);
     today = QDate::currentDate();
     ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
+    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     auto logo = QPixmap(Opl::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
