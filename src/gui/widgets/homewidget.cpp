@@ -54,7 +54,10 @@ HomeWidget::HomeWidget(QWidget *parent) :
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
-    checkAllCurrencies();
+
+    // This implementation is annoying. Review or remove.
+    //if (ASettings::read(ASettings::UserData::CurrWarningEnabled).toBool())
+    //    warnCurrencies();
 }
 
 HomeWidget::~HomeWidget()
@@ -213,10 +216,10 @@ void HomeWidget::fillLimitations()
 }
 
 /*!
- * \brief HomeWidget::checkAllCurrencies loops through all the currencies and warns the user about
+ * \brief HomeWidget::warnCurrencies loops through all the currencies and warns the user about
  * impending expiries.
  */
-void HomeWidget::checkAllCurrencies()
+void HomeWidget::warnCurrencies()
 {
     for (int i = 1 ; i <= 6; i++) {
         // Get the Currency entry

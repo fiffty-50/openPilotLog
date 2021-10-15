@@ -39,6 +39,11 @@
 #define ORGNAME QStringLiteral("opl")
 #define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
 
+/*!
+ *  Helper functions that prepare and set up the application
+ */
+namespace Main {
+
 void init()
 {
     LOG << "Setting up / verifying Application Directories...";
@@ -71,6 +76,7 @@ void firstRun()
     ASettings::write(ASettings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
 }
+} // namespace Main
 
 int main(int argc, char *argv[])
 {
@@ -87,11 +93,11 @@ int main(int argc, char *argv[])
     }
 
     // Set Up the Application
-    init();
+    Main::init();
 
     // Check for First Run and launch Setup Wizard
     if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
-        firstRun();
+        Main::firstRun();
 
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;

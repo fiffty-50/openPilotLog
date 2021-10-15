@@ -13,15 +13,22 @@ void ACompletionData::init()
     airportIataIdMap = aDB->getIdMap(ADatabaseTarget::airport_identifier_iata);
     airportNameIdMap = aDB->getIdMap(ADatabaseTarget::airport_names);
     airportList      = aDB->getCompletionList(ADatabaseTarget::airport_identifier_all);
+
+    current_state = aDB->getUserDataState();
 }
 
 void ACompletionData::update()
 {
-    // retreive user modifiable data
-    pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
-    tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
-    pilotsIdMap = aDB->getIdMap(ADatabaseTarget::pilots);
-    tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
+    if (current_state != aDB->getUserDataState()) {
+        // retreive user modifiable data
+        pilotList   = aDB->getCompletionList(ADatabaseTarget::pilots);
+        tailsList   = aDB->getCompletionList(ADatabaseTarget::registrations);
+        pilotsIdMap = aDB->getIdMap(ADatabaseTarget::pilots);
+        tailsIdMap  = aDB->getIdMap(ADatabaseTarget::tails);
+
+        current_state = aDB->getUserDataState();
+    }
+
 }
 
 void ACompletionData::updateTails()

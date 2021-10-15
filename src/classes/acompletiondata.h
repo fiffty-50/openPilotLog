@@ -34,6 +34,8 @@ public:
     QStringList pilotList;
     QStringList tailsList;
     QStringList airportList;
+    // User Data State to trigger update if needed
+    UserDataState current_state;
 };
 
 #endif // ACOMPLETIONDATA_H

@@ -98,7 +98,7 @@ private:
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
-    void checkAllCurrencies();
+    void warnCurrencies();
 
 public slots:
     void refresh();

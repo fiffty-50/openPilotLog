@@ -95,6 +95,8 @@ enum class ADatabaseSummaryKey {
  * \param numPilots - Number of pilots in the database
  */
 struct UserDataState {
+
+    UserDataState(){numTails = 0; numPilots = 0;}
     UserDataState(int numTails_, int numPilots_)
         : numTails(numTails_), numPilots(numPilots_){}
 

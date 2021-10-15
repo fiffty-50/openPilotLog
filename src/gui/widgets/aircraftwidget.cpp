@@ -18,7 +18,6 @@
 #include "aircraftwidget.h"
 #include "ui_aircraftwidget.h"
 #include "src/opl.h"
-#include "src/gui/dialogues/newtaildialog.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
 #include "src/classes/atailentry.h"
@@ -199,6 +198,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
         }
     }
     refreshView();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 /*!

@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
         WARN(tr("Error: Database file not found."));
         db_invalid = true;
     }
-    if (database_file.size() == 0) {
+    if (database_file.size() == 0) { // To Do: Check for database errors instead of just checking for empty
         WARN(tr("Database file invalid."));
         db_invalid = true;
     }
@@ -212,13 +212,13 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    auto old_state = aDB->getUserDataState();
+    // Make sure latest completion data is used, make this trigger only when needed
+    TODO << "Trigger update only when needed.";
+    completionData.update();
+
     NewFlightDialog nf(completionData,
                        this);
     nf.exec();
-    auto new_state = aDB->getUserDataState();
-    if (old_state != new_state)
-        completionData.update();
 }
 
 void MainWindow::on_actionLogbook_triggered()
