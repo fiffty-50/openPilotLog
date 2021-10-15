@@ -57,7 +57,7 @@ private:
      * \brief currWarningThreshold - Retreived from ASettings::UserData::CurrWarningThreshold, the number
      * of days before expiry that the user gets notified about impending expiries.
      */
-    int            currWarningThreshold;
+    int currWarningThreshold = 30;
     /*!
      * \brief ftlWarningThreshold - Retreived from ASettings::UserData::FtlWarningThreshold, the percentage
      * of how close the user has to be to reaching a Flight Time Limitation before getting notified.
@@ -98,7 +98,6 @@ private:
      * \brief Retreives the users first name from the database.
      */
     const QString userName();
-    void warnCurrencies();
 
 public slots:
     void refresh();
