@@ -199,6 +199,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
     }
     refreshView();
     ui->stackedWidget->setCurrentIndex(0);
+    ui->aircraftSearchLineEdit->setText(QString());
 }
 
 /*!

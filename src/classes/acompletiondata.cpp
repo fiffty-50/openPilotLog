@@ -28,7 +28,6 @@ void ACompletionData::update()
 
         current_state = aDB->getUserDataState();
     }
-
 }
 
 void ACompletionData::updateTails()
