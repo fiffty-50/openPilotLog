@@ -189,7 +189,7 @@ QSqlDatabase ADatabase::database()
     return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
 }
 
-bool ADatabase::commit(AEntry entry)
+bool ADatabase::commit(const AEntry &entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -198,7 +198,7 @@ bool ADatabase::commit(AEntry entry)
     }
 }
 
-bool ADatabase::remove(AEntry entry)
+bool ADatabase::remove(const AEntry &entry)
 {
     if (!exists(entry)) {
         DEB << "Error: Database entry not found.";
@@ -269,7 +269,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
     }
 }
 
-bool ADatabase::exists(AEntry entry)
+bool ADatabase::exists(const AEntry &entry)
 {
     if(entry.getPosition().rowId == 0)
         return false;
@@ -344,7 +344,7 @@ bool ADatabase::clear()
 }
 
 
-bool ADatabase::update(AEntry updated_entry)
+bool ADatabase::update(const AEntry &updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = QLatin1String("UPDATE ") + updated_entry.getPosition().tableName + QLatin1String(" SET ");
@@ -378,7 +378,7 @@ bool ADatabase::update(AEntry updated_entry)
     }
 }
 
-bool ADatabase::insert(AEntry new_entry)
+bool ADatabase::insert(const AEntry &new_entry)
 {
     auto data = new_entry.getData();
     QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");

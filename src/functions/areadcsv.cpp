@@ -48,3 +48,24 @@ QVector<QStringList> aReadCsv(QString filename)
     }
     return values;
 }
+
+/*!
+ * \brief aReadCsvAsRows reads from CSV
+ * \param file_name input file path
+ * \return QVector<QStringList> of the CSV data, where each QStringList is one row of the input file
+ */
+QVector<QStringList> aReadCsvAsRows(const QString &file_name)
+{
+    QFile csvfile(file_name);
+    csvfile.open(QIODevice::ReadOnly);
+    QTextStream stream(&csvfile);
+
+    QVector<QStringList> csv_rows;
+
+    // Read each line
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+        csv_rows.append(line.split(','));
+    }
+    return csv_rows;
+}

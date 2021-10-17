@@ -34,12 +34,17 @@ void AEntry::setData(RowData_T table_data)
     tableData = table_data;
 }
 
-const DataPosition& AEntry::getPosition()
+void AEntry::setPosition(DataPosition position_)
+{
+    position = position_;
+}
+
+const DataPosition& AEntry::getPosition() const
 {
     return position;
 }
 
-const RowData_T& AEntry::getData()
+const RowData_T& AEntry::getData() const
 {
     return tableData;
 }

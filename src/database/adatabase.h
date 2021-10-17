@@ -220,7 +220,7 @@ public:
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(AEntry entry);
+    bool exists(const AEntry &entry);
     bool exists(DataPosition data_position);
 
     /*!
@@ -233,22 +233,22 @@ public:
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(AEntry entry);
+    bool commit(const AEntry &entry);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(AEntry new_entry);
+    bool insert(const AEntry &new_entry);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    bool update(AEntry updated_entry);
+    bool update(const AEntry &updated_entry);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    bool remove(AEntry entry);
+    bool remove(const AEntry &entry);
 
     /*!
      * \brief deletes a list of entries from the database. Optimised for speed when

@@ -33,9 +33,27 @@
 #include "src/classes/ajson.h"
 #include "src/functions/adate.h"
 
+
+#include "src/testing/importCrewlounge/processflights.h"
+#include "src/testing/importCrewlounge/processpilots.h"
+#include "src/testing/importCrewlounge/processaircraft.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    // Debug
+    auto rawCsvData = aReadCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
+    // Process Pilots
+    auto proc_pilots = ProcessPilots(rawCsvData);
+    proc_pilots.init();
+    const auto p_maps = proc_pilots.getProcessedPilotMaps();
+    // Process Tails
+    auto proc_tails = ProcessAircraft(rawCsvData);
+    proc_tails.init();
+    const auto t_maps = proc_tails.getProcessedTailMaps();
+    // Process Flights
+    auto proc_flights = ProcessFlights(rawCsvData,proc_pilots.getProcessedPilotsIds(), proc_tails.getProcessedTailIds());
+    proc_flights.init();
+
+    auto flights = proc_flights.getProcessedFlights();
+    DEB << "Flight:" << flights[1000];
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :

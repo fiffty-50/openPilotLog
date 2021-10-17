@@ -53,8 +53,8 @@ public:
     void setData(RowData_T table_data);
     void setPosition(DataPosition position_);
 
-    const DataPosition& getPosition();
-    const RowData_T& getData();
+    const DataPosition& getPosition() const;
+    const RowData_T& getData() const;
 
 };
 

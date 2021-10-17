@@ -170,6 +170,7 @@ static const auto TABLE_AIRPORTS         = QLatin1String("airports");
 static const auto TABLE_CURRENCIES       = QLatin1String("currencies");
 
 // Flights table columns
+static const auto FLIGHTS_ROWID          = QLatin1String("flight_id");
 static const auto FLIGHTS_DOFT           = QLatin1String("doft");
 static const auto FLIGHTS_DEPT           = QLatin1String("dept");
 static const auto FLIGHTS_DEST           = QLatin1String("dest");
@@ -203,6 +204,7 @@ static const auto FLIGHTS_REMARKS        = QLatin1String("remarks");
 
 // tails table
 
+static const auto TAILS_ROWID            = QLatin1String("tail_id");
 static const auto TAILS_REGISTRATION     = QLatin1String("registration");
 static const auto TAILS_COMPANY          = QLatin1String("company");
 static const auto TAILS_MAKE             = QLatin1String("make");
@@ -215,6 +217,7 @@ static const auto TAILS_WEIGHTCLASS      = QLatin1String("weightClass");
 
 // pilots table
 
+static const auto PILOTS_ROWID           = QLatin1String("pilot_id");
 static const auto PILOTS_LASTNAME        = QLatin1String("lastname");
 static const auto PILOTS_FIRSTNAME       = QLatin1String("firstname");
 static const auto PILOTS_ALIAS           = QLatin1String("alias");

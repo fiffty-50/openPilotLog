@@ -117,6 +117,15 @@ set(PROJECT_SOURCES
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
     assets/templates.qrc
+
+    src/testing/importCrewlounge/importcrewlounge.h
+    src/testing/importCrewlounge/importcrewlounge.cpp
+    src/testing/importCrewlounge/processpilots.h
+    src/testing/importCrewlounge/processpilots.cpp
+    src/testing/importCrewlounge/processaircraft.h
+    src/testing/importCrewlounge/processaircraft.cpp
+    src/testing/importCrewlounge/processflights.h
+    src/testing/importCrewlounge/processflights.cpp
 )
 
 # This is currently a bit buggy, see

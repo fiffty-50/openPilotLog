@@ -21,5 +21,7 @@
 #include<QtCore>
 
 QVector<QStringList> aReadCsv(QString filename);
+QVector<QStringList> aReadCsvAsRows(const QString &filename);
+
 
 #endif // AREADCSV_H

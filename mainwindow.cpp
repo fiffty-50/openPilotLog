@@ -20,15 +20,15 @@
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/classes/astyle.h"
+#include "src/gui/dialogues/firstrundialog.h"
+#include "src/classes/aentry.h"
 
 // Quick and dirty Debug area
-#include "src/gui/dialogues/firstrundialog.h"
+#include "src/testing/importCrewlounge/importcrewlounge.h"
 void MainWindow::doDebugStuff()
 {
-    auto fr = new FirstRunDialog(this);
-    fr->exec();
+    ImportCrewlounge::exec(QString());
 }
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
