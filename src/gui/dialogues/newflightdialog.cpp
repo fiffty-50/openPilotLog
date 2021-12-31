@@ -149,46 +149,50 @@ void NewFlightDialog::setupButtonGroups()
 void NewFlightDialog::setupRawInputValidation()
 {
     // Define Regular Expressions
-    const auto time_valid_rx = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");
-    const auto loc_valid_rx  = QRegularExpression("[a-zA-Z0-9]{1,4}");
-    const auto acft_valid_rx = QRegularExpression("\\w+\\-?(\\w+)?");
     const auto name_rx       = QLatin1String("((\\p{L}+)?('|\\-|,)?(\\p{L}+)?)");
     const auto add_name_rx   = QLatin1String("(\\s?(\\p{L}+('|\\-|,)?\\p{L}+?))?");
+    const auto time_valid_rx = QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?");
+    const auto loc_valid_rx  = QRegularExpression("[a-zA-Z0-9]{1,4}");
+    const auto acft_valid_rx = QRegularExpression("\\w+\\-?(\\w+)?");   
     const auto name_valid_rx = QRegularExpression(
                 name_rx + add_name_rx + add_name_rx + add_name_rx + ",?\\s?" // up to 4 first names
-                + name_rx + add_name_rx + add_name_rx + add_name_rx );         // up to 4 last names
-    auto tempList = QStringList();
-    // define tuples
-    const std::tuple<QString, QStringList*, QRegularExpression>
-            location_line_edit_settings {QStringLiteral("Loc"), &completionData.airportList, loc_valid_rx};
-    const std::tuple<QString, QStringList*, QRegularExpression>
-            name_line_edit_settings {QStringLiteral("Name"), &completionData.pilotList, name_valid_rx};
-    const std::tuple<QString, QStringList*, QRegularExpression>
-            acft_line_edit_settings {QStringLiteral("acft"), &completionData.tailsList, acft_valid_rx};
-    const std::tuple<QString, QStringList*, QRegularExpression>
-            time_line_edit_settings {QStringLiteral("Time"), &tempList, time_valid_rx};
-    const QList<std::tuple<QString, QStringList*, QRegularExpression>> line_edit_settings = {
-        location_line_edit_settings,
-        name_line_edit_settings,
-        acft_line_edit_settings,
-        time_line_edit_settings
-    };
-    //get line edits, set up completers and validators
-    const auto line_edits = ui->flightDataTab->findChildren<QLineEdit*>();
+              + name_rx + add_name_rx + add_name_rx + add_name_rx );         // up to 4 last names
 
-    for (const auto &item : line_edit_settings) {
-        for (const auto &line_edit : line_edits) {
-            if(line_edit->objectName().contains(std::get<0>(item))) {
-                // DEB << "Setting up: " << line_edit->objectName();
+    // create the structs holding the inititalisation data and store them in a map
+    const auto location_data = ValidationSetupData(&completionData.airportList, &loc_valid_rx);
+    const auto pilot_data    = ValidationSetupData(&completionData.pilotList, &name_valid_rx);
+    const auto aircraft_data = ValidationSetupData(&completionData.tailsList, &acft_valid_rx);
+    const auto time_data     = ValidationSetupData(&time_valid_rx);
+
+    const QMap<QString, const ValidationSetupData*> init_data_map = {
+        {QStringLiteral("Loc"),  &location_data},
+        {QStringLiteral("Name"), &pilot_data},
+        {QStringLiteral("acft"), &aircraft_data},
+        {QStringLiteral("Time"), &time_data}
+    };
+
+    //get and set up line edits
+    const QList<QLineEdit*> line_edits = ui->flightDataTab->findChildren<QLineEdit*>();
+    const QList<QString> keys_list = init_data_map.keys();
+
+    for (const auto &line_edit : line_edits) {
+        for (const auto &key : keys_list ) {
+            if (line_edit->objectName().contains(key)) {
+                // Fetch Data from the map and set up the line edit
+                const ValidationSetupData* init_data = init_data_map.value(key);
+                DEB << "Setting up: " << line_edit->objectName();
+
                 // Set Validator
-                auto validator = new QRegularExpressionValidator(std::get<2>(item), line_edit);
+                auto validator = new QRegularExpressionValidator(*init_data->validationRegEx, line_edit);
                 line_edit->setValidator(validator);
                 // Set Completer
-                auto completer = new QCompleter(*std::get<1>(item), line_edit);
-                completer->setCaseSensitivity(Qt::CaseInsensitive);
-                completer->setCompletionMode(QCompleter::PopupCompletion);
-                completer->setFilterMode(Qt::MatchContains);
-                line_edit->setCompleter(completer);
+                if (init_data->completionData) {
+                    auto completer = new QCompleter(*init_data->completionData, line_edit);
+                    completer->setCaseSensitivity(Qt::CaseInsensitive);
+                    completer->setCompletionMode(QCompleter::PopupCompletion);
+                    completer->setFilterMode(Qt::MatchContains);
+                    line_edit->setCompleter(completer);
+                }
             }
         }
     }
@@ -204,7 +208,6 @@ void NewFlightDialog::setupRawInputValidation()
         ui->picNameLineEdit,
         ui->acftLineEdit,
     };
-
     primaryTimeLineEdits = {
         ui->tofbTimeLineEdit,
         ui->tonbTimeLineEdit
