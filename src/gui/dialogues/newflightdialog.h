@@ -39,23 +39,6 @@
 #include "src/database/adatabase.h"
 #include "src/classes/acompletiondata.h"
 
-
-/*!
- * \brief The ValidationSetupData struct encapsulates the items required to initialise
- * the line edits with QValidators and QCompleters
- */
-struct ValidationSetupData
-{
-    ValidationSetupData(QStringList* completion_data, const QRegularExpression* validation_RegEx)
-        : completionData(completion_data), validationRegEx(validation_RegEx){};
-
-    ValidationSetupData(const QRegularExpression* validation_RegEx)
-        : completionData(nullptr), validationRegEx(validation_RegEx){};
-
-    const QStringList* completionData;
-    const QRegularExpression* validationRegEx;
-};
-
 namespace Ui {
 
 class NewFlight;
@@ -89,6 +72,22 @@ public:
      */
     explicit NewFlightDialog(ACompletionData &completion_data, int row_id, QWidget *parent = nullptr);
     ~NewFlightDialog();
+
+    /*!
+     * \brief The ValidationSetupData struct encapsulates the items required to initialise
+     * the line edits with QValidators and QCompleters
+     */
+    struct ValidationSetupData
+    {
+        ValidationSetupData(QStringList* completion_data, const QRegularExpression* validation_RegEx)
+            : completionData(completion_data), validationRegEx(validation_RegEx){};
+
+        ValidationSetupData(const QRegularExpression* validation_RegEx)
+            : completionData(nullptr), validationRegEx(validation_RegEx){};
+
+        const QStringList* completionData;
+        const QRegularExpression* validationRegEx;
+    };
 
 private slots:
 
@@ -172,6 +171,7 @@ private:
 
     void setup();
     void readSettings();
+    void setupUi();
     void writeSettings();
     void setupButtonGroups();
     void setupRawInputValidation();

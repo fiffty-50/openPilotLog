@@ -614,9 +614,8 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         return {};
     }
     auto id_map = QMap<QString, RowId_T>();
-    while (query.next()) {
+    while (query.next())
         id_map.insert(query.value(1).toString(), query.value(0).toInt());
-    }
     return id_map;
 }
 

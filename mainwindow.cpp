@@ -212,12 +212,8 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    // Make sure latest completion data is used, make this trigger only when needed
-    TODO << "Trigger update only when needed.";
     completionData.update();
-
-    NewFlightDialog nf(completionData,
-                       this);
+    NewFlightDialog nf(completionData, this);
     nf.exec();
 }
 
