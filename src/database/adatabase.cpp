@@ -571,7 +571,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 }
 
 const
-QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
+QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -613,13 +613,13 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         lastError = query.lastError();
         return {};
     }
-    auto id_map = QMap<QString, RowId_T>();
+    auto id_map = QMap<RowId_T, QString>();
     while (query.next())
-        id_map.insert(query.value(1).toString(), query.value(0).toInt());
+        id_map.insert(query.value(0).toInt(), query.value(1).toString());
     return id_map;
 }
 
-int ADatabase::getLastEntry(ADatabaseTable table)
+RowId_T ADatabase::getLastEntry(ADatabaseTable table)
 {
     QString statement = QLatin1String("SELECT MAX(ROWID) FROM ");
 

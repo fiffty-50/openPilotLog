@@ -25,11 +25,11 @@ public:
 
 
     // Maps for input mapping DB key - user input
-    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
-    QMap<TailRegistration_T, TailId_T> tailsIdMap;
-    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
-    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
-    QMap<AirportName_T, AirportId_T> airportNameIdMap;
+    QMap<RowId_T, QString> pilotsIdMap;
+    QMap<RowId_T, QString> tailsIdMap;
+    QMap<RowId_T, QString> airportIcaoIdMap;
+    QMap<RowId_T, QString> airportIataIdMap;
+    QMap<RowId_T, QString> airportNameIdMap;
     // Lists for QCompleter
     QStringList pilotList;
     QStringList tailsList;

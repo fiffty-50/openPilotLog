@@ -318,16 +318,16 @@ public:
     const QStringList getCompletionList(ADatabaseTarget target);
 
     /*!
-     * \brief returns a QMap<QString, RowId_t> of a human-readable database value and
+     * \brief returns a QMap of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      * \todo What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString
      */
-    const QMap<QString, RowId_T> getIdMap(ADatabaseTarget target);
+    const QMap<RowId_T, QString> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTable table);
+    RowId_T getLastEntry(ADatabaseTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
