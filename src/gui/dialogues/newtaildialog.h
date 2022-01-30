@@ -59,7 +59,7 @@ private:
 
     QStringList aircraftList;
 
-    QMap<QString, int> idMap;
+    QMap<RowId_T, QString> idMap;
 
     void setupCompleter();
     void setupValidators();

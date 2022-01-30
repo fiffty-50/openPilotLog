@@ -35,6 +35,7 @@ const QString APilotEntry::name()
     if (tableData.isEmpty())
         return QString();
 
-    return tableData.value(Opl::Db::PILOTS_LASTNAME).toString() + ','
-           +tableData.value(Opl::Db::PILOTS_FIRSTNAME).toString().left(1) + '.';
+    return tableData.value(Opl::Db::PILOTS_LASTNAME).toString() + ", "
+           //+tableData.value(Opl::Db::PILOTS_FIRSTNAME).toString().left(1) + '.';
+           +tableData.value(Opl::Db::PILOTS_FIRSTNAME).toString();
 }

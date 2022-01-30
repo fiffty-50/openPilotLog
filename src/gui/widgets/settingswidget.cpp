@@ -112,6 +112,9 @@ void SettingsWidget::setupDateEdits()
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
     }
+    // De-activate non-default date settings for now, implement in future release
+    ui->dateFormatComboBox->setVisible(false);
+    ui->dateFormatLabel->setVisible(false);
     // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
@@ -175,11 +178,8 @@ void SettingsWidget::readSettings()
     ui->currMedCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowMedCurrency).toBool());
     ui->currCustom1CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool());
     ui->currCustom2CheckBox->setChecked(ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool());
-    ui->currWarningThresholdSpinBox->setValue(ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt());
-    ui->currWarningCheckBox->setChecked(ASettings::read(ASettings::UserData::CurrWarningEnabled).toBool());
     ui->currCustom1LineEdit->setText(ASettings::read(ASettings::UserData::Custom1CurrencyName).toString());
     ui->currCustom2LineEdit->setText(ASettings::read(ASettings::UserData::Custom2CurrencyName).toString());
-
 
     /*
      * Misc Tab
@@ -673,27 +673,6 @@ void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
         break;
     }
     emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currWarningCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currWarningThresholdSpinBox_valueChanged(int arg1)
-{
-    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
-    emit settingChanged(SettingSignal::HomeWidget);
 }
 
 void SettingsWidget::on_currCustom1LineEdit_editingFinished()

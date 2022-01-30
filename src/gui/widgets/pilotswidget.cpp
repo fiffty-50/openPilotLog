@@ -180,6 +180,8 @@ void PilotsWidget::on_deletePilotButton_clicked()
         }
     }
     refreshView();
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->pilotSearchLineEdit->setText(QString());
 }
 
 /*!

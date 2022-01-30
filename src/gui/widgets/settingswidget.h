@@ -105,10 +105,6 @@ private slots:
 
     void on_currCustom2CheckBox_stateChanged(int arg1);
 
-    void on_currWarningCheckBox_stateChanged(int arg1);
-
-    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
-
     void on_currCustom1LineEdit_editingFinished();
 
     void on_currCustom2LineEdit_editingFinished();

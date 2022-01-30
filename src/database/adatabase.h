@@ -89,6 +89,31 @@ enum class ADatabaseSummaryKey {
 };
 
 /*!
+ * \brief The UserDateState struct caches the current number of entries in relevant database tables
+ * for fast access
+ * \param numTails - Number of tails in the database
+ * \param numPilots - Number of pilots in the database
+ */
+struct UserDataState {
+
+    UserDataState(){numTails = 0; numPilots = 0;}
+    UserDataState(int numTails_, int numPilots_)
+        : numTails(numTails_), numPilots(numPilots_){}
+
+    bool operator==(const UserDataState& other)
+    {
+        return numTails == other.numTails && numPilots == other.numPilots;
+    }
+    bool operator!=(const UserDataState& other)
+    {
+        return numTails != other.numTails || numPilots != other.numPilots;
+    }
+
+    int numTails;
+    int numPilots;
+};
+
+/*!
  * \brief Custom Database Error derived from QSqlError.
  * Extends text() adding "Database Error: " before the text.
  * Errors that are related to SQL are assigned their respective error codes.
@@ -195,7 +220,7 @@ public:
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(AEntry entry);
+    bool exists(const AEntry &entry);
     bool exists(DataPosition data_position);
 
     /*!
@@ -208,22 +233,22 @@ public:
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(AEntry entry);
+    bool commit(const AEntry &entry);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(AEntry new_entry);
+    bool insert(const AEntry &new_entry);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    bool update(AEntry updated_entry);
+    bool update(const AEntry &updated_entry);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    bool remove(AEntry entry);
+    bool remove(const AEntry &entry);
 
     /*!
      * \brief deletes a list of entries from the database. Optimised for speed when
@@ -293,16 +318,16 @@ public:
     const QStringList getCompletionList(ADatabaseTarget target);
 
     /*!
-     * \brief returns a QMap<QString, RowId_t> of a human-readable database value and
+     * \brief returns a QMap of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
      * \todo What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString
      */
-    const QMap<QString, RowId_T> getIdMap(ADatabaseTarget target);
+    const QMap<RowId_T, QString> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    int getLastEntry(ADatabaseTable table);
+    RowId_T getLastEntry(ADatabaseTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
@@ -357,6 +382,13 @@ public:
      * (aiports, aircraft,..)
      */
     QStringList getTemplateTableNames();
+
+    /*!
+     * \brief getUserDataState returns a struct containing the current amount of entries in the tails and
+     * pilots tables.
+     * \return
+     */
+    UserDataState getUserDataState();
 
     /*!
      * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.

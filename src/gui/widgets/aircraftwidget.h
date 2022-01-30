@@ -23,6 +23,7 @@
 #include <QSqlTableModel>
 #include <QTableView>
 #include "src/gui/widgets/settingswidget.h"
+#include "src/gui/dialogues/newtaildialog.h"
 
 
 namespace Ui {

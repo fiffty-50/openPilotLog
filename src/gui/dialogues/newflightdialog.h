@@ -37,11 +37,28 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/database/adatabase.h"
+#include "src/classes/acompletiondata.h"
 
 namespace Ui {
+
 class NewFlight;
 }
 
+/*!
+ * \brief The NewFlightDialog enables the user to add a new flight or edit an existing one.
+ * \details
+ * - Most line edits have validators and completers.
+ * - Validators are based on regular expressions, serving as raw input validation
+ * - The Completers are based off the database and provide auto-completion
+ * - mandatory line edits only emit editing finished if their content has passed
+ *   raw input validation or focus is lost.
+ * - Editing finished triggers validating inputs by mapping them to Database values
+ *   where required and results in either pass or fail.
+ * - A QBitArray is mainained containing the state of validity of the mandatory line edits
+ * - The deducted entries are automatically filled if the necessary mandatory entries
+ * are valid.
+ * - Comitting an entry to the database is only allowed if all mandatory inputs are valid.
+ */
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
@@ -49,12 +66,28 @@ public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
      */
-    explicit NewFlightDialog(QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData &completion_data, QWidget *parent = nullptr);
     /*!
      * \brief NewFlightDialog Edit an existing logbook entry.
      */
-    explicit NewFlightDialog(int row_id, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData &completion_data, int row_id, QWidget *parent = nullptr);
     ~NewFlightDialog();
+
+    /*!
+     * \brief The ValidationSetupData struct encapsulates the items required to initialise
+     * the line edits with QValidators and QCompleters
+     */
+    struct ValidationSetupData
+    {
+        ValidationSetupData(QStringList* completion_data, const QRegularExpression* validation_RegEx)
+            : completionData(completion_data), validationRegEx(validation_RegEx){};
+
+        ValidationSetupData(const QRegularExpression* validation_RegEx)
+            : completionData(nullptr), validationRegEx(validation_RegEx){};
+
+        const QStringList* completionData;
+        const QRegularExpression* validationRegEx;
+    };
 
 private slots:
 
@@ -93,48 +126,40 @@ private:
      */
     AFlightEntry flightEntry;
 
-    // [G]: Initial refactoring based on previous use.
-    /*!
-     * \brief Wrapper around Vector of mandatory line edits and their corresponding
-     * "ok" QBitArray.
-     */
-    struct MandatoryLineEdits {
-        QVector<QLineEdit*> lineEdits;
-        QBitArray lineEditsValid;
-
-        MandatoryLineEdits() = default;
-        MandatoryLineEdits(std::initializer_list<QLineEdit*> init_list);
-        void operator= (std::initializer_list<QLineEdit*> init_list);
-
-        bool contains(QLineEdit* line_edit);
-        void validate(QLineEdit* line_edit);
-        void unvalidate(QLineEdit* line_edit);
-        int countValid();
-        int size();
-        bool validAt(int idx);
-        bool allValid();
-        QLineEdit* operator[] (int idx);
-
-    } mandatoryLineEdits;
-
+    QVector<QLineEdit*> mandatoryLineEdits;
     QVector<QLineEdit*> primaryTimeLineEdits;
     QVector<QLineEdit*> pilotsLineEdits;
 
     /*!
-     * To be used by the QCompleters
+     * \brief mandatoryLineEditsValid holds the minimum required information to create a
+     * valid database entries.
      */
-    QStringList pilotList;
-    QStringList tailsList;
-    QStringList airportList;
+    QBitArray mandatoryLineEditsValid;
+    enum mandatoryLineEdit {
+        doft = 0,
+        dept = 1,
+        dest = 2,
+        tofb = 3,
+        tonb = 4,
+        pic  = 5,
+        acft = 6
+    };
+    void validateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, true);}
+    void invalidateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, false);}
+    bool timeLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::tofb]
+                                  && mandatoryLineEditsValid[mandatoryLineEdit::tonb];}
+    bool acftLineEditValid(){return mandatoryLineEditsValid[mandatoryLineEdit::acft];}
+    bool locLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::dept]
+                                 && mandatoryLineEditsValid[mandatoryLineEdit::dest];}
+    bool allMandatoryLineEditsValid(){return mandatoryLineEditsValid.count(true) == 7;}
 
+    //debug
+    void validationStatus();
     /*!
-     * \brief Used to map user input to database keys
+     * Contains completion data for QCompleters and mapping user input
      */
-    QMap<PilotName_T, PilotRowId_T> pilotsIdMap;
-    QMap<TailRegistration_T, TailId_T> tailsIdMap;
-    QMap<AirportICAO_T, AirportId_T> airportIcaoIdMap;
-    QMap<AirportIATA_T, AirportId_T> airportIataIdMap;
-    QMap<AirportName_T, AirportId_T> airportNameIdMap;
+    ACompletionData completionData;
+
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 
@@ -146,6 +171,7 @@ private:
 
     void setup();
     void readSettings();
+    void setupUi();
     void writeSettings();
     void setupButtonGroups();
     void setupRawInputValidation();
@@ -162,6 +188,10 @@ private:
     void addNewTail(QLineEdit*);
     void addNewPilot(QLineEdit *);
 
+    /*!
+     * \brief Collects user input from the line edits and processes it to be ready
+     * for database submission.
+     */
     RowData_T collectInput();
 
     /*!
@@ -182,6 +212,5 @@ private:
         return ATime::toString(ATime::fromMinutes(minutes), format);
     }
 };
-
 
 #endif // NEWFLIGHT_H

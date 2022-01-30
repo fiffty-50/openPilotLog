@@ -127,7 +127,7 @@ void NewTailDialog::fillForm(AEntry entry, bool is_template)
 
     auto data = entry.getData();
 
-    for (const auto &le : line_edits) {
+    for (const auto &le : qAsConst(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         le->setText(data.value(key).toString());
     }
@@ -152,7 +152,7 @@ bool NewTailDialog::verify()
     recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppNumberComboBox")));
     recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppTypeComboBox")));
 
-    for (const auto &le : recommended_line_edits) {
+    for (const auto &le : qAsConst(recommended_line_edits)) {
         if (le->text() != "") {
             DEB << "Good: " << le;
             recommended_line_edits.removeOne(le);
@@ -162,7 +162,7 @@ bool NewTailDialog::verify()
             DEB << "Not Good: " << le;
         }
     }
-    for (const auto &cb : recommended_combo_boxes) {
+    for (const auto &cb : qAsConst(recommended_combo_boxes)) {
         if (cb->currentIndex() != 0) {
 
             recommended_combo_boxes.removeOne(cb);
@@ -192,7 +192,7 @@ void NewTailDialog::submitForm()
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));
 
-    for (const auto &le : line_edits) {
+    for (const auto &le : qAsConst(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         new_data.insert(key, le->text());
     }
@@ -284,9 +284,9 @@ void NewTailDialog::onSearchCompleterActivated()
     const auto &text = ui->searchLineEdit->text();
     if (aircraftList.contains(text)) {
 
-            DEB << "Template Selected. aircraft_id is: " << idMap.value(text);
+            DEB << "Template Selected. aircraft_id is: " << idMap.key(text);
             //call autofiller for dialog
-            fillForm(aDB->getAircraftEntry(idMap.value(text)), true);
+            fillForm(aDB->getAircraftEntry(idMap.key(text)), true);
             ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
             ui->searchLabel->setText(text);
         } else {

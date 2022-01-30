@@ -44,10 +44,6 @@ private slots:
 
     void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
 
-    void on_currWarningCheckBox_stateChanged(int arg1);
-
-    void on_currWarningThresholdSpinBox_valueChanged(int arg1);
-
     void on_currCustom1LineEdit_editingFinished();
 
     void on_currCustom2LineEdit_editingFinished();

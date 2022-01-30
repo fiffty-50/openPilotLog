@@ -4,27 +4,27 @@
 <context>
     <name>ADatabase</name>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="774"/>
+        <location filename="../src/database/adatabase.cpp" line="791"/>
         <source>&lt;tr&gt;&lt;td&gt;Total Time: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="775"/>
+        <location filename="../src/database/adatabase.cpp" line="792"/>
         <source>&lt;tr&gt;&lt;td&gt;Last Flight: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="776"/>
+        <location filename="../src/database/adatabase.cpp" line="793"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of flights: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="777"/>
+        <location filename="../src/database/adatabase.cpp" line="794"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of aircraft: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/database/adatabase.cpp" line="778"/>
+        <location filename="../src/database/adatabase.cpp" line="795"/>
         <source>&lt;tr&gt;&lt;td&gt;Number of Pilots: &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -73,32 +73,32 @@
     </message>
     <message>
         <location filename="../src/gui/widgets/aircraftwidget.ui" line="195"/>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="190"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="189"/>
         <source>Delete Aircraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="171"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="170"/>
         <source>No Aircraft selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="174"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="173"/>
         <source>Deleting multiple entries is currently not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="191"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="190"/>
         <source>You are deleting the following aircraft:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1 - (%2)&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="224"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="225"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="237"/>
+        <location filename="../src/gui/widgets/aircraftwidget.cpp" line="238"/>
         <source>Unable to delete.&lt;br&gt;&lt;br&gt;This is most likely the case because a flight exists with the aircraft you are trying to delete.&lt;br&gt;&lt;br&gt;%1 flight(s) with this aircraft have been found:&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%2&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;You have to change or remove the conflicting flight(s) before removing this aircraft from the database.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -318,7 +318,7 @@ Error: %2</source>
     <message>
         <location filename="../src/gui/widgets/debugwidget.ui" line="73"/>
         <source>Do Debug Stuff!</source>
-        <translation>Haz Cosas de Debug</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/debugwidget.ui" line="80"/>
@@ -362,12 +362,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="190"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="186"/>
         <source>Open CSV File for import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/debugwidget.cpp" line="192"/>
+        <location filename="../src/gui/widgets/debugwidget.cpp" line="188"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -386,7 +386,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="27"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="87"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="90"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
@@ -415,7 +415,7 @@ Error: %2</source>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="93"/>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="110"/>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="127"/>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="705"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="674"/>
         <source>optional</source>
         <translation type="unfinished"></translation>
     </message>
@@ -431,7 +431,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.ui" line="136"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="475"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="473"/>
         <source>Import Database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -487,293 +487,283 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="441"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="454"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="445"/>
         <source>Date Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="463"/>
-        <source>Warn me about expiring currencies</source>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="455"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="483"/>
-        <source>days before expiry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="503"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="472"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can make selections about which parts of a new flight will be automatically preselected or completed by default. You can always change these settings for an individual flight or adjust them globally in the settings menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="524"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="493"/>
         <source>Default Function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="538"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="507"/>
         <source>PIC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="543"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="512"/>
         <source>SIC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="548"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="517"/>
         <source>DUAL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="553"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="522"/>
         <source>INSTRUCTOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="567"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="536"/>
         <source>Default Flight Rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="581"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="550"/>
         <source>VFR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="586"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="555"/>
         <source>IFR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="600"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="569"/>
         <source>Default Approach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="623"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="592"/>
         <source>Calculate Night Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="637"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="606"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="642"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="611"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="656"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="625"/>
         <source>Night Time Rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="670"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="639"/>
         <source>EASA / ICAO / FAA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="675"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="644"/>
         <source>Sunrise to Sunset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="689"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="658"/>
         <source>Flight Number Prefix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="718"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="687"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can customize the appearance of your logbook, like how your name should be displayed in the logbook or the theme of the app.&lt;/p&gt;&lt;p&gt;The logbook views determine how your logbook is displayed. The default view is a compact overview with all the essential information displayed, whereas the EASA view is modelled after the EASA guidelines for logbooks and contains more fields. Please note that these only affects how your logbook is displayed. In both views, you have the possibility to log all the details of a specific flight. You can change the view at any time from the settings page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="739"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="708"/>
         <source>Show own name as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="753"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="722"/>
         <source>self</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="758"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="727"/>
         <source>SELF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="763"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="732"/>
         <source>Lastname, Firstname</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="777"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="746"/>
         <source>Application Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="793"/>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="796"/>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="806"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="762"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="765"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="775"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="799"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="768"/>
         <source>Logbook Dispay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="810"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="779"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="815"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="784"/>
         <source>EASA Part-FCL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="829"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="798"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Finish&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Almost done! We are now going to create the database for the application.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;If you want to use the most up-to-date version of the database, an internet connection is required, otherwise you can use the version included in the download.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.ui" line="845"/>
+        <location filename="../src/gui/dialogues/firstrundialog.ui" line="814"/>
         <source>main</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="102"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="105"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="103"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="106"/>
         <source>Please enter first and last name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="110"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="113"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="131"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="134"/>
         <source>Existing Database found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="132"/>
-        <source>An existing database file has been detected on your system.&lt;br&gt;Would you like to create a backup of the existing database?&lt;br&gt;&lt;br&gt;Note: if you select no, the existing database will be overwritten. Thisaction is irreversible.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="144"/>
-        <source>Unable to backup old database:&lt;br&gt;%1</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="135"/>
+        <source>An existing database file has been detected on your system.&lt;br&gt;Would you like to create a backup of the existing database?&lt;br&gt;&lt;br&gt;Note: if you select no, the existing database will be overwritten. This action is irreversible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/dialogues/firstrundialog.cpp" line="147"/>
+        <source>Unable to backup old database:&lt;br&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="150"/>
         <source>Backup successfully created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="154"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="157"/>
         <source>Unable to delete existing database file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="160"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="170"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="180"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="189"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="163"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="173"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="183"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="192"/>
         <source>Database setup failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="161"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="164"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;Database: Unable to connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="171"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="174"/>
         <source>Errors have ocurred creating the database.Without a working database The application will not be usable.&lt;br&gt;The following error has ocurred:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="181"/>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="190"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="184"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="193"/>
         <source>Unable to execute database query&lt;br&gt;The following error has occured:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="292"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="310"/>
         <source>Create Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="293"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="311"/>
         <source>We are now going to create the database.&lt;br&gt;Would you like to download the latest database information?&lt;br&gt;(Recommended, Internet connection required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="303"/>
-        <source>Downloading latest data has failed.&lt;br&gt;&lt;br&gt;Using local data instead.</source>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="321"/>
+        <source>Downloading or verifying latest data has failed.&lt;br&gt;&lt;br&gt;Using local data instead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="312"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="330"/>
         <source>Database creation has been unsuccessful. The following error has ocurred:&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="319"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="337"/>
         <source>Database creation has been unsuccessful. Unable to fill template data.&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="369"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="387"/>
         <source>Setup incomplete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="370"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="388"/>
         <source>Without completing the initial setup you cannot use the application.&lt;br&gt;&lt;br&gt;Quit anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="461"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="459"/>
         <source>Choose backup file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="467"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="465"/>
         <source>No Database has been selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="476"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="474"/>
         <source>The following database will be imported:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;Is this correct?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="482"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="480"/>
         <source>Unable to import database file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="485"/>
+        <location filename="../src/gui/dialogues/firstrundialog.cpp" line="483"/>
         <source>Database successfully imported.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -831,7 +821,7 @@ Error: %2</source>
     <message>
         <location filename="../src/gui/widgets/homewidget.ui" line="167"/>
         <source>Limitations</source>
-        <translation>Limitaciones</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/homewidget.ui" line="179"/>
@@ -959,23 +949,13 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="45"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="44"/>
         <source>Welcome to openPilotLog, %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="119"/>
+        <location filename="../src/gui/widgets/homewidget.cpp" line="116"/>
         <source>Invalid Date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="233"/>
-        <source>Your currency &lt;b&gt;%1&lt;/b&gt; is expired since %2.&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/homewidget.cpp" line="240"/>
-        <source>Your currency &lt;b&gt;%1&lt;/b&gt; expires in &lt;b&gt;%2&lt;/b&gt; days (%3).&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1054,39 +1034,39 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="157"/>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="172"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="169"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="184"/>
         <source>&lt;br&gt;No flight selected.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="159"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="171"/>
         <source>&lt;br&gt;More than one flight selected.&lt;br&gt;&lt;br&gt;Editing multiple entries is not yet supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="193"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="205"/>
         <source>The following flight(s) will be deleted:&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%1&lt;br&gt;&lt;/b&gt;&lt;/tt&gt;Deleting flights is irreversible.&lt;br&gt;Do you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="201"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="213"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="206"/>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="229"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="218"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="241"/>
         <source>%1 flights have been deleted successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="216"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="228"/>
         <source>You have selected %1 flights.&lt;br&gt;&lt;br&gt;Deleting flights is irreversible.&lt;br&gt;&lt;br&gt;Are you sure you want to proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/logbookwidget.cpp" line="226"/>
+        <location filename="../src/gui/widgets/logbookwidget.cpp" line="238"/>
         <source>Unable to delete. The following error has ocurred:&lt;br&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1244,23 +1224,73 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="34"/>
+        <location filename="../mainwindow.cpp" line="42"/>
         <source>Error: Database file not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="37"/>
+        <location filename="../mainwindow.cpp" line="46"/>
+        <source>Database file invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="55"/>
         <source>Error establishing database connection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="87"/>
+        <location filename="../mainwindow.cpp" line="108"/>
         <source>Your database is out of date.Minimum required revision: %1&lt;br&gt;You have revision: %2&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="103"/>
+        <location filename="../mainwindow.cpp" line="124"/>
         <source>This feature is not yet available!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="167"/>
+        <source>Restore Backup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="168"/>
+        <source>Create New Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="169"/>
+        <source>Abort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="171"/>
+        <source>No valid database found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="172"/>
+        <source>No valid database has been found.&lt;br&gt;Would you like to create a new database or import a backup?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="182"/>
+        <source>Select Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="184"/>
+        <source>Database file (*.db)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="187"/>
+        <source>Unable to restore Backup file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="190"/>
+        <source>Backup successfully restored.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1643,73 +1673,73 @@ Error: %2</source>
 <context>
     <name>NewFlightDialog</name>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="768"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="220"/>
+        <source>Date Format: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="689"/>
         <source>Unable to determine total block time.&lt;br&gt;Please fill out all Mandatory Fields&lt;br&gt;before manually editing these times.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="782"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="703"/>
         <source>The flight time you have entered is longer than the total blocktime:&lt;br&gt;&lt;center&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/center&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="796"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="717"/>
         <source>No Aircraft found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="797"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="718"/>
         <source>No aircraft with this registration found.&lt;br&gt;If this is the first time you log a flight with this aircraft, you have to add the registration to the database first.&lt;br&gt;&lt;br&gt;Would you like to add a new aircraft to the database?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="828"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="756"/>
         <source>No Pilot found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="829"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="757"/>
         <source>No pilot found.&lt;br&gt;Please enter the Name as&lt;br&gt;&lt;br&gt;&lt;center&gt;&lt;b&gt;Lastname, Firstname&lt;/b&gt;&lt;/center&gt;&lt;br&gt;&lt;br&gt;If this is the first time you log a flight with this pilot, you have to add the pilot to the database first.&lt;br&gt;&lt;br&gt;Would you like to add a new pilot to the database?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="876"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="820"/>
         <source>Not all mandatory entries are valid.&lt;br&gt;The following item(s) are empty or missing:&lt;br&gt;&lt;br&gt;&lt;center&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/center&gt;&lt;br&gt;Please go back and fill in the required data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="890"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="834"/>
         <source>The following error has ocurred:&lt;br&gt;&lt;br&gt;%1&lt;br&gt;&lt;br&gt;The entry has not been saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="993"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="932"/>
         <source>Invalid Date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1067"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1020"/>
         <source>Unknown airport identifier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1132"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1085"/>
         <source>Unknown Registration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1219"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1168"/>
         <source>Before editing times manually, please fill out the required fields in the flight data tab, so that total time can be calculated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1262"/>
-        <source>You can specify the approach type in the Remarks field.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1276"/>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1284"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1221"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="1229"/>
         <source>Currently only logging in UTC time is supported.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2014,12 +2044,12 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="204"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="206"/>
         <source>&lt;br&gt;Unable to delete.&lt;br&gt;&lt;br&gt;The following error has ocurred:&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/pilotswidget.cpp" line="216"/>
+        <location filename="../src/gui/widgets/pilotswidget.cpp" line="218"/>
         <source>Unable to delete.&lt;br&gt;&lt;br&gt;This is most likely the case because a flight exists with the Pilot you are trying to delete as PIC.&lt;br&gt;&lt;br&gt;%1 flight(s) with this pilot have been found:&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;tt&gt;%2&lt;/b&gt;&lt;/tt&gt;&lt;br&gt;&lt;br&gt;You have to change or remove the conflicting flight(s) before removing this pilot from the database.&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2035,37 +2065,37 @@ Error: %2</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="51"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="807"/>
         <source>Date of Flight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="51"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="807"/>
         <source>Departure Airport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="52"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="808"/>
         <source>Destination Airport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="52"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="808"/>
         <source>Time Off Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="53"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="809"/>
         <source>Time on Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="53"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="809"/>
         <source>PIC Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="54"/>
+        <location filename="../src/gui/dialogues/newflightdialog.cpp" line="810"/>
         <source>Aircraft Registration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2084,7 +2114,7 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="30"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="929"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="843"/>
         <source>Last Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2096,14 +2126,14 @@ Error: %2</source>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="47"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="934"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="848"/>
         <source>First Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/settingswidget.ui" line="64"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="939"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1016"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="853"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="930"/>
         <source>Company</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2278,186 +2308,170 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="397"/>
-        <source>Currency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="413"/>
-        <source>Expiration Date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="429"/>
-        <source>Show on Home Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="452"/>
-        <source>Take-off / Landing (automatic)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="471"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="526"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="584"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="642"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="700"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="761"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="819"/>
-        <source>MM/dd/yyyy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="510"/>
-        <source>Licence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="568"/>
-        <source>Type Rating</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="626"/>
-        <source>Line Check</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="684"/>
-        <source>Medical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="745"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="803"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="403"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="600"/>
         <source>custom currency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="864"/>
-        <source>Warn me about expiring currencies</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="432"/>
+        <source>Take-off / Landing (days)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="874"/>
-        <source>days before expiry</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="461"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="490"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="535"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="616"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="713"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="758"/>
+        <source>MM/dd/yyyy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="897"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="555"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of days for TO/LDG currency. Default 90&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="571"/>
+        <source>Medical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="642"/>
+        <source>Line Check</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="655"/>
+        <source>Type Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="668"/>
+        <source>Licence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="800"/>
+        <source>Show on Home Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="811"/>
         <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="985"/>
-        <source>Use System Font</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="912"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="915"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="925"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="826"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="829"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="839"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Pilots in the Pilots Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="918"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="832"/>
         <source>Sort Pilots by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1002"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1030"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1033"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1036"/>
-        <source>Sort Aircraft by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="975"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1043"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="889"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="957"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines whether incomplete database entries are permitted. It is highly recommended to keep this option off.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="978"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="892"/>
         <source>Allow incomplete Entries </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1079"/>
-        <source>Reset to Default</source>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="899"/>
+        <source>Use System Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1109"/>
-        <source>Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1066"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1069"/>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1086"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1072"/>
-        <source>Logbook Dispay</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="995"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="909"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1006"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="916"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="944"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="947"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="920"/>
         <source>Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1011"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="925"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1047"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="950"/>
+        <source>Sort Aircraft by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="961"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1052"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="966"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1090"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="980"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="983"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1000"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="986"/>
+        <source>Logbook Dispay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="993"/>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1004"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1095"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1009"/>
         <source>EASA Part-FCL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1126"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1023"/>
+        <source>Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1040"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1134"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1048"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.ui" line="1153"/>
+        <location filename="../src/gui/widgets/settingswidget.ui" line="1067"/>
         <source>About openPilotLog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2482,7 +2496,7 @@ Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/settingswidget.cpp" line="723"/>
+        <location filename="../src/gui/widgets/settingswidget.cpp" line="702"/>
         <source>Translations are not yet available. If you are interested in making openPilotLog available in your native language, visit us &lt;a href=&quot;https://%1/&quot;&gt;here&lt;/a&gt; for more information.</source>
         <translation type="unfinished"></translation>
     </message>

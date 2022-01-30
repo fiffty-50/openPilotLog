@@ -35,7 +35,6 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
     {UserData::AcftAllowIncomplete,     QStringLiteral("acftAllowIncomplete")},
     {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
-    {UserData::CurrWarningEnabled,      QStringLiteral("currWarningEnabled")},
     {UserData::CurrWarningThreshold,    QStringLiteral("currWarningThreshold")},
     {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
     {UserData::ShowLicCurrency,         QStringLiteral("showLicCurrency")},
@@ -81,7 +80,6 @@ void ASettings::resetToDefaults()
 
     write(UserData::DisplaySelfAs, 0);
     write(UserData::FtlWarningThreshold, 0.8); // To Do: UI Option
-    write(UserData::CurrWarningEnabled, true);
     write(UserData::CurrWarningThreshold, 30);
     write(UserData::ShowToLgdCurrency, true);
     write(UserData::ShowLicCurrency, false);

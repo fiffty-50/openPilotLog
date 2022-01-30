@@ -23,6 +23,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools 
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
+    src/classes/acompletiondata.cpp
     src/classes/acurrencyentry.cpp
     src/classes/astyle.cpp
     src/classes/astandardpaths.cpp
@@ -60,6 +61,7 @@ set(PROJECT_SOURCES
     
     src/opl.h
     mainwindow.h
+    src/classes/acompletiondata.h
     src/classes/acurrencyentry.h
     src/classes/astyle.h
     src/classes/astandardpaths.h
@@ -115,6 +117,15 @@ set(PROJECT_SOURCES
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
     assets/templates.qrc
+
+    src/testing/importCrewlounge/importcrewlounge.h
+    src/testing/importCrewlounge/importcrewlounge.cpp
+    src/testing/importCrewlounge/processpilots.h
+    src/testing/importCrewlounge/processpilots.cpp
+    src/testing/importCrewlounge/processaircraft.h
+    src/testing/importCrewlounge/processaircraft.cpp
+    src/testing/importCrewlounge/processflights.h
+    src/testing/importCrewlounge/processflights.cpp
 )
 
 # This is currently a bit buggy, see
@@ -122,14 +133,20 @@ set(PROJECT_SOURCES
 # https://bugreports.qt.io/browse/QTBUG-76410
 # Before working on the translations themselves, check for updates and consider not updating for
 # every build due to danger of loss of translations...
-set(TS_FILES
-    l10n/openpilotlog_en.ts
-    l10n/openpilotlog_de.ts
-    l10n/openpilotlog_es.ts
-)
-set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "l10n")
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-
+#if (Qt5Widgets_FOUND)
+#    if (Qt5Widgets_VERSION VERSION_LESS 5.15.0)
+#        message("Translations are available for Qt5 version >= 5.15")
+#    else()
+#        message("Qt > 5.15 detected. Enabling translations.")
+#        set(TS_FILES
+#            l10n/openpilotlog_en.ts
+#            l10n/openpilotlog_de.ts
+#            l10n/openpilotlog_es.ts
+#        )
+#        set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "l10n")
+#        qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+#    endif(Qt5Widgets_VERSION VERSION_LESS 5.15.0)
+#endif(Qt5Widgets_FOUND)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(openPilotLog

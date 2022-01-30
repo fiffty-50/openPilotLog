@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QTableView>
 #include "src/gui/widgets/settingswidget.h"
+#include "src/classes/acompletiondata.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -47,7 +48,7 @@ class LogbookWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LogbookWidget(QWidget *parent = nullptr);
+    explicit LogbookWidget(ACompletionData &completion_data, QWidget *parent = nullptr);
     ~LogbookWidget();
 
 private slots:
@@ -83,6 +84,8 @@ private:
 
     void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
+
+    ACompletionData completionData;
 
 protected:
     /*!

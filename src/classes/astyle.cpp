@@ -51,7 +51,7 @@ void AStyle::setup()
         QFont font(ASettings::read(ASettings::Main::Font).toString());
         font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
         qApp->setFont(font);
-        LOG << "Application Font set: " << font.toString().splitRef(',').first();
+        LOG << "Application Font set: " << font.toString().split(',').first();
     }
     // Set style, stylesheet or palette
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();

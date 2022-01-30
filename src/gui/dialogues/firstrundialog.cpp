@@ -66,6 +66,8 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
                     ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
+    // De-activate non-default date formats for now, implement in future version
+    ui->dateFormatComboBox->setVisible(false);
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
     ui->branchLineEdit->setVisible(false);
 }
@@ -298,17 +300,6 @@ void FirstRunDialog::writeSettings()
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
     ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
 
-    switch (ui->currWarningCheckBox->checkState()) {
-    case Qt::CheckState::Checked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
-        break;
-    default:
-        break;
-    }
-    ASettings::write(ASettings::UserData::CurrWarningThreshold, ui->currWarningThresholdSpinBox->value());
     ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
     QSettings settings;
     settings.sync();
@@ -438,26 +429,6 @@ void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_styl
             return;
         }
     }
-}
-
-void FirstRunDialog::on_currWarningCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        ASettings::write(ASettings::UserData::CurrWarningEnabled, false);
-        break;
-    default:
-        break;
-    }
-    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
-}
-
-void FirstRunDialog::on_currWarningThresholdSpinBox_valueChanged(int arg1)
-{
-    ASettings::write(ASettings::UserData::CurrWarningThreshold, arg1);
 }
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()

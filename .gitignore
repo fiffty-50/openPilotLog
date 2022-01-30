@@ -82,3 +82,6 @@ openPilotLog.vcxproj
 openPilotLog.vcxproj.filters
 
 openPilotLog.vcxproj.user
+
+# Disable localization updates
+l10n/

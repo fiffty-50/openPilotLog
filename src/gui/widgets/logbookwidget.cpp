@@ -34,9 +34,10 @@ const QMap<int, QString> FILTER_MAP = {
 };
 const auto NON_WORD_CHAR = QRegularExpression("\\W");
 
-LogbookWidget::LogbookWidget(QWidget *parent) :
+LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::LogbookWidget)
+    ui(new Ui::LogbookWidget),
+    completionData(completion_data)
 {
     ui->setupUi(this);
     ui->newFlightButton->setFocus();
@@ -136,9 +137,15 @@ void LogbookWidget::flightsTableView_selectionChanged()
  */
 void LogbookWidget::on_newFlightButton_clicked()
 {
-    auto nf = new NewFlightDialog(this);
-    nf->setAttribute(Qt::WA_DeleteOnClose);
-    nf->exec();
+    auto old_state = aDB->getUserDataState();
+
+    NewFlightDialog nf(completionData, this);
+    nf.exec();
+
+    auto new_state = aDB->getUserDataState();
+    if (old_state != new_state)
+        completionData.update();
+
     displayModel->select();
 }
 
@@ -149,9 +156,14 @@ void LogbookWidget::on_newFlightButton_clicked()
 void LogbookWidget::on_editFlightButton_clicked()
 {
     if(selectedFlights.length() == 1){
-        auto ef = new NewFlightDialog(selectedFlights.first(), this);
-        ef->setAttribute(Qt::WA_DeleteOnClose);
+        auto old_state = aDB->getUserDataState();
+
+        auto ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
         ef->exec();
+
+        auto new_state = aDB->getUserDataState();
+        if (old_state != new_state)
+            completionData.update();
         displayModel->select();
     } else if (selectedFlights.isEmpty()) {
         WARN(tr("<br>No flight selected.<br>"));

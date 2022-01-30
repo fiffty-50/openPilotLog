@@ -37,8 +37,8 @@ HomeWidget::HomeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     today = QDate::currentDate();
-    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
+    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     auto logo = QPixmap(Opl::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
@@ -54,7 +54,6 @@ HomeWidget::HomeWidget(QWidget *parent) :
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
-    checkAllCurrencies();
 }
 
 HomeWidget::~HomeWidget()
@@ -68,7 +67,6 @@ void HomeWidget::refresh()
     const auto label_list = this->findChildren<QLabel *>();
     for (const auto label : label_list)
         label->setVisible(true);
-    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
     for (const auto &label : qAsConst(limitationDisplayLabels))
         label->setStyleSheet(QString());
 
@@ -209,38 +207,6 @@ void HomeWidget::fillLimitations()
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Red);
     } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Orange);
-    }
-}
-
-/*!
- * \brief HomeWidget::checkAllCurrencies loops through all the currencies and warns the user about
- * impending expiries.
- */
-void HomeWidget::checkAllCurrencies()
-{
-    for (int i = 1 ; i <= 6; i++) {
-        // Get the Currency entry
-        auto entry = aDB->getCurrencyEntry(ACurrencyEntry::CurrencyName(i));
-        const auto currency_date = entry.getData().value(Opl::Db::CURRENCIES_EXPIRYDATE).toDate();
-        if (!currency_date.isValid())
-            continue;
-        const auto currency_name = entry.getData().value(Opl::Db::CURRENCIES_DESCRIPTION).toString();
-
-        // check expiration dates
-        if (today >= currency_date) {
-            // is expired
-            WARN(tr("Your currency <b>%1</b> is expired since %2.<br><br>")
-                 .arg(currency_name,
-                      currency_date.toString(Qt::TextDate)));
-            continue;
-        } else if (today.addDays(currWarningThreshold) >=currency_date) {
-            // expires less than <currWarningThreshold> days from current Date
-            QString days_to_expiry = QString::number(today.daysTo(currency_date));
-            WARN(tr("Your currency <b>%1</b> expires in <b>%2</b> days (%3).<br><br>")
-                 .arg(currency_name,
-                      days_to_expiry,
-                      currency_date.toString(Qt::TextDate)));
-        }
     }
 }
 

@@ -80,6 +80,22 @@ QStringList ADatabase::getTemplateTableNames()
     return templateTableNames;
 }
 
+UserDataState ADatabase::getUserDataState()
+{
+    QSqlQuery q;
+    q.prepare(QStringLiteral("SELECT COUNT (*) FROM tails"));
+    q.exec();
+    q.first();
+    int tails = q.value(0).toInt();
+
+    q.prepare(QStringLiteral("SELECT COUNT (*) FROM pilots"));
+    q.exec();
+    q.first();
+    int pilots = q.value(0).toInt();
+
+    return UserDataState(tails, pilots);
+}
+
 QStringList ADatabase::getUserTableNames()
 {
     return userTableNames;
@@ -173,7 +189,7 @@ QSqlDatabase ADatabase::database()
     return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
 }
 
-bool ADatabase::commit(AEntry entry)
+bool ADatabase::commit(const AEntry &entry)
 {
     if (exists(entry)) {
         return update(entry);
@@ -182,7 +198,7 @@ bool ADatabase::commit(AEntry entry)
     }
 }
 
-bool ADatabase::remove(AEntry entry)
+bool ADatabase::remove(const AEntry &entry)
 {
     if (!exists(entry)) {
         DEB << "Error: Database entry not found.";
@@ -197,7 +213,7 @@ bool ADatabase::remove(AEntry entry)
     query.prepare(statement);
     query.addBindValue(entry.getPosition().rowId);
 
-    if (!query.exec())
+    if (query.exec())
     {
         DEB << "Entry " << entry.getPosition() << " removed.";
         emit dataBaseUpdated();
@@ -253,7 +269,7 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
     }
 }
 
-bool ADatabase::exists(AEntry entry)
+bool ADatabase::exists(const AEntry &entry)
 {
     if(entry.getPosition().rowId == 0)
         return false;
@@ -328,7 +344,7 @@ bool ADatabase::clear()
 }
 
 
-bool ADatabase::update(AEntry updated_entry)
+bool ADatabase::update(const AEntry &updated_entry)
 {
     auto data = updated_entry.getData();
     QString statement = QLatin1String("UPDATE ") + updated_entry.getPosition().tableName + QLatin1String(" SET ");
@@ -362,7 +378,7 @@ bool ADatabase::update(AEntry updated_entry)
     }
 }
 
-bool ADatabase::insert(AEntry new_entry)
+bool ADatabase::insert(const AEntry &new_entry)
 {
     auto data = new_entry.getData();
     QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");
@@ -555,7 +571,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 }
 
 const
-QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
+QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -585,7 +601,11 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         return {};
     }
 
-    auto query = QSqlQuery(statement);
+    QSqlQuery query;
+    query.setForwardOnly(true);
+    query.prepare(statement);
+    query.exec();
+    //auto query = QSqlQuery(statement);
     if (!query.isActive()) {
         DEB << "No result found. Check Query and Error.";
         DEB << "Query: " << statement;
@@ -593,15 +613,13 @@ QMap<QString, RowId_T> ADatabase::getIdMap(ADatabaseTarget target)
         lastError = query.lastError();
         return {};
     }
-
-    auto id_map = QMap<QString, RowId_T>();
-    while (query.next()) {
-        id_map.insert(query.value(1).toString(), query.value(0).toInt());
-    }
+    auto id_map = QMap<RowId_T, QString>();
+    while (query.next())
+        id_map.insert(query.value(0).toInt(), query.value(1).toString());
     return id_map;
 }
 
-int ADatabase::getLastEntry(ADatabaseTable table)
+RowId_T ADatabase::getLastEntry(ADatabaseTable table)
 {
     QString statement = QLatin1String("SELECT MAX(ROWID) FROM ");
 

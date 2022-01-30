@@ -30,36 +30,30 @@
 #include "src/classes/atranslator.h"
 #include "src/database/adatabasesetup.h"
 #include "src/classes/ahash.h"
-
 #include "src/classes/ajson.h"
+#include "src/functions/adate.h"
+
+
+#include "src/testing/importCrewlounge/processflights.h"
+#include "src/testing/importCrewlounge/processpilots.h"
+#include "src/testing/importCrewlounge/processaircraft.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    // Debug
-    QFileInfo check_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.json");
-    AHash hash(check_file);
+    auto rawCsvData = aReadCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
+    // Process Pilots
+    auto proc_pilots = ProcessPilots(rawCsvData);
+    proc_pilots.init();
+    const auto p_maps = proc_pilots.getProcessedPilotMaps();
+    // Process Tails
+    auto proc_tails = ProcessAircraft(rawCsvData);
+    proc_tails.init();
+    const auto t_maps = proc_tails.getProcessedTailMaps();
+    // Process Flights
+    auto proc_flights = ProcessFlights(rawCsvData,proc_pilots.getProcessedPilotsIds(), proc_tails.getProcessedTailIds());
+    proc_flights.init();
 
-    QFileInfo md5_file("/home/felix/.local/share/opl/openPilotLog/templates/changelog.md5");
-    DEB << "Sums are equal?" << hash.compare(md5_file);
-    //test_file2.open(QFile::ReadOnly);
-    //QTextStream in(&test_file2);
-    //auto read = in.read(32);
-    //auto array = read.toUtf8();
-    //test_file2.close();
-    //DEB << read;
-    //DEB << (read == hash.hashToHex());
-    //DEB << array;
-
-
-    //for (const auto &table_name : aDB->getTemplateTableNames()) {
-    //    //json_files.append(QFile(AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name)));
-    //    QString json_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".json");
-    //    QString md5_path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name) + QLatin1String(".md5");
-    //    DEB << json_path << md5_path;
-    //    QFileInfo json_fi(json_path);
-    //    QFileInfo md5_fi(md5_path);
-    //    DEB << "Exists? " << json_fi.exists() << md5_fi.exists();
-    //}
-
+    auto flights = proc_flights.getProcessedFlights();
+    DEB << "Flight:" << flights[1000];
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :
