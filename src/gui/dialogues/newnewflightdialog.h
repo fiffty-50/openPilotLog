@@ -18,7 +18,7 @@
  * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
  * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
  */
-enum ValidationItem {doft, dept, dest, tofb, tonb, pic, acft};
+enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
 
 /*!
  * \brief The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether the
@@ -30,7 +30,9 @@ public:
     ValidationState() = default;
 
     void validate(ValidationItem line_edit)   { validationArray[line_edit] = true;};
+    void validate(int index)                  { validationArray[index] = true;};
     void invalidate(ValidationItem line_edit) { validationArray[line_edit] = false;}
+    void invalidate(int index)                { validationArray[index] = false;}
     bool allValid()                           { return validationArray.count(true) == 6;};
     bool timesValid()                         { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
     bool locationsValid()                     { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
@@ -89,16 +91,29 @@ private:
     ACompletionData completionData;
     ValidationState validationState;
 
-    static const inline QList<QLineEdit*>* timeLineEdits;
-    static const inline QList<QLineEdit*>* locationLineEdits;
-    static const inline QList<QLineEdit*>* pilotNameLineEdits;
+    QList<QLineEdit*> timeLineEdits;
+    QList<QLineEdit*> locationLineEdits;
+    QList<QLineEdit*> pilotNameLineEdits;
+    QList<QLineEdit*> mandatoryLineEdits;
     static const inline QLatin1String self = QLatin1String("self");
 
+    bool eventFilter(QObject *object, QEvent *event) override;
     void init();
     void setupRawInputValidation();
     void setupSignalsAndSlots();
     void readSettings();
 
+    void onGoodInputReceived(QLineEdit *line_edit);
+    void onBadInputReceived(QLineEdit *line_edit);
+
+
+private slots:
+    void toUpper(const QString& text);
+    void onTimeLineEdit_editingFinished();
+    void onPilotNameLineEdit_editingFinshed();
+    void onLocationLineEdit_editingFinished();
+    void on_acftLineEdit_editingFinished();
 };
+
 
 #endif // NEWNEWFLIGHTDIALOG_H

@@ -60,8 +60,19 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
          <property name="text">
-          <string>DestName</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -70,8 +81,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>invis</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -79,6 +96,9 @@
         <widget class="QLabel" name="picLabel">
          <property name="text">
           <string>PIC</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -107,8 +127,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>SicName</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -127,13 +153,30 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
          <property name="text">
-          <string>DeptName</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item row="5" column="2">
         <widget class="QLabel" name="submissionReadyLabel">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>Data Missing</string>
          </property>
@@ -144,8 +187,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>PicName</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -171,6 +220,12 @@
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="calendarPushButton">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>Calendar</string>
          </property>
@@ -191,8 +246,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>invis</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -207,6 +268,9 @@
         <widget class="QLabel" name="acftLabel">
          <property name="text">
           <string>Aircraft</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -239,6 +303,9 @@
          <property name="text">
           <string>Flight Number</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
         </widget>
        </item>
        <item row="0" column="5">
@@ -246,8 +313,19 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
          <property name="text">
-          <string>AircraftName</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -276,8 +354,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>invis</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -292,6 +376,9 @@
         <widget class="QLabel" name="thirdPilotLabel">
          <property name="text">
           <string>Third Pilot</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -310,6 +397,9 @@
          <property name="text">
           <string>Remarks</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
         </widget>
        </item>
        <item row="5" column="1">
@@ -324,8 +414,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>invis</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -344,6 +440,9 @@
          <property name="text">
           <string>SIC</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
         </widget>
        </item>
        <item row="3" column="5">
@@ -351,8 +450,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>ThirdName</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -482,6 +587,30 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>doftLineEdit</tabstop>
+  <tabstop>deptLocationLineEdit</tabstop>
+  <tabstop>destLocationLineEdit</tabstop>
+  <tabstop>tofbTimeLineEdit</tabstop>
+  <tabstop>tonbTimeLineEdit</tabstop>
+  <tabstop>acftLineEdit</tabstop>
+  <tabstop>picNameLineEdit</tabstop>
+  <tabstop>sicNameLineEdit</tabstop>
+  <tabstop>thirdPilotNameLineEdit</tabstop>
+  <tabstop>flightNumberLineEdit</tabstop>
+  <tabstop>remarksLineEdit</tabstop>
+  <tabstop>pilotFlyingCheckBox</tabstop>
+  <tabstop>ifrCheckBox</tabstop>
+  <tabstop>takeOffSpinBox</tabstop>
+  <tabstop>toNightCheckBox</tabstop>
+  <tabstop>landingSpinBox</tabstop>
+  <tabstop>ldgNightCheckBox</tabstop>
+  <tabstop>functionComboBox</tabstop>
+  <tabstop>approachComboBox</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>toolButton</tabstop>
+  <tabstop>calendarPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
