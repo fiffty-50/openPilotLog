@@ -29,14 +29,16 @@ class ValidationState {
 public:
     ValidationState() = default;
 
-    void validate(ValidationItem line_edit)   { validationArray[line_edit] = true;};
+    void validate(ValidationItem item)   { validationArray[item] = true;};
     void validate(int index)                  { validationArray[index] = true;};
-    void invalidate(ValidationItem line_edit) { validationArray[line_edit] = false;}
+    void invalidate(ValidationItem item) { validationArray[item] = false;}
     void invalidate(int index)                { validationArray[index] = false;}
-    bool allValid()                           { return validationArray.count(true) == 6;};
+    bool allValid()                           { return validationArray.count(true) == 7;};
     bool timesValid()                         { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
     bool locationsValid()                     { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
     bool acftValid()                          { return validationArray[ValidationItem::acft];}
+    bool validAt(int index)                   { return validationArray[index];}
+    bool validAt(ValidationItem item)         { return validationArray[item];}
 
     // Debug
     void printValidationStatus(){
@@ -97,7 +99,6 @@ private:
     QList<QLineEdit*> mandatoryLineEdits;
     static const inline QLatin1String self = QLatin1String("self");
 
-    bool eventFilter(QObject *object, QEvent *event) override;
     void init();
     void setupRawInputValidation();
     void setupSignalsAndSlots();
@@ -106,6 +107,10 @@ private:
     void onGoodInputReceived(QLineEdit *line_edit);
     void onBadInputReceived(QLineEdit *line_edit);
 
+    QTime calculateBlockTime();
+    int updateNightCheckBoxes();
+    void setNightCheckboxes();
+
 
 private slots:
     void toUpper(const QString& text);
@@ -113,6 +118,9 @@ private slots:
     void onPilotNameLineEdit_editingFinshed();
     void onLocationLineEdit_editingFinished();
     void on_acftLineEdit_editingFinished();
+    void on_doftLineEdit_editingFinished();
+    void on_buttonBox_accepted();
+    void on_pilotFlyingCheckBox_stateChanged(int arg1);
 };
 
 

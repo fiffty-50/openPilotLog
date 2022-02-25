@@ -2,6 +2,9 @@
 #include "ui_newnewflightdialog.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
+#include "src/functions/adate.h"
+#include "src/classes/asettings.h"
+#include "src/functions/acalc.h"
 #include <QDateTime>
 #include <QCompleter>
 #include <QKeyEvent>
@@ -38,23 +41,7 @@ void NewNewFlightDialog::init()
     //readSettings();
 
     ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
-}
-
-/*!
- * \brief NewNewFlightDialog::eventFilter the event filter is used to invalidate mandatory line edits on entering. This acts as a double-check against
- * false inputs for cases when the editingFinished() signal is not emitted due to the QValidators blocking it.
- */
-bool NewNewFlightDialog::eventFilter(QObject* object, QEvent* event)
-{
-    auto line_edit = qobject_cast<QLineEdit*>(object);
-    if (line_edit != nullptr) {
-        if (mandatoryLineEdits.contains(line_edit) && event->type() == QEvent::FocusIn) {
-            //DEB << "Invalidating " << line_edit->objectName() << "(Focus In Event)";
-            validationState.invalidate(mandatoryLineEdits.indexOf(line_edit));
-            return false;
-        }
-    }
-    return false;
+    emit ui->doftLineEdit->editingFinished();
 }
 
 /*!
@@ -112,11 +99,6 @@ void NewNewFlightDialog::setupSignalsAndSlots()
     for (const auto& line_edit : qAsConst(pilotNameLineEdits))
         QObject::connect(line_edit, &QLineEdit::editingFinished,
                          this, &NewNewFlightDialog::onPilotNameLineEdit_editingFinshed);
-
-    // install event filter for focus in vent
-    for (const auto& line_edit : qAsConst(mandatoryLineEdits)) {
-        line_edit->installEventFilter(this);
-    }
 }
 
 void NewNewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
@@ -126,10 +108,15 @@ void NewNewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 
     if (mandatoryLineEdits.contains(line_edit))
         validationState.validate(mandatoryLineEdits.indexOf(line_edit));
-    if (validationState.allValid())
+    if (validationState.timesValid()) {
         DEB << "All mandatory Line Edits valid!";
-        // Go to onMandatoryLineEditsFilled?
-    else
+        // Update Block Time Label
+        QTime tblk = calculateBlockTime();
+        ui->tblkDisplayLabel->setText(ATime::toString(tblk));
+        if (validationState.allValid())
+            updateNightCheckBoxes();
+    }
+
         validationState.printValidationStatus();
 }
 
@@ -144,6 +131,66 @@ void NewNewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 
     validationState.printValidationStatus();
 }
+
+QTime NewNewFlightDialog::calculateBlockTime()
+{
+    if (!validationState.timesValid())
+        return {};
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
+    return ATime::blocktime(tofb, tonb);
+}
+
+/*!
+ * \brief NewNewFlightDialog::updateNightCheckBoxes updates the check boxes for take-off and landing
+ * at night. Returns the number of minutes of night time.
+ * \return
+ */
+int NewNewFlightDialog::updateNightCheckBoxes()
+{
+    if (!validationState.allValid())
+        return 0;
+
+    // Calculate Block Time
+    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
+    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
+    const auto tblk = ATime::blocktime(tofb, tonb);
+    const auto block_minutes = ATime::toMinutes(tblk);
+    // Calculate Night Time
+
+    const QString dept_date = ui->doftLineEdit->text() + 'T'
+            + ATime::toString(tofb);
+    const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
+    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
+    const auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
+                                             ui->deptLocationLineEdit->text(),
+                                             ui->destLocationLineEdit->text(),
+                                             dept_date_time,
+                                             block_minutes,
+                                             night_angle));
+    const auto night_minutes = ATime::toMinutes(night_time);
+
+    // set check boxes
+    if (night_minutes == 0) {
+        ui->toNightCheckBox->setCheckState(Qt::Unchecked);
+        ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
+    }
+    else if (night_minutes == ATime::toMinutes(calculateBlockTime())) {
+        ui->toNightCheckBox->setCheckState(Qt::Checked);
+        ui->ldgNightCheckBox->setCheckState(Qt::Checked);
+    } else {
+        if(ACalc::isNight(ui->deptLocationLineEdit->text(), dept_date_time,  night_angle)) {
+            ui->toNightCheckBox->setCheckState(Qt::Checked);
+            ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
+        } else {
+            ui->toNightCheckBox->setCheckState(Qt::Unchecked);
+            ui->ldgNightCheckBox->setCheckState(Qt::Checked);
+        }
+    }
+
+    return ATime::toMinutes(night_time);
+}
+
 // # Slots
 void NewNewFlightDialog::toUpper(const QString &text)
 {
@@ -241,5 +288,107 @@ void NewNewFlightDialog::onLocationLineEdit_editingFinished()
 
 void NewNewFlightDialog::on_acftLineEdit_editingFinished()
 {
-    TODO << "Fix looking up and matching...";
+    const auto line_edit = ui->acftLineEdit;
+    int acft_id = completionData.tailsIdMap.key(line_edit->text());
+    DEB << "acft_id: " << acft_id;
+
+    if (acft_id != 0) { // Success
+        auto acft = aDB->getTailEntry(acft_id);
+        ui->acftDisplayLabel->setText(acft.type());
+        onGoodInputReceived(line_edit);
+        return;
+    }
+
+    // try to use a completion
+    if (!line_edit->completer()->currentCompletion().isEmpty() && !line_edit->text().isEmpty()) {
+        line_edit->setText(line_edit->completer()->currentCompletion().split(QLatin1Char(' ')).first());
+        emit line_edit->editingFinished();
+        return;
+    }
+
+    // Mark as bad input and prompt for adding new tail
+    onBadInputReceived(line_edit);
+    ui->acftDisplayLabel->setText(tr("Unknown Registration."));
+    WARN("Add new tail..");
+}
+
+void NewNewFlightDialog::on_doftLineEdit_editingFinished()
+{
+    const auto line_edit = ui->doftLineEdit;
+    auto text = ui->doftLineEdit->text();
+    auto label = ui->doftDisplayLabel;
+    //DEB << line_edit->objectName() << "Editing finished - " << text;
+
+    TODO << "Non-default Date formats not implemented yet.";
+    Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
+    auto date = ADate::parseInput(text, date_format);
+    if (date.isValid()) {
+        label->setText(date.toString(Qt::TextDate));
+        line_edit->setText(ADate::toString(date, date_format));
+        onGoodInputReceived(line_edit);
+        return;
+    }
+
+    label->setText(tr("Invalid Date."));
+    onBadInputReceived(line_edit);
+}
+
+void NewNewFlightDialog::on_pilotFlyingCheckBox_stateChanged(int arg1)
+{
+    if (arg1 == Qt::CheckState::Checked) {
+        ui->takeOffSpinBox->setValue(1);
+        ui->landingSpinBox->setValue(1);
+    } else {
+        ui->takeOffSpinBox->setValue(0);
+        ui->landingSpinBox->setValue(0);
+    }
+}
+
+void NewNewFlightDialog::on_buttonBox_accepted()
+{
+    // emit editing finished for all mandatory line edits to trigger input verification
+    for (const auto &line_edit : qAsConst(mandatoryLineEdits)) {
+        emit line_edit->editingFinished();
+    }
+
+    // If input verification is passed, continue, otherwise prompt user to correct
+    // enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
+    if (!validationState.allValid()) {
+        const auto display_names = QMap<ValidationItem, QString> {
+            {ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationItem::dept, QObject::tr("Departure Airport")},
+            {ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationItem::tofb, QObject::tr("Time Off Blocks")},
+            {ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationItem::pic, QObject::tr("PIC Name")},
+            {ValidationItem::acft, QObject::tr("Aircraft Registration")}
+        };
+        QString missing_items;
+        for (int i=0; i < mandatoryLineEdits.size(); i++) {
+            if (!validationState.validAt(i)){
+                missing_items.append(display_names.value(static_cast<ValidationItem>(i)) + "<br>");
+                mandatoryLineEdits[i]->setStyleSheet(QStringLiteral("border: 1px solid red"));
+            }
+        }
+
+        INFO(tr("Not all mandatory entries are valid.<br>"
+                "The following item(s) are empty or missing:"
+                "<br><br><center><b>%1</b></center><br>"
+                "Please go back and fill in the required data."
+                ).arg(missing_items));
+        return;
+    }
+
+
+    // If input verification passed, collect input and submit to database
+    //auto newData = collectInput();
+    //DEB << "Setting Data for flightEntry...";
+    //flightEntry.setData(newData);
+    //DEB << "Committing...";
+    //if (!aDB->commit(flightEntry)) {
+    //    WARN(tr("The following error has ocurred:"
+    //                           "<br><br>%1<br><br>"
+    //                           "The entry has not been saved."
+    //                           ).arg(aDB->lastError.text()));
+    //    return;
+    //} else {
+    //    QDialog::accept();
+    //}
 }
