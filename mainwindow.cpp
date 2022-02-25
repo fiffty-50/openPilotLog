@@ -15,6 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include <QToolBar>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/functions/alog.h"
@@ -23,11 +24,13 @@
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/aentry.h"
 
+
 // Quick and dirty Debug area
-#include "src/testing/importCrewlounge/importcrewlounge.h"
+#include "src/gui/dialogues/newnewflightdialog.h"
 void MainWindow::doDebugStuff()
 {
-    ImportCrewlounge::exec(QString());
+    NewNewFlightDialog nf(completionData, this);
+    nf.exec();
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -58,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     // retreive completion lists and maps
     completionData.init();
 
+    /*
     // Create a spacer for the toolbar to separate left and right parts
     auto *spacer = new QWidget();
     spacer->setMinimumWidth(1);
@@ -79,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (const auto &button : buttons) {
         button->setMinimumWidth(128);
     }
+    */
 
     // Construct Widgets
     homeWidget = new HomeWidget(this);
@@ -101,6 +106,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Startup Screen (Home Screen)
     ui->stackedWidget->setCurrentWidget(homeWidget);
+
+    // Create and set up the toolbar
+    auto *toolBar = new QToolBar(this);
+
+    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
+    toolBar->addAction(ui->actionHome);
+    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+    toolBar->addAction(ui->actionNewFlight);
+    ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
+    toolBar->addAction(ui->actionLogbook);
+    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
+    toolBar->addAction(ui->actionAircraft);
+    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
+    toolBar->addAction(ui->actionPilots);
+    ui->actionBackup->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_BACKUP));
+    toolBar->addAction(ui->actionBackup);
+    ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
+    toolBar->addAction(ui->actionSettings);
+    ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
+    toolBar->addAction(ui->actionQuit);
+
+    int icon_size = (this->height() / 8) * 0.95;
+    toolBar->setIconSize(QSize(icon_size, icon_size));
+    toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
 
 
     // check database version (Debug)
@@ -213,8 +243,20 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionNewFlight_triggered()
 {
     completionData.update();
-    NewFlightDialog nf(completionData, this);
-    nf.exec();
+    //NewFlightDialog nf(completionData, this);
+    //nf.exec();
+
+    auto* nf = new NewFlightDialog(completionData, this);
+    //QObject::connect(nf,   &QDialog::accepted,
+    //                 this, &AircraftWidget::onNewTailDialog_editingFinished);
+    //QObject::connect(nf,   &QDialog::rejected,
+    //                 this, &AircraftWidget::onNewTailDialog_editingFinished);
+    ui->stackedWidget->addWidget(nf);
+    ui->stackedWidget->setCurrentWidget(nf);
+    nf->setWindowFlag(Qt::Widget);
+    nf->setAttribute(Qt::WA_DeleteOnClose);
+    nf->exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
 void MainWindow::on_actionLogbook_triggered()

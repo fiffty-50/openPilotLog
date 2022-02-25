@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_MIN_VERSION "5.5.1")
@@ -48,6 +48,7 @@ set(PROJECT_SOURCES
     src/functions/adate.cpp
     src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/newflightdialog.cpp
+    src/gui/dialogues/newnewflightdialog.cpp
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newtaildialog.cpp
     src/gui/widgets/aircraftwidget.cpp
@@ -89,6 +90,7 @@ set(PROJECT_SOURCES
     src/functions/atime.h
     src/gui/dialogues/firstrundialog.h
     src/gui/dialogues/newflightdialog.h
+    src/gui/dialogues/newnewflightdialog.h
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newtaildialog.h
     src/gui/widgets/aircraftwidget.h
@@ -103,6 +105,7 @@ set(PROJECT_SOURCES
     mainwindow.ui
     src/gui/dialogues/firstrundialog.ui
     src/gui/dialogues/newflight.ui
+    src/gui/dialogues/newnewflightdialog.ui
     src/gui/dialogues/newpilot.ui
     src/gui/dialogues/newtail.ui
     src/gui/widgets/aircraftwidget.ui

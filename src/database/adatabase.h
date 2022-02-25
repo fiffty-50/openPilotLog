@@ -149,7 +149,7 @@ private:
     const static int minimumDatabaseRevision;
 public:
     /*!
-     * \brief lastError extends QSqlError. Holds information about the last error that ocurred during
+     * \brief Holds information about the last error that ocurred during
      * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
      * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
      * case error.type() provides further information.

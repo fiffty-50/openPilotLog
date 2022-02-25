@@ -49,6 +49,7 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
         ui->picNameLineEdit->setText(SELF);
         emit ui->picNameLineEdit->editingFinished();
     }
+    CRIT("Time empty bug - check verification logic");
 }
 
 NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
