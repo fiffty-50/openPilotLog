@@ -30,19 +30,12 @@
 #include "src/functions/adatetime.h"
 void MainWindow::doDebugStuff()
 {
-    //NewNewFlightDialog nf(completionData, this);
-    //nf.exec();
-    QString dept = "KJFK";
-    QString dest = "EGLL";
-    QDateTime date_time = ADateTime::fromString(QDate::currentDate().toString(Qt::ISODate) + "22:00");
-    int tblk = 660;
-    int night_angle = -6;
-
-    //LOG << "Berlin Local" << date_time.toString() << "Total:" << tblk;
-    //LOG << "Night time:" << ACalc::calculateNightTime(dept, dest, date_time, tblk, night_angle);
-    //dest = "EDDB";
-    LOG << "JFK to LHR" << date_time.toString() << "Total:" << tblk;
-    LOG << "Night Time:" << ACalc::calculateNightTime(dept, dest, date_time, tblk, night_angle);
+    NewNewFlightDialog nf(completionData, this);
+    nf.exec();
+    //QString location = "KJFK";
+    //QString time = "22:40";
+    //QDateTime date_time = ADateTime::fromString(QDate::currentDate().toString(Qt::ISODate) + time);
+    //DEB << "Night at " << location << " at " << date_time << ACalc::isNight(location, date_time, -6);
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

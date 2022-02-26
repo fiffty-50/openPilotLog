@@ -285,8 +285,8 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
         return 0;
     }
 
-    double lat = degToRad(lat_lon[0].toDouble());
-    double lon = degToRad(lat_lon[1].toDouble());
+    double lat = lat_lon[0].toDouble();
+    double lon = lat_lon[1].toDouble();
 
     if(solarElevation(event_time, lat, lon) < night_angle){
         return true;
