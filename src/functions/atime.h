@@ -141,6 +141,41 @@ inline QTime blocktime(const QTime &tofb, const QTime &tonb)
     return blocktime_out;
 }
 
+inline QTime blocktime(const QString& tofb, const QString& tonb)
+{
+    QTime t_tofb = ATime::fromString(tofb);
+    QTime t_tonb = ATime::fromString(tonb);
+    return blocktime(t_tofb, t_tonb);
+}
+
+/*!
+ * \brief blockMinutes calculates the total amount of minutes elapsed between
+ * tofb and tonb
+ */
+inline int blockMinutes(const QString& tofb, const QString& tonb)
+{
+    const QTime t_tofb = ATime::fromString(tofb);
+    const QTime t_tonb = ATime::fromString(tonb);
+    if (t_tofb.isValid() && t_tonb.isValid()) {
+        const auto tblk = ATime::blocktime(t_tofb, t_tonb);
+        return ATime::toMinutes(tblk);
+    } else
+        return 0;
+}
+
+/*!
+ * \brief blockMinutes calculates the total amount of minutes elapsed between
+ * tofb and tonb
+ */
+inline int blockMinutes(const QTime& tofb, const QTime& tonb)
+{
+    if (tofb.isValid() && tonb.isValid()) {
+        const auto tblk = ATime::blocktime(tofb, tonb);
+        return ATime::toMinutes(tblk);
+    } else
+        return 0;
+}
+
 /*!
  * \brief verifies user input and formats to hh:mm
  * if the output is not a valid time, an empty string is returned. Accepts

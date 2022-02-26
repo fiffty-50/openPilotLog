@@ -26,7 +26,7 @@ namespace ADateTime {
  * \brief toString formats a QDateTime object into a string in a uniform way.
  * \return
  */
-inline const QString toString (const QDateTime date_time, Opl::Datetime::DateTimeFormat format) {
+inline const QString toString (const QDateTime& date_time, Opl::Datetime::DateTimeFormat format) {
     switch (format) {
     case Opl::Datetime::Default:
         return date_time.toString(Qt::ISODate);
@@ -35,6 +35,13 @@ inline const QString toString (const QDateTime date_time, Opl::Datetime::DateTim
     default:
         return QString();
     }
+}
+
+inline QDateTime fromString(const QString& date_time_string)
+{
+    auto date_time = QDateTime::fromString(date_time_string, QStringLiteral("yyyy-MM-ddhh:mm"));
+    date_time.setTimeZone(QTimeZone::utc());
+    return date_time;
 }
 
 }

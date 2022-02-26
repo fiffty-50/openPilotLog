@@ -107,9 +107,9 @@ private:
     void onGoodInputReceived(QLineEdit *line_edit);
     void onBadInputReceived(QLineEdit *line_edit);
 
-    QTime calculateBlockTime();
-    int updateNightCheckBoxes();
+    void updateNightCheckBoxes();
     void setNightCheckboxes();
+    void updateBlockTimeLabel();
 
 
 private slots:

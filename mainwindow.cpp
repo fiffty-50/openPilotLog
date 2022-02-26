@@ -27,10 +27,22 @@
 
 // Quick and dirty Debug area
 #include "src/gui/dialogues/newnewflightdialog.h"
+#include "src/functions/adatetime.h"
 void MainWindow::doDebugStuff()
 {
-    NewNewFlightDialog nf(completionData, this);
-    nf.exec();
+    //NewNewFlightDialog nf(completionData, this);
+    //nf.exec();
+    QString dept = "KJFK";
+    QString dest = "EGLL";
+    QDateTime date_time = ADateTime::fromString(QDate::currentDate().toString(Qt::ISODate) + "22:00");
+    int tblk = 660;
+    int night_angle = -6;
+
+    //LOG << "Berlin Local" << date_time.toString() << "Total:" << tblk;
+    //LOG << "Night time:" << ACalc::calculateNightTime(dept, dest, date_time, tblk, night_angle);
+    //dest = "EDDB";
+    LOG << "JFK to LHR" << date_time.toString() << "Total:" << tblk;
+    LOG << "Night Time:" << ACalc::calculateNightTime(dept, dest, date_time, tblk, night_angle);
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

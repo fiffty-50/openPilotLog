@@ -20,6 +20,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/opl.h"
+#include "src/functions/atime.h"
 
 using namespace ACalc;
 
@@ -136,7 +137,10 @@ double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QStr
 QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, double lon1,
                                                                double lat2, double lon2, int tblk)
 {
-    double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (radians)
+    double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (Haversine)
+    // where d is the great circle distance in radians, to get KM take * 6371 (radius of earth).
+    //DEB << "Distance (nm): " << (d*6371.0088) * 0.5399568; // km->nm = *0.54
+
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
     lon1 = degToRad(lon1);
@@ -157,8 +161,8 @@ QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, dou
         double lat = atan2(z, sqrt( pow(x, 2) + pow(y, 2) ));
         double lon = atan2(y, x);
 
-        QVector<double> coordinate = {lat, lon};
-        coordinates.append(coordinate);
+        QVector<double> coordinate = {radToDeg(lat), radToDeg(lon)};
+        coordinates.prepend(coordinate);
     }
     return coordinates;
 }
@@ -166,8 +170,7 @@ QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, dou
 
 double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
-    double Alt =
-        11; // I am taking 11 kilometers as an average cruising height for a commercial passenger airplane.
+    double Alt = 11; // Assuming 11 kilometers as an average cruising height for a commercial passenger airplane.
     // convert current DateTime Object to a J2000 value used in the Calculation
     double d = utc_time_point.date().toJulianDay() - 2451544 + utc_time_point.time().hour() / 24.0 +
                utc_time_point.time().minute() / 1440.0;
@@ -213,7 +216,7 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
     double HA = (sid_time * 15 - RA);
     // convert to rectangular coordinate system
     x = cos(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
-    y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
+    //y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180)); //value of y not needed
     double z = sin(delta * (M_PI / 180));
     // rotate this along an axis going east - west.
     double zhor = x * sin((90 - lat) * (M_PI / 180)) + z * cos((90 - lat) * (M_PI / 180));
@@ -224,7 +227,7 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 }
 
 
-int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle)
+int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int night_angle)
 {
 
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
@@ -233,23 +236,37 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
             + QLatin1String("'");
     auto lat_lon = aDB->customQuery(statement, 2);
 
-    if (lat_lon.length() != 4) {
+    double dept_lat;
+    double dept_lon;
+    double dest_lat;
+    double dest_lon;
+    int night_time = 0;
+
+    if (lat_lon.length() == 4) { // normal flight from A to B
+        dept_lat = lat_lon[0].toDouble();
+        dept_lon = lat_lon[1].toDouble();
+        dest_lat = lat_lon[2].toDouble();
+        dest_lon = lat_lon[3].toDouble();
+    } else if (lat_lon.length() == 2 ) { // Dept == Dest, i.e. local flight
+        for (int i = 0; i < tblk; i++) {
+            dept_lat = lat_lon[0].toDouble();
+            dept_lon = lat_lon[1].toDouble();
+            if (solarElevation(departureTime.addSecs(60 * i), dept_lat, dept_lon) < night_angle)
+
+                night_time++;
+        }
+        return night_time;
+    } else {
         DEB << "Invalid input. Aborting.";
         return 0;
     }
 
-    double dept_lat = degToRad(lat_lon[0].toDouble());
-    double dept_lon = degToRad(lat_lon[1].toDouble());
-    double dest_lat = degToRad(lat_lon[2].toDouble());
-    double dest_lon = degToRad(lat_lon[3].toDouble());
-
     QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon,
                                                                      dest_lat, dest_lon,
                                                                      tblk);
-    int night_time = 0;
     for (int i = 0; i < tblk ; i++) {
-        if (solarElevation(departureTime.addSecs(60 * i), radToDeg(route[i][0]),
-                           radToDeg(route[i][1])) < nightAngle) {
+        if (solarElevation(departureTime.addSecs(60 * i), route[i][0],
+                           route[i][1]) < night_angle) {
             night_time ++;
         }
     }
@@ -306,19 +323,19 @@ void ACalc::updateAutoTimes(int acft_id)
                 && acft_data.value(Opl::Db::TAILS_MULTIENGINE) == 0) {
             DEB << "SPSE";
             flight_data.insert(Opl::Db::FLIGHTS_TSPSE, flight_data.value(Opl::Db::FLIGHTS_TBLK));
-            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QStringLiteral(""));
-            flight_data.insert(Opl::Db::FLIGHTS_TMP, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QString());
+            flight_data.insert(Opl::Db::FLIGHTS_TMP, QString());
         } else if ((acft_data.value(Opl::Db::TAILS_MULTIPILOT) == 0
                     && acft.getData().value(Opl::Db::TAILS_MULTIENGINE) == 1)) {
             DEB << "SPME";
             flight_data.insert(Opl::Db::FLIGHTS_TSPME, flight_data.value(Opl::Db::FLIGHTS_TBLK));
-            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QStringLiteral(""));
-            flight_data.insert(Opl::Db::FLIGHTS_TMP, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QString());
+            flight_data.insert(Opl::Db::FLIGHTS_TMP, QString());
         } else if ((acft_data.value(Opl::Db::TAILS_MULTIPILOT) == 1)) {
             DEB << "MPME";
             flight_data.insert(Opl::Db::FLIGHTS_TMP, flight_data.value(Opl::Db::FLIGHTS_TBLK));
-            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QStringLiteral(""));
-            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QStringLiteral(""));
+            flight_data.insert(Opl::Db::FLIGHTS_TSPSE, QString());
+            flight_data.insert(Opl::Db::FLIGHTS_TSPME, QString());
         }
         flight.setData(flight_data);
         aDB->commit(flight);
@@ -359,4 +376,3 @@ void ACalc::updateNightTimes()
         aDB->commit(flt);
     }
 }
-

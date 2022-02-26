@@ -5,6 +5,7 @@
 #include "src/functions/adate.h"
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
+#include "src/functions/adatetime.h"
 #include <QDateTime>
 #include <QCompleter>
 #include <QKeyEvent>
@@ -108,15 +109,12 @@ void NewNewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 
     if (mandatoryLineEdits.contains(line_edit))
         validationState.validate(mandatoryLineEdits.indexOf(line_edit));
+
     if (validationState.timesValid()) {
-        DEB << "All mandatory Line Edits valid!";
-        // Update Block Time Label
-        QTime tblk = calculateBlockTime();
-        ui->tblkDisplayLabel->setText(ATime::toString(tblk));
+        updateBlockTimeLabel();
         if (validationState.allValid())
             updateNightCheckBoxes();
     }
-
         validationState.printValidationStatus();
 }
 
@@ -132,63 +130,47 @@ void NewNewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
     validationState.printValidationStatus();
 }
 
-QTime NewNewFlightDialog::calculateBlockTime()
+void NewNewFlightDialog::updateBlockTimeLabel()
 {
-    if (!validationState.timesValid())
-        return {};
-    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
-    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
-    return ATime::blocktime(tofb, tonb);
+    QTime tblk = ATime::blocktime(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
+    ui->tblkDisplayLabel->setText(ATime::toString(tblk));
 }
+
 
 /*!
  * \brief NewNewFlightDialog::updateNightCheckBoxes updates the check boxes for take-off and landing
  * at night. Returns the number of minutes of night time.
  * \return
  */
-int NewNewFlightDialog::updateNightCheckBoxes()
+void NewNewFlightDialog::updateNightCheckBoxes()
 {
     if (!validationState.allValid())
-        return 0;
+        return;
 
-    // Calculate Block Time
-    const auto tofb = ATime::fromString(ui->tofbTimeLineEdit->text());
-    const auto tonb = ATime::fromString(ui->tonbTimeLineEdit->text());
-    const auto tblk = ATime::blocktime(tofb, tonb);
-    const auto block_minutes = ATime::toMinutes(tblk);
     // Calculate Night Time
-
-    const QString dept_date = ui->doftLineEdit->text() + 'T'
-            + ATime::toString(tofb);
-    const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
+    const QString dept_date = (ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
+    const auto dept_date_time = ADateTime::fromString(dept_date);
+    const int block_minutes = ATime::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
-    const auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
-                                             ui->deptLocationLineEdit->text(),
-                                             ui->destLocationLineEdit->text(),
-                                             dept_date_time,
-                                             block_minutes,
-                                             night_angle));
-    const auto night_minutes = ATime::toMinutes(night_time);
-
+    const auto night_values = ACalc::NightTimeValues(
+                ui->deptLocationLineEdit->text(),
+                ui->destLocationLineEdit->text(),
+                dept_date_time,
+                block_minutes,
+                night_angle);
     // set check boxes
-    if (night_minutes == 0) {
-        ui->toNightCheckBox->setCheckState(Qt::Unchecked);
-        ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
-    }
-    else if (night_minutes == ATime::toMinutes(calculateBlockTime())) {
-        ui->toNightCheckBox->setCheckState(Qt::Checked);
-        ui->ldgNightCheckBox->setCheckState(Qt::Checked);
-    } else {
-        if(ACalc::isNight(ui->deptLocationLineEdit->text(), dept_date_time,  night_angle)) {
-            ui->toNightCheckBox->setCheckState(Qt::Checked);
-            ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
-        } else {
-            ui->toNightCheckBox->setCheckState(Qt::Unchecked);
-            ui->ldgNightCheckBox->setCheckState(Qt::Checked);
-        }
-    }
+    DEB << "toN" << night_values.takeOffNight;
+    DEB << "ldgN" << night_values.landingNight;
 
-    return ATime::toMinutes(night_time);
+    if (night_values.takeOffNight)
+        ui->toNightCheckBox->setCheckState(Qt::Checked);
+    else
+        ui->toNightCheckBox->setCheckState(Qt::Unchecked);
+
+    if (night_values.landingNight)
+        ui->ldgNightCheckBox->setCheckState(Qt::Checked);
+    else
+        ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
 }
 
 // # Slots
