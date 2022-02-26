@@ -13,6 +13,7 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/database/adatabase.h"
+#include "src/opl.h"
 
 /*!
  * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
@@ -33,12 +34,13 @@ public:
     void validate(int index)                  { validationArray[index] = true;};
     void invalidate(ValidationItem item) { validationArray[item] = false;}
     void invalidate(int index)                { validationArray[index] = false;}
-    bool allValid()                           { return validationArray.count(true) == 7;};
-    bool timesValid()                         { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
-    bool locationsValid()                     { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
-    bool acftValid()                          { return validationArray[ValidationItem::acft];}
-    bool validAt(int index)                   { return validationArray[index];}
-    bool validAt(ValidationItem item)         { return validationArray[item];}
+    inline bool allValid()                           { return validationArray.count(true) == 7;};
+    inline bool timesValid()                         { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
+    inline bool locationsValid()                     { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
+    inline bool nightDataValid()                     { return timesValid() && locationsValid() && validationArray[ValidationItem::doft];}
+    inline bool acftValid()                          { return validationArray[ValidationItem::acft];}
+    inline bool validAt(int index)                   { return validationArray[index];}
+    inline bool validAt(ValidationItem item)         { return validationArray[item];}
 
     // Debug
     void printValidationStatus(){
@@ -93,10 +95,10 @@ private:
     ACompletionData completionData;
     ValidationState validationState;
 
-    QList<QLineEdit*> timeLineEdits;
-    QList<QLineEdit*> locationLineEdits;
-    QList<QLineEdit*> pilotNameLineEdits;
-    QList<QLineEdit*> mandatoryLineEdits;
+    static const inline QList<QLineEdit*>* timeLineEdits;
+    static const inline QList<QLineEdit*>* locationLineEdits;
+    static const inline QList<QLineEdit*>* pilotNameLineEdits;
+    static const inline QList<QLineEdit*>* mandatoryLineEdits;
     static const inline QLatin1String self = QLatin1String("self");
 
     void init();
@@ -111,6 +113,11 @@ private:
     void setNightCheckboxes();
     void updateBlockTimeLabel();
 
+    void addNewTail();
+    void addNewPilot(QLineEdit* line_edit);
+
+    RowData_T prepareFlightEntryData();
+
 
 private slots:
     void toUpper(const QString& text);
@@ -121,6 +128,7 @@ private slots:
     void on_doftLineEdit_editingFinished();
     void on_buttonBox_accepted();
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
+    void on_approachComboBox_currentTextChanged(const QString &arg1);
 };
 
 

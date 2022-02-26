@@ -516,17 +516,22 @@
          </item>
          <item>
           <property name="text">
+           <string>PICUS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>SIC</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>FI</string>
+           <string>DUAL</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>DUAL</string>
+           <string>FI</string>
           </property>
          </item>
         </widget>

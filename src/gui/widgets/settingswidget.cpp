@@ -314,6 +314,7 @@ void SettingsWidget::on_functionComboBox_currentIndexChanged(const QString &arg1
 void SettingsWidget::on_rulesComboBox_currentIndexChanged(const QString &arg1)
 {
     ASettings::write(ASettings::FlightLogging::Rules, arg1);
+    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
 }
 
 void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1)

@@ -31,7 +31,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="personalDataPage">
       <layout class="QGridLayout" name="gridLayout_9">
@@ -154,7 +154,6 @@
         <widget class="QLabel" name="importLabel">
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>

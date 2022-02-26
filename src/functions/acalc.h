@@ -230,16 +230,13 @@ void updateNightTimes();
  * \brief The NightTimeValues struct encapsulates values relating to night time that are needed by the NewFlightDialog
  */
 struct NightTimeValues{
+    NightTimeValues() = delete;
     NightTimeValues(const QString& dept, const QString& dest, const QDateTime& departure_time, int block_minutes, int night_angle)
     {
         nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
 
         nightTime = ATime::fromMinutes(nightMinutes);
         totalTime = ATime::fromMinutes(block_minutes);
-        LOG << "Total: " << totalTime;
-        LOG << "Night: " << nightTime;
-        LOG << "Is Night Dept" << isNight(dept, departure_time, night_angle);
-        LOG << "Is Night Dest" << isNight(dest, departure_time.addSecs(block_minutes * 60), night_angle);
 
         if (nightMinutes == 0) { // all day
             takeOffNight = false;
@@ -259,7 +256,6 @@ struct NightTimeValues{
                 landingNight = false;
         }
 
-
     };
     NightTimeValues(bool to_night, bool ldg_night, int night_minutes, QTime night_time, QTime total_time)
         : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes), nightTime(night_time), totalTime(total_time){};
@@ -269,10 +265,10 @@ struct NightTimeValues{
     QTime nightTime;
     QTime totalTime;
 
-    inline bool isAllDay()      {return (!takeOffNight && !landingNight);}
-    inline bool isAllNight()    {return (takeOffNight && landingNight);}
-    inline bool isDayToNight()  {return (!takeOffNight && landingNight);}
-    inline bool isNightToDay()  {return (takeOffNight && !landingNight);}
+    inline bool isAllDay()      {return (!takeOffNight  && !landingNight);}
+    inline bool isAllNight()    {return ( takeOffNight  &&  landingNight);}
+    inline bool isDayToNight()  {return (!takeOffNight  &&  landingNight);}
+    inline bool isNightToDay()  {return ( takeOffNight  && !landingNight);}
 };
 
 
