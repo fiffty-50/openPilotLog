@@ -134,47 +134,6 @@ void LogbookWidget::flightsTableView_selectionChanged()
 }
 
 /*!
- * \brief LogbookWidget::on_newFlightButton_clicked opens a NewFlightDialog
- */
-//void LogbookWidget::on_newFlightButton_clicked()
-//{
-//    auto old_state = aDB->getUserDataState();
-//
-//    NewFlightDialog nf(completionData, this);
-//    nf.exec();
-//
-//    auto new_state = aDB->getUserDataState();
-//    if (old_state != new_state)
-//        completionData.update();
-//
-//    displayModel->select();
-//}
-
-/*!
- * \brief LogbookWidget::on_editFlightButton_clicked opens a NewFlightDialog and
- * pre-fills the data from the selected flight.
- */
-//void LogbookWidget::on_editFlightButton_clicked()
-//{
-//    if(selectedFlights.length() == 1){
-//        auto old_state = aDB->getUserDataState();
-//
-//        auto ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
-//        ef->exec();
-//
-//        auto new_state = aDB->getUserDataState();
-//        if (old_state != new_state)
-//            completionData.update();
-//        displayModel->select();
-//    } else if (selectedFlights.isEmpty()) {
-//        WARN(tr("<br>No flight selected.<br>"));
-//    } else {
-//        WARN(tr("<br>More than one flight selected."
-//                               "<br><br>Editing multiple entries is not yet supported."));
-//    }
-//}
-
-/*!
  * \brief If a row is selected, query information
  * about the affected row(s) and ask the user to confirm deletion.
  */
@@ -255,33 +214,13 @@ void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
 
 void LogbookWidget::on_actionEdit_Flight_triggered()
 {
+    completionData.update();
     if(selectedFlights.length() == 1){
-        auto old_state = aDB->getUserDataState();
-
-        //auto ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
-        //ef->exec();
-
-        //!
-        //! \brief new_state
-        //auto* ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
-        //ui->stackedWidget->addWidget(ef);
-        //ui->stackedWidget->setCurrentWidget(ef);
-        //ef->setWindowFlag(Qt::Widget);
-        //ef->setAttribute(Qt::WA_DeleteOnClose);
-        //ef->exec();
-        //ui->stackedWidget->setCurrentWidget(logbookWidget);
-        //!
-        //! \brief new_state
         NewFlightDialog nff(completionData,selectedFlights.first(), this);
         ui->stackedWidget->addWidget(&nff);
         ui->stackedWidget->setCurrentWidget(&nff);
         nff.setWindowFlag(Qt::Widget);
-        //nff.setAttribute(Qt::WA_DeleteOnClose);
         nff.exec();
-
-        auto new_state = aDB->getUserDataState();
-        if (old_state != new_state)
-            completionData.update();
         displayModel->select();
     } else if (selectedFlights.isEmpty()) {
         WARN(tr("<br>No flight selected.<br>"));

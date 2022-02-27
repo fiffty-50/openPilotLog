@@ -330,7 +330,7 @@ bool ADataBaseSetup::backupOldData()
     QString backup_name = database_file.baseName() + QLatin1String("_bak_")
             + date_string + QLatin1String(".db");
     QFile file(database_file.absoluteFilePath());
-    DEB << "File:" << file;
+    DEB << "File:" << file.fileName();
     if (!file.rename(backup_dir.absoluteFilePath(backup_name))) {
         LOG << "Unable to backup old database.\n";
         return false;

@@ -62,9 +62,9 @@ private slots:
     void on_emailLineEdit_editingFinished();
     void on_phoneLineEdit_editingFinished();
     void on_aliasComboBox_currentIndexChanged(int index);
-    void on_functionComboBox_currentIndexChanged(const QString &arg1);
-    void on_rulesComboBox_currentIndexChanged(const QString &arg1);
-    void on_approachComboBox_currentIndexChanged(const QString &arg1);
+    void on_functionComboBox_currentIndexChanged(int arg1);
+    void on_rulesComboBox_currentIndexChanged(int arg1);
+    void on_approachComboBox_currentIndexChanged(int arg1);
     void on_nightComboBox_currentIndexChanged(int index);
     void on_pilotSortComboBox_currentIndexChanged(int index);
     void on_logbookViewComboBox_currentIndexChanged(int index);
@@ -111,7 +111,7 @@ private slots:
 
     void on_dateFormatComboBox_currentIndexChanged(int index);
 
-    void on_languageComboBox_activated(const QString &arg1);
+    void on_languageComboBox_activated(int arg1);
 
 private:
     Ui::SettingsWidget *ui;

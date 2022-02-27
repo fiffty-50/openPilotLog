@@ -236,7 +236,7 @@ void SettingsWidget::updatePersonalDetails()
         QString name;
         name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().leftRef(1));
+        name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
         user_data.insert(Opl::Db::PILOTS_ALIAS, name);
     }
@@ -306,18 +306,18 @@ void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
     updatePersonalDetails();
 }
 
-void SettingsWidget::on_functionComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_functionComboBox_currentIndexChanged(int arg1)
 {
     ASettings::write(ASettings::FlightLogging::Function, arg1);
 }
 
-void SettingsWidget::on_rulesComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_rulesComboBox_currentIndexChanged(int arg1)
 {
     ASettings::write(ASettings::FlightLogging::Rules, arg1);
     ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
 }
 
-void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_approachComboBox_currentIndexChanged(int arg1)
 {
     ASettings::write(ASettings::FlightLogging::Approach, arg1);
 }
@@ -697,12 +697,13 @@ void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
     }
 }
 
-void SettingsWidget::on_languageComboBox_activated(const QString &arg1)
+void SettingsWidget::on_languageComboBox_activated(int arg1)
 {
-    if (arg1 != Opl::L10N_NAMES[Opl::Translations::English]) {
+    if (arg1 != 0) {
         INFO(tr("Translations are not yet available. If you are interested in making openPilotLog available in your native "
              "language, visit us <a href=\"https://%1/\">here</a> for more information."
              ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
         ui->languageComboBox->setCurrentIndex(0);
     }
 }
+

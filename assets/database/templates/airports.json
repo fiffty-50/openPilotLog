@@ -3943,7 +3943,7 @@
         "icao": "EDBM",
         "lat": 52.073612,
         "long": 11.626389,
-        "name": "\"\"\"Magdeburg \"\"\"\"City\"\"\"\" Airport\"\"\"",
+        "name": "Magdeburg City Airport",
         "tzolson": "Europe/Berlin",
         "utcoffset": 1
     },
@@ -7585,14 +7585,14 @@
     },
     {
         "airport_id": 633,
-        "alt": "Norway",
-        "country": "16.678100585938",
+        "alt": 85,
+        "country": "Norway",
         "iata": "EVE",
         "icao": "ENEV",
-        "lat": "\"Evenes\"\"\"",
-        "long": 68.491302490234,
-        "name": "\"\"\"Harstad/Narvik Airport\"",
-        "tzolson": "1",
+        "lat": 68.491302490234,
+        "long": 16.678100585938,
+        "name": "Evenes Harstad/Narvik Airport",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 84
     },
     {
@@ -7777,26 +7777,26 @@
     },
     {
         "airport_id": 649,
-        "alt": "Norway",
-        "country": "10.785439",
+        "alt": 173,
+        "country": "Norway",
         "iata": "RYG",
         "icao": "ENRY",
-        "lat": "\"Rygge\"\"\"",
-        "long": 59.378817,
-        "name": "\"\"\"Moss Airport\"",
-        "tzolson": "1",
+        "lat": 59.378817,
+        "long": 10.785439,
+        "name": "Rygge Moss Airport",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 174
     },
     {
         "airport_id": 650,
-        "alt": "Norway",
-        "country": "15.465600013733",
+        "alt": 94,
+        "country": "Norway",
         "iata": "LYR",
         "icao": "ENSB",
-        "lat": "\"Longyear\"\"\"",
-        "long": 78.246101379395,
-        "name": "\"\"\"Svalbard Airport\"",
-        "tzolson": "1",
+        "lat": 78.246101379395,
+        "long": 15.465600013733,
+        "name": "Longyear Svalbard Airport",
+        "tzolson": "Europe/Arctic",
         "utcoffset": 88
     },
     {
@@ -7837,26 +7837,26 @@
     },
     {
         "airport_id": 654,
-        "alt": "Norway",
-        "country": "18.9188995361328",
+        "alt": 32,
+        "country": "Norway",
         "iata": "TOS",
         "icao": "ENTC",
-        "lat": "\"\"\"\"",
-        "long": 69.6832962036133,
-        "name": "\"\"\"Tromsø Airport\"",
-        "tzolson": "1",
+        "lat": 69.6832962036133,
+        "long": 18.9188995361328,
+        "name": "Tromsø Airport",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 31
     },
     {
         "airport_id": 655,
-        "alt": "Norway",
-        "country": "10.258600235",
+        "alt": 285,
+        "country": "Norway",
         "iata": "TRF",
         "icao": "ENTO",
-        "lat": "\"Torp\"\"\"",
-        "long": 59.1866989136,
-        "name": "\"\"\"Sandefjord Airport\"",
-        "tzolson": "1",
+        "lat": 59.1866989136,
+        "long": 10.258600235,
+        "name": "Torp Sandefjord Airport",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 286
     },
     {
@@ -7987,7 +7987,7 @@
         "icao": "EPSC",
         "lat": 53.5847015381,
         "long": 14.9021997452,
-        "name": "\"\"\"Szczecin-Goleniów \"\"\"\"Solidarność\"\"\"\" Airport\"\"\"",
+        "name": "Szczecin-Goleniów Solidarność Airport",
         "tzolson": "Europe/Warsaw",
         "utcoffset": 1
     },
@@ -15715,7 +15715,7 @@
         "icao": "LFLX",
         "lat": 46.860278,
         "long": 1.721111,
-        "name": "\"\"\"Châteauroux-Déols \"\"\"\"Marcel Dassault\"\"\"\" Airport\"\"\"",
+        "name": "Châteauroux-Déols Marcel Dassault Airport",
         "tzolson": "Europe/Paris",
         "utcoffset": 1
     },
@@ -17419,7 +17419,7 @@
         "icao": "LGZA",
         "lat": 37.7509,
         "long": 20.8843,
-        "name": "\"\"\"Zakynthos International Airport \"\"\"\"Dionysios Solomos\"\"\"\"\"\"\"",
+        "name": "Zakynthos International Airport Dionysios Solomos",
         "tzolson": "Europe/Athens",
         "utcoffset": 2
     },
@@ -17551,7 +17551,7 @@
         "icao": "LIBF",
         "lat": 41.432899,
         "long": 15.535,
-        "name": "\"\"\"Foggia \"\"\"\"Gino Lisa\"\"\"\" Airport\"\"\"",
+        "name": "Foggia Gino Lisa Airport",
         "tzolson": "Europe/Rome",
         "utcoffset": 1
     },
@@ -17563,7 +17563,7 @@
         "icao": "LIBG",
         "lat": 40.517502,
         "long": 17.4032,
-        "name": "\"\"\"Taranto-Grottaglie \"\"\"\"Marcello Arlotta\"\"\"\" Airport\"\"\"",
+        "name": "Taranto-Grottaglie Marcello Arlotta Airport",
         "tzolson": "Europe/Rome",
         "utcoffset": 1
     },
@@ -32203,7 +32203,7 @@
         "icao": "SVCB",
         "lat": 8.12216091156,
         "long": -63.5369567871,
-        "name": "\"\"\"Aeropuerto \"\"\"\"General Tomas de Heres\"\"\"\". Ciudad Bolivar\"\"\"",
+        "name": "Aeropuerto General Tomas de Heres Ciudad Bolivar",
         "tzolson": "America/Caracas",
         "utcoffset": -4
     },
@@ -36829,15 +36829,15 @@
     },
     {
         "airport_id": 3070,
-        "alt": "Indonesia",
-        "country": "128.089004517",
+        "alt": 33,
+        "country": "Indonesia",
         "iata": "AMQ",
         "icao": "WAPP",
-        "lat": "\"Ambon\"\"\"",
-        "long": -3.7102599144,
-        "name": "\"\"\"Pattimura Airport\"",
-        "tzolson": "9",
-        "utcoffset": 33
+        "lat": -3.7102599144,
+        "long": 128.089004517,
+        "name": "Ambon Pattimura Airport",
+        "tzolson": "Asia/Jayapura",
+        "utcoffset": 9
     },
     {
         "airport_id": 3071,
@@ -37765,15 +37765,15 @@
     },
     {
         "airport_id": 3148,
-        "alt": "Australia",
-        "country": "144.753006",
+        "alt": 14,
+        "country": "Australia",
         "iata": null,
         "icao": "YMPC",
-        "lat": "\"Point Cook Base\"\"\"",
-        "long": -37.932201,
-        "name": "\"\"\"RAAF Williams\"",
-        "tzolson": "10",
-        "utcoffset": 14
+        "lat": -37.932201,
+        "long": 144.753006,
+        "name": "Point Cook Base RAAF Williams",
+        "tzolson": "Australia/Melbourne",
+        "utcoffset": 10
     },
     {
         "airport_id": 3149,
@@ -38929,15 +38929,15 @@
     },
     {
         "airport_id": 3245,
-        "alt": "United States",
-        "country": "-91.9356",
+        "alt": 206,
+        "country": "United States",
         "iata": "PBF",
         "icao": "KPBF",
-        "lat": "\"Grider Field\"\"\"",
-        "long": 34.1731,
-        "name": "\"\"\"Pine Bluff Regional Airport\"",
-        "tzolson": "-6",
-        "utcoffset": 206
+        "lat": 34.1731,
+        "long": -91.9356,
+        "name": "Grider Field Pine Bluff Regional Airport",
+        "tzolson": "America/Chicago",
+        "utcoffset": -6
     },
     {
         "airport_id": 3246,
@@ -40435,7 +40435,7 @@
         "icao": "PAAQ",
         "lat": 61.594898,
         "long": -149.08901,
-        "name": "\"\"\"Warren \"\"\"\"Bud\"\"\"\" Woods Palmer Municipal Airport\"\"\"",
+        "name": "Warren Bud Woods Palmer Municipal Airport",
         "tzolson": "America/Anchorage",
         "utcoffset": -9
     },
@@ -40837,15 +40837,15 @@
     },
     {
         "airport_id": 3404,
-        "alt": "United States",
-        "country": "-87.307602",
+        "alt": 589,
+        "country": "United States",
         "iata": "HUF",
         "icao": "KHUF",
-        "lat": "\"Hulman Field\"\"\"",
-        "long": 39.4515,
-        "name": "\"\"\"Terre Haute Regional Airport\"",
-        "tzolson": "-5",
-        "utcoffset": 589
+        "lat": 39.4515,
+        "long": -87.307602,
+        "name": "Hulman Field Terre Haute Regional Airport",
+        "tzolson": "America/Indiana",
+        "utcoffset": -5
     },
     {
         "airport_id": 3405,
@@ -48913,14 +48913,14 @@
     },
     {
         "airport_id": 4077,
-        "alt": "Norway",
-        "country": "6.0741000175476",
+        "alt": 243,
+        "country": "Norway",
         "iata": "HOV",
         "icao": "ENOV",
-        "lat": "\"Hovden\"\"\"",
-        "long": 62.180000305176,
-        "name": "\"\"\"Ørsta-Volda Airport\"",
-        "tzolson": "1",
+        "lat": 62.180000305176,
+        "long": 6.0741000175476,
+        "name": "Hovden Ørsta-Volda Airport",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 243
     },
     {
@@ -48973,14 +48973,14 @@
     },
     {
         "airport_id": 4082,
-        "alt": "Norway",
-        "country": "10.6171998977661",
+        "alt": 56,
+        "country": "Norway",
         "iata": "FBU",
         "icao": "ENFB",
-        "lat": "\"Fornebu Airport\"\"\"",
-        "long": 59.8958015441895,
-        "name": "\"\"\"Oslo\"",
-        "tzolson": "1",
+        "lat": 59.8958015441895,
+        "long": 10.6171998977661,
+        "name": "Fornebu Airport Oslo",
+        "tzolson": "Europe/Oslo",
         "utcoffset": 0
     },
     {
@@ -51445,27 +51445,27 @@
     },
     {
         "airport_id": 4288,
-        "alt": "Norway",
-        "country": "14.301400184631",
+        "alt": 229,
+        "country": "Norway",
         "iata": "MQN",
         "icao": "ENRA",
-        "lat": "\"Røssvoll\"\"\"",
-        "long": 66.363899230957,
-        "name": "\"\"\"Mo i Rana Airport\"",
-        "tzolson": "1",
-        "utcoffset": 229
+        "lat": 66.363899230957,
+        "long": 14.301400184631,
+        "name": "Røssvoll Mo i Rana Airport",
+        "tzolson": "Europe/Oslo",
+        "utcoffset": 1
     },
     {
         "airport_id": 4289,
-        "alt": "Norway",
-        "country": "11.14610004425",
+        "alt": 14,
+        "country": "Norway",
         "iata": "RVK",
         "icao": "ENRM",
-        "lat": "\"Ryum\"\"\"",
-        "long": 64.838302612305,
-        "name": "\"\"\"Rørvik Airport\"",
-        "tzolson": "1",
-        "utcoffset": 14
+        "lat": 64.838302612305,
+        "long": 11.14610004425,
+        "name": "Ryum Rørvik Airport",
+        "tzolson": "Europe/Oslo",
+        "utcoffset": 1
     },
     {
         "airport_id": 4290,
@@ -51529,15 +51529,15 @@
     },
     {
         "airport_id": 4295,
-        "alt": "Norway",
-        "country": "31.044900894165",
+        "alt": 42,
+        "country": "Norway",
         "iata": "VAW",
         "icao": "ENSS",
-        "lat": "\"Svartnes\"\"\"",
-        "long": 70.355400085449,
-        "name": "\"\"\"Vardø Airport\"",
-        "tzolson": "1",
-        "utcoffset": 42
+        "lat": 70.355400085449,
+        "long": 31.044900894165,
+        "name": "Svartnes Vardø Airport",
+        "tzolson": "Europe/Oslo",
+        "utcoffset": 1
     },
     {
         "airport_id": 4296,
@@ -62785,14 +62785,14 @@
     },
     {
         "airport_id": 5233,
-        "alt": "Australia",
-        "country": "144.746002197266",
+        "alt": 14,
+        "country": "Australia",
         "iata": null,
         "icao": "YLVT",
-        "lat": "\"Laverton Base\"\"\"",
-        "long": -37.8636016845703,
-        "name": "\"\"\"RAAF Williams\"",
-        "tzolson": "10",
+        "lat": -37.8636016845703,
+        "long": 144.746002197266,
+        "name": "RAAF Williams Laverton Base",
+        "tzolson": "Australia/Sydney",
         "utcoffset": 18
     },
     {
@@ -91609,15 +91609,15 @@
     },
     {
         "airport_id": 7635,
-        "alt": "South Sudan",
-        "country": "32.500556",
+        "alt": 1290,
+        "country": "South Sudan",
         "iata": "HGI",
         "icao": "HSFA",
-        "lat": "\"Heliport\"\"\"",
-        "long": 10.529167,
-        "name": "\"\"\"Paloich Airport\"",
-        "tzolson": "\\N",
-        "utcoffset": 1290
+        "lat": 10.529167,
+        "long": 32.500556,
+        "name": "Paloich Airport Heliport",
+        "tzolson": "Africa/Mozambique",
+        "utcoffset": 2 
     },
     {
         "airport_id": 7636,

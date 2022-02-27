@@ -783,7 +783,7 @@ bool ADatabase::createBackup(const QString& dest_file)
     LOG << "Backing up current database to: " << dest_file;
     ADatabase::disconnect();
     QFile db_file(databaseFile.absoluteFilePath());
-    DEB << "File to Overwrite:" << db_file;
+    //DEB << "File to Overwrite:" << db_file;
 
     if (!db_file.copy(dest_file)) {
         LOG << "Unable to backup old database:" << db_file.errorString();
@@ -862,7 +862,7 @@ bool ADatabase::restoreBackup(const QString& backup_file)
 
     if (!backup.copy(default_loc))
     {
-        LOG << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        LOG << backup.errorString() << "Could not copy" << backup.fileName() << "to" << databaseFile;
         // try to restore previously used db
         current_db.rename(default_loc);
         return false;

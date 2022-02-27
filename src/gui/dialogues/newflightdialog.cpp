@@ -173,7 +173,7 @@ void NewFlightDialog::readSettings()
 {
     ASettings settings;
     ui->functionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
-    ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
+    ui->approachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
     ui->pilotFlyingCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PilotFlying).toBool());
     ui->ifrCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::LogIFR).toBool());
     ui->flightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
@@ -605,10 +605,11 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
         return;
     }
 
-    // Mark as bad input and prompt for adding new tail
-    onBadInputReceived(line_edit);
     if (!(line_edit->text() == QString()))
         addNewTail(*line_edit);
+    // Mark as bad input and prompt for adding new tail
+    onBadInputReceived(line_edit);
+
 }
 
 void NewFlightDialog::on_doftLineEdit_editingFinished()

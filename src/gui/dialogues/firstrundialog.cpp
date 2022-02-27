@@ -254,7 +254,6 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 
 bool FirstRunDialog::verifyTemplates()
 {
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
     const auto table_names = aDB->getTemplateTableNames();
     for (const auto &table_name : table_names) {
         const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
@@ -287,7 +286,7 @@ void FirstRunDialog::writeSettings()
     }
     switch (ui->nightRulesComboBox->currentIndex()) {
     case 0:
-        ASettings::write(ASettings::FlightLogging::NightAngle, 6);
+        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
         break;
     case 1:
         ASettings::write(ASettings::FlightLogging::NightAngle, 0);

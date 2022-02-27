@@ -25,7 +25,7 @@ AHash::AHash(QFileInfo &file_info)
         QCryptographicHash hash(QCryptographicHash::Md5);
         if (hash.addData(&f)) {
             checksum = hash.result();
-            DEB << "File: " << f;
+            DEB << "File: " << f.fileName();
             DEB << "Hash: " << hash.result().toHex();
         } else {
             checksum = QByteArray();

@@ -102,8 +102,8 @@ QT_DEPRECATED
 inline int QTimeToMinutes(QTime time)
 {
     QString timestring = time.toString("hh:mm");
-    int minutes = (timestring.leftRef(2).toInt()) * 60;
-    minutes += timestring.rightRef(2).toInt();
+    int minutes = (timestring.left(2).toInt()) * 60;
+    minutes += timestring.right(2).toInt();
     return minutes;
 }
 
@@ -115,8 +115,8 @@ inline int QTimeToMinutes(QTime time)
 QT_DEPRECATED
 inline int stringToMinutes(QString timestring)
 {
-    int minutes = (timestring.leftRef(2).toInt()) * 60;
-    minutes += timestring.rightRef(2).toInt();
+    int minutes = (timestring.left(2).toInt()) * 60;
+    minutes += timestring.right(2).toInt();
     timestring = QString::number(minutes);
     return minutes;
 }

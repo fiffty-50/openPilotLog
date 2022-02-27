@@ -30,8 +30,7 @@
 #include "src/functions/adatetime.h"
 void MainWindow::doDebugStuff()
 {
-    NewFlightDialog nf(completionData, this);
-    nf.exec();
+    LOG << AStandardPaths::directory(AStandardPaths::Database).filesystemAbsolutePath();
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
