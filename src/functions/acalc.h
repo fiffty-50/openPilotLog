@@ -235,8 +235,8 @@ struct NightTimeValues{
     {
         nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
 
-        nightTime = ATime::fromMinutes(nightMinutes);
-        totalTime = ATime::fromMinutes(block_minutes);
+        nightTime = ATime::qTimefromMinutes(nightMinutes);
+        totalTime = ATime::qTimefromMinutes(block_minutes);
 
         if (nightMinutes == 0) { // all day
             takeOffNight = false;

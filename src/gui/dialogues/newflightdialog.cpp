@@ -362,7 +362,7 @@ void NewFlightDialog::fillDeductibleData()
         QString dept_date = ui->doftLineEdit->text() + 'T' + ATime::toString(tofb);
         auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
         const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
-        auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
+        auto night_time = ATime::qTimefromMinutes(ACalc::calculateNightTime(
                                                  ui->deptLocLineEdit->text(),
                                                  ui->destLocLineEdit->text(),
                                                  dept_date_time,
@@ -454,7 +454,7 @@ RowData_T NewFlightDialog::collectInput()
             + ATime::toString(tofb);
     const auto dept_date_time = QDateTime::fromString(dept_date, QStringLiteral("yyyy-MM-ddThh:mm"));
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
-    const auto night_time = ATime::fromMinutes(ACalc::calculateNightTime(
+    const auto night_time = ATime::qTimefromMinutes(ACalc::calculateNightTime(
                                              ui->deptLocLineEdit->text(),
                                              ui->destLocLineEdit->text(),
                                              dept_date_time,

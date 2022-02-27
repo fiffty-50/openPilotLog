@@ -76,7 +76,7 @@ inline double toDecimalHours(const QTime &time){
     return (time.hour() * 60 + time.minute()) / 60.0;
 }
 
-inline QTime fromMinutes(int total_minutes)
+inline QTime qTimefromMinutes(int total_minutes)
 {
     int minute = total_minutes % 60;
     int hour = total_minutes / 60;

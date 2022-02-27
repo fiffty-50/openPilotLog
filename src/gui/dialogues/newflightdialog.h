@@ -209,7 +209,7 @@ private:
      */
     inline QString minutesToString(const int minutes, Opl::Time::FlightTimeFormat format)
     {
-        return ATime::toString(ATime::fromMinutes(minutes), format);
+        return ATime::toString(ATime::qTimefromMinutes(minutes), format);
     }
 };
 

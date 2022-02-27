@@ -90,6 +90,7 @@ class NewNewFlightDialog : public QDialog
 public:
 
     explicit NewNewFlightDialog(ACompletionData& completion_data, QWidget *parent = nullptr);
+    explicit NewNewFlightDialog(ACompletionData& completion_data, RowId_T row_id, QWidget* parent = nullptr);
     ~NewNewFlightDialog();
 
 private:
@@ -114,6 +115,7 @@ private:
     void setupRawInputValidation();
     void setupSignalsAndSlots();
     void readSettings();
+    void fillWithEntryData();
 
     void onGoodInputReceived(QLineEdit *line_edit);
     void onBadInputReceived(QLineEdit *line_edit);
@@ -139,6 +141,8 @@ private slots:
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
+protected:
+    bool eventFilter(QObject* object, QEvent* event) override;
 };
 
 

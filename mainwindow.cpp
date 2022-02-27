@@ -241,20 +241,8 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionNewFlight_triggered()
 {
     completionData.update();
-    //NewFlightDialog nf(completionData, this);
-    //nf.exec();
-
-    auto* nf = new NewFlightDialog(completionData, this);
-    //QObject::connect(nf,   &QDialog::accepted,
-    //                 this, &AircraftWidget::onNewTailDialog_editingFinished);
-    //QObject::connect(nf,   &QDialog::rejected,
-    //                 this, &AircraftWidget::onNewTailDialog_editingFinished);
-    ui->stackedWidget->addWidget(nf);
-    ui->stackedWidget->setCurrentWidget(nf);
-    nf->setWindowFlag(Qt::Widget);
-    nf->setAttribute(Qt::WA_DeleteOnClose);
+    auto* nf = new NewNewFlightDialog(completionData, this);
     nf->exec();
-    ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
 void MainWindow::on_actionLogbook_triggered()
