@@ -6,6 +6,8 @@
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
 #include "src/functions/adatetime.h"
+#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/dialogues/newpilotdialog.h"
 #include <QDateTime>
 #include <QCompleter>
 #include <QKeyEvent>
@@ -17,7 +19,23 @@ NewNewFlightDialog::NewNewFlightDialog(ACompletionData &completion_data,
       completionData(completion_data)
 {
     ui->setupUi(this);
+    flightEntry = AFlightEntry();
     init();
+    // Set up UI (New Flight)
+    LOG << ASettings::read(ASettings::FlightLogging::Function);
+    if(ASettings::read(ASettings::FlightLogging::Function).toString() == QLatin1String("PIC")){
+        ui->picNameLineEdit->setText(self);
+        ui->functionComboBox->setCurrentIndex(0);
+        emit ui->picNameLineEdit->editingFinished();
+    }
+    if (ASettings::read(ASettings::FlightLogging::Function).toString() == QLatin1String("SIC")) {
+        ui->sicNameLineEdit->setText(self);
+        ui->functionComboBox->setCurrentIndex(2);
+        emit ui->sicNameLineEdit->editingFinished();
+    }
+
+    ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
+    emit ui->doftLineEdit->editingFinished();
 }
 
 NewNewFlightDialog::~NewNewFlightDialog()
@@ -47,9 +65,6 @@ void NewNewFlightDialog::init()
     setupRawInputValidation();
     setupSignalsAndSlots();
     readSettings();
-
-    ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
-    emit ui->doftLineEdit->editingFinished();
 }
 
 /*!
@@ -154,6 +169,85 @@ void NewNewFlightDialog::updateBlockTimeLabel()
     ui->tblkDisplayLabel->setText(ATime::toString(tblk));
 }
 
+/*!
+ * \brief NewNewFlightDialog::addNewTail If the user input is not in the aircraftList, the user
+ * is prompted if he wants to add a new entry to the database
+ */
+void NewNewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("No Aircraft found"),
+                                  tr("No aircraft with this registration found.<br>"
+                                     "If this is the first time you log a flight with this aircraft, "
+                                     "you have to add the registration to the database first."
+                                     "<br><br>Would you like to add a new aircraft to the database?"),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        // create and open new aircraft dialog
+        NewTailDialog nt(ui->acftLineEdit->text(), this);
+        int ret = nt.exec();
+        // update map and list, set line edit
+        if (ret == QDialog::Accepted) {
+            DEB << "New Tail Entry added:";
+            DEB << aDB->getTailEntry(aDB->getLastEntry(ADatabaseTable::tails));
+
+            // update completion Data and Completer
+            completionData.updateTails();
+            auto new_model = new QStringListModel(completionData.tailsList, parent_line_edit.completer());
+            parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
+
+            // update Line Edit
+            parent_line_edit.setText(completionData.tailsIdMap.value(aDB->getLastEntry(ADatabaseTable::tails)));
+            emit parent_line_edit.editingFinished();
+        } else {
+            parent_line_edit.setText(QString());
+            parent_line_edit.setFocus();
+        }
+    } else {
+        parent_line_edit.setText(QString());
+        parent_line_edit.setFocus();
+    }
+}
+
+/*!
+ * \brief NewNewFlightDialog::addNewPilot If the user input is not in the pilotNameList, the user
+ * is prompted if he wants to add a new entry to the database
+ */
+void NewNewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("No Pilot found"),
+                                  tr("No pilot found.<br>Please enter the Name as"
+                                     "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+                                     "If this is the first time you log a flight with this pilot, "
+                                     "you have to add the pilot to the database first."
+                                     "<br><br>Would you like to add a new pilot to the database?"),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        // create and open new pilot dialog
+        NewPilotDialog np(this);
+        int ret = np.exec();
+        // update map and list, set line edit
+        if (ret == QDialog::Accepted) {
+            DEB << "New Pilot Entry added:";
+            DEB << aDB->getPilotEntry(aDB->getLastEntry(ADatabaseTable::pilots));
+            // update completion Data and Completer
+            completionData.updatePilots();
+            auto new_model = new QStringListModel(completionData.pilotList, parent_line_edit.completer());
+            parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
+
+            // update Line Edit
+            parent_line_edit.setText(completionData.pilotsIdMap.value(aDB->getLastEntry(ADatabaseTable::pilots)));
+            emit parent_line_edit.editingFinished();
+        } else {
+            parent_line_edit.setText(QString());
+            parent_line_edit.setFocus();
+        }
+    } else {
+        parent_line_edit.setText(QString());
+    }
+}
+
 RowData_T NewNewFlightDialog::prepareFlightEntryData()
 {
     if(!validationState.allValid())
@@ -242,10 +336,8 @@ RowData_T NewNewFlightDialog::prepareFlightEntryData()
     new_data.insert(Opl::Db::FLIGHTS_APPROACHTYPE, ui->approachComboBox->currentText());
     new_data.insert(Opl::Db::FLIGHTS_FLIGHTNUMBER, ui->flightNumberLineEdit->text());
     new_data.insert(Opl::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
-    DEB << "New Flight Data: " << new_data;
     return new_data;
 }
-
 
 /*!
  * \brief NewNewFlightDialog::updateNightCheckBoxes updates the check boxes for take-off and landing
@@ -313,12 +405,18 @@ void NewNewFlightDialog::onPilotNameLineEdit_editingFinshed()
     if(line_edit->text().contains(self, Qt::CaseInsensitive)) {
         DEB << "self recognized.";
         line_edit->setText(completionData.pilotsIdMap.value(1));
+        if (line_edit->objectName() == QLatin1String("picNameLineEdit"))
+            ui->functionComboBox->setCurrentIndex(0);
+
         onGoodInputReceived(line_edit);
         return;
     }
 
-    if(completionData.pilotsIdMap.key(line_edit->text()) != 0) {
-        DEB << "Mapped: " << line_edit->text() << completionData.pilotsIdMap.key(line_edit->text());
+    int pilot_id = completionData.pilotsIdMap.key(line_edit->text());
+    if(pilot_id != 0) {
+        DEB << "Mapped: " << line_edit->text() << pilot_id;
+        if (line_edit->objectName() == QLatin1String("picNameLineEdit") && pilot_id == 1)
+            ui->functionComboBox->setCurrentIndex(0);
         onGoodInputReceived(line_edit);
         return;
     }
@@ -335,8 +433,7 @@ void NewNewFlightDialog::onPilotNameLineEdit_editingFinshed()
     }
 
     onBadInputReceived(line_edit);
-    TODO << "Add new Pilot...";
-    //addNewPilot(line_edit);
+    addNewPilot(*line_edit);
 }
 
 void NewNewFlightDialog::onLocationLineEdit_editingFinished()
@@ -395,7 +492,8 @@ void NewNewFlightDialog::on_acftLineEdit_editingFinished()
     // Mark as bad input and prompt for adding new tail
     onBadInputReceived(line_edit);
     ui->acftDisplayLabel->setText(tr("Unknown Registration."));
-    TODO << "Add new tail..";
+    if (!(line_edit->text() == QString()))
+        addNewTail(*line_edit);
 }
 
 void NewNewFlightDialog::on_doftLineEdit_editingFinished()
@@ -403,7 +501,6 @@ void NewNewFlightDialog::on_doftLineEdit_editingFinished()
     const auto line_edit = ui->doftLineEdit;
     auto text = ui->doftLineEdit->text();
     auto label = ui->doftDisplayLabel;
-    //DEB << line_edit->objectName() << "Editing finished - " << text;
 
     TODO << "Non-default Date formats not implemented yet.";
     Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
@@ -436,13 +533,30 @@ void NewNewFlightDialog::on_approachComboBox_currentTextChanged(const QString &a
         INFO(tr("Please specify the approach type in the remarks field."));
 }
 
+/*!
+ * \brief NewNewFlightDialog::on_functionComboBox_currentIndexChanged
+ * If the Function Combo Box is selected to be either PIC or SIC, fill the corresponding
+ * nameLineEdit with the logbook owner's name, then check for duplication.
+ */
+void NewNewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
+{
+    if (index == 0) {
+        ui->picNameLineEdit->setText(self);
+        emit ui->picNameLineEdit->editingFinished();
+        if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
+         == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
+                ui->sicNameLineEdit->setText(QString());
+    } else if (index == 2) {
+        ui->sicNameLineEdit->setText(self);
+        emit ui->sicNameLineEdit->editingFinished();
+        if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
+         == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
+            ui->picNameLineEdit->setText(QString());
+    }
+}
+
 void NewNewFlightDialog::on_buttonBox_accepted()
 {
-    // emit editing finished for all mandatory line edits to trigger input verification
-    //for (const auto &line_edit : *mandatoryLineEdits) {
-    //    emit line_edit->editingFinished();
-    //}
-
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
         const auto display_names = QMap<ValidationItem, QString> {
@@ -470,9 +584,11 @@ void NewNewFlightDialog::on_buttonBox_accepted()
 
     // If input verification passed, collect input and submit to database
     auto newData = prepareFlightEntryData();
+
     //DEB << "Setting Data for flightEntry...";
-    //flightEntry.setData(newData);
-    //DEB << "Committing...";
+    flightEntry.setData(newData);
+    DEB << "Committing: ";
+    DEB << flightEntry;
     //if (!aDB->commit(flightEntry)) {
     //    WARN(tr("The following error has ocurred:"
     //                           "<br><br>%1<br><br>"

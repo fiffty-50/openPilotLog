@@ -44,14 +44,15 @@ public:
 
     // Debug
     void printValidationStatus(){
-        QString deb_string("Validation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n");
-        deb_string += "\t\t\t\t\t" + QString::number(validationArray[0]);
-        deb_string += "\t" + QString::number(validationArray[1]);
-        deb_string += "\t" + QString::number(validationArray[2]);
-        deb_string += "\t" + QString::number(validationArray[3]);
-        deb_string += "\t" + QString::number(validationArray[4]);
-        deb_string += "\t" + QString::number(validationArray[5]);
-        deb_string += "\t" + QString::number(validationArray[6]);
+        QString deb_string("\033[mValidation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n");
+        deb_string += "\t\t\t\t";
+        for (int i = 0; i < 7; i++) { //\033[32m
+            if (validationArray[i])
+                deb_string += "\t\033[32m" + QString::number(validationArray[i]);
+            else
+                deb_string += "\t\033[31m" + QString::number(validationArray[i]);
+        }
+        deb_string += QLatin1String("\u001b[38;5;75m"); // return to default DEB
         qDebug().noquote() << deb_string;
     }
 private:
@@ -87,6 +88,7 @@ class NewNewFlightDialog : public QDialog
     Q_OBJECT
 
 public:
+
     explicit NewNewFlightDialog(ACompletionData& completion_data, QWidget *parent = nullptr);
     ~NewNewFlightDialog();
 
@@ -94,6 +96,13 @@ private:
     Ui::NewNewFlightDialog *ui;
     ACompletionData completionData;
     ValidationState validationState;
+
+    /*!
+     * \brief a AFlightEntry object that is used to store either position data
+     * from an old entry, is used to fill the form for editing an entry, or is
+     * filled with new data for adding a new entry to the logbook.
+     */
+    AFlightEntry flightEntry;
 
     static const inline QList<QLineEdit*>* timeLineEdits;
     static const inline QList<QLineEdit*>* locationLineEdits;
@@ -113,8 +122,8 @@ private:
     void setNightCheckboxes();
     void updateBlockTimeLabel();
 
-    void addNewTail();
-    void addNewPilot(QLineEdit* line_edit);
+    void addNewTail(QLineEdit& parent_line_edit);
+    void addNewPilot(QLineEdit& parent_line_edit);
 
     RowData_T prepareFlightEntryData();
 
@@ -129,6 +138,7 @@ private slots:
     void on_buttonBox_accepted();
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
+    void on_functionComboBox_currentIndexChanged(int index);
 };
 
 

@@ -32,10 +32,6 @@ void MainWindow::doDebugStuff()
 {
     NewNewFlightDialog nf(completionData, this);
     nf.exec();
-    //QString location = "KJFK";
-    //QString time = "22:40";
-    //QDateTime date_time = ADateTime::fromString(QDate::currentDate().toString(Qt::ISODate) + time);
-    //DEB << "Night at " << location << " at " << date_time << ACalc::isNight(location, date_time, -6);
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -131,9 +127,6 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(ui->actionSettings);
     ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
     toolBar->addAction(ui->actionQuit);
-
-    int icon_size = (this->height() / 8) * 0.95;
-    toolBar->setIconSize(QSize(icon_size, icon_size));
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
 

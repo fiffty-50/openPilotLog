@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QFile>
 #include <QKeyEvent>
+#include <QToolBar>
 
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
@@ -125,6 +126,16 @@ protected:
                 doDebugStuff();
             }
         }
+    }
+
+    /*!
+     * \brief resizeEvent Resize the Toolbar's icon size to match the window height
+     */
+    void resizeEvent(QResizeEvent *event) override
+    {
+        int icon_size = (this->height() / 12);
+        auto tool_bar = this->findChild<QToolBar*>();
+        tool_bar->setIconSize(QSize(icon_size, icon_size));
     }
 };
 #endif // MAINWINDOW_H

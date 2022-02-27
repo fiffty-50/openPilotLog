@@ -49,6 +49,12 @@ public:
     const DataPosition& getPosition() const;
     const RowData_T& getData() const;
 
+    /*!
+     * \brief operator QString provides compatibilty with QDebug() - prints
+     * the tableData in a readable formatting to stdout
+     */
+    operator QString() const;
+
 };
 
 #endif // AENTRY_H
