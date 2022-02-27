@@ -26,11 +26,11 @@
 
 
 // Quick and dirty Debug area
-#include "src/gui/dialogues/newnewflightdialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
 #include "src/functions/adatetime.h"
 void MainWindow::doDebugStuff()
 {
-    NewNewFlightDialog nf(completionData, this);
+    NewFlightDialog nf(completionData, this);
     nf.exec();
 }
 MainWindow::MainWindow(QWidget *parent)
@@ -241,7 +241,7 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionNewFlight_triggered()
 {
     completionData.update();
-    auto* nf = new NewNewFlightDialog(completionData, this);
+    auto* nf = new NewFlightDialog(completionData, this);
     nf->exec();
 }
 

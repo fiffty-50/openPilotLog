@@ -22,7 +22,6 @@
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
-#include "src/gui/dialogues/newnewflightdialog.h"
 #include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
@@ -273,7 +272,7 @@ void LogbookWidget::on_actionEdit_Flight_triggered()
         //ui->stackedWidget->setCurrentWidget(logbookWidget);
         //!
         //! \brief new_state
-        NewNewFlightDialog nff(completionData,selectedFlights.first(), this);
+        NewFlightDialog nff(completionData,selectedFlights.first(), this);
         ui->stackedWidget->addWidget(&nff);
         ui->stackedWidget->setCurrentWidget(&nff);
         nff.setWindowFlag(Qt::Widget);

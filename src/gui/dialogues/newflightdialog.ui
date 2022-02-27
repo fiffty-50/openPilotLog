@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewNewFlightDialog</class>
- <widget class="QDialog" name="NewNewFlightDialog">
+ <class>NewFlightDialog</class>
+ <widget class="QDialog" name="NewFlightDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -644,7 +644,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>NewNewFlightDialog</receiver>
+   <receiver>NewFlightDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
