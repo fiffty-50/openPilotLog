@@ -39,16 +39,10 @@ public:
 private slots:
 
     void on_previousPushButton_clicked();
-
     void on_nextPushButton_clicked();
-
     void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
-
     void on_currCustom1LineEdit_editingFinished();
-
     void on_currCustom2LineEdit_editingFinished();
-
-    void on_dateFormatComboBox_currentIndexChanged(int index);
 
     /*!
      * \brief Import an existing database instead of creating a new one

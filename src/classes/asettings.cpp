@@ -33,7 +33,6 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
     {UserData::TailSortColumn,          QStringLiteral("tailSortColumn")},
     {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
-    {UserData::AcftAllowIncomplete,     QStringLiteral("acftAllowIncomplete")},
     {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
     {UserData::CurrWarningThreshold,    QStringLiteral("currWarningThreshold")},
     {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
@@ -53,13 +52,9 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     {FlightLogging::NightLoggingEnabled,QStringLiteral("nightLoggingEnabled")},
     {FlightLogging::LogIFR,             QStringLiteral("logIfr")},
     {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
-    {FlightLogging::NumberTakeoffs,     QStringLiteral("numberTakeoffs")},
-    {FlightLogging::NumberLandings,     QStringLiteral("numberLandings")},
     {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
     {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
-    {FlightLogging::Rules,              QStringLiteral("rules")},
-    {FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
-    {FlightLogging::FunctionComboBox,   QStringLiteral("functionComboBox")},
+    //{FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
 };
 
 void ASettings::setup()
@@ -89,8 +84,6 @@ void ASettings::resetToDefaults()
     write(UserData::ShowCustom1Currency, false);
     write(UserData::ShowCustom2Currency, false);
 
-    write(FlightLogging::NumberTakeoffs, 1);
-    write(FlightLogging::NumberLandings, 1);
     write(FlightLogging::PilotFlying, true);
     write(FlightLogging::NightAngle, -6);
 }

@@ -39,12 +39,12 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
     flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << ASettings::read(ASettings::FlightLogging::Function);
-    if(ASettings::read(ASettings::FlightLogging::Function).toString() == QLatin1String("PIC")){
+    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == Opl::PIC){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
         emit ui->picNameLineEdit->editingFinished();
     }
-    if (ASettings::read(ASettings::FlightLogging::Function).toString() == QLatin1String("SIC")) {
+    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == Opl::SIC) {
         ui->sicNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
@@ -88,10 +88,9 @@ void NewFlightDialog::init()
 
     for (const auto& line_edit : *mandatoryLineEdits)
         line_edit->installEventFilter(this);
-
-    for (const auto & approach : Opl::ApproachTypes){
-        ui->approachComboBox->addItem(approach);
-    }
+    // Approach Combo Box and Function Combo Box
+    Opl::loadApproachTypes(ui->approachComboBox);
+    Opl::loadPilotFunctios(ui->functionComboBox);
 
     setupRawInputValidation();
     setupSignalsAndSlots();
@@ -172,7 +171,7 @@ bool NewFlightDialog::eventFilter(QObject *object, QEvent *event)
 void NewFlightDialog::readSettings()
 {
     ASettings settings;
-    ui->functionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
+    ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
     ui->approachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
     ui->pilotFlyingCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PilotFlying).toBool());
     ui->ifrCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::LogIFR).toBool());
@@ -441,7 +440,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(Opl::Db::FLIGHTS_LDGNIGHT, 0);
         new_data.insert(Opl::Db::FLIGHTS_LDGDAY, ui->landingSpinBox->value());
     }
-    if (ui->approachComboBox->currentText() == Opl::ApproachTypes[3]) // ILS CAT III
+    if (ui->approachComboBox->currentText() == Opl::APPROACH_TYPES[3]) // ILS CAT III
         new_data.insert(Opl::Db::FLIGHTS_AUTOLAND, ui->landingSpinBox->value());
 
     // Additional Data

@@ -20,6 +20,7 @@
 
 #include <QtCore>
 #include <QMessageBox>
+#include <QComboBox>
 #include "src/database/adatabasetypes.h"
 
 /*!
@@ -97,7 +98,27 @@ static const QMap<Translations, QString> L10N_NAMES {
     {Opl::Translations::Spanish, QStringLiteral("Español")},
 };
 
-static const auto ApproachTypes = QStringList{
+/*!
+ * \brief PilotFunction
+ * Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor
+ */
+enum PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
+
+static const QHash<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
+    {PilotFunction::PIC, QLatin1String("PIC")},
+    {PilotFunction::PICUS, QLatin1String("PICUS")},
+    {PilotFunction::SIC, QLatin1String("SIC")},
+    {PilotFunction::DUAL, QLatin1String("DUAL")},
+    {PilotFunction::FI, QLatin1String("FI")},
+};
+
+static inline void loadPilotFunctios(QComboBox *combo_box)
+{
+    for (int i = 0; i < Opl::PILOT_FUNCTIONS.size(); i++)
+        combo_box->addItem(Opl::PILOT_FUNCTIONS.value(Opl::PilotFunction(i)));
+};
+
+static const QList<QLatin1String> APPROACH_TYPES = {
         QLatin1String("VISUAL"),
         QLatin1String("ILS CAT I"),
         QLatin1String("ILS CAT II"),
@@ -120,6 +141,12 @@ static const auto ApproachTypes = QStringList{
         QLatin1String("SRA"),
         QLatin1String("PAR"),
         QLatin1String("OTHER")
+};
+
+static inline void loadApproachTypes(QComboBox *combo_box)
+{
+    for (const auto & approach : Opl::APPROACH_TYPES)
+        combo_box->addItem(approach);
 };
 
 namespace Date {

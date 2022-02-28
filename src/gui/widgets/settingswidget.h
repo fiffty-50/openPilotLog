@@ -54,7 +54,6 @@ private slots:
 
     void on_aboutPushButton_clicked();
     void on_acftSortComboBox_currentIndexChanged(int index);
-    void on_acAllowIncompleteComboBox_currentIndexChanged(int index);
     void on_prefixLineEdit_textChanged(const QString &arg1);
     void on_lastnameLineEdit_editingFinished();
     void on_firstnameLineEdit_editingFinished();
@@ -70,47 +69,26 @@ private slots:
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
     void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
-
     void on_fontComboBox_currentFontChanged(const QFont &f);
-
     void on_fontSpinBox_valueChanged(int arg1);
-
     void on_fontCheckBox_stateChanged(int arg1);
-
     void on_resetStylePushButton_clicked();
-
     void on_currLicDateEdit_userDateChanged(const QDate &date);
-
     void on_currTrDateEdit_userDateChanged(const QDate &date);
-
     void on_currLckDateEdit_userDateChanged(const QDate &date);
-
     void on_currMedDateEdit_userDateChanged(const QDate &date);
-
     void on_currCustom1DateEdit_userDateChanged(const QDate &date);
-
     void on_currCustom2DateEdit_userDateChanged(const QDate &date);
-
     void on_currToLdgCheckBox_stateChanged(int arg1);
-
     void on_currLicCheckBox_stateChanged(int arg1);
-
     void on_currTrCheckBox_stateChanged(int arg1);
-
     void on_currLckCheckBox_stateChanged(int arg1);
-
     void on_currMedCheckBox_stateChanged(int arg1);
-
     void on_currCustom1CheckBox_stateChanged(int arg1);
-
     void on_currCustom2CheckBox_stateChanged(int arg1);
-
     void on_currCustom1LineEdit_editingFinished();
-
     void on_currCustom2LineEdit_editingFinished();
-
     void on_dateFormatComboBox_currentIndexChanged(int index);
-
     void on_languageComboBox_activated(int arg1);
 
 private:

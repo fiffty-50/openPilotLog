@@ -40,7 +40,6 @@ public:
         DisplaySelfAs,
         TailSortColumn,
         PilotSortColumn,
-        AcftAllowIncomplete,
         FtlWarningThreshold,
         CurrWarningThreshold,
         ShowToLgdCurrency,
@@ -60,13 +59,9 @@ public:
         NightLoggingEnabled,
         LogIFR,
         FlightNumberPrefix,
-        NumberTakeoffs,
-        NumberLandings,
         PilotFlying,
         NightAngle,
-        Rules,
-        FlightTimeFormat,
-        FunctionComboBox,
+        //FlightTimeFormat,
     };
 
     /*!
@@ -99,6 +94,7 @@ public:
     static QString stringOfKey(const UserData key);
 
     static QSettings settings();
+    static void sync() { QSettings().sync(); }
 
 private:
     static QMap<Main, QString> mainMap;
