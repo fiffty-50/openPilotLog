@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    toolBar->setMovable(false);
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
 
     // check database version (Debug)
