@@ -141,8 +141,8 @@ private:
     void setNightCheckboxes();
     void updateBlockTimeLabel();
 
-    void addNewTail(QLineEdit& parent_line_edit);
-    void addNewPilot(QLineEdit& parent_line_edit);
+    bool addNewTail(QLineEdit& parent_line_edit);
+    bool addNewPilot(QLineEdit& parent_line_edit);
 
     RowData_T prepareFlightEntryData();
 

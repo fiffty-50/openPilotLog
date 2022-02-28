@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>720</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="3">
+   <item row="0" column="2" rowspan="3">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -73,7 +73,7 @@
         <widget class="QLineEdit" name="pilotSearchLineEdit">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>220</width>
            <height>0</height>
           </size>
          </property>
@@ -109,7 +109,7 @@
         <widget class="QComboBox" name="pilotsSearchComboBox">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>220</width>
            <height>0</height>
           </size>
          </property>
@@ -215,6 +215,13 @@
     <widget class="QPushButton" name="deletePilotButton">
      <property name="text">
       <string>Delete Pilot</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="3">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>

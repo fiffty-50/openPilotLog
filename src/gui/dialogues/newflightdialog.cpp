@@ -282,7 +282,7 @@ void NewFlightDialog::updateBlockTimeLabel()
  * \brief NewFlightDialog::addNewTail If the user input is not in the aircraftList, the user
  * is prompted if he wants to add a new entry to the database
  */
-void NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
+bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("No Aircraft found"),
@@ -307,14 +307,12 @@ void NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
 
             // update Line Edit
             parent_line_edit.setText(completionData.tailsIdMap.value(aDB->getLastEntry(ADatabaseTable::tails)));
-            emit parent_line_edit.editingFinished();
+            return true;
         } else {
-            parent_line_edit.setText(QString());
-            parent_line_edit.setFocus();
+            return false;
         }
     } else {
-        parent_line_edit.setText(QString());
-        parent_line_edit.setFocus();
+        return false;
     }
 }
 
@@ -322,7 +320,7 @@ void NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
  * \brief NewFlightDialog::addNewPilot If the user input is not in the pilotNameList, the user
  * is prompted if he wants to add a new entry to the database
  */
-void NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
+bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("No Pilot found"),
@@ -347,14 +345,12 @@ void NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
 
             // update Line Edit
             parent_line_edit.setText(completionData.pilotsIdMap.value(aDB->getLastEntry(ADatabaseTable::pilots)));
-            emit parent_line_edit.editingFinished();
+            return true;
         } else {
-            parent_line_edit.setText(QString());
-            parent_line_edit.setFocus();
+            return false;
         }
-    } else {
-        parent_line_edit.setText(QString());
-    }
+    } else
+        return false;
 }
 
 /*!
@@ -523,6 +519,8 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
         line_edit->setText(completionData.pilotsIdMap.value(1));
         if (line_edit->objectName() == QLatin1String("picNameLineEdit"))
             ui->functionComboBox->setCurrentIndex(0);
+        else if (line_edit->objectName() == QLatin1String("sicNameLineEdit"))
+            ui->functionComboBox->setCurrentIndex(2);
 
         onGoodInputReceived(line_edit);
         return;
@@ -550,8 +548,8 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
         return;
     }
 
-    onBadInputReceived(line_edit);
-    addNewPilot(*line_edit);
+    if(!addNewPilot(*line_edit))
+        onBadInputReceived(line_edit);
 }
 
 void NewFlightDialog::onLocationLineEdit_editingFinished()
@@ -606,10 +604,8 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     }
 
     if (!(line_edit->text() == QString()))
-        addNewTail(*line_edit);
-    // Mark as bad input and prompt for adding new tail
-    onBadInputReceived(line_edit);
-
+        if(!addNewTail(*line_edit))
+            onBadInputReceived(line_edit);
 }
 
 void NewFlightDialog::on_doftLineEdit_editingFinished()

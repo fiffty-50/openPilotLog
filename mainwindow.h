@@ -133,7 +133,12 @@ protected:
      */
     void resizeEvent(QResizeEvent *event) override
     {
-        int icon_size = (this->height() / 12);
+        int icon_size;
+        if (this->height() < 780)
+            icon_size = (this->height() / 13);
+        else
+            icon_size = (this->height() / 12);
+
         auto tool_bar = this->findChild<QToolBar*>();
         tool_bar->setIconSize(QSize(icon_size, icon_size));
     }

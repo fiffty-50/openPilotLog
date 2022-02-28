@@ -61,30 +61,6 @@ MainWindow::MainWindow(QWidget *parent)
     // retreive completion lists and maps
     completionData.init();
 
-    /*
-    // Create a spacer for the toolbar to separate left and right parts
-    auto *spacer = new QWidget();
-    spacer->setMinimumWidth(1);
-    spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    // Set up Toolbar
-    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
-    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-    ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
-    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
-    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
-    ui->toolBar->insertWidget(ui->actionSettings, spacer); // spacer goes here
-    ui->actionBackup->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_BACKUP));
-    ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
-    ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
-    ui->toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-
-    const auto buttons = ui->toolBar->findChildren<QWidget *>();
-    ui->toolBar->setIconSize(QSize(64, 64));
-    for (const auto &button : buttons) {
-        button->setMinimumWidth(128);
-    }
-    */
-
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
@@ -128,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
-
 
     // check database version (Debug)
     if (aDB->dbRevision() < aDB->getMinimumDatabaseRevision()) {
