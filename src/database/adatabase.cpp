@@ -509,7 +509,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
                          "UNION "
                          "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
@@ -558,7 +558,7 @@ QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
                          "UNION "
                          "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;

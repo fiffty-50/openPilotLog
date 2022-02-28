@@ -20,21 +20,6 @@
 #include "src/functions/alog.h"
 #include "src/opl.h"
 
-static const auto REG_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("registrationLineEdit"), QRegularExpression("\\w+-\\w+")};
-static const auto MAKE_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("makeLineEdit"), QRegularExpression("[-a-zA-Z\\s]+")};
-static const auto MODEL_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("modelLineEdit"), QRegularExpression("[\\s\\w-]+")};
-static const auto VARIANT_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("variantLineEdit"), QRegularExpression("[\\s\\w-]+")};
-static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>{
-    REG_VALID,
-    MAKE_VALID,
-    MODEL_VALID,
-    VARIANT_VALID};
-
-
 NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
@@ -102,9 +87,17 @@ void NewTailDialog::setupCompleter()
 
 void NewTailDialog::setupValidators()
 {
-    for(const auto& pair : LINE_EDIT_VALIDATORS){
-        auto line_edit = this->findChild<QLineEdit*>(pair.first);
-        auto validator = new QRegularExpressionValidator(pair.second, line_edit);
+    const QHash<QLatin1String, QRegularExpression> line_edit_validators = {
+        {QLatin1String("registrationLineEdit"), QRegularExpression(QLatin1String("\\w+-\\w+"))},
+        {QLatin1String("makeLineEdit"),         QRegularExpression(QLatin1String("[-a-zA-Z\\s]+"))},
+        {QLatin1String("modelLineEdit"),        QRegularExpression(QLatin1String("[\\s\\w-]+"))},
+        {QLatin1String("variantLineEdit"),      QRegularExpression(QLatin1String("[\\s\\w-]+"))},
+    };
+
+    QHash<QLatin1String, QRegularExpression>::const_iterator i;
+    for (i = line_edit_validators.constBegin(); i != line_edit_validators.constEnd(); ++i) {
+        const auto line_edit = this->findChild<QLineEdit*>(i.key());
+        auto validator = new QRegularExpressionValidator(i.value(), line_edit);
         line_edit->setValidator(validator);
     }
 }
