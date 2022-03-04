@@ -1,11 +1,14 @@
-.TH "FirstRunDialog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "FirstRunDialog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-FirstRunDialog
+FirstRunDialog \- The \fBFirstRunDialog\fP is used as a set-up wizard for the application\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <firstrundialog\&.h>\fP
 .PP
 Inherits QDialog\&.
 .SS "Public Member Functions"
@@ -26,6 +29,29 @@ Inherits QDialog\&.
 .br
 .RI "Shows the debug widget by pressing <ctrl + t> "
 .in -1c
+.SH "Detailed Description"
+.PP 
+The \fBFirstRunDialog\fP is used as a set-up wizard for the application\&. 
+
+The Application does not ship with a database, it is created on the fly\&. This is the main purpose of the \fBFirstRunDialog\fP\&. Apart from this main task, user details and preferences are gathered and saved using \fBASettings\fP\&.
+.PP
+The Dialog contains a tabbed widget which guides the user through the set up process\&.
+.SS "1 - Welcome"
+In this tab, the user is greeted and has the option to import an existing database instead of creating a new one\&.
+.SS "2 - Personal Data"
+In this tab, the users personal data is collected, which is used to create the first Pilot Entry in the database\&. ROW ID (1) identifies the logbook owner, which is also referred to as 'self' in the application\&.
+.SS "3 - Currencies"
+In this tab, the user can enter the expiration dates of his licenses, medical or other currencies that he wishes to keep track of\&. These are stored in the database within the currencies table\&.
+.SS "4 - Flight Logging"
+In this tab, the user can determine what the defualt selections for logging a new flight will be\&. These selections (Pilot Function, Flight Rules,\&.\&.\&.) are stored in an INI file using the \fBASettings\fP class\&.
+.SS "5 - Customization"
+In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being displayed\&. These settings are stored in an INI file using the \fBASettings\fP class\&.
+.SS "6 - Finish / Database creation"
+In this tab the user can select how the database is created\&. There are two options, either downloading database templates from the github repository, or to fall back to a set of JSON files inclnuded in the application ressources (see templates\&.qrc)\&. These built in files are probably not as up-to-date, but enable the application to function if no internet connection is available or the links to the online ressources are broken\&.
+.PP
+For Debug purcposes, pressing <ctrl+t> will enable a line edit in which a different branch than main can be selected from which the database templates are to be pulled\&.
+.PP
+Upon successful completion of the \fBFirstRunDialog\fP, a Setting is written so that the dialog is not shown on subsequent runs\&. 
 .SH "Member Function Documentation"
 .PP 
 .SS "void FirstRunDialog::keyPressEvent (QKeyEvent * keyEvent)\fC [override]\fP, \fC [protected]\fP"

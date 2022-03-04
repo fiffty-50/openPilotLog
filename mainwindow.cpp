@@ -22,16 +22,17 @@
 #include "src/database/adatabase.h"
 #include "src/classes/astyle.h"
 #include "src/gui/dialogues/firstrundialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
+#include "src/functions/adatetime.h"
 #include "src/classes/aentry.h"
 
 
 // Quick and dirty Debug area
-#include "src/gui/dialogues/newflightdialog.h"
-#include "src/functions/adatetime.h"
 void MainWindow::doDebugStuff()
 {
-    LOG << AStandardPaths::directory(AStandardPaths::Database).filesystemAbsolutePath();
+
 }
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -254,19 +255,3 @@ void MainWindow::on_actionDebug_triggered()
 {
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
-
-// Debug
-
-// not used at the moment
-
-/*void MainWindow::on_actionNewAircraft_triggered()
-{
-    NewTailDialog nt(QString(), this);
-    nt.exec();
-}
-
-void MainWindow::on_actionNewPilot_triggered()
-{
-    NewPilotDialog np(this);
-    np.exec();
-}*/

@@ -1,4 +1,4 @@
-.TH "aDbSetup" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "aDbSetup" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,6 +22,10 @@ aDbSetup \- The \fBaDbSetup\fP namespace is responsible for the inital setup of 
 .RI "bool \fBimportTemplateData\fP (bool use_local_ressources)"
 .br
 .RI "importTemplateData fills an empty database with the template data (Aircraft, Airports, currencies, changelog) as read from the JSON templates\&. "
+.ti -1c
+.RI "bool \fBresetUserData\fP ()"
+.br
+.RI "Empties all user-generated content in the database\&. "
 .in -1c
 .SS "Variables"
 
@@ -69,10 +73,16 @@ aDbSetup \- The \fBaDbSetup\fP namespace is responsible for the inital setup of 
 .RI "const auto \fBCREATE_VIEW_TOTALS\fP"
 .br
 .ti -1c
-.RI "const QStringList \fBDATABASE_TABLES\fP"
+.RI "const QList< QLatin1String > \fBDATABASE_TABLES\fP"
 .br
 .ti -1c
-.RI "const QStringList \fBDATABASE_VIEWS\fP"
+.RI "const QList< QLatin1String > \fBDATABASE_VIEWS\fP"
+.br
+.ti -1c
+.RI "const QList< QLatin1String > \fBUSER_TABLES\fP"
+.br
+.ti -1c
+.RI "const QList< QLatin1String > \fBTEMPLATE_TABLES\fP"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -103,6 +113,17 @@ importTemplateData fills an empty database with the template data (Aircraft, Air
 .PP
 \fBReturns\fP
 .RS 4
+.RE
+.PP
+
+.SS "bool aDbSetup::resetUserData ()"
+
+.PP
+Empties all user-generated content in the database\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true on success 
 .RE
 .PP
 
@@ -293,7 +314,7 @@ importTemplateData fills an empty database with the template data (Aircraft, Air
         " CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
         " FROM flights")
 .fi
-.SS "const QStringList aDbSetup::DATABASE_TABLES"
+.SS "const QList<QLatin1String> aDbSetup::DATABASE_TABLES"
 \fBInitial value:\fP
 .PP
 .nf
@@ -307,7 +328,7 @@ importTemplateData fills an empty database with the template data (Aircraft, Air
     CREATE_TABLE_CHANGELOG
 }
 .fi
-.SS "const QStringList aDbSetup::DATABASE_VIEWS"
+.SS "const QList<QLatin1String> aDbSetup::DATABASE_VIEWS"
 \fBInitial value:\fP
 .PP
 .nf
@@ -318,6 +339,27 @@ importTemplateData fills an empty database with the template data (Aircraft, Air
     CREATE_VIEW_PILOTS,
     CREATE_VIEW_TOTALS,
     CREATE_VIEW_QCOMPLETER,
+}
+.fi
+.SS "const QList<QLatin1String> aDbSetup::TEMPLATE_TABLES"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+    QLatin1String("aircraft"),
+    QLatin1String("airports"),
+    QLatin1String("currencies"),
+    QLatin1String("changelog")
+}
+.fi
+.SS "const QList<QLatin1String> aDbSetup::USER_TABLES"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+    QLatin1String("flights"),
+    QLatin1String("pilots"),
+    QLatin1String("tails")
 }
 .fi
 .SH "Author"

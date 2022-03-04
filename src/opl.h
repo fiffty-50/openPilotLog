@@ -57,30 +57,25 @@ namespace Opl {
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
- * information to the user and forwards the displayed message to ALog so it is written
+ * information to the user in a QMessageBox and forwards the displayed message to ALog so it is written
  * to the console and log files. The INFO, WARN and CRIT makros provide convenient access.
  */
 class ANotificationHandler {
 public:
     static inline void info(const QString msg, QWidget *parent = nullptr){
+
         qInfo() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Information);
+        auto mb = QMessageBox(QMessageBox::Information, QLatin1String("Info"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void warn(const QString msg, QWidget *parent = nullptr){
         qWarning() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Warning);
+        auto mb = QMessageBox(QMessageBox::Warning, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void crit(const QString msg, QWidget *parent = nullptr){
         qCritical() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Critical);
+        auto mb = QMessageBox(QMessageBox::Critical, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
 }; // class ANotificationHandler

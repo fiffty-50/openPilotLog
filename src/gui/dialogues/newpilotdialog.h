@@ -28,7 +28,19 @@
 namespace Ui {
 class NewPilot;
 }
-
+/*!
+ * \brief The NewPilotDialog enables adding new entries to the pilot table in the database
+ * \details The NewPilotDialog offers two constructors, one is used to create a new Pilot Entry
+ * from scratch, while the other one is used to edit an existing entry. The existing entry
+ * is identified by its ROW ID in the database and is then retreived, its data being used
+ * to pre-fill the UI to enable editing the existing data.
+ *
+ * A QCompleter provides in-line completion for the company field.
+ *
+ * No verification is done on the user input. Sqlite has full unicode support and names
+ * come in all different forms and shapes around the world. In order to maintain a maximum
+ * amount of flexibility, any unicode input is allowed.
+ */
 class NewPilotDialog : public QDialog
 {
     Q_OBJECT
@@ -46,8 +58,14 @@ private:
 
     inline void setup();
 
+    /*!
+     * \brief formFiller - fills the line edits with the data retreived from the database.
+     */
     void formFiller();
 
+    /*!
+     * \brief submitForm - retreives the input from the line edits and commits to the database.
+     */
     void submitForm();
 };
 

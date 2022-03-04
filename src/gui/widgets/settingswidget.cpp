@@ -55,13 +55,7 @@ void SettingsWidget::setupComboBoxes(){
     {
         // Style combo box
         const QSignalBlocker style_blocker(ui->styleComboBox);
-        ui->styleComboBox->addItems(AStyle::styles);
-        for (const auto &style_sheet : AStyle::styleSheets) {
-            ui->styleComboBox->addItem(style_sheet.styleSheetName);
-        }
-        ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
-        ui->styleComboBox->model()->sort(0);
-
+        AStyle::loadStylesComboBox(ui->styleComboBox);
         // Approach Combo Box and Function Combo Box
         const QSignalBlocker approach_blocker(ui->approachComboBox);
         Opl::loadApproachTypes(ui->approachComboBox);

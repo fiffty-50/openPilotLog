@@ -1,4 +1,4 @@
-.TH "ADatabase" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADatabase" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -65,7 +65,7 @@ Inherits QObject\&.
 .br
 .RI "Can be used to send a complex query to the database\&. "
 .ti -1c
-.RI "bool \fBexists\fP (\fBAEntry\fP entry)"
+.RI "bool \fBexists\fP (const \fBAEntry\fP &entry)"
 .br
 .RI "Checks if an entry exists in the database, based on position data\&. "
 .ti -1c
@@ -76,19 +76,19 @@ Inherits QObject\&.
 .br
 .RI "clear resets the database, i\&.e\&. deletes all content in the tables containing userdata (pilots, flights, tails) "
 .ti -1c
-.RI "bool \fBcommit\fP (\fBAEntry\fP entry)"
+.RI "bool \fBcommit\fP (const \fBAEntry\fP &entry)"
 .br
 .RI "commits an entry to the database, calls either insert or update, based on position data "
 .ti -1c
-.RI "bool \fBinsert\fP (\fBAEntry\fP new_entry)"
+.RI "bool \fBinsert\fP (const \fBAEntry\fP &new_entry)"
 .br
 .RI "Create new entry in the databse based on UserInput\&. "
 .ti -1c
-.RI "bool \fBupdate\fP (\fBAEntry\fP updated_entry)"
+.RI "bool \fBupdate\fP (const \fBAEntry\fP &updated_entry)"
 .br
 .RI "Updates entry in database from existing entry tweaked by the user\&. "
 .ti -1c
-.RI "bool \fBremove\fP (\fBAEntry\fP entry)"
+.RI "bool \fBremove\fP (const \fBAEntry\fP &entry)"
 .br
 .RI "deletes an entry from the database\&. "
 .ti -1c
@@ -128,11 +128,11 @@ Inherits QObject\&.
 .br
 .RI "getCompletionList returns a QStringList of values for a QCompleter based on database values "
 .ti -1c
-.RI "const QMap< QString, RowId_T > \fBgetIdMap\fP (ADatabaseTarget target)"
+.RI "const QMap< RowId_T, QString > \fBgetIdMap\fP (ADatabaseTarget target)"
 .br
-.RI "returns a QMap<QString, RowId_t> of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
+.RI "returns a QMap of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
 .ti -1c
-.RI "int \fBgetLastEntry\fP (ADatabaseTable table)"
+.RI "RowId_T \fBgetLastEntry\fP (ADatabaseTable table)"
 .br
 .RI "returns the ROWID for the newest entry in the respective database\&. "
 .ti -1c
@@ -175,6 +175,10 @@ Inherits QObject\&.
 .RI "QStringList \fBgetTemplateTableNames\fP ()"
 .br
 .RI "getTemplateTableNames returns a list of the table names of tables that contain template data (aiports, aircraft,\&.\&.) "
+.ti -1c
+.RI "\fBUserDataState\fP \fBgetUserDataState\fP ()"
+.br
+.RI "getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. "
 .in -1c
 .SS "Static Public Member Functions"
 
@@ -197,7 +201,7 @@ Inherits QObject\&.
 .ti -1c
 .RI "QSqlError \fBlastError\fP"
 .br
-.RI "lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. "
+.RI "Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. "
 .ti -1c
 .RI "const QFileInfo \fBdatabaseFile\fP"
 .br
@@ -265,10 +269,10 @@ retreives a TailEntry from the database\&. This function is a wrapper for DataBa
 
 .PP
 retreives a flight entry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAFlightEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to a flight entry with only the RowId required as input\&. 
-.SS "const QMap< QString, RowId_T > ADatabase::getIdMap (ADatabaseTarget target)"
+.SS "const QMap< RowId_T, QString > ADatabase::getIdMap (ADatabaseTarget target)"
 
 .PP
-returns a QMap<QString, RowId_t> of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. 
+returns a QMap of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. 
 .PP
 \fBTodo\fP
 .RS 4
@@ -295,6 +299,17 @@ getTable returns all contents of a given table from the database
 
 .PP
 retreives a TailEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a TailEntry instead of an Entry\&. It allows for easy access to a tail entry with only the RowId required as input\&. 
+.SS "\fBUserDataState\fP ADatabase::getUserDataState ()"
+
+.PP
+getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
 .SS "\fBAPilotEntry\fP ADatabase::resolveForeignPilot (RowId_T foreign_key)"
 
 .PP
@@ -344,7 +359,7 @@ sqlite version string
 .SS "QSqlError ADatabase::lastError"
 
 .PP
-lastError extends QSqlError\&. Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. If the error type is QSqlError::NoError, the last executed database query was successful\&. 
+Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. If the error type is QSqlError::NoError, the last executed database query was successful\&. 
 
 .SH "Author"
 .PP 

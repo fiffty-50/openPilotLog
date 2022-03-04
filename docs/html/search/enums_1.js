@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['editrole_176',['editRole',['../class_db.html#a2eb74695b795bf25b6ddfd41c86bcc7b',1,'Db']]]
+  ['settingsignal_300',['SettingSignal',['../class_settings_widget.html#af15eec9fd55841ec02041a1114da54d4',1,'SettingsWidget']]]
 ];

@@ -28,7 +28,7 @@
 #include "src/functions/astat.h"
 #include "src/classes/acurrencyentry.h"
 #include "src/classes/atranslator.h"
-#include "src/database/adatabasesetup.h"
+#include "src/database/adbsetup.h"
 #include "src/classes/ahash.h"
 #include "src/classes/ajson.h"
 #include "src/functions/adate.h"
@@ -76,62 +76,85 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    QMessageBox message_box(this);
-    if (ADataBaseSetup::resetToDefault()){
-        message_box.setText("Database successfully reset");
-        message_box.exec();
+    if (aDbSetup::resetUserData()){
+        LOG << "Database successfully reset";
         emit aDB->dataBaseUpdated();
-    } else {
-        message_box.setText("Errors have occurred. Check console for Debug output. ");
-        message_box.exec();
-    }
+    } else
+        LOG <<"Errors have occurred. Check console for Debug output. ";
 }
 
 void DebugWidget::on_resetDatabasePushButton_clicked()
 {
-    ATimer timer(this);
-    QMessageBox message_box(this);
+    // disconnect and remove old database
+    aDB->disconnect();
+    QFile db_file(AStandardPaths::directory(AStandardPaths::Database).absoluteFilePath(QStringLiteral("logbook.db")));
+    if (!db_file.remove()) {
+        WARN(tr("Unable to delete existing database file."));
+        return;
+    }
 
-    // download latest csv
-    QString link_stub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
-    link_stub.append(ui->branchLineEdit->text()); // optionally select branch for development
-    link_stub.append("/assets/database/templates/");
 
-    QStringList template_tables = {"aircraft", "airports", "changelog"};
+    // Download templates
+    QString branch_name = ui->branchLineEdit->text();
+
+    // Create url string
+    auto template_url_string = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    template_url_string.append(branch_name);
+    template_url_string.append(QLatin1String("/assets/database/templates/"));
+
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+
+    const auto template_tables = aDB->getTemplateTableNames();
+    // Download json files
     for (const auto& table : template_tables) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(link_stub % table % QStringLiteral(".csv")));
-        dl->setFileName(template_dir.filePath(table % QStringLiteral(".csv")));
+        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
+        DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
         dl->download();
-        loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".json")));
+        if (downloaded_file.size() == 0)
+            LOG << "ssl/network error";
+    }
+    // Download checksum files
+    for (const auto& table : template_tables) {
+        QEventLoop loop;
+        ADownload* dl = new ADownload;
+        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
+        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+
+        DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+
+        dl->download();
+        dl->deleteLater();
+        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+
+        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
+        if (downloaded_file.size() == 0)
+            LOG << "ssl/network error";
+    }
+    // Create Database
+    if (!aDbSetup::createDatabase()) {
+        WARN(QString("Unable to create database.<br>%1").arg(aDB->lastError.text()));
+        return;
     }
 
-    // back up old db
-    aDB->disconnect();
-    ADataBaseSetup::backupOldData();
+    // Load ressources
+    bool use_ressource_data = false; // do not use local data, download from github
+    if(!aDbSetup::importTemplateData(use_ressource_data)) {
+        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
+             .arg(aDB->lastError.text()));
+        return ;
+    }
 
-    // re-connct and create new database
     aDB->connect();
-    if (ADataBaseSetup::createDatabase()) {
-        DEB << "Database has been successfully created.";
-    } else {
-        message_box.setText("Errors have ocurred creating the database.<br>"
-                            "Check console for details.");
-        message_box.exec();
-    }
-    if (ADataBaseSetup::importDefaultData(false)) {
-        message_box.setText("Database has been successfully reset.");
-        emit aDB->dataBaseUpdated();
-        message_box.exec();
-    } else {
-        message_box.setText("Errors have ocurred while importing templates.<br>"
-                            "Check console for details.");
-        message_box.exec();
-    }
+
 }
 
 void DebugWidget::downloadFinished()
@@ -141,9 +164,11 @@ void DebugWidget::downloadFinished()
 
 void DebugWidget::on_fillUserDataPushButton_clicked()
 {
+    TODO << "Create JSON sample data and import";
+    /*
     ATimer timer(this);
     QMessageBox message_box(this);
-    // download latest csv
+    // download latest json
     QStringList userTables = {"pilots", "tails", "flights"};
     QString linkStub = "https://raw.githubusercontent.com/fiffty-50/openpilotlog/";
     linkStub.append(ui->branchLineEdit->text());
@@ -154,8 +179,8 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
         QEventLoop loop;
         ADownload* dl = new ADownload;
         connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(linkStub + table + ".csv"));
-        dl->setFileName(template_dir.filePath("sample_" % table % QStringLiteral(".csv")));
+        dl->setTarget(QUrl(linkStub + table + ".json"));
+        dl->setFileName(template_dir.filePath("sample_" % table % QStringLiteral(".json")));
         dl->download();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
         dl->deleteLater();
@@ -164,9 +189,9 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     allGood.resize(userTables.size());
 
     for (const auto& table : userTables) {
-        auto data = aReadCsv(AStandardPaths::directory(AStandardPaths::Templates).absoluteFilePath(
-                             + "sample_" + table + ".csv"));
-        allGood.setBit(userTables.indexOf(table), ADataBaseSetup::commitData(data, table));
+        auto data = readcsv(AStandardPaths::directory(AStandardPaths::Templates).absoluteFilePath(
+                             + "sample_" + table + ".json"));
+        allGood.setBit(userTables.indexOf(table), aDbSetup::commitData(data, table));
     }
 
     if (allGood.count(true) != userTables.size()) {
@@ -178,6 +203,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
     message_box.setText("User tables successfully populated.");
     message_box.exec();
     emit aDB->dataBaseUpdated();
+    */
 }
 
 void DebugWidget::on_selectCsvPushButton_clicked()
@@ -191,6 +217,8 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 
 void DebugWidget::on_importCsvPushButton_clicked()
 {
+    WARN("Not currently working...");
+    /*
     ATimer timer(this);
     auto file = QFileInfo(ui->importCsvLineEdit->text());
     DEB << "File exists/is file:" << file.exists() << file.isFile() << " Path:" << file.absoluteFilePath();
@@ -211,6 +239,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
         message_box.setText("Please select a valid file.");
         message_box.exec();
     }
+    */
 }
 
 void DebugWidget::changeEvent(QEvent *event)

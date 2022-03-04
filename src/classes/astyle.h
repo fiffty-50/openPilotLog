@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <QMap>
 #include <QTextStream>
+#include <QComboBox>
 
 /*!
  * \brief The StyleSheet struct holds the Display Name and File Name (in the
@@ -62,6 +63,15 @@ public:
     static void setStyle(const QPalette &palette);
     static QPalette darkPalette();
     static const QString& style();
+
+    static inline void loadStylesComboBox(QComboBox *combo_box){
+        combo_box->addItems(AStyle::styles);
+        for (const auto &style_sheet : AStyle::styleSheets) {
+            combo_box->addItem(style_sheet.styleSheetName);
+        }
+        combo_box->addItem(QStringLiteral("Dark-Palette"));
+        combo_box->model()->sort(0);
+    }
 };
 
 #endif // ASTYLE_H

@@ -1,4 +1,4 @@
-.TH "ADate" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ADate" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,9 +13,26 @@ ADate \- The \fBADate\fP class is responsible for input/output of Dates and hand
 
 .in +1c
 .ti -1c
-.RI "static QDate \fBformatInput\fP (QString user_input, Opl::Date::ADateFormat format)"
+.RI "static QDate \fBparseInput\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
 .br
-.RI "formatInput takes a user-provided input and tries to convert it to a QDate\&. "
+.RI "takes a user-provided input and tries to convert it to a (valid) QDate\&. "
+.ti -1c
+.RI "static void \fBtryToFix\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
+.br
+.ti -1c
+.RI "static void \fBpadCentury\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
+.br
+.RI "padCentury adds the century to a date where it was omitted "
+.ti -1c
+.RI "static void \fBpadZeroes\fP (QString &io_user_input)"
+.br
+.RI "pads a user-provided date string with 0s to facilitate conversion to QDate "
+.ti -1c
+.RI "static void \fBaddSeperators\fP (QString &io_user_input, const Opl::Date::ADateFormat &format)"
+.br
+.ti -1c
+.RI "static bool \fBcontainsSeperator\fP (const QString &user_input)"
+.br
 .ti -1c
 .RI "static QString \fBtoString\fP (const QDate &date, Opl::Date::ADateFormat format=Opl::Date::ADateFormat::ISODate)"
 .br
@@ -32,10 +49,10 @@ ADate \- The \fBADate\fP class is responsible for input/output of Dates and hand
 The \fBADate\fP class is responsible for input/output of Dates and handling the different Date Formats\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "QDate ADate::formatInput (QString user_input, Opl::Date::ADateFormat format)\fC [static]\fP"
+.SS "QDate ADate::parseInput (QString & io_user_input, Opl::Date::ADateFormat format)\fC [static]\fP"
 
 .PP
-formatInput takes a user-provided input and tries to convert it to a QDate\&. 
+takes a user-provided input and tries to convert it to a (valid) QDate\&. 
 .PP
 \fBReturns\fP
 .RS 4

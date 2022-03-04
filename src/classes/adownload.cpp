@@ -29,7 +29,7 @@ ADownload::ADownload() : QObject(nullptr)
 
 ADownload::~ADownload()
 {
-    DEB << "Deleting ADownload Object";
+
 }
 
 void ADownload::setTarget(const QUrl &value)
@@ -53,7 +53,7 @@ void ADownload::download()
 
 void ADownload::downloadProgress(qint64 received, qint64 total)
 {
-    DEB << "Received " << received << " bytes of " << total;
+    //DEB << "Received " << received << " bytes of " << total;
 }
 
 

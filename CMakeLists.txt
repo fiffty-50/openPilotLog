@@ -39,7 +39,6 @@ set(PROJECT_SOURCES
     src/classes/ajson.cpp
     src/classes/ahash.cpp
     src/database/adatabase.cpp
-    src/database/adatabasesetup.cpp
     src/database/adbsetup.cpp
     src/functions/acalc.cpp
     src/functions/alog.cpp
@@ -77,7 +76,6 @@ set(PROJECT_SOURCES
     src/classes/ajson.h
     src/classes/ahash.h
     src/database/adatabase.h
-    src/database/adatabasesetup.h
     src/database/adbsetup.h
     src/database/adatabasetypes.h
     src/functions/acalc.h

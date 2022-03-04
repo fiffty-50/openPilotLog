@@ -34,20 +34,44 @@ namespace Ui {
 class NewTail;
 }
 /*!
- * \brief The NewTail class is a dialog for adding a new tail to
- * the database or editing an existing one.
+ * \brief The NewTailDialog enables adding new Tail entries to the database or editing existing ones.
  *
- * For a new tail, construct using QString reg.
- * For editing an existing tail, provide the aircraft object.
+ * \details The NewTailDialog offers two constructors, one is used to create a new Tail Entry
+ * from scratch, while the other one is used to edit an existing entry. The existing entry
+ * is identified by its ROW ID in the database and is then retreived, its data being used
+ * to pre-fill the UI to enable editing the existing data.
+ *
+ * The Dialog is headed by a search-field containing template data retreived from the aircraft table.
+ * This enables a fast and convenient way of rapidly filling out all the details for a given aircraft type.
+ *
+ * Think of aircraft and tails as classes and instances. The tail refers to the actual aircraft, which is
+ * identified by its registration, normally a 5-letter alphanumeric, e.g. D-AIDB or LN-NEN. The aircraft table
+ * in the database holds templates for the aircraft type, for example a Boeing 737 or Airbus 320. A typical
+ * operator has several aircraft of the same type, for example OE-ABC, OE-DEF and OE-GHI, all of which are of the
+ * aircraft type Airbus 320.
+ *
+ * The Dialog contains 4 QComboBoxes that have to be filled out before an entry can be submitted, since this data
+ * is being used to deduct certain types of hours that have to be logged depending on the number or type of engines.
+ *
+ * A set of QValidators provides raw input validation for the line edits.
+ *
+ *
+ *
  */
 class NewTailDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    //create new tail
-    explicit NewTailDialog(QString new_registration, QWidget *parent = nullptr);
-    //edit existing tail
+    /*!
+     * \brief NewTailDialog - create a new ATailEntry and submit it to the database
+     * \param new_registration - when called from the NewFlightDialog, pre-fills the registration already entered.
+     */
+    explicit NewTailDialog(const QString& new_registration, QWidget *parent = nullptr);
+    /*!
+     * \brief NewTailDialog - edit an existing Tail Entry
+     * \param row_id - the ROW_ID of the entry to be edited in the database
+     */
     explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();

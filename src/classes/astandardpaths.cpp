@@ -59,7 +59,7 @@ bool AStandardPaths::scan_directories()
 {
     for(const auto& dir : qAsConst(directories)){
         if(!dir.exists()) {
-            DEB << dir << "Does not exist. Creating:" << dir.absolutePath();
+            LOG << dir << "Does not exist. Creating:" << dir.absolutePath();
             if (!dir.mkpath(dir.absolutePath()))
                 return false;
         }

@@ -1,6 +1,6 @@
 var hierarchy =
 [
-    [ "ADataBaseSetup", "class_a_data_base_setup.html", null ],
+    [ "ACompletionData", "class_a_completion_data.html", null ],
     [ "ADate", "class_a_date.html", null ],
     [ "AEntry", "class_a_entry.html", [
       [ "AAircraftEntry", "struct_a_aircraft_entry.html", null ],
@@ -17,6 +17,10 @@ var hierarchy =
     [ "AStandardPaths", "class_a_standard_paths.html", null ],
     [ "AStyle", "class_a_style.html", null ],
     [ "DataPosition", "struct_data_position.html", null ],
+    [ "ACalc::NightTimeValues", "struct_a_calc_1_1_night_time_values.html", null ],
+    [ "ProcessAircraft", "class_process_aircraft.html", null ],
+    [ "ProcessFlights", "class_process_flights.html", null ],
+    [ "ProcessPilots", "class_process_pilots.html", null ],
     [ "QDialog", null, [
       [ "FirstRunDialog", "class_first_run_dialog.html", null ],
       [ "NewFlightDialog", "class_new_flight_dialog.html", null ],
@@ -44,5 +48,7 @@ var hierarchy =
       [ "PilotsWidget", "class_pilots_widget.html", null ],
       [ "SettingsWidget", "class_settings_widget.html", null ]
     ] ],
-    [ "StyleSheet", "struct_style_sheet.html", null ]
+    [ "StyleSheet", "struct_style_sheet.html", null ],
+    [ "UserDataState", "struct_user_data_state.html", null ],
+    [ "ValidationState", "class_validation_state.html", null ]
 ];

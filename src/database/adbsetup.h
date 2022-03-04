@@ -48,6 +48,12 @@ bool commitData(const QJsonArray &json_arr, const QString &table_name);
  * \return
  */
 bool importTemplateData(bool use_local_ressources);
+
+/*!
+ * \brief  Empties all user-generated content in the database.
+ * \return true on success
+ */
+bool resetUserData();
 }; // namespace aDbSetup
 
 #endif // ADBSETUP_H

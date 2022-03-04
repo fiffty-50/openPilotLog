@@ -20,11 +20,10 @@
 #include "src/functions/alog.h"
 #include "src/opl.h"
 
-NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
+NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB << "new NewTailDialog";
     ui->setupUi(this);
 
     setupCompleter();
@@ -41,7 +40,6 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTail)
 {
-    DEB << "New New Pilot Dialog (edit existing)";
     ui->setupUi(this);
 
     ui->searchLabel->hide();
@@ -50,15 +48,14 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
 
     setupValidators();
     entry = aDB->getTailEntry(row_id);
+    LOG << "Editing: " << entry;
     fillForm(entry, false);
 }
 
 NewTailDialog::~NewTailDialog()
 {
-    DEB << "Deleting NewTailDialog\n";
     delete ui;
 }
-/// Functions
 
 /*!
  * \brief NewTail::setupCompleter obtains a QMap<QString searchstring, int aircaft_id> for auto completion
@@ -107,11 +104,12 @@ void NewTailDialog::setupValidators()
  * information contained in an entry object. This can be either
  * a template (AAircraft, used when creating a new entry) or
  * a tail (ATail, used when editing an existing entry)
- * \param entry
+ * \param is_template - determines whether we are adding a new entry
+ * or editing an existing one.
  */
 void NewTailDialog::fillForm(AEntry entry, bool is_template)
 {
-    DEB << "Filling Form for a/c" << entry.getPosition().tableName << entry.getPosition().rowId;
+    DEB << "Filling Form for a/c" << entry;
     //fill Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
 
@@ -179,7 +177,6 @@ bool NewTailDialog::verify()
  */
 void NewTailDialog::submitForm()
 {
-    DEB << "Creating Database Object...";
     RowData_T new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
@@ -206,6 +203,7 @@ void NewTailDialog::submitForm()
     //create db object
 
     entry.setData(new_data);
+    LOG << "Commiting: " << entry;
     if (!aDB->commit(entry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"
@@ -268,7 +266,6 @@ void NewTailDialog::on_buttonBox_accepted()
         message_box.exec();
         return;
     }
-    DEB << "Form verified";
     submitForm();
 }
 

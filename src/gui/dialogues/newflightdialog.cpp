@@ -154,6 +154,13 @@ void NewFlightDialog::setupSignalsAndSlots()
                          this, &NewFlightDialog::onPilotNameLineEdit_editingFinshed);
 }
 
+/*!
+ * \brief NewFlightDialog::eventFilter invalidates mandatory line edits on focus in.
+ * \details Some of the QLineEdits have validators set that provide raw input validation. These validators have the side effect
+ * that if an input does not meet the raw input validation criteria, onEditingFinished() is not emitted when the line edit loses
+ * focus. This could lead to a line edit that previously had good input to be changed to bad input without the validation bit
+ * in validationState being unset, because the second step of input validation is only triggered when editingFinished() is emitted.
+ */
 bool NewFlightDialog::eventFilter(QObject *object, QEvent *event)
 {
     auto line_edit = qobject_cast<QLineEdit*>(object);
@@ -168,15 +175,16 @@ bool NewFlightDialog::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
+/*!
+ * \brief NewFlightDialog::readSettings Reads user-defined settings from an INI file.
+ */
 void NewFlightDialog::readSettings()
 {
-    ASettings settings;
     ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
     ui->approachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
     ui->pilotFlyingCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PilotFlying).toBool());
     ui->ifrCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::LogIFR).toBool());
     ui->flightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
-
 }
 
 /*!
@@ -480,7 +488,9 @@ void NewFlightDialog::updateNightCheckBoxes()
         ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
 }
 
-// # Slots
+/*!
+ * \brief NewFlightDialog::toUpper - changes inserted text to upper case for IATA/ICAO airport codes and registrations.
+ */
 void NewFlightDialog::toUpper(const QString &text)
 {
     const auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
@@ -666,6 +676,13 @@ void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
     }
 }
 
+/*!
+ * \brief NewFlightDialog::on_buttonBox_accepted - checks for validity and commits the form data to the database
+ * \details When the user is ready to submit a flight entry, a final check for valid entries is made, and the user
+ * is prompted to correct unsatisfactory inputs. When this is done, prepareFlightEntryData() collects the input from
+ * the user interface and converts it to database format. The data is then stored in a QMap<QString, QVariant>.
+ * This data is then used to create a AFlightEntry object, which is then commited to the database by ADatabase::commit()
+ */
 void NewFlightDialog::on_buttonBox_accepted()
 {
     for (const auto& line_edit : *mandatoryLineEdits)

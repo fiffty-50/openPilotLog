@@ -262,7 +262,7 @@ void BackupWidget::on_aboutPushButton_clicked()
                       "<br>"
                       "<p>By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your "
                       "flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
-                      "later be restored or kept for safekeeping. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
+                      "later be restored. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
                       "are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting <b>Create Local backup</b> and restored with "
                       "<b>Restore Local Backup</b>.<br>"
                       "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. "

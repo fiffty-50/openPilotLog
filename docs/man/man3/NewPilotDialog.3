@@ -1,11 +1,14 @@
-.TH "NewPilotDialog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "NewPilotDialog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-NewPilotDialog
+NewPilotDialog \- The \fBNewPilotDialog\fP enables adding new entries to the pilot table in the database\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <newpilotdialog\&.h>\fP
 .PP
 Inherits QDialog\&.
 .SS "Public Member Functions"
@@ -14,10 +17,34 @@ Inherits QDialog\&.
 .ti -1c
 .RI "\fBNewPilotDialog\fP (QWidget *parent=nullptr)"
 .br
+.RI "\fBNewPilotDialog::NewPilotDialog\fP - creates a new pilot dialog which can be used to add a new entry to the database\&. "
 .ti -1c
 .RI "\fBNewPilotDialog\fP (int rowId, QWidget *parent=nullptr)"
 .br
+.RI "\fBNewPilotDialog::NewPilotDialog\fP - creates a new pilot dialog which can be used to edit an existing entry in the database\&. "
 .in -1c
+.SH "Detailed Description"
+.PP 
+The \fBNewPilotDialog\fP enables adding new entries to the pilot table in the database\&. 
+
+The \fBNewPilotDialog\fP offers two constructors, one is used to create a new Pilot Entry from scratch, while the other one is used to edit an existing entry\&. The existing entry is identified by its ROW ID in the database and is then retreived, its data being used to pre-fill the UI to enable editing the existing data\&.
+.PP
+A QCompleter provides in-line completion for the company field\&.
+.PP
+No verification is done on the user input\&. Sqlite has full unicode support and names come in all different forms and shapes around the world\&. In order to maintain a maximum amount of flexibility, any unicode input is allowed\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "NewPilotDialog::NewPilotDialog (int rowId, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+\fBNewPilotDialog::NewPilotDialog\fP - creates a new pilot dialog which can be used to edit an existing entry in the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrowId\fP - the rowid of the entry to be edited in the database 
+.RE
+.PP
+
 
 .SH "Author"
 .PP 

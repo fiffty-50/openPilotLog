@@ -1,4 +1,4 @@
-.TH "Opl" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "Opl" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,14 +20,18 @@ Opl \- A namespace to collect constants and enums used throughout the applicatio
 .ti -1c
 .RI "class \fBANotificationHandler\fP"
 .br
-.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user and forwards the displayed message to \fBALog\fP so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
+.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user in a QMessageBox and forwards the displayed message to \fBALog\fP so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
 .in -1c
 .SS "Enumerations"
 
 .in +1c
 .ti -1c
-.RI "enum \fBTranslations\fP { \fBEnglish\fP, \fBGerman\fP, \fBSpanish\fP }"
+.RI "enum class \fBTranslations\fP { \fBEnglish\fP, \fBGerman\fP, \fBSpanish\fP }"
 .br
+.ti -1c
+.RI "enum \fBPilotFunction\fP { \fBPIC\fP = 0, \fBPICUS\fP = 1, \fBSIC\fP = 2, \fBDUAL\fP = 3, \fBFI\fP = 4 }"
+.br
+.RI "PilotFunction Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
