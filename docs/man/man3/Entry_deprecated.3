@@ -18,10 +18,10 @@ Inherited by \fBAircraft\fP, \fBFlight\fP, and \fBPilot\fP\&.
 .RI "\fBEntry_deprecated\fP (QString table, int row)"
 .br
 .ti -1c
-.RI "\fBEntry_deprecated\fP (QString table, QMap< QString, QString > newData)"
+.RI "\fBEntry_deprecated\fP (QString table, QHash< QString, QString > newData)"
 .br
 .ti -1c
-.RI "void \fBsetData\fP (QMap< QString, QString > &value)"
+.RI "void \fBsetData\fP (QHash< QString, QString > &value)"
 .br
 .ti -1c
 .RI "bool \fBcommit\fP ()"
@@ -52,7 +52,7 @@ Inherited by \fBAircraft\fP, \fBFlight\fP, and \fBPilot\fP\&.
 .RI "QVector< QString > \fBcolumns\fP = QVector<QString>()"
 .br
 .ti -1c
-.RI "QMap< QString, QString > \fBdata\fP = QMap<QString, QString>()"
+.RI "QHash< QString, QString > \fBdata\fP = QHash<QString, QString>()"
 .br
 .ti -1c
 .RI "QString \fBerror\fP = QString()"

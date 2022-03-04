@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('astandardpaths_8h_source.html',''); in
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;QStandardPaths&gt;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;QString&gt;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;QMap&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;QHash&gt;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;QDir&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="class_a_standard_paths.html">   30</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_standard_paths.html">AStandardPaths</a>{</div>
@@ -122,7 +122,7 @@ $(document).ready(function(){initNavTree('astandardpaths_8h_source.html',''); in
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        JSON</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    };</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">static</span> QMap&lt;Directories, QDir&gt; directories;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">static</span> QHash&lt;Directories, QDir&gt; directories;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> scan_directories();</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
@@ -132,16 +132,16 @@ $(document).ready(function(){initNavTree('astandardpaths_8h_source.html',''); in
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QDir &amp;<a class="code" href="class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe">directory</a>(Directories location);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QString <a class="code" href="class_a_standard_paths.html#a43937baa78a53e1427e23f533024221b">asChildOfDir</a>(Directories location, <span class="keyword">const</span> QString&amp; filename);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QMap&lt;Directories, QDir&gt; &amp;<a class="code" href="class_a_standard_paths.html#a775a7f2d7d99e8b7d29cc91c33c08ba8">allDirectories</a>();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QHash&lt;Directories, QDir&gt; &amp;<a class="code" href="class_a_standard_paths.html#a56108cc186aa3326bb41d8716b78e322">allDirectories</a>();</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// ASTANDARDPATHS_H</span></div>
-<div class="ttc" id="aclass_a_standard_paths_html"><div class="ttname"><a href="class_a_standard_paths.html">AStandardPaths</a></div><div class="ttdoc">The AStandardAppPaths class encapsulates a static QMap holding the standard paths of the application.</div><div class="ttdef"><b>Definition:</b> astandardpaths.h:30</div></div>
+<div class="ttc" id="aclass_a_standard_paths_html"><div class="ttname"><a href="class_a_standard_paths.html">AStandardPaths</a></div><div class="ttdoc">The AStandardAppPaths class encapsulates a static QHash holding the standard paths of the application...</div><div class="ttdef"><b>Definition:</b> astandardpaths.h:30</div></div>
 <div class="ttc" id="aclass_a_standard_paths_html_a0df7e02331fdf09a81951657d52e0ebe"><div class="ttname"><a href="class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe">AStandardPaths::directory</a></div><div class="ttdeci">static const QDir &amp; directory(Directories location)</div><div class="ttdoc">Returns the QDir for the standard directory referenced by the Directories enum 'loc'.</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:43</div></div>
 <div class="ttc" id="aclass_a_standard_paths_html_a233dfe0411b294e64da674ff9c898c62"><div class="ttname"><a href="class_a_standard_paths.html#a233dfe0411b294e64da674ff9c898c62">AStandardPaths::setup</a></div><div class="ttdeci">static bool setup()</div><div class="ttdoc">Creates and verifies a static map of the standard paths used in the app.</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:23</div></div>
 <div class="ttc" id="aclass_a_standard_paths_html_a43937baa78a53e1427e23f533024221b"><div class="ttname"><a href="class_a_standard_paths.html#a43937baa78a53e1427e23f533024221b">AStandardPaths::asChildOfDir</a></div><div class="ttdeci">static const QString asChildOfDir(Directories location, const QString &amp;filename)</div><div class="ttdoc">Returns a string of the absolute path to directory location concatenated with filename.</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:48</div></div>
-<div class="ttc" id="aclass_a_standard_paths_html_a775a7f2d7d99e8b7d29cc91c33c08ba8"><div class="ttname"><a href="class_a_standard_paths.html#a775a7f2d7d99e8b7d29cc91c33c08ba8">AStandardPaths::allDirectories</a></div><div class="ttdeci">static const QMap&lt; Directories, QDir &gt; &amp; allDirectories()</div><div class="ttdoc">returns the static map of all standard directories</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:53</div></div>
+<div class="ttc" id="aclass_a_standard_paths_html_a56108cc186aa3326bb41d8716b78e322"><div class="ttname"><a href="class_a_standard_paths.html#a56108cc186aa3326bb41d8716b78e322">AStandardPaths::allDirectories</a></div><div class="ttdeci">static const QHash&lt; Directories, QDir &gt; &amp; allDirectories()</div><div class="ttdoc">returns the static map of all standard directories</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:53</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -37,7 +37,7 @@ BackupWidget::BackupWidget(QWidget *parent) :
 
     model = new QStandardItemModel(this);
     model->setHorizontalHeaderLabels(QStringList{tr("Backup File"),tr("Flights"), tr("Aircraft"),
-                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});  // [G]: TODO make const but where?    
+                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});
     view = ui->tableView;
     refresh();
 }

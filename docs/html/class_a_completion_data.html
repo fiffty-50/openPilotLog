@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('class_a_completion_data.html',''); ini
 </div><!--header-->
 <div class="contents">
 
-<p>The <a class="el" href="class_a_completion_data.html" title="The ACompletionData class provides data to QCompleters and QMaps used for mapping user input to datab...">ACompletionData</a> class provides data to QCompleters and QMaps used for mapping user input to database keys. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database.  
+<p>The <a class="el" href="class_a_completion_data.html" title="The ACompletionData class provides data to QCompleters and QHashs used for mapping user input to data...">ACompletionData</a> class provides data to QCompleters and QHashs used for mapping user input to database keys. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database.  
  <a href="class_a_completion_data.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="acompletiondata_8h_source.html">acompletiondata.h</a>&gt;</code></p>
@@ -116,21 +116,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updatePilots</b> ()</
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a172d3e1372f7d07943e4a73a21cdfd52"><td class="memItemLeft" align="right" valign="top"><a id="a172d3e1372f7d07943e4a73a21cdfd52"></a>
-QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pilotsIdMap</b></td></tr>
-<tr class="separator:a172d3e1372f7d07943e4a73a21cdfd52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a601ce1c2e4f333322db7953575d01115"><td class="memItemLeft" align="right" valign="top"><a id="a601ce1c2e4f333322db7953575d01115"></a>
-QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tailsIdMap</b></td></tr>
-<tr class="separator:a601ce1c2e4f333322db7953575d01115"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2b6444cc32de8bf74f91ded2a727e50"><td class="memItemLeft" align="right" valign="top"><a id="af2b6444cc32de8bf74f91ded2a727e50"></a>
-QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportIcaoIdMap</b></td></tr>
-<tr class="separator:af2b6444cc32de8bf74f91ded2a727e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace740694f0cc1e7a1409de8e7a5c64a2"><td class="memItemLeft" align="right" valign="top"><a id="ace740694f0cc1e7a1409de8e7a5c64a2"></a>
-QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportIataIdMap</b></td></tr>
-<tr class="separator:ace740694f0cc1e7a1409de8e7a5c64a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe09abc08a33efbebe47b5e24bc64f69"><td class="memItemLeft" align="right" valign="top"><a id="abe09abc08a33efbebe47b5e24bc64f69"></a>
-QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportNameIdMap</b></td></tr>
-<tr class="separator:abe09abc08a33efbebe47b5e24bc64f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4cc9aa54dd7bf9814af90fd5fd36d16"><td class="memItemLeft" align="right" valign="top"><a id="af4cc9aa54dd7bf9814af90fd5fd36d16"></a>
+QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pilotsIdMap</b></td></tr>
+<tr class="separator:af4cc9aa54dd7bf9814af90fd5fd36d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa72061810010cad858efc7619bce8abd"><td class="memItemLeft" align="right" valign="top"><a id="aa72061810010cad858efc7619bce8abd"></a>
+QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tailsIdMap</b></td></tr>
+<tr class="separator:aa72061810010cad858efc7619bce8abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79dd0d7f80a5116a308ced917fc95196"><td class="memItemLeft" align="right" valign="top"><a id="a79dd0d7f80a5116a308ced917fc95196"></a>
+QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportIcaoIdMap</b></td></tr>
+<tr class="separator:a79dd0d7f80a5116a308ced917fc95196"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a504a3efc00d3dc4e184927fe291c00aa"><td class="memItemLeft" align="right" valign="top"><a id="a504a3efc00d3dc4e184927fe291c00aa"></a>
+QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportIataIdMap</b></td></tr>
+<tr class="separator:a504a3efc00d3dc4e184927fe291c00aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f3c332e66663a75da8bebe2f91431b2"><td class="memItemLeft" align="right" valign="top"><a id="a1f3c332e66663a75da8bebe2f91431b2"></a>
+QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>airportNameIdMap</b></td></tr>
+<tr class="separator:a1f3c332e66663a75da8bebe2f91431b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9965af9d815b2f22061b311677cc1282"><td class="memItemLeft" align="right" valign="top"><a id="a9965af9d815b2f22061b311677cc1282"></a>
 QStringList&#160;</td><td class="memItemRight" valign="bottom"><b>pilotList</b></td></tr>
 <tr class="separator:a9965af9d815b2f22061b311677cc1282"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,7 +145,7 @@ QStringList&#160;</td><td class="memItemRight" valign="bottom"><b>airportList</b
 <tr class="separator:a612bf846e0d12eeae323baba191dcf75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <a class="el" href="class_a_completion_data.html" title="The ACompletionData class provides data to QCompleters and QMaps used for mapping user input to datab...">ACompletionData</a> class provides data to QCompleters and QMaps used for mapping user input to database keys. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database. </p>
+<div class="textblock"><p>The <a class="el" href="class_a_completion_data.html" title="The ACompletionData class provides data to QCompleters and QHashs used for mapping user input to data...">ACompletionData</a> class provides data to QCompleters and QHashs used for mapping user input to database keys. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database. </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/classes/<a class="el" href="acompletiondata_8h_source.html">acompletiondata.h</a></li>
 <li>src/classes/acompletiondata.cpp</li>

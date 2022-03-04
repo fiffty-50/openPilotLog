@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['newflightdialog_259',['NewFlightDialog',['../class_new_flight_dialog.html#a69fe866923d7456caf890a8aa2fa0aaa',1,'NewFlightDialog::NewFlightDialog(ACompletionData &amp;completion_data, QWidget *parent=nullptr)'],['../class_new_flight_dialog.html#a40c7259679534de33230b5e3c45539e1',1,'NewFlightDialog::NewFlightDialog(ACompletionData &amp;completion_data, RowId_T row_id, QWidget *parent=nullptr)']]],
-  ['newpilotdialog_260',['NewPilotDialog',['../class_new_pilot_dialog.html#ad410c1f4e504c92fe43084a7d10e1ea0',1,'NewPilotDialog::NewPilotDialog(QWidget *parent=nullptr)'],['../class_new_pilot_dialog.html#a1ab8e67282e910895a544e8dea51cb91',1,'NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent=nullptr)']]],
-  ['newtaildialog_261',['NewTailDialog',['../class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d',1,'NewTailDialog::NewTailDialog(const QString &amp;new_registration, QWidget *parent=nullptr)'],['../class_new_tail_dialog.html#abac4f77a4b8a80ef7d14790d4ed6700e',1,'NewTailDialog::NewTailDialog(int row_id, QWidget *parent=nullptr)']]]
+  ['onaircraftwidget_5fdatabaseupdated_255',['onAircraftWidget_dataBaseUpdated',['../class_aircraft_widget.html#ac5a5e720c80e49796930f8715b0a51e0',1,'AircraftWidget']]],
+  ['onaircraftwidget_5fsettingchanged_256',['onAircraftWidget_settingChanged',['../class_aircraft_widget.html#a8e78830530971eeb4a3913b1d8356498',1,'AircraftWidget']]],
+  ['onpilotswidget_5fdatabaseupdated_257',['onPilotsWidget_databaseUpdated',['../class_pilots_widget.html#abbcd659b4eb6ed17a7d484138b319fab',1,'PilotsWidget']]],
+  ['onpilotswidget_5fsettingchanged_258',['onPilotsWidget_settingChanged',['../class_pilots_widget.html#a201b8f8af06bfd1a8716dbc052a0927f',1,'PilotsWidget']]],
+  ['operator_20qstring_259',['operator QString',['../class_a_entry.html#a220a7359ee6bf14ff9a483cbbea90f91',1,'AEntry']]]
 ];

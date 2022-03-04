@@ -34,7 +34,6 @@ var NAVTREE =
       [ "Settings", "index.html#autotoc_md4", null ],
       [ "Import / Export", "index.html#autotoc_md5", null ]
     ] ],
-    [ "Todo List", "todo.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -62,8 +61,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"",
-"class_home_widget.html#ab1c284d5badc82196e283df0189c1be2"
+"aaircraftentry_8h_source.html",
+"class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

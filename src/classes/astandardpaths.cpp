@@ -18,7 +18,7 @@
 #include "src/classes/astandardpaths.h"
 #include "src/opl.h"
 
-QMap<AStandardPaths::Directories, QDir> AStandardPaths::directories;
+QHash<AStandardPaths::Directories, QDir> AStandardPaths::directories;
 
 bool AStandardPaths::setup()
 {
@@ -50,7 +50,7 @@ const QString AStandardPaths::asChildOfDir(Directories location, const QString &
     return directories[location].absoluteFilePath(filename);
 }
 
-const QMap<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
+const QHash<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
 {
     return directories;
 }

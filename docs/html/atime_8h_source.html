@@ -208,7 +208,7 @@ $(document).ready(function(){initNavTree('atime_8h_source.html',''); initResizab
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> toMinutes(<span class="keyword">const</span> QTime &amp;time) {<span class="keywordflow">return</span> time.hour() * 60 + time.minute();}</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> toMinutes(<span class="keyword">const</span> QString &amp;time_string) {<span class="keywordflow">return</span> toMinutes(fromString(time_string));}</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">inline</span> QTime <a class="code" href="namespace_a_calc.html#a8ac68999097f2e28a3b4bd2709b5b19f">blocktime</a>(<span class="keyword">const</span> QTime &amp;tofb, <span class="keyword">const</span> QTime &amp;tonb)</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">inline</span> QTime blocktime(<span class="keyword">const</span> QTime &amp;tofb, <span class="keyword">const</span> QTime &amp;tonb)</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;{</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    QTime blocktime_out(0, 0); <span class="comment">// initialise return value at midnight</span></div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
@@ -225,11 +225,11 @@ $(document).ready(function(){initNavTree('atime_8h_source.html',''); initResizab
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">return</span> blocktime_out;</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;}</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">inline</span> QTime <a class="code" href="namespace_a_calc.html#a8ac68999097f2e28a3b4bd2709b5b19f">blocktime</a>(<span class="keyword">const</span> QString&amp; tofb, <span class="keyword">const</span> QString&amp; tonb)</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">inline</span> QTime blocktime(<span class="keyword">const</span> QString&amp; tofb, <span class="keyword">const</span> QString&amp; tonb)</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;{</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    QTime t_tofb = ATime::fromString(tofb);</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    QTime t_tonb = ATime::fromString(tonb);</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespace_a_calc.html#a8ac68999097f2e28a3b4bd2709b5b19f">blocktime</a>(t_tofb, t_tonb);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordflow">return</span> blocktime(t_tofb, t_tonb);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;}</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> blockMinutes(<span class="keyword">const</span> QString&amp; tofb, <span class="keyword">const</span> QString&amp; tonb)</div>
@@ -283,7 +283,6 @@ $(document).ready(function(){initNavTree('atime_8h_source.html',''); initResizab
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;} <span class="comment">// namespace ATime</span></div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// ATIME_H</span></div>
-<div class="ttc" id="anamespace_a_calc_html_a8ac68999097f2e28a3b4bd2709b5b19f"><div class="ttname"><a href="namespace_a_calc.html#a8ac68999097f2e28a3b4bd2709b5b19f">ACalc::blocktime</a></div><div class="ttdeci">QT_DEPRECATED QTime blocktime(QTime tofb, QTime tonb)</div><div class="ttdoc">ACalc::blocktime Calculates Block Time for a given departure and arrival time.</div><div class="ttdef"><b>Definition:</b> acalc.h:44</div></div>
 <div class="ttc" id="anamespace_a_calc_html_ad088e5dd93d1938ff97f88032dc0adec"><div class="ttname"><a href="namespace_a_calc.html#ad088e5dd93d1938ff97f88032dc0adec">ACalc::formatTimeInput</a></div><div class="ttdeci">QString formatTimeInput(QString user_input)</div><div class="ttdoc">ACalc::formatTimeInput verifies user input and formats to hh:mm if the output is not a valid time,...</div><div class="ttdef"><b>Definition:</b> acalc.cpp:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

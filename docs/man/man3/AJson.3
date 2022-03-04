@@ -44,7 +44,7 @@ The AJSON class is responsible for parsing the database (sqlite) to and from JSO
 .SS "void AJson::exportDatabase ()\fC [static]\fP"
 
 .PP
-exportDatabase exports the currently active database to JSON\&. QJsonObject can be constructed from QMap<QString, QVariant> aka QVariantmap\&. All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which can be exported\&. The files are created at AStandardPaths::JSON\&. 
+exportDatabase exports the currently active database to JSON\&. QJsonObject can be constructed from QHash<QString, QVariant> aka QVariantmap\&. All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which can be exported\&. The files are created at AStandardPaths::JSON\&. 
 .SS "QJsonDocument AJson::readFileToDoc (const QString & file_path)\fC [static]\fP"
 
 .PP

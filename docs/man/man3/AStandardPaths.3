@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-AStandardPaths \- The AStandardAppPaths class encapsulates a static QMap holding the standard paths of the application\&.  
+AStandardPaths \- The AStandardAppPaths class encapsulates a static QHash holding the standard paths of the application\&.  
 
 .SH SYNOPSIS
 .br
@@ -32,23 +32,23 @@ AStandardPaths \- The AStandardAppPaths class encapsulates a static QMap holding
 .br
 .RI "Returns a string of the absolute path to directory location concatenated with filename\&. "
 .ti -1c
-.RI "static const QMap< Directories, QDir > & \fBallDirectories\fP ()"
+.RI "static const QHash< Directories, QDir > & \fBallDirectories\fP ()"
 .br
 .RI "returns the static map of all standard directories "
 .in -1c
 .SH "Detailed Description"
 .PP 
-The AStandardAppPaths class encapsulates a static QMap holding the standard paths of the application\&. 
+The AStandardAppPaths class encapsulates a static QHash holding the standard paths of the application\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "const QMap< AStandardPaths::Directories, QDir > & AStandardPaths::allDirectories ()\fC [static]\fP"
+.SS "const QHash< AStandardPaths::Directories, QDir > & AStandardPaths::allDirectories ()\fC [static]\fP"
 
 .PP
 returns the static map of all standard directories 
 .PP
 \fBReturns\fP
 .RS 4
-static const QMap<Directories, QDir> 
+static const QHash<Directories, QDir> 
 .RE
 .PP
 

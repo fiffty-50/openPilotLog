@@ -212,9 +212,10 @@ RowData_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 const QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a89de409c1828125363f46f384df47359">getCompletionList</a> (ADatabaseTarget target)</td></tr>
 <tr class="memdesc:a89de409c1828125363f46f384df47359"><td class="mdescLeft">&#160;</td><td class="mdescRight">getCompletionList returns a QStringList of values for a QCompleter based on database values <br /></td></tr>
 <tr class="separator:a89de409c1828125363f46f384df47359"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa8ce49693abf480f296d34dfc2969f0"><td class="memItemLeft" align="right" valign="top">const QMap&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#afa8ce49693abf480f296d34dfc2969f0">getIdMap</a> (ADatabaseTarget target)</td></tr>
-<tr class="memdesc:afa8ce49693abf480f296d34dfc2969f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a QMap of a human-readable database value and its row id. Used in the Dialogs to map user input to unique database entries.  <a href="class_a_database.html#afa8ce49693abf480f296d34dfc2969f0">More...</a><br /></td></tr>
-<tr class="separator:afa8ce49693abf480f296d34dfc2969f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaaaaf276d832833b0865db86de51ae5"><td class="memItemLeft" align="right" valign="top"><a id="afaaaaf276d832833b0865db86de51ae5"></a>
+const QHash&lt; RowId_T, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#afaaaaf276d832833b0865db86de51ae5">getIdMap</a> (ADatabaseTarget target)</td></tr>
+<tr class="memdesc:afaaaaf276d832833b0865db86de51ae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a QHash of a human-readable database value and its row id. Used in the Dialogs to map user input to unique database entries. <br /></td></tr>
+<tr class="separator:afaaaaf276d832833b0865db86de51ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0497bb70998cea6cd60fa893880c9555"><td class="memItemLeft" align="right" valign="top"><a id="a0497bb70998cea6cd60fa893880c9555"></a>
 RowId_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_database.html#a0497bb70998cea6cd60fa893880c9555">getLastEntry</a> (ADatabaseTable table)</td></tr>
 <tr class="memdesc:a0497bb70998cea6cd60fa893880c9555"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the ROWID for the newest entry in the respective database. <br /></td></tr>
@@ -390,7 +391,7 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
 </div><div class="memdoc">
 
 <p>Return a summary of a database. </p>
-<p>Creates a summary of the database giving a quick overview of the relevant contents. The function runs several specialised SQL queries to create a QMap&lt;ADatabaseSummaryKey, QString&gt; containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection. </p>
+<p>Creates a summary of the database giving a quick overview of the relevant contents. The function runs several specialised SQL queries to create a QHash&lt;ADatabaseSummaryKey, QString&gt; containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection. </p>
 
 </div>
 </div>
@@ -453,27 +454,6 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
 
 <p>retreives a flight entry from the database. </p>
 <p>This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an <a class="el" href="class_a_flight_entry.html">AFlightEntry</a> instead of an <a class="el" href="class_a_entry.html" title="The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries...">AEntry</a>. It allows for easy access to a flight entry with only the RowId required as input. </p>
-
-</div>
-</div>
-<a id="afa8ce49693abf480f296d34dfc2969f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa8ce49693abf480f296d34dfc2969f0">&#9670;&nbsp;</a></span>getIdMap()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const QMap&lt; RowId_T, QString &gt; ADatabase::getIdMap </td>
-          <td>(</td>
-          <td class="paramtype">ADatabaseTarget&#160;</td>
-          <td class="paramname"><em>target</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>returns a QMap of a human-readable database value and its row id. Used in the Dialogs to map user input to unique database entries. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString </dd></dl>
 
 </div>
 </div>

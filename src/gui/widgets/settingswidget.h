@@ -88,7 +88,6 @@ private slots:
     void on_currCustom2CheckBox_stateChanged(int arg1);
     void on_currCustom1LineEdit_editingFinished();
     void on_currCustom2LineEdit_editingFinished();
-    void on_dateFormatComboBox_currentIndexChanged(int index);
     void on_languageComboBox_activated(int arg1);
 
 private:

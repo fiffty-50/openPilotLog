@@ -53,7 +53,7 @@ AEntry::operator QString() const
 {
     QString out("\033[32m[Entry Data]:\t\033[m\n");
     int item_count = 0;
-    QMap<ColName_T, ColData_T>::const_iterator i;
+    QHash<ColName_T, ColData_T>::const_iterator i;
     for (i = tableData.constBegin(); i!= tableData.constEnd(); ++i) {
         QString spacer(":");
         int spaces = (14 - i.key().length());

@@ -19,7 +19,7 @@
 #define ASTYLE_H
 #include <QString>
 #include <QFileInfo>
-#include <QMap>
+#include <QHash>
 #include <QTextStream>
 #include <QComboBox>
 

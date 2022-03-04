@@ -19,7 +19,7 @@
 #define ADATABASE_H
 
 #include <QPair>
-#include <QMap>
+#include <QHash>
 #include <QString>
 #include <QDir>
 #include <QSqlDatabase>
@@ -78,7 +78,7 @@ enum class ADatabaseTable
 };
 
 /*!
- * \brief Enumerates the QMap keys used when summarising a database
+ * \brief Enumerates the QHash keys used when summarising a database
  */
 enum class ADatabaseSummaryKey {
     total_flights,
@@ -318,11 +318,10 @@ public:
     const QStringList getCompletionList(ADatabaseTarget target);
 
     /*!
-     * \brief returns a QMap of a human-readable database value and
+     * \brief returns a QHash of a human-readable database value and
      * its row id. Used in the Dialogs to map user input to unique database entries.
-     * \todo What is this QString semantically? As i understand its a "QueryResult" QVariant cast to QString
      */
-    const QMap<RowId_T, QString> getIdMap(ADatabaseTarget target);
+    const QHash<RowId_T, QString> getIdMap(ADatabaseTarget target);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective database.
@@ -350,7 +349,7 @@ public:
     /*!
      * \brief Return a summary of a database
      * \details Creates a summary of the database giving a quick overview of the relevant contents. The
-     * function runs several specialised SQL queries to create a QMap<ADatabaseSummaryKey, QString> containing
+     * function runs several specialised SQL queries to create a QHash<ADatabaseSummaryKey, QString> containing
      * Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary
      * database connection separate from the default connection in order to not tamper with the currently active
      * database connection.

@@ -128,9 +128,9 @@ Inherits QObject\&.
 .br
 .RI "getCompletionList returns a QStringList of values for a QCompleter based on database values "
 .ti -1c
-.RI "const QMap< RowId_T, QString > \fBgetIdMap\fP (ADatabaseTarget target)"
+.RI "const QHash< RowId_T, QString > \fBgetIdMap\fP (ADatabaseTarget target)"
 .br
-.RI "returns a QMap of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
+.RI "returns a QHash of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
 .ti -1c
 .RI "RowId_T \fBgetLastEntry\fP (ADatabaseTable table)"
 .br
@@ -249,7 +249,7 @@ The QSqlDatabase object pertaining to the connection\&.
 .SS "QMap< ADatabaseSummaryKey, QString > ADatabase::databaseSummary (const QString & db_path)"
 
 .PP
-Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QMap<ADatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. 
+Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QHash<ADatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. 
 .SS "int ADatabase::dbRevision () const"
 
 .PP
@@ -269,17 +269,6 @@ retreives a TailEntry from the database\&. This function is a wrapper for DataBa
 
 .PP
 retreives a flight entry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAFlightEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to a flight entry with only the RowId required as input\&. 
-.SS "const QMap< RowId_T, QString > ADatabase::getIdMap (ADatabaseTarget target)"
-
-.PP
-returns a QMap of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. 
-.PP
-\fBTodo\fP
-.RS 4
-What is this QString semantically? As i understand its a 'QueryResult' QVariant cast to QString 
-.RE
-.PP
-
 .SS "\fBAPilotEntry\fP ADatabase::getPilotEntry (RowId_T row_id)"
 
 .PP

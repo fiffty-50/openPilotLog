@@ -58,7 +58,7 @@ NewTailDialog::~NewTailDialog()
 }
 
 /*!
- * \brief NewTail::setupCompleter obtains a QMap<QString searchstring, int aircaft_id> for auto completion
+ * \brief NewTail::setupCompleter obtains a QHash<QString searchstring, int aircaft_id> for auto completion
  * and obtains a QStringList for QCompleter. This function then sets up the search line edit where
  * the user can select a template from the aircraft database to pre-fill the form with the details
  * for the selected type.

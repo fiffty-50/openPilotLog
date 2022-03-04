@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters and QMaps used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&.  
+ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters and QHashs used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&.  
 
 .SH SYNOPSIS
 .br
@@ -31,19 +31,19 @@ ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters 
 
 .in +1c
 .ti -1c
-.RI "QMap< RowId_T, QString > \fBpilotsIdMap\fP"
+.RI "QHash< RowId_T, QString > \fBpilotsIdMap\fP"
 .br
 .ti -1c
-.RI "QMap< RowId_T, QString > \fBtailsIdMap\fP"
+.RI "QHash< RowId_T, QString > \fBtailsIdMap\fP"
 .br
 .ti -1c
-.RI "QMap< RowId_T, QString > \fBairportIcaoIdMap\fP"
+.RI "QHash< RowId_T, QString > \fBairportIcaoIdMap\fP"
 .br
 .ti -1c
-.RI "QMap< RowId_T, QString > \fBairportIataIdMap\fP"
+.RI "QHash< RowId_T, QString > \fBairportIataIdMap\fP"
 .br
 .ti -1c
-.RI "QMap< RowId_T, QString > \fBairportNameIdMap\fP"
+.RI "QHash< RowId_T, QString > \fBairportNameIdMap\fP"
 .br
 .ti -1c
 .RI "QStringList \fBpilotList\fP"
@@ -60,7 +60,7 @@ ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters 
 .in -1c
 .SH "Detailed Description"
 .PP 
-The \fBACompletionData\fP class provides data to QCompleters and QMaps used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&. 
+The \fBACompletionData\fP class provides data to QCompleters and QHashs used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&. 
 
 .SH "Author"
 .PP 

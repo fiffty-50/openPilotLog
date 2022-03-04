@@ -2,9 +2,9 @@ var namespace_opl =
 [
     [ "Date", null, [
       [ "ADateFormat", "opl_8h.html#af1aade4eb549444e47dbba0699f75cec", [
-        [ "ISODate", "opl_8h.html#af1aade4eb549444e47dbba0699f75ceca4951f14884fa5e89fa841e4deee36c97", null ],
-        [ "DE", "opl_8h.html#af1aade4eb549444e47dbba0699f75ceca3a52f3c22ed6fcde5bf696a6c02c9e73", null ],
-        [ "EN", "opl_8h.html#af1aade4eb549444e47dbba0699f75cecaaa85f1840e282d8a8304dbc2c0d7c9b2", null ]
+        [ "ISODate", "opl_8h.html#af1aade4eb549444e47dbba0699f75ceca4dd61d7a4e931af556260d83ff9e5612", null ],
+        [ "DE", "opl_8h.html#af1aade4eb549444e47dbba0699f75cecaea5beabe166bf7f79c0ca6af89fd346e", null ],
+        [ "EN", "opl_8h.html#af1aade4eb549444e47dbba0699f75cecaad4a4f3d4bfdb7cea40c9f52eae16a7a", null ]
       ] ]
     ] ],
     [ "Datetime", null, [
@@ -32,5 +32,7 @@ var namespace_opl =
       [ "English", "namespace_opl.html#ad8d5db7057cda09601dfdc761d3cd81da78463a384a5aa4fad5fa73e2f506ecfc", null ],
       [ "German", "namespace_opl.html#ad8d5db7057cda09601dfdc761d3cd81da86bc3115eb4e9873ac96904a4a68e19e", null ],
       [ "Spanish", "namespace_opl.html#ad8d5db7057cda09601dfdc761d3cd81dacb5480c32e71778852b08ae1e8712775", null ]
-    ] ]
+    ] ],
+    [ "loadApproachTypes", "namespace_opl.html#af33a7a939e6cdb0b6959b14ba8169a92", null ],
+    [ "loadPilotFunctios", "namespace_opl.html#ae454c0f7eb980e403102db3394d93093", null ]
 ];

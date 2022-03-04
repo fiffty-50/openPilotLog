@@ -75,18 +75,10 @@ void SettingsWidget::setupDateEdits()
     int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
     const QString date_format_string = ADate::getFormatString(
                 static_cast<Opl::Date::ADateFormat>(date_format_index));
-    // Set Up Date Format Combo Box
-    const QSignalBlocker blocker_date(ui->dateFormatComboBox);
-    for (const auto &date_format : ADate::getDisplayNames())
-        ui->dateFormatComboBox->addItem(date_format);
-    ui->dateFormatComboBox->setCurrentIndex(date_format_index);
     const auto date_edits = this->findChildren<QDateEdit*>();
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
     }
-    // De-activate non-default date settings for now, implement in future release
-    ui->dateFormatComboBox->setVisible(false);
-    ui->dateFormatLabel->setVisible(false);
     // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
@@ -277,7 +269,7 @@ void SettingsWidget::on_functionComboBox_currentIndexChanged(int arg1)
 
 void SettingsWidget::on_rulesComboBox_currentIndexChanged(int arg1)
 {
-    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    ASettings::write(ASettings::FlightLogging::LogIFR, arg1);
 }
 
 void SettingsWidget::on_approachComboBox_currentIndexChanged(int arg1)
@@ -625,17 +617,6 @@ void SettingsWidget::on_currCustom1LineEdit_editingFinished()
 void SettingsWidget::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
-}
-
-void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
-{
-    ASettings::write(ASettings::Main::DateFormat, index);
-    const auto date_edits = this->findChildren<QDateEdit*>();
-    for (const auto & date_edit : date_edits) {
-        date_edit->setDisplayFormat(
-                    ADate::getFormatString(
-                        static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));
-    }
 }
 
 void SettingsWidget::on_languageComboBox_activated(int arg1)

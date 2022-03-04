@@ -213,7 +213,7 @@ void NewFlightDialog::fillWithEntryData()
         emit le->editingFinished();
 
     //Function
-    const QHash<int, QLatin1String> functions = {
+    const QHash<int, QString> functions = {
         {0, Opl::Db::FLIGHTS_TPIC},
         {1, Opl::Db::FLIGHTS_TPICUS},
         {2, Opl::Db::FLIGHTS_TSIC},
@@ -416,7 +416,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(Opl::Db::FLIGHTS_TIFR, QString());
     }
     // Function Times
-    QList<QLatin1String> function_times = {
+    QStringList function_times = {
         Opl::Db::FLIGHTS_TPIC,
         Opl::Db::FLIGHTS_TPICUS,
         Opl::Db::FLIGHTS_TSIC,
@@ -680,7 +680,7 @@ void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
  * \brief NewFlightDialog::on_buttonBox_accepted - checks for validity and commits the form data to the database
  * \details When the user is ready to submit a flight entry, a final check for valid entries is made, and the user
  * is prompted to correct unsatisfactory inputs. When this is done, prepareFlightEntryData() collects the input from
- * the user interface and converts it to database format. The data is then stored in a QMap<QString, QVariant>.
+ * the user interface and converts it to database format. The data is then stored in a QHash<QString, QVariant>.
  * This data is then used to create a AFlightEntry object, which is then commited to the database by ADatabase::commit()
  */
 void NewFlightDialog::on_buttonBox_accepted()
@@ -689,7 +689,7 @@ void NewFlightDialog::on_buttonBox_accepted()
         emit line_edit->editingFinished();
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
-        const auto display_names = QMap<ValidationItem, QString> {
+        const auto display_names = QHash<ValidationItem, QString> {
             {ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationItem::dept, QObject::tr("Departure Airport")},
             {ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationItem::tofb, QObject::tr("Time Off Blocks")},
             {ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationItem::pic, QObject::tr("PIC Name")},

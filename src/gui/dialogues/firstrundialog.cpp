@@ -316,7 +316,7 @@ bool FirstRunDialog::setupDatabase()
 
 bool FirstRunDialog::createUserEntry()
 {
-    QMap<QString, QVariant> data;
+    QHash<QString, QVariant> data;
     data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
     data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
     data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));

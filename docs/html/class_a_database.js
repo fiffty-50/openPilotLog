@@ -21,7 +21,7 @@ var class_a_database =
     [ "getEntryData", "class_a_database.html#afc39f6136fc822e0649964fa22b84bf9", null ],
     [ "getFlightEntry", "class_a_database.html#a7bb44738362582e4f54f68e3aa30d40a", null ],
     [ "getForeignKeyConstraints", "class_a_database.html#a0f88e121d421043f35e321d5dc49ba19", null ],
-    [ "getIdMap", "class_a_database.html#afa8ce49693abf480f296d34dfc2969f0", null ],
+    [ "getIdMap", "class_a_database.html#afaaaaf276d832833b0865db86de51ae5", null ],
     [ "getLastEntry", "class_a_database.html#a0497bb70998cea6cd60fa893880c9555", null ],
     [ "getPilotEntry", "class_a_database.html#a426026d641a594863995ec5db8312259", null ],
     [ "getTable", "class_a_database.html#a8b38405b535d603cce2b36ca2d56368f", null ],

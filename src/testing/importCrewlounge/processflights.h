@@ -7,8 +7,8 @@ class ProcessFlights
 {
 public:
     ProcessFlights(const QVector<QStringList> &raw_csv_data,
-                   const QMap<QString, int> &processed_pilots_ids,
-                   const QMap<QString, int> &processed_tails_ids)
+                   const QHash<QString, int> &processed_pilots_ids,
+                   const QHash<QString, int> &processed_tails_ids)
         : rawData(raw_csv_data),
           processedPilotsIds(processed_pilots_ids),
           processedTailsIds(processed_tails_ids){};
@@ -17,7 +17,7 @@ public:
         parseRawData();
         processParsedData();
     };
-    QVector<QMap<QString, QVariant> > getProcessedFlights() const;
+    QVector<QHash<QString, QVariant> > getProcessedFlights() const;
 
 private:
     void parseRawData();
@@ -25,10 +25,10 @@ private:
     QVector<QStringList> rawData;
     QVector<QStringList> rawFlightData;
 
-    QVector<QMap<QString, QVariant>> processedFlights;
+    QVector<QHash<QString, QVariant>> processedFlights;
 
-    QMap<QString, int> processedPilotsIds;
-    QMap<QString, int> processedTailsIds;
+    QHash<QString, int> processedPilotsIds;
+    QHash<QString, int> processedTailsIds;
 };
 
 #endif // PROCESSFLIGHTS_H

@@ -10,13 +10,13 @@ ProcessFlights
 
 .in +1c
 .ti -1c
-.RI "\fBProcessFlights\fP (const QVector< QStringList > &raw_csv_data, const QMap< QString, int > &processed_pilots_ids, const QMap< QString, int > &processed_tails_ids)"
+.RI "\fBProcessFlights\fP (const QVector< QStringList > &raw_csv_data, const QHash< QString, int > &processed_pilots_ids, const QHash< QString, int > &processed_tails_ids)"
 .br
 .ti -1c
 .RI "void \fBinit\fP ()"
 .br
 .ti -1c
-.RI "QVector< QMap< QString, QVariant > > \fBgetProcessedFlights\fP () const"
+.RI "QVector< QHash< QString, QVariant > > \fBgetProcessedFlights\fP () const"
 .br
 .in -1c
 

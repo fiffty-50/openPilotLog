@@ -20,7 +20,7 @@
 
 #include <QString>
 #include <QStringList>
-#include <QMap>
+#include <QHash>
 #include <QPair>
 #include <QVariant>
 

@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="personalTab">
       <attribute name="title">
@@ -170,47 +170,8 @@
       <attribute name="title">
        <string>Flight Logging</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
+      <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="1">
-        <widget class="QLabel" name="dateFormatLabel">
-         <property name="text">
-          <string>Date Format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="dateFormatComboBox"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="aliasLabel">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How your own name is displayed in your logbook&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Show own name as</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QComboBox" name="aliasComboBox">
-         <item>
-          <property name="text">
-           <string>self</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SELF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Lastname, Firstname</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="1">
         <widget class="QLabel" name="functionLabel">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default function for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -220,10 +181,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
+       <item row="0" column="2">
         <widget class="QComboBox" name="functionComboBox"/>
        </item>
-       <item row="3" column="1">
+       <item row="1" column="1">
         <widget class="QLabel" name="rulesLabel">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default Flight Rules for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -233,7 +194,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
+       <item row="1" column="2">
         <widget class="QComboBox" name="rulesComboBox">
          <item>
           <property name="text">
@@ -247,7 +208,7 @@
          </item>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="2" column="0">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -260,7 +221,7 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1">
+       <item row="2" column="1">
         <widget class="QLabel" name="approachLabel">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default approach for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -270,10 +231,10 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
+       <item row="2" column="2">
         <widget class="QComboBox" name="approachComboBox"/>
        </item>
-       <item row="4" column="3">
+       <item row="2" column="3">
         <spacer name="horizontalSpacer_4">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -286,7 +247,7 @@
          </property>
         </spacer>
        </item>
-       <item row="5" column="1">
+       <item row="3" column="1">
         <widget class="QLabel" name="nightLabel">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how (if) night time is automatically calculated. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -299,7 +260,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
+       <item row="3" column="2">
         <widget class="QComboBox" name="nightComboBox">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;EASA: End of civil evening twilight until beginning of civil morning twilight&lt;/p&gt;&lt;p&gt;SR/SS: From sunrise to sunset.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -324,7 +285,7 @@
          </item>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="4" column="1">
         <widget class="QLabel" name="prefixLabel">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter you airline Prefix to speed up logging of flight numbers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -334,7 +295,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="2">
+       <item row="4" column="2">
         <widget class="QLineEdit" name="prefixLineEdit">
          <property name="maxLength">
           <number>10</number>
@@ -789,48 +750,7 @@
       <attribute name="title">
        <string>Appearance</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="4" column="0">
-        <widget class="QLabel" name="logbookViewLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Logbook Dispay</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QComboBox" name="acftSortComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Registration</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Type</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Company</string>
-          </property>
-         </item>
-        </widget>
-       </item>
+      <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QLabel" name="styleLabel">
          <property name="sizePolicy">
@@ -844,21 +764,38 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QComboBox" name="logbookViewComboBox">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="resetStylePushButton">
+         <property name="text">
+          <string>Reset to Default</string>
          </property>
-         <item>
-          <property name="text">
-           <string>Default</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>EASA Part-FCL</string>
-          </property>
-         </item>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QComboBox" name="styleComboBox"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="fontLabel">
+         <property name="text">
+          <string>Font</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="fontCheckBox">
+         <property name="text">
+          <string>Use System Font</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QFontComboBox" name="fontComboBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="3">
@@ -883,43 +820,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="styleComboBox"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="fontCheckBox">
-         <property name="text">
-          <string>Use System Font</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="languageLabel">
-         <property name="text">
-          <string>Language</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QFontComboBox" name="fontComboBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="resetStylePushButton">
-         <property name="text">
-          <string>Reset to Default</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QComboBox" name="languageComboBox"/>
-       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="pilotSortLabel">
          <property name="sizePolicy">
@@ -936,25 +836,6 @@
          </property>
          <property name="text">
           <string>Sort Pilots by</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="acftSortLabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Sort Aircraft by</string>
          </property>
         </widget>
        </item>
@@ -980,12 +861,121 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="fontLabel">
+       <item row="3" column="0">
+        <widget class="QLabel" name="acftSortLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
-          <string>Font</string>
+          <string>Sort Aircraft by</string>
          </property>
         </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QComboBox" name="acftSortComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines by which column to sort the display of Aircaft in the Aircraft Tab.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Registration</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Company</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="logbookViewLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Logbook Dispay</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QComboBox" name="logbookViewComboBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Default</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EASA Part-FCL</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="aliasLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How your own name is displayed in your logbook&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Show own name as</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QComboBox" name="aliasComboBox">
+         <item>
+          <property name="text">
+           <string>self</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SELF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Lastname, Firstname</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="languageLabel">
+         <property name="text">
+          <string>Language</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QComboBox" name="languageComboBox"/>
        </item>
       </layout>
      </widget>

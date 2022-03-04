@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('adatabase_8h_source.html',''); initRes
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define ADATABASE_H</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;QPair&gt;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;QMap&gt;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;QHash&gt;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;QString&gt;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;QDir&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;QSqlDatabase&gt;</span></div>
@@ -264,39 +264,39 @@ $(document).ready(function(){initNavTree('adatabase_8h_source.html',''); initRes
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keyword">const</span> QStringList <a class="code" href="class_a_database.html#a89de409c1828125363f46f384df47359">getCompletionList</a>(ADatabaseTarget target);</div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keyword">const</span> QMap&lt;RowId_T, QString&gt; <a class="code" href="class_a_database.html#afa8ce49693abf480f296d34dfc2969f0">getIdMap</a>(ADatabaseTarget target);</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    RowId_T <a class="code" href="class_a_database.html#a0497bb70998cea6cd60fa893880c9555">getLastEntry</a>(ADatabaseTable table);</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    QList&lt;RowId_T&gt; <a class="code" href="class_a_database.html#a0f88e121d421043f35e321d5dc49ba19">getForeignKeyConstraints</a>(RowId_T foreign_row_id, ADatabaseTable target);</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <a class="code" href="struct_a_pilot_entry.html">APilotEntry</a> <a class="code" href="class_a_database.html#a4640a4348dad468a0ff65bad05b07227">resolveForeignPilot</a>(RowId_T foreign_key);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <a class="code" href="struct_a_tail_entry.html">ATailEntry</a> <a class="code" href="class_a_database.html#a5878bcd4bc19e4c3fc5275ca7252860d">resolveForeignTail</a>(RowId_T foreign_key);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    QMap&lt;ADatabaseSummaryKey, QString&gt; <a class="code" href="class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c">databaseSummary</a>(<span class="keyword">const</span> QString&amp; db_path);</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keyword">const</span> QString <a class="code" href="class_a_database.html#a2c54b7506faf0f15f5323ed53ff12099">databaseSummaryString</a>(<span class="keyword">const</span> QString&amp; db_path);</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_database.html#a0bda52064f005f1463e56b60cd23b164">restoreBackup</a>(<span class="keyword">const</span> QString&amp; backup_file);</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_database.html#a5ab838a62a83974f9e40c62f66adfa99">createBackup</a>(<span class="keyword">const</span> QString&amp; dest_file);</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    QVector&lt;RowData_T&gt; <a class="code" href="class_a_database.html#a8b38405b535d603cce2b36ca2d56368f">getTable</a>(ADatabaseTable table_name);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160; </div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    QStringList <a class="code" href="class_a_database.html#a692d7ba3abc763ee7c0d1a47236f021f">getUserTableNames</a>();</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    QStringList <a class="code" href="class_a_database.html#ad688f0e48bea4879a81e17a584f189b1">getTemplateTableNames</a>();</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160; </div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <a class="code" href="struct_user_data_state.html">UserDataState</a> <a class="code" href="class_a_database.html#a9da290c8488b35196ce4e49c4cfbe9f5">getUserDataState</a>();</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160; </div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="class_a_database.html#ab99ccce4c67591f5f58832c26cf93fc8">getMinimumDatabaseRevision</a>();</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;signals:</div>
-<div class="line"><a name="l00405"></a><span class="lineno"><a class="line" href="class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911">  405</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911">dataBaseUpdated</a>();</div>
-<div class="line"><a name="l00410"></a><span class="lineno"><a class="line" href="class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7">  410</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7">connectionReset</a>();</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;};</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160; </div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// ADATABASE_H</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keyword">const</span> QHash&lt;RowId_T, QString&gt; <a class="code" href="class_a_database.html#afaaaaf276d832833b0865db86de51ae5">getIdMap</a>(ADatabaseTarget target);</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    RowId_T <a class="code" href="class_a_database.html#a0497bb70998cea6cd60fa893880c9555">getLastEntry</a>(ADatabaseTable table);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    QList&lt;RowId_T&gt; <a class="code" href="class_a_database.html#a0f88e121d421043f35e321d5dc49ba19">getForeignKeyConstraints</a>(RowId_T foreign_row_id, ADatabaseTable target);</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <a class="code" href="struct_a_pilot_entry.html">APilotEntry</a> <a class="code" href="class_a_database.html#a4640a4348dad468a0ff65bad05b07227">resolveForeignPilot</a>(RowId_T foreign_key);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <a class="code" href="struct_a_tail_entry.html">ATailEntry</a> <a class="code" href="class_a_database.html#a5878bcd4bc19e4c3fc5275ca7252860d">resolveForeignTail</a>(RowId_T foreign_key);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    QMap&lt;ADatabaseSummaryKey, QString&gt; <a class="code" href="class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c">databaseSummary</a>(<span class="keyword">const</span> QString&amp; db_path);</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keyword">const</span> QString <a class="code" href="class_a_database.html#a2c54b7506faf0f15f5323ed53ff12099">databaseSummaryString</a>(<span class="keyword">const</span> QString&amp; db_path);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_database.html#a0bda52064f005f1463e56b60cd23b164">restoreBackup</a>(<span class="keyword">const</span> QString&amp; backup_file);</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_a_database.html#a5ab838a62a83974f9e40c62f66adfa99">createBackup</a>(<span class="keyword">const</span> QString&amp; dest_file);</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    QVector&lt;RowData_T&gt; <a class="code" href="class_a_database.html#a8b38405b535d603cce2b36ca2d56368f">getTable</a>(ADatabaseTable table_name);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    QStringList <a class="code" href="class_a_database.html#a692d7ba3abc763ee7c0d1a47236f021f">getUserTableNames</a>();</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    QStringList <a class="code" href="class_a_database.html#ad688f0e48bea4879a81e17a584f189b1">getTemplateTableNames</a>();</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <a class="code" href="struct_user_data_state.html">UserDataState</a> <a class="code" href="class_a_database.html#a9da290c8488b35196ce4e49c4cfbe9f5">getUserDataState</a>();</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="class_a_database.html#ab99ccce4c67591f5f58832c26cf93fc8">getMinimumDatabaseRevision</a>();</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;signals:</div>
+<div class="line"><a name="l00404"></a><span class="lineno"><a class="line" href="class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911">  404</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911">dataBaseUpdated</a>();</div>
+<div class="line"><a name="l00409"></a><span class="lineno"><a class="line" href="class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7">  409</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_database.html#a0f0bffbb6cdd79975b7b5ca6c0db31a7">connectionReset</a>();</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;};</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160; </div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// ADATABASE_H</span></div>
 <div class="ttc" id="aclass_a_database_error_html"><div class="ttname"><a href="class_a_database_error.html">ADatabaseError</a></div><div class="ttdoc">Custom Database Error derived from QSqlError. Extends text() adding &quot;Database Error: &quot; before the tex...</div><div class="ttdef"><b>Definition:</b> adatabase.h:123</div></div>
 <div class="ttc" id="aclass_a_database_html"><div class="ttname"><a href="class_a_database.html">ADatabase</a></div><div class="ttdoc">The DB class encapsulates the SQL database by providing fast access to hot database data.</div><div class="ttdef"><b>Definition:</b> adatabase.h:135</div></div>
 <div class="ttc" id="aclass_a_database_html_a0497bb70998cea6cd60fa893880c9555"><div class="ttname"><a href="class_a_database.html#a0497bb70998cea6cd60fa893880c9555">ADatabase::getLastEntry</a></div><div class="ttdeci">RowId_T getLastEntry(ADatabaseTable table)</div><div class="ttdoc">returns the ROWID for the newest entry in the respective database.</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:600</div></div>
@@ -338,7 +338,7 @@ $(document).ready(function(){initNavTree('adatabase_8h_source.html',''); initRes
 <div class="ttc" id="aclass_a_database_html_ac73208ba1a70af19590d53f260e7cb8c"><div class="ttname"><a href="class_a_database.html#ac73208ba1a70af19590d53f260e7cb8c">ADatabase::update</a></div><div class="ttdeci">bool update(const AEntry &amp;updated_entry)</div><div class="ttdoc">Updates entry in database from existing entry tweaked by the user.</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:326</div></div>
 <div class="ttc" id="aclass_a_database_html_ad688f0e48bea4879a81e17a584f189b1"><div class="ttname"><a href="class_a_database.html#ad688f0e48bea4879a81e17a584f189b1">ADatabase::getTemplateTableNames</a></div><div class="ttdeci">QStringList getTemplateTableNames()</div><div class="ttdoc">getTemplateTableNames returns a list of the table names of tables that contain template data (aiports...</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:62</div></div>
 <div class="ttc" id="aclass_a_database_html_ae0a3c9273431195df6295b9da24b3a3a"><div class="ttname"><a href="class_a_database.html#ae0a3c9273431195df6295b9da24b3a3a">ADatabase::getAircraftEntry</a></div><div class="ttdeci">AAircraftEntry getAircraftEntry(RowId_T row_id)</div><div class="ttdoc">retreives a TailEntry from the database.</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:482</div></div>
-<div class="ttc" id="aclass_a_database_html_afa8ce49693abf480f296d34dfc2969f0"><div class="ttname"><a href="class_a_database.html#afa8ce49693abf480f296d34dfc2969f0">ADatabase::getIdMap</a></div><div class="ttdeci">const QMap&lt; RowId_T, QString &gt; getIdMap(ADatabaseTarget target)</div><div class="ttdoc">returns a QMap of a human-readable database value and its row id. Used in the Dialogs to map user inp...</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:552</div></div>
+<div class="ttc" id="aclass_a_database_html_afaaaaf276d832833b0865db86de51ae5"><div class="ttname"><a href="class_a_database.html#afaaaaf276d832833b0865db86de51ae5">ADatabase::getIdMap</a></div><div class="ttdeci">const QHash&lt; RowId_T, QString &gt; getIdMap(ADatabaseTarget target)</div><div class="ttdoc">returns a QHash of a human-readable database value and its row id. Used in the Dialogs to map user in...</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:552</div></div>
 <div class="ttc" id="aclass_a_database_html_afc39f6136fc822e0649964fa22b84bf9"><div class="ttname"><a href="class_a_database.html#afc39f6136fc822e0649964fa22b84bf9">ADatabase::getEntryData</a></div><div class="ttdeci">RowData_T getEntryData(DataPosition data_position)</div><div class="ttdoc">retreive entry data from the database to create an entry object</div><div class="ttdef"><b>Definition:</b> adatabase.cpp:404</div></div>
 <div class="ttc" id="aclass_a_entry_html"><div class="ttname"><a href="class_a_entry.html">AEntry</a></div><div class="ttdoc">The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries...</div><div class="ttdef"><b>Definition:</b> aentry.h:33</div></div>
 <div class="ttc" id="aclass_a_flight_entry_html"><div class="ttname"><a href="class_a_flight_entry.html">AFlightEntry</a></div><div class="ttdef"><b>Definition:</b> aflightentry.h:23</div></div>

@@ -95,7 +95,7 @@ class NewFlightDialog;
  * user to only inputting generally acceptable data (like numbers for date or time, or characters for airport identifiers). If the input
  * passes this sanity check, the line edits emit the editingFinished() signal, which triggers a more granular and sophisticated set of input
  * verification, broadly based on cross-checking the entered data against known good values. The ACompletionData class is used to provide
- * QMaps of known good values from the database and their respective ROW_IDs. If user-entered data has been matched to a known good database
+ * QHashs of known good values from the database and their respective ROW_IDs. If user-entered data has been matched to a known good database
  * value, the data is considered acceptable. This means that in order to, for example, log a flight with a certain Pilot, that this pilot
  * already has to exist in the pilots table. If this is not the case, the user is prompted to add a new pilot (or aircraft) to the database
  * before proceeding. In order to make this matching process seamless for the user, the completionData also contains a set of QStringLists

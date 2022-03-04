@@ -361,7 +361,7 @@ bool ADatabase::insert(const AEntry &new_entry)
 {
     auto data = new_entry.getData();
     QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");
-    QMap<QString, QVariant>::iterator i;
+    QHash<QString, QVariant>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement.append(i.key() + QLatin1Char(','));
     }
@@ -549,7 +549,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 }
 
 const
-QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
+QHash<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -591,7 +591,7 @@ QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
         lastError = query.lastError();
         return {};
     }
-    auto id_map = QMap<RowId_T, QString>();
+    auto id_map = QHash<RowId_T, QString>();
     while (query.next())
         id_map.insert(query.value(0).toInt(), query.value(1).toString());
     return id_map;

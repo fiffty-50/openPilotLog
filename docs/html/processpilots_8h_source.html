@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('processpilots_8h_source.html',''); ini
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define PROCESSPILOTS_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;QtCore&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;src/opl.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;QMap&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;QHash&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;QVector&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="class_process_pilots.html">    8</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_process_pilots.html">ProcessPilots</a></div>
@@ -105,8 +105,8 @@ $(document).ready(function(){initNavTree('processpilots_8h_source.html',''); ini
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        processParsedData();</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    };</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    QMap&lt;QString, QMap&lt;QString, QVariant&gt; &gt; getProcessedPilotMaps() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    QMap&lt;QString, int&gt; getProcessedPilotsIds() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    QHash&lt;QString, QHash&lt;QString, QVariant&gt; &gt; getProcessedPilotMaps() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    QHash&lt;QString, int&gt; getProcessedPilotsIds() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
@@ -116,9 +116,9 @@ $(document).ready(function(){initNavTree('processpilots_8h_source.html',''); ini
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    QVector&lt;QPair&lt;QStringList, int&gt;&gt; rawPilotsAndIds;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    QVector&lt;QStringList&gt; rawData;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    QMap&lt;QString, QMap&lt;QString, QVariant&gt;&gt; processedPilotMaps;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    QHash&lt;QString, QHash&lt;QString, QVariant&gt;&gt; processedPilotHashes;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    QMap&lt;QString, int&gt; processedPilotsIds;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    QHash&lt;QString, int&gt; processedPilotsIds;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// PROCESSPILOTS_H</span></div>

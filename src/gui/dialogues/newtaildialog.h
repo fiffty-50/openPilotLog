@@ -83,7 +83,7 @@ private:
 
     QStringList aircraftList;
 
-    QMap<RowId_T, QString> idMap;
+    QHash<RowId_T, QString> idMap;
 
     void setupCompleter();
     void setupValidators();

@@ -25,7 +25,7 @@
 #include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
-const QMap<int, QString> FILTER_MAP = {
+const QHash<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
     {1, QStringLiteral("Dept LIKE \"%")},
     {2, QStringLiteral("Dest LIKE \"%")},
