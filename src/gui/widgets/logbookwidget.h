@@ -52,10 +52,10 @@ public:
     ~LogbookWidget();
 
 private slots:
-    void on_newFlightButton_clicked();
-    void on_editFlightButton_clicked();
-    void on_deleteFlightPushButton_clicked();
-    void on_showAllButton_clicked();
+    //void on_newFlightButton_clicked();
+    //void on_editFlightButton_clicked();
+    //void on_deleteFlightPushButton_clicked();
+    //void on_showAllButton_clicked();
     void flightsTableView_selectionChanged();
     void on_tableView_customContextMenuRequested(const QPoint &pos);
     void on_actionDelete_Flight_triggered();

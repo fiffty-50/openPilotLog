@@ -11,27 +11,20 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Welcome to openPilotLog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QPushButton" name="previousPushButton">
      <property name="text">
       <string>Previous</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="nextPushButton">
-     <property name="text">
-      <string>Next</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item row="2" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="personalDataPage">
       <layout class="QGridLayout" name="gridLayout_9">
@@ -140,7 +133,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook.&lt;/p&gt;&lt;p&gt;OpenPilotLog does not collect, sell or use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:700;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook.&lt;/p&gt;&lt;p&gt;OpenPilotLog does not collect, sell or use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::RichText</enum>
@@ -162,7 +155,7 @@
           <string>If you already have been using openPilotLog before and wish to continue your logbook, skip this initial setup process and import your database instead.</string>
          </property>
          <property name="text">
-          <string>Already have a logbook database?</string>
+          <string>Already have a openPilotLog database?</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -173,7 +166,27 @@
      </widget>
      <widget class="QWidget" name="currencyPage">
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="3" column="0" colspan="2">
+       <item row="1" column="0" colspan="2">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="1">
           <widget class="QDateEdit" name="currLicDateEdit">
@@ -184,10 +197,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -229,10 +242,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -258,10 +271,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -339,10 +352,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -368,10 +381,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -397,10 +410,10 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
+            <enum>QDateTimeEdit::YearSection</enum>
            </property>
            <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
+            <string>yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -431,36 +444,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="dateFormatLabel">
-         <property name="text">
-          <string>Date Format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="dateFormatComboBox"/>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. By default, only Take-Off and Landing currency is shown on the home page, but any other currency can also be shown as well. This can be enabled in the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
@@ -502,26 +485,6 @@
              <height>0</height>
             </size>
            </property>
-           <item>
-            <property name="text">
-             <string>PIC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SIC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>DUAL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>INSTRUCTOR</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item row="1" column="0">
@@ -601,14 +564,17 @@
              <height>0</height>
             </size>
            </property>
+           <property name="currentIndex">
+            <number>1</number>
+           </property>
            <item>
             <property name="text">
-             <string>Yes</string>
+             <string>No</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>No</string>
+             <string>Yes</string>
             </property>
            </item>
           </widget>
@@ -684,7 +650,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can customize the appearance of your logbook, like how your name should be displayed in the logbook or the theme of the app.&lt;/p&gt;&lt;p&gt;The logbook views determine how your logbook is displayed. The default view is a compact overview with all the essential information displayed, whereas the EASA view is modelled after the EASA guidelines for logbooks and contains more fields. Please note that these only affects how your logbook is displayed. In both views, you have the possibility to log all the details of a specific flight. You can change the view at any time from the settings page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can customize the appearance of your logbook, like how your name should be displayed in the logbook or the theme of the app. For the best cross-platform experience, we recommend the Fusion theme.&lt;/p&gt;&lt;p&gt;The logbook views determine how your logbook is displayed. The default view is a compact overview with all the essential information displayed, optimised for viewing on a comptuter screen. The EASA view is modelled after the EASA guidelines for logbooks and contains more fields. Please note that these only affects how your logbook is displayed. In both views, you have the possibility to log all the details of a specific flight. You can change the view at any time from the settings page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::RichText</enum>
@@ -819,13 +785,27 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
+   <item row="3" column="1">
+    <widget class="QPushButton" name="nextPushButton">
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="logoLabel">
      <property name="text">
       <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;Welcome to&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>

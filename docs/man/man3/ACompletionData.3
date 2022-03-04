@@ -1,0 +1,67 @@
+.TH "ACompletionData" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters and QHashs used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <acompletiondata\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP ()"
+.br
+.RI "init Retrieves Data and populates Lists and Maps "
+.ti -1c
+.RI "void \fBupdate\fP ()"
+.br
+.RI "updates data from the user modifiable tables "
+.ti -1c
+.RI "void \fBupdateTails\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdatePilots\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QHash< RowId_T, QString > \fBpilotsIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< RowId_T, QString > \fBtailsIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< RowId_T, QString > \fBairportIcaoIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< RowId_T, QString > \fBairportIataIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< RowId_T, QString > \fBairportNameIdMap\fP"
+.br
+.ti -1c
+.RI "QStringList \fBpilotList\fP"
+.br
+.ti -1c
+.RI "QStringList \fBtailsList\fP"
+.br
+.ti -1c
+.RI "QStringList \fBairportList\fP"
+.br
+.ti -1c
+.RI "\fBUserDataState\fP \fBcurrent_state\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBACompletionData\fP class provides data to QCompleters and QHashs used for mapping user input to database keys\&. It retreives the completer targets and mapping data from the database and caches it for fast access without the need to query the database\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

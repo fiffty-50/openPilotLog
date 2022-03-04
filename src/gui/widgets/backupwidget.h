@@ -69,7 +69,6 @@ public:
 class BackupWidget : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit BackupWidget(QWidget *parent = nullptr);
     ~BackupWidget();

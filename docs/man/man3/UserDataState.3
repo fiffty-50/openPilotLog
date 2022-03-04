@@ -1,0 +1,52 @@
+.TH "UserDataState" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UserDataState \- The UserDateState struct caches the current number of entries in relevant database tables for fast access\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <adatabase\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBUserDataState\fP (int numTails_, int numPilots_)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBUserDataState\fP &other)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBUserDataState\fP &other)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBnumTails\fP"
+.br
+.ti -1c
+.RI "int \fBnumPilots\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The UserDateState struct caches the current number of entries in relevant database tables for fast access\&. 
+
+
+.PP
+\fBParameters\fP
+.RS 4
+\fInumTails\fP - Number of tails in the database 
+.br
+\fInumPilots\fP - Number of pilots in the database 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

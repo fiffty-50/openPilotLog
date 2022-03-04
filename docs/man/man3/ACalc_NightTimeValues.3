@@ -1,0 +1,59 @@
+.TH "ACalc::NightTimeValues" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACalc::NightTimeValues \- The \fBNightTimeValues\fP struct encapsulates values relating to night time that are needed by the \fBNewFlightDialog\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <acalc\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNightTimeValues\fP (const QString &dept, const QString &dest, const QDateTime &departure_time, int block_minutes, int night_angle)"
+.br
+.ti -1c
+.RI "\fBNightTimeValues\fP (bool to_night, bool ldg_night, int night_minutes, QTime night_time, QTime total_time)"
+.br
+.ti -1c
+.RI "bool \fBisAllDay\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisAllNight\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisDayToNight\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisNightToDay\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBtakeOffNight\fP"
+.br
+.ti -1c
+.RI "bool \fBlandingNight\fP"
+.br
+.ti -1c
+.RI "int \fBnightMinutes\fP"
+.br
+.ti -1c
+.RI "QTime \fBnightTime\fP"
+.br
+.ti -1c
+.RI "QTime \fBtotalTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBNightTimeValues\fP struct encapsulates values relating to night time that are needed by the \fBNewFlightDialog\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

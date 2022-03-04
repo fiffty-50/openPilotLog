@@ -20,6 +20,7 @@
 
 #include <QtCore>
 #include <QMessageBox>
+#include <QComboBox>
 #include "src/database/adatabasetypes.h"
 
 /*!
@@ -56,30 +57,25 @@ namespace Opl {
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
- * information to the user and forwards the displayed message to ALog so it is written
+ * information to the user in a QMessageBox and forwards the displayed message to ALog so it is written
  * to the console and log files. The INFO, WARN and CRIT makros provide convenient access.
  */
 class ANotificationHandler {
 public:
     static inline void info(const QString msg, QWidget *parent = nullptr){
+
         qInfo() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Information);
+        auto mb = QMessageBox(QMessageBox::Information, QLatin1String("Info"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void warn(const QString msg, QWidget *parent = nullptr){
         qWarning() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Warning);
+        auto mb = QMessageBox(QMessageBox::Warning, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void crit(const QString msg, QWidget *parent = nullptr){
         qCritical() << msg;
-        QMessageBox mb(parent);
-        mb.setText(msg);
-        mb.setIcon(QMessageBox::Critical);
+        auto mb = QMessageBox(QMessageBox::Critical, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
 }; // class ANotificationHandler
@@ -97,7 +93,27 @@ static const QMap<Translations, QString> L10N_NAMES {
     {Opl::Translations::Spanish, QStringLiteral("Español")},
 };
 
-static const auto ApproachTypes = QStringList{
+/*!
+ * \brief PilotFunction
+ * Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor
+ */
+enum PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
+
+static const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
+    {PilotFunction::PIC, QLatin1String("PIC")},
+    {PilotFunction::PICUS, QLatin1String("PICUS")},
+    {PilotFunction::SIC, QLatin1String("SIC")},
+    {PilotFunction::DUAL, QLatin1String("DUAL")},
+    {PilotFunction::FI, QLatin1String("FI")},
+};
+
+inline void loadPilotFunctios(QComboBox *combo_box)
+{
+    for (int i = 0; i < Opl::PILOT_FUNCTIONS.size(); i++)
+        combo_box->addItem(Opl::PILOT_FUNCTIONS.value(Opl::PilotFunction(i)));
+};
+
+static const QList<QLatin1String> APPROACH_TYPES = {
         QLatin1String("VISUAL"),
         QLatin1String("ILS CAT I"),
         QLatin1String("ILS CAT II"),
@@ -122,12 +138,19 @@ static const auto ApproachTypes = QStringList{
         QLatin1String("OTHER")
 };
 
+inline void loadApproachTypes(QComboBox *combo_box)
+{
+    for (const auto & approach : Opl::APPROACH_TYPES)
+        combo_box->addItem(approach);
+};
+
 namespace Date {
 
 /*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
+ * \todo At the moment, only ISODate is accepet as a valid date format.
  */
-enum class ADateFormat {ISODate, DE, EN };
+enum ADateFormat {ISODate, DE, EN };
 
 } // namespace opl::date
 
@@ -162,77 +185,77 @@ namespace Db {
 
 
 // Table names
-static const auto TABLE_FLIGHTS          = QLatin1String("flights");
-static const auto TABLE_PILOTS           = QLatin1String("pilots");
-static const auto TABLE_TAILS            = QLatin1String("tails");
-static const auto TABLE_AIRCRAFT         = QLatin1String("aircraft");
-static const auto TABLE_AIRPORTS         = QLatin1String("airports");
-static const auto TABLE_CURRENCIES       = QLatin1String("currencies");
+static const auto TABLE_FLIGHTS          = QStringLiteral("flights");
+static const auto TABLE_PILOTS           = QStringLiteral("pilots");
+static const auto TABLE_TAILS            = QStringLiteral("tails");
+static const auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
+static const auto TABLE_AIRPORTS         = QStringLiteral("airports");
+static const auto TABLE_CURRENCIES       = QStringLiteral("currencies");
 
 // Flights table columns
-static const auto FLIGHTS_ROWID          = QLatin1String("flight_id");
-static const auto FLIGHTS_DOFT           = QLatin1String("doft");
-static const auto FLIGHTS_DEPT           = QLatin1String("dept");
-static const auto FLIGHTS_DEST           = QLatin1String("dest");
-static const auto FLIGHTS_TOFB           = QLatin1String("tofb");
-static const auto FLIGHTS_TONB           = QLatin1String("tonb");
-static const auto FLIGHTS_PIC            = QLatin1String("pic");
-static const auto FLIGHTS_ACFT           = QLatin1String("acft");
-static const auto FLIGHTS_TBLK           = QLatin1String("tblk");
-static const auto FLIGHTS_TSPSE          = QLatin1String("tSPSE");
-static const auto FLIGHTS_TSPME          = QLatin1String("tSPME");
-static const auto FLIGHTS_TMP            = QLatin1String("tMP");
-static const auto FLIGHTS_TNIGHT         = QLatin1String("tNIGHT");
-static const auto FLIGHTS_TIFR           = QLatin1String("tIFR");
-static const auto FLIGHTS_TPIC           = QLatin1String("tPIC");
-static const auto FLIGHTS_TPICUS         = QLatin1String("tPICUS");
-static const auto FLIGHTS_TSIC           = QLatin1String("tSIC");
-static const auto FLIGHTS_TDUAL          = QLatin1String("tDUAL");
-static const auto FLIGHTS_TFI            = QLatin1String("tFI");
-static const auto FLIGHTS_TSIM           = QLatin1String("tSIM");
-static const auto FLIGHTS_PILOTFLYING    = QLatin1String("pilotFlying");
-static const auto FLIGHTS_TODAY          = QLatin1String("toDay");
-static const auto FLIGHTS_TONIGHT        = QLatin1String("toNight");
-static const auto FLIGHTS_LDGDAY         = QLatin1String("ldgDay");
-static const auto FLIGHTS_LDGNIGHT       = QLatin1String("ldgNight");
-static const auto FLIGHTS_AUTOLAND       = QLatin1String("autoland");
-static const auto FLIGHTS_SECONDPILOT    = QLatin1String("secondPilot");
-static const auto FLIGHTS_THIRDPILOT     = QLatin1String("thirdPilot");
-static const auto FLIGHTS_APPROACHTYPE   = QLatin1String("approachType");
-static const auto FLIGHTS_FLIGHTNUMBER   = QLatin1String("flightNumber");
-static const auto FLIGHTS_REMARKS        = QLatin1String("remarks");
+static const auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
+static const auto FLIGHTS_DOFT           = QStringLiteral("doft");
+static const auto FLIGHTS_DEPT           = QStringLiteral("dept");
+static const auto FLIGHTS_DEST           = QStringLiteral("dest");
+static const auto FLIGHTS_TOFB           = QStringLiteral("tofb");
+static const auto FLIGHTS_TONB           = QStringLiteral("tonb");
+static const auto FLIGHTS_PIC            = QStringLiteral("pic");
+static const auto FLIGHTS_ACFT           = QStringLiteral("acft");
+static const auto FLIGHTS_TBLK           = QStringLiteral("tblk");
+static const auto FLIGHTS_TSPSE          = QStringLiteral("tSPSE");
+static const auto FLIGHTS_TSPME          = QStringLiteral("tSPME");
+static const auto FLIGHTS_TMP            = QStringLiteral("tMP");
+static const auto FLIGHTS_TNIGHT         = QStringLiteral("tNIGHT");
+static const auto FLIGHTS_TIFR           = QStringLiteral("tIFR");
+static const auto FLIGHTS_TPIC           = QStringLiteral("tPIC");
+static const auto FLIGHTS_TPICUS         = QStringLiteral("tPICUS");
+static const auto FLIGHTS_TSIC           = QStringLiteral("tSIC");
+static const auto FLIGHTS_TDUAL          = QStringLiteral("tDUAL");
+static const auto FLIGHTS_TFI            = QStringLiteral("tFI");
+static const auto FLIGHTS_TSIM           = QStringLiteral("tSIM");
+static const auto FLIGHTS_PILOTFLYING    = QStringLiteral("pilotFlying");
+static const auto FLIGHTS_TODAY          = QStringLiteral("toDay");
+static const auto FLIGHTS_TONIGHT        = QStringLiteral("toNight");
+static const auto FLIGHTS_LDGDAY         = QStringLiteral("ldgDay");
+static const auto FLIGHTS_LDGNIGHT       = QStringLiteral("ldgNight");
+static const auto FLIGHTS_AUTOLAND       = QStringLiteral("autoland");
+static const auto FLIGHTS_SECONDPILOT    = QStringLiteral("secondPilot");
+static const auto FLIGHTS_THIRDPILOT     = QStringLiteral("thirdPilot");
+static const auto FLIGHTS_APPROACHTYPE   = QStringLiteral("approachType");
+static const auto FLIGHTS_FLIGHTNUMBER   = QStringLiteral("flightNumber");
+static const auto FLIGHTS_REMARKS        = QStringLiteral("remarks");
 
 // tails table
 
-static const auto TAILS_ROWID            = QLatin1String("tail_id");
-static const auto TAILS_REGISTRATION     = QLatin1String("registration");
-static const auto TAILS_COMPANY          = QLatin1String("company");
-static const auto TAILS_MAKE             = QLatin1String("make");
-static const auto TAILS_MODEL            = QLatin1String("model");
-static const auto TAILS_VARIANT          = QLatin1String("variant");
-static const auto TAILS_MULTIPILOT       = QLatin1String("multipilot");
-static const auto TAILS_MULTIENGINE      = QLatin1String("multiengine");
-static const auto TAILS_ENGINETYPE       = QLatin1String("engineType");
-static const auto TAILS_WEIGHTCLASS      = QLatin1String("weightClass");
+static const auto TAILS_ROWID            = QStringLiteral("tail_id");
+static const auto TAILS_REGISTRATION     = QStringLiteral("registration");
+static const auto TAILS_COMPANY          = QStringLiteral("company");
+static const auto TAILS_MAKE             = QStringLiteral("make");
+static const auto TAILS_MODEL            = QStringLiteral("model");
+static const auto TAILS_VARIANT          = QStringLiteral("variant");
+static const auto TAILS_MULTIPILOT       = QStringLiteral("multipilot");
+static const auto TAILS_MULTIENGINE      = QStringLiteral("multiengine");
+static const auto TAILS_ENGINETYPE       = QStringLiteral("engineType");
+static const auto TAILS_WEIGHTCLASS      = QStringLiteral("weightClass");
 
 // pilots table
 
-static const auto PILOTS_ROWID           = QLatin1String("pilot_id");
-static const auto PILOTS_LASTNAME        = QLatin1String("lastname");
-static const auto PILOTS_FIRSTNAME       = QLatin1String("firstname");
-static const auto PILOTS_ALIAS           = QLatin1String("alias");
-static const auto PILOTS_COMPANY         = QLatin1String("company");
-static const auto PILOTS_EMPLOYEEID      = QLatin1String("employeeid");
-static const auto PILOTS_PHONE           = QLatin1String("phone");
-static const auto PILOTS_EMAIL           = QLatin1String("email");
+static const auto PILOTS_ROWID           = QStringLiteral("pilot_id");
+static const auto PILOTS_LASTNAME        = QStringLiteral("lastname");
+static const auto PILOTS_FIRSTNAME       = QStringLiteral("firstname");
+static const auto PILOTS_ALIAS           = QStringLiteral("alias");
+static const auto PILOTS_COMPANY         = QStringLiteral("company");
+static const auto PILOTS_EMPLOYEEID      = QStringLiteral("employeeid");
+static const auto PILOTS_PHONE           = QStringLiteral("phone");
+static const auto PILOTS_EMAIL           = QStringLiteral("email");
 
 // Currencies table
-static const auto CURRENCIES_EXPIRYDATE  = QLatin1String("expiryDate");
-static const auto CURRENCIES_DESCRIPTION = QLatin1String("description");
+static const auto CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
+static const auto CURRENCIES_DESCRIPTION = QStringLiteral("description");
 
 // all tables
-static const auto ROWID                  = QLatin1String("ROWID");
-static const auto NULL_TIME_hhmm         = QLatin1String("00:00");
+static const auto ROWID                  = QStringLiteral("ROWID");
+static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
 static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
 static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
@@ -243,31 +266,31 @@ static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 namespace Assets {
 
-static const auto LOGO                          = QLatin1String(":/icons/opl-icons/logos/logo_text.png");
-static const auto ICON_MAIN                     = QLatin1String(":/icons/opl-icons/app/icon_main.png");
-static const auto ICON_APPICON_LINUX            = QLatin1String(":/icons/opl-icons/app/icon_linux.svg");
-static const auto ICON_APPICON_IOS              = QLatin1String(":/icons/opl-icons/app/icon_ios.svg");
-static const auto ICON_APPICON_WIN              = QLatin1String(":/icons/opl-icons/app/icon_windows.ico");
+static const auto LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
+static const auto ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
+static const auto ICON_APPICON_LINUX            = QStringLiteral(":/icons/opl-icons/app/icon_linux.svg");
+static const auto ICON_APPICON_IOS              = QStringLiteral(":/icons/opl-icons/app/icon_ios.svg");
+static const auto ICON_APPICON_WIN              = QStringLiteral(":/icons/opl-icons/app/icon_windows.ico");
 
-static const auto ICON_TOOLBAR_HOME             = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
-static const auto ICON_TOOLBAR_NEW_FLIGHT       = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");
-static const auto ICON_TOOLBAR_LOGBOOK          = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_logbook.svg");
-static const auto ICON_TOOLBAR_AIRCRAFT         = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_airplane.svg");
-static const auto ICON_TOOLBAR_PILOT            = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_pilot.svg");
-static const auto ICON_TOOLBAR_SETTINGS         = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_settings.svg");
-static const auto ICON_TOOLBAR_QUIT             = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_exit.svg");
+static const auto ICON_TOOLBAR_HOME             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
+static const auto ICON_TOOLBAR_NEW_FLIGHT       = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");
+static const auto ICON_TOOLBAR_LOGBOOK          = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_logbook.svg");
+static const auto ICON_TOOLBAR_AIRCRAFT         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_airplane.svg");
+static const auto ICON_TOOLBAR_PILOT            = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_pilot.svg");
+static const auto ICON_TOOLBAR_SETTINGS         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_settings.svg");
+static const auto ICON_TOOLBAR_QUIT             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_exit.svg");
 
-static const auto ICON_TOOLBAR_BACKUP           = QLatin1String(":/icons/opl-icons/toolbar/thick/light/icon_backup.svg");
+static const auto ICON_TOOLBAR_BACKUP           = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_backup.svg");
 
-static const auto ICON_TOOLBAR_HOME_DARK        = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_home_dm.svg");
-static const auto ICON_TOOLBAR_NEW_FLIGHT_DARK  = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg");
-static const auto ICON_TOOLBAR_LOGBOOK_DARK     = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_logbook_dm.svg");
-static const auto ICON_TOOLBAR_AIRCRAFT_DARK    = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_airplane_dm.svg");
-static const auto ICON_TOOLBAR_PILOT_DARK       = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_pilot_dm.svg");
-static const auto ICON_TOOLBAR_SETTINGS_DARK    = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_settings_dm.svg");
-static const auto ICON_TOOLBAR_QUIT_DARK        = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_exit_dm.svg");
+static const auto ICON_TOOLBAR_HOME_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_home_dm.svg");
+static const auto ICON_TOOLBAR_NEW_FLIGHT_DARK  = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg");
+static const auto ICON_TOOLBAR_LOGBOOK_DARK     = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_logbook_dm.svg");
+static const auto ICON_TOOLBAR_AIRCRAFT_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_airplane_dm.svg");
+static const auto ICON_TOOLBAR_PILOT_DARK       = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_pilot_dm.svg");
+static const auto ICON_TOOLBAR_SETTINGS_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_settings_dm.svg");
+static const auto ICON_TOOLBAR_QUIT_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_exit_dm.svg");
 
-static const auto ICON_TOOLBAR_BACKUP_DARK      = QLatin1String(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
+static const auto ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
 
 }
 

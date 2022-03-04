@@ -76,9 +76,7 @@ inline double toDecimalHours(const QTime &time){
     return (time.hour() * 60 + time.minute()) / 60.0;
 }
 
-inline int toMinutes(const QTime &time) {return time.hour() * 60 + time.minute();}
-
-inline QTime fromMinutes(int total_minutes)
+inline QTime qTimefromMinutes(int total_minutes)
 {
     int minute = total_minutes % 60;
     int hour = total_minutes / 60;
@@ -124,6 +122,9 @@ inline const QTime fromString(const char* time_string, Opl::Time::FlightTimeForm
     }
 }
 
+inline int toMinutes(const QTime &time) {return time.hour() * 60 + time.minute();}
+inline int toMinutes(const QString &time_string) {return toMinutes(fromString(time_string));}
+
 inline QTime blocktime(const QTime &tofb, const QTime &tonb)
 {
     QTime blocktime_out(0, 0); // initialise return value at midnight
@@ -139,6 +140,41 @@ inline QTime blocktime(const QTime &tofb, const QTime &tonb)
         blocktime_out = blocktime_out.addSecs(seconds);
     }
     return blocktime_out;
+}
+
+inline QTime blocktime(const QString& tofb, const QString& tonb)
+{
+    QTime t_tofb = ATime::fromString(tofb);
+    QTime t_tonb = ATime::fromString(tonb);
+    return blocktime(t_tofb, t_tonb);
+}
+
+/*!
+ * \brief blockMinutes calculates the total amount of minutes elapsed between
+ * tofb and tonb
+ */
+inline int blockMinutes(const QString& tofb, const QString& tonb)
+{
+    const QTime t_tofb = ATime::fromString(tofb);
+    const QTime t_tonb = ATime::fromString(tonb);
+    if (t_tofb.isValid() && t_tonb.isValid()) {
+        const auto tblk = ATime::blocktime(t_tofb, t_tonb);
+        return ATime::toMinutes(tblk);
+    } else
+        return 0;
+}
+
+/*!
+ * \brief blockMinutes calculates the total amount of minutes elapsed between
+ * tofb and tonb
+ */
+inline int blockMinutes(const QTime& tofb, const QTime& tonb)
+{
+    if (tofb.isValid() && tonb.isValid()) {
+        const auto tblk = ATime::blocktime(tofb, tonb);
+        return ATime::toMinutes(tblk);
+    } else
+        return 0;
 }
 
 /*!

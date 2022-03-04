@@ -1,4 +1,4 @@
-.TH "ASettings" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ASettings" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,13 +13,13 @@ ASettings \- Thin wrapper for the QSettings class, simplifying reading and writi
 
 .in +1c
 .ti -1c
-.RI "enum \fBMain\fP { \fBSetupComplete\fP, \fBStyle\fP, \fBFont\fP, \fBFontSize\fP, \fBUseSystemFont\fP, \fBLogbookView\fP, \fBDateFormat\fP }"
+.RI "enum class \fBMain\fP { \fBSetupComplete\fP, \fBStyle\fP, \fBFont\fP, \fBFontSize\fP, \fBUseSystemFont\fP, \fBLogbookView\fP, \fBDateFormat\fP }"
 .br
 .ti -1c
-.RI "enum \fBUserData\fP { \fBDisplaySelfAs\fP, \fBTailSortColumn\fP, \fBPilotSortColumn\fP, \fBAcftAllowIncomplete\fP, \fBFtlWarningThreshold\fP, \fBCurrWarningEnabled\fP, \fBCurrWarningThreshold\fP, \fBShowToLgdCurrency\fP, \fBShowLicCurrency\fP, \fBShowTrCurrency\fP, \fBShowLckCurrency\fP, \fBShowMedCurrency\fP, \fBShowCustom1Currency\fP, \fBShowCustom2Currency\fP, \fBCustom1CurrencyName\fP, \fBCustom2CurrencyName\fP }"
+.RI "enum class \fBUserData\fP { \fBDisplaySelfAs\fP, \fBTailSortColumn\fP, \fBPilotSortColumn\fP, \fBFtlWarningThreshold\fP, \fBCurrWarningThreshold\fP, \fBShowToLgdCurrency\fP, \fBShowLicCurrency\fP, \fBShowTrCurrency\fP, \fBShowLckCurrency\fP, \fBShowMedCurrency\fP, \fBShowCustom1Currency\fP, \fBShowCustom2Currency\fP, \fBCustom1CurrencyName\fP, \fBCustom2CurrencyName\fP }"
 .br
 .ti -1c
-.RI "enum \fBFlightLogging\fP { \fBFunction\fP, \fBApproach\fP, \fBNightLoggingEnabled\fP, \fBLogIFR\fP, \fBFlightNumberPrefix\fP, \fBNumberTakeoffs\fP, \fBNumberLandings\fP, \fBPilotFlying\fP, \fBNightAngle\fP, \fBRules\fP, \fBFlightTimeFormat\fP, \fBFunctionComboBox\fP }"
+.RI "enum class \fBFlightLogging\fP { \fBFunction\fP, \fBApproach\fP, \fBNightLoggingEnabled\fP, \fBLogIFR\fP, \fBFlightNumberPrefix\fP, \fBPilotFlying\fP, \fBNightAngle\fP }"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -73,6 +73,9 @@ ASettings \- Thin wrapper for the QSettings class, simplifying reading and writi
 .br
 .ti -1c
 .RI "static QSettings \fBsettings\fP ()"
+.br
+.ti -1c
+.RI "static void \fBsync\fP ()"
 .br
 .in -1c
 .SH "Detailed Description"

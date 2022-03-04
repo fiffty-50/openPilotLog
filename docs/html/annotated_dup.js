@@ -1,11 +1,16 @@
 var annotated_dup =
 [
-    [ "Opl", "namespace_opl.html", "namespace_opl" ],
+    [ "ACalc", "namespace_a_calc.html", [
+      [ "NightTimeValues", "struct_a_calc_1_1_night_time_values.html", "struct_a_calc_1_1_night_time_values" ]
+    ] ],
+    [ "Opl", "namespace_opl.html", [
+      [ "ANotificationHandler", "class_opl_1_1_a_notification_handler.html", null ]
+    ] ],
     [ "AAircraftEntry", "struct_a_aircraft_entry.html", "struct_a_aircraft_entry" ],
+    [ "ACompletionData", "class_a_completion_data.html", "class_a_completion_data" ],
     [ "ACurrencyEntry", "struct_a_currency_entry.html", "struct_a_currency_entry" ],
     [ "ADatabase", "class_a_database.html", "class_a_database" ],
     [ "ADatabaseError", "class_a_database_error.html", "class_a_database_error" ],
-    [ "ADataBaseSetup", "class_a_data_base_setup.html", null ],
     [ "ADate", "class_a_date.html", null ],
     [ "ADownload", "class_a_download.html", "class_a_download" ],
     [ "AEntry", "class_a_entry.html", "class_a_entry" ],
@@ -32,6 +37,11 @@ var annotated_dup =
     [ "NewPilotDialog", "class_new_pilot_dialog.html", "class_new_pilot_dialog" ],
     [ "NewTailDialog", "class_new_tail_dialog.html", "class_new_tail_dialog" ],
     [ "PilotsWidget", "class_pilots_widget.html", "class_pilots_widget" ],
+    [ "ProcessAircraft", "class_process_aircraft.html", "class_process_aircraft" ],
+    [ "ProcessFlights", "class_process_flights.html", "class_process_flights" ],
+    [ "ProcessPilots", "class_process_pilots.html", "class_process_pilots" ],
     [ "SettingsWidget", "class_settings_widget.html", "class_settings_widget" ],
-    [ "StyleSheet", "struct_style_sheet.html", "struct_style_sheet" ]
+    [ "StyleSheet", "struct_style_sheet.html", "struct_style_sheet" ],
+    [ "UserDataState", "struct_user_data_state.html", "struct_user_data_state" ],
+    [ "ValidationState", "class_validation_state.html", "class_validation_state" ]
 ];

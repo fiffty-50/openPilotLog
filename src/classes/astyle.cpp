@@ -46,6 +46,8 @@ QString AStyle::currentStyle = defaultStyle;
  */
 void AStyle::setup()
 {
+    if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) // Use system default for first run
+        return;
     // Set Font
     if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
         QFont font(ASettings::read(ASettings::Main::Font).toString());

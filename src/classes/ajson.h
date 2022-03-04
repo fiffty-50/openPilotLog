@@ -35,7 +35,7 @@ public:
     /*!
      * \brief exportDatabase exports the currently active database to JSON.
      *
-     * \details QJsonObject can be constructed from QMap<QString, QVariant> aka QVariantmap.
+     * \details QJsonObject can be constructed from QHash<QString, QVariant> aka QVariantmap.
      * All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which
      * can be exported. The files are created at AStandardPaths::JSON.
      */

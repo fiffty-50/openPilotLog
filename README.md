@@ -14,7 +14,7 @@ openPilotLog is currently in development, so no release is provided yet. If you 
 
 If you want to learn more about this project, check out the [wiki](https://github.com/fiffty-50/openpilotlog/wiki) or the [blog](https://turowsky.eu/)!
 
-For developers, the code documentation can be found at our [doxygen](https://fiffty-50.github.io/openpilotlog/) pages. If you are interested in contributing to the project, you can get in touch [here](mailto:felix.turo@gmail.com?subject=[GitHub]%20Contributing%20to%20openPilotLog).
+For developers, the code documentation can be found at our [doxygen](https://fiffty-50.github.io/openPilotLog/) pages. If you are interested in contributing to the project, you can get in touch [here](mailto:felix.turo@gmail.com?subject=[GitHub]%20Contributing%20to%20openPilotLog).
 
 # How does it look like?
 

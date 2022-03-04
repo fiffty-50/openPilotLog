@@ -1,8 +1,8 @@
-.TH "NewTailDialog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "NewTailDialog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-NewTailDialog \- The NewTail class is a dialog for adding a new tail to the database or editing an existing one\&.  
+NewTailDialog \- The \fBNewTailDialog\fP enables adding new Tail entries to the database or editing existing ones\&.  
 
 .SH SYNOPSIS
 .br
@@ -15,17 +15,51 @@ Inherits QDialog\&.
 
 .in +1c
 .ti -1c
-.RI "\fBNewTailDialog\fP (QString new_registration, QWidget *parent=nullptr)"
+.RI "\fBNewTailDialog\fP (const QString &new_registration, QWidget *parent=nullptr)"
 .br
+.RI "\fBNewTailDialog\fP - create a new \fBATailEntry\fP and submit it to the database\&. "
 .ti -1c
 .RI "\fBNewTailDialog\fP (int row_id, QWidget *parent=nullptr)"
 .br
+.RI "\fBNewTailDialog\fP - edit an existing Tail Entry\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-The NewTail class is a dialog for adding a new tail to the database or editing an existing one\&. 
+The \fBNewTailDialog\fP enables adding new Tail entries to the database or editing existing ones\&. 
 
-For a new tail, construct using QString reg\&. For editing an existing tail, provide the aircraft object\&. 
+The \fBNewTailDialog\fP offers two constructors, one is used to create a new Tail Entry from scratch, while the other one is used to edit an existing entry\&. The existing entry is identified by its ROW ID in the database and is then retreived, its data being used to pre-fill the UI to enable editing the existing data\&.
+.PP
+The Dialog is headed by a search-field containing template data retreived from the aircraft table\&. This enables a fast and convenient way of rapidly filling out all the details for a given aircraft type\&.
+.PP
+Think of aircraft and tails as classes and instances\&. The tail refers to the actual aircraft, which is identified by its registration, normally a 5-letter alphanumeric, e\&.g\&. D-AIDB or LN-NEN\&. The aircraft table in the database holds templates for the aircraft type, for example a Boeing 737 or Airbus 320\&. A typical operator has several aircraft of the same type, for example OE-ABC, OE-DEF and OE-GHI, all of which are of the aircraft type Airbus 320\&.
+.PP
+The Dialog contains 4 QComboBoxes that have to be filled out before an entry can be submitted, since this data is being used to deduct certain types of hours that have to be logged depending on the number or type of engines\&.
+.PP
+A set of QValidators provides raw input validation for the line edits\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "NewTailDialog::NewTailDialog (const QString & new_registration, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+\fBNewTailDialog\fP - create a new \fBATailEntry\fP and submit it to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInew_registration\fP - when called from the \fBNewFlightDialog\fP, pre-fills the registration already entered\&. 
+.RE
+.PP
+
+.SS "NewTailDialog::NewTailDialog (int row_id, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+\fBNewTailDialog\fP - edit an existing Tail Entry\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrow_id\fP - the ROW_ID of the entry to be edited in the database 
+.RE
+.PP
+
 
 .SH "Author"
 .PP 

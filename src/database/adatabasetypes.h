@@ -36,10 +36,10 @@ using ColData_T = QVariant;
 using TableName_T = QString;
 
 using TableNames_T = QStringList;
-using RowData_T = QMap<ColName_T, ColData_T>;
+using RowData_T = QHash<ColName_T, ColData_T>;
 using ColumnData_T = QPair<ColName_T, ColData_T>;
 using ColumnNames_T = QStringList;
-using TableColumns_T = QMap<TableName_T, ColumnNames_T>;
+using TableColumns_T = QHash<TableName_T, ColumnNames_T>;
 
 struct DataPosition {
     TableName_T tableName;

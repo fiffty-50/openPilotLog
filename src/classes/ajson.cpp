@@ -32,7 +32,7 @@ void AJson::exportDatabase()
         const auto rows = aDB->getTable(pair.second);
 
         for (const auto &row : rows)
-            array.append(QJsonObject::fromVariantMap(row));
+            array.append(QJsonObject::fromVariantHash(row));
 
         QJsonDocument doc(array);
         writeDocToFile(doc, pair.first + QLatin1String(".json"));

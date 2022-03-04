@@ -25,7 +25,7 @@
 #include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
-const QMap<int, QString> FILTER_MAP = {
+const QHash<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
     {1, QStringLiteral("Dept LIKE \"%")},
     {2, QStringLiteral("Dest LIKE \"%")},
@@ -40,7 +40,6 @@ LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) 
     completionData(completion_data)
 {
     ui->setupUi(this);
-    ui->newFlightButton->setFocus();
 
     //customContextMenu for tablewidget
     menu  = new QMenu(this);
@@ -130,54 +129,15 @@ void LogbookWidget::flightsTableView_selectionChanged()
         selectedFlights.append(row.data().toInt());
         DEB << "Selected Flight(s) with ID: " << selectedFlights;
     }
+    if (selectedFlights.length() == 1)
+        on_actionEdit_Flight_triggered();
 }
 
 /*!
- * \brief LogbookWidget::on_newFlightButton_clicked opens a NewFlightDialog
- */
-void LogbookWidget::on_newFlightButton_clicked()
-{
-    auto old_state = aDB->getUserDataState();
-
-    NewFlightDialog nf(completionData, this);
-    nf.exec();
-
-    auto new_state = aDB->getUserDataState();
-    if (old_state != new_state)
-        completionData.update();
-
-    displayModel->select();
-}
-
-/*!
- * \brief LogbookWidget::on_editFlightButton_clicked opens a NewFlightDialog and
- * pre-fills the data from the selected flight.
- */
-void LogbookWidget::on_editFlightButton_clicked()
-{
-    if(selectedFlights.length() == 1){
-        auto old_state = aDB->getUserDataState();
-
-        auto ef = new NewFlightDialog(completionData, selectedFlights.first(), this);
-        ef->exec();
-
-        auto new_state = aDB->getUserDataState();
-        if (old_state != new_state)
-            completionData.update();
-        displayModel->select();
-    } else if (selectedFlights.isEmpty()) {
-        WARN(tr("<br>No flight selected.<br>"));
-    } else {
-        WARN(tr("<br>More than one flight selected."
-                               "<br><br>Editing multiple entries is not yet supported."));
-    }
-}
-
-/*!
- * \brief LogbookWidget::on_deleteFlightPushButton_clicked If a row is selected, query information
+ * \brief If a row is selected, query information
  * about the affected row(s) and ask the user to confirm deletion.
  */
-void LogbookWidget::on_deleteFlightPushButton_clicked()
+void LogbookWidget::on_actionDelete_Flight_triggered()
 {
     DEB << "Flights selected: " << selectedFlights.length();
     if (selectedFlights.length() == 0) {
@@ -231,7 +191,7 @@ void LogbookWidget::on_deleteFlightPushButton_clicked()
                            ).arg(QString::number(selectedFlights.length())));
         if(confirm.exec() == QMessageBox::Yes) {
             QList<DataPosition> selected_flights;
-            for (const auto& flight_id : selectedFlights) {
+            for (const auto& flight_id : qAsConst(selectedFlights)) {
                 selected_flights.append({QStringLiteral("flights"), flight_id});
             }
             if (!aDB->removeMany(selected_flights)) {
@@ -252,24 +212,32 @@ void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
     menu->popup(ui->tableView->viewport()->mapToGlobal(pos));
 }
 
-void LogbookWidget::on_actionDelete_Flight_triggered()
-{
-    emit ui->deleteFlightPushButton->clicked();
-}
-
 void LogbookWidget::on_actionEdit_Flight_triggered()
 {
-    emit ui->editFlightButton->clicked();
+    completionData.update();
+    if(selectedFlights.length() == 1){
+        NewFlightDialog nff(completionData,selectedFlights.first(), this);
+        ui->stackedWidget->addWidget(&nff);
+        ui->stackedWidget->setCurrentWidget(&nff);
+        nff.setWindowFlag(Qt::Widget);
+        nff.exec();
+        displayModel->select();
+    } else if (selectedFlights.isEmpty()) {
+        WARN(tr("<br>No flight selected.<br>"));
+    } else {
+        WARN(tr("<br>More than one flight selected."
+                               "<br><br>Editing multiple entries is not yet supported."));
+    }
 }
 
 void LogbookWidget::on_tableView_doubleClicked()
 {
-    emit ui->editFlightButton->clicked();
+    on_actionEdit_Flight_triggered();
 }
 
 void LogbookWidget::on_flightSearchComboBox_currentIndexChanged(int)
 {
-    emit ui->showAllButton->clicked();
+    //emit ui->showAllButton->clicked();
 }
 
 /*!
@@ -287,12 +255,12 @@ void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::Setting
         setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
 }
 
-void LogbookWidget::on_showAllButton_clicked()
-{
-    ui->flightSearchLlineEdit->setText(QString());
-    displayModel->setFilter(QString());
-    displayModel->select();
-}
+//void LogbookWidget::on_showAllButton_clicked()
+//{
+//    ui->flightSearchLlineEdit->setText(QString());
+//    displayModel->setFilter(QString());
+//    displayModel->select();
+//}
 
 /*!
  * \brief LogbookWidget::on_flightSearchLlineEdit_textChanged applies a filter to the

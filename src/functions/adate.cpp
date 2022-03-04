@@ -37,7 +37,7 @@ void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
 {
     switch (format) {
     case Opl::Date::ADateFormat::ISODate: {
-        int year = io_user_input.leftRef(2).toInt();
+        int year = io_user_input.left(2).toInt();
         if (year > 50)
             io_user_input.prepend(QStringLiteral("19"));
         else
@@ -45,7 +45,7 @@ void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
         break;
     }
     case Opl::Date::ADateFormat::DE: {
-        int year = io_user_input.rightRef(2).toInt();
+        int year = io_user_input.right(2).toInt();
         if (year > 50)
             io_user_input.insert(6, QStringLiteral("19"));
         else
@@ -53,7 +53,7 @@ void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
         break;
     }
     case Opl::Date::ADateFormat::EN: {
-        int year = io_user_input.rightRef(2).toInt();
+        int year = io_user_input.right(2).toInt();
         if (year > 50)
             io_user_input.insert(6, QStringLiteral("19"));
         else

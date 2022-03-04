@@ -46,7 +46,7 @@ void ProcessPilots::processParsedData()
 {
     for (const auto &pair : qAsConst(rawPilotsAndIds)) {
         //DEB << "ID:" << pair.second << "Details:" << pair.first;
-        QMap<QString, QVariant> new_pilot_data;
+        QHash<QString, QVariant> new_pilot_data;
 
         // process name [1]
         auto temp_list = pair.first[1].split(QLatin1Char(' '));
@@ -68,17 +68,17 @@ void ProcessPilots::processParsedData()
         // add pilot_id (workaround with literal until Opl::Db is updated)
         new_pilot_data.insert(QStringLiteral("pilot_id"), pair.second);
 
-        processedPilotMaps.insert(pair.first[1], new_pilot_data);
+        processedPilotHashes.insert(pair.first[1], new_pilot_data);
         processedPilotsIds.insert(pair.first[1], pair.second);
     }
 }
 
-QMap<QString, QMap<QString, QVariant>> ProcessPilots::getProcessedPilotMaps() const
+QHash<QString, QHash<QString, QVariant>> ProcessPilots::getProcessedPilotMaps() const
 {
-    return processedPilotMaps;
+    return processedPilotHashes;
 }
 
-QMap<QString, int> ProcessPilots::getProcessedPilotsIds() const
+QHash<QString, int> ProcessPilots::getProcessedPilotsIds() const
 {
     return processedPilotsIds;
 }

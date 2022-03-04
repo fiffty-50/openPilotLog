@@ -15,109 +15,118 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef NEWFLIGHT_H
-#define NEWFLIGHT_H
+#ifndef NewFlightDialog_H
+#define NewFlightDialog_H
 
 #include <QDialog>
-#include <QRegularExpression>
-#include <QMessageBox>
 #include <QDebug>
-#include <QCompleter>
-#include <QStringList>
-#include <QButtonGroup>
-#include <QBitArray>
 #include <QLineEdit>
-#include <QCalendarWidget>
-#include <QComboBox>
-#include <QTabWidget>
-#include <QKeyEvent>
-#include "src/functions/atime.h"
+#include <QList>
+#include <QBitArray>
 
+#include "src/functions/atime.h"
+#include "src/classes/acompletiondata.h"
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/database/adatabase.h"
-#include "src/classes/acompletiondata.h"
-
-namespace Ui {
-
-class NewFlight;
-}
+#include "src/opl.h"
 
 /*!
- * \brief The NewFlightDialog enables the user to add a new flight or edit an existing one.
- * \details
- * - Most line edits have validators and completers.
- * - Validators are based on regular expressions, serving as raw input validation
- * - The Completers are based off the database and provide auto-completion
- * - mandatory line edits only emit editing finished if their content has passed
- *   raw input validation or focus is lost.
- * - Editing finished triggers validating inputs by mapping them to Database values
- *   where required and results in either pass or fail.
- * - A QBitArray is mainained containing the state of validity of the mandatory line edits
- * - The deducted entries are automatically filled if the necessary mandatory entries
- * are valid.
- * - Comitting an entry to the database is only allowed if all mandatory inputs are valid.
+ * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
+ * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
+ */
+enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
+
+/*!
+ * \brief The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether the
+ * input for the associated index has been verified. The indexes correspond to the mandatory items enumerated in the
+ * ValidationItem enum.
+ */
+class ValidationState {
+public:
+    ValidationState() = default;
+
+    void validate(ValidationItem item)             { validationArray[item] = true;};
+    void validate(int index)                       { validationArray[index] = true;};
+    void invalidate(ValidationItem item)           { validationArray[item] = false;}
+    void invalidate(int index)                     { validationArray[index] = false;}
+    inline bool allValid() const                   { return validationArray.count(true) == 7;};
+    inline bool timesValid() const                 { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
+    inline bool locationsValid() const             { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
+    inline bool nightDataValid() const             { return timesValid() && locationsValid() && validationArray[ValidationItem::doft];}
+    inline bool acftValid() const                  { return validationArray[ValidationItem::acft];}
+    inline bool validAt(int index) const           { return validationArray[index];}
+    inline bool validAt(ValidationItem item) const { return validationArray[item];}
+
+    // Debug
+    void printValidationStatus() const {
+        QString deb_string("\033[mValidation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n");
+        deb_string += "\t\t\t\t";
+        for (int i = 0; i < 7; i++) { //\033[32m
+            if (validationArray[i])
+                deb_string += "\t\033[32m" + QString::number(validationArray[i]);
+            else
+                deb_string += "\t\033[31m" + QString::number(validationArray[i]);
+        }
+        deb_string += QLatin1String("\u001b[38;5;75m"); // return to default DEB
+        qDebug().noquote() << deb_string;
+    }
+private:
+    QBitArray validationArray = QBitArray(7);
+};
+
+namespace Ui {
+class NewFlightDialog;
+}
+/*!
+ * \brief The NewFlightDialog is used to add or edit entries from the flights table in the database
+ * \details NewFlightDialog offers two constructors, one is used to create a new flight entry from scratch, where the other one is used
+ * to edit an existing entry. This entry is identified by its ROW ID, which is used to retreive the entry data and pre-populate the
+ * user interface with the data from the database.
+ *
+ * The flights table is the core of the application's database and care needs to be taken when interfacing with it.
+ *
+ * To ensure only good data is written to the database, the ValidationState class is used. It contains a QBitArray with each bit representing
+ * a mandatory data point. The array is initialized to all false and progressively changed to true as entry data is validated. An entry can
+ * only be submitted if all the verification bits are set.
+ *
+ * Inputs from the user are verified with a two-step process. The first level of verification is accomplished by QRegularExpressionValidator, which limits the
+ * user to only inputting generally acceptable data (like numbers for date or time, or characters for airport identifiers). If the input
+ * passes this sanity check, the line edits emit the editingFinished() signal, which triggers a more granular and sophisticated set of input
+ * verification, broadly based on cross-checking the entered data against known good values. The ACompletionData class is used to provide
+ * QHashs of known good values from the database and their respective ROW_IDs. If user-entered data has been matched to a known good database
+ * value, the data is considered acceptable. This means that in order to, for example, log a flight with a certain Pilot, that this pilot
+ * already has to exist in the pilots table. If this is not the case, the user is prompted to add a new pilot (or aircraft) to the database
+ * before proceeding. In order to make this matching process seamless for the user, the completionData also contains a set of QStringLists
+ * for each of the database tables which are used to create QCompleters that provide pop-up completion on the respective QLineEdits.
+ *
+ * Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database,
+ * see on_buttonBox_accepted() and ADatabase::commit()
  */
 class NewFlightDialog : public QDialog
 {
     Q_OBJECT
+
 public:
+
     /*!
-     * \brief NewFlightDialog create a new flight and add it to the logbook.
+     * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to add a new flight entry to the logbook
+     * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
      */
-    explicit NewFlightDialog(ACompletionData &completion_data, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData& completion_data, QWidget *parent = nullptr);
     /*!
-     * \brief NewFlightDialog Edit an existing logbook entry.
+     * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to edit an existing entry in the logbook
+     * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
+     * \param row_id - The database ROW ID of the entry to be edited
      */
-    explicit NewFlightDialog(ACompletionData &completion_data, int row_id, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData& completion_data, RowId_T row_id, QWidget* parent = nullptr);
     ~NewFlightDialog();
 
-    /*!
-     * \brief The ValidationSetupData struct encapsulates the items required to initialise
-     * the line edits with QValidators and QCompleters
-     */
-    struct ValidationSetupData
-    {
-        ValidationSetupData(QStringList* completion_data, const QRegularExpression* validation_RegEx)
-            : completionData(completion_data), validationRegEx(validation_RegEx){};
-
-        ValidationSetupData(const QRegularExpression* validation_RegEx)
-            : completionData(nullptr), validationRegEx(validation_RegEx){};
-
-        const QStringList* completionData;
-        const QRegularExpression* validationRegEx;
-    };
-
-private slots:
-
-    void onToUpperTriggered_textChanged(const QString&);
-    void onPilotNameLineEdit_editingFinished();
-    void onLocationEditingFinished(QLineEdit*, QLabel*);
-    void onTimeLineEdit_editingFinished();
-    void onCompleter_highlighted(const QString&);
-    void onCompleter_activated(const QString &);
-    void onCalendarWidget_clicked(const QDate &date);
-    void on_doftLineEdit_editingFinished();
-    void on_cancelButton_clicked();
-    void on_submitButton_clicked();
-    void on_setAsDefaultButton_clicked();
-    void on_restoreDefaultButton_clicked();
-    void on_PilotFlyingCheckBox_stateChanged(int arg1);
-    void on_IfrCheckBox_stateChanged(int);
-    void on_manualEditingCheckBox_stateChanged(int arg1);
-    void on_ApproachComboBox_currentTextChanged(const QString &arg1);
-    void on_FunctionComboBox_currentIndexChanged(int index);
-    void on_deptLocLineEdit_editingFinished();
-    void on_destLocLineEdit_editingFinished();
-    void on_acftLineEdit_editingFinished();
-    void on_deptTZComboBox_currentIndexChanged(int index);
-    void on_destTZComboBox_currentIndexChanged(int index);
-
-    void on_calendarPushButton_clicked();
-
 private:
-    Ui::NewFlight *ui;
+    Ui::NewFlightDialog *ui;
+    ACompletionData completionData;
+    ValidationState validationState;
 
     /*!
      * \brief a AFlightEntry object that is used to store either position data
@@ -126,91 +135,68 @@ private:
      */
     AFlightEntry flightEntry;
 
-    QVector<QLineEdit*> mandatoryLineEdits;
-    QVector<QLineEdit*> primaryTimeLineEdits;
-    QVector<QLineEdit*> pilotsLineEdits;
-
     /*!
-     * \brief mandatoryLineEditsValid holds the minimum required information to create a
-     * valid database entries.
+     * \brief timeLineEdits - Line Edits for time Off Blocks and Time On Blocks
      */
-    QBitArray mandatoryLineEditsValid;
-    enum mandatoryLineEdit {
-        doft = 0,
-        dept = 1,
-        dest = 2,
-        tofb = 3,
-        tonb = 4,
-        pic  = 5,
-        acft = 6
-    };
-    void validateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, true);}
-    void invalidateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, false);}
-    bool timeLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::tofb]
-                                  && mandatoryLineEditsValid[mandatoryLineEdit::tonb];}
-    bool acftLineEditValid(){return mandatoryLineEditsValid[mandatoryLineEdit::acft];}
-    bool locLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::dept]
-                                 && mandatoryLineEditsValid[mandatoryLineEdit::dest];}
-    bool allMandatoryLineEditsValid(){return mandatoryLineEditsValid.count(true) == 7;}
-
-    //debug
-    void validationStatus();
+    static const inline QList<QLineEdit*>* timeLineEdits;
     /*!
-     * Contains completion data for QCompleters and mapping user input
+     * \brief locationLineEdits - Line Edits for Departure and Destination Airports
      */
-    ACompletionData completionData;
-
-
-    Opl::Time::FlightTimeFormat flightTimeFormat;
-
+    static const inline QList<QLineEdit*>* locationLineEdits;
     /*!
-     * \brief If the user elects to manually edit function times, automatic updating
-     * is disabled.
+     * \brief pilotNameLineEdits - Line Edits for Pilot in Command, Second in Command (Co-Pilot) and Third Pilot
      */
-    bool updateEnabled;
+    static const inline QList<QLineEdit*>* pilotNameLineEdits;
+    /*!
+     * \brief mandatoryLineEdits - Contains the Line Edits that are needed for logging a complete flight from A to B.
+     * The list is ordered like the ValidationItem enum so that indexed access is possible using the enum.
+     */
+    static const inline QList<QLineEdit*>* mandatoryLineEdits;
+    static const inline QLatin1String self = QLatin1String("self");
 
-    void setup();
-    void readSettings();
-    void setupUi();
-    void writeSettings();
-    void setupButtonGroups();
+    void init();
     void setupRawInputValidation();
     void setupSignalsAndSlots();
-    void formFiller();
-    void fillDeductibleData();
-
-    void onMandatoryLineEditsFilled();
-    void onGoodInputReceived(QLineEdit*);
-    void onBadInputReceived(QLineEdit *);
-    bool eventFilter(QObject *object, QEvent *event);
-    bool isLessOrEqualThanBlockTime(const QString time_string);
-
-    void addNewTail(QLineEdit*);
-    void addNewPilot(QLineEdit *);
+    void readSettings();
+    void fillWithEntryData();
 
     /*!
-     * \brief Collects user input from the line edits and processes it to be ready
-     * for database submission.
+     * \brief onGoodInputReceived - Sets a verification bit for the line edit that has been edited.
+     * \details When a Line Edit of the mandatoryLineEdits list is edited, on editingFinished(), the received input is
+     * evaluated and if considered a good input, the validation bit in validationState is set.
      */
-    RowData_T collectInput();
-
+    void onGoodInputReceived(QLineEdit *line_edit);
     /*!
-     * \brief converts a time string as used in the UI to an integer of minutes for
-     * use in the database based on the format in use in the Dialog
+     * \brief onBadInputReceived Unsets a verification bit for the line edit that has been edited.
+     * \details When a Line Edit of the mandatoryLineEdits list is edited, on editingFinished(), the received input is
+     * evaluated and if considered a bad input, the validation bit in validationState is unset.
      */
-    inline int stringToMinutes(const QString &time_string, Opl::Time::FlightTimeFormat format)
-    {
-        return ATime::toMinutes(ATime::fromString(time_string, format));
-    }
+    void onBadInputReceived(QLineEdit *line_edit);
 
-    /*!
-     * \brief minutesToString converts an integer of minutes as received from the database
-     * to a String to be displayed in the UI, based on the format in use in the Dialog.
-     */
-    inline QString minutesToString(const int minutes, Opl::Time::FlightTimeFormat format)
-    {
-        return ATime::toString(ATime::fromMinutes(minutes), format);
-    }
+    void updateNightCheckBoxes();
+    void setNightCheckboxes();
+    void updateBlockTimeLabel();
+
+    bool addNewTail(QLineEdit& parent_line_edit);
+    bool addNewPilot(QLineEdit& parent_line_edit);
+
+    RowData_T prepareFlightEntryData();
+
+
+private slots:
+    void toUpper(const QString& text);
+    void onTimeLineEdit_editingFinished();
+    void onPilotNameLineEdit_editingFinshed();
+    void onLocationLineEdit_editingFinished();
+    void on_acftLineEdit_editingFinished();
+    void on_doftLineEdit_editingFinished();
+    void on_buttonBox_accepted();
+    void on_pilotFlyingCheckBox_stateChanged(int arg1);
+    void on_approachComboBox_currentTextChanged(const QString &arg1);
+    void on_functionComboBox_currentIndexChanged(int index);
+protected:
+    bool eventFilter(QObject* object, QEvent* event) override;
 };
 
-#endif // NEWFLIGHT_H
+
+#endif // NewFlightDialog_H

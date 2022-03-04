@@ -25,35 +25,12 @@
 #include "src/opl.h"
 #include "src/functions/adate.h"
 
-static const auto FIRSTNAME_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("firstnameLineEdit"), QRegularExpression("[a-zA-Z]+")};
-static const auto LASTNAME_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("lastnameLineEdit"), QRegularExpression("\\w+")};
-static const auto PHONE_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("phoneLineEdit"), QRegularExpression("^[+]{0,1}[0-9\\-\\s]+")};
-static const auto EMAIL_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("emailLineEdit"), QRegularExpression("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
-                                        "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z")};
-static const auto COMPANY_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("companyLineEdit"), QRegularExpression("\\w+")};
-static const auto EMPLOYEENR_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("employeeidLineEdit"), QRegularExpression("\\w+")};
-static const auto PREFIX_VALID = QPair<QString, QRegularExpression> {
-    QStringLiteral("prefixLineEdit"), QRegularExpression("[a-zA-Z0-9]?[a-zA-Z0-9]?[a-zA-Z0-9]")};
-
-static const auto LINE_EDIT_VALIDATORS = QVector<QPair<QString, QRegularExpression>>{
-    FIRSTNAME_VALID, LASTNAME_VALID, PHONE_VALID, EMAIL_VALID,
-    COMPANY_VALID, EMPLOYEENR_VALID, PREFIX_VALID};
-
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
-
-    ui->acAllowIncompleteComboBox->hide(); // [F]: Hidden for now, thinking of removing that option
-    ui->acAllowIncompleteLabel->hide();
 
     setupComboBoxes();
     setupDateEdits();
@@ -77,20 +54,15 @@ void SettingsWidget::changeEvent(QEvent *event)
 void SettingsWidget::setupComboBoxes(){
     {
         // Style combo box
-        const QSignalBlocker blocker_style(ui->styleComboBox);
-        ui->styleComboBox->addItems(AStyle::styles);
-        for (const auto &style_sheet : AStyle::styleSheets) {
-            ui->styleComboBox->addItem(style_sheet.styleSheetName);
-        }
-        ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
-        ui->styleComboBox->model()->sort(0);
+        const QSignalBlocker style_blocker(ui->styleComboBox);
+        AStyle::loadStylesComboBox(ui->styleComboBox);
+        // Approach Combo Box and Function Combo Box
+        const QSignalBlocker approach_blocker(ui->approachComboBox);
+        Opl::loadApproachTypes(ui->approachComboBox);
+        const QSignalBlocker function_blocker(ui->functionComboBox);
+        Opl::loadPilotFunctios(ui->functionComboBox);
 
-        // Approach Combo Box
-        const QSignalBlocker blocker_approach(ui->approachComboBox);
-        for (const auto &approach : Opl::ApproachTypes)
-            ui->approachComboBox->addItem(approach);
         // Language Combo Box
-        const QSignalBlocker blocker_language(ui->languageComboBox);
         for (const auto &lang : Opl::L10N_NAMES)
             ui->languageComboBox->addItem(lang);
     }
@@ -103,18 +75,10 @@ void SettingsWidget::setupDateEdits()
     int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
     const QString date_format_string = ADate::getFormatString(
                 static_cast<Opl::Date::ADateFormat>(date_format_index));
-    // Set Up Date Format Combo Box
-    const QSignalBlocker blocker_date(ui->dateFormatComboBox);
-    for (const auto &date_format : ADate::getDisplayNames())
-        ui->dateFormatComboBox->addItem(date_format);
-    ui->dateFormatComboBox->setCurrentIndex(date_format_index);
     const auto date_edits = this->findChildren<QDateEdit*>();
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
     }
-    // De-activate non-default date settings for now, implement in future release
-    ui->dateFormatComboBox->setVisible(false);
-    ui->dateFormatLabel->setVisible(false);
     // Fill currencies
     const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
         {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
@@ -143,34 +107,28 @@ void SettingsWidget::setupDateEdits()
  */
 void SettingsWidget::readSettings()
 {
-    /*
-     * Personal Tab
-     */
-    {
-        const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
-        auto user_data = aDB->getPilotEntry(1).getData();
-        ui->lastnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_LASTNAME).toString());
-        ui->firstnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_FIRSTNAME).toString());
-        ui->companyLineEdit->setText(user_data.value(Opl::Db::PILOTS_COMPANY).toString());
-        ui->employeeidLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMPLOYEEID).toString());
-        ui->phoneLineEdit->setText(user_data.value(Opl::Db::PILOTS_PHONE).toString());
-        ui->emailLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMAIL).toString());
-    }
+    //const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
-    /*
-     * Flight Logging Tab
-     */
-    ui->aliasComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::DisplaySelfAs).toInt());
-    ui->functionComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Function).toString());
-    ui->rulesComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Rules).toString());
-    ui->approachComboBox->setCurrentText(ASettings::read(ASettings::FlightLogging::Approach).toString());
+    // Personal Data Tab
+    auto user_data = aDB->getPilotEntry(1).getData();
+    ui->lastnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_LASTNAME).toString());
+    ui->firstnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_FIRSTNAME).toString());
+    ui->companyLineEdit->setText(user_data.value(Opl::Db::PILOTS_COMPANY).toString());
+    ui->employeeidLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMPLOYEEID).toString());
+    ui->phoneLineEdit->setText(user_data.value(Opl::Db::PILOTS_PHONE).toString());
+    ui->emailLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMAIL).toString());
+
+    // FLight Logging Tab
+    ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
+    ui->rulesComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::LogIFR).toInt());
+    ui->approachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
     ui->nightComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::NightLoggingEnabled).toInt());
     ui->prefixLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
-    ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::Main::LogbookView).toInt());
 
-    /*
-     * Currencies Tab
-     */
+    ui->logbookViewComboBox->setCurrentIndex(ASettings::read(ASettings::Main::LogbookView).toInt());
+    ui->aliasComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::DisplaySelfAs).toInt());
+
+    // Currencies Tab
     ui->currToLdgCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool());
     ui->currLicCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowLicCurrency).toBool());
     ui->currTrCheckBox->setChecked(ASettings::read(ASettings::UserData::ShowTrCurrency).toBool());
@@ -181,41 +139,44 @@ void SettingsWidget::readSettings()
     ui->currCustom1LineEdit->setText(ASettings::read(ASettings::UserData::Custom1CurrencyName).toString());
     ui->currCustom2LineEdit->setText(ASettings::read(ASettings::UserData::Custom2CurrencyName).toString());
 
-    /*
-     * Misc Tab
-     */
+    // Misc Tab
     ui->acftSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
-    //ui->acAllowIncompleteComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::AcftAllowIncomplete).toInt());
-    {
-        // Block style widgets signals to not trigger style changes during UI setup
-        const QSignalBlocker style_blocker(ui->styleComboBox);
-        const QSignalBlocker font_blocker1(ui->fontSpinBox);
-        const QSignalBlocker font_blocker2(ui->fontComboBox);
-        const QSignalBlocker font_blocker3(ui->fontCheckBox);
-        ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
-        ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
-        ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
-        bool use_system_font = ASettings::read(ASettings::Main::UseSystemFont).toBool();
-        ui->fontCheckBox->setChecked(use_system_font);
-        if (!use_system_font) {
-            ui->fontComboBox->setEnabled(true);
-            ui->fontSpinBox->setEnabled(true);
-        }
+
+    // Don't emit signals for style changes during setup
+    const QSignalBlocker style_blocker(ui->styleComboBox);
+    const QSignalBlocker font_blocker_1(ui->fontSpinBox);
+    const QSignalBlocker font_blocker_2(ui->fontComboBox);
+    const QSignalBlocker font_blocker_3(ui->fontCheckBox);
+
+    ui->styleComboBox->setCurrentText(ASettings::read(ASettings::Main::Style).toString());
+    ui->fontSpinBox->setValue(ASettings::read(ASettings::Main::FontSize).toUInt());
+    ui->fontComboBox->setCurrentFont(QFont(ASettings::read(ASettings::Main::Font).toString()));
+    bool use_system_font = ASettings::read(ASettings::Main::UseSystemFont).toBool();
+    ui->fontCheckBox->setChecked(use_system_font);
+    if (!use_system_font) {
+        ui->fontComboBox->setEnabled(true);
+        ui->fontSpinBox->setEnabled(true);
     }
 }
 
 void SettingsWidget::setupValidators()
 {
-    // DEB << "Setting up Validators...";
-    for(const auto& pair : LINE_EDIT_VALIDATORS){
-        auto line_edit = parent()->findChild<QLineEdit*>(pair.first);
-        if(line_edit != nullptr){
-            auto validator = new QRegularExpressionValidator(pair.second,line_edit);
-            line_edit->setValidator(validator);
-        }else{
-            DEB << "Error: Line Edit not found: "<< pair.first << " - skipping.";
-        }
+    const QHash<QLineEdit*, QRegularExpression> validator_map = {
+        {ui->firstnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
+        {ui->lastnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
+        {ui->phoneLineEdit, QRegularExpression(QLatin1String("^[+]{0,1}[0-9\\-\\s]+"))},
+        {ui->emailLineEdit, QRegularExpression(QLatin1String("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z"))},
+        {ui->companyLineEdit, QRegularExpression(QLatin1String("\\w+"))},
+        {ui->employeeidLineEdit, QRegularExpression(QLatin1String("\\w+"))},
+        {ui->prefixLineEdit, QRegularExpression(QLatin1String("\\w+"))},
+    };
+
+    QHash<QLineEdit*, QRegularExpression>::const_iterator i;
+    for (i = validator_map.constBegin(); i != validator_map.constEnd(); ++i) {
+        auto validator = new QRegularExpressionValidator(i.value(),i.key());
+        i.key()->setValidator(validator);
     }
 }
 
@@ -236,7 +197,7 @@ void SettingsWidget::updatePersonalDetails()
         QString name;
         name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().leftRef(1));
+        name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
         user_data.insert(Opl::Db::PILOTS_ALIAS, name);
     }
@@ -256,11 +217,6 @@ void SettingsWidget::updatePersonalDetails()
 
     aDB->commit(user);
 }
-
-/*
- * Slots
- */
-
 
 /*
  * Personal Tab
@@ -306,17 +262,17 @@ void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
     updatePersonalDetails();
 }
 
-void SettingsWidget::on_functionComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_functionComboBox_currentIndexChanged(int arg1)
 {
     ASettings::write(ASettings::FlightLogging::Function, arg1);
 }
 
-void SettingsWidget::on_rulesComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_rulesComboBox_currentIndexChanged(int arg1)
 {
-    ASettings::write(ASettings::FlightLogging::Rules, arg1);
+    ASettings::write(ASettings::FlightLogging::LogIFR, arg1);
 }
 
-void SettingsWidget::on_approachComboBox_currentIndexChanged(const QString &arg1)
+void SettingsWidget::on_approachComboBox_currentIndexChanged(int arg1)
 {
     ASettings::write(ASettings::FlightLogging::Approach, arg1);
 }
@@ -363,28 +319,6 @@ void SettingsWidget::on_acftSortComboBox_currentIndexChanged(int index)
     emit settingChanged(AircraftWidget);
 }
 
-QT_DEPRECATED
-void SettingsWidget::on_acAllowIncompleteComboBox_currentIndexChanged(int index)
-{
-    ASettings::write(ASettings::UserData::AcftAllowIncomplete, index);
-    if (index) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::warning(this, tr("Warning"),
-                                      tr("Enabling incomplete logging will enable you to add aircraft with incomplete data.<br><br>"
-                                      "If you do not fill out the aircraft details, "
-                                      "it will be impossible to automatically determine Single/Multi Pilot Times or Single/Multi Engine Time. "
-                                      "This will also impact statistics and auto-logging capabilites as well as jeopardise database integrity.<br><br>"
-                                      "It is highly recommended to keep this option off unless you have a specific reason not to.<br><br>"
-                                      "Are you sure you want to proceed?"),
-                                      QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes) {
-            ASettings::write(ASettings::UserData::AcftAllowIncomplete, index);
-        } else {
-            ui->acAllowIncompleteComboBox->setCurrentIndex(0);
-        }
-    }
-}
-
 /*
  * About Tab
  */
@@ -402,7 +336,7 @@ void SettingsWidget::on_aboutPushButton_clicked()
 
                        "<h3><center>About openPilotLog</center></h3>"
                        "<br>"
-                       "&#169; 2020-2021 Felix Turowsky"
+                       "&#169; 2020 - 2022 Felix Turowsky"
                        "<br>"
                        "<p>This is a collaboratively developed Free and Open Source Application. "
                        "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
@@ -685,23 +619,13 @@ void SettingsWidget::on_currCustom2LineEdit_editingFinished()
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }
 
-void SettingsWidget::on_dateFormatComboBox_currentIndexChanged(int index)
+void SettingsWidget::on_languageComboBox_activated(int arg1)
 {
-    ASettings::write(ASettings::Main::DateFormat, index);
-    const auto date_edits = this->findChildren<QDateEdit*>();
-    for (const auto & date_edit : date_edits) {
-        date_edit->setDisplayFormat(
-                    ADate::getFormatString(
-                        static_cast<Opl::Date::ADateFormat>(ASettings::read(ASettings::Main::DateFormat).toInt())));
-    }
-}
-
-void SettingsWidget::on_languageComboBox_activated(const QString &arg1)
-{
-    if (arg1 != Opl::L10N_NAMES[Opl::Translations::English]) {
+    if (arg1 != 0) {
         INFO(tr("Translations are not yet available. If you are interested in making openPilotLog available in your native "
              "language, visit us <a href=\"https://%1/\">here</a> for more information."
              ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
         ui->languageComboBox->setCurrentIndex(0);
     }
 }
+

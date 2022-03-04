@@ -25,6 +25,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include "src/functions/alog.h"
+#include "src/functions/atime.h"
 /*!
  * \brief The ACalc namespace provides various functions for calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
@@ -32,93 +33,6 @@
  */
 
 namespace ACalc {
-
-/*!
- * \brief ACalc::blocktime Calculates Block Time for a given departure and arrival time
- * \param tofb QTime Time Off Blocks
- * \param tonb QTime Time On Blocks
- * \return Block Time in minutes
- */
-QT_DEPRECATED
-inline QTime blocktime(QTime tofb, QTime tonb)
-{
-    QTime blocktime_out(0, 0); // initialise return value at midnight
-
-    if (tonb > tofb) { // landing same day
-        int blockseconds = tofb.secsTo(tonb);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
-    } else { // landing next day
-        QTime midnight(0, 0);
-        int blockseconds = tofb.secsTo(midnight);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
-        blockseconds = midnight.secsTo(tonb);
-        blocktime_out = blocktime_out.addSecs(blockseconds);
-    }
-    return blocktime_out;
-}
-/*!
- * \brief ACalc::minutes_to_string Converts database time to String Time
- * \param blockminutes from database
- * \return String hh:mm
- */
-QT_DEPRECATED
-inline QString minutesToString(QString block_minutes)
-{
-    int minutes = block_minutes.toInt();
-    QString hour = QString::number(minutes / 60);
-    if (hour.size() < 2) {
-        hour.prepend("0");
-    }
-    QString minute = QString::number(minutes % 60);
-    if (minute.size() < 2) {
-        minute.prepend("0");
-    }
-    QString block_time = hour + ":" + minute;
-    return block_time;
-};
-
-QT_DEPRECATED
-inline QString minutesToString(int block_minutes)
-{
-    QString hour = QString::number(block_minutes / 60);
-    if (hour.size() < 2) {
-        hour.prepend("0");
-    }
-    QString minute = QString::number(block_minutes % 60);
-    if (minute.size() < 2) {
-        minute.prepend("0");
-    }
-    QString blocktime = hour + ":" + minute;
-    return blocktime;
-};
-
-/*!
- * \brief ACalc::time_to_minutes converts QTime to int minutes
- * \param time QTime
- * \return int time as number of minutes
- */
-QT_DEPRECATED
-inline int QTimeToMinutes(QTime time)
-{
-    QString timestring = time.toString("hh:mm");
-    int minutes = (timestring.left(2).toInt()) * 60;
-    minutes += timestring.right(2).toInt();
-    return minutes;
-}
-
-/*!
- * \brief ACalc::string_to_minutes Converts String Time to String Number of Minutes
- * \param timestring "hh:mm"
- * \return String number of minutes
- */
-QT_DEPRECATED
-inline int stringToMinutes(QString timestring)
-{
-    int minutes = (timestring.left(2).toInt()) * 60;
-    minutes += timestring.right(2).toInt();
-    timestring = QString::number(minutes);
-    return minutes;
-}
 
 /*!
  * \brief radToDeg Converts radians to degrees
@@ -224,6 +138,53 @@ QString formatTimeInput(QString user_input);
 void updateAutoTimes(int acft_id);
 
 void updateNightTimes();
+
+/*!
+ * \brief The NightTimeValues struct encapsulates values relating to night time that are needed by the NewFlightDialog
+ */
+struct NightTimeValues{
+    NightTimeValues() = delete;
+    NightTimeValues(const QString& dept, const QString& dest, const QDateTime& departure_time, int block_minutes, int night_angle)
+    {
+        nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
+
+        nightTime = ATime::qTimefromMinutes(nightMinutes);
+        totalTime = ATime::qTimefromMinutes(block_minutes);
+
+        if (nightMinutes == 0) { // all day
+            takeOffNight = false;
+            landingNight  = false;
+        }
+        else if (nightMinutes == block_minutes) { // all night
+            takeOffNight = true;
+            landingNight  = true;
+        } else {
+            if(isNight(dept, departure_time,  night_angle))
+                takeOffNight = true;
+            else
+                takeOffNight = false;
+            if(isNight(dest, departure_time.addSecs(block_minutes * 60), night_angle))
+                landingNight = true;
+            else
+                landingNight = false;
+        }
+
+    };
+    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, QTime night_time, QTime total_time)
+        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes), nightTime(night_time), totalTime(total_time){};
+    bool takeOffNight;
+    bool landingNight;
+    int nightMinutes;
+    QTime nightTime;
+    QTime totalTime;
+
+    inline bool isAllDay()      {return (!takeOffNight  && !landingNight);}
+    inline bool isAllNight()    {return ( takeOffNight  &&  landingNight);}
+    inline bool isDayToNight()  {return (!takeOffNight  &&  landingNight);}
+    inline bool isNightToDay()  {return ( takeOffNight  && !landingNight);}
+};
+
+
 } // namespace ACalc
 
 #endif // ACALC_H

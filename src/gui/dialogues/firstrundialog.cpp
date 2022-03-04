@@ -17,6 +17,7 @@
  */
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
+#include "src/opl.h"
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/gui/widgets/backupwidget.h"
@@ -24,14 +25,13 @@
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
-#include "src/opl.h"
 #include "src/functions/adate.h"
-#include <QErrorMessage>
-#include <QFileDialog>
-#include <QKeyEvent>
 #include "src/classes/astyle.h"
 #include "src/functions/adatetime.h"
 #include "src/classes/ahash.h"
+#include <QErrorMessage>
+#include <QFileDialog>
+#include <QKeyEvent>
 
 FirstRunDialog::FirstRunDialog(QWidget *parent) :
     QDialog(parent),
@@ -43,31 +43,21 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->previousPushButton->setEnabled(false);
     ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
 
-    // approach Combo Box
-    for (const auto &approach : Opl::ApproachTypes){
-        ui->approachComboBox->addItem(approach);
-    }
+    // Approach Combo Box and Function Combo Box
+    Opl::loadApproachTypes(ui->approachComboBox);
+    Opl::loadPilotFunctios(ui->functionComboBox);
+
     // Style combo box
-    const QSignalBlocker blocker_style(ui->styleComboBox);
-    ui->styleComboBox->addItems(AStyle::styles);
-    for (const auto &style_sheet : AStyle::styleSheets) {
-        ui->styleComboBox->addItem(style_sheet.styleSheetName);
-    }
-    ui->styleComboBox->addItem(QStringLiteral("Dark-Palette"));
-    ui->styleComboBox->model()->sort(0);
+    const QSignalBlocker style_blocker(ui->styleComboBox);
+    AStyle::loadStylesComboBox(ui->styleComboBox);
     ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+
     // Prepare Date Edits
-    dateEdits = this->findChildren<QDateEdit *>();
-    for (const auto &date_format : ADate::getDisplayNames())
-        ui->dateFormatComboBox->addItem(date_format);
-    // Set Date Edits for currencies
-    for (const auto &date_edit : qAsConst(dateEdits)) {
-        date_edit->setDisplayFormat(
-                    ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
+    const auto date_edits = this->findChildren<QDateEdit *>();
+    for (const auto &date_edit : date_edits) {
+        date_edit->setDisplayFormat(ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
-    // De-activate non-default date formats for now, implement in future version
-    ui->dateFormatComboBox->setVisible(false);
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
     ui->branchLineEdit->setVisible(false);
 }
@@ -79,7 +69,7 @@ FirstRunDialog::~FirstRunDialog()
 
 void FirstRunDialog::on_previousPushButton_clicked()
 {
-    auto current_index = ui->stackedWidget->currentIndex();
+    const int current_index = ui->stackedWidget->currentIndex();
     switch (current_index) {
     case 0:
         return;
@@ -96,13 +86,13 @@ void FirstRunDialog::on_previousPushButton_clicked()
 
 void FirstRunDialog::on_nextPushButton_clicked()
 {
-    auto current_index = ui->stackedWidget->currentIndex();
+    const int current_index = ui->stackedWidget->currentIndex();
     switch (current_index) {
     case 0:
         if(ui->firstnameLineEdit->text().isEmpty()
            || ui->lastnameLineEdit->text().isEmpty())
         {
-            QMessageBox(QMessageBox::Warning, tr("Error"),
+            QMessageBox(QMessageBox::Information, tr("No name entered"),
                         tr("Please enter first and last name")
                         ).exec();
             return;
@@ -217,10 +207,7 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
-
         DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
-        DEB << "To:" << AStandardPaths::directory(AStandardPaths::Templates);
-
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
@@ -237,8 +224,7 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
 
-        DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
-        DEB << "To:" << AStandardPaths::directory(AStandardPaths::Templates);
+        LOG << "Downloading: " << template_url_string + table + QLatin1String(".md5");
 
         dl->download();
         dl->deleteLater();
@@ -254,7 +240,6 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 
 bool FirstRunDialog::verifyTemplates()
 {
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
     const auto table_names = aDB->getTemplateTableNames();
     for (const auto &table_name : table_names) {
         const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
@@ -272,37 +257,24 @@ bool FirstRunDialog::verifyTemplates()
 void FirstRunDialog::writeSettings()
 {
     ASettings::resetToDefaults();
-    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentText());
+
+    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
-    switch (ui->nightComboBox->currentIndex()) {
-    case 0:
-        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
-        break;
-    case 1:
-        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, false);
-        break;
-    default:
-        ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, true);
-        break;
-    }
+    ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
     switch (ui->nightRulesComboBox->currentIndex()) {
     case 0:
-        ASettings::write(ASettings::FlightLogging::NightAngle, 6);
+        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
         break;
     case 1:
         ASettings::write(ASettings::FlightLogging::NightAngle, 0);
         break;
-
     }
     ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
     ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
-    ASettings::write(ASettings::FlightLogging::FlightTimeFormat, Opl::Time::Default);
     ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
     ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
-
     ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
-    QSettings settings;
-    settings.sync();
+    ASettings::sync();
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -344,7 +316,7 @@ bool FirstRunDialog::setupDatabase()
 
 bool FirstRunDialog::createUserEntry()
 {
-    QMap<QString, QVariant> data;
+    QHash<QString, QVariant> data;
     data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
     data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
     data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));
@@ -385,14 +357,13 @@ void FirstRunDialog::reject()
 {
     QMessageBox confirm(QMessageBox::Critical,
                                tr("Setup incomplete"),
-                               tr("Without completing the initial setup"
-                                              " you cannot use the application.<br><br>"
-                                              "Quit anyway?"),
+                               tr("Without completing the initial setup "
+                                  "you cannot use the application.<br><br>"
+                                  "Quit anyway?"),
                                QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
     if (confirm.exec() == QMessageBox::Yes) {
-        DEB << "rejected.";
         QDialog::reject();
     }
 }
@@ -409,22 +380,18 @@ void FirstRunDialog::keyPressEvent(QKeyEvent *keyEvent)
 
 void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
 {
-    DEB << "style selected:"<<new_style_setting;
     if (new_style_setting == QLatin1String("Dark-Palette")) {
-        //DEB << "Palette";
         AStyle::setStyle(AStyle::darkPalette());
         return;
     }
     for (const auto &style_name : AStyle::styles) {
         if (new_style_setting == style_name) {
-            //DEB << "style";
             AStyle::setStyle(style_name);
             return;
         }
     }
     for (const auto &style_sheet : AStyle::styleSheets) {
         if (new_style_setting == style_sheet.styleSheetName) {
-            //DEB << "stylesheet";
             AStyle::setStyle(style_sheet);
             return;
         }
@@ -439,17 +406,6 @@ void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 {
     ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
-}
-
-void FirstRunDialog::on_dateFormatComboBox_currentIndexChanged(int index)
-{
-    Opl::Date::ADateFormat format = (Opl::Date::ADateFormat)index;
-
-    for (const auto &date_edit : qAsConst(dateEdits)) {
-        date_edit->setDisplayFormat(
-                    ADate::getFormatString(format));
-    }
-    ASettings::write(ASettings::Main::DateFormat, index);
 }
 
 void FirstRunDialog::on_importPushButton_clicked()

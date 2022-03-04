@@ -67,14 +67,15 @@ void init()
     //ATranslator::installTranslator(Opl::Translations::English);
 }
 
-void firstRun()
+bool firstRun()
 {
     if(FirstRunDialog().exec() == QDialog::Rejected){
         LOG << "Initial setup incomplete or unsuccessfull.";
-        return;
+        return false;
     }
     ASettings::write(ASettings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
+    return true;
 }
 } // namespace Main
 
@@ -97,7 +98,8 @@ int main(int argc, char *argv[])
 
     // Check for First Run and launch Setup Wizard
     if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
-        Main::firstRun();
+        if(!Main::firstRun())
+            return 0;
 
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;

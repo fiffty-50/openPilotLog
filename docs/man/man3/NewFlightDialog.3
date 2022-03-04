@@ -1,56 +1,81 @@
-.TH "NewFlightDialog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "NewFlightDialog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-NewFlightDialog
+NewFlightDialog \- The \fBNewFlightDialog\fP is used to add or edit entries from the flights table in the database\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <newflightdialog\&.h>\fP
 .PP
 Inherits QDialog\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBNewFlightDialog\fP (QWidget *parent=nullptr)"
+.RI "\fBNewFlightDialog\fP (\fBACompletionData\fP &completion_data, QWidget *parent=nullptr)"
 .br
-.RI "\fBNewFlightDialog\fP create a new flight and add it to the logbook\&. "
+.RI "\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to add a new flight entry to the logbook\&. "
 .ti -1c
-.RI "\fBNewFlightDialog\fP (int row_id, QWidget *parent=nullptr)"
+.RI "\fBNewFlightDialog\fP (\fBACompletionData\fP &completion_data, RowId_T row_id, QWidget *parent=nullptr)"
 .br
-.RI "\fBNewFlightDialog\fP Edit an existing logbook entry\&. "
+.RI "\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to edit an existing entry in the logbook\&. "
 .in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBeventFilter\fP (QObject *object, QEvent *event) override"
+.br
+.RI "\fBNewFlightDialog::eventFilter\fP invalidates mandatory line edits on focus in\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBNewFlightDialog\fP is used to add or edit entries from the flights table in the database\&. 
+
+\fBNewFlightDialog\fP offers two constructors, one is used to create a new flight entry from scratch, where the other one is used to edit an existing entry\&. This entry is identified by its ROW ID, which is used to retreive the entry data and pre-populate the user interface with the data from the database\&.
+.PP
+The flights table is the core of the application's database and care needs to be taken when interfacing with it\&.
+.PP
+To ensure only good data is written to the database, the \fBValidationState\fP class is used\&. It contains a QBitArray with each bit representing a mandatory data point\&. The array is initialized to all false and progressively changed to true as entry data is validated\&. An entry can only be submitted if all the verification bits are set\&.
+.PP
+Inputs from the user are verified with a two-step process\&. The first level of verification is accomplished by QRegularExpressionValidator, which limits the user to only inputting generally acceptable data (like numbers for date or time, or characters for airport identifiers)\&. If the input passes this sanity check, the line edits emit the editingFinished() signal, which triggers a more granular and sophisticated set of input verification, broadly based on cross-checking the entered data against known good values\&. The \fBACompletionData\fP class is used to provide QHashs of known good values from the database and their respective ROW_IDs\&. If user-entered data has been matched to a known good database value, the data is considered acceptable\&. This means that in order to, for example, log a flight with a certain Pilot, that this pilot already has to exist in the pilots table\&. If this is not the case, the user is prompted to add a new pilot (or aircraft) to the database before proceeding\&. In order to make this matching process seamless for the user, the completionData also contains a set of QStringLists for each of the database tables which are used to create QCompleters that provide pop-up completion on the respective QLineEdits\&.
+.PP
+Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database, see on_buttonBox_accepted() and \fBADatabase::commit()\fP 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "NewFlightDialog::NewFlightDialog (QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+.SS "NewFlightDialog::NewFlightDialog (\fBACompletionData\fP & completion_data, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
 
 .PP
-\fBNewFlightDialog\fP create a new flight and add it to the logbook\&. Construction ///\&.
+\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to add a new flight entry to the logbook\&. 
 .PP
-[F] The general idea for this dialog is this:
-.IP "\(bu" 2
-Most line edits have validators and completers\&.
-.IP "\(bu" 2
-Validators are based on regular expressions, serving as raw input validation
-.IP "\(bu" 2
-The Completers are based off the database and provide auto-completion
-.IP "\(bu" 2
-mandatory line edits only emit editing finished if their content has passed raw input validation or focus is lost\&.
-.IP "\(bu" 2
-Editing finished triggers validating inputs by mapping them to Database values where required and results in either pass or fail\&.
-.IP "\(bu" 2
-A QBitArray is mainained containing the state of validity of the mandatory line edits
-.IP "\(bu" 2
-The deducted entries are automatically filled if all mandatory entries are valid\&.
-.IP "\(bu" 2
-Comitting an entry to the database is only allowed if all mandatory inputs are valid\&.
+\fBParameters\fP
+.RS 4
+\fIcompletion_data\fP - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn 
+.RE
 .PP
+
+.SS "NewFlightDialog::NewFlightDialog (\fBACompletionData\fP & completion_data, RowId_T row_id, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
 .PP
-if the user presses 'OK', check if all mandatory inputs are valid, check if optional user inputs are valid and commit\&.
+\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to edit an existing entry in the logbook\&. 
 .PP
-For the completion and mapping, I have settled on a more low-level approach using Completers based on QStringLists and mapping with QMaps\&.
+\fBParameters\fP
+.RS 4
+\fIcompletion_data\fP - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn 
+.br
+\fIrow_id\fP - The database ROW ID of the entry to be edited 
+.RE
 .PP
-I implemented the Completers and mapping based on a QSqlTableModel which would have been quite nice, since it would keep all data in one place, providing both completion and mapping in one model\&. But as we have seen before with the more high-level qt classes, they are quite slow on execution when used for tasks they were probably not designed to do\&. Mapping a registration to an ID for example took around 300ms, which is very noticeable in the UI and not an acceptable user experience\&. Using QStringLists and QMaps this goes down to around 5ms\&. 
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool NewFlightDialog::eventFilter (QObject * object, QEvent * event)\fC [override]\fP, \fC [protected]\fP"
+
+.PP
+\fBNewFlightDialog::eventFilter\fP invalidates mandatory line edits on focus in\&. Some of the QLineEdits have validators set that provide raw input validation\&. These validators have the side effect that if an input does not meet the raw input validation criteria, onEditingFinished() is not emitted when the line edit loses focus\&. This could lead to a line edit that previously had good input to be changed to bad input without the validation bit in validationState being unset, because the second step of input validation is only triggered when editingFinished() is emitted\&. 
 
 .SH "Author"
 .PP 

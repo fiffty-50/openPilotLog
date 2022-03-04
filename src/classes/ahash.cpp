@@ -25,8 +25,8 @@ AHash::AHash(QFileInfo &file_info)
         QCryptographicHash hash(QCryptographicHash::Md5);
         if (hash.addData(&f)) {
             checksum = hash.result();
-            DEB << "File: " << f;
-            DEB << "Hash: " << hash.result().toHex();
+            //DEB << "File: " << f.fileName();
+            //DEB << "Hash: " << hash.result().toHex();
         } else {
             checksum = QByteArray();
         }
@@ -43,7 +43,6 @@ bool AHash::compare(QFileInfo &md5_file)
     if (f.open(QFile::ReadOnly)) {
         QTextStream in(&f);
         const QString hash_string = in.read(32);
-        DEB << "Checksum:" << hash_string;
 
         // Verify checksum is not empty and compare to md5 read from file
         if (checksum == QByteArray())
@@ -51,8 +50,12 @@ bool AHash::compare(QFileInfo &md5_file)
         else
             if (checksum.toHex() == hash_string)
                 return true;
-            else
+            else {
+                LOG << QString("Checksum for %1 invalid. Calculated: %2 - Hash: %3").arg(f.fileName(),
+                                                                                         QString(checksum.toHex()),
+                                                                                         hash_string);
                 return false;
+            }
     }
     return false;
 }

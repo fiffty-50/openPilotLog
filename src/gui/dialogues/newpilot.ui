@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>230</width>
+    <height>252</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,12 @@
    </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="lastnameLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>40</number>
      </property>
@@ -37,6 +43,12 @@
    </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="firstnameLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>40</number>
      </property>
@@ -51,6 +63,12 @@
    </item>
    <item row="2" column="1">
     <widget class="QLineEdit" name="companyLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>69</number>
      </property>
@@ -65,6 +83,12 @@
    </item>
    <item row="3" column="1">
     <widget class="QLineEdit" name="aliasLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>40</number>
      </property>
@@ -79,6 +103,12 @@
    </item>
    <item row="4" column="1">
     <widget class="QLineEdit" name="employeeidLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -96,6 +126,12 @@
    </item>
    <item row="5" column="1">
     <widget class="QLineEdit" name="phoneLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>40</number>
      </property>
@@ -110,6 +146,12 @@
    </item>
    <item row="6" column="1">
     <widget class="QLineEdit" name="emailLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>140</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maxLength">
       <number>40</number>
      </property>

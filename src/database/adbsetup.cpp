@@ -241,7 +241,7 @@ const auto CREATE_VIEW_TOTALS = QLatin1String("CREATE VIEW viewTotals AS "
         " CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
         " FROM flights");
 
-const QStringList DATABASE_TABLES = {
+const QList<QLatin1String> DATABASE_TABLES = {
     CREATE_TABLE_PILOTS,
     CREATE_TABLE_TAILS,
     CREATE_TABLE_FLIGHTS,
@@ -250,13 +250,25 @@ const QStringList DATABASE_TABLES = {
     CREATE_TABLE_CURRENCIES,
     CREATE_TABLE_CHANGELOG
 };
-const QStringList DATABASE_VIEWS = {
+const QList<QLatin1String> DATABASE_VIEWS = {
     CREATE_VIEW_DEFAULT,
     CREATE_VIEW_EASA,
     CREATE_VIEW_TAILS,
     CREATE_VIEW_PILOTS,
     CREATE_VIEW_TOTALS,
     CREATE_VIEW_QCOMPLETER,
+};
+
+const QList<QLatin1String> USER_TABLES = {
+    QLatin1String("flights"),
+    QLatin1String("pilots"),
+    QLatin1String("tails")
+};
+const QList<QLatin1String> TEMPLATE_TABLES= {
+    QLatin1String("aircraft"),
+    QLatin1String("airports"),
+    QLatin1String("currencies"),
+    QLatin1String("changelog")
 };
 
 bool createDatabase()
@@ -366,6 +378,20 @@ bool importTemplateData(bool use_local_ressources)
             return false;
         }
     } // for table_name
+    return true;
+}
+
+bool resetUserData()
+{
+    QSqlQuery query;
+
+    // clear user tables
+    for (const auto& table : USER_TABLES) {
+        query.prepare("DELETE FROM " + table);
+        if (!query.exec()) {
+            DEB << "Error: " << query.lastError().text();
+        }
+    }
     return true;
 }
 

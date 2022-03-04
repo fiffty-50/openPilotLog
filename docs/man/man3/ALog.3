@@ -1,4 +1,4 @@
-.TH "ALog" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ALog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -46,10 +46,6 @@ Credits to \fCAndy Dunkel\fP for his excellent blog post on Qt Log File Rotation
 
 .PP
 aMessageHandler Intercepts Messages and prints to console and log file The message handler is responsible for intercepting the output from qDebug(), qInfo(), qWarning() and qCritical(), formatting them and printing them to the standard console out and to a logfile using QTextStream\&. Debug messages are not written to the log file\&. 
-.SS "void ALog::deleteOldLogs ()"
-
-.PP
-Cleans up old logs and initializes logging by preparing and installing a QMessageHandler\&. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for openPilotLog from the source code\&.

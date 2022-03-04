@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QFile>
 #include <QKeyEvent>
+#include <QToolBar>
 
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
@@ -49,6 +50,40 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+/*!
+ * \brief The MainWindow contains a QStackedWidget and a QToolBar as the main User Interface.
+ * \details The Tool bar contains shortcuts to the different widgets, which are on selection set active on the stacked main widget.
+ * For a detailed description of what each widget does, please refer to the documentation for each widget. This is only a short synopsis:
+ *
+ * # HomeWidget
+ *
+ * The home widget displays the total amount of hours for all logged flights, seperated into different categories. It also enables keeping track
+ * of currencies and license expiries
+ *
+ * # New Flight
+ *
+ * Opens a NewFlightDialog which can be used to submit a new flight to the database.
+ *
+ * # Logboook
+ *
+ * Shows a view of the logbook table in a QTableView and enables editing the entries by spawning a child NewFlightDialog with the details for a selected flight.
+ *
+ * # Aircraft
+ *
+ * Shows a view of the tails table in a QTableView and enables editing the entries by spawning a child NewTailDialog with the details for a selected tail.
+ *
+ * # Pilots
+ *
+ * Shows a view of the pilots table in a QTableView and enables editing the entries by spawning a child NewPilotDialog with the details for a selected pilot.
+ *
+ * # Backup
+ *
+ * Enables backing up and restoring the database.
+ *
+ * # Settings
+ *
+ * Enables changing application settings
+*/
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -67,11 +102,7 @@ private slots:
 
     void on_actionAircraft_triggered();
 
-    //void on_actionNewAircraft_triggered();
-
     void on_actionPilots_triggered();
-
-    //void on_actionNewPilot_triggered();
 
     void on_actionBackup_triggered();
 
@@ -125,6 +156,21 @@ protected:
                 doDebugStuff();
             }
         }
+    }
+
+    /*!
+     * \brief resizeEvent Resize the Toolbar's icon size to match the window height
+     */
+    void resizeEvent(QResizeEvent *event) override
+    {
+        int icon_size;
+        if (this->height() < 780)
+            icon_size = (this->height() / 13);
+        else
+            icon_size = (this->height() / 12);
+
+        auto tool_bar = this->findChild<QToolBar*>();
+        tool_bar->setIconSize(QSize(icon_size, icon_size));
     }
 };
 #endif // MAINWINDOW_H

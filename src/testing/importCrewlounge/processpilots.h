@@ -2,7 +2,7 @@
 #define PROCESSPILOTS_H
 #include <QtCore>
 #include <src/opl.h>
-#include <QMap>
+#include <QHash>
 #include <QVector>
 
 class ProcessPilots
@@ -16,8 +16,8 @@ public:
         processParsedData();
     };
 
-    QMap<QString, QMap<QString, QVariant> > getProcessedPilotMaps() const;
-    QMap<QString, int> getProcessedPilotsIds() const;
+    QHash<QString, QHash<QString, QVariant> > getProcessedPilotMaps() const;
+    QHash<QString, int> getProcessedPilotsIds() const;
 
 private:
 
@@ -32,10 +32,10 @@ private:
      *
      * \details Here, the imported pilots are stored after having been read from the CSV file.
      * The key is the original string as it was originally in the PILOT_NAME field and allows
-     * mapping the data to ID's later on. The value is a QMap<QString, QVariant> and contains
+     * mapping the data to ID's later on. The value is a QHash<QString, QVariant> and contains
      * the data processed as it will be represented in the OPL database later on.
      */
-    QMap<QString, QMap<QString, QVariant>> processedPilotMaps;
+    QHash<QString, QHash<QString, QVariant>> processedPilotHashes;
 
     /*!
      * \brief processedPilotsIds Holds a map of the ids that have been given to the processed pilots
@@ -43,7 +43,7 @@ private:
      * \details The pilot data, once processed is held in processedPilotMaps. With processePilotsIds it
      * is possible to map the original String to the PilotID that has been assigned during the parsing process.
      */
-    QMap<QString, int> processedPilotsIds;
+    QHash<QString, int> processedPilotsIds;
 };
 
 #endif // PROCESSPILOTS_H

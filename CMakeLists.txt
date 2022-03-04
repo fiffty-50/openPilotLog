@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_MIN_VERSION "5.5.1")
@@ -39,7 +39,6 @@ set(PROJECT_SOURCES
     src/classes/ajson.cpp
     src/classes/ahash.cpp
     src/database/adatabase.cpp
-    src/database/adatabasesetup.cpp
     src/database/adbsetup.cpp
     src/functions/acalc.cpp
     src/functions/alog.cpp
@@ -77,7 +76,6 @@ set(PROJECT_SOURCES
     src/classes/ajson.h
     src/classes/ahash.h
     src/database/adatabase.h
-    src/database/adatabasesetup.h
     src/database/adbsetup.h
     src/database/adatabasetypes.h
     src/functions/acalc.h
@@ -102,7 +100,7 @@ set(PROJECT_SOURCES
     
     mainwindow.ui
     src/gui/dialogues/firstrundialog.ui
-    src/gui/dialogues/newflight.ui
+    src/gui/dialogues/newflightdialog.ui
     src/gui/dialogues/newpilot.ui
     src/gui/dialogues/newtail.ui
     src/gui/widgets/aircraftwidget.ui

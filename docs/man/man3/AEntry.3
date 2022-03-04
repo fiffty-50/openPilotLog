@@ -1,4 +1,4 @@
-.TH "AEntry" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "AEntry" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -36,11 +36,15 @@ Inherited by \fBAAircraftEntry\fP, \fBACurrencyEntry\fP, \fBAFlightEntry\fP, \fB
 .RI "void \fBsetPosition\fP (\fBDataPosition\fP position_)"
 .br
 .ti -1c
-.RI "const \fBDataPosition\fP & \fBgetPosition\fP ()"
+.RI "const \fBDataPosition\fP & \fBgetPosition\fP () const"
 .br
 .ti -1c
-.RI "const RowData_T & \fBgetData\fP ()"
+.RI "const RowData_T & \fBgetData\fP () const"
 .br
+.ti -1c
+.RI "\fBoperator QString\fP () const"
+.br
+.RI "operator QString provides compatibilty with QDebug() - prints the tableData in a readable formatting to stdout "
 .in -1c
 .SS "Public Attributes"
 

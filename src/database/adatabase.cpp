@@ -35,27 +35,11 @@ const QStringList ADatabase::templateTableNames = {
     QStringLiteral("changelog")
 };
 
-
-ADatabaseError::ADatabaseError(QString msg_)
-    : QSqlError::QSqlError(QString(), msg_, QSqlError::UnknownError, QLatin1String("opl"))
-{}
-
-ADatabaseError::ADatabaseError(QSqlError err_)
-    : QSqlError(err_)
-{};
-
-QString ADatabaseError::text() const
-{
-    return QLatin1String("Database Error: ") + QSqlError::text();
-}
-
 ADatabase* ADatabase::self = nullptr;
 
 ADatabase::ADatabase()
     : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
-                             absoluteFilePath(QStringLiteral("logbook.db"))
-                             )
-                   )
+                             absoluteFilePath(QStringLiteral("logbook.db"))))
 {}
 
 int ADatabase::dbRevision() const
@@ -130,13 +114,10 @@ void ADatabase::updateLayout()
 
 ADatabase* ADatabase::instance()
 {
-#ifdef __GNUC__
-    return self ?: self = new ADatabase();  // Cheeky business...
-#else
     if(!self)
         self = new ADatabase();
+
     return self;
-#endif
 }
 
 
@@ -201,8 +182,7 @@ bool ADatabase::commit(const AEntry &entry)
 bool ADatabase::remove(const AEntry &entry)
 {
     if (!exists(entry)) {
-        DEB << "Error: Database entry not found.";
-        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
+        LOG << "Error: Database entry not found.";
         return false;
     }
 
@@ -215,7 +195,7 @@ bool ADatabase::remove(const AEntry &entry)
 
     if (query.exec())
     {
-        DEB << "Entry " << entry.getPosition() << " removed.";
+        LOG << "Entry " << entry.getPosition() << " removed.";
         emit dataBaseUpdated();
         return true;
     } else {
@@ -236,7 +216,6 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
 
     for (const auto& data_position : data_position_list) {
         if (!exists(data_position)) {
-            lastError = ADatabaseError("Database entry not found.");
             errorCount++;
         }
         QString statement = QLatin1String("DELETE FROM ") + data_position.tableName +
@@ -253,17 +232,19 @@ bool ADatabase::removeMany(QList<DataPosition> data_position_list)
         query.prepare(QStringLiteral("COMMIT"));
         if(query.exec()) {
             emit dataBaseUpdated();
+            LOG << "Transaction successfull.";
             return true;
         } else {
-            DEB << "Transaction unsuccessful (Interrupted). Error count: "
+            LOG << "Transaction unsuccessful (Interrupted). Error count: "
                         + QString::number(errorCount);
+            DEB << query.lastError().text();
             lastError = query.lastError();
             return false;
         }
     } else {
         query.prepare(QStringLiteral("ROLLBACK"));
         query.exec();
-        DEB << "Transaction unsuccessful (no changes have been made). Error count: "
+        LOG << "Transaction unsuccessful (no changes have been made). Error count: "
                     + QString::number(errorCount);
         return false;
     }
@@ -293,8 +274,7 @@ bool ADatabase::exists(const AEntry &entry)
     if (rowId) {
         return true;
     } else {
-        DEB << "Database entry not found.";
-        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
+        LOG << "Database entry not found.";
         return false;
     }
 }
@@ -315,15 +295,14 @@ bool ADatabase::exists(DataPosition data_position)
     //this returns either 1 or 0 since row ids are unique
     if (!query.isActive()) {
         lastError = query.lastError();
-        DEB << "Query Error: " << query.lastError().text() << statement;
+        LOG << "Query Error: " << query.lastError().text() << statement;
     }
     query.next();
     int rowId = query.value(0).toInt();
     if (rowId) {
         return true;
     } else {
-        DEB << "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
-        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
+        LOG << "No entry exists at DataPosition: " << data_position.tableName << data_position.rowId;
         return false;
     }
 }
@@ -382,7 +361,7 @@ bool ADatabase::insert(const AEntry &new_entry)
 {
     auto data = new_entry.getData();
     QString statement = QLatin1String("INSERT INTO ") + new_entry.getPosition().tableName + QLatin1String(" (");
-    QMap<QString, QVariant>::iterator i;
+    QHash<QString, QVariant>::iterator i;
     for (i = data.begin(); i != data.end(); ++i) {
         statement.append(i.key() + QLatin1Char(','));
     }
@@ -446,8 +425,7 @@ RowData_T ADatabase::getEntryData(DataPosition data_position)
     }
     check_query.next();
     if (check_query.value(0).toInt() == 0) {
-        DEB << "No Entry found for row id: " << data_position.rowId;
-        lastError = ADatabaseError("Database entry not found.");
+        LOG << "No Entry found for row id: " << data_position.rowId;
         return RowData_T();
     }
 
@@ -531,7 +509,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
                          "UNION "
                          "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
@@ -571,7 +549,7 @@ const QStringList ADatabase::getCompletionList(ADatabaseTarget target)
 }
 
 const
-QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
+QHash<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
 {
     QString statement;
 
@@ -580,7 +558,7 @@ QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
         statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
     case ADatabaseTarget::aircraft:
-        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL "
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
                          "UNION "
                          "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
@@ -613,7 +591,7 @@ QMap<RowId_T, QString> ADatabase::getIdMap(ADatabaseTarget target)
         lastError = query.lastError();
         return {};
     }
-    auto id_map = QMap<RowId_T, QString>();
+    auto id_map = QHash<RowId_T, QString>();
     while (query.next())
         id_map.insert(query.value(0).toInt(), query.value(1).toString());
     return id_map;
@@ -641,8 +619,7 @@ RowId_T ADatabase::getLastEntry(ADatabaseTable table)
     if (query.first()) {
         return query.value(0).toInt();
     } else {
-        lastError = ADatabaseError(QStringLiteral("Database entry not found."));
-        DEB << "No entry found.";
+        LOG << "No entry found. (Database empty?)" << query.lastError().text();
         return 0;
     }
 }
@@ -704,10 +681,9 @@ QVector<QVariant> ADatabase::customQuery(QString statement, int return_values)
     }
 
     if (!query.first()) {
-        DEB << "No result found. Check Query and Error.";
+        LOG << "No result found. Check Query and Error.";
         DEB << "Error: " << query.lastError().text();
         DEB << "Statement: " << statement;
-        lastError = ADatabaseError("No result found.");
         return QVector<QVariant>();
     } else {
         query.first();
@@ -807,7 +783,7 @@ bool ADatabase::createBackup(const QString& dest_file)
     LOG << "Backing up current database to: " << dest_file;
     ADatabase::disconnect();
     QFile db_file(databaseFile.absoluteFilePath());
-    DEB << "File to Overwrite:" << db_file;
+    //DEB << "File to Overwrite:" << db_file;
 
     if (!db_file.copy(dest_file)) {
         LOG << "Unable to backup old database:" << db_file.errorString();
@@ -886,7 +862,7 @@ bool ADatabase::restoreBackup(const QString& backup_file)
 
     if (!backup.copy(default_loc))
     {
-        LOG << backup.errorString() << "Could not copy" << backup << "to" << databaseFile;
+        LOG << backup.errorString() << "Could not copy" << backup.fileName() << "to" << databaseFile;
         // try to restore previously used db
         current_db.rename(default_loc);
         return false;

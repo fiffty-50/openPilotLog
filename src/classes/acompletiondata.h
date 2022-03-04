@@ -3,7 +3,7 @@
 #include "src/database/adatabase.h"
 
 /*!
- * \brief The ACompletionData class provides data to QCompleters and QMaps used
+ * \brief The ACompletionData class provides data to QCompleters and QHashs used
  * for mapping user input to database keys. It retreives the completer targets
  * and mapping data from the database and caches it for fast access without the
  * need to query the database.
@@ -25,11 +25,11 @@ public:
 
 
     // Maps for input mapping DB key - user input
-    QMap<RowId_T, QString> pilotsIdMap;
-    QMap<RowId_T, QString> tailsIdMap;
-    QMap<RowId_T, QString> airportIcaoIdMap;
-    QMap<RowId_T, QString> airportIataIdMap;
-    QMap<RowId_T, QString> airportNameIdMap;
+    QHash<RowId_T, QString> pilotsIdMap;
+    QHash<RowId_T, QString> tailsIdMap;
+    QHash<RowId_T, QString> airportIcaoIdMap;
+    QHash<RowId_T, QString> airportIataIdMap;
+    QHash<RowId_T, QString> airportNameIdMap;
     // Lists for QCompleter
     QStringList pilotList;
     QStringList tailsList;

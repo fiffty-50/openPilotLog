@@ -20,11 +20,11 @@
 
 #include <QStandardPaths>
 #include <QString>
-#include <QMap>
+#include <QHash>
 #include <QDir>
 
 /*!
- * \brief The AStandardAppPaths class encapsulates a static QMap holding
+ * \brief The AStandardAppPaths class encapsulates a static QHash holding
  * the standard paths of the application.
  */
 class AStandardPaths{
@@ -37,7 +37,7 @@ public:
         JSON
     };
 private:
-    static QMap<Directories, QDir> directories;
+    static QHash<Directories, QDir> directories;
 
     /*!
      * \brief Ensures the standard app directories exists and creates
@@ -63,9 +63,9 @@ public:
     static const QString asChildOfDir(Directories location, const QString& filename);
     /*!
      * \brief returns the static map of all standard directories
-     * \return static const QMap<Directories, QDir>
+     * \return static const QHash<Directories, QDir>
      */
-    static const QMap<Directories, QDir> &allDirectories();
+    static const QHash<Directories, QDir> &allDirectories();
 };
 
 

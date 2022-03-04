@@ -1,4 +1,4 @@
-.TH "ACalc" 3 "Tue Jul 27 2021" "openPilotLog" \" -*- nroff -*-
+.TH "ACalc" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,28 +7,17 @@ ACalc \- The \fBACalc\fP namespace provides various functions for calculations t
 .SH SYNOPSIS
 .br
 .PP
-.SS "Functions"
+.SS "Classes"
 
 .in +1c
 .ti -1c
-.RI "QT_DEPRECATED QTime \fBblocktime\fP (QTime tofb, QTime tonb)"
+.RI "struct \fBNightTimeValues\fP"
 .br
-.RI "\fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. "
-.ti -1c
-.RI "QT_DEPRECATED QString \fBminutesToString\fP (QString block_minutes)"
-.br
-.RI "ACalc::minutes_to_string Converts database time to String Time\&. "
-.ti -1c
-.RI "QT_DEPRECATED QString \fBminutesToString\fP (int block_minutes)"
-.br
-.ti -1c
-.RI "QT_DEPRECATED int \fBQTimeToMinutes\fP (QTime time)"
-.br
-.RI "ACalc::time_to_minutes converts QTime to int minutes\&. "
-.ti -1c
-.RI "QT_DEPRECATED int \fBstringToMinutes\fP (QString timestring)"
-.br
-.RI "ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. "
+.RI "The \fBNightTimeValues\fP struct encapsulates values relating to night time that are needed by the \fBNewFlightDialog\fP\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
 .ti -1c
 .RI "double \fBradToDeg\fP (double rad)"
 .br
@@ -82,24 +71,6 @@ ACalc \- The \fBACalc\fP namespace provides various functions for calculations t
 The \fBACalc\fP namespace provides various functions for calculations that are performed outside of the database\&. This includes tasks like converting different units and formats, or functions calculating block time or night time\&. 
 .SH "Function Documentation"
 .PP 
-.SS "QT_DEPRECATED QTime ACalc::blocktime (QTime tofb, QTime tonb)\fC [inline]\fP"
-
-.PP
-\fBACalc::blocktime\fP Calculates Block Time for a given departure and arrival time\&. 
-.PP
-\fBParameters\fP
-.RS 4
-\fItofb\fP QTime Time Off Blocks 
-.br
-\fItonb\fP QTime Time On Blocks 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-Block Time in minutes 
-.RE
-.PP
-
 .SS "int ACalc::calculateNightTime (const QString & dept, const QString & dest, QDateTime departureTime, int tblk, int nightAngle)"
 
 .PP
@@ -140,22 +111,10 @@ radians
 .RE
 .PP
 
-.SS "QT_DEPRECATED QString ACalc::formatTimeInput (QString user_input)\fC [inline]\fP"
+.SS "QT_DEPRECATED QString ACalc::formatTimeInput (QString user_input)"
 
 .PP
 \fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&. 
-.PP
-\fBParameters\fP
-.RS 4
-\fIuserinput\fP from a QLineEdit 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-formatted QString 'hh:mm' or Empty String
-.RE
-.PP
-\fBACalc::formatTimeInput\fP verifies user input and formats to hh:mm if the output is not a valid time, an empty string is returned\&. Accepts input as hh:mm, h:mm, hhmm or hmm\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -241,38 +200,6 @@ coordinates {lat,lon} along the Great Circle Track
 .RE
 .PP
 
-.SS "QT_DEPRECATED QString ACalc::minutesToString (QString block_minutes)\fC [inline]\fP"
-
-.PP
-ACalc::minutes_to_string Converts database time to String Time\&. 
-.PP
-\fBParameters\fP
-.RS 4
-\fIblockminutes\fP from database 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-String hh:mm 
-.RE
-.PP
-
-.SS "QT_DEPRECATED int ACalc::QTimeToMinutes (QTime time)\fC [inline]\fP"
-
-.PP
-ACalc::time_to_minutes converts QTime to int minutes\&. 
-.PP
-\fBParameters\fP
-.RS 4
-\fItime\fP QTime 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-int time as number of minutes 
-.RE
-.PP
-
 .SS "double ACalc::radToDeg (double rad)\fC [inline]\fP"
 
 .PP
@@ -326,22 +253,6 @@ Darin C\&. Koblock: https://www.mathworks.com/matlabcentral/profile/authors/1284
 \fBReturns\fP
 .RS 4
 elevation - double of solar elevation in degrees\&. 
-.RE
-.PP
-
-.SS "QT_DEPRECATED int ACalc::stringToMinutes (QString timestring)\fC [inline]\fP"
-
-.PP
-ACalc::string_to_minutes Converts String Time to String Number of Minutes\&. 
-.PP
-\fBParameters\fP
-.RS 4
-\fItimestring\fP 'hh:mm' 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-String number of minutes 
 .RE
 .PP
 

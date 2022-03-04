@@ -1,0 +1,58 @@
+.TH "ValidationState" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ValidationState \- The \fBValidationState\fP class encapsulates a QBitArray that has a bit set (or unset) depending on wether the input for the associated index has been verified\&. The indexes correspond to the mandatory items enumerated in the ValidationItem enum\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <newflightdialog\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBvalidate\fP (ValidationItem item)"
+.br
+.ti -1c
+.RI "void \fBvalidate\fP (int index)"
+.br
+.ti -1c
+.RI "void \fBinvalidate\fP (ValidationItem item)"
+.br
+.ti -1c
+.RI "void \fBinvalidate\fP (int index)"
+.br
+.ti -1c
+.RI "bool \fBallValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBtimesValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBlocationsValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBnightDataValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBacftValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBvalidAt\fP (int index) const"
+.br
+.ti -1c
+.RI "bool \fBvalidAt\fP (ValidationItem item) const"
+.br
+.ti -1c
+.RI "void \fBprintValidationStatus\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBValidationState\fP class encapsulates a QBitArray that has a bit set (or unset) depending on wether the input for the associated index has been verified\&. The indexes correspond to the mandatory items enumerated in the ValidationItem enum\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.
