@@ -10,7 +10,7 @@ I have used paid solutions for many years, and have seen more and of them move f
 
 ## The state of the project!
 
-openPilotLog is currently in development, so no release is provided yet. If you would like to be informed about upcoming releases, you can [subscribe](https://turowsky.eu/?page_id=112) to our newsletter.
+openPilotLog is currently in development, so no release is provided yet. If you would like to be informed about upcoming releases, you can [subscribe](https://openpilotlog.eu/?page_id=35) to our newsletter.
 
 If you want to learn more about this project, check out the [wiki](https://github.com/fiffty-50/openpilotlog/wiki) or the [blog](https://turowsky.eu/)!
 

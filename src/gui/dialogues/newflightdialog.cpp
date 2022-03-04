@@ -423,14 +423,28 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
         Opl::Db::FLIGHTS_TDUAL,
         Opl::Db::FLIGHTS_TFI,
     };
-    for (int i = 0; i < 5; i++) {
-        if (i == ui->functionComboBox->currentIndex())
-            new_data.insert(function_times[i], block_minutes);
-        else
-            new_data.insert(function_times[i], QString());
+
+    // Determine function times, zero out all values except one
+    // Log Instructor Time as PIC time as well
+    const int& function_index = ui->functionComboBox->currentIndex();
+    switch (function_index) {
+    case 4:
+        for (int i = 0; i < 5; i++){
+            if(i == 0 || i == 4)
+                new_data.insert(function_times[i], block_minutes);
+            else
+                new_data.insert(function_times[i], 0);
+        }
+        break;
+    default:
+        for (int i = 0; i < 5; i++){
+            if(i == function_index)
+                new_data.insert(function_times[i], block_minutes);
+            else
+                new_data.insert(function_times[i], 0);
+        }
+        break;
     }
-    if (ui->functionComboBox->currentIndex() == 4)
-        new_data.insert(Opl::Db::FLIGHTS_PIC, block_minutes); // Log FI time as PIC as well
     // Pilot flying / Pilot monitoring
     new_data.insert(Opl::Db::FLIGHTS_PILOTFLYING, ui->pilotFlyingCheckBox->isChecked());
     // Take-Off and Landing

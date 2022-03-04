@@ -525,33 +525,7 @@
         </widget>
        </item>
        <item row="3" column="1" colspan="2">
-        <widget class="QComboBox" name="functionComboBox">
-         <item>
-          <property name="text">
-           <string>PIC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>PICUS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>SIC</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>DUAL</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>FI</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QComboBox" name="functionComboBox"/>
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="approachLabel">
