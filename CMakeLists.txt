@@ -21,106 +21,116 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools 
 # find_package(OpenSSL REQUIRED) # Pending testing
 
 set(PROJECT_SOURCES
+
     main.cpp
-    mainwindow.cpp
-    src/classes/acompletiondata.cpp
-    src/classes/acurrencyentry.cpp
-    src/classes/astyle.cpp
-    src/classes/astandardpaths.cpp
-    src/classes/aaircraftentry.cpp
-    src/classes/adownload.cpp
-    src/classes/aentry.cpp
-    src/classes/aflightentry.cpp
-    src/classes/apilotentry.cpp
-    src/classes/arunguard.cpp
-    src/classes/asettings.cpp
-    src/classes/atailentry.cpp
-    src/classes/atranslator.cpp
-    src/classes/ajson.cpp
-    src/classes/ahash.cpp
-    src/classes/asimulatorentry.cpp
-    src/database/adatabase.cpp
-    src/database/adbsetup.cpp
-    src/functions/acalc.cpp
-    src/functions/alog.cpp
-    src/functions/areadcsv.cpp
-    src/functions/astat.cpp
-    src/functions/adate.cpp
-    src/gui/dialogues/firstrundialog.cpp
-    src/gui/dialogues/newflightdialog.cpp
-    src/gui/dialogues/newpilotdialog.cpp
-    src/gui/dialogues/newtaildialog.cpp
-    src/gui/dialogues/newsimdialog.cpp
-    src/gui/widgets/aircraftwidget.cpp
-    src/gui/widgets/backupwidget.cpp
-    src/gui/widgets/debugwidget.cpp
-    src/gui/widgets/homewidget.cpp
-    src/gui/widgets/logbookwidget.cpp
-    src/gui/widgets/pilotswidget.cpp
-    src/gui/widgets/settingswidget.cpp
-    src/testing/atimer.cpp
-    
     src/opl.h
+
+    # GUI
     mainwindow.h
-    src/classes/acompletiondata.h
-    src/classes/acurrencyentry.h
-    src/classes/astyle.h
-    src/classes/astandardpaths.h
-    src/classes/aaircraftentry.h
-    src/classes/adownload.h
-    src/classes/aentry.h
-    src/classes/aflightentry.h
-    src/classes/apilotentry.h
-    src/classes/arunguard.h
-    src/classes/asettings.h
-    src/classes/atailentry.h
-    src/classes/atranslator.h
-    src/classes/ajson.h
-    src/classes/ahash.h
-    src/classes/asimulatorentry.h
-    src/database/adatabase.h
-    src/database/adbsetup.h
-    src/database/adatabasetypes.h
-    src/functions/acalc.h
-    src/functions/adatetime.h
-    src/functions/alog.h
-    src/functions/areadcsv.h
-    src/functions/astat.h
-    src/functions/adate.h
-    src/functions/atime.h
-    src/gui/dialogues/firstrundialog.h
-    src/gui/dialogues/newflightdialog.h
-    src/gui/dialogues/newpilotdialog.h
-    src/gui/dialogues/newtaildialog.h
-    src/gui/dialogues/newsimdialog.h
-    src/gui/widgets/aircraftwidget.h
-    src/gui/widgets/backupwidget.h
-    src/gui/widgets/debugwidget.h
-    src/gui/widgets/homewidget.h
-    src/gui/widgets/logbookwidget.h
-    src/gui/widgets/pilotswidget.h
-    src/gui/widgets/settingswidget.h
-    src/testing/atimer.h
-    
+    mainwindow.cpp
     mainwindow.ui
+    # Dialogs
+    src/gui/dialogues/firstrundialog.h
+    src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/firstrundialog.ui
+    src/gui/dialogues/newflightdialog.h
+    src/gui/dialogues/newflightdialog.cpp
     src/gui/dialogues/newflightdialog.ui
+    src/gui/dialogues/newpilotdialog.h
+    src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newpilot.ui
+    src/gui/dialogues/newtaildialog.h
+    src/gui/dialogues/newtaildialog.cpp
     src/gui/dialogues/newtail.ui
-    src/gui/widgets/aircraftwidget.ui
-    src/gui/widgets/backupwidget.ui
-    src/gui/widgets/debugwidget.ui
-    src/gui/widgets/homewidget.ui
-    src/gui/widgets/logbookwidget.ui
-    src/gui/widgets/pilotswidget.ui
-    src/gui/widgets/settingswidget.ui
+    src/gui/dialogues/newsimdialog.h
+    src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
 
+    # Widgets
+    src/gui/widgets/aircraftwidget.h
+    src/gui/widgets/aircraftwidget.cpp
+    src/gui/widgets/aircraftwidget.ui
+    src/gui/widgets/backupwidget.h
+    src/gui/widgets/backupwidget.cpp
+    src/gui/widgets/backupwidget.ui
+    src/gui/widgets/debugwidget.h
+    src/gui/widgets/debugwidget.cpp
+    src/gui/widgets/debugwidget.ui
+    src/gui/widgets/homewidget.h
+    src/gui/widgets/homewidget.cpp
+    src/gui/widgets/homewidget.ui
+    src/gui/widgets/logbookwidget.h
+    src/gui/widgets/logbookwidget.cpp
+    src/gui/widgets/logbookwidget.ui
+    src/gui/widgets/pilotswidget.h
+    src/gui/widgets/pilotswidget.cpp
+    src/gui/widgets/pilotswidget.ui
+    src/gui/widgets/settingswidget.cpp
+    src/gui/widgets/settingswidget.h
+    src/gui/widgets/settingswidget.ui
+
+    # Classes
+    src/classes/acompletiondata.h
+    src/classes/acompletiondata.cpp
+    src/classes/acurrencyentry.h
+    src/classes/acurrencyentry.cpp
+    src/classes/astyle.h
+    src/classes/astyle.cpp
+    src/classes/astandardpaths.h
+    src/classes/astandardpaths.cpp
+    src/classes/aaircraftentry.h
+    src/classes/aaircraftentry.cpp
+    src/classes/adownload.h
+    src/classes/adownload.cpp
+    src/classes/aentry.h
+    src/classes/aentry.cpp
+    src/classes/aflightentry.h
+    src/classes/aflightentry.cpp
+    src/classes/apilotentry.h
+    src/classes/apilotentry.cpp
+    src/classes/arunguard.h
+    src/classes/arunguard.cpp
+    src/classes/asettings.h
+    src/classes/asettings.cpp
+    src/classes/atailentry.h
+    src/classes/atailentry.cpp
+    src/classes/atranslator.h
+    src/classes/atranslator.cpp
+    src/classes/ajson.h
+    src/classes/ajson.cpp
+    src/classes/ahash.h
+    src/classes/ahash.cpp
+    src/classes/asimulatorentry.h
+    src/classes/asimulatorentry.cpp
+
+    # Namespaces
+    src/functions/acalc.h
+    src/functions/acalc.cpp
+    src/functions/adatetime.h
+    src/functions/alog.h
+    src/functions/alog.cpp
+    src/functions/areadcsv.h
+    src/functions/areadcsv.cpp
+    src/functions/astat.h
+    src/functions/astat.cpp
+    src/functions/adate.h
+    src/functions/adate.cpp
+    src/functions/atime.h
+
+    # Database
+    src/database/adatabasetypes.h
+    src/database/adatabase.h
+    src/database/adatabase.cpp
+    src/database/adbsetup.h
+    src/database/adbsetup.cpp
+
+    # Ressources
     assets/icons.qrc
+    assets/templates.qrc
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
-    assets/templates.qrc
 
+    # Testing / Debug
     src/testing/importCrewlounge/importcrewlounge.h
     src/testing/importCrewlounge/importcrewlounge.cpp
     src/testing/importCrewlounge/processpilots.h
@@ -129,6 +139,8 @@ set(PROJECT_SOURCES
     src/testing/importCrewlounge/processaircraft.cpp
     src/testing/importCrewlounge/processflights.h
     src/testing/importCrewlounge/processflights.cpp
+    src/testing/atimer.h
+    src/testing/atimer.cpp
 )
 
 # This is currently a bit buggy, see
@@ -151,6 +163,7 @@ set(PROJECT_SOURCES
 #    endif(Qt5Widgets_VERSION VERSION_LESS 5.15.0)
 #endif(Qt5Widgets_FOUND)
 
+# Disable Debug output for Release Build
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Build type: Debug")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
