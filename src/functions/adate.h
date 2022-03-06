@@ -60,6 +60,12 @@ public:
 
     static const QString getFormatString(Opl::Date::ADateFormat format);
 
+    /*!
+     * \brief today Returns a string containing the current date in ISO format
+     * \return
+     */
+    static const QString currentDate();
+
 };
 
 #endif // ADATE_H

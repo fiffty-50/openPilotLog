@@ -50,7 +50,7 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
         emit ui->sicNameLineEdit->editingFinished();
     }
 
-    ui->doftLineEdit->setText(QDate::currentDate().toString(Qt::ISODate));
+    ui->doftLineEdit->setText(ADate::currentDate());
     emit ui->doftLineEdit->editingFinished();
 }
 
@@ -270,7 +270,7 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 {
     DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
-    line_edit->setStyleSheet(QStringLiteral("border: 1px solid red"));
+    line_edit->setStyleSheet(Opl::Styles::RED_BORDER);
     line_edit->setText(QString());
 
     if (mandatoryLineEdits->contains(line_edit))

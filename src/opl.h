@@ -109,38 +109,55 @@ static const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
 
 inline void loadPilotFunctios(QComboBox *combo_box)
 {
-    for (int i = 0; i < Opl::PILOT_FUNCTIONS.size(); i++)
-        combo_box->addItem(Opl::PILOT_FUNCTIONS.value(Opl::PilotFunction(i)));
+    for (int i = PilotFunction::PIC; i < PILOT_FUNCTIONS.size(); i++)
+        combo_box->addItem(PILOT_FUNCTIONS.value(PilotFunction(i)));
 };
 
-static const QList<QLatin1String> APPROACH_TYPES = {
-        QLatin1String("VISUAL"),
-        QLatin1String("ILS CAT I"),
-        QLatin1String("ILS CAT II"),
-        QLatin1String("ILS CAT III"),
-        QLatin1String("GLS"),
-        QLatin1String("MLS"),
-        QLatin1String("LOC"),
-        QLatin1String("LOC/DME"),
-        QLatin1String("RNAV"),
-        QLatin1String("RNAV (LNAV)"),
-        QLatin1String("RNAV (LNAV/VNAV)"),
-        QLatin1String("RNAV (LPV)"),
-        QLatin1String("RNAV (RNP)"),
-        QLatin1String("RNAV (RNP-AR)"),
-        QLatin1String("VOR"),
-        QLatin1String("VOR/DME"),
-        QLatin1String("NDB"),
-        QLatin1String("NDB/DME"),
-        QLatin1String("TACAN"),
-        QLatin1String("SRA"),
-        QLatin1String("PAR"),
-        QLatin1String("OTHER")
+/*!
+ * \brief Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
+ */
+enum SimulatorTypes {FNPTI = 0, FNPTII = 1, FSTD = 2};
+
+static const QMap<SimulatorTypes, QString> SIMULATOR_TYPES = {
+    {FNPTI,  QStringLiteral("FNPT I")},
+    {FNPTII, QStringLiteral("FNPT II")},
+    {FSTD,   QStringLiteral("FSTD")},
+};
+
+inline void loadSimulatorTypes(QComboBox *combo_box)
+{
+    for (int i = 0; i < SIMULATOR_TYPES.size(); i++)
+        combo_box->addItem(SIMULATOR_TYPES.value(SimulatorTypes(i)));
+}
+
+static const QStringList APPROACH_TYPES = {
+        QStringLiteral("VISUAL"),
+        QStringLiteral("ILS CAT I"),
+        QStringLiteral("ILS CAT II"),
+        QStringLiteral("ILS CAT III"),
+        QStringLiteral("GLS"),
+        QStringLiteral("MLS"),
+        QStringLiteral("LOC"),
+        QStringLiteral("LOC/DME"),
+        QStringLiteral("RNAV"),
+        QStringLiteral("RNAV (LNAV)"),
+        QStringLiteral("RNAV (LNAV/VNAV)"),
+        QStringLiteral("RNAV (LPV)"),
+        QStringLiteral("RNAV (RNP)"),
+        QStringLiteral("RNAV (RNP-AR)"),
+        QStringLiteral("VOR"),
+        QStringLiteral("VOR/DME"),
+        QStringLiteral("NDB"),
+        QStringLiteral("NDB/DME"),
+        QStringLiteral("TACAN"),
+        QStringLiteral("SRA"),
+        QStringLiteral("PAR"),
+        QStringLiteral("OTHER")
 };
 
 inline void loadApproachTypes(QComboBox *combo_box)
 {
-    for (const auto & approach : Opl::APPROACH_TYPES)
+    for (const auto & approach : APPROACH_TYPES)
         combo_box->addItem(approach);
 };
 
@@ -191,6 +208,7 @@ static const auto TABLE_TAILS            = QStringLiteral("tails");
 static const auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
 static const auto TABLE_AIRPORTS         = QStringLiteral("airports");
 static const auto TABLE_CURRENCIES       = QStringLiteral("currencies");
+static const auto TABLE_SIMULATORS       = QStringLiteral("simulators");
 
 // Flights table columns
 static const auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
@@ -253,8 +271,17 @@ static const auto PILOTS_EMAIL           = QStringLiteral("email");
 static const auto CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
 static const auto CURRENCIES_DESCRIPTION = QStringLiteral("description");
 
+// Simulators table
+static const auto SIMULATORS_ROWID       = QStringLiteral("session_id");
+static const auto SIMULATORS_DATE        = QStringLiteral("date");
+static const auto SIMULATORS_TIME        = QStringLiteral("totalTime");
+static const auto SIMULATORS_TYPE        = QStringLiteral("deviceType");
+static const auto SIMULATORS_ACFT        = QStringLiteral("aircraftType");
+static const auto SIMULATORS_REG         = QStringLiteral("registration");
+static const auto SIMULATORS_REMARKS     = QStringLiteral("remarks");
+
 // all tables
-static const auto ROWID                  = QStringLiteral("ROWID");
+static const auto ROWID                  = QStringLiteral("rowid");
 static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
 static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
@@ -293,6 +320,11 @@ static const auto ICON_TOOLBAR_QUIT_DARK        = QStringLiteral(":/icons/opl-ic
 static const auto ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
 
 }
+
+namespace Styles {
+
+static const auto RED_BORDER = QStringLiteral("border: 1px solid red");
+} // namespace ui
 
 } // namespace opl
 

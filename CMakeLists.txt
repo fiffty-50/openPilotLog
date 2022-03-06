@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
     src/classes/atranslator.cpp
     src/classes/ajson.cpp
     src/classes/ahash.cpp
+    src/classes/asimulatorentry.cpp
     src/database/adatabase.cpp
     src/database/adbsetup.cpp
     src/functions/acalc.cpp
@@ -49,6 +50,7 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newflightdialog.cpp
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newtaildialog.cpp
+    src/gui/dialogues/newsimdialog.cpp
     src/gui/widgets/aircraftwidget.cpp
     src/gui/widgets/backupwidget.cpp
     src/gui/widgets/debugwidget.cpp
@@ -75,6 +77,7 @@ set(PROJECT_SOURCES
     src/classes/atranslator.h
     src/classes/ajson.h
     src/classes/ahash.h
+    src/classes/asimulatorentry.h
     src/database/adatabase.h
     src/database/adbsetup.h
     src/database/adatabasetypes.h
@@ -89,6 +92,7 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newflightdialog.h
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newtaildialog.h
+    src/gui/dialogues/newsimdialog.h
     src/gui/widgets/aircraftwidget.h
     src/gui/widgets/backupwidget.h
     src/gui/widgets/debugwidget.h
@@ -110,6 +114,7 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbookwidget.ui
     src/gui/widgets/pilotswidget.ui
     src/gui/widgets/settingswidget.ui
+    src/gui/dialogues/newsimdialog.ui
 
     assets/icons.qrc
     assets/themes/stylesheets/breeze/breeze.qrc
@@ -145,6 +150,14 @@ set(PROJECT_SOURCES
 #        qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 #    endif(Qt5Widgets_VERSION VERSION_LESS 5.15.0)
 #endif(Qt5Widgets_FOUND)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message("Build type: Debug")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message("Build type: Release")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(openPilotLog

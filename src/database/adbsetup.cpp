@@ -24,23 +24,24 @@
 namespace aDbSetup {
 
 // const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/tree/main/assets/database/templates/");
-const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
+const static auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 
-const auto CREATE_TABLE_PILOTS = QLatin1String("CREATE TABLE pilots ( "
-            " pilot_id       INTEGER NOT NULL, "
+const static auto CREATE_TABLE_PILOTS = QStringLiteral("CREATE TABLE pilots ( "
+            " pilot_id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             " lastname       TEXT    NOT NULL, "
             " firstname      TEXT, "
             " alias          TEXT, "
             " company        TEXT, "
             " employeeid     TEXT, "
             " phone          TEXT, "
-            " email          TEXT, "
-            " PRIMARY KEY(pilot_id AUTOINCREMENT)"
-            ")");
+            " email          TEXT "
+//            " PRIMARY KEY(pilot_id AUTOINCREMENT)"
+            ")"
+                                                       );
 
-const auto CREATE_TABLE_TAILS = QLatin1String("CREATE TABLE tails ("
-            " tail_id        INTEGER NOT NULL,"
+const static auto CREATE_TABLE_TAILS = QStringLiteral("CREATE TABLE tails ("
+            " tail_id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
             " registration   TEXT NOT NULL,"
             " company        TEXT,"
             " make           TEXT,"
@@ -49,12 +50,13 @@ const auto CREATE_TABLE_TAILS = QLatin1String("CREATE TABLE tails ("
             " multipilot     INTEGER,"
             " multiengine    INTEGER,"
             " engineType     INTEGER,"
-            " weightClass    INTEGER,"
-            " PRIMARY KEY(tail_id AUTOINCREMENT)"
-            ")");
+            " weightClass    INTEGER"
+//            " PRIMARY KEY(tail_id AUTOINCREMENT)"
+            ")"
+                                                      );
 
-const auto CREATE_TABLE_FLIGHTS = QLatin1String("CREATE TABLE flights ("
-            " flight_id      INTEGER NOT NULL, "
+const static auto CREATE_TABLE_FLIGHTS = QStringLiteral("CREATE TABLE flights ("
+            " flight_id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             " doft           NUMERIC NOT NULL, "
             " dept           TEXT NOT NULL, "
             " dest           TEXT NOT NULL, "
@@ -86,12 +88,13 @@ const auto CREATE_TABLE_FLIGHTS = QLatin1String("CREATE TABLE flights ("
             " flightNumber   TEXT, "
             " remarks        TEXT, "
             " FOREIGN KEY(pic)  REFERENCES pilots(pilot_id) ON DELETE RESTRICT, "
-            " FOREIGN KEY(acft) REFERENCES tails(tail_id)   ON DELETE RESTRICT, "
-            " PRIMARY KEY(flight_id    AUTOINCREMENT) "
-        ")");
+            " FOREIGN KEY(acft) REFERENCES tails(tail_id)   ON DELETE RESTRICT "
+//            " PRIMARY KEY(flight_id    AUTOINCREMENT) "
+        ")"
+                                                        );
 
-const auto CREATE_TABLE_AIRPORTS = QLatin1String("CREATE TABLE airports ( "
-            " airport_id     INTEGER NOT NULL, "
+const static auto CREATE_TABLE_AIRPORTS = QStringLiteral("CREATE TABLE airports ( "
+            " airport_id     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             " icao           TEXT NOT NULL, "
             " iata           TEXT, "
             " name           TEXT, "
@@ -100,12 +103,13 @@ const auto CREATE_TABLE_AIRPORTS = QLatin1String("CREATE TABLE airports ( "
             " country        TEXT, "
             " alt            INTEGER, "
             " utcoffset      INTEGER, "
-            " tzolson        TEXT, "
-            " PRIMARY KEY(airport_id AUTOINCREMENT) "
-            ")");
+            " tzolson        TEXT "
+ //           " PRIMARY KEY(airport_id AUTOINCREMENT) "
+            ")"
+                                                         );
 
-const auto CREATE_TABLE_AIRCRAFT = QLatin1String("CREATE TABLE aircraft ("
-            " aircraft_id   INTEGER NOT NULL,"
+const static auto CREATE_TABLE_AIRCRAFT = QStringLiteral("CREATE TABLE aircraft ("
+            " aircraft_id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
             " make          TEXT,"
             " model         TEXT,"
             " variant       TEXT,"
@@ -115,26 +119,39 @@ const auto CREATE_TABLE_AIRCRAFT = QLatin1String("CREATE TABLE aircraft ("
             " multipilot    INTEGER,"
             " multiengine   INTEGER,"
             " engineType    INTEGER,"
-            " weightClass   INTEGER,"
-            " PRIMARY KEY(aircraft_id AUTOINCREMENT)"
-            ")");
+            " weightClass   INTEGER"
+//            " PRIMARY KEY(aircraft_id AUTOINCREMENT)"
+            ")"
+                                                         );
 
-const auto CREATE_TABLE_CHANGELOG = QLatin1String("CREATE TABLE changelog ( "
-            " revision   INTEGER NOT NULL, "
+const static auto CREATE_TABLE_CHANGELOG = QStringLiteral("CREATE TABLE changelog ( "
+            " revision   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             " comment    TEXT, "
-            " date       NUMERIC, "
-            " PRIMARY KEY(revision) "
-            ")");
+            " date       NUMERIC "
+//            " PRIMARY KEY(revision) "
+            ")"
+                                                          );
 
-const auto CREATE_TABLE_CURRENCIES = QLatin1String("CREATE TABLE currencies ( "
-            " currency_id	INTEGER PRIMARY KEY AUTOINCREMENT, "
+const static auto CREATE_TABLE_CURRENCIES = QStringLiteral("CREATE TABLE currencies ( "
+            " currency_id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             " description	TEXT, "
             " expiryDate     NUMERIC "
             ")"
-            );
+                                                           );
+
+const static auto CREATE_TABLE_SIMULATORS = QStringLiteral("CREATE TABLE simulators ( "
+                                                       " session_id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+                                                       " date	NUMERIC NOT NULL, "
+                                                       " totalTime	INTEGER NOT NULL, "
+                                                       " deviceType	TEXT NOT NULL, "
+                                                       " aircraftType	TEXT, "
+                                                       " registration	TEXT, "
+                                                       " remarks	TEXT "
+                                                       ")"
+                                                   );
 
 // Statements for creation of views in the database
-const auto CREATE_VIEW_DEFAULT = QLatin1String("CREATE VIEW viewDefault AS "
+const static auto CREATE_VIEW_DEFAULT = QStringLiteral("CREATE VIEW viewDefault AS "
         " SELECT flight_id, doft as 'Date', "
         " dept AS 'Dept', "
         " printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time', "
@@ -158,7 +175,7 @@ const auto CREATE_VIEW_DEFAULT = QLatin1String("CREATE VIEW viewDefault AS "
         " INNER JOIN tails on flights.acft = tails.tail_id "
         " ORDER BY date DESC ");
 
-const auto CREATE_VIEW_EASA = QLatin1String("CREATE VIEW viewEASA AS "
+const static auto CREATE_VIEW_EASA = QStringLiteral("CREATE VIEW viewEASA AS "
         " SELECT "
         " flight_id, doft as 'Date', "
         " dept AS 'Dept', "
@@ -193,7 +210,7 @@ const auto CREATE_VIEW_EASA = QLatin1String("CREATE VIEW viewEASA AS "
         " INNER JOIN tails on flights.acft = tails.tail_id "
         " ORDER BY date DESC");
 
-const auto CREATE_VIEW_TAILS = QLatin1String("CREATE VIEW viewTails AS "
+const static auto CREATE_VIEW_TAILS = QStringLiteral("CREATE VIEW viewTails AS "
         " SELECT "
         " tail_id AS 'ID', "
         " registration AS 'Registration', "
@@ -208,7 +225,7 @@ const auto CREATE_VIEW_TAILS = QLatin1String("CREATE VIEW viewTails AS "
         " company AS 'Company' "
         " FROM tails WHERE variant IS NOT NULL");
 
-const auto CREATE_VIEW_PILOTS = QLatin1String("CREATE VIEW viewPilots AS "
+const static auto CREATE_VIEW_PILOTS = QStringLiteral("CREATE VIEW viewPilots AS "
         " SELECT "
         " pilot_id AS 'ID', "
         " lastname AS 'Last Name', "
@@ -216,14 +233,14 @@ const auto CREATE_VIEW_PILOTS = QLatin1String("CREATE VIEW viewPilots AS "
         " company AS 'Company' "
         " FROM pilots");
 
-const auto CREATE_VIEW_QCOMPLETER = QLatin1String("CREATE VIEW viewQCompleter AS "
+const static auto CREATE_VIEW_QCOMPLETER = QStringLiteral("CREATE VIEW viewQCompleter AS "
         " SELECT airport_id, icao, iata, tail_id, registration, pilot_id, "
         " lastname||', '||firstname AS 'pilot_name', alias "
         " FROM airports "
         " LEFT JOIN tails ON airports.airport_id = tails.tail_id "
         " LEFT JOIN pilots ON airports.airport_id = pilots.pilot_id");
 
-const auto CREATE_VIEW_TOTALS = QLatin1String("CREATE VIEW viewTotals AS "
+const static auto CREATE_VIEW_TOTALS = QStringLiteral("CREATE VIEW viewTotals AS "
         " SELECT "
         " printf(\"%02d\",CAST(SUM(tblk) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tblk) AS INT)%60) AS \"TOTAL\", "
         " printf(\"%02d\",CAST(SUM(tSPSE) AS INT)/60)||\":\"||printf(\"%02d\",CAST(SUM(tSPSE) AS INT)%60) AS \"SP SE\", "
@@ -241,16 +258,17 @@ const auto CREATE_VIEW_TOTALS = QLatin1String("CREATE VIEW viewTotals AS "
         " CAST(SUM(ldgDay) AS INT) AS \"LDG Day\", CAST(SUM(ldgNight) AS INT) AS \"LDG Night\" "
         " FROM flights");
 
-const QList<QLatin1String> DATABASE_TABLES = {
+const static QStringList DATABASE_TABLES = {
     CREATE_TABLE_PILOTS,
     CREATE_TABLE_TAILS,
     CREATE_TABLE_FLIGHTS,
     CREATE_TABLE_AIRCRAFT,
     CREATE_TABLE_AIRPORTS,
     CREATE_TABLE_CURRENCIES,
-    CREATE_TABLE_CHANGELOG
+    CREATE_TABLE_CHANGELOG,
+    CREATE_TABLE_SIMULATORS,
 };
-const QList<QLatin1String> DATABASE_VIEWS = {
+const static QStringList DATABASE_VIEWS = {
     CREATE_VIEW_DEFAULT,
     CREATE_VIEW_EASA,
     CREATE_VIEW_TAILS,
@@ -259,16 +277,16 @@ const QList<QLatin1String> DATABASE_VIEWS = {
     CREATE_VIEW_QCOMPLETER,
 };
 
-const QList<QLatin1String> USER_TABLES = {
-    QLatin1String("flights"),
-    QLatin1String("pilots"),
-    QLatin1String("tails")
+const static QStringList USER_TABLES = {
+    QStringLiteral("flights"),
+    QStringLiteral("pilots"),
+    QStringLiteral("tails")
 };
-const QList<QLatin1String> TEMPLATE_TABLES= {
-    QLatin1String("aircraft"),
-    QLatin1String("airports"),
-    QLatin1String("currencies"),
-    QLatin1String("changelog")
+const static QStringList TEMPLATE_TABLES= {
+    QStringLiteral("aircraft"),
+    QStringLiteral("airports"),
+    QStringLiteral("currencies"),
+    QStringLiteral("changelog")
 };
 
 bool createDatabase()

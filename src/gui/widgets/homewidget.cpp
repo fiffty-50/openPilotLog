@@ -160,6 +160,8 @@ void HomeWidget::fillSelectedCurrencies()
 void HomeWidget::fillCurrencyTakeOffLanding()
 {
     const auto takeoff_landings = AStat::countTakeOffLanding();
+    if(takeoff_landings.isEmpty())
+        return;
 
     ui->TakeOffDisplayLabel->setText(takeoff_landings[0].toString());
     if (takeoff_landings[0].toUInt() < 3)

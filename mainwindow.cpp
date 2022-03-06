@@ -26,11 +26,12 @@
 #include "src/functions/adatetime.h"
 #include "src/classes/aentry.h"
 
-
+#include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-
+    auto nsd = new NewSimDialog(this);
+    nsd->exec();
 }
 
 MainWindow::MainWindow(QWidget *parent)

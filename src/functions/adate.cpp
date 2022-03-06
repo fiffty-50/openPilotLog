@@ -132,3 +132,8 @@ const QString ADate::getFormatString(Opl::Date::ADateFormat format)
     return ADATEFORMATSMAP.value(format);
 }
 
+const QString ADate::currentDate()
+{
+    return QDate::currentDate().toString(Qt::ISODate);
+}
+
