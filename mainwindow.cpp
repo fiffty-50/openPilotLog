@@ -46,8 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (!database_file.exists()) {
         WARN(tr("Error: Database file not found."));
         db_invalid = true;
-    }
-    if (database_file.size() == 0) { // To Do: Check for database errors instead of just checking for empty
+    } else if (database_file.size() == 0) { // To Do: Check for database errors instead of just checking for empty
         WARN(tr("Database file invalid."));
         db_invalid = true;
     }

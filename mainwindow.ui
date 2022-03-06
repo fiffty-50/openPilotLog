@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>openPilotLog v0.6</string>
+   <string>openPilotLog</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextUnderIcon</enum>

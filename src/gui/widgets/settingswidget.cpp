@@ -334,7 +334,7 @@ void SettingsWidget::on_aboutPushButton_clicked()
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 
-                       "<h3><center>About openPilotLog</center></h3>"
+                       "<h3><center>About</center></h3>"
                        "<br>"
                        "&#169; 2020 - 2022 Felix Turowsky"
                        "<br>"
@@ -356,11 +356,15 @@ void SettingsWidget::on_aboutPushButton_clicked()
                        "please click <a href=\"https://%2\">here</a>.</p>"
 
                        "<br>"
+                       "You are using openPilotLog version %3."
+                       "<br>"
 
-                       "<p>This program uses <a href=\"http://%3/\">Qt</a> version %4 and "
-                       "<a href=\"https://%5/\">SQLite</a> version %6</p>"
-                   ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog"),
+                       "<p>This program uses <a href=\"http://%4/\">Qt</a> version %5 and "
+                       "<a href=\"https://%6/\">SQLite</a> version %7</p>"
+                   ).arg(
+                         QStringLiteral("github.com/fiffty-50/openpilotlog"),
                          QStringLiteral("gnu.org/licenses/"),
+                         OPL_VERSION_STRING,
                          QStringLiteral("qt.io"),
                          QT_VERSION_STR,
                          QStringLiteral("sqlite.org/about.html"),

@@ -39,6 +39,10 @@
  */
 namespace Opl {
 
+#define OPL_VERSION 0
+#define OPL_SUBVERSION 1
+#define OPL_VERSION_STRING QString(QString::number(OPL_VERSION) + "." + QString::number(OPL_SUBVERSION))
+
 #if defined(__GNUC__) || defined(__clang__)
     #define FUNC_IDENT __PRETTY_FUNCTION__
 #elif defined(_MSC_VER)
