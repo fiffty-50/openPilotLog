@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
 
     main.cpp
     src/opl.h
+    src/opl.cpp
 
     # GUI
     mainwindow.h

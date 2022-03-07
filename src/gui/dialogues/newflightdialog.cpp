@@ -89,8 +89,8 @@ void NewFlightDialog::init()
     for (const auto& line_edit : *mandatoryLineEdits)
         line_edit->installEventFilter(this);
     // Approach Combo Box and Function Combo Box
-    Opl::loadApproachTypes(ui->approachComboBox);
-    Opl::loadPilotFunctios(ui->functionComboBox);
+    Opl::GLOBALS->loadApproachTypes(ui->approachComboBox);
+    Opl::GLOBALS->loadPilotFunctios(ui->functionComboBox);
 
     setupRawInputValidation();
     setupSignalsAndSlots();
@@ -462,7 +462,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(Opl::Db::FLIGHTS_LDGNIGHT, 0);
         new_data.insert(Opl::Db::FLIGHTS_LDGDAY, ui->landingSpinBox->value());
     }
-    if (ui->approachComboBox->currentText() == Opl::APPROACH_TYPES[3]) // ILS CAT III
+    if (ui->approachComboBox->currentText() == Opl::GLOBALS->getApproachTypes()[3]) // ILS CAT III
         new_data.insert(Opl::Db::FLIGHTS_AUTOLAND, ui->landingSpinBox->value());
 
     // Additional Data

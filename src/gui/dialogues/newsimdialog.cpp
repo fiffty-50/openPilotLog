@@ -11,7 +11,7 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->dateLineEdit->setText(ADate::currentDate());
-    Opl::loadSimulatorTypes(ui->typeComboBox);
+    Opl::GLOBALS->loadSimulatorTypes(ui->typeComboBox);
 
     const QStringList aircraft_list = aDB->getCompletionList(ADatabaseTarget::aircraft);
     auto completer = new QCompleter(aircraft_list, ui->acftLineEdit);

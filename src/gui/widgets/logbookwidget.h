@@ -27,6 +27,7 @@
 #include <QTableView>
 #include "src/gui/widgets/settingswidget.h"
 #include "src/classes/acompletiondata.h"
+#include "src/opl.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -52,10 +53,6 @@ public:
     ~LogbookWidget();
 
 private slots:
-    //void on_newFlightButton_clicked();
-    //void on_editFlightButton_clicked();
-    //void on_deleteFlightPushButton_clicked();
-    //void on_showAllButton_clicked();
     void flightsTableView_selectionChanged();
     void on_tableView_customContextMenuRequested(const QPoint &pos);
     void on_actionDelete_Flight_triggered();
@@ -63,6 +60,8 @@ private slots:
     void on_tableView_doubleClicked();
     void on_flightSearchLlineEdit_textChanged(const QString &arg1);
     void on_flightSearchComboBox_currentIndexChanged(int);
+
+    void on_viewsComboBox_currentIndexChanged(int index);
 
 public slots:
     void refresh();

@@ -44,8 +44,10 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
 
     // Approach Combo Box and Function Combo Box
-    Opl::loadApproachTypes(ui->approachComboBox);
-    Opl::loadPilotFunctios(ui->functionComboBox);
+    Opl::GLOBALS->loadApproachTypes(ui->approachComboBox);
+    Opl::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+    Opl::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
+
 
     // Style combo box
     const QSignalBlocker style_blocker(ui->styleComboBox);

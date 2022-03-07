@@ -14,12 +14,10 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTableView" name="tableView">
      <property name="font">
-      <font>
-       <family>Cantarell</family>
-      </font>
+      <font/>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -32,7 +30,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="QWidget" name="defaultPage">
       <layout class="QGridLayout" name="gridLayout_2">
@@ -120,6 +118,9 @@
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QComboBox" name="viewsComboBox"/>
    </item>
   </layout>
   <widget class="QLabel" name="spacerLabel">

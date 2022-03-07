@@ -65,6 +65,7 @@ public:
     static const QString& style();
 
     static inline void loadStylesComboBox(QComboBox *combo_box){
+        const QSignalBlocker blocker(combo_box);
         combo_box->addItems(AStyle::styles);
         for (const auto &style_sheet : AStyle::styleSheets) {
             combo_box->addItem(style_sheet.styleSheetName);

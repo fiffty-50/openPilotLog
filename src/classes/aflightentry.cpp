@@ -22,7 +22,7 @@
 #include "src/classes/asettings.h"
 
 AFlightEntry::AFlightEntry()
-    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, 0))
 {}
 
 AFlightEntry::AFlightEntry(RowId_T row_id)
@@ -30,7 +30,7 @@ AFlightEntry::AFlightEntry(RowId_T row_id)
 {}
 
 AFlightEntry::AFlightEntry(RowData_T table_data)
-    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION, table_data)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, 0), table_data)
 {}
 
 const QString AFlightEntry::summary()

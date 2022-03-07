@@ -84,86 +84,110 @@ public:
     };
 }; // class ANotificationHandler
 
-enum class Translations {English, German, Spanish};
-
-const static QMap<Opl::Translations, QString> L10N_FILES {
-    {Opl::Translations::English, QStringLiteral("l10n/openpilotlog_en")},
-    {Opl::Translations::German,  QStringLiteral("l10n/openpilotlog_de")},
-    {Opl::Translations::Spanish, QStringLiteral("l10n/openpilotlog_es")},
-};
-static const QMap<Translations, QString> L10N_NAMES {
-    {Opl::Translations::English, QStringLiteral("English")},
-    {Opl::Translations::German,  QStringLiteral("Deutsch")},
-    {Opl::Translations::Spanish, QStringLiteral("Español")},
-};
-
 /*!
  * \brief PilotFunction
  * Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor
  */
 enum PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
 
-static const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
-    {PilotFunction::PIC, QLatin1String("PIC")},
-    {PilotFunction::PICUS, QLatin1String("PICUS")},
-    {PilotFunction::SIC, QLatin1String("SIC")},
-    {PilotFunction::DUAL, QLatin1String("DUAL")},
-    {PilotFunction::FI, QLatin1String("FI")},
-};
-
-inline void loadPilotFunctios(QComboBox *combo_box)
-{
-    for (int i = PilotFunction::PIC; i < PILOT_FUNCTIONS.size(); i++)
-        combo_box->addItem(PILOT_FUNCTIONS.value(PilotFunction(i)));
-};
+/*!
+ * \brief Enumerates the available translations
+ */
+enum Translation {English, German, Spanish};
 
 /*!
- * \brief Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
+ * \brief Enumerates the available SQL views in the database
+ */
+enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim};
+
+/*!
+ * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
  */
 enum SimulatorTypes {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
-static const QMap<SimulatorTypes, QString> SIMULATOR_TYPES = {
-    {FNPTI,  QStringLiteral("FNPT I")},
-    {FNPTII, QStringLiteral("FNPT II")},
-    {FSTD,   QStringLiteral("FSTD")},
-};
+/*!
+ * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
+ * as a global static object via the Opl::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
+ * For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]
+ */
+class OplGlobals : public QObject {
+public:
+    OplGlobals() = default;
 
-inline void loadSimulatorTypes(QComboBox *combo_box)
-{
-    for (int i = 0; i < SIMULATOR_TYPES.size(); i++)
-        combo_box->addItem(SIMULATOR_TYPES.value(SimulatorTypes(i)));
-}
+    void fillLanguageComboBox(QComboBox *combo_box) const;
+    void fillViewNamesComboBox(QComboBox *combo_box) const;
+    void loadPilotFunctios(QComboBox *combo_box) const;
+    void loadSimulatorTypes(QComboBox *combo_box) const;
+    void loadApproachTypes(QComboBox *combo_box) const;
 
-static const QStringList APPROACH_TYPES = {
-        QStringLiteral("VISUAL"),
-        QStringLiteral("ILS CAT I"),
-        QStringLiteral("ILS CAT II"),
-        QStringLiteral("ILS CAT III"),
-        QStringLiteral("GLS"),
-        QStringLiteral("MLS"),
-        QStringLiteral("LOC"),
-        QStringLiteral("LOC/DME"),
-        QStringLiteral("RNAV"),
-        QStringLiteral("RNAV (LNAV)"),
-        QStringLiteral("RNAV (LNAV/VNAV)"),
-        QStringLiteral("RNAV (LPV)"),
-        QStringLiteral("RNAV (RNP)"),
-        QStringLiteral("RNAV (RNP-AR)"),
-        QStringLiteral("VOR"),
-        QStringLiteral("VOR/DME"),
-        QStringLiteral("NDB"),
-        QStringLiteral("NDB/DME"),
-        QStringLiteral("TACAN"),
-        QStringLiteral("SRA"),
-        QStringLiteral("PAR"),
-        QStringLiteral("OTHER")
-};
+    inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
+    inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
+    inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
 
-inline void loadApproachTypes(QComboBox *combo_box)
-{
-    for (const auto & approach : APPROACH_TYPES)
-        combo_box->addItem(approach);
+private:
+    Q_OBJECT
+
+    const QMap<Opl::Translation, QString> L10N_FilePaths {
+        {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
+        {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
+        {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
+    };
+    const QMap<Translation, QString> L10N_DisplayNames {
+        {Translation::English, tr("English")},
+        {Translation::German,  tr("Deutsch")},
+        {Translation::Spanish, tr("Español")},
+    };
+    const QMap<DbViewName, QString> DATABASE_VIEWS = {
+        {Default,        QStringLiteral("viewDefault")},
+        {DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {Easa,           QStringLiteral("viewEasa")},
+        {EasaWithSim,    QStringLiteral("viewEasaSim")},
+    };
+    const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {Default,        tr("Default")},
+        {DefaultWithSim, tr("Default with Simulator")},
+        {Easa,           tr("EASA-FCL")},
+        {EasaWithSim,    tr("EASA-FCL with Simulator")},
+    };
+    const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QLatin1String("PIC")},
+        {PilotFunction::PICUS, QLatin1String("PICUS")},
+        {PilotFunction::SIC,   QLatin1String("SIC")},
+        {PilotFunction::DUAL,  QLatin1String("DUAL")},
+        {PilotFunction::FI,    QLatin1String("FI")},
+    };
+    const QMap<SimulatorTypes, QString> SIMULATOR_TYPES = {
+        {FNPTI,  QStringLiteral("FNPT I")},
+        {FNPTII, QStringLiteral("FNPT II")},
+        {FSTD,   QStringLiteral("FSTD")},
+    };
+    const QStringList APPROACH_TYPES = {
+            QStringLiteral("VISUAL"),
+            QStringLiteral("ILS CAT I"),
+            QStringLiteral("ILS CAT II"),
+            QStringLiteral("ILS CAT III"),
+            QStringLiteral("GLS"),
+            QStringLiteral("MLS"),
+            QStringLiteral("LOC"),
+            QStringLiteral("LOC/DME"),
+            QStringLiteral("RNAV"),
+            QStringLiteral("RNAV (LNAV)"),
+            QStringLiteral("RNAV (LNAV/VNAV)"),
+            QStringLiteral("RNAV (LPV)"),
+            QStringLiteral("RNAV (RNP)"),
+            QStringLiteral("RNAV (RNP-AR)"),
+            QStringLiteral("VOR"),
+            QStringLiteral("VOR/DME"),
+            QStringLiteral("NDB"),
+            QStringLiteral("NDB/DME"),
+            QStringLiteral("TACAN"),
+            QStringLiteral("SRA"),
+            QStringLiteral("PAR"),
+            QStringLiteral("OTHER")
+    };
 };
+//Make available as a global static
+Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
 
 namespace Date {
 
@@ -288,10 +312,10 @@ static const auto SIMULATORS_REMARKS     = QStringLiteral("remarks");
 static const auto ROWID                  = QStringLiteral("rowid");
 static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
-static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
-static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
-static const auto DEFAULT_TAIL_POSITION     = DataPosition(TABLE_TAILS, 0);
-static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
+//static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
+//static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
+//static const auto DEFAULT_TAIL_POSITION     = DataPosition(TABLE_TAILS, 0);
+//static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
 
 } // namespace opl::db
 

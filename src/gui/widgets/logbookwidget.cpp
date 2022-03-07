@@ -41,6 +41,8 @@ LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) 
 {
     ui->setupUi(this);
 
+    Opl::GLOBALS->fillViewNamesComboBox(ui->viewsComboBox);
+
     //customContextMenu for tablewidget
     menu  = new QMenu(this);
     menu->addAction(ui->actionEdit_Flight);
@@ -71,33 +73,19 @@ LogbookWidget::~LogbookWidget()
  */
 void LogbookWidget::setupModelAndView(int view_id)
 {
-    switch (view_id) {
-    case 0:
-        LOG << "Loading Default View...";
-        displayModel->setTable(QStringLiteral("viewDefault"));
-        displayModel->select();
-        break;
-    case 1:
-        LOG << "Loading EASA View...";
-        displayModel->setTable(QStringLiteral("viewEASA"));
-        displayModel->select();
-        break;
-    default:
-        LOG << "Loading Default View...";
-        displayModel->setTable(QStringLiteral("viewDefault"));
-        displayModel->select();
-    }
+    displayModel->setTable(Opl::GLOBALS->getViewIdentifier(Opl::DbViewName(view_id)));
+    displayModel->select();
 
     view->setModel(displayModel);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->resizeColumnsToContents();
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->hideColumn(0);
-    view->resizeColumnsToContents();
     view->show();
 }
 
@@ -304,3 +292,9 @@ void LogbookWidget::repopulateModel()
     setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 }
+
+void LogbookWidget::on_viewsComboBox_currentIndexChanged(int index)
+{
+    setupModelAndView(index);
+}
+

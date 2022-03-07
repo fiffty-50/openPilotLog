@@ -133,9 +133,9 @@ public:
  * to hot database data.
  */
 class ADatabase : public QObject {
-    Q_OBJECT
 
 private:
+    Q_OBJECT
     static ADatabase* self;
     TableNames_T tableNames;
     TableColumns_T tableColumns;

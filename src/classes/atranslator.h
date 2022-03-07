@@ -21,7 +21,7 @@ public:
     /*!
      * \brief Installs a QTranslator with the selected language. Defaults to English. Call this function before constructing the Main Window.
      */
-    static void installTranslator(Opl::Translations language = Opl::Translations::English);
+    static void installTranslator(Opl::Translation language = Opl::Translation::English);
 
 private:
     static QTranslator *translator;

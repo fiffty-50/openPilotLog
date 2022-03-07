@@ -19,7 +19,7 @@
 #include "src/opl.h"
 
 ATailEntry::ATailEntry()
-    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, 0))
 {}
 
 ATailEntry::ATailEntry(RowId_T row_id)
@@ -27,7 +27,7 @@ ATailEntry::ATailEntry(RowId_T row_id)
 {}
 
 ATailEntry::ATailEntry(RowData_T table_data)
-    : AEntry::AEntry(Opl::Db::DEFAULT_TAIL_POSITION, table_data)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, 0), table_data)
 {}
 
 const QString ATailEntry::registration()

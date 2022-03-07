@@ -19,7 +19,7 @@
 #include "src/opl.h"
 
 APilotEntry::APilotEntry()
-    : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_PILOTS, 0))
 {}
 
 APilotEntry::APilotEntry(RowId_T row_id)
@@ -27,7 +27,7 @@ APilotEntry::APilotEntry(RowId_T row_id)
 {}
 
 APilotEntry::APilotEntry(RowData_T table_data)
-    : AEntry::AEntry(Opl::Db::DEFAULT_PILOT_POSITION, table_data)
+    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_PILOTS, 0), table_data)
 {}
 
 const QString APilotEntry::name()

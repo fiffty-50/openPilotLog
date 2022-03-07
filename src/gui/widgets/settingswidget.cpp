@@ -53,18 +53,12 @@ void SettingsWidget::changeEvent(QEvent *event)
 
 void SettingsWidget::setupComboBoxes(){
     {
-        // Style combo box
-        const QSignalBlocker style_blocker(ui->styleComboBox);
+        // Set up Combo Boxes
         AStyle::loadStylesComboBox(ui->styleComboBox);
-        // Approach Combo Box and Function Combo Box
-        const QSignalBlocker approach_blocker(ui->approachComboBox);
-        Opl::loadApproachTypes(ui->approachComboBox);
-        const QSignalBlocker function_blocker(ui->functionComboBox);
-        Opl::loadPilotFunctios(ui->functionComboBox);
-
-        // Language Combo Box
-        for (const auto &lang : Opl::L10N_NAMES)
-            ui->languageComboBox->addItem(lang);
+        Opl::GLOBALS->loadApproachTypes(ui->approachComboBox);
+        Opl::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+        Opl::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
+        Opl::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
     }
 }
 
