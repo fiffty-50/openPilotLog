@@ -37,7 +37,7 @@
  *  The db namespace contains constants for programatically accessing the database in a fast
  *  and uniform manner.
  */
-namespace Opl {
+namespace OPL {
 
 #define OPL_VERSION 0
 #define OPL_SUBVERSION 1
@@ -55,9 +55,9 @@ namespace Opl {
 #define LOG qInfo()                             // Use for logging milestones (silently, will be written to log file and console out only)
 #define TODO qCritical() << "TO DO:\t"
 
-#define INFO(msg) Opl::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
-#define WARN(msg) Opl::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
-#define CRIT(msg) Opl::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
+#define INFO(msg) OPL::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
+#define WARN(msg) OPL::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
+#define CRIT(msg) OPL::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
@@ -85,6 +85,16 @@ public:
 }; // class ANotificationHandler
 
 /*!
+ * \brief ADateFormats enumerates the accepted date formats for QDateEdits
+ * \todo At the moment, only ISODate is accepet as a valid date format.
+ */
+enum class DateFormat {ISODate, DE, EN };
+
+enum class FlightTimeFormat {Default, Decimal};
+
+enum class DateTimeFormat {Default, Backup};
+
+/*!
  * \brief PilotFunction
  * Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor
  */
@@ -103,11 +113,11 @@ enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim};
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
  */
-enum SimulatorTypes {FNPTI = 0, FNPTII = 1, FSTD = 2};
+enum SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
 /*!
  * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
- * as a global static object via the Opl::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
+ * as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
  * For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]
  */
 class OplGlobals : public QObject {
@@ -127,7 +137,7 @@ public:
 private:
     Q_OBJECT
 
-    const QMap<Opl::Translation, QString> L10N_FilePaths {
+    const QMap<Translation, QString> L10N_FilePaths {
         {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
         {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
         {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
@@ -156,7 +166,7 @@ private:
         {PilotFunction::DUAL,  QLatin1String("DUAL")},
         {PilotFunction::FI,    QLatin1String("FI")},
     };
-    const QMap<SimulatorTypes, QString> SIMULATOR_TYPES = {
+    const QMap<SimulatorType, QString> SIMULATOR_TYPES = {
         {FNPTI,  QStringLiteral("FNPT I")},
         {FNPTII, QStringLiteral("FNPT II")},
         {FSTD,   QStringLiteral("FSTD")},
@@ -189,34 +199,12 @@ private:
 //Make available as a global static
 Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
 
-namespace Date {
-
 /*!
- * \brief ADateFormats enumerates the accepted date formats for QDateEdits
- * \todo At the moment, only ISODate is accepet as a valid date format.
- */
-enum ADateFormat {ISODate, DE, EN };
-
-} // namespace opl::date
-
-namespace Time {
-
-enum FlightTimeFormat {Default, Decimal};
-
-} // namespace opl::time
-
-namespace Datetime {
-
-enum DateTimeFormat {Default, Backup};
-
-} // namespace opl::datetime
-
-/*!
- *  The opl::db namespace provides string literals to programatically access the database
+ *  The OPL::db namespace provides string literals to programatically access the database
  *
  *  Example usage, do:
- *  newData.insert(opl::db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
- *  newData.value(opl::db::AIRCRAFT_MULTIPILOT);
+ *  newData.insert(OPL::db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
+ *  newData.value(OPL::db::AIRCRAFT_MULTIPILOT);
  *
  *  instead of:
  *  newData.insert("dept", ui->deptLocLineEdit->text());
@@ -312,12 +300,7 @@ static const auto SIMULATORS_REMARKS     = QStringLiteral("remarks");
 static const auto ROWID                  = QStringLiteral("rowid");
 static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
-//static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
-//static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
-//static const auto DEFAULT_TAIL_POSITION     = DataPosition(TABLE_TAILS, 0);
-//static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
-
-} // namespace opl::db
+} // namespace OPL::db
 
 namespace Assets {
 
@@ -352,7 +335,7 @@ static const auto ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-ic
 namespace Styles {
 
 static const auto RED_BORDER = QStringLiteral("border: 1px solid red");
-} // namespace ui
+} // namespace Styles
 
 } // namespace opl
 

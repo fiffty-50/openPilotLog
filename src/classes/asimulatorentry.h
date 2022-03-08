@@ -25,11 +25,11 @@ class ASimulatorEntry : public AEntry
 {
 public:
     ASimulatorEntry()
-        : AEntry::AEntry(DataPosition(Opl::Db::TABLE_SIMULATORS, 0)){};
+        : AEntry::AEntry(DataPosition(OPL::Db::TABLE_SIMULATORS, 0)){};
     ASimulatorEntry(RowId_T row_id)
-        : AEntry::AEntry(DataPosition(Opl::Db::TABLE_SIMULATORS, row_id)){};
+        : AEntry::AEntry(DataPosition(OPL::Db::TABLE_SIMULATORS, row_id)){};
     ASimulatorEntry(RowData_T table_data)
-        : AEntry::AEntry(DataPosition(Opl::Db::TABLE_SIMULATORS, 0), table_data){};
+        : AEntry::AEntry(DataPosition(OPL::Db::TABLE_SIMULATORS, 0), table_data){};
 
     ASimulatorEntry(const ASimulatorEntry& pe) = default;
     ASimulatorEntry& operator=(const ASimulatorEntry& pe) = default;

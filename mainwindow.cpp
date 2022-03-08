@@ -87,21 +87,21 @@ MainWindow::MainWindow(QWidget *parent)
     // Create and set up the toolbar
     auto *toolBar = new QToolBar(this);
 
-    ui->actionHome->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_HOME));
+    ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
     toolBar->addAction(ui->actionHome);
-    ui->actionNewFlight->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+    ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
     toolBar->addAction(ui->actionNewFlight);
-    ui->actionLogbook->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_LOGBOOK));
+    ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
     toolBar->addAction(ui->actionLogbook);
-    ui->actionAircraft->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_AIRCRAFT));
+    ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
     toolBar->addAction(ui->actionAircraft);
-    ui->actionPilots->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_PILOT));
+    ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
     toolBar->addAction(ui->actionPilots);
-    ui->actionBackup->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_BACKUP));
+    ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
     toolBar->addAction(ui->actionBackup);
-    ui->actionSettings->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_SETTINGS));
+    ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
     toolBar->addAction(ui->actionSettings);
-    ui->actionQuit->setIcon(QIcon(Opl::Assets::ICON_TOOLBAR_QUIT));
+    ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     toolBar->setMovable(false);

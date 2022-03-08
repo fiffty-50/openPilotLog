@@ -28,13 +28,13 @@ namespace ATime {
 /*!
  * \brief Converts a QTime to a String to be used in the UI
  */
-inline const QString toString(const QTime &time, Opl::Time::FlightTimeFormat format = Opl::Time::Default)
+inline const QString toString(const QTime &time, OPL::FlightTimeFormat format = OPL::FlightTimeFormat::Default)
 {
     switch (format) {
-    case Opl::Time::Default:
+    case OPL::FlightTimeFormat::Default:
         return time.toString(QStringLiteral("hh:mm"));
         break;
-    case Opl::Time::Decimal:
+    case OPL::FlightTimeFormat::Decimal:
         return QString::number(((time.hour() * 60 + time.minute() )/60.0), 'f', 2);
         break;
     default:
@@ -45,10 +45,10 @@ inline const QString toString(const QTime &time, Opl::Time::FlightTimeFormat for
 /*!
  * \brief Converts an integer of minutes as received from the Datbase to a String
  */
-inline const QString toString(int minutes_in, Opl::Time::FlightTimeFormat format = Opl::Time::Default)
+inline const QString toString(int minutes_in, OPL::FlightTimeFormat format = OPL::FlightTimeFormat::Default)
 {
     switch (format) {
-    case Opl::Time::Default:
+    case OPL::FlightTimeFormat::Default:
     {
         QString hour = QString::number(minutes_in / 60);
         if (hour.size() < 2) {
@@ -60,7 +60,7 @@ inline const QString toString(int minutes_in, Opl::Time::FlightTimeFormat format
         }
         return hour + ':' + minute;
     }
-    case Opl::Time::Decimal:
+    case OPL::FlightTimeFormat::Decimal:
     {
         int hour = minutes_in / 60;
         double minute = (minutes_in % 60) / 60.0;
@@ -84,13 +84,13 @@ inline QTime qTimefromMinutes(int total_minutes)
     return QTime(hour, minute, 0);
 }
 
-inline const QTime fromString(QString time_string, Opl::Time::FlightTimeFormat format = Opl::Time::Default)
+inline const QTime fromString(QString time_string, OPL::FlightTimeFormat format = OPL::FlightTimeFormat::Default)
 {
     switch (format) {
-    case Opl::Time::Default:
+    case OPL::FlightTimeFormat::Default:
         return QTime::fromString(time_string, QStringLiteral("hh:mm"));
         break;
-    case Opl::Time::Decimal:
+    case OPL::FlightTimeFormat::Decimal:
     {
         double decimal_time = time_string.toDouble();
         int hour = decimal_time;
@@ -103,13 +103,13 @@ inline const QTime fromString(QString time_string, Opl::Time::FlightTimeFormat f
     }
 }
 
-inline const QTime fromString(const char* time_string, Opl::Time::FlightTimeFormat format = Opl::Time::Default)
+inline const QTime fromString(const char* time_string, OPL::FlightTimeFormat format = OPL::FlightTimeFormat::Default)
 {
     switch (format) {
-    case Opl::Time::Default:
+    case OPL::FlightTimeFormat::Default:
         return QTime::fromString(time_string, QStringLiteral("hh:mm"));
         break;
-    case Opl::Time::Decimal:
+    case OPL::FlightTimeFormat::Decimal:
     {
         double decimal_time = QString(time_string).toDouble();
         int hour = decimal_time;

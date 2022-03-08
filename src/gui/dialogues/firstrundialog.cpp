@@ -41,12 +41,12 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->lastnameLineEdit->setFocus();
     ui->previousPushButton->setEnabled(false);
-    ui->logoLabel->setPixmap(QPixmap(Opl::Assets::LOGO));
+    ui->logoLabel->setPixmap(QPixmap(OPL::Assets::LOGO));
 
     // Approach Combo Box and Function Combo Box
-    Opl::GLOBALS->loadApproachTypes(ui->approachComboBox);
-    Opl::GLOBALS->loadPilotFunctios(ui->functionComboBox);
-    Opl::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
+    OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
+    OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+    OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
 
 
     // Style combo box
@@ -57,7 +57,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     // Prepare Date Edits
     const auto date_edits = this->findChildren<QDateEdit *>();
     for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(ADate::getFormatString(Opl::Date::ADateFormat::ISODate));
+        date_edit->setDisplayFormat(ADate::getFormatString(OPL::DateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
@@ -319,12 +319,12 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     QHash<QString, QVariant> data;
-    data.insert(Opl::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
-    data.insert(Opl::Db::PILOTS_ALIAS,      QStringLiteral("self"));
-    data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(Opl::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
-    data.insert(Opl::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
+    data.insert(OPL::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(OPL::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(OPL::Db::PILOTS_ALIAS,      QStringLiteral("self"));
+    data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(OPL::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
+    data.insert(OPL::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
 
     auto pilot = APilotEntry(1);
     pilot.setData(data);

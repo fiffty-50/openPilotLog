@@ -30,7 +30,7 @@ void exec(const QString &csv_file_path)
 
     for (const auto & pilot : p_maps) {
         APilotEntry pe(pilot);
-        pe.setPosition(DataPosition(Opl::Db::TABLE_PILOTS, pilot.value(Opl::Db::PILOTS_ROWID).toInt()));
+        pe.setPosition(DataPosition(OPL::Db::TABLE_PILOTS, pilot.value(OPL::Db::PILOTS_ROWID).toInt()));
         aDB->commit(pe);
     }
 
@@ -41,7 +41,7 @@ void exec(const QString &csv_file_path)
 
     for (const auto& tail : t_maps) {
         ATailEntry te(tail);
-        te.setPosition(DataPosition(Opl::Db::TABLE_TAILS, tail.value(Opl::Db::PILOTS_ROWID).toInt()));
+        te.setPosition(DataPosition(OPL::Db::TABLE_TAILS, tail.value(OPL::Db::PILOTS_ROWID).toInt()));
         aDB->commit(te);
     }
 

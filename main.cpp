@@ -64,7 +64,7 @@ void init()
     AStyle::setup();
     // Translations to be done at a later stage
     //LOG << "Installing translator...";
-    //ATranslator::installTranslator(Opl::Translations::English);
+    //ATranslator::installTranslator(OPL::Translations::English);
 }
 
 bool firstRun()
@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;
 #ifdef __linux__
-    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_LINUX));
+    w.setWindowIcon(QIcon(OPL::Assets::ICON_APPICON_LINUX));
 #elif defined(_WIN32) || defined(_WIN64)
-    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_WIN));
+    w.setWindowIcon(QIcon(OPL::Assets::ICON_APPICON_WIN));
 #elif __APPLE__
     #include <TargetConditionals.h>
     #if TARGET_IPHONE_SIMULATOR
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     #elif TARGET_OS_IPHONE
         // iOS device
     #elif TARGET_OS_MAC
-    w.setWindowIcon(QIcon(Opl::Assets::ICON_APPICON_IOS));
+    w.setWindowIcon(QIcon(OPL::Assets::ICON_APPICON_IOS));
     #else
     #   error "Unknown Apple platform"
     #endif

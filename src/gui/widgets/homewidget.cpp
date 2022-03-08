@@ -39,7 +39,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
     today = QDate::currentDate();
     ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
     currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
-    auto logo = QPixmap(Opl::Assets::LOGO);
+    auto logo = QPixmap(OPL::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 
@@ -100,7 +100,7 @@ void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel
     auto currency_entry = aDB->getCurrencyEntry(currency_name);
     if (currency_entry.isValid()) {
         auto currency_date = QDate::fromString(currency_entry.tableData.value(
-                                                   Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                                                   OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);

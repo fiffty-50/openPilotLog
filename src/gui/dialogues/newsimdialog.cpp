@@ -11,7 +11,7 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->dateLineEdit->setText(ADate::currentDate());
-    Opl::GLOBALS->loadSimulatorTypes(ui->typeComboBox);
+    OPL::GLOBALS->loadSimulatorTypes(ui->typeComboBox);
 
     const QStringList aircraft_list = aDB->getCompletionList(ADatabaseTarget::aircraft);
     auto completer = new QCompleter(aircraft_list, ui->acftLineEdit);
@@ -30,7 +30,7 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
 {
     auto text = ui->dateLineEdit->text();
 
-    Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
+    OPL::DateFormat date_format = OPL::DateFormat::ISODate;
     auto date = ADate::parseInput(text, date_format);
     if (date.isValid()) {
         ui->dateLineEdit->setText(ADate::toString(date, date_format));
@@ -38,7 +38,7 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
         return;
     } else {
         ui->dateLineEdit->setText(QString());
-        ui->dateLineEdit->setStyleSheet(Opl::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
     }
 }
 
@@ -53,7 +53,7 @@ void NewSimDialog::on_timeLineEdit_editingFinished()
         ui->timeLineEdit->setStyleSheet(QString());
     } else {
         ui->timeLineEdit->setText(QString());
-        ui->timeLineEdit->setStyleSheet(Opl::Styles::RED_BORDER);
+        ui->timeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
     }
 }
 
@@ -78,11 +78,11 @@ bool NewSimDialog::verifyInput(QString& error_msg)
 {
     // Date
     auto text = ui->dateLineEdit->text();
-    Opl::Date::ADateFormat date_format = Opl::Date::ADateFormat::ISODate;
+    OPL::DateFormat date_format = OPL::DateFormat::ISODate;
     const auto date = ADate::parseInput(text, date_format);
 
     if (!date.isValid()) {
-        ui->dateLineEdit->setStyleSheet(Opl::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
         ui->dateLineEdit->setText(QString());
         error_msg = tr("Invalid Date");
         return false;
@@ -92,14 +92,14 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     const QTime time = ATime::fromString(time_string);
 
     if (!time.isValid()) {
-        ui->timeLineEdit->setStyleSheet(Opl::Styles::RED_BORDER);
+        ui->timeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
         ui->timeLineEdit->setText(QString());
         error_msg = tr("Invalid time");
         return false;
     }
 
     // Device Type - for FSTD, aircraft info is required
-    if (ui->typeComboBox->currentIndex() == Opl::SimulatorTypes::FSTD
+    if (ui->typeComboBox->currentIndex() == OPL::SimulatorType::FSTD
             && ui->acftLineEdit->text() == QString()) {
         error_msg = tr("For FSTD, please enter the aircraft type.");
         return false;
@@ -112,19 +112,19 @@ RowData_T NewSimDialog::collectInput()
 {
     RowData_T new_entry;
     // Date
-    new_entry.insert(Opl::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
+    new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(Opl::Db::SIMULATORS_TIME, ATime::toMinutes(ui->timeLineEdit->text()));
+    new_entry.insert(OPL::Db::SIMULATORS_TIME, ATime::toMinutes(ui->timeLineEdit->text()));
     // Device Type
-    new_entry.insert(Opl::Db::SIMULATORS_TYPE, ui->typeComboBox->currentText());
+    new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->typeComboBox->currentText());
     // Aircraft Type
-    new_entry.insert(Opl::Db::SIMULATORS_ACFT, ui->acftLineEdit->text());
+    new_entry.insert(OPL::Db::SIMULATORS_ACFT, ui->acftLineEdit->text());
     // Registration
     if (!ui->registrationLineEdit->text().isEmpty())
-        new_entry.insert(Opl::Db::SIMULATORS_REG, ui->registrationLineEdit->text());
+        new_entry.insert(OPL::Db::SIMULATORS_REG, ui->registrationLineEdit->text());
     // Remarks
     if (!ui->remarksLineEdit->text().isEmpty())
-        new_entry.insert(Opl::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
+        new_entry.insert(OPL::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
 
     return new_entry;
 }

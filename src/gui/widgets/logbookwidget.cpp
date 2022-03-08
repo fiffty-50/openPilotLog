@@ -41,7 +41,7 @@ LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) 
 {
     ui->setupUi(this);
 
-    Opl::GLOBALS->fillViewNamesComboBox(ui->viewsComboBox);
+    OPL::GLOBALS->fillViewNamesComboBox(ui->viewsComboBox);
 
     //customContextMenu for tablewidget
     menu  = new QMenu(this);
@@ -73,7 +73,7 @@ LogbookWidget::~LogbookWidget()
  */
 void LogbookWidget::setupModelAndView(int view_id)
 {
-    displayModel->setTable(Opl::GLOBALS->getViewIdentifier(Opl::DbViewName(view_id)));
+    displayModel->setTable(OPL::GLOBALS->getViewIdentifier(OPL::DbViewName(view_id)));
     displayModel->select();
 
     view->setModel(displayModel);

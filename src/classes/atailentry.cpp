@@ -19,31 +19,31 @@
 #include "src/opl.h"
 
 ATailEntry::ATailEntry()
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, 0))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, 0))
 {}
 
 ATailEntry::ATailEntry(RowId_T row_id)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, row_id))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, row_id))
 {}
 
 ATailEntry::ATailEntry(RowData_T table_data)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_TAILS, 0), table_data)
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, 0), table_data)
 {}
 
 const QString ATailEntry::registration()
 {
-    return getData().value(Opl::Db::TAILS_REGISTRATION).toString();
+    return getData().value(OPL::Db::TAILS_REGISTRATION).toString();
 }
 
 const QString ATailEntry::type()
 {
     QString type_string;
-    if (!tableData.value(Opl::Db::TAILS_MAKE).toString().isEmpty())
-        type_string.append(getData().value(Opl::Db::TAILS_MAKE).toString() + ' ');
-    if (!tableData.value(Opl::Db::TAILS_MODEL).toString().isEmpty())
-        type_string.append(getData().value(Opl::Db::TAILS_MODEL).toString());
-    if (!tableData.value(Opl::Db::TAILS_VARIANT).toString().isEmpty())
-        type_string.append('-' + getData().value(Opl::Db::TAILS_VARIANT).toString());
+    if (!tableData.value(OPL::Db::TAILS_MAKE).toString().isEmpty())
+        type_string.append(getData().value(OPL::Db::TAILS_MAKE).toString() + ' ');
+    if (!tableData.value(OPL::Db::TAILS_MODEL).toString().isEmpty())
+        type_string.append(getData().value(OPL::Db::TAILS_MODEL).toString());
+    if (!tableData.value(OPL::Db::TAILS_VARIANT).toString().isEmpty())
+        type_string.append('-' + getData().value(OPL::Db::TAILS_VARIANT).toString());
 
     return type_string;
 }

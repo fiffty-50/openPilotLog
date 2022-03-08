@@ -2,13 +2,13 @@
 
 QTranslator* ATranslator::translator;
 
-void ATranslator::installTranslator(Opl::Translation language)
+void ATranslator::installTranslator(OPL::Translation language)
 {
     translator = new QTranslator();
-    if (translator->load(Opl::GLOBALS->getLanguageFilePath(language)))
-        LOG << "Translations loaded. Selected language: " << Opl::GLOBALS->getLanguageFilePath(language);
+    if (translator->load(OPL::GLOBALS->getLanguageFilePath(language)))
+        LOG << "Translations loaded. Selected language: " << OPL::GLOBALS->getLanguageFilePath(language);
     else
-        LOG << "Loading translations has failed. Selected language: " << Opl::GLOBALS->getLanguageFilePath(language);
+        LOG << "Loading translations has failed. Selected language: " << OPL::GLOBALS->getLanguageFilePath(language);
 
 
     if (qApp->installTranslator(translator))

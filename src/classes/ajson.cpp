@@ -19,10 +19,10 @@
 #include "src/database/adbsetup.h"
 
 const QList<QPair<TableName_T, ADatabaseTable>> AJson::tables {
-    qMakePair(Opl::Db::TABLE_TAILS, ADatabaseTable::tails),
-    qMakePair(Opl::Db::TABLE_PILOTS, ADatabaseTable::pilots),
-    qMakePair(Opl::Db::TABLE_CURRENCIES, ADatabaseTable::currencies),
-    qMakePair(Opl::Db::TABLE_FLIGHTS, ADatabaseTable::flights),
+    qMakePair(OPL::Db::TABLE_TAILS, ADatabaseTable::tails),
+    qMakePair(OPL::Db::TABLE_PILOTS, ADatabaseTable::pilots),
+    qMakePair(OPL::Db::TABLE_CURRENCIES, ADatabaseTable::currencies),
+    qMakePair(OPL::Db::TABLE_FLIGHTS, ADatabaseTable::flights),
 };
 
 void AJson::exportDatabase()

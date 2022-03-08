@@ -1,6 +1,6 @@
 #include "opl.h"
 
-namespace Opl {
+namespace OPL {
 
 void OplGlobals::fillLanguageComboBox(QComboBox *combo_box) const
 {
@@ -12,7 +12,7 @@ void OplGlobals::fillLanguageComboBox(QComboBox *combo_box) const
 void OplGlobals::fillViewNamesComboBox(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (int i = 0; i < DATABASE_VIEW_DISPLAY_NAMES.size(); i++)
+    for (int i = DbViewName::Default; i < DATABASE_VIEW_DISPLAY_NAMES.size(); i++)
         combo_box->addItem(DATABASE_VIEW_DISPLAY_NAMES.value(DbViewName(i)));
 }
 
@@ -26,8 +26,8 @@ void OplGlobals::loadPilotFunctios(QComboBox *combo_box) const
 void OplGlobals::loadSimulatorTypes(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (int i = 0; i < SIMULATOR_TYPES.size(); i++)
-        combo_box->addItem(SIMULATOR_TYPES.value(SimulatorTypes(i)));
+    for (int i = SimulatorType::FNPTI; i < SIMULATOR_TYPES.size(); i++)
+        combo_box->addItem(SIMULATOR_TYPES.value(SimulatorType(i)));
 }
 
 void OplGlobals::loadApproachTypes(QComboBox *combo_box) const

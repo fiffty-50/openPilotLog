@@ -80,7 +80,7 @@ void BackupWidget::refresh()
 const QString BackupWidget::absoluteBackupPath()
 {
     const QString backup_name = QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), Opl::Datetime::Backup)
+            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
     return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
 }
@@ -88,7 +88,7 @@ const QString BackupWidget::absoluteBackupPath()
 const QString BackupWidget::backupName()
 {
     return  QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), Opl::Datetime::Backup)
+            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
 }
 

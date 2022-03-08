@@ -12,14 +12,14 @@
  * CurrencyName, which maps to the static row id for the currency.
  */
 ACurrencyEntry::ACurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_CURRENCIES, static_cast<int>(currency_name)))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_CURRENCIES, static_cast<int>(currency_name)))
 {}
 
 ACurrencyEntry::ACurrencyEntry(ACurrencyEntry::CurrencyName currency_name, QDate expiration_date)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_CURRENCIES, static_cast<int>(currency_name)))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_CURRENCIES, static_cast<int>(currency_name)))
 {
     if (expiration_date.isValid()) {
-        tableData.insert(Opl::Db::CURRENCIES_EXPIRYDATE, expiration_date.toString(Qt::ISODate));
+        tableData.insert(OPL::Db::CURRENCIES_EXPIRYDATE, expiration_date.toString(Qt::ISODate));
     } else {
         DEB << "Invalid Date.";
     }
@@ -34,6 +34,6 @@ ACurrencyEntry::ACurrencyEntry(ACurrencyEntry::CurrencyName currency_name, QDate
 bool ACurrencyEntry::isValid() const
 {
     return QDate::fromString(
-                tableData.value(Opl::Db::CURRENCIES_EXPIRYDATE).toString(), Qt::ISODate
+                tableData.value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(), Qt::ISODate
                 ).isValid();
 }

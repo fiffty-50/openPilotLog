@@ -55,10 +55,10 @@ void SettingsWidget::setupComboBoxes(){
     {
         // Set up Combo Boxes
         AStyle::loadStylesComboBox(ui->styleComboBox);
-        Opl::GLOBALS->loadApproachTypes(ui->approachComboBox);
-        Opl::GLOBALS->loadPilotFunctios(ui->functionComboBox);
-        Opl::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
-        Opl::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
+        OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
+        OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+        OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
+        OPL::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
     }
 }
 
@@ -68,7 +68,7 @@ void SettingsWidget::setupDateEdits()
     // Read Display Format Setting
     int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
     const QString date_format_string = ADate::getFormatString(
-                static_cast<Opl::Date::ADateFormat>(date_format_index));
+                static_cast<OPL::DateFormat>(date_format_index));
     const auto date_edits = this->findChildren<QDateEdit*>();
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
@@ -87,7 +87,7 @@ void SettingsWidget::setupDateEdits()
         const auto entry = aDB->getCurrencyEntry(pair.first);
         if (entry.isValid()) { // set date
             const auto date = QDate::fromString(
-                        entry.tableData.value(Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                        entry.tableData.value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                         Qt::ISODate);
             pair.second->setDate(date);
         } else { // set current date
@@ -105,12 +105,12 @@ void SettingsWidget::readSettings()
 
     // Personal Data Tab
     auto user_data = aDB->getPilotEntry(1).getData();
-    ui->lastnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_LASTNAME).toString());
-    ui->firstnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_FIRSTNAME).toString());
-    ui->companyLineEdit->setText(user_data.value(Opl::Db::PILOTS_COMPANY).toString());
-    ui->employeeidLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMPLOYEEID).toString());
-    ui->phoneLineEdit->setText(user_data.value(Opl::Db::PILOTS_PHONE).toString());
-    ui->emailLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMAIL).toString());
+    ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
+    ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
+    ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
+    ui->employeeidLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMPLOYEEID).toString());
+    ui->phoneLineEdit->setText(user_data.value(OPL::Db::PILOTS_PHONE).toString());
+    ui->emailLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMAIL).toString());
 
     // FLight Logging Tab
     ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
@@ -182,10 +182,10 @@ void SettingsWidget::updatePersonalDetails()
     RowData_T user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("self"));
         break;
     case 1:
-        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
+        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
         break;
     case 2:{
         QString name;
@@ -193,18 +193,18 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
-        user_data.insert(Opl::Db::PILOTS_ALIAS, name);
+        user_data.insert(OPL::Db::PILOTS_ALIAS, name);
     }
         break;
     default:
         break;
     }
-    user_data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto user = APilotEntry(1);
     user.setData(user_data);
@@ -323,7 +323,7 @@ void SettingsWidget::on_acftSortComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
-    QPixmap icon = QPixmap(Opl::Assets::ICON_MAIN);
+    QPixmap icon = QPixmap(OPL::Assets::ICON_MAIN);
     message_box.setIconPixmap(icon.scaledToWidth(64, Qt::TransformationMode::SmoothTransformation));
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
