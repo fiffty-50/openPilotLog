@@ -45,7 +45,7 @@ const QList<StyleSheet> AStyle::styleSheets = {
 };
 
 QString AStyle::currentStyle = defaultStyle;
-
+QLatin1String AStyle::DARK_PALETTE = QLatin1String("Dark-Palette");
 /*!
  * \brief Setup Application style by reading from openPilotLog.ini
  */
@@ -63,7 +63,7 @@ void AStyle::setup()
     // Set style, stylesheet or palette
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();
 
-    if (style_setting == QLatin1String("Dark-Palette")) {
+    if (style_setting == DARK_PALETTE) {
         AStyle::setStyle(AStyle::darkPalette());
         ASettings::write(ASettings::Main::Style, style_setting);
         return;
@@ -112,7 +112,22 @@ void AStyle::setStyle(const QPalette &palette)
 {
     resetStyle();
     LOG << "Setting Colour Palette...";
+    currentStyle = DARK_PALETTE;
     qApp->setPalette(palette);
+}
+
+StyleType AStyle::getStyleType()
+{
+    const QStringList darkStyles = {
+        QStringLiteral("Breeze-Dark"),
+        QStringLiteral("QDarkStyle"),
+        DARK_PALETTE,
+    };
+
+    if (darkStyles.contains(currentStyle))
+        return StyleType::Dark;
+    else
+        return StyleType::Light;
 }
 
 QPalette AStyle::darkPalette()

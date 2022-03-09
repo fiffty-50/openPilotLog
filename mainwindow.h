@@ -42,8 +42,9 @@
 #include "src/classes/arunguard.h"
 #include "src/classes/acompletiondata.h"
 #include "src/testing/atimer.h"
+#include "src/classes/astyle.h"
 
-
+enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -92,6 +93,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void onStyleChanged(SettingsWidget::SettingSignal signal){
+        if (signal == SettingsWidget::MainWindow)
+            setActionIcons(AStyle::getStyleType());
+    }
+
 private slots:
 
     void on_actionHome_triggered();
@@ -112,6 +119,8 @@ private slots:
 
     void on_actionDebug_triggered();
 
+    void on_actionNewSim_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -131,6 +140,9 @@ private:
 
     // Completion Data for QCompleters and Mapping
     ACompletionData completionData;
+
+    void setupToolbar();
+    void setActionIcons(StyleType style = StyleType::Light);
 
     void nope();
 
@@ -163,11 +175,12 @@ protected:
      */
     void resizeEvent(QResizeEvent *event) override
     {
+        LOG << "SIZE:" << this->size();
         int icon_size;
-        if (this->height() < 780)
-            icon_size = (this->height() / 13);
+        if (this->height() < 760)
+            icon_size = (this->height() / 16);
         else
-            icon_size = (this->height() / 12);
+            icon_size = (this->height() / 14);
 
         auto tool_bar = this->findChild<QToolBar*>();
         tool_bar->setIconSize(QSize(icon_size, icon_size));

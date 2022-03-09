@@ -372,12 +372,14 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
     if (new_style_setting == QLatin1String("Dark-Palette")) {
         AStyle::setStyle(AStyle::darkPalette());
         ASettings::write(ASettings::Main::Style, new_style_setting);
+        emit settingChanged(MainWindow);
         return;
     }
     for (const auto &style_name : AStyle::styles) {
         if (new_style_setting == style_name) {
             AStyle::setStyle(style_name);
             ASettings::write(ASettings::Main::Style, new_style_setting);
+            emit settingChanged(MainWindow);
             return;
         }
     }
@@ -386,6 +388,7 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
         if (new_style_setting == style_sheet.styleSheetName) {
             AStyle::setStyle(style_sheet);
             ASettings::write(ASettings::Main::Style, new_style_setting);
+            emit settingChanged(MainWindow);
             return;
         }
     }

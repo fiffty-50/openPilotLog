@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setupToolbar();
+    setActionIcons(AStyle::getStyleType());
+
     // connect to the Database
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                          absoluteFilePath(QStringLiteral("logbook.db")));
@@ -84,29 +87,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Startup Screen (Home Screen)
     ui->stackedWidget->setCurrentWidget(homeWidget);
 
-    // Create and set up the toolbar
-    auto *toolBar = new QToolBar(this);
-
-    ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
-    toolBar->addAction(ui->actionHome);
-    ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-    toolBar->addAction(ui->actionNewFlight);
-    ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-    toolBar->addAction(ui->actionLogbook);
-    ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
-    toolBar->addAction(ui->actionAircraft);
-    ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-    toolBar->addAction(ui->actionPilots);
-    ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
-    toolBar->addAction(ui->actionBackup);
-    ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
-    toolBar->addAction(ui->actionSettings);
-    ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
-    toolBar->addAction(ui->actionQuit);
-    toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    toolBar->setMovable(false);
-    addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
-
     // check database version (Debug)
     if (aDB->dbRevision() < aDB->getMinimumDatabaseRevision()) {
         QString message = tr("Your database is out of date."
@@ -120,6 +100,55 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setupToolbar()
+{
+    // Create and set up the toolbar
+    auto *toolBar = new QToolBar(this);
+
+    toolBar->addAction(ui->actionHome);
+    toolBar->addAction(ui->actionNewFlight);
+    toolBar->addAction(ui->actionNewSim);
+    toolBar->addAction(ui->actionLogbook);
+    toolBar->addAction(ui->actionAircraft);
+    toolBar->addAction(ui->actionPilots);
+    toolBar->addAction(ui->actionBackup);
+    toolBar->addAction(ui->actionSettings);
+    toolBar->addAction(ui->actionQuit);
+    toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    toolBar->setMovable(false);
+    addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
+}
+
+void MainWindow::setActionIcons(StyleType style)
+{
+    switch (style){
+    case StyleType::Light:
+        LOG << "Setting Light Icon theme";
+        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
+        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
+        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
+        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
+        break;
+    case StyleType::Dark:
+        LOG << "Setting Dark Icon theme";
+        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
+        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
+        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
+        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
+        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
+        break;
+    }
 }
 
 void MainWindow::nope()
@@ -155,6 +184,8 @@ void MainWindow::connectWidgets()
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     this,           &MainWindow::onStyleChanged);
 
     QObject::connect(aDB,             &ADatabase::connectionReset,
                      logbookWidget,   &LogbookWidget::repopulateModel);
@@ -255,3 +286,10 @@ void MainWindow::on_actionDebug_triggered()
 {
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
+
+void MainWindow::on_actionNewSim_triggered()
+{
+    auto nsd = NewSimDialog(this);
+    nsd.exec();
+}
+

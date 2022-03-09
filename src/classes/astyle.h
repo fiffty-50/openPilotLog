@@ -23,6 +23,8 @@
 #include <QTextStream>
 #include <QComboBox>
 
+enum class StyleType {Light, Dark};
+
 /*!
  * \brief The StyleSheet struct holds the Display Name and File Name (in the
  * resource system) for the available stylesheets.
@@ -51,6 +53,7 @@ class AStyle
 {
 private:
     static QString currentStyle;
+    static QLatin1String DARK_PALETTE;
     static void resetStyle();
 public:
     static const QStringList styles;
@@ -61,6 +64,8 @@ public:
     static void setStyle(const QString &style_key);
     static void setStyle(const StyleSheet &style_sheet);
     static void setStyle(const QPalette &palette);
+    static QString getCurrentStyle() {return currentStyle;}
+    static StyleType getStyleType();
     static QPalette darkPalette();
     static const QString& style();
 
