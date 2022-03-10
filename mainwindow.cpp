@@ -30,7 +30,7 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    auto nsd = new NewSimDialog(this);
+    auto nsd = new NewSimDialog(1, this);
     nsd->exec();
 }
 

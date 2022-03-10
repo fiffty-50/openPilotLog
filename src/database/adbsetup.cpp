@@ -190,7 +190,7 @@ const static auto CREATE_VIEW_DEFAULT_SIM = QStringLiteral( "CREATE VIEW viewDef
         " FROM flights  "
         " INNER JOIN pilots on flights.pic = pilots.pilot_id  INNER JOIN tails on flights.acft = tails.tail_id  "
         " UNION"
-        " SELECT session_id,"
+        " SELECT (session_id * -1),"
         " date,"
         " null,"
         " null,"
@@ -269,7 +269,7 @@ const static auto CREATE_VIEW_EASA_SIM = QStringLiteral(" CREATE VIEW viewEasaSi
             " INNER JOIN pilots on flights.pic = pilots.pilot_id   "
             " INNER JOIN tails on flights.acft = tails.tail_id   "
             " UNION "
-            " SELECT session_id, "
+            " SELECT (session_id * -1), "
             " date, "
             " null, "
             " null, "
@@ -295,6 +295,17 @@ const static auto CREATE_VIEW_EASA_SIM = QStringLiteral(" CREATE VIEW viewEasaSi
             " remarks "
             " FROM simulators "
             " ORDER BY date DESC "
+            );
+
+const static auto CREATE_VIEW_SIMULATORS = QStringLiteral (" CREATE VIEW viewSimulators AS SELECT (session_id * -1), "
+                                                           " date as 'Date', "
+                                                           " registration AS 'Registration',  "
+                                                           " aircraftType AS 'Aircraft Type',  "
+                                                           " deviceType 'Sim Type', "
+                                                           " printf('%02d',(totalTime/60))||':'||printf('%02d',(totalTime%60)) AS 'Time of Session', "
+                                                           " remarks AS 'Remarks' "
+                                                           " FROM simulators "
+                                                           " ORDER BY date DESC "
             );
 
 const static auto CREATE_VIEW_TAILS = QStringLiteral("CREATE VIEW viewTails AS "
@@ -360,6 +371,7 @@ const static QStringList DATABASE_VIEWS = {
     CREATE_VIEW_DEFAULT_SIM,
     CREATE_VIEW_EASA,
     CREATE_VIEW_EASA_SIM,
+    CREATE_VIEW_SIMULATORS,
     CREATE_VIEW_TAILS,
     CREATE_VIEW_PILOTS,
     CREATE_VIEW_TOTALS,

@@ -108,7 +108,7 @@ enum Translation {English, German, Spanish};
 /*!
  * \brief Enumerates the available SQL views in the database
  */
-enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim};
+enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
 
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
@@ -152,12 +152,14 @@ private:
         {DefaultWithSim, QStringLiteral("viewDefaultSim")},
         {Easa,           QStringLiteral("viewEasa")},
         {EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {SimulatorOnly,  QStringLiteral("viewSimulators")},
     };
     const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
         {Default,        tr("Default")},
         {DefaultWithSim, tr("Default with Simulator")},
         {Easa,           tr("EASA-FCL")},
         {EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {SimulatorOnly,  tr("Simulator Sessions Only")},
     };
     const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
         {PilotFunction::PIC,   QLatin1String("PIC")},

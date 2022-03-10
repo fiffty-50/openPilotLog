@@ -39,6 +39,7 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/acurrencyentry.h"
+#include "src/classes/asimulatorentry.h"
 
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
@@ -68,13 +69,22 @@ enum class ADatabaseTarget
     aircraft
 };
 
+/*!
+ * \brief enumarates the tables in the database
+ */
 enum class ADatabaseTable
 {
-    tails,
-    flights,
-    currencies,
-    aircraft,
-    pilots,
+    // user tables
+    tails = 0,
+    pilots = 1,
+    flights = 2,
+    simulators = 3,
+    currencies = 4,
+
+    // template tables
+    aircraft = 4,
+    airports = 5,
+    changelog = 7,
 };
 
 /*!
@@ -305,6 +315,16 @@ public:
      * with only the RowId required as input.
      */
     AFlightEntry getFlightEntry(RowId_T row_id);
+
+    /*!
+     * \brief retreives a Simulator entry from the database.
+     *
+     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * where the table is already set and which returns an ASimEntry
+     * instead of an AEntry. It allows for easy access to a Simulator entry
+     * with only the RowId required as input.
+     */
+    ASimulatorEntry getSimEntry(RowId_T row_id);
 
     /*!
      * \brief Retreives a currency entry from the database.

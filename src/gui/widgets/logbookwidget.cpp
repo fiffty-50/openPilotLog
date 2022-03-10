@@ -22,6 +22,7 @@
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/gui/dialogues/newsimdialog.h"
 #include "src/functions/alog.h"
 #include "src/functions/alog.h"
 
@@ -102,9 +103,6 @@ void LogbookWidget::changeEvent(QEvent *event)
         if(event->type() == QEvent::LanguageChange)
             ui->retranslateUi(this);
 }
-/*
- * Slots
- */
 
 /*!
  * \brief LogbookWidget::flightsTableView_selectionChanged saves the selected row(s)
@@ -112,13 +110,17 @@ void LogbookWidget::changeEvent(QEvent *event)
  */
 void LogbookWidget::flightsTableView_selectionChanged()
 {
-    selectedFlights.clear();
+    selectedEntries.clear();
     for (const auto& row : selectionModel->selectedRows()) {
-        selectedFlights.append(row.data().toInt());
-        DEB << "Selected Flight(s) with ID: " << selectedFlights;
+        selectedEntries.append(row.data().toInt());
+        DEB << "Selected Flight(s) with ID: " << selectedEntries;
     }
-    if (selectedFlights.length() == 1)
-        on_actionEdit_Flight_triggered();
+    if (selectedEntries.length() == 1) {
+        if (isFlight(selectedEntries.first()))
+            on_actionEdit_Flight_triggered();
+        else
+            on_actionEdit_Sim_triggered();
+    }
 }
 
 /*!
@@ -127,14 +129,14 @@ void LogbookWidget::flightsTableView_selectionChanged()
  */
 void LogbookWidget::on_actionDelete_Flight_triggered()
 {
-    DEB << "Flights selected: " << selectedFlights.length();
-    if (selectedFlights.length() == 0) {
+    DEB << "Flights selected: " << selectedEntries.length();
+    if (selectedEntries.length() == 0) {
         WARN(tr("<br>No flight selected.<br>"));
         return;
-    } else if (selectedFlights.length() > 0 && selectedFlights.length() <= 10) {
+    } else if (selectedEntries.length() > 0 && selectedEntries.length() <= 10) {
         QVector<AFlightEntry> flights_list;
 
-        for (const auto &flight_id : qAsConst(selectedFlights)) {
+        for (const auto &flight_id : qAsConst(selectedEntries)) {
             flights_list.append(aDB->getFlightEntry(flight_id));
         }
 
@@ -164,10 +166,10 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                 }
             }
             INFO(tr("%1 flights have been deleted successfully."
-                                   ).arg(QString::number(selectedFlights.length())));
+                                   ).arg(QString::number(selectedEntries.length())));
             displayModel->select();
         }
-    } else if (selectedFlights.length() > 10) {
+    } else if (selectedEntries.length() > 10) {
         QMessageBox confirm;
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
@@ -176,10 +178,10 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         confirm.setText(tr("You have selected %1 flights.<br><br>"
                            "Deleting flights is irreversible.<br><br>"
                            "Are you sure you want to proceed?"
-                           ).arg(QString::number(selectedFlights.length())));
+                           ).arg(QString::number(selectedEntries.length())));
         if(confirm.exec() == QMessageBox::Yes) {
             QList<DataPosition> selected_flights;
-            for (const auto& flight_id : qAsConst(selectedFlights)) {
+            for (const auto& flight_id : qAsConst(selectedEntries)) {
                 selected_flights.append({QStringLiteral("flights"), flight_id});
             }
             if (!aDB->removeMany(selected_flights)) {
@@ -187,7 +189,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                 return;
             }
             INFO(tr("%1 flights have been deleted successfully."
-                                   ).arg(QString::number(selectedFlights.length())));
+                                   ).arg(QString::number(selectedEntries.length())));
             displayModel->select();
         }
         displayModel->select();
@@ -198,24 +200,6 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
 void LogbookWidget::on_tableView_customContextMenuRequested(const QPoint &pos)
 {
     menu->popup(ui->tableView->viewport()->mapToGlobal(pos));
-}
-
-void LogbookWidget::on_actionEdit_Flight_triggered()
-{
-    completionData.update();
-    if(selectedFlights.length() == 1){
-        NewFlightDialog nff(completionData,selectedFlights.first(), this);
-        ui->stackedWidget->addWidget(&nff);
-        ui->stackedWidget->setCurrentWidget(&nff);
-        nff.setWindowFlag(Qt::Widget);
-        nff.exec();
-        displayModel->select();
-    } else if (selectedFlights.isEmpty()) {
-        WARN(tr("<br>No flight selected.<br>"));
-    } else {
-        WARN(tr("<br>More than one flight selected."
-                               "<br><br>Editing multiple entries is not yet supported."));
-    }
 }
 
 void LogbookWidget::on_tableView_doubleClicked()
@@ -296,5 +280,40 @@ void LogbookWidget::repopulateModel()
 void LogbookWidget::on_viewsComboBox_currentIndexChanged(int index)
 {
     setupModelAndView(index);
+}
+
+void LogbookWidget::on_actionEdit_Flight_triggered()
+{
+    completionData.update();
+    if(selectedEntries.length() == 1){
+        NewFlightDialog nff(completionData,selectedEntries.first(), this);
+        ui->stackedWidget->addWidget(&nff);
+        ui->stackedWidget->setCurrentWidget(&nff);
+        nff.setWindowFlag(Qt::Widget);
+        nff.exec();
+        displayModel->select();
+    } else if (selectedEntries.isEmpty()) {
+        WARN(tr("<br>No flight selected.<br>"));
+    } else {
+        WARN(tr("<br>More than one flight selected."
+                               "<br><br>Editing multiple entries is not yet supported."));
+    }
+}
+
+void LogbookWidget::on_actionEdit_Sim_triggered()
+{
+    if (selectedEntries.length() == 1) {
+        NewSimDialog nsd((selectedEntries.first() * -1), this);
+        ui->stackedWidget->addWidget(&nsd);
+        ui->stackedWidget->setCurrentWidget(&nsd);
+        nsd.setWindowFlag(Qt::Widget);
+        nsd.exec();
+        displayModel->select();
+    } else if (selectedEntries.isEmpty()) {
+        WARN(tr("<br>No flight selected.<br>"));
+    } else {
+        WARN(tr("<br>More than one flight selected."
+                               "<br><br>Editing multiple entries is not yet supported."));
+    }
 }
 

@@ -43,7 +43,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="typeComboBox">
+    <widget class="QComboBox" name="deviceTypeComboBox">
      <property name="minimumSize">
       <size>
        <width>160</width>
@@ -63,7 +63,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="timeLineEdit">
+    <widget class="QLineEdit" name="totalTimeLineEdit">
      <property name="minimumSize">
       <size>
        <width>160</width>
@@ -90,7 +90,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QLineEdit" name="acftLineEdit">
+    <widget class="QLineEdit" name="aircraftTypeLineEdit">
      <property name="minimumSize">
       <size>
        <width>160</width>
@@ -146,9 +146,9 @@
  </widget>
  <tabstops>
   <tabstop>dateLineEdit</tabstop>
-  <tabstop>timeLineEdit</tabstop>
-  <tabstop>typeComboBox</tabstop>
-  <tabstop>acftLineEdit</tabstop>
+  <tabstop>totalTimeLineEdit</tabstop>
+  <tabstop>deviceTypeComboBox</tabstop>
+  <tabstop>aircraftTypeLineEdit</tabstop>
   <tabstop>registrationLineEdit</tabstop>
   <tabstop>remarksLineEdit</tabstop>
  </tabstops>
