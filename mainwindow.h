@@ -42,8 +42,9 @@
 #include "src/classes/arunguard.h"
 #include "src/classes/acompletiondata.h"
 #include "src/testing/atimer.h"
+#include "src/classes/astyle.h"
 
-
+enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -55,32 +56,32 @@ QT_END_NAMESPACE
  * \details The Tool bar contains shortcuts to the different widgets, which are on selection set active on the stacked main widget.
  * For a detailed description of what each widget does, please refer to the documentation for each widget. This is only a short synopsis:
  *
- * # HomeWidget
+ * ## HomeWidget
  *
  * The home widget displays the total amount of hours for all logged flights, seperated into different categories. It also enables keeping track
  * of currencies and license expiries
  *
- * # New Flight
+ * ## New Flight
  *
  * Opens a NewFlightDialog which can be used to submit a new flight to the database.
  *
- * # Logboook
+ * ## Logboook
  *
  * Shows a view of the logbook table in a QTableView and enables editing the entries by spawning a child NewFlightDialog with the details for a selected flight.
  *
- * # Aircraft
+ * ## Aircraft
  *
  * Shows a view of the tails table in a QTableView and enables editing the entries by spawning a child NewTailDialog with the details for a selected tail.
  *
- * # Pilots
+ * ## Pilots
  *
  * Shows a view of the pilots table in a QTableView and enables editing the entries by spawning a child NewPilotDialog with the details for a selected pilot.
  *
- * # Backup
+ * ## Backup
  *
  * Enables backing up and restoring the database.
  *
- * # Settings
+ * ## Settings
  *
  * Enables changing application settings
 */
@@ -91,6 +92,12 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+public slots:
+    void onStyleChanged(SettingsWidget::SettingSignal signal){
+        if (signal == SettingsWidget::MainWindow)
+            setActionIcons(AStyle::getStyleType());
+    }
 
 private slots:
 
@@ -112,6 +119,8 @@ private slots:
 
     void on_actionDebug_triggered();
 
+    void on_actionNewSim_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -131,6 +140,9 @@ private:
 
     // Completion Data for QCompleters and Mapping
     ACompletionData completionData;
+
+    void setupToolbar();
+    void setActionIcons(StyleType style = StyleType::Light);
 
     void nope();
 
@@ -163,11 +175,12 @@ protected:
      */
     void resizeEvent(QResizeEvent *event) override
     {
+        //DEB << "SIZE:" << this->size();
         int icon_size;
-        if (this->height() < 780)
-            icon_size = (this->height() / 13);
+        if (this->height() < 760)
+            icon_size = (this->height() / 16);
         else
-            icon_size = (this->height() / 12);
+            icon_size = (this->height() / 14);
 
         auto tool_bar = this->findChild<QToolBar*>();
         tool_bar->setIconSize(QSize(icon_size, icon_size));

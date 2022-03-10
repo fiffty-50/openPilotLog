@@ -22,15 +22,15 @@
 #include "src/classes/asettings.h"
 
 AFlightEntry::AFlightEntry()
-    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION)
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, 0))
 {}
 
 AFlightEntry::AFlightEntry(RowId_T row_id)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_FLIGHTS, row_id))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, row_id))
 {}
 
 AFlightEntry::AFlightEntry(RowData_T table_data)
-    : AEntry::AEntry(Opl::Db::DEFAULT_FLIGHT_POSITION, table_data)
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, 0), table_data)
 {}
 
 const QString AFlightEntry::summary()
@@ -39,21 +39,21 @@ const QString AFlightEntry::summary()
         return QString();
 
     QString flight_summary;
-    auto space = QStringLiteral(" ");
-    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DOFT).toString() + space);
-    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(Opl::Db::FLIGHTS_TOFB).toInt())
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(Opl::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
                           + space);
-    flight_summary.append(tableData.value(Opl::Db::FLIGHTS_DEST).toString());
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 
     return flight_summary;
 }
 
 const QString AFlightEntry::getRegistration()
 {
-    ATailEntry acft = aDB->resolveForeignTail(tableData.value(Opl::Db::FLIGHTS_ACFT).toInt());
+    ATailEntry acft = aDB->resolveForeignTail(tableData.value(OPL::Db::FLIGHTS_ACFT).toInt());
     return acft.registration();
 }
 
@@ -61,16 +61,16 @@ const QString AFlightEntry::getPilotName(pilotPosition pilot_)
 {
     switch (pilot_) {
     case pilotPosition::pic: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_PIC).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(OPL::Db::FLIGHTS_PIC).toInt());
         return foreign_pilot.name();
         break;
     }
     case pilotPosition::secondPilot: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_SECONDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(OPL::Db::FLIGHTS_SECONDPILOT).toInt());
         return foreign_pilot.name();
     }
     case pilotPosition::thirdPilot: {
-        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(Opl::Db::FLIGHTS_THIRDPILOT).toInt());
+        auto foreign_pilot = aDB->resolveForeignPilot(tableData.value(OPL::Db::FLIGHTS_THIRDPILOT).toInt());
         return foreign_pilot.name();
         break;
     } // case scope

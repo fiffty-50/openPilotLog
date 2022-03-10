@@ -1,6 +1,6 @@
 #include "adate.h"
 
-QDate ADate::parseInput(QString &io_user_input, Opl::Date::ADateFormat format)
+QDate ADate::parseInput(QString &io_user_input, OPL::DateFormat format)
 {
     // Try input string
     const QString &format_string = ADATEFORMATSMAP.value(format);
@@ -14,7 +14,7 @@ QDate ADate::parseInput(QString &io_user_input, Opl::Date::ADateFormat format)
     return  QDate::fromString(io_user_input, format_string);
 }
 
-void ADate::tryToFix(QString &io_user_input, Opl::Date::ADateFormat format)
+void ADate::tryToFix(QString &io_user_input, OPL::DateFormat format)
 {
 
     if (io_user_input.length() < 10) {
@@ -33,10 +33,10 @@ void ADate::tryToFix(QString &io_user_input, Opl::Date::ADateFormat format)
 }
 
 // Input contains seperators and is of length 8
-void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
+void ADate::padCentury(QString &io_user_input, OPL::DateFormat format)
 {
     switch (format) {
-    case Opl::Date::ADateFormat::ISODate: {
+    case OPL::DateFormat::ISODate: {
         int year = io_user_input.left(2).toInt();
         if (year > 50)
             io_user_input.prepend(QStringLiteral("19"));
@@ -44,7 +44,7 @@ void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
             io_user_input.prepend(QStringLiteral("20"));
         break;
     }
-    case Opl::Date::ADateFormat::DE: {
+    case OPL::DateFormat::DE: {
         int year = io_user_input.right(2).toInt();
         if (year > 50)
             io_user_input.insert(6, QStringLiteral("19"));
@@ -52,7 +52,7 @@ void ADate::padCentury(QString &io_user_input, Opl::Date::ADateFormat format)
             io_user_input.insert(6, QStringLiteral("20"));
         break;
     }
-    case Opl::Date::ADateFormat::EN: {
+    case OPL::DateFormat::EN: {
         int year = io_user_input.right(2).toInt();
         if (year > 50)
             io_user_input.insert(6, QStringLiteral("19"));
@@ -84,10 +84,10 @@ void ADate::padZeroes(QString &io_user_input)
     DEB << "Padded zeroes: " << io_user_input;
 }
 // 10.10.2020
-void ADate::addSeperators(QString &io_user_input, const Opl::Date::ADateFormat &format)
+void ADate::addSeperators(QString &io_user_input, const OPL::DateFormat &format)
 {
     switch (format) {
-    case Opl::Date::ADateFormat::ISODate:
+    case OPL::DateFormat::ISODate:
         if (io_user_input.length() > 7) {
             io_user_input.insert(4, QLatin1Char('-'));
             io_user_input.insert(7, QLatin1Char('-'));
@@ -96,11 +96,11 @@ void ADate::addSeperators(QString &io_user_input, const Opl::Date::ADateFormat &
             io_user_input.insert(5, QLatin1Char('-'));
         }
         break;
-    case Opl::Date::ADateFormat::DE:
+    case OPL::DateFormat::DE:
             io_user_input.insert(2, QLatin1Char('.'));
             io_user_input.insert(5, QLatin1Char('.'));
         break;
-    case Opl::Date::ADateFormat::EN:
+    case OPL::DateFormat::EN:
             io_user_input.insert(2, QLatin1Char('/'));
             io_user_input.insert(5, QLatin1Char('/'));
         break;
@@ -127,8 +127,13 @@ const QStringList& ADate::getDisplayNames()
     return DISPLAY_NAMES;
 }
 
-const QString ADate::getFormatString(Opl::Date::ADateFormat format)
+const QString ADate::getFormatString(OPL::DateFormat format)
 {
     return ADATEFORMATSMAP.value(format);
+}
+
+const QString ADate::currentDate()
+{
+    return QDate::currentDate().toString(Qt::ISODate);
 }
 

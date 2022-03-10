@@ -493,6 +493,13 @@ AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
     return flight_entry;
 }
 
+ASimulatorEntry ADatabase::getSimEntry(RowId_T row_id)
+{
+    ASimulatorEntry sim_entry(row_id);
+    sim_entry.setData(getEntryData(sim_entry.getPosition()));
+    return sim_entry;
+}
+
 ACurrencyEntry ADatabase::getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
 {
     ACurrencyEntry currency_entry(currency_name);
@@ -603,13 +610,13 @@ RowId_T ADatabase::getLastEntry(ADatabaseTable table)
 
     switch (table) {
     case ADatabaseTable::pilots:
-        statement.append(Opl::Db::TABLE_PILOTS);
+        statement.append(OPL::Db::TABLE_PILOTS);
         break;
     case ADatabaseTable::aircraft:
-        statement.append(Opl::Db::TABLE_AIRCRAFT);
+        statement.append(OPL::Db::TABLE_AIRCRAFT);
         break;
     case ADatabaseTable::tails:
-        statement.append(Opl::Db::TABLE_TAILS);
+        statement.append(OPL::Db::TABLE_TAILS);
         break;
     default:
         DEB << "Not a valid completer target for this function.";
@@ -801,16 +808,16 @@ QVector<RowData_T> ADatabase::getTable(ADatabaseTable table_name)
     auto query_str = QStringLiteral("SELECT * FROM ");
     switch (table_name) {
     case ADatabaseTable::pilots:
-        query_str.append(Opl::Db::TABLE_PILOTS);
+        query_str.append(OPL::Db::TABLE_PILOTS);
         break;
     case ADatabaseTable::tails:
-        query_str.append(Opl::Db::TABLE_TAILS);
+        query_str.append(OPL::Db::TABLE_TAILS);
         break;
     case ADatabaseTable::flights:
-        query_str.append(Opl::Db::TABLE_FLIGHTS);
+        query_str.append(OPL::Db::TABLE_FLIGHTS);
         break;
     case ADatabaseTable::currencies:
-        query_str.append(Opl::Db::TABLE_CURRENCIES);
+        query_str.append(OPL::Db::TABLE_CURRENCIES);
     default:
         break;
     }

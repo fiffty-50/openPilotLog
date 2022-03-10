@@ -48,7 +48,7 @@ public:
     /*!
      * \brief enumerates Widgets that need to receive a signal when a setting is updated.
      */
-    enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget};
+    enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget, MainWindow};
 
 private slots:
 
@@ -111,7 +111,7 @@ signals:
      * \brief settingChanged is emitted when a setting change occurs that needs to trigger
      * an update (repaint) to another widget.
      */
-    void settingChanged(SettingSignal widget);
+    void settingChanged(SettingsWidget::SettingSignal widget);
 
 protected:
     /*!

@@ -37,7 +37,11 @@
  *  The db namespace contains constants for programatically accessing the database in a fast
  *  and uniform manner.
  */
-namespace Opl {
+namespace OPL {
+
+#define OPL_VERSION 0
+#define OPL_SUBVERSION 1
+#define OPL_VERSION_STRING QString(QString::number(OPL_VERSION) + "." + QString::number(OPL_SUBVERSION))
 
 #if defined(__GNUC__) || defined(__clang__)
     #define FUNC_IDENT __PRETTY_FUNCTION__
@@ -51,9 +55,9 @@ namespace Opl {
 #define LOG qInfo()                             // Use for logging milestones (silently, will be written to log file and console out only)
 #define TODO qCritical() << "TO DO:\t"
 
-#define INFO(msg) Opl::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
-#define WARN(msg) Opl::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
-#define CRIT(msg) Opl::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
+#define INFO(msg) OPL::ANotificationHandler::info(msg, this)  // Use for messages of interest to the user (will be displayed in GUI)
+#define WARN(msg) OPL::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
+#define CRIT(msg) OPL::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
@@ -80,18 +84,15 @@ public:
     };
 }; // class ANotificationHandler
 
-enum class Translations {English, German, Spanish};
+/*!
+ * \brief ADateFormats enumerates the accepted date formats for QDateEdits
+ * \todo At the moment, only ISODate is accepet as a valid date format.
+ */
+enum class DateFormat {ISODate, DE, EN };
 
-const static QMap<Opl::Translations, QString> L10N_FILES {
-    {Opl::Translations::English, QStringLiteral("l10n/openpilotlog_en")},
-    {Opl::Translations::German,  QStringLiteral("l10n/openpilotlog_de")},
-    {Opl::Translations::Spanish, QStringLiteral("l10n/openpilotlog_es")},
-};
-static const QMap<Translations, QString> L10N_NAMES {
-    {Opl::Translations::English, QStringLiteral("English")},
-    {Opl::Translations::German,  QStringLiteral("Deutsch")},
-    {Opl::Translations::Spanish, QStringLiteral("Español")},
-};
+enum class FlightTimeFormat {Default, Decimal};
+
+enum class DateTimeFormat {Default, Backup};
 
 /*!
  * \brief PilotFunction
@@ -99,79 +100,113 @@ static const QMap<Translations, QString> L10N_NAMES {
  */
 enum PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
 
-static const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
-    {PilotFunction::PIC, QLatin1String("PIC")},
-    {PilotFunction::PICUS, QLatin1String("PICUS")},
-    {PilotFunction::SIC, QLatin1String("SIC")},
-    {PilotFunction::DUAL, QLatin1String("DUAL")},
-    {PilotFunction::FI, QLatin1String("FI")},
-};
-
-inline void loadPilotFunctios(QComboBox *combo_box)
-{
-    for (int i = 0; i < Opl::PILOT_FUNCTIONS.size(); i++)
-        combo_box->addItem(Opl::PILOT_FUNCTIONS.value(Opl::PilotFunction(i)));
-};
-
-static const QList<QLatin1String> APPROACH_TYPES = {
-        QLatin1String("VISUAL"),
-        QLatin1String("ILS CAT I"),
-        QLatin1String("ILS CAT II"),
-        QLatin1String("ILS CAT III"),
-        QLatin1String("GLS"),
-        QLatin1String("MLS"),
-        QLatin1String("LOC"),
-        QLatin1String("LOC/DME"),
-        QLatin1String("RNAV"),
-        QLatin1String("RNAV (LNAV)"),
-        QLatin1String("RNAV (LNAV/VNAV)"),
-        QLatin1String("RNAV (LPV)"),
-        QLatin1String("RNAV (RNP)"),
-        QLatin1String("RNAV (RNP-AR)"),
-        QLatin1String("VOR"),
-        QLatin1String("VOR/DME"),
-        QLatin1String("NDB"),
-        QLatin1String("NDB/DME"),
-        QLatin1String("TACAN"),
-        QLatin1String("SRA"),
-        QLatin1String("PAR"),
-        QLatin1String("OTHER")
-};
-
-inline void loadApproachTypes(QComboBox *combo_box)
-{
-    for (const auto & approach : Opl::APPROACH_TYPES)
-        combo_box->addItem(approach);
-};
-
-namespace Date {
-
 /*!
- * \brief ADateFormats enumerates the accepted date formats for QDateEdits
- * \todo At the moment, only ISODate is accepet as a valid date format.
+ * \brief Enumerates the available translations
  */
-enum ADateFormat {ISODate, DE, EN };
-
-} // namespace opl::date
-
-namespace Time {
-
-enum FlightTimeFormat {Default, Decimal};
-
-} // namespace opl::time
-
-namespace Datetime {
-
-enum DateTimeFormat {Default, Backup};
-
-} // namespace opl::datetime
+enum Translation {English, German, Spanish};
 
 /*!
- *  The opl::db namespace provides string literals to programatically access the database
+ * \brief Enumerates the available SQL views in the database
+ */
+enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
+
+/*!
+ * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
+ */
+enum SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
+
+/*!
+ * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
+ * as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
+ * For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]
+ */
+class OplGlobals : public QObject {
+public:
+    OplGlobals() = default;
+
+    void fillLanguageComboBox(QComboBox *combo_box) const;
+    void fillViewNamesComboBox(QComboBox *combo_box) const;
+    void loadPilotFunctios(QComboBox *combo_box) const;
+    void loadSimulatorTypes(QComboBox *combo_box) const;
+    void loadApproachTypes(QComboBox *combo_box) const;
+
+    inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
+    inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
+    inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
+
+private:
+    Q_OBJECT
+
+    const QMap<Translation, QString> L10N_FilePaths {
+        {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
+        {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
+        {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
+    };
+    const QMap<Translation, QString> L10N_DisplayNames {
+        {Translation::English, tr("English")},
+        {Translation::German,  tr("Deutsch")},
+        {Translation::Spanish, tr("Español")},
+    };
+    const QMap<DbViewName, QString> DATABASE_VIEWS = {
+        {Default,        QStringLiteral("viewDefault")},
+        {DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {Easa,           QStringLiteral("viewEasa")},
+        {EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {SimulatorOnly,  QStringLiteral("viewSimulators")},
+    };
+    const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {Default,        tr("Default")},
+        {DefaultWithSim, tr("Default with Simulator")},
+        {Easa,           tr("EASA-FCL")},
+        {EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {SimulatorOnly,  tr("Simulator Sessions Only")},
+    };
+    const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QLatin1String("PIC")},
+        {PilotFunction::PICUS, QLatin1String("PICUS")},
+        {PilotFunction::SIC,   QLatin1String("SIC")},
+        {PilotFunction::DUAL,  QLatin1String("DUAL")},
+        {PilotFunction::FI,    QLatin1String("FI")},
+    };
+    const QMap<SimulatorType, QString> SIMULATOR_TYPES = {
+        {FNPTI,  QStringLiteral("FNPT I")},
+        {FNPTII, QStringLiteral("FNPT II")},
+        {FSTD,   QStringLiteral("FSTD")},
+    };
+    const QStringList APPROACH_TYPES = {
+            QStringLiteral("VISUAL"),
+            QStringLiteral("ILS CAT I"),
+            QStringLiteral("ILS CAT II"),
+            QStringLiteral("ILS CAT III"),
+            QStringLiteral("GLS"),
+            QStringLiteral("MLS"),
+            QStringLiteral("LOC"),
+            QStringLiteral("LOC/DME"),
+            QStringLiteral("RNAV"),
+            QStringLiteral("RNAV (LNAV)"),
+            QStringLiteral("RNAV (LNAV/VNAV)"),
+            QStringLiteral("RNAV (LPV)"),
+            QStringLiteral("RNAV (RNP)"),
+            QStringLiteral("RNAV (RNP-AR)"),
+            QStringLiteral("VOR"),
+            QStringLiteral("VOR/DME"),
+            QStringLiteral("NDB"),
+            QStringLiteral("NDB/DME"),
+            QStringLiteral("TACAN"),
+            QStringLiteral("SRA"),
+            QStringLiteral("PAR"),
+            QStringLiteral("OTHER")
+    };
+};
+//Make available as a global static
+Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
+
+/*!
+ *  The OPL::db namespace provides string literals to programatically access the database
  *
  *  Example usage, do:
- *  newData.insert(opl::db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
- *  newData.value(opl::db::AIRCRAFT_MULTIPILOT);
+ *  newData.insert(OPL::db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
+ *  newData.value(OPL::db::AIRCRAFT_MULTIPILOT);
  *
  *  instead of:
  *  newData.insert("dept", ui->deptLocLineEdit->text());
@@ -191,6 +226,7 @@ static const auto TABLE_TAILS            = QStringLiteral("tails");
 static const auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
 static const auto TABLE_AIRPORTS         = QStringLiteral("airports");
 static const auto TABLE_CURRENCIES       = QStringLiteral("currencies");
+static const auto TABLE_SIMULATORS       = QStringLiteral("simulators");
 
 // Flights table columns
 static const auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
@@ -253,16 +289,20 @@ static const auto PILOTS_EMAIL           = QStringLiteral("email");
 static const auto CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
 static const auto CURRENCIES_DESCRIPTION = QStringLiteral("description");
 
+// Simulators table
+static const auto SIMULATORS_ROWID       = QStringLiteral("session_id");
+static const auto SIMULATORS_DATE        = QStringLiteral("date");
+static const auto SIMULATORS_TIME        = QStringLiteral("totalTime");
+static const auto SIMULATORS_TYPE        = QStringLiteral("deviceType");
+static const auto SIMULATORS_ACFT        = QStringLiteral("aircraftType");
+static const auto SIMULATORS_REG         = QStringLiteral("registration");
+static const auto SIMULATORS_REMARKS     = QStringLiteral("remarks");
+
 // all tables
-static const auto ROWID                  = QStringLiteral("ROWID");
+static const auto ROWID                  = QStringLiteral("rowid");
 static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
-static const auto DEFAULT_FLIGHT_POSITION   = DataPosition(TABLE_FLIGHTS, 0);
-static const auto DEFAULT_PILOT_POSITION    = DataPosition(TABLE_PILOTS, 0);
-static const auto DEFAULT_TAIL_POSITION     = DataPosition(TABLE_TAILS, 0);
-static const auto DEFAULT_AIRCRAFT_POSITION = DataPosition(TABLE_AIRCRAFT, 0);
-
-} // namespace opl::db
+} // namespace OPL::db
 
 namespace Assets {
 
@@ -293,6 +333,11 @@ static const auto ICON_TOOLBAR_QUIT_DARK        = QStringLiteral(":/icons/opl-ic
 static const auto ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
 
 }
+
+namespace Styles {
+
+static const auto RED_BORDER = QStringLiteral("border: 1px solid red");
+} // namespace Styles
 
 } // namespace opl
 

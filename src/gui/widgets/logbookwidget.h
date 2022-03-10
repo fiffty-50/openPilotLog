@@ -27,6 +27,7 @@
 #include <QTableView>
 #include "src/gui/widgets/settingswidget.h"
 #include "src/classes/acompletiondata.h"
+#include "src/opl.h"
 
 namespace Ui {
 class LogbookWidget;
@@ -52,17 +53,18 @@ public:
     ~LogbookWidget();
 
 private slots:
-    //void on_newFlightButton_clicked();
-    //void on_editFlightButton_clicked();
-    //void on_deleteFlightPushButton_clicked();
-    //void on_showAllButton_clicked();
     void flightsTableView_selectionChanged();
     void on_tableView_customContextMenuRequested(const QPoint &pos);
     void on_actionDelete_Flight_triggered();
-    void on_actionEdit_Flight_triggered();
+
     void on_tableView_doubleClicked();
     void on_flightSearchLlineEdit_textChanged(const QString &arg1);
     void on_flightSearchComboBox_currentIndexChanged(int);
+
+    void on_viewsComboBox_currentIndexChanged(int index);
+
+    void on_actionEdit_Flight_triggered();
+    void on_actionEdit_Sim_triggered();
 
 public slots:
     void refresh();
@@ -80,12 +82,21 @@ private:
 
     QMenu* menu;
 
-    QVector<qint32> selectedFlights;
+    QVector<qint32> selectedEntries;
 
     void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
 
     ACompletionData completionData;
+
+    /*!
+     * \brief isFlight Determines whether an entry shown in a view is a Flight or a Simulator.
+     * \param model_row_id the row id in the QSqlTableModel used for displaying
+     * \details In the composite views (SQL UNION) with Simulators included, the row_id of the
+     * simulator entries is inverted to a negative value. A positive row id is thus a row id from
+     * the flights table, whereas a negative rowid is a row id from the simulators table.
+     */
+    inline bool isFlight(int model_row_id) { return model_row_id > 0; }
 
 protected:
     /*!

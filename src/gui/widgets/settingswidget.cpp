@@ -53,18 +53,12 @@ void SettingsWidget::changeEvent(QEvent *event)
 
 void SettingsWidget::setupComboBoxes(){
     {
-        // Style combo box
-        const QSignalBlocker style_blocker(ui->styleComboBox);
+        // Set up Combo Boxes
         AStyle::loadStylesComboBox(ui->styleComboBox);
-        // Approach Combo Box and Function Combo Box
-        const QSignalBlocker approach_blocker(ui->approachComboBox);
-        Opl::loadApproachTypes(ui->approachComboBox);
-        const QSignalBlocker function_blocker(ui->functionComboBox);
-        Opl::loadPilotFunctios(ui->functionComboBox);
-
-        // Language Combo Box
-        for (const auto &lang : Opl::L10N_NAMES)
-            ui->languageComboBox->addItem(lang);
+        OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
+        OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+        OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
+        OPL::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
     }
 }
 
@@ -74,7 +68,7 @@ void SettingsWidget::setupDateEdits()
     // Read Display Format Setting
     int date_format_index = ASettings::read(ASettings::Main::DateFormat).toInt();
     const QString date_format_string = ADate::getFormatString(
-                static_cast<Opl::Date::ADateFormat>(date_format_index));
+                static_cast<OPL::DateFormat>(date_format_index));
     const auto date_edits = this->findChildren<QDateEdit*>();
     for (const auto &date_edit : date_edits) {
         date_edit->setDisplayFormat(date_format_string);
@@ -93,7 +87,7 @@ void SettingsWidget::setupDateEdits()
         const auto entry = aDB->getCurrencyEntry(pair.first);
         if (entry.isValid()) { // set date
             const auto date = QDate::fromString(
-                        entry.tableData.value(Opl::Db::CURRENCIES_EXPIRYDATE).toString(),
+                        entry.tableData.value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                         Qt::ISODate);
             pair.second->setDate(date);
         } else { // set current date
@@ -111,12 +105,12 @@ void SettingsWidget::readSettings()
 
     // Personal Data Tab
     auto user_data = aDB->getPilotEntry(1).getData();
-    ui->lastnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_LASTNAME).toString());
-    ui->firstnameLineEdit->setText(user_data.value(Opl::Db::PILOTS_FIRSTNAME).toString());
-    ui->companyLineEdit->setText(user_data.value(Opl::Db::PILOTS_COMPANY).toString());
-    ui->employeeidLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMPLOYEEID).toString());
-    ui->phoneLineEdit->setText(user_data.value(Opl::Db::PILOTS_PHONE).toString());
-    ui->emailLineEdit->setText(user_data.value(Opl::Db::PILOTS_EMAIL).toString());
+    ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
+    ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
+    ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
+    ui->employeeidLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMPLOYEEID).toString());
+    ui->phoneLineEdit->setText(user_data.value(OPL::Db::PILOTS_PHONE).toString());
+    ui->emailLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMAIL).toString());
 
     // FLight Logging Tab
     ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
@@ -188,10 +182,10 @@ void SettingsWidget::updatePersonalDetails()
     RowData_T user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("self"));
+        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("self"));
         break;
     case 1:
-        user_data.insert(Opl::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
+        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
         break;
     case 2:{
         QString name;
@@ -199,18 +193,18 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->firstnameLineEdit->text().left(1));
         name.append(QLatin1Char('.'));
-        user_data.insert(Opl::Db::PILOTS_ALIAS, name);
+        user_data.insert(OPL::Db::PILOTS_ALIAS, name);
     }
         break;
     default:
         break;
     }
-    user_data.insert(Opl::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    user_data.insert(Opl::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
+    user_data.insert(OPL::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
     auto user = APilotEntry(1);
     user.setData(user_data);
@@ -329,12 +323,12 @@ void SettingsWidget::on_acftSortComboBox_currentIndexChanged(int index)
 void SettingsWidget::on_aboutPushButton_clicked()
 {
     QMessageBox message_box(this);
-    QPixmap icon = QPixmap(Opl::Assets::ICON_MAIN);
+    QPixmap icon = QPixmap(OPL::Assets::ICON_MAIN);
     message_box.setIconPixmap(icon.scaledToWidth(64, Qt::TransformationMode::SmoothTransformation));
     QString SQLITE_VERSION = aDB->sqliteVersion();
     QString text = QMessageBox::tr(
 
-                       "<h3><center>About openPilotLog</center></h3>"
+                       "<h3><center>About</center></h3>"
                        "<br>"
                        "&#169; 2020 - 2022 Felix Turowsky"
                        "<br>"
@@ -356,11 +350,15 @@ void SettingsWidget::on_aboutPushButton_clicked()
                        "please click <a href=\"https://%2\">here</a>.</p>"
 
                        "<br>"
+                       "You are using openPilotLog version %3."
+                       "<br>"
 
-                       "<p>This program uses <a href=\"http://%3/\">Qt</a> version %4 and "
-                       "<a href=\"https://%5/\">SQLite</a> version %6</p>"
-                   ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog"),
+                       "<p>This program uses <a href=\"http://%4/\">Qt</a> version %5 and "
+                       "<a href=\"https://%6/\">SQLite</a> version %7</p>"
+                   ).arg(
+                         QStringLiteral("github.com/fiffty-50/openpilotlog"),
                          QStringLiteral("gnu.org/licenses/"),
+                         OPL_VERSION_STRING,
                          QStringLiteral("qt.io"),
                          QT_VERSION_STR,
                          QStringLiteral("sqlite.org/about.html"),
@@ -374,12 +372,14 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
     if (new_style_setting == QLatin1String("Dark-Palette")) {
         AStyle::setStyle(AStyle::darkPalette());
         ASettings::write(ASettings::Main::Style, new_style_setting);
+        emit settingChanged(MainWindow);
         return;
     }
     for (const auto &style_name : AStyle::styles) {
         if (new_style_setting == style_name) {
             AStyle::setStyle(style_name);
             ASettings::write(ASettings::Main::Style, new_style_setting);
+            emit settingChanged(MainWindow);
             return;
         }
     }
@@ -388,6 +388,7 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
         if (new_style_setting == style_sheet.styleSheetName) {
             AStyle::setStyle(style_sheet);
             ASettings::write(ASettings::Main::Style, new_style_setting);
+            emit settingChanged(MainWindow);
             return;
         }
     }

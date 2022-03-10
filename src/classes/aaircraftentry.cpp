@@ -19,13 +19,13 @@
 #include "src/opl.h"
 
 AAircraftEntry::AAircraftEntry()
-    : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION)
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_AIRCRAFT, 0))
 {}
 
 AAircraftEntry::AAircraftEntry(RowId_T row_id)
-    : AEntry::AEntry(DataPosition(Opl::Db::TABLE_AIRCRAFT, row_id))
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_AIRCRAFT, row_id))
 {}
 
 AAircraftEntry::AAircraftEntry(RowData_T table_data)
-    : AEntry::AEntry(Opl::Db::DEFAULT_AIRCRAFT_POSITION, table_data)
+    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_AIRCRAFT, 0), table_data)
 {}

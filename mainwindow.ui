@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>openPilotLog v0.6</string>
+   <string>openPilotLog</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -48,7 +48,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNewFlight">
    <property name="text">
-    <string>NewFlight</string>
+    <string>New Flight</string>
    </property>
    <property name="toolTip">
     <string>Add a new flight to the logbook</string>
@@ -150,6 +150,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionNewSim">
+   <property name="text">
+    <string>New Sim</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a new simulator sesion to the logbook</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

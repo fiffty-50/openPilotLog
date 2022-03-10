@@ -14,11 +14,16 @@
  *
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-/*
- * Stylesheets used (c) Alexander Huszagh
+ *
+ * Breeze Stylesheets (c) Alexander Huszagh
  * https://github.com/Alexhuszagh/BreezeStyleSheets
+ *
+ * QDarksStyle Stylesheet (c) Colin Duquesnoy
+ * https://github.com/ColinDuquesnoy/QDarkStyleSheet
+ *
+ * Dark Palette (c) 2017 by Juergen Skrotzky
+ * https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle
+ *
  */
 #include "astyle.h"
 #include "src/opl.h"
@@ -40,7 +45,7 @@ const QList<StyleSheet> AStyle::styleSheets = {
 };
 
 QString AStyle::currentStyle = defaultStyle;
-
+QLatin1String AStyle::DARK_PALETTE = QLatin1String("Dark-Palette");
 /*!
  * \brief Setup Application style by reading from openPilotLog.ini
  */
@@ -58,7 +63,7 @@ void AStyle::setup()
     // Set style, stylesheet or palette
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();
 
-    if (style_setting == QLatin1String("Dark-Palette")) {
+    if (style_setting == DARK_PALETTE) {
         AStyle::setStyle(AStyle::darkPalette());
         ASettings::write(ASettings::Main::Style, style_setting);
         return;
@@ -107,26 +112,67 @@ void AStyle::setStyle(const QPalette &palette)
 {
     resetStyle();
     LOG << "Setting Colour Palette...";
+    currentStyle = DARK_PALETTE;
     qApp->setPalette(palette);
+}
+
+StyleType AStyle::getStyleType()
+{
+    const QStringList darkStyles = {
+        QStringLiteral("Breeze-Dark"),
+        QStringLiteral("QDarkStyle"),
+        DARK_PALETTE,
+    };
+
+    if (darkStyles.contains(currentStyle))
+        return StyleType::Dark;
+    else
+        return StyleType::Light;
 }
 
 QPalette AStyle::darkPalette()
 {
     auto palette = QPalette();
+    //palette.setColor(QPalette::Window, QColor(53, 53, 53));
+    //palette.setColor(QPalette::WindowText, Qt::white);
+    //palette.setColor(QPalette::Base, QColor(25, 25, 25));
+    //palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
+    //palette.setColor(QPalette::ToolTipBase, Qt::black);
+    //palette.setColor(QPalette::ToolTipText, Qt::white);
+    //palette.setColor(QPalette::Text, Qt::white);
+    //palette.setColor(QPalette::Button, QColor(53, 53, 53));
+    //palette.setColor(QPalette::ButtonText, Qt::white);
+    //palette.setColor(QPalette::BrightText, Qt::red);
+    //palette.setColor(QPalette::Link, QColor(42, 130, 218));
+    //palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    //palette.setColor(QPalette::HighlightedText, Qt::black);
+
     palette.setColor(QPalette::Window, QColor(53, 53, 53));
     palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::Base, QColor(25, 25, 25));
-    palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
-    palette.setColor(QPalette::ToolTipBase, Qt::black);
-    palette.setColor(QPalette::ToolTipText, Qt::white);
+    palette.setColor(QPalette::Disabled, QPalette::WindowText,
+                     QColor(127, 127, 127));
+    palette.setColor(QPalette::Base, QColor(42, 42, 42));
+    palette.setColor(QPalette::AlternateBase, QColor(66, 66, 66));
+    palette.setColor(QPalette::ToolTipBase, Qt::white);
+    palette.setColor(QPalette::ToolTipText, QColor(53, 53, 53));
     palette.setColor(QPalette::Text, Qt::white);
+    palette.setColor(QPalette::Disabled, QPalette::Text, QColor(127, 127, 127));
+    palette.setColor(QPalette::Dark, QColor(35, 35, 35));
+    palette.setColor(QPalette::Shadow, QColor(20, 20, 20));
     palette.setColor(QPalette::Button, QColor(53, 53, 53));
     palette.setColor(QPalette::ButtonText, Qt::white);
+    palette.setColor(QPalette::Disabled, QPalette::ButtonText,
+                     QColor(127, 127, 127));
     palette.setColor(QPalette::BrightText, Qt::red);
     palette.setColor(QPalette::Link, QColor(42, 130, 218));
     palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-    palette.setColor(QPalette::HighlightedText, Qt::black);
+    palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(80, 80, 80));
+    palette.setColor(QPalette::HighlightedText, Qt::white);
+    palette.setColor(QPalette::Disabled, QPalette::HighlightedText,
+                     QColor(127, 127, 127));
+
     return palette;
+
 }
 
 const QString& AStyle::style()

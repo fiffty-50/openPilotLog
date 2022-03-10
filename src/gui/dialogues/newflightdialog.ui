@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Add New Flight</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
@@ -154,6 +154,9 @@
            <width>120</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="placeholderText">
+          <string>YYYY-MM-DD</string>
          </property>
         </widget>
        </item>
