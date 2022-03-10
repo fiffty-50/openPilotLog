@@ -6,7 +6,7 @@ const static auto ISO = QStringLiteral("yyyy-MM-dd");
 const static auto DE = QStringLiteral("dd.MM.yyyy");
 const static auto EN = QStringLiteral("MM/dd/yyyy");
 
-const static QHash<OPL::DateFormat, QString> ADATEFORMATSMAP = {
+const static QMap<OPL::DateFormat, QString> ADATEFORMATSMAP = {
     {OPL::DateFormat::ISODate, ISO},
     {OPL::DateFormat::DE,      DE },
     {OPL::DateFormat::EN,      EN },

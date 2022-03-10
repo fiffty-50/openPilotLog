@@ -155,6 +155,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="placeholderText">
+          <string>YYYY-MM-DD</string>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">

@@ -209,9 +209,6 @@ void NewFlightDialog::fillWithEntryData()
     ui->sicNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
     ui->thirdPilotNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
 
-    for (const auto& le : *mandatoryLineEdits)
-        emit le->editingFinished();
-
     //Function
     const QHash<int, QString> functions = {
         {0, OPL::Db::FLIGHTS_TPIC},
@@ -264,7 +261,6 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
         if (validationState.nightDataValid())
             updateNightCheckBoxes();
     }
-        validationState.printValidationStatus();
 }
 
 void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
@@ -429,6 +425,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
     const int& function_index = ui->functionComboBox->currentIndex();
     switch (function_index) {
     case 4:
+        LOG << "Function FI";
         for (int i = 0; i < 5; i++){
             if(i == 0 || i == 4)
                 new_data.insert(function_times[i], block_minutes);
@@ -537,23 +534,19 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
     auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
     DEB << line_edit->objectName() << "Editing Finished -" << line_edit->text();
 
+    int pilot_id = 0;
+
+    // Check for self and try mapping to rowid
     if(line_edit->text().contains(self, Qt::CaseInsensitive)) {
         DEB << "self recognized.";
         line_edit->setText(completionData.pilotsIdMap.value(1));
-        if (line_edit->objectName() == QLatin1String("picNameLineEdit"))
-            ui->functionComboBox->setCurrentIndex(0);
-        else if (line_edit->objectName() == QLatin1String("sicNameLineEdit"))
-            ui->functionComboBox->setCurrentIndex(2);
+        pilot_id = 1;
+    } else
+        pilot_id = completionData.pilotsIdMap.key(line_edit->text());
 
-        onGoodInputReceived(line_edit);
-        return;
-    }
 
-    int pilot_id = completionData.pilotsIdMap.key(line_edit->text());
     if(pilot_id != 0) {
         DEB << "Mapped: " << line_edit->text() << pilot_id;
-        if (line_edit->objectName() == QLatin1String("picNameLineEdit") && pilot_id == 1)
-            ui->functionComboBox->setCurrentIndex(0);
         onGoodInputReceived(line_edit);
         return;
     }
@@ -571,6 +564,7 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
         return;
     }
 
+    // Fall through to adding new pilot to database
     if(!addNewPilot(*line_edit))
         onBadInputReceived(line_edit);
 }
@@ -675,19 +669,51 @@ void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1
  */
 void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
 {
-    if (index == 0) {
+    DEB << "Current Index: " << index;
+    if (index == OPL::PilotFunction::PIC) {
         ui->picNameLineEdit->setText(self);
         emit ui->picNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
          == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
                 ui->sicNameLineEdit->setText(QString());
-    } else if (index == 2) {
+    } else if (index == OPL::PilotFunction::SIC) {
         ui->sicNameLineEdit->setText(self);
         emit ui->sicNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
          == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
             ui->picNameLineEdit->setText(QString());
     }
+}
+
+/*!
+ * \brief NewFlightDialog::checkPilotFunctionsValid checks if there are incompatible selections made on Pilot Function.
+ * \details Checks for 2 cases in which there might be a discrepancy between the PilotNameLineEdit and the functionComboBox:
+ * - If the pilotNameLineEdit's value is self, but the functionComboBox has been manually selected to be different from either
+ * PIC or FI
+ * - If the functionComboBox has been set to PIC but the pilotNameLineEdit is not self
+ * \param error_msg - the error string displayed to the user
+ * \return
+ */
+bool NewFlightDialog::checkPilotFunctionsValid()
+{
+    int pic_id = completionData.pilotsIdMap.key(ui->picNameLineEdit->text());
+    int function_index = ui->functionComboBox->currentIndex();
+
+    if (pic_id == 1) {
+        if (!(function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI)) {
+            INFO(tr("The PIC is set to %1 but the Pilot Function is set to %2")
+                    .arg(ui->picNameLineEdit->text(), ui->functionComboBox->currentText()));
+            return false;
+        }
+    } else {
+        if (function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI) {
+            INFO(tr("The Pilot Function is set to %1, but the PIC is set to %2")
+                    .arg(ui->functionComboBox->currentText(), ui->picNameLineEdit->text()));
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /*!
@@ -699,8 +725,8 @@ void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
  */
 void NewFlightDialog::on_buttonBox_accepted()
 {
-    for (const auto& line_edit : *mandatoryLineEdits)
-        emit line_edit->editingFinished();
+    // Debug
+    validationState.printValidationStatus();
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
         const auto display_names = QHash<ValidationItem, QString> {
@@ -724,6 +750,9 @@ void NewFlightDialog::on_buttonBox_accepted()
                 ).arg(missing_items));
         return;
     }
+
+    if(!checkPilotFunctionsValid())
+        return;
 
     // If input verification passed, collect input and submit to database
     auto newData = prepareFlightEntryData();

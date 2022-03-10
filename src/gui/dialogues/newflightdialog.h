@@ -173,13 +173,15 @@ private:
      */
     void onBadInputReceived(QLineEdit *line_edit);
 
+    void updateBlockTimeLabel();
     void updateNightCheckBoxes();
     void setNightCheckboxes();
-    void updateBlockTimeLabel();
 
     bool addNewTail(QLineEdit& parent_line_edit);
     bool addNewPilot(QLineEdit& parent_line_edit);
 
+
+    bool checkPilotFunctionsValid();
     RowData_T prepareFlightEntryData();
 
 
