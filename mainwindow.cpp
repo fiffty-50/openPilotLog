@@ -128,7 +128,7 @@ void MainWindow::setActionIcons(StyleType style)
         LOG << "Setting Light Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // pending seperate icon
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
@@ -140,7 +140,7 @@ void MainWindow::setActionIcons(StyleType style)
         LOG << "Setting Dark Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
