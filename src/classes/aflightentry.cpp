@@ -39,7 +39,7 @@ const QString AFlightEntry::summary()
         return QString();
 
     QString flight_summary;
-    auto space = QStringLiteral(" ");
+    auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
     flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())

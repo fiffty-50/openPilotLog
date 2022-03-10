@@ -4,21 +4,60 @@
 #include "src/functions/atime.h"
 #include "src/functions/adate.h"
 #include <QCompleter>
-
+/*!
+ * \brief create a NewSimDialog to add a new Simulator Entry to the database
+ */
 NewSimDialog::NewSimDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewSimDialog)
 {
+    entry = ASimulatorEntry();
     ui->setupUi(this);
     ui->dateLineEdit->setText(ADate::currentDate());
-    OPL::GLOBALS->loadSimulatorTypes(ui->typeComboBox);
+    init();
+}
+/*!
+ * \brief create a NewSimDialog to edit an existing Simulator Entry
+ * \param row_id of the entry to be edited
+ */
+NewSimDialog::NewSimDialog(RowId_T row_id, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewSimDialog)
+{
+
+    ui->setupUi(this);
+    entry = aDB->getSimEntry(row_id);
+    init();
+    fillEntryData();
+}
+
+/*!
+ * \brief set up the UI with Combo Box entries and QCompleter
+ */
+void NewSimDialog::init()
+{
+    OPL::GLOBALS->loadSimulatorTypes(ui->deviceTypeComboBox);
 
     const QStringList aircraft_list = aDB->getCompletionList(ADatabaseTarget::aircraft);
-    auto completer = new QCompleter(aircraft_list, ui->acftLineEdit);
+    auto completer = new QCompleter(aircraft_list, ui->aircraftTypeLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
-    ui->acftLineEdit->setCompleter(completer);
+    ui->aircraftTypeLineEdit->setCompleter(completer);
+}
+
+/*!
+ * \brief fills the UI with data retreived from an existing entry.
+ */
+void NewSimDialog::fillEntryData()
+{
+    const auto& data = entry.getData();
+    ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
+    ui->totalTimeLineEdit->setText(ATime::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
+    ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
+    ui->aircraftTypeLineEdit->setText(data.value(OPL::Db::SIMULATORS_ACFT).toString());
+    ui->registrationLineEdit->setText(data.value(OPL::Db::SIMULATORS_REG).toString());
+    ui->remarksLineEdit->setText(data.value(OPL::Db::SIMULATORS_REMARKS).toString());
 }
 
 NewSimDialog::~NewSimDialog()
@@ -43,17 +82,17 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
 }
 
 
-void NewSimDialog::on_timeLineEdit_editingFinished()
+void NewSimDialog::on_totalTimeLineEdit_editingFinished()
 {
-    const QString time_string = ATime::formatTimeInput(ui->timeLineEdit->text());
+    const QString time_string = ATime::formatTimeInput(ui->totalTimeLineEdit->text());
     const QTime time = ATime::fromString(time_string);
 
     if (time.isValid()) {
-        ui->timeLineEdit->setText(time_string);
-        ui->timeLineEdit->setStyleSheet(QString());
+        ui->totalTimeLineEdit->setText(time_string);
+        ui->totalTimeLineEdit->setStyleSheet(QString());
     } else {
-        ui->timeLineEdit->setText(QString());
-        ui->timeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->totalTimeLineEdit->setText(QString());
+        ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
     }
 }
 
@@ -88,19 +127,19 @@ bool NewSimDialog::verifyInput(QString& error_msg)
         return false;
     }
     // Time
-    const QString time_string = ATime::formatTimeInput(ui->timeLineEdit->text());
+    const QString time_string = ATime::formatTimeInput(ui->totalTimeLineEdit->text());
     const QTime time = ATime::fromString(time_string);
 
     if (!time.isValid()) {
-        ui->timeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
-        ui->timeLineEdit->setText(QString());
+        ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->totalTimeLineEdit->setText(QString());
         error_msg = tr("Invalid time");
         return false;
     }
 
     // Device Type - for FSTD, aircraft info is required
-    if (ui->typeComboBox->currentIndex() == OPL::SimulatorType::FSTD
-            && ui->acftLineEdit->text() == QString()) {
+    if (ui->deviceTypeComboBox->currentIndex() == OPL::SimulatorType::FSTD
+            && ui->aircraftTypeLineEdit->text() == QString()) {
         error_msg = tr("For FSTD, please enter the aircraft type.");
         return false;
     }
@@ -114,11 +153,11 @@ RowData_T NewSimDialog::collectInput()
     // Date
     new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(OPL::Db::SIMULATORS_TIME, ATime::toMinutes(ui->timeLineEdit->text()));
+    new_entry.insert(OPL::Db::SIMULATORS_TIME, ATime::toMinutes(ui->totalTimeLineEdit->text()));
     // Device Type
-    new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->typeComboBox->currentText());
+    new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type
-    new_entry.insert(OPL::Db::SIMULATORS_ACFT, ui->acftLineEdit->text());
+    new_entry.insert(OPL::Db::SIMULATORS_ACFT, ui->aircraftTypeLineEdit->text());
     // Registration
     if (!ui->registrationLineEdit->text().isEmpty())
         new_entry.insert(OPL::Db::SIMULATORS_REG, ui->registrationLineEdit->text());
@@ -137,7 +176,12 @@ void NewSimDialog::on_buttonBox_accepted()
         return;
     }
 
-    auto sim_entry = ASimulatorEntry(collectInput());
-    DEB << sim_entry;
-    aDB->commit(sim_entry);
+    entry.setData(collectInput());
+
+    DEB << entry;
+
+    if(aDB->commit(entry))
+        QDialog::accept();
+    else
+        WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1").arg(aDB->lastError.text()));
 }

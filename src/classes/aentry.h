@@ -47,6 +47,8 @@ public:
     void setPosition(DataPosition position_);
 
     const DataPosition& getPosition() const;
+    const TableName_T &getTableName() const { return position.tableName; }
+    const RowId_T &getRowId() const { return position.rowId; }
     const RowData_T& getData() const;
 
     /*!

@@ -493,6 +493,13 @@ AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
     return flight_entry;
 }
 
+ASimulatorEntry ADatabase::getSimEntry(RowId_T row_id)
+{
+    ASimulatorEntry sim_entry(row_id);
+    sim_entry.setData(getEntryData(sim_entry.getPosition()));
+    return sim_entry;
+}
+
 ACurrencyEntry ADatabase::getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
 {
     ACurrencyEntry currency_entry(currency_name);
