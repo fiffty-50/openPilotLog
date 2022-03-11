@@ -157,7 +157,12 @@ private:
     const static QStringList userTableNames;
     const static QStringList templateTableNames;
     const static int minimumDatabaseRevision;
+
 public:
+    ADatabase(const ADatabase&) = delete;
+    void operator=(const ADatabase&) = delete;
+    static ADatabase* instance();
+
     /*!
      * \brief Holds information about the last error that ocurred during
      * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
@@ -170,10 +175,24 @@ public:
 
     const QFileInfo databaseFile;
 
-    // Ensure DB is not copiable or assignable
-    ADatabase(const ADatabase&) = delete;
-    void operator=(const ADatabase&) = delete;
-    static ADatabase* instance();
+
+
+    /*!
+     * \brief Create or restore the database to its ready-to-use but empty state
+     * \details The SQL code for the database creation is stored in a .sql file which is available as a ressource.
+     * This file gets read, and the querys executed. If errors occur, returns false.
+     */
+    bool createSchema();
+
+    /*!
+     * \brief importTemplateData fills an empty database with the template
+     * data (Aircraft, Airports, currencies, changelog) as read from the JSON
+     * templates.
+     * \param use_local_ressources determines whether the included ressource files
+     * or a previously downloaded file should be used.
+     * \return
+     */
+    bool importTemplateData(bool use_local_ressources = true);
 
     /*!
      * \brief dbRevision returns the database Revision Number. The Revision refers to what iteration
@@ -244,6 +263,13 @@ public:
      * based on position data
      */
     bool commit(const AEntry &entry);
+
+    /*!
+     * \brief commits data imported from JSON
+     * \details This function is used to import values to the databases which are held in JSON documents.
+     * These entries are pre-filled data used for providing completion data, such as Airport or Aircraft Type Data.
+     */
+    bool commit(const QJsonArray &json_arr, const QString &table_name);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
@@ -394,13 +420,13 @@ public:
      * \brief getUserTableNames returns a list of the table names of tables that contain user-created data
      * (flights, pilots,..)
      */
-    QStringList getUserTableNames();
+    const QStringList &getUserTableNames() const;
 
     /*!
      * \brief getTemplateTableNames returns a list of the table names of tables that contain template data
      * (aiports, aircraft,..)
      */
-    QStringList getTemplateTableNames();
+    const QStringList &getTemplateTableNames() const;
 
     /*!
      * \brief getUserDataState returns a struct containing the current amount of entries in the tails and
@@ -408,6 +434,11 @@ public:
      * \return
      */
     UserDataState getUserDataState();
+
+    /*!
+     * \brief Delete all rows from the user data tables (flights, pliots, tails)
+     */
+    bool resetUserData();
 
     /*!
      * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.

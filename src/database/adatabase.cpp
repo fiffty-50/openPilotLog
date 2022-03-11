@@ -20,6 +20,7 @@
 #include "src/classes/astandardpaths.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
+#include "src/classes/ajson.h"
 
 const int ADatabase::minimumDatabaseRevision = 0;
 
@@ -59,9 +60,14 @@ int ADatabase::getMinimumDatabaseRevision()
     return minimumDatabaseRevision;
 }
 
-QStringList ADatabase::getTemplateTableNames()
+const QStringList &ADatabase::getTemplateTableNames() const
 {
     return templateTableNames;
+}
+
+const QStringList& ADatabase::getUserTableNames() const
+{
+    return userTableNames;
 }
 
 UserDataState ADatabase::getUserDataState()
@@ -80,9 +86,17 @@ UserDataState ADatabase::getUserDataState()
     return UserDataState(tails, pilots);
 }
 
-QStringList ADatabase::getUserTableNames()
+bool ADatabase::resetUserData()
 {
-    return userTableNames;
+    QSqlQuery query;
+    for (const auto& table : userTableNames) {
+        query.prepare(QLatin1String("DELETE FROM ") + table);
+        if (!query.exec()) {
+            DEB << "Error: " << query.lastError().text();
+            return false;
+        }
+    }
+    return true;
 }
 
 const ColumnNames_T ADatabase::getTableColumns(TableName_T table_name) const
@@ -120,6 +134,76 @@ ADatabase* ADatabase::instance()
     return self;
 }
 
+bool ADatabase::createSchema()
+{
+    // Read Database layout from sql file
+    QFile f(OPL::Assets::DATABASE_SCHEMA);
+    f.open(QIODevice::ReadOnly);
+    QByteArray filedata = f.readAll();
+    // create individual queries for each table/view
+    auto list = filedata.split(';');
+
+    // Create Tables
+    QSqlQuery q;
+    QVector<QSqlError> errors;
+    for (const auto &query_string : list) {
+        q.prepare(query_string);
+        if (!q.exec()) {
+            errors.append(q.lastError());
+            LOG << "Unable to execute query: ";
+            LOG << q.lastQuery();
+            LOG << q.lastError();
+        }
+    }
+    updateLayout();
+
+    if (errors.isEmpty()) {
+        LOG << "Database succesfully created.";
+        return true;
+    } else {
+        LOG << "Database creation has failed. The following error(s) have ocurred: ";
+        for (const auto &error : qAsConst(errors)) {
+            LOG << error.type() << error.text();
+        }
+        return false;
+    }
+}
+
+bool ADatabase::importTemplateData(bool use_local_ressources)
+{
+    for (const auto& table_name : templateTableNames) {
+
+        //clear table
+        QSqlQuery q;
+        q.prepare(QLatin1String("DELETE FROM ") + table_name);
+        if (!q.exec()) {
+            LOG << "Error clearing tables: " << q.lastError().text();
+            return false;
+        }
+
+        //Prepare data
+        QJsonArray data_to_commit;
+        QString error_message("Error importing data ");
+
+        if (use_local_ressources) {
+            data_to_commit = AJson::readFileToDoc(QLatin1String(":database/templates/")
+                                      + table_name + QLatin1String(".json")).array();
+            error_message.append(QLatin1String(" (ressource) "));
+        } else {
+            data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
+                                          AStandardPaths::Templates).absoluteFilePath(
+                                          table_name + QLatin1String(".json"))).array();
+            error_message.append(QLatin1String(" (downloaded) "));
+        }
+
+        // commit Data from Array
+        if (!commit(data_to_commit, table_name)) {
+            LOG << error_message;
+            return false;
+        }
+    } // for table_name
+    return true;
+}
 
 const QString ADatabase::sqliteVersion() const
 {
@@ -162,6 +246,7 @@ void ADatabase::disconnect()
 {
     auto db = ADatabase::database();
     db.close();
+    db.removeDatabase(db.connectionName());
     LOG << "Database connection closed.";
 }
 
@@ -177,6 +262,43 @@ bool ADatabase::commit(const AEntry &entry)
     } else {
         return insert(entry);
     }
+}
+
+bool ADatabase::commit(const QJsonArray &json_arr, const QString &table_name)
+{
+    // create statement
+    QString statement = QLatin1String("INSERT INTO ") + table_name + QLatin1String(" (");
+    QString placeholder = QStringLiteral(") VALUES (");
+    for (const auto &column_name : aDB->getTableColumns(table_name)) {
+        statement += column_name + ',';
+        placeholder.append(QLatin1Char(':') + column_name + QLatin1Char(','));
+    }
+
+    statement.chop(1);
+    placeholder.chop(1);
+    placeholder.append(')');
+    statement.append(placeholder);
+
+    // Create query and commit
+    QSqlQuery q;
+    q.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
+    q.exec();
+    for (const auto &entry : json_arr) {
+        q.prepare(statement);
+        auto object = entry.toObject();
+        const auto keys = object.keys();
+        for (const auto &key : keys){
+            object.value(key).isNull() ? q.bindValue(key, QVariant(QVariant::String)) : // refactor to use QMetaType with Qt6
+                                         q.bindValue(QLatin1Char(':') + key, object.value(key).toVariant());
+        }
+        q.exec();
+    }
+
+    q.prepare(QStringLiteral("COMMIT"));
+    if (q.exec())
+        return true;
+    else
+        return false;
 }
 
 bool ADatabase::remove(const AEntry &entry)

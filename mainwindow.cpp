@@ -30,7 +30,7 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    QSqlQuery query;
+    //QSqlQuery query;
     QFile f(OPL::Assets::DATABASE_SCHEMA);
     f.open(QIODevice::ReadOnly);
     QByteArray filedata = f.readAll();
@@ -52,18 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
     // connect to the Database
     QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
                                          absoluteFilePath(QStringLiteral("logbook.db")));
-    bool db_invalid = false;
-    if (!database_file.exists()) {
-        WARN(tr("Error: Database file not found."));
-        db_invalid = true;
-    } else if (database_file.size() == 0) { // To Do: Check for database errors instead of just checking for empty
-        WARN(tr("Database file invalid."));
-        db_invalid = true;
-    }
 
-    if (db_invalid)
+    if (database_file.size() == 0)
         onDatabaseInvalid();
-
 
     if(!aDB->connect()){
         WARN(tr("Error establishing database connection."));

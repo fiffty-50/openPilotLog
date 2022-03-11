@@ -28,7 +28,6 @@
 #include "src/functions/astat.h"
 #include "src/classes/acurrencyentry.h"
 #include "src/classes/atranslator.h"
-#include "src/database/adbsetup.h"
 #include "src/classes/ahash.h"
 #include "src/classes/ajson.h"
 #include "src/functions/adate.h"
@@ -76,7 +75,7 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    if (aDbSetup::resetUserData()){
+    if (aDB->resetUserData()){
         LOG << "Database successfully reset";
         emit aDB->dataBaseUpdated();
     } else
@@ -140,14 +139,14 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
             LOG << "ssl/network error";
     }
     // Create Database
-    if (!aDbSetup::createDatabase()) {
+    if (!aDB->createSchema()) {
         WARN(QString("Unable to create database.<br>%1").arg(aDB->lastError.text()));
         return;
     }
 
     // Load ressources
     bool use_ressource_data = false; // do not use local data, download from github
-    if(!aDbSetup::importTemplateData(use_ressource_data)) {
+    if(!aDB->importTemplateData(use_ressource_data)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
              .arg(aDB->lastError.text()));
         return ;
