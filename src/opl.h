@@ -306,6 +306,12 @@ static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
 
 namespace Assets {
 
+static const auto DATABASE_SCHEMA               = QStringLiteral(":/database/database_schema.sql");
+static const auto DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
+static const auto DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
+static const auto DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
+static const auto DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/templates/currencies.json");
+
 static const auto LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 static const auto ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
 static const auto ICON_APPICON_LINUX            = QStringLiteral(":/icons/opl-icons/app/icon_linux.svg");

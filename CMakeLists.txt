@@ -127,7 +127,7 @@ set(PROJECT_SOURCES
 
     # Ressources
     assets/icons.qrc
-    assets/templates.qrc
+    assets/database/templates.qrc
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
 

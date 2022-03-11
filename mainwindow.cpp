@@ -30,8 +30,15 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    auto nsd = new NewSimDialog(1, this);
-    nsd->exec();
+    QSqlQuery query;
+    QFile f(OPL::Assets::DATABASE_SCHEMA);
+    f.open(QIODevice::ReadOnly);
+    QByteArray filedata = f.readAll();
+
+    auto list = filedata.split(';');
+    for (const auto &string : list)
+        //query.exec(string);
+        LOG << string;
 }
 
 MainWindow::MainWindow(QWidget *parent)

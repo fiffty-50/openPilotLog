@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/templates">
-        <file>database/templates/aircraft.json</file>
-        <file>database/templates/airports.json</file>
-        <file>database/templates/changelog.json</file>
-        <file>database/templates/currencies.json</file>
-    </qresource>
-</RCC>
