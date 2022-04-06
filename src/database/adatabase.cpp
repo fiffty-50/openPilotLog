@@ -329,7 +329,7 @@ bool ADatabase::remove(const AEntry &entry)
     }
 }
 
-bool ADatabase::removeMany(QList<DataPosition> data_position_list)
+bool ADatabase::removeMany(const QList<DataPosition> &data_position_list)
 {
     int errorCount = 0;
     QSqlQuery query;
@@ -523,7 +523,7 @@ bool ADatabase::insert(const AEntry &new_entry)
 
 }
 
-RowData_T ADatabase::getEntryData(DataPosition data_position)
+RowData_T ADatabase::getEntryData(const DataPosition &data_position)
 {
     // check table exists
     if (!getTableNames().contains(data_position.tableName)) {
@@ -580,7 +580,7 @@ RowData_T ADatabase::getEntryData(DataPosition data_position)
     return entry_data;
 }
 
-AEntry ADatabase::getEntry(DataPosition data_position)
+AEntry ADatabase::getEntry(const DataPosition &data_position)
 {
     AEntry entry(data_position);
     entry.setData(getEntryData(data_position));
@@ -622,7 +622,7 @@ ASimulatorEntry ADatabase::getSimEntry(RowId_T row_id)
     return sim_entry;
 }
 
-ACurrencyEntry ADatabase::getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name)
+ACurrencyEntry ADatabase::getCurrencyEntry(const ACurrencyEntry::CurrencyName &currency_name)
 {
     ACurrencyEntry currency_entry(currency_name);
     currency_entry.setData(getEntryData(currency_entry.getPosition()));

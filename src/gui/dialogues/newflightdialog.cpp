@@ -41,12 +41,12 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
     flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << ASettings::read(ASettings::FlightLogging::Function);
-    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == OPL::PIC){
+    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
         emit ui->picNameLineEdit->editingFinished();
     }
-    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == OPL::SIC) {
+    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::SIC)) {
         ui->sicNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
@@ -682,13 +682,13 @@ void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1
 void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
 {
     DEB << "Current Index: " << index;
-    if (index == OPL::PilotFunction::PIC) {
+    if (index == static_cast<int>(OPL::PilotFunction::PIC)) {
         ui->picNameLineEdit->setText(self);
         emit ui->picNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
          == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
                 ui->sicNameLineEdit->setText(QString());
-    } else if (index == OPL::PilotFunction::SIC) {
+    } else if (index == static_cast<int>(OPL::PilotFunction::SIC)) {
         ui->sicNameLineEdit->setText(self);
         emit ui->sicNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
@@ -712,13 +712,13 @@ bool NewFlightDialog::checkPilotFunctionsValid()
     int function_index = ui->functionComboBox->currentIndex();
 
     if (pic_id == 1) {
-        if (!(function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI)) {
+        if (!(function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI))) {
             INFO(tr("The PIC is set to %1 but the Pilot Function is set to %2")
                     .arg(ui->picNameLineEdit->text(), ui->functionComboBox->currentText()));
             return false;
         }
     } else {
-        if (function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI) {
+        if (function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI)) {
             INFO(tr("The Pilot Function is set to %1, but the PIC is set to %2")
                     .arg(ui->functionComboBox->currentText(), ui->picNameLineEdit->text()));
             return false;

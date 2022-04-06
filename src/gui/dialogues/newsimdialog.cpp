@@ -138,7 +138,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     }
 
     // Device Type - for FSTD, aircraft info is required
-    if (ui->deviceTypeComboBox->currentIndex() == OPL::SimulatorType::FSTD
+    if (ui->deviceTypeComboBox->currentIndex() == static_cast<int>(OPL::SimulatorType::FSTD)
             && ui->aircraftTypeLineEdit->text() == QString()) {
         error_msg = tr("For FSTD, please enter the aircraft type.");
         return false;

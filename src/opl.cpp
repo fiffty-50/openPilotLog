@@ -12,22 +12,22 @@ void OplGlobals::fillLanguageComboBox(QComboBox *combo_box) const
 void OplGlobals::fillViewNamesComboBox(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (int i = DbViewName::Default; i < DATABASE_VIEW_DISPLAY_NAMES.size(); i++)
-        combo_box->addItem(DATABASE_VIEW_DISPLAY_NAMES.value(DbViewName(i)));
+    for (const auto &view_name : DATABASE_VIEW_DISPLAY_NAMES)
+        combo_box->addItem(view_name);
 }
 
 void OplGlobals::loadPilotFunctios(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (int i = PilotFunction::PIC; i < PILOT_FUNCTIONS.size(); i++)
-        combo_box->addItem(PILOT_FUNCTIONS.value(PilotFunction(i)));
+    for (const auto& pilot_function : PILOT_FUNCTIONS)
+        combo_box->addItem(pilot_function);
 }
 
 void OplGlobals::loadSimulatorTypes(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (int i = SimulatorType::FNPTI; i < SIMULATOR_TYPES.size(); i++)
-        combo_box->addItem(SIMULATOR_TYPES.value(SimulatorType(i)));
+    for (const auto &sim_type : SIMULATOR_TYPES)
+        combo_box->addItem(sim_type);
 }
 
 void OplGlobals::loadApproachTypes(QComboBox *combo_box) const

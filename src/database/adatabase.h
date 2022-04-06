@@ -290,17 +290,17 @@ public:
      * \brief deletes a list of entries from the database. Optimised for speed when
      * deleting many entries.
      */
-    bool removeMany(QList<DataPosition>);
+    bool removeMany(const QList<DataPosition> &);
 
     /*!
      * \brief retreive entry data from the database to create an entry object
      */
-    RowData_T getEntryData(DataPosition data_position);
+    RowData_T getEntryData(const DataPosition &data_position);
 
     /*!
      * \brief retreive an Entry from the database.
      */
-    AEntry getEntry(DataPosition data_position);
+    AEntry getEntry(const DataPosition &data_position);
 
     /*!
      * \brief retreives a PilotEntry from the database.
@@ -355,7 +355,7 @@ public:
     /*!
      * \brief Retreives a currency entry from the database.
      */
-    ACurrencyEntry getCurrencyEntry(ACurrencyEntry::CurrencyName currency_name);
+    ACurrencyEntry getCurrencyEntry(const ACurrencyEntry::CurrencyName &currency_name);
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a

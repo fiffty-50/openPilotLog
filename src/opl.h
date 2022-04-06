@@ -69,17 +69,17 @@ public:
     static inline void info(const QString msg, QWidget *parent = nullptr){
 
         qInfo() << msg;
-        auto mb = QMessageBox(QMessageBox::Information, QLatin1String("Info"), msg, QMessageBox::StandardButton::Ok, parent);
+        auto mb = QMessageBox(QMessageBox::Information, QStringLiteral("Info"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void warn(const QString msg, QWidget *parent = nullptr){
         qWarning() << msg;
-        auto mb = QMessageBox(QMessageBox::Warning, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
+        auto mb = QMessageBox(QMessageBox::Warning, QStringLiteral("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
     static inline void crit(const QString msg, QWidget *parent = nullptr){
         qCritical() << msg;
-        auto mb = QMessageBox(QMessageBox::Critical, QLatin1String("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
+        auto mb = QMessageBox(QMessageBox::Critical, QStringLiteral("Warning"), msg, QMessageBox::StandardButton::Ok, parent);
         mb.exec();
     };
 }; // class ANotificationHandler
@@ -98,22 +98,22 @@ enum class DateTimeFormat {Default, Backup};
  * \brief PilotFunction
  * Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor
  */
-enum PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
+enum class PilotFunction {PIC = 0, PICUS = 1, SIC = 2, DUAL = 3, FI = 4};
 
 /*!
  * \brief Enumerates the available translations
  */
-enum Translation {English, German, Spanish};
+enum class Translation {English, German, Spanish};
 
 /*!
  * \brief Enumerates the available SQL views in the database
  */
-enum DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
+enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
 
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
  */
-enum SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
+enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
 /*!
  * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
@@ -137,43 +137,43 @@ public:
 private:
     Q_OBJECT
 
-    const QMap<Translation, QString> L10N_FilePaths {
+    const static inline QMap<Translation, QString> L10N_FilePaths {
         {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
         {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
         {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
     };
-    const QMap<Translation, QString> L10N_DisplayNames {
-        {Translation::English, tr("English")},
-        {Translation::German,  tr("Deutsch")},
-        {Translation::Spanish, tr("Español")},
+    const static inline QMap<Translation, QString> L10N_DisplayNames {
+        {Translation::English, QStringLiteral("English")},
+        {Translation::German,  QStringLiteral("Deutsch")},
+        {Translation::Spanish, QStringLiteral("Español")},
     };
-    const QMap<DbViewName, QString> DATABASE_VIEWS = {
-        {Default,        QStringLiteral("viewDefault")},
-        {DefaultWithSim, QStringLiteral("viewDefaultSim")},
-        {Easa,           QStringLiteral("viewEasa")},
-        {EasaWithSim,    QStringLiteral("viewEasaSim")},
-        {SimulatorOnly,  QStringLiteral("viewSimulators")},
+    const static inline QMap<DbViewName, QString> DATABASE_VIEWS = {
+        {DbViewName::Default,        QStringLiteral("viewDefault")},
+        {DbViewName::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {DbViewName::Easa,           QStringLiteral("viewEasa")},
+        {DbViewName::EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {DbViewName::SimulatorOnly,  QStringLiteral("viewSimulators")},
     };
     const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
-        {Default,        tr("Default")},
-        {DefaultWithSim, tr("Default with Simulator")},
-        {Easa,           tr("EASA-FCL")},
-        {EasaWithSim,    tr("EASA-FCL with Simulator")},
-        {SimulatorOnly,  tr("Simulator Sessions Only")},
+        {DbViewName::Default,        tr("Default")},
+        {DbViewName::DefaultWithSim, tr("Default with Simulator")},
+        {DbViewName::Easa,           tr("EASA-FCL")},
+        {DbViewName::EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {DbViewName::SimulatorOnly,  tr("Simulator Sessions Only")},
     };
-    const QMap<PilotFunction, QLatin1String> PILOT_FUNCTIONS = {
-        {PilotFunction::PIC,   QLatin1String("PIC")},
-        {PilotFunction::PICUS, QLatin1String("PICUS")},
-        {PilotFunction::SIC,   QLatin1String("SIC")},
-        {PilotFunction::DUAL,  QLatin1String("DUAL")},
-        {PilotFunction::FI,    QLatin1String("FI")},
+    const static inline QMap<PilotFunction, QString> PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QStringLiteral("PIC")},
+        {PilotFunction::PICUS, QStringLiteral("PICUS")},
+        {PilotFunction::SIC,   QStringLiteral("SIC")},
+        {PilotFunction::DUAL,  QStringLiteral("DUAL")},
+        {PilotFunction::FI,    QStringLiteral("FI")},
     };
-    const QMap<SimulatorType, QString> SIMULATOR_TYPES = {
-        {FNPTI,  QStringLiteral("FNPT I")},
-        {FNPTII, QStringLiteral("FNPT II")},
-        {FSTD,   QStringLiteral("FSTD")},
+    const static inline QMap<SimulatorType, QString> SIMULATOR_TYPES = {
+        {SimulatorType::FNPTI,  QStringLiteral("FNPT I")},
+        {SimulatorType::FNPTII, QStringLiteral("FNPT II")},
+        {SimulatorType::FSTD,   QStringLiteral("FSTD")},
     };
-    const QStringList APPROACH_TYPES = {
+    const static inline QStringList APPROACH_TYPES = {
             QStringLiteral("VISUAL"),
             QStringLiteral("ILS CAT I"),
             QStringLiteral("ILS CAT II"),
@@ -202,147 +202,146 @@ private:
 Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
 
 /*!
- *  The OPL::db namespace provides string literals to programatically access the database
+ *  The OPL::Db namespace provides string literals to programatically access the database
  *
  *  Example usage, do:
- *  newData.insert(OPL::db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
- *  newData.value(OPL::db::AIRCRAFT_MULTIPILOT);
+ *  newData.insert(OPL::Db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
+ *  newData.value(OPL::Db::AIRCRAFT_MULTIPILOT);
  *
  *  instead of:
  *  newData.insert("dept", ui->deptLocLineEdit->text());
  *  newData.value("multipilot");
  *
  *  Declaring these literals here avoids memory allocation at runtime for construction of temporary
- *  qstrings like ("dept"). See https://doc.qt.io/qt-5/qstring.html#QStringLiteral and ensures
- *  uniform use throughout the application.
+ *  qstrings like ("dept").
  */
 namespace Db {
 
 
 // Table names
-static const auto TABLE_FLIGHTS          = QStringLiteral("flights");
-static const auto TABLE_PILOTS           = QStringLiteral("pilots");
-static const auto TABLE_TAILS            = QStringLiteral("tails");
-static const auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
-static const auto TABLE_AIRPORTS         = QStringLiteral("airports");
-static const auto TABLE_CURRENCIES       = QStringLiteral("currencies");
-static const auto TABLE_SIMULATORS       = QStringLiteral("simulators");
+const inline auto TABLE_FLIGHTS          = QStringLiteral("flights");
+const inline auto TABLE_PILOTS           = QStringLiteral("pilots");
+const inline auto TABLE_TAILS            = QStringLiteral("tails");
+const inline auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
+const inline auto TABLE_AIRPORTS         = QStringLiteral("airports");
+const inline auto TABLE_CURRENCIES       = QStringLiteral("currencies");
+const inline auto TABLE_SIMULATORS       = QStringLiteral("simulators");
 
 // Flights table columns
-static const auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
-static const auto FLIGHTS_DOFT           = QStringLiteral("doft");
-static const auto FLIGHTS_DEPT           = QStringLiteral("dept");
-static const auto FLIGHTS_DEST           = QStringLiteral("dest");
-static const auto FLIGHTS_TOFB           = QStringLiteral("tofb");
-static const auto FLIGHTS_TONB           = QStringLiteral("tonb");
-static const auto FLIGHTS_PIC            = QStringLiteral("pic");
-static const auto FLIGHTS_ACFT           = QStringLiteral("acft");
-static const auto FLIGHTS_TBLK           = QStringLiteral("tblk");
-static const auto FLIGHTS_TSPSE          = QStringLiteral("tSPSE");
-static const auto FLIGHTS_TSPME          = QStringLiteral("tSPME");
-static const auto FLIGHTS_TMP            = QStringLiteral("tMP");
-static const auto FLIGHTS_TNIGHT         = QStringLiteral("tNIGHT");
-static const auto FLIGHTS_TIFR           = QStringLiteral("tIFR");
-static const auto FLIGHTS_TPIC           = QStringLiteral("tPIC");
-static const auto FLIGHTS_TPICUS         = QStringLiteral("tPICUS");
-static const auto FLIGHTS_TSIC           = QStringLiteral("tSIC");
-static const auto FLIGHTS_TDUAL          = QStringLiteral("tDUAL");
-static const auto FLIGHTS_TFI            = QStringLiteral("tFI");
-static const auto FLIGHTS_TSIM           = QStringLiteral("tSIM");
-static const auto FLIGHTS_PILOTFLYING    = QStringLiteral("pilotFlying");
-static const auto FLIGHTS_TODAY          = QStringLiteral("toDay");
-static const auto FLIGHTS_TONIGHT        = QStringLiteral("toNight");
-static const auto FLIGHTS_LDGDAY         = QStringLiteral("ldgDay");
-static const auto FLIGHTS_LDGNIGHT       = QStringLiteral("ldgNight");
-static const auto FLIGHTS_AUTOLAND       = QStringLiteral("autoland");
-static const auto FLIGHTS_SECONDPILOT    = QStringLiteral("secondPilot");
-static const auto FLIGHTS_THIRDPILOT     = QStringLiteral("thirdPilot");
-static const auto FLIGHTS_APPROACHTYPE   = QStringLiteral("approachType");
-static const auto FLIGHTS_FLIGHTNUMBER   = QStringLiteral("flightNumber");
-static const auto FLIGHTS_REMARKS        = QStringLiteral("remarks");
+const inline auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
+const inline auto FLIGHTS_DOFT           = QStringLiteral("doft");
+const inline auto FLIGHTS_DEPT           = QStringLiteral("dept");
+const inline auto FLIGHTS_DEST           = QStringLiteral("dest");
+const inline auto FLIGHTS_TOFB           = QStringLiteral("tofb");
+const inline auto FLIGHTS_TONB           = QStringLiteral("tonb");
+const inline auto FLIGHTS_PIC            = QStringLiteral("pic");
+const inline auto FLIGHTS_ACFT           = QStringLiteral("acft");
+const inline auto FLIGHTS_TBLK           = QStringLiteral("tblk");
+const inline auto FLIGHTS_TSPSE          = QStringLiteral("tSPSE");
+const inline auto FLIGHTS_TSPME          = QStringLiteral("tSPME");
+const inline auto FLIGHTS_TMP            = QStringLiteral("tMP");
+const inline auto FLIGHTS_TNIGHT         = QStringLiteral("tNIGHT");
+const inline auto FLIGHTS_TIFR           = QStringLiteral("tIFR");
+const inline auto FLIGHTS_TPIC           = QStringLiteral("tPIC");
+const inline auto FLIGHTS_TPICUS         = QStringLiteral("tPICUS");
+const inline auto FLIGHTS_TSIC           = QStringLiteral("tSIC");
+const inline auto FLIGHTS_TDUAL          = QStringLiteral("tDUAL");
+const inline auto FLIGHTS_TFI            = QStringLiteral("tFI");
+const inline auto FLIGHTS_TSIM           = QStringLiteral("tSIM");
+const inline auto FLIGHTS_PILOTFLYING    = QStringLiteral("pilotFlying");
+const inline auto FLIGHTS_TODAY          = QStringLiteral("toDay");
+const inline auto FLIGHTS_TONIGHT        = QStringLiteral("toNight");
+const inline auto FLIGHTS_LDGDAY         = QStringLiteral("ldgDay");
+const inline auto FLIGHTS_LDGNIGHT       = QStringLiteral("ldgNight");
+const inline auto FLIGHTS_AUTOLAND       = QStringLiteral("autoland");
+const inline auto FLIGHTS_SECONDPILOT    = QStringLiteral("secondPilot");
+const inline auto FLIGHTS_THIRDPILOT     = QStringLiteral("thirdPilot");
+const inline auto FLIGHTS_APPROACHTYPE   = QStringLiteral("approachType");
+const inline auto FLIGHTS_FLIGHTNUMBER   = QStringLiteral("flightNumber");
+const inline auto FLIGHTS_REMARKS        = QStringLiteral("remarks");
 
 // tails table
 
-static const auto TAILS_ROWID            = QStringLiteral("tail_id");
-static const auto TAILS_REGISTRATION     = QStringLiteral("registration");
-static const auto TAILS_COMPANY          = QStringLiteral("company");
-static const auto TAILS_MAKE             = QStringLiteral("make");
-static const auto TAILS_MODEL            = QStringLiteral("model");
-static const auto TAILS_VARIANT          = QStringLiteral("variant");
-static const auto TAILS_MULTIPILOT       = QStringLiteral("multipilot");
-static const auto TAILS_MULTIENGINE      = QStringLiteral("multiengine");
-static const auto TAILS_ENGINETYPE       = QStringLiteral("engineType");
-static const auto TAILS_WEIGHTCLASS      = QStringLiteral("weightClass");
+const inline auto TAILS_ROWID            = QStringLiteral("tail_id");
+const inline auto TAILS_REGISTRATION     = QStringLiteral("registration");
+const inline auto TAILS_COMPANY          = QStringLiteral("company");
+const inline auto TAILS_MAKE             = QStringLiteral("make");
+const inline auto TAILS_MODEL            = QStringLiteral("model");
+const inline auto TAILS_VARIANT          = QStringLiteral("variant");
+const inline auto TAILS_MULTIPILOT       = QStringLiteral("multipilot");
+const inline auto TAILS_MULTIENGINE      = QStringLiteral("multiengine");
+const inline auto TAILS_ENGINETYPE       = QStringLiteral("engineType");
+const inline auto TAILS_WEIGHTCLASS      = QStringLiteral("weightClass");
 
 // pilots table
 
-static const auto PILOTS_ROWID           = QStringLiteral("pilot_id");
-static const auto PILOTS_LASTNAME        = QStringLiteral("lastname");
-static const auto PILOTS_FIRSTNAME       = QStringLiteral("firstname");
-static const auto PILOTS_ALIAS           = QStringLiteral("alias");
-static const auto PILOTS_COMPANY         = QStringLiteral("company");
-static const auto PILOTS_EMPLOYEEID      = QStringLiteral("employeeid");
-static const auto PILOTS_PHONE           = QStringLiteral("phone");
-static const auto PILOTS_EMAIL           = QStringLiteral("email");
+const inline auto  PILOTS_ROWID           = QStringLiteral("pilot_id");
+const inline auto  PILOTS_LASTNAME        = QStringLiteral("lastname");
+const inline auto  PILOTS_FIRSTNAME       = QStringLiteral("firstname");
+const inline auto  PILOTS_ALIAS           = QStringLiteral("alias");
+const inline auto  PILOTS_COMPANY         = QStringLiteral("company");
+const inline auto  PILOTS_EMPLOYEEID      = QStringLiteral("employeeid");
+const inline auto  PILOTS_PHONE           = QStringLiteral("phone");
+const inline auto  PILOTS_EMAIL           = QStringLiteral("email");
 
 // Currencies table
-static const auto CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
-static const auto CURRENCIES_DESCRIPTION = QStringLiteral("description");
+const inline auto  CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
+const inline auto  CURRENCIES_DESCRIPTION = QStringLiteral("description");
 
 // Simulators table
-static const auto SIMULATORS_ROWID       = QStringLiteral("session_id");
-static const auto SIMULATORS_DATE        = QStringLiteral("date");
-static const auto SIMULATORS_TIME        = QStringLiteral("totalTime");
-static const auto SIMULATORS_TYPE        = QStringLiteral("deviceType");
-static const auto SIMULATORS_ACFT        = QStringLiteral("aircraftType");
-static const auto SIMULATORS_REG         = QStringLiteral("registration");
-static const auto SIMULATORS_REMARKS     = QStringLiteral("remarks");
+const inline auto  SIMULATORS_ROWID       = QStringLiteral("session_id");
+const inline auto  SIMULATORS_DATE        = QStringLiteral("date");
+const inline auto  SIMULATORS_TIME        = QStringLiteral("totalTime");
+const inline auto  SIMULATORS_TYPE        = QStringLiteral("deviceType");
+const inline auto  SIMULATORS_ACFT        = QStringLiteral("aircraftType");
+const inline auto  SIMULATORS_REG         = QStringLiteral("registration");
+const inline auto  SIMULATORS_REMARKS     = QStringLiteral("remarks");
 
 // all tables
-static const auto ROWID                  = QStringLiteral("rowid");
-static const auto NULL_TIME_hhmm         = QStringLiteral("00:00");
+const inline auto  ROWID                  = QStringLiteral("rowid");
+const inline auto  NULL_TIME_hhmm         = QStringLiteral("00:00");
 
 } // namespace OPL::db
 
 namespace Assets {
 
-static const auto DATABASE_SCHEMA               = QStringLiteral(":/database/database_schema.sql");
-static const auto DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
-static const auto DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
-static const auto DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
-static const auto DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/templates/currencies.json");
+const inline auto  DATABASE_SCHEMA               = QStringLiteral(":/database/database_schema.sql");
+const inline auto  DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
+const inline auto  DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
+const inline auto  DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
+const inline auto  DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/templates/currencies.json");
 
-static const auto LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
-static const auto ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
-static const auto ICON_APPICON_LINUX            = QStringLiteral(":/icons/opl-icons/app/icon_linux.svg");
-static const auto ICON_APPICON_IOS              = QStringLiteral(":/icons/opl-icons/app/icon_ios.svg");
-static const auto ICON_APPICON_WIN              = QStringLiteral(":/icons/opl-icons/app/icon_windows.ico");
+const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
+const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
+const inline auto  ICON_APPICON_LINUX            = QStringLiteral(":/icons/opl-icons/app/icon_linux.svg");
+const inline auto  ICON_APPICON_IOS              = QStringLiteral(":/icons/opl-icons/app/icon_ios.svg");
+const inline auto  ICON_APPICON_WIN              = QStringLiteral(":/icons/opl-icons/app/icon_windows.ico");
 
-static const auto ICON_TOOLBAR_HOME             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
-static const auto ICON_TOOLBAR_NEW_FLIGHT       = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");
-static const auto ICON_TOOLBAR_LOGBOOK          = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_logbook.svg");
-static const auto ICON_TOOLBAR_AIRCRAFT         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_airplane.svg");
-static const auto ICON_TOOLBAR_PILOT            = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_pilot.svg");
-static const auto ICON_TOOLBAR_SETTINGS         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_settings.svg");
-static const auto ICON_TOOLBAR_QUIT             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_exit.svg");
+const inline auto  ICON_TOOLBAR_HOME             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");
+const inline auto  ICON_TOOLBAR_NEW_FLIGHT       = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_new_flight.svg");
+const inline auto  ICON_TOOLBAR_LOGBOOK          = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_logbook.svg");
+const inline auto  ICON_TOOLBAR_AIRCRAFT         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_airplane.svg");
+const inline auto  ICON_TOOLBAR_PILOT            = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_pilot.svg");
+const inline auto  ICON_TOOLBAR_SETTINGS         = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_settings.svg");
+const inline auto  ICON_TOOLBAR_QUIT             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_exit.svg");
 
-static const auto ICON_TOOLBAR_BACKUP           = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_backup.svg");
+const inline auto  ICON_TOOLBAR_BACKUP           = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_backup.svg");
 
-static const auto ICON_TOOLBAR_HOME_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_home_dm.svg");
-static const auto ICON_TOOLBAR_NEW_FLIGHT_DARK  = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg");
-static const auto ICON_TOOLBAR_LOGBOOK_DARK     = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_logbook_dm.svg");
-static const auto ICON_TOOLBAR_AIRCRAFT_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_airplane_dm.svg");
-static const auto ICON_TOOLBAR_PILOT_DARK       = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_pilot_dm.svg");
-static const auto ICON_TOOLBAR_SETTINGS_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_settings_dm.svg");
-static const auto ICON_TOOLBAR_QUIT_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_exit_dm.svg");
+const inline auto  ICON_TOOLBAR_HOME_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_home_dm.svg");
+const inline auto  ICON_TOOLBAR_NEW_FLIGHT_DARK  = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_new_flight_dm.svg");
+const inline auto  ICON_TOOLBAR_LOGBOOK_DARK     = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_logbook_dm.svg");
+const inline auto  ICON_TOOLBAR_AIRCRAFT_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_airplane_dm.svg");
+const inline auto  ICON_TOOLBAR_PILOT_DARK       = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_pilot_dm.svg");
+const inline auto  ICON_TOOLBAR_SETTINGS_DARK    = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_settings_dm.svg");
+const inline auto  ICON_TOOLBAR_QUIT_DARK        = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_exit_dm.svg");
 
-static const auto ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
+const inline auto  ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-icons/toolbar/thick/dark/icon_backup_dm.svg");
 
 }
 
 namespace Styles {
 
-static const auto RED_BORDER = QStringLiteral("border: 1px solid red");
+const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles
 
 } // namespace opl
