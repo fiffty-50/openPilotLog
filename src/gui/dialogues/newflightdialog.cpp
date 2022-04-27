@@ -29,6 +29,8 @@
 #include <QCompleter>
 #include <QKeyEvent>
 
+const auto CAT_3 = QLatin1String(OPL::GLOBALS->getApproachTypes()[3].toLatin1());
+
 NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
                                        QWidget *parent)
     : QDialog(parent),
@@ -39,12 +41,12 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
     flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << ASettings::read(ASettings::FlightLogging::Function);
-    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == OPL::PIC){
+    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
         emit ui->picNameLineEdit->editingFinished();
     }
-    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == OPL::SIC) {
+    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::SIC)) {
         ui->sicNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
@@ -132,7 +134,6 @@ void NewFlightDialog::setupRawInputValidation()
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
     ui->acftLineEdit->setCompleter(completer);
-
 }
 
 void NewFlightDialog::setupSignalsAndSlots()
@@ -459,7 +460,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, 0);
         new_data.insert(OPL::Db::FLIGHTS_LDGDAY, ui->landingSpinBox->value());
     }
-    if (ui->approachComboBox->currentText() == OPL::GLOBALS->getApproachTypes()[3]) // ILS CAT III
+    if (ui->approachComboBox->currentText() == CAT_3) // ILS CAT III
         new_data.insert(OPL::Db::FLIGHTS_AUTOLAND, ui->landingSpinBox->value());
 
     // Additional Data
@@ -606,12 +607,21 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
     const auto line_edit = ui->acftLineEdit;
     int acft_id = completionData.tailsIdMap.key(line_edit->text());
-    DEB << "acft_id: " << acft_id;
+    DEB << line_edit->text() << " has acft_id: " << acft_id;
 
     if (acft_id != 0) { // Success
         onGoodInputReceived(line_edit);
         return;
     }
+    // check for whitespaces
+    acft_id = completionData.tailsIdMap.key(line_edit->text().split(" ").first());
+    if (acft != 0) {
+        line_edit->setText(completionData.tailsIdMap.value(acft_id));
+        onGoodInputReceived(line_edit);
+        return;
+    }
+
+
 
     // try to use a completion
     if (!line_edit->completer()->currentCompletion().isEmpty() && !line_edit->text().isEmpty()) {
@@ -658,7 +668,9 @@ void NewFlightDialog::on_pilotFlyingCheckBox_stateChanged(int arg1)
 
 void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1)
 {
-    if (arg1 == QLatin1String("OTHER"))
+    if (arg1 == CAT_3)
+        ui->remarksLineEdit->setText(QStringLiteral("Autoland"));
+    else if (arg1 == QLatin1String("OTHER"))
         INFO(tr("Please specify the approach type in the remarks field."));
 }
 
@@ -670,13 +682,13 @@ void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1
 void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
 {
     DEB << "Current Index: " << index;
-    if (index == OPL::PilotFunction::PIC) {
+    if (index == static_cast<int>(OPL::PilotFunction::PIC)) {
         ui->picNameLineEdit->setText(self);
         emit ui->picNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
          == completionData.pilotsIdMap.key(ui->sicNameLineEdit->text()))
                 ui->sicNameLineEdit->setText(QString());
-    } else if (index == OPL::PilotFunction::SIC) {
+    } else if (index == static_cast<int>(OPL::PilotFunction::SIC)) {
         ui->sicNameLineEdit->setText(self);
         emit ui->sicNameLineEdit->editingFinished();
         if (completionData.pilotsIdMap.key(ui->picNameLineEdit->text())
@@ -700,13 +712,13 @@ bool NewFlightDialog::checkPilotFunctionsValid()
     int function_index = ui->functionComboBox->currentIndex();
 
     if (pic_id == 1) {
-        if (!(function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI)) {
+        if (!(function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI))) {
             INFO(tr("The PIC is set to %1 but the Pilot Function is set to %2")
                     .arg(ui->picNameLineEdit->text(), ui->functionComboBox->currentText()));
             return false;
         }
     } else {
-        if (function_index == OPL::PilotFunction::PIC || function_index == OPL::PilotFunction::FI) {
+        if (function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI)) {
             INFO(tr("The Pilot Function is set to %1, but the PIC is set to %2")
                     .arg(ui->functionComboBox->currentText(), ui->picNameLineEdit->text()));
             return false;
@@ -727,6 +739,8 @@ void NewFlightDialog::on_buttonBox_accepted()
 {
     // Debug
     validationState.printValidationStatus();
+    for (const auto& le : *mandatoryLineEdits)
+        emit le->editingFinished();
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
         const auto display_names = QHash<ValidationItem, QString> {

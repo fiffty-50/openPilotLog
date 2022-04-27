@@ -21,7 +21,6 @@
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/gui/widgets/backupwidget.h"
-#include "src/database/adbsetup.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
@@ -29,6 +28,7 @@
 #include "src/classes/astyle.h"
 #include "src/functions/adatetime.h"
 #include "src/classes/ahash.h"
+#include "src/testing/atimer.h"
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -300,19 +300,17 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    if(!aDbSetup::createDatabase()) {
+    if(!aDB->createSchema()) {
         WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1")
              .arg(aDB->lastError.text()));
         return false;
     }
 
-
-    if(!aDbSetup::importTemplateData(useRessourceData)) {
+    if(!aDB->importTemplateData(useRessourceData)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
              .arg(aDB->lastError.text()));
         return false;
     }
-
     return true;
 }
 

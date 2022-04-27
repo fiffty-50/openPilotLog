@@ -196,6 +196,7 @@ private slots:
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
+
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;
 };
