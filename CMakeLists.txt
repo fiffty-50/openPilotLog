@@ -34,6 +34,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/firstrundialog.h
     src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/firstrundialog.ui
+    src/gui/dialogues/newairportdialog.h
+    src/gui/dialogues/newairportdialog.cpp
+    src/gui/dialogues/newairportdialog.ui
     src/gui/dialogues/newflightdialog.h
     src/gui/dialogues/newflightdialog.cpp
     src/gui/dialogues/newflightdialog.ui

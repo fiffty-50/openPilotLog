@@ -1,19 +1,6 @@
 #include "airportwidget.h"
 #include "ui_airportwidget.h"
-
-const QString TABLE_NAME = QStringLiteral("airports");
-const QHash<int, QString> FILTER_MAP = {
-    {0, QStringLiteral("icao LIKE \"%")},
-    {1, QStringLiteral("iata LIKE \"%")},
-    {2, QStringLiteral("name LIKE \"%")},
-    {3, QStringLiteral("country LIKE \"%")},
-};
-const QHash<int, QString> HEADER_MAP = {
-    {0, QStringLiteral("ICAO")},
-    {1, QStringLiteral("IATA")},
-    {2, QStringLiteral("Name")},
-    {3, QStringLiteral("Country")},
-};
+#include "src/gui/dialogues/newairportdialog.h"
 
 AirportWidget::AirportWidget(QWidget *parent) :
     QWidget(parent),
@@ -72,4 +59,11 @@ void AirportWidget::on_searchLineEdit_textChanged(const QString &arg1)
 void AirportWidget::on_searchComboBox_currentIndexChanged(int index)
 {
     ui->searchLineEdit->setText(QString());
+}
+
+void AirportWidget::on_newAirportPushButton_clicked()
+{
+    auto ap_dialog = NewAirportDialog(this);
+    if (ap_dialog.exec() == QDialog::Accepted)
+        model->select();
 }
