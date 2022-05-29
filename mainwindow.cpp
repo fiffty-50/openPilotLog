@@ -30,15 +30,9 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    //QSqlQuery query;
-    QFile f(OPL::Assets::DATABASE_SCHEMA);
-    f.open(QIODevice::ReadOnly);
-    QByteArray filedata = f.readAll();
-
-    auto list = filedata.split(';');
-    for (const auto &string : list)
-        //query.exec(string);
-        LOG << string;
+    auto widget = new AirportWidget(this);
+    ui->stackedWidget->addWidget(widget);
+    ui->stackedWidget->setCurrentWidget(widget);
 }
 
 MainWindow::MainWindow(QWidget *parent)

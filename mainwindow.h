@@ -33,6 +33,7 @@
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/backupwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"

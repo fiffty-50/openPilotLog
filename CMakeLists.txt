@@ -51,6 +51,9 @@ set(PROJECT_SOURCES
     src/gui/widgets/aircraftwidget.h
     src/gui/widgets/aircraftwidget.cpp
     src/gui/widgets/aircraftwidget.ui
+    src/gui/widgets/airportwidget.h
+    src/gui/widgets/airportwidget.cpp
+    src/gui/widgets/airportwidget.ui
     src/gui/widgets/backupwidget.h
     src/gui/widgets/backupwidget.cpp
     src/gui/widgets/backupwidget.ui
@@ -69,6 +72,7 @@ set(PROJECT_SOURCES
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.ui
+
 
     # Classes
     src/classes/acompletiondata.h
