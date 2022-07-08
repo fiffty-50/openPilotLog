@@ -27,7 +27,10 @@
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
 #include "src/database/adatabase.h"
+
 #include "src/classes/atailentry.h"
+#include "src/classes/tailentry.h"
+
 #include "src/classes/aaircraftentry.h"
 
 namespace Ui {
@@ -79,7 +82,9 @@ private:
 
     Ui::NewTail *ui;
 
-    ATailEntry entry;
+    //ATailEntry entry;
+    OPL::TailEntry entry;
+
 
     QStringList aircraftList;
 
@@ -87,7 +92,7 @@ private:
 
     void setupCompleter();
     void setupValidators();
-    void fillForm(AEntry entry, bool is_template);
+    void fillForm(OPL::Row entry, bool is_template);
     bool verify();
     void submitForm();
 

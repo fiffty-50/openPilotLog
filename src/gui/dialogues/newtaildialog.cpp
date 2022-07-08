@@ -33,7 +33,7 @@ NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid blue"));
     ui->searchLineEdit->setFocus();
 
-    entry = ATailEntry();
+    //entry = OPL::TailEntry();
 }
 
 NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
@@ -102,12 +102,12 @@ void NewTailDialog::setupValidators()
 /*!
  * \brief NewTailDialog::fillForm populates the Dialog with the
  * information contained in an entry object. This can be either
- * a template (AAircraft, used when creating a new entry) or
- * a tail (ATail, used when editing an existing entry)
+ * a template (AircraftEntry, used when creating a new entry) or
+ * a tail (TailEntry, used when editing an existing entry)
  * \param is_template - determines whether we are adding a new entry
  * or editing an existing one.
  */
-void NewTailDialog::fillForm(AEntry entry, bool is_template)
+void NewTailDialog::fillForm(OPL::Row entry, bool is_template)
 {
     DEB << "Filling Form for a/c" << entry;
     //fill Line Edits
@@ -116,7 +116,7 @@ void NewTailDialog::fillForm(AEntry entry, bool is_template)
     if (is_template)
         line_edits.removeOne(ui->registrationLineEdit);
 
-    auto data = entry.getData();
+    auto data = entry.getRowData();
 
     for (const auto &le : qAsConst(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
@@ -202,7 +202,7 @@ void NewTailDialog::submitForm()
 
     //create db object
 
-    entry.setData(new_data);
+    entry.setRowData(new_data);
     LOG << "Commiting: " << entry;
     if (!aDB->commit(entry)) {
         QMessageBox message_box(this);
@@ -213,9 +213,6 @@ void NewTailDialog::submitForm()
         message_box.exec();
         return;
     } else {
-        if (entry.getPosition().rowId != 0)
-            ACalc::updateAutoTimes(entry.getPosition().rowId);
-
         QDialog::accept();
     }
 }

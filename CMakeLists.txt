@@ -78,6 +78,12 @@ set(PROJECT_SOURCES
 
 
     # Classes
+    src/classes/row.h
+    src/classes/row.cpp
+    src/classes/tailentry.h
+    src/classes/tailentry.cpp
+    src/classes/aircraftentry.h
+    src/classes/aircraftentry.cpp
     src/classes/acompletiondata.h
     src/classes/acompletiondata.cpp
     src/classes/acurrencyentry.h

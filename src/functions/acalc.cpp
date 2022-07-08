@@ -314,7 +314,7 @@ void ACalc::updateAutoTimes(int acft_id)
     DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
     auto acft = aDB->getTailEntry(acft_id);
-    auto acft_data = acft.getData();
+    auto acft_data = acft.getRowData();
     for (const auto& item : flight_list) {
         auto flight = aDB->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
@@ -326,7 +326,7 @@ void ACalc::updateAutoTimes(int acft_id)
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
             flight_data.insert(OPL::Db::FLIGHTS_TMP, QString());
         } else if ((acft_data.value(OPL::Db::TAILS_MULTIPILOT) == 0
-                    && acft.getData().value(OPL::Db::TAILS_MULTIENGINE) == 1)) {
+                    && acft.getRowData().value(OPL::Db::TAILS_MULTIENGINE) == 1)) {
             DEB << "SPME";
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, flight_data.value(OPL::Db::FLIGHTS_TBLK));
             flight_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());

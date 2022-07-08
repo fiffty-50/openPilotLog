@@ -25,14 +25,45 @@
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/functions/adatetime.h"
 #include "src/classes/aentry.h"
-
+#include "src/classes/row.h"
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    auto widget = new AirportWidget(this);
-    ui->stackedWidget->addWidget(widget);
-    ui->stackedWidget->setCurrentWidget(widget);
+    //auto widget = new AirportWidget(this);
+    //ui->stackedWidget->addWidget(widget);
+    //ui->stackedWidget->setCurrentWidget(widget);
+    //DEB << "Testing retreiving...";
+    //DEB << "Old";
+    //{
+    //ATimer timer;
+    //
+    //for (int i = 1; i < 1000; i++) {
+    //    DataPosition dp("airports", i);
+    //    auto entry = aDB->getEntry(dp);
+    //    //auto entry = aDB->(i);
+    //}
+    //DEB << "getEntry completed";
+    //}
+    //
+    //{
+    //ATimer timer;
+    //
+    //for (int i = 1; i < 1000; i++) {
+    //    auto row = aDB->getRow(OPL::DbTable::Airports, i);
+    //}
+    //DEB << "getRow completed";
+    //}
+    //OPL::Row new_row(OPL::DbTable::Aircraft, 4, entry.getData());
+    //DEB << new_row;
+    //DEB << aDB->commit(new_row);
+    //DEB << aDB->getAircraftEntry(4);
+
+    auto row = aDB->getRow(OPL::DbTable::Flights, 2);
+    DEB << row;
+    auto row_2 = aDB->getRow(OPL::DbTable::Flights, 500);
+    DEB << row_2;
+
 }
 
 MainWindow::MainWindow(QWidget *parent)

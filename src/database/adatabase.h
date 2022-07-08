@@ -35,11 +35,17 @@
 #include "src/classes/aentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
+
+#include "src/classes/row.h"
+#include "src/classes/tailentry.h"
+#include "src/classes/aircraftentry.h"
+
 #include "src/classes/aaircraftentry.h"
 #include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/acurrencyentry.h"
 #include "src/classes/asimulatorentry.h"
+#include "src/classes/row.h"
 
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
@@ -252,6 +258,8 @@ public:
     bool exists(const AEntry &entry);
     bool exists(DataPosition data_position);
 
+    bool exists(const OPL::Row &row);
+
     /*!
      * \brief clear resets the database, i.e. deletes all content in the tables containing
      * userdata (pilots, flights, tails)
@@ -263,6 +271,8 @@ public:
      * based on position data
      */
     bool commit(const AEntry &entry);
+
+    bool commit(const OPL::Row &row);
 
     /*!
      * \brief commits data imported from JSON
@@ -276,15 +286,21 @@ public:
      */
     bool insert(const AEntry &new_entry);
 
+    bool insert(const OPL::Row &new_row);
+
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
     bool update(const AEntry &updated_entry);
 
+    bool update(const OPL::Row &updated_row);
+
     /*!
      * \brief deletes an entry from the database.
      */
     bool remove(const AEntry &entry);
+
+    bool remove(const OPL::Row &row);
 
     /*!
      * \brief deletes a list of entries from the database. Optimised for speed when
@@ -301,6 +317,13 @@ public:
      * \brief retreive an Entry from the database.
      */
     AEntry getEntry(const DataPosition &data_position);
+
+    /*!
+     * \brief retreive a Row from the database
+     */
+    OPL::Row getRow(const OPL::DbTable table, const int row_id);
+
+    RowData_T getRowData(const OPL::DbTable table, const int row_id);
 
     /*!
      * \brief retreives a PilotEntry from the database.
@@ -320,7 +343,11 @@ public:
      * instead of an Entry. It allows for easy access to a tail entry
      * with only the RowId required as input.
      */
-    ATailEntry getTailEntry(RowId_T row_id);
+    inline OPL::TailEntry getTailEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Tails, row_id);
+        return OPL::TailEntry(row_id, data);
+    }
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -330,7 +357,11 @@ public:
      * instead of an AEntry. It allows for easy access to an aircraft entry
      * with only the RowId required as input.
      */
-    AAircraftEntry getAircraftEntry(RowId_T row_id);
+    inline OPL::AircraftEntry getAircraftEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Aircraft, row_id);
+        return OPL::AircraftEntry(row_id, data);
+    }
 
     /*!
      * \brief retreives a flight entry from the database.
@@ -390,7 +421,7 @@ public:
      * \brief Resolves the foreign key in a flight entry
      * \return The Tail Entry referencted by the foreign key.
      */
-    ATailEntry resolveForeignTail(RowId_T foreign_key);
+    //ATailEntry resolveForeignTail(RowId_T foreign_key);
 
     /*!
      * \brief Return a summary of a database

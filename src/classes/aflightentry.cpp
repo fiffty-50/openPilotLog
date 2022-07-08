@@ -51,11 +51,11 @@ const QString AFlightEntry::summary()
     return flight_summary;
 }
 
-const QString AFlightEntry::getRegistration()
-{
-    ATailEntry acft = aDB->resolveForeignTail(tableData.value(OPL::Db::FLIGHTS_ACFT).toInt());
-    return acft.registration();
-}
+//const QString AFlightEntry::getRegistration()
+//{
+//    ATailEntry acft = aDB->resolveForeignTail(tableData.value(OPL::Db::FLIGHTS_ACFT).toInt());
+//    return acft.registration();
+//}
 
 const QString AFlightEntry::getPilotName(pilotPosition pilot_)
 {

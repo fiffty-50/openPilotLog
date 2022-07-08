@@ -40,7 +40,7 @@ public:
     /*!
      * \brief Returns the tails' registration from the database.
      */
-    const QString getRegistration();
+    //const QString getRegistration();
     /*!
      * \brief Returns the pilots name from the Database
      *

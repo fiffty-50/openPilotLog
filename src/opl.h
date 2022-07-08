@@ -115,6 +115,8 @@ enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly
  */
 enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
+enum class DbTable {Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies};
+
 /*!
  * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
  * as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
@@ -133,6 +135,7 @@ public:
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
     inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
+    inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
 
 private:
     Q_OBJECT
@@ -172,6 +175,16 @@ private:
         {SimulatorType::FNPTI,  QStringLiteral("FNPT I")},
         {SimulatorType::FNPTII, QStringLiteral("FNPT II")},
         {SimulatorType::FSTD,   QStringLiteral("FSTD")},
+    };
+    const static inline QMap<DbTable, QString> DB_TABLES = {
+        //Flights, Simulators, Pilots, Tails, Aircraft, Airports
+        {DbTable::Flights,      QStringLiteral("flights")},
+        {DbTable::Simulators,   QStringLiteral("simulators")},
+        {DbTable::Pilots,       QStringLiteral("pilots")},
+        {DbTable::Tails,        QStringLiteral("tails")},
+        {DbTable::Aircraft,     QStringLiteral("aircraft")},
+        {DbTable::Airports,     QStringLiteral("airports")},
+        {DbTable::Currencies,   QStringLiteral("currencies")},
     };
     const static inline QStringList APPROACH_TYPES = {
             QStringLiteral("VISUAL"),
