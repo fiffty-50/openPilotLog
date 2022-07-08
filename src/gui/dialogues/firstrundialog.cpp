@@ -21,7 +21,7 @@
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
 #include "src/gui/widgets/backupwidget.h"
-#include "src/classes/apilotentry.h"
+#include "src/classes/row.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
@@ -324,8 +324,7 @@ bool FirstRunDialog::createUserEntry()
     data.insert(OPL::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
     data.insert(OPL::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
 
-    auto pilot = APilotEntry(1);
-    pilot.setData(data);
+    auto pilot = OPL::PilotEntry(1, data);
 
     return aDB->commit(pilot);
 }

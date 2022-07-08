@@ -20,7 +20,7 @@
 #include "src/opl.h"
 #include "src/functions/alog.h"
 #include "src/database/adatabase.h"
-#include "src/classes/apilotentry.h"
+#include "src/classes/row.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -173,7 +173,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
         confirm.setWindowTitle(tr("Delete Pilot"));
 
         confirm.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
-                               "%1</b></tt><br><br>Are you sure?").arg(entry.name()));
+                               "%1</b></tt><br><br>Are you sure?").arg(getPilotName(entry)));
         if (confirm.exec() == QMessageBox::Yes) {
             if(!aDB->remove(entry))
                 onDeleteUnsuccessful();
@@ -197,7 +197,7 @@ void PilotsWidget::onDeleteUnsuccessful()
 {
     const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
                                                                        ADatabaseTable::pilots);
-    QList<AFlightEntry> constrained_flights;
+    QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
@@ -209,7 +209,7 @@ void PilotsWidget::onDeleteUnsuccessful()
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
                 constrained_flights_string.append("<br>[...]<br>");
                 break;
@@ -236,4 +236,34 @@ void PilotsWidget::repopulateModel()
     model = new QSqlTableModel(this);
     setupModelAndView();
     connectSignalsAndSlots();
+}
+
+const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot)
+{
+    if (!pilot.isValid())
+        return QString();
+
+    return pilot.getRowData().value(OPL::Db::PILOTS_LASTNAME).toString() + QLatin1String(", ")
+            + pilot.getRowData().value(OPL::Db::PILOTS_FIRSTNAME).toString();
+}
+
+const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+{
+
+    if(!flight.isValid())
+        return QString();
+
+    auto tableData = flight.getRowData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+                          + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+
+    return flight_summary;
+
 }

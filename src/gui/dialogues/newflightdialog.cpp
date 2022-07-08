@@ -38,7 +38,7 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
       completionData(completion_data)
 {
     init();
-    flightEntry = AFlightEntry();
+    //flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << ASettings::read(ASettings::FlightLogging::Function);
     if(ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
@@ -197,18 +197,20 @@ void NewFlightDialog::fillWithEntryData()
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
 
+    const auto &flight_data = flightEntry.getRowData();
+
     // Date of Flight
-    ui->doftLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DOFT).toString());
+    ui->doftLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DOFT).toString());
     // Location
-    ui->deptLocationLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DEPT).toString());
-    ui->destLocationLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DEST).toString());
+    ui->deptLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEPT).toString());
+    ui->destLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEST).toString());
     // Times
-    ui->tofbTimeLineEdit->setText(ATime::toString(flightEntry.getData().value(OPL::Db::FLIGHTS_TOFB).toInt()));
-    ui->tonbTimeLineEdit->setText(ATime::toString(flightEntry.getData().value(OPL::Db::FLIGHTS_TONB).toInt()));
-    ui->acftLineEdit->setText(completionData.tailsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_ACFT).toInt()));
-    ui->picNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_PIC).toInt()));
-    ui->sicNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
-    ui->thirdPilotNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
+    ui->tofbTimeLineEdit->setText(ATime::toString(flight_data.value(OPL::Db::FLIGHTS_TOFB).toInt()));
+    ui->tonbTimeLineEdit->setText(ATime::toString(flight_data.value(OPL::Db::FLIGHTS_TONB).toInt()));
+    ui->acftLineEdit->setText(completionData.tailsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_ACFT).toInt()));
+    ui->picNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_PIC).toInt()));
+    ui->sicNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
+    ui->thirdPilotNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
 
     //Function
     const QHash<int, QString> functions = {
@@ -219,31 +221,31 @@ void NewFlightDialog::fillWithEntryData()
         {4, OPL::Db::FLIGHTS_TFI},
     };
     for (int i = 0; i < 5; i++) { // QHash::iterator not guarenteed to be in ordetr
-        if(flightEntry.getData().value(functions.value(i)).toInt() != 0)
+        if(flight_data.value(functions.value(i)).toInt() != 0)
             ui->functionComboBox->setCurrentIndex(i);
     }
     // Approach ComboBox
-    const QString& app = flightEntry.getData().value(OPL::Db::FLIGHTS_APPROACHTYPE).toString();
+    const QString& app = flight_data.value(OPL::Db::FLIGHTS_APPROACHTYPE).toString();
     if(app != QString()){
         ui->approachComboBox->setCurrentText(app);
     }
     // Task
-    bool PF = flightEntry.getData().value(OPL::Db::FLIGHTS_PILOTFLYING).toBool();
+    bool PF = flight_data.value(OPL::Db::FLIGHTS_PILOTFLYING).toBool();
     ui->pilotFlyingCheckBox->setChecked(PF);
     // Flight Rules
-    bool time_ifr = flightEntry.getData().value(OPL::Db::FLIGHTS_TIFR).toBool();
+    bool time_ifr = flight_data.value(OPL::Db::FLIGHTS_TIFR).toBool();
     ui->ifrCheckBox->setChecked(time_ifr);
     // Take-Off and Landing
-    int TO = flightEntry.getData().value(OPL::Db::FLIGHTS_TODAY).toInt()
-            + flightEntry.getData().value(OPL::Db::FLIGHTS_TONIGHT).toInt();
-    int LDG = flightEntry.getData().value(OPL::Db::FLIGHTS_LDGDAY).toInt()
-            + flightEntry.getData().value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
+    int TO =  flight_data.value(OPL::Db::FLIGHTS_TODAY).toInt()
+            + flight_data.value(OPL::Db::FLIGHTS_TONIGHT).toInt();
+    int LDG = flight_data.value(OPL::Db::FLIGHTS_LDGDAY).toInt()
+            + flight_data.value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
     ui->takeOffSpinBox->setValue(TO);
     ui->landingSpinBox->setValue(LDG);
     // Remarks
-    ui->remarksLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_REMARKS).toString());
+    ui->remarksLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_REMARKS).toString());
     // Flight Number
-    ui->flightNumberLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_FLIGHTNUMBER).toString());
+    ui->flightNumberLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_FLIGHTNUMBER).toString());
 
     for(const auto &line_edit : *mandatoryLineEdits)
         emit line_edit->editingFinished();
@@ -774,7 +776,7 @@ void NewFlightDialog::on_buttonBox_accepted()
     DEB << flightEntry;
 
     //DEB << "Setting Data for flightEntry...";
-    flightEntry.setData(newData);
+    flightEntry.setRowData(newData);
     DEB << "Committing: ";
     DEB << flightEntry;
     if (!aDB->commit(flightEntry)) {

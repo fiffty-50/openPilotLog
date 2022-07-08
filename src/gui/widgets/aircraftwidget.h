@@ -102,6 +102,10 @@ private:
      */
     QVector<qint32> selectedTails;
 
+    const QString getAircraftTypeString(const OPL::Row &row) const;
+
+    const QString getFlightSummary(const OPL::FlightEntry &flight) const;
+
     void setupModelAndView();
 
     void connectSignalsAndSlots();

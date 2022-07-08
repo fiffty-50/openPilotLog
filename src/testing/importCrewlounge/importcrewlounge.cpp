@@ -1,6 +1,7 @@
 #include "importcrewlounge.h"
 #include "src/database/adatabase.h"
 #include "src/opl.h"
+#include "src/classes/row.h"
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
@@ -28,9 +29,8 @@ void exec(const QString &csv_file_path)
     proc_pilots.init();
     const auto p_maps = proc_pilots.getProcessedPilotMaps();
 
-    for (const auto & pilot : p_maps) {
-        APilotEntry pe(pilot);
-        pe.setPosition(DataPosition(OPL::Db::TABLE_PILOTS, pilot.value(OPL::Db::PILOTS_ROWID).toInt()));
+    for (const auto & pilot_data : p_maps) {
+        OPL::PilotEntry pe(pilot_data.value(OPL::Db::PILOTS_ROWID).toInt(), pilot_data);
         aDB->commit(pe);
     }
 
@@ -39,9 +39,8 @@ void exec(const QString &csv_file_path)
     proc_tails.init();
     const auto t_maps = proc_tails.getProcessedTailMaps();
 
-    for (const auto& tail : t_maps) {
-        ATailEntry te(tail);
-        te.setPosition(DataPosition(OPL::Db::TABLE_TAILS, tail.value(OPL::Db::PILOTS_ROWID).toInt()));
+    for (const auto& tail_data : t_maps) {
+        OPL::TailEntry te(tail_data.value(OPL::Db::PILOTS_ROWID).toInt(), tail_data);
         aDB->commit(te);
     }
 
@@ -53,8 +52,8 @@ void exec(const QString &csv_file_path)
 
 
 
-    for (const auto &flight : flights) {
-        AFlightEntry fe(flight);
+    for (const auto &flight_data : flights) {
+        OPL::FlightEntry fe(flight_data);
         aDB->commit(fe);
     }
 

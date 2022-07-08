@@ -18,7 +18,7 @@
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
 
-#include "src/classes/aflightentry.h"
+#include "src/classes/row.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
@@ -97,6 +97,25 @@ void LogbookWidget::connectSignalsAndSlots()
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
 
+const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+{
+    if(!flight.isValid())
+        return QString();
+
+    auto tableData = flight.getRowData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+                          + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+
+    return flight_summary;
+}
+
 void LogbookWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
@@ -134,7 +153,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         WARN(tr("<br>No flight selected.<br>"));
         return;
     } else if (selectedEntries.length() > 0 && selectedEntries.length() <= 10) {
-        QVector<AFlightEntry> flights_list;
+        QVector<OPL::FlightEntry> flights_list;
 
         for (const auto &flight_id : qAsConst(selectedEntries)) {
             flights_list.append(aDB->getFlightEntry(flight_id));
@@ -143,7 +162,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         QString flights_list_string;
 
         for (auto &flight : flights_list) {
-            flights_list_string.append(flight.summary());
+            flights_list_string.append(getFlightSummary(flight));
             flights_list_string.append(QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
 
@@ -158,7 +177,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                            ).arg(flights_list_string));
         if (confirm.exec() == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
-                DEB << "Deleting flight: " << flight.summary();
+                DEB << "Deleting flight: " << flight;
                 if(!aDB->remove(flight)) {
                     WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
                                        ).arg(aDB->lastError.text()));

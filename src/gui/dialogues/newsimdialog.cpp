@@ -11,7 +11,7 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewSimDialog)
 {
-    entry = ASimulatorEntry();
+    //entry = ASimulatorEntry();
     ui->setupUi(this);
     ui->dateLineEdit->setText(ADate::currentDate());
     init();
@@ -51,7 +51,7 @@ void NewSimDialog::init()
  */
 void NewSimDialog::fillEntryData()
 {
-    const auto& data = entry.getData();
+    const auto& data = entry.getRowData();
     ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
     ui->totalTimeLineEdit->setText(ATime::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
@@ -176,7 +176,7 @@ void NewSimDialog::on_buttonBox_accepted()
         return;
     }
 
-    entry.setData(collectInput());
+    entry.setRowData(collectInput());
 
     DEB << entry;
 

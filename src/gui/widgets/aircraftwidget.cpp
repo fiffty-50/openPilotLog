@@ -20,8 +20,7 @@
 #include "src/opl.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
-#include "src/classes/atailentry.h"
-#include "src/classes/aflightentry.h"
+#include "src/classes/row.h"
 #include "src/functions/alog.h"
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
@@ -189,8 +188,8 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
         message_box.setWindowTitle(tr("Delete Aircraft"));
         message_box.setText(tr("You are deleting the following aircraft:<br><br><b><tt>"
                                "%1 - (%2)</b></tt><br><br>Are you sure?"
-                               ).arg(entry.registration(),
-                                     entry.type()));
+                               ).arg(entry.getRowData().value(OPL::Db::TAILS_REGISTRATION).toString(),
+                                     getAircraftTypeString(entry)));
 
         if (message_box.exec() == QMessageBox::Yes) {
             if(!aDB->remove(entry))
@@ -215,7 +214,7 @@ void AircraftWidget::onDeleteUnsuccessful()
 {
     QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
                                                                        ADatabaseTable::tails);
-    QList<AFlightEntry> constrained_flights;
+    QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(aDB->getFlightEntry(row_id));
     }
@@ -229,7 +228,7 @@ void AircraftWidget::onDeleteUnsuccessful()
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].summary() + QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
                 constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
                 break;
@@ -257,4 +256,36 @@ void AircraftWidget::repopulateModel()
     model = new QSqlTableModel(this);
     setupModelAndView();
     connectSignalsAndSlots();
+}
+
+const QString AircraftWidget::getAircraftTypeString(const OPL::Row &row) const
+{
+    QString type_string;
+    if (!row.getRowData().value(OPL::Db::TAILS_MAKE).toString().isEmpty())
+        type_string.append(row.getRowData().value(OPL::Db::TAILS_MAKE).toString() + QLatin1Char(' '));
+    if (!row.getRowData().value(OPL::Db::TAILS_MODEL).toString().isEmpty())
+        type_string.append(row.getRowData().value(OPL::Db::TAILS_MODEL).toString());
+    if (!row.getRowData().value(OPL::Db::TAILS_VARIANT).toString().isEmpty())
+        type_string.append(QLatin1Char('-') + row.getRowData().value(OPL::Db::TAILS_VARIANT).toString());
+
+    return type_string;
+}
+
+const QString AircraftWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+{
+    if(!flight.isValid())
+        return QString();
+
+    auto tableData = flight.getRowData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+                          + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+
+    return flight_summary;
 }

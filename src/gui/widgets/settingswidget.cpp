@@ -21,7 +21,7 @@
 #include "src/classes/astyle.h"
 #include "src/classes/asettings.h"
 #include "src/database/adatabase.h"
-#include "src/classes/apilotentry.h"
+#include "src/classes/row.h"
 #include "src/opl.h"
 #include "src/functions/adate.h"
 
@@ -104,7 +104,7 @@ void SettingsWidget::readSettings()
     //const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
     // Personal Data Tab
-    auto user_data = aDB->getPilotEntry(1).getData();
+    auto user_data = aDB->getPilotEntry(1).getRowData();
     ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
     ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
     ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
@@ -191,7 +191,7 @@ void SettingsWidget::updatePersonalDetails()
         QString name;
         name.append(ui->lastnameLineEdit->text());
         name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().left(1));
+        name.append(ui->firstnameLineEdit->text().at(0));
         name.append(QLatin1Char('.'));
         user_data.insert(OPL::Db::PILOTS_ALIAS, name);
     }
@@ -206,10 +206,17 @@ void SettingsWidget::updatePersonalDetails()
     user_data.insert(OPL::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
     user_data.insert(OPL::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
 
-    auto user = APilotEntry(1);
-    user.setData(user_data);
+    auto user = OPL::PilotEntry(1, user_data);
 
-    aDB->commit(user);
+    TODO << "Changing DB does not currently refresh logbook view";
+    TODO << "Check for empty line edits (First, last name should not be empty...validators not a good way because it gives no user feedback)";
+
+    if(!aDB->commit(user))
+        WARN(tr("Unable to update Database:<br>") + aDB->lastError.text());
+    else
+        LOG << "User updated successfully.";
+
+
 }
 
 /*

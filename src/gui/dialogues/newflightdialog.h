@@ -26,11 +26,9 @@
 
 #include "src/functions/atime.h"
 #include "src/classes/acompletiondata.h"
-#include "src/classes/aflightentry.h"
-#include "src/classes/apilotentry.h"
-#include "src/classes/atailentry.h"
 #include "src/database/adatabase.h"
 #include "src/opl.h"
+#include "src/classes/row.h"
 
 /*!
  * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
@@ -133,7 +131,7 @@ private:
      * from an old entry, is used to fill the form for editing an entry, or is
      * filled with new data for adding a new entry to the logbook.
      */
-    AFlightEntry flightEntry;
+    OPL::FlightEntry flightEntry;
 
     /*!
      * \brief timeLineEdits - Line Edits for time Off Blocks and Time On Blocks

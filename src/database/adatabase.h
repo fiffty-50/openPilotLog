@@ -32,20 +32,10 @@
 #include <QSqlField>
 
 #include "src/database/adatabasetypes.h"
-#include "src/classes/aentry.h"
-#include "src/classes/apilotentry.h"
-#include "src/classes/atailentry.h"
-
 #include "src/classes/row.h"
-#include "src/classes/tailentry.h"
-#include "src/classes/aircraftentry.h"
 
-#include "src/classes/aaircraftentry.h"
-#include "src/classes/aflightentry.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/acurrencyentry.h"
-#include "src/classes/asimulatorentry.h"
-#include "src/classes/row.h"
 
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
@@ -333,7 +323,11 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    APilotEntry getPilotEntry(RowId_T row_id);
+    inline OPL::PilotEntry getPilotEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Pilots, row_id);
+        return OPL::PilotEntry(row_id, data);
+    }
 
     /*!
      * \brief retreives a TailEntry from the database.
@@ -371,7 +365,11 @@ public:
      * instead of an AEntry. It allows for easy access to a flight entry
      * with only the RowId required as input.
      */
-    AFlightEntry getFlightEntry(RowId_T row_id);
+    inline OPL::FlightEntry getFlightEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Flights, row_id);
+        return OPL::FlightEntry(row_id, data);
+    }
 
     /*!
      * \brief retreives a Simulator entry from the database.
@@ -381,7 +379,11 @@ public:
      * instead of an AEntry. It allows for easy access to a Simulator entry
      * with only the RowId required as input.
      */
-    ASimulatorEntry getSimEntry(RowId_T row_id);
+    inline OPL::SimulatorEntry getSimEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Simulators, row_id);
+        return OPL::SimulatorEntry(row_id, data);
+    }
 
     /*!
      * \brief Retreives a currency entry from the database.
@@ -415,7 +417,7 @@ public:
      * \brief Resolves the foreign key in a flight entry
      * \return The Pilot Entry referencted by the foreign key.
      */
-    APilotEntry resolveForeignPilot(RowId_T foreign_key);
+    //APilotEntry resolveForeignPilot(RowId_T foreign_key);
 
     /*!
      * \brief Resolves the foreign key in a flight entry

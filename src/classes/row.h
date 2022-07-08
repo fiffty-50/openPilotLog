@@ -35,8 +35,57 @@ private:
     OPL::DbTable table;
     int rowId;
     RowData_T rowData;
+protected:
     bool hasData;
     bool valid = true;
+};
+
+
+class AircraftEntry : public Row
+{
+public:
+    AircraftEntry();
+    AircraftEntry(const RowData_T &row_data);
+    AircraftEntry(int row_id, const RowData_T &row_data);
+};
+
+
+class TailEntry : public Row
+{
+public:
+    TailEntry();
+    TailEntry(const RowData_T &row_data);
+    TailEntry(int row_id, const RowData_T &row_data);
+
+    const QString registration() const;
+    const QString type() const;
+};
+
+
+class PilotEntry : public Row
+{
+public:
+    PilotEntry();
+    PilotEntry(const RowData_T &row_data);
+    PilotEntry(int row_id, const RowData_T &row_data);
+
+};
+
+class SimulatorEntry : public Row
+{
+public:
+    SimulatorEntry();
+    SimulatorEntry(const RowData_T &row_data);
+    SimulatorEntry(int row_id, const RowData_T &row_data);
+};
+
+class FlightEntry : public Row
+{
+public:
+    FlightEntry();
+    FlightEntry(const RowData_T &row_data);
+    FlightEntry(int row_id, const RowData_T &row_data);
+
 };
 
 } // namespace OPL

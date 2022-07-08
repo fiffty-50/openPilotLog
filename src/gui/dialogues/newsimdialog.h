@@ -2,7 +2,7 @@
 #define NEWSIMDIALOG_H
 
 #include <QDialog>
-#include "src/classes/asimulatorentry.h"
+#include "src/classes/row.h"
 #include "src/database/adatabase.h"
 #include "src/classes/acompletiondata.h"
 
@@ -46,7 +46,7 @@ private:
     bool verifyInput(QString &error_msg);
     RowData_T collectInput();
 
-    ASimulatorEntry entry;
+    OPL::SimulatorEntry entry;
 };
 
 #endif // NEWSIMDIALOG_H

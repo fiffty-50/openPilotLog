@@ -27,11 +27,7 @@
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
 #include "src/database/adatabase.h"
-
-#include "src/classes/atailentry.h"
-#include "src/classes/tailentry.h"
-
-#include "src/classes/aaircraftentry.h"
+#include "src/classes/row.h"
 
 namespace Ui {
 class NewTail;

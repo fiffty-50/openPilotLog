@@ -26,28 +26,12 @@ public:
     AFlightEntry(RowId_T row_id);
     AFlightEntry(RowData_T table_data);
 
-    AFlightEntry(const AFlightEntry& pe) = default;
-    AFlightEntry& operator=(const AFlightEntry& pe) = default;
-
-
-    enum class pilotPosition { pic, secondPilot, thirdPilot };
-
     /*!
      * \brief Returs a summary of the flight data, if struct holds data
      * \return "doft, dept, tofb, dest, tonb"
      */
     const QString summary();
-    /*!
-     * \brief Returns the tails' registration from the database.
-     */
-    //const QString getRegistration();
-    /*!
-     * \brief Returns the pilots name from the Database
-     *
-     * \param pilot_number - 1=pic, 2=second Pilot, 3 = third Pilot
-     * \return "Lastname, Firstname"
-     */
-    const QString getPilotName(pilotPosition);
+
 };
 
 #endif // AFLIGHTENTRY_H

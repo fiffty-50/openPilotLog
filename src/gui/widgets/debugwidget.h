@@ -29,8 +29,7 @@
 #include "src/functions/areadcsv.h"
 
 #include "src/database/adatabase.h"
-#include "src/classes/aentry.h"
-#include "src/classes/apilotentry.h"
+#include "src/classes/row.h"
 
 #include "src/testing/atimer.h"
 #include "src/functions/alog.h"

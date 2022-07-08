@@ -80,10 +80,6 @@ set(PROJECT_SOURCES
     # Classes
     src/classes/row.h
     src/classes/row.cpp
-    src/classes/tailentry.h
-    src/classes/tailentry.cpp
-    src/classes/aircraftentry.h
-    src/classes/aircraftentry.cpp
     src/classes/acompletiondata.h
     src/classes/acompletiondata.cpp
     src/classes/acurrencyentry.h
@@ -92,30 +88,18 @@ set(PROJECT_SOURCES
     src/classes/astyle.cpp
     src/classes/astandardpaths.h
     src/classes/astandardpaths.cpp
-    src/classes/aaircraftentry.h
-    src/classes/aaircraftentry.cpp
     src/classes/adownload.h
     src/classes/adownload.cpp
-    src/classes/aentry.h
-    src/classes/aentry.cpp
-    src/classes/aflightentry.h
-    src/classes/aflightentry.cpp
-    src/classes/apilotentry.h
-    src/classes/apilotentry.cpp
     src/classes/arunguard.h
     src/classes/arunguard.cpp
     src/classes/asettings.h
     src/classes/asettings.cpp
-    src/classes/atailentry.h
-    src/classes/atailentry.cpp
     src/classes/atranslator.h
     src/classes/atranslator.cpp
     src/classes/ajson.h
     src/classes/ajson.cpp
     src/classes/ahash.h
     src/classes/ahash.cpp
-    src/classes/asimulatorentry.h
-    src/classes/asimulatorentry.cpp
 
     # Namespaces
     src/functions/acalc.h

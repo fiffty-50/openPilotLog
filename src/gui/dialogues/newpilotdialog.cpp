@@ -20,7 +20,7 @@
 #include "src/opl.h"
 
 #include "src/database/adatabase.h"
-#include "src/classes/aentry.h"
+#include "src/classes/row.h"
 #include "src/functions/alog.h"
 
 /*!
@@ -32,7 +32,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
 {
     setup();
 
-    pilotEntry = APilotEntry();
+    //pilotEntry = APilotEntry();
     ui->lastnameLineEdit->setFocus();
 }
 
@@ -84,7 +84,7 @@ void NewPilotDialog::formFiller()
 
     for (const auto &le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
-        le->setText(pilotEntry.getData().value(key).toString());
+        le->setText(pilotEntry.getRowData().value(key).toString());
     }
 }
 
@@ -98,9 +98,9 @@ void NewPilotDialog::submitForm()
         new_data.insert(key, value);
     }
 
-    pilotEntry.setData(new_data);
-    DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
-    DEB << "entry data: " << pilotEntry;
+    pilotEntry.setRowData(new_data);
+    DEB << "Submitting Pilot:";
+    DEB << pilotEntry;
     if (!aDB->commit(pilotEntry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"

@@ -93,4 +93,66 @@ OPL::Row::operator QString() const
     return QString();
 }
 
+AircraftEntry::AircraftEntry()
+    : Row(DbTable::Aircraft, 0)
+{}
+
+AircraftEntry::AircraftEntry(const RowData_T &row_data)
+    : Row(DbTable::Aircraft, 0, row_data)
+{}
+
+AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Aircraft, row_id, row_data)
+{}
+
+
+TailEntry::TailEntry()
+    : Row(DbTable::Tails, 0)
+{}
+
+TailEntry::TailEntry(const RowData_T &row_data)
+    : Row(DbTable::Tails, 0, row_data)
+{}
+
+TailEntry::TailEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Tails, row_id, row_data)
+{}
+
+PilotEntry::PilotEntry()
+    : Row(DbTable::Pilots, 0)
+{}
+
+PilotEntry::PilotEntry(const RowData_T &row_data)
+    : Row(DbTable::Pilots, 0, row_data)
+{}
+
+PilotEntry::PilotEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Pilots, row_id, row_data)
+{}
+
+
+SimulatorEntry::SimulatorEntry()
+    : Row(DbTable::Simulators, 0)
+{}
+
+SimulatorEntry::SimulatorEntry(const RowData_T &row_data)
+    : Row(DbTable::Simulators, 0, row_data)
+{}
+
+SimulatorEntry::SimulatorEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Simulators, row_id, row_data)
+{}
+
+FlightEntry::FlightEntry()
+    : Row(DbTable::Flights, 0)
+{}
+
+FlightEntry::FlightEntry(const RowData_T &row_data)
+    : Row(DbTable::Flights, 0, row_data)
+{}
+
+FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Flights, row_id, row_data)
+{}
+
 } // namespace OPL

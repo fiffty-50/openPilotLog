@@ -794,12 +794,12 @@ RowData_T ADatabase::getRowData(const OPL::DbTable table, const int row_id)
     return entry_data;
 }
 
-APilotEntry ADatabase::getPilotEntry(RowId_T row_id)
-{
-    APilotEntry pilot_entry(row_id);
-    pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
-    return pilot_entry;
-}
+//OPL::PilotEntry ADatabase::getPilotEntry(RowId_T row_id)
+//{
+//    APilotEntry pilot_entry(row_id);
+//    pilot_entry.setData(getEntryData(pilot_entry.getPosition()));
+//    return pilot_entry;
+//}
 
 //OPL::TailEntry ADatabase::getTailEntry(RowId_T row_id)
 //{
@@ -815,19 +815,19 @@ APilotEntry ADatabase::getPilotEntry(RowId_T row_id)
 //    return aircraft_entry;
 //}
 
-AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
-{
-    AFlightEntry flight_entry(row_id);
-    flight_entry.setData(getEntryData(flight_entry.getPosition()));
-    return flight_entry;
-}
+//AFlightEntry ADatabase::getFlightEntry(RowId_T row_id)
+//{
+//    AFlightEntry flight_entry(row_id);
+//    flight_entry.setData(getEntryData(flight_entry.getPosition()));
+//    return flight_entry;
+//}
 
-ASimulatorEntry ADatabase::getSimEntry(RowId_T row_id)
-{
-    ASimulatorEntry sim_entry(row_id);
-    sim_entry.setData(getEntryData(sim_entry.getPosition()));
-    return sim_entry;
-}
+//ASimulatorEntry ADatabase::getSimEntry(RowId_T row_id)
+//{
+//    ASimulatorEntry sim_entry(row_id);
+//    sim_entry.setData(getEntryData(sim_entry.getPosition()));
+//    return sim_entry;
+//}
 
 ACurrencyEntry ADatabase::getCurrencyEntry(const ACurrencyEntry::CurrencyName &currency_name)
 {
@@ -997,10 +997,10 @@ QList<RowId_T> ADatabase::getForeignKeyConstraints(RowId_T foreign_row_id, AData
     return row_ids;
 }
 
-APilotEntry ADatabase::resolveForeignPilot(RowId_T foreign_key)
-{
-    return aDB->getPilotEntry(foreign_key);
-}
+//APilotEntry ADatabase::resolveForeignPilot(RowId_T foreign_key)
+//{
+//    return aDB->getPilotEntry(foreign_key);
+//}
 
 //ATailEntry ADatabase::resolveForeignTail(RowId_T foreign_key)
 //{

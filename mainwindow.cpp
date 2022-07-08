@@ -24,7 +24,6 @@
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/functions/adatetime.h"
-#include "src/classes/aentry.h"
 #include "src/classes/row.h"
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area

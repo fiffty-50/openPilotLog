@@ -87,6 +87,8 @@ private:
     void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
 
+    const QString getFlightSummary(const OPL::FlightEntry &flight) const;
+
     ACompletionData completionData;
 
     /*!
