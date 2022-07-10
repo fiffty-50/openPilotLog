@@ -21,12 +21,12 @@ Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
     hasData = true;
 };
 
-RowData_T Row::getRowData() const
+RowData_T Row::getData() const
 {
     return rowData;
 }
 
-void Row::setRowData(const RowData_T &value)
+void Row::setData(const RowData_T &value)
 {
     rowData = value;
     hasData = true;
@@ -42,7 +42,7 @@ void Row::setRowId(int value)
     rowId = value;
 }
 
-OPL::DbTable Row::getTable() const
+OPL::DbTable Row::getTableName() const
 {
     return table;
 }
@@ -153,6 +153,18 @@ FlightEntry::FlightEntry(const RowData_T &row_data)
 
 FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Flights, row_id, row_data)
+{}
+
+CurrencyEntry::CurrencyEntry()
+    : Row(DbTable::Currencies, 0)
+{}
+
+CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
+    : Row(DbTable::Currencies, 0, row_data)
+{}
+
+CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Currencies, row_id, row_data)
 {}
 
 } // namespace OPL

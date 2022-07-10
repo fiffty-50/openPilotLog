@@ -74,22 +74,23 @@ void SettingsWidget::setupDateEdits()
         date_edit->setDisplayFormat(date_format_string);
     }
     // Fill currencies
-    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit* >> currencies = {
-        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
-        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
-        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
-        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
-        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
-        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom2DateEdit}
+    const QList<QPair<OPL::CurrencyName, QDateEdit*>> currencies_list = {
+        {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
+        {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
+        {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
+        {OPL::CurrencyName::Medical,    ui->currMedDateEdit},
+        {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
+        {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
-    for (const auto &pair : currencies) {
+    for (const auto &pair : currencies_list) {
         const QSignalBlocker signal_blocker(pair.second);
-        const auto entry = aDB->getCurrencyEntry(pair.first);
+        const auto entry = aDB->getCurrencyEntry(static_cast<int>(pair.first));
         if (entry.isValid()) { // set date
             const auto date = QDate::fromString(
-                        entry.tableData.value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+                        entry.getData().value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                         Qt::ISODate);
-            pair.second->setDate(date);
+            if(date.isValid())
+                pair.second->setDate(date);
         } else { // set current date
             pair.second->setDate(QDate::currentDate());
         }
@@ -104,7 +105,7 @@ void SettingsWidget::readSettings()
     //const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
     // Personal Data Tab
-    auto user_data = aDB->getPilotEntry(1).getRowData();
+    auto user_data = aDB->getPilotEntry(1).getData();
     ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
     ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
     ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
@@ -160,7 +161,7 @@ void SettingsWidget::setupValidators()
         {ui->firstnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
         {ui->lastnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
         {ui->phoneLineEdit, QRegularExpression(QLatin1String("^[+]{0,1}[0-9\\-\\s]+"))},
-        {ui->emailLineEdit, QRegularExpression(QLatin1String("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
+        {ui->emailLineEdit, QRegularExpression(QString("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
          "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z"))},
         {ui->companyLineEdit, QRegularExpression(QLatin1String("\\w+"))},
         {ui->employeeidLineEdit, QRegularExpression(QLatin1String("\\w+"))},
@@ -472,43 +473,64 @@ void SettingsWidget::on_resetStylePushButton_clicked()
 
 void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Licence, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Licence), row_data);
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::TypeRating, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::TypeRating), row_data);
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::LineCheck, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::LineCheck), row_data);
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Medical, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Medical), row_data);
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom1, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
+                                {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text()}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom1), row_data);
+    DEB << entry;
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 
 void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
-    ACurrencyEntry entry(ACurrencyEntry::CurrencyName::Custom2, date);
-    aDB->commit(entry);
+    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
+                                {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text()}};
+    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom2), row_data);
+    if (!aDB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+
     emit settingChanged(HomeWidget);
 }
 

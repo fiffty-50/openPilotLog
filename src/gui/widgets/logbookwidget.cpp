@@ -102,7 +102,7 @@ const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) co
     if(!flight.isValid())
         return QString();
 
-    auto tableData = flight.getRowData();
+    auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);

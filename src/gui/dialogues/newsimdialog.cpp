@@ -51,7 +51,7 @@ void NewSimDialog::init()
  */
 void NewSimDialog::fillEntryData()
 {
-    const auto& data = entry.getRowData();
+    const auto& data = entry.getData();
     ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
     ui->totalTimeLineEdit->setText(ATime::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
@@ -176,7 +176,7 @@ void NewSimDialog::on_buttonBox_accepted()
         return;
     }
 
-    entry.setRowData(collectInput());
+    entry.setData(collectInput());
 
     DEB << entry;
 

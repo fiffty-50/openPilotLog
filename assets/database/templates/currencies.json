@@ -1,32 +1,32 @@
 [
     {
         "currency_id": 1,
-        "description": "Licence",
+        "currencyName": "Licence",
         "expiryDate": null
     },
     {
         "currency_id": 2,
-        "description": "Type Rating",
+        "currencyName": "Type Rating",
         "expiryDate": null
     },
     {
         "currency_id": 3,
-        "description": "Line Check",
+        "currencyName": "Line Check",
         "expiryDate": null
     },
     {
         "currency_id": 4,
-        "description": "Medical",
+        "currencyName": "Medical",
         "expiryDate": null
     },
     {
         "currency_id": 5,
-        "description": "Custom1",
+        "currencyName": "Custom1",
         "expiryDate": null
     },
     {
         "currency_id": 6,
-        "description": "Custom2",
+        "currencyName": "Custom2",
         "expiryDate": null
     }
 ]

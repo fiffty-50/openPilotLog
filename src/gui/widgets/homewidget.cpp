@@ -21,6 +21,7 @@
 #include "src/database/adatabase.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
+#include "src/classes/row.h"
 
 // EASA FTL Limitations in minutes
 // 100 hours per 28 days
@@ -95,12 +96,19 @@ void HomeWidget::fillTotals()
     }
 }
 
-void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel* display_label)
+void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)
 {
-    auto currency_entry = aDB->getCurrencyEntry(currency_name);
+    const auto currency_entry = aDB->getCurrencyEntry(static_cast<int>(currency_name));
+
+    if (currency_name == OPL::CurrencyName::Custom1) {
+        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+    } else if (currency_name == OPL::CurrencyName::Custom2) {
+        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+    }
+
     if (currency_entry.isValid()) {
-        auto currency_date = QDate::fromString(currency_entry.tableData.value(
-                                                   OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+        const auto currency_date = QDate::fromString(currency_entry.getData().value(
+                                               OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);
@@ -126,30 +134,26 @@ void HomeWidget::fillSelectedCurrencies()
     fillCurrencyTakeOffLanding();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)
+                fillCurrency(OPL::CurrencyName::Licence, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
     ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::TypeRating, ui->currTrDisplayLabel)
+                fillCurrency(OPL::CurrencyName::TypeRating, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
     ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::LineCheck, ui->currLckDisplayLabel)
+                fillCurrency(OPL::CurrencyName::LineCheck, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
     ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Medical, ui->currMedDisplayLabel)
+                fillCurrency(OPL::CurrencyName::Medical, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
-
     ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
+                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    const QString custom1_text = ASettings::read(ASettings::UserData::Custom1CurrencyName).toString();
-    if (!custom1_text.isEmpty())
-        ui->currCustom1Label->setText(custom1_text);
+    ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
+                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
+              : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
     ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
+                fillCurrency(OPL::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
-    const QString custom2_text = ASettings::read(ASettings::UserData::Custom2CurrencyName).toString();
-    if (!custom2_text.isEmpty())
-        ui->currCustom2Label->setText(custom2_text);
 }
 
 /*!

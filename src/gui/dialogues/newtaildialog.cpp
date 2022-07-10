@@ -116,7 +116,7 @@ void NewTailDialog::fillForm(OPL::Row entry, bool is_template)
     if (is_template)
         line_edits.removeOne(ui->registrationLineEdit);
 
-    auto data = entry.getRowData();
+    auto data = entry.getData();
 
     for (const auto &le : qAsConst(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
@@ -202,7 +202,7 @@ void NewTailDialog::submitForm()
 
     //create db object
 
-    entry.setRowData(new_data);
+    entry.setData(new_data);
     LOG << "Commiting: " << entry;
     if (!aDB->commit(entry)) {
         QMessageBox message_box(this);

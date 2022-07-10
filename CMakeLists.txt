@@ -82,8 +82,6 @@ set(PROJECT_SOURCES
     src/classes/row.cpp
     src/classes/acompletiondata.h
     src/classes/acompletiondata.cpp
-    src/classes/acurrencyentry.h
-    src/classes/acurrencyentry.cpp
     src/classes/astyle.h
     src/classes/astyle.cpp
     src/classes/astandardpaths.h

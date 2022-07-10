@@ -197,7 +197,7 @@ void NewFlightDialog::fillWithEntryData()
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
 
-    const auto &flight_data = flightEntry.getRowData();
+    const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
     ui->doftLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DOFT).toString());
@@ -388,8 +388,8 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
     int acft_id = completionData.tailsIdMap.key(ui->acftLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_ACFT, acft_id);
     const OPL::TailEntry acft_data = aDB->getTailEntry(acft_id);
-    bool multi_pilot = acft_data.getRowData().value(OPL::Db::TAILS_MULTIPILOT).toBool();
-    bool multi_engine = acft_data.getRowData().value(OPL::Db::TAILS_MULTIENGINE).toBool();
+    bool multi_pilot = acft_data.getData().value(OPL::Db::TAILS_MULTIPILOT).toBool();
+    bool multi_engine = acft_data.getData().value(OPL::Db::TAILS_MULTIENGINE).toBool();
 
     if (multi_pilot) {
         new_data.insert(OPL::Db::FLIGHTS_TMP, block_minutes);
@@ -776,7 +776,7 @@ void NewFlightDialog::on_buttonBox_accepted()
     DEB << flightEntry;
 
     //DEB << "Setting Data for flightEntry...";
-    flightEntry.setRowData(newData);
+    flightEntry.setData(newData);
     DEB << "Committing: ";
     DEB << flightEntry;
     if (!aDB->commit(flightEntry)) {

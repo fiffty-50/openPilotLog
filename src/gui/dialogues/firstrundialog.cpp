@@ -331,20 +331,26 @@ bool FirstRunDialog::createUserEntry()
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit*>> currencies_list = {
-        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
-        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
-        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
-        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
-        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
-        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom1DateEdit},
+    const QList<QPair<OPL::CurrencyName, QDateEdit*>> currencies_list = {
+        {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
+        {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
+        {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
+        {OPL::CurrencyName::Medical,    ui->currMedDateEdit},
+        {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
+        {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
 
     QDate today = QDate::currentDate();
     for (const auto &pair : currencies_list) {
         // only write dates that have been edited
         if (pair.second->date() != today) {
-            ACurrencyEntry entry(pair.first, pair.second->date());
+            RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, pair.second->date().toString(Qt::ISODate)}};
+            if (pair.first == OPL::CurrencyName::Custom1)
+                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
+            else if(pair.first == OPL::CurrencyName::Custom2)
+                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
+
+            OPL::CurrencyEntry entry(static_cast<int>(pair.first), row_data);
             if (!aDB->commit(entry))
                 return false;
         }

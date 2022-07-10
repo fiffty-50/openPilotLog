@@ -188,7 +188,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
         message_box.setWindowTitle(tr("Delete Aircraft"));
         message_box.setText(tr("You are deleting the following aircraft:<br><br><b><tt>"
                                "%1 - (%2)</b></tt><br><br>Are you sure?"
-                               ).arg(entry.getRowData().value(OPL::Db::TAILS_REGISTRATION).toString(),
+                               ).arg(entry.getData().value(OPL::Db::TAILS_REGISTRATION).toString(),
                                      getAircraftTypeString(entry)));
 
         if (message_box.exec() == QMessageBox::Yes) {
@@ -261,12 +261,12 @@ void AircraftWidget::repopulateModel()
 const QString AircraftWidget::getAircraftTypeString(const OPL::Row &row) const
 {
     QString type_string;
-    if (!row.getRowData().value(OPL::Db::TAILS_MAKE).toString().isEmpty())
-        type_string.append(row.getRowData().value(OPL::Db::TAILS_MAKE).toString() + QLatin1Char(' '));
-    if (!row.getRowData().value(OPL::Db::TAILS_MODEL).toString().isEmpty())
-        type_string.append(row.getRowData().value(OPL::Db::TAILS_MODEL).toString());
-    if (!row.getRowData().value(OPL::Db::TAILS_VARIANT).toString().isEmpty())
-        type_string.append(QLatin1Char('-') + row.getRowData().value(OPL::Db::TAILS_VARIANT).toString());
+    if (!row.getData().value(OPL::Db::TAILS_MAKE).toString().isEmpty())
+        type_string.append(row.getData().value(OPL::Db::TAILS_MAKE).toString() + QLatin1Char(' '));
+    if (!row.getData().value(OPL::Db::TAILS_MODEL).toString().isEmpty())
+        type_string.append(row.getData().value(OPL::Db::TAILS_MODEL).toString());
+    if (!row.getData().value(OPL::Db::TAILS_VARIANT).toString().isEmpty())
+        type_string.append(QLatin1Char('-') + row.getData().value(OPL::Db::TAILS_VARIANT).toString());
 
     return type_string;
 }
@@ -276,7 +276,7 @@ const QString AircraftWidget::getFlightSummary(const OPL::FlightEntry &flight) c
     if(!flight.isValid())
         return QString();
 
-    auto tableData = flight.getRowData();
+    auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);

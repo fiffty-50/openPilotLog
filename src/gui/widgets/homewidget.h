@@ -26,7 +26,6 @@
 #include "src/functions/astat.h"
 #include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
-#include "src/classes/acurrencyentry.h"
 
 namespace Ui {
 class HomeWidget;
@@ -67,7 +66,7 @@ private:
     void fillTotals();
     void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
-    void fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel *display_label);
+    void fillCurrency(OPL::CurrencyName currency_name, QLabel *display_label);
     void fillLimitations();
 
     enum class Colour {Red, Orange, None};

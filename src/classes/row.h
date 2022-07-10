@@ -19,11 +19,11 @@ public:
     Row(const Row&) = default;
     Row& operator=(const Row&) = default;
 
-    RowData_T getRowData() const;
-    void setRowData(const RowData_T &value);
+    RowData_T getData() const;
+    void setData(const RowData_T &value);
     int getRowId() const;
     void setRowId(int value);
-    OPL::DbTable getTable() const;
+    OPL::DbTable getTableName() const;
 
     bool isValid() const {return hasData && valid;}
 
@@ -40,7 +40,6 @@ protected:
     bool valid = true;
 };
 
-
 class AircraftEntry : public Row
 {
 public:
@@ -48,7 +47,6 @@ public:
     AircraftEntry(const RowData_T &row_data);
     AircraftEntry(int row_id, const RowData_T &row_data);
 };
-
 
 class TailEntry : public Row
 {
@@ -60,7 +58,6 @@ public:
     const QString registration() const;
     const QString type() const;
 };
-
 
 class PilotEntry : public Row
 {
@@ -85,7 +82,14 @@ public:
     FlightEntry();
     FlightEntry(const RowData_T &row_data);
     FlightEntry(int row_id, const RowData_T &row_data);
+};
 
+class CurrencyEntry : public Row
+{
+public:
+    CurrencyEntry();
+    CurrencyEntry(const RowData_T &row_data);
+    CurrencyEntry(int row_id, const RowData_T &row_data);
 };
 
 } // namespace OPL

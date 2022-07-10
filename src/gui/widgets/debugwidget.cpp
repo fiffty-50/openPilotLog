@@ -26,7 +26,6 @@
 #include <QtGlobal>
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
-#include "src/classes/acurrencyentry.h"
 #include "src/classes/atranslator.h"
 #include "src/classes/ahash.h"
 #include "src/classes/ajson.h"

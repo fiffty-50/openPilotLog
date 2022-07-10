@@ -314,10 +314,10 @@ void ACalc::updateAutoTimes(int acft_id)
     DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
     auto acft = aDB->getTailEntry(acft_id);
-    auto acft_data = acft.getRowData();
+    auto acft_data = acft.getData();
     for (const auto& item : flight_list) {
         auto flight = aDB->getFlightEntry(item.toInt());
-        auto flight_data = flight.getRowData();
+        auto flight_data = flight.getData();
 
         if(acft_data.value(OPL::Db::TAILS_MULTIPILOT).toInt() == 0
                 && acft_data.value(OPL::Db::TAILS_MULTIENGINE) == 0) {
@@ -326,7 +326,7 @@ void ACalc::updateAutoTimes(int acft_id)
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
             flight_data.insert(OPL::Db::FLIGHTS_TMP, QString());
         } else if ((acft_data.value(OPL::Db::TAILS_MULTIPILOT) == 0
-                    && acft.getRowData().value(OPL::Db::TAILS_MULTIENGINE) == 1)) {
+                    && acft.getData().value(OPL::Db::TAILS_MULTIENGINE) == 1)) {
             DEB << "SPME";
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, flight_data.value(OPL::Db::FLIGHTS_TBLK));
             flight_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
@@ -337,7 +337,7 @@ void ACalc::updateAutoTimes(int acft_id)
             flight_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
         }
-        flight.setRowData(flight_data);
+        flight.setData(flight_data);
         aDB->commit(flight);
     }
 }
@@ -362,7 +362,7 @@ void ACalc::updateNightTimes()
     for (const auto& item : flight_list) {
 
         auto flt = aDB->getFlightEntry(item.toInt());
-        auto data = flt.getRowData();
+        auto data = flt.getData();
         auto dateTime = QDateTime(QDate::fromString(data.value(OPL::Db::FLIGHTS_DOFT).toString(), Qt::ISODate),
                                   QTime().addSecs(data.value(OPL::Db::FLIGHTS_TOFB).toInt() * 60),
                                   Qt::UTC);
@@ -372,7 +372,7 @@ void ACalc::updateNightTimes()
                                        dateTime,
                                        data.value(OPL::Db::FLIGHTS_TBLK).toInt(),
                                        night_angle));
-        flt.setRowData(data);
+        flt.setData(data);
         aDB->commit(flt);
     }
 }

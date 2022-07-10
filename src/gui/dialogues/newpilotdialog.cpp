@@ -84,7 +84,7 @@ void NewPilotDialog::formFiller()
 
     for (const auto &le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
-        le->setText(pilotEntry.getRowData().value(key).toString());
+        le->setText(pilotEntry.getData().value(key).toString());
     }
 }
 
@@ -98,7 +98,7 @@ void NewPilotDialog::submitForm()
         new_data.insert(key, value);
     }
 
-    pilotEntry.setRowData(new_data);
+    pilotEntry.setData(new_data);
     DEB << "Submitting Pilot:";
     DEB << pilotEntry;
     if (!aDB->commit(pilotEntry)) {

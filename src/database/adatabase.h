@@ -35,7 +35,6 @@
 #include "src/classes/row.h"
 
 #include "src/classes/astandardpaths.h"
-#include "src/classes/acurrencyentry.h"
 
 #define SQLITE_DRIVER QStringLiteral("QSQLITE")
 
@@ -245,10 +244,8 @@ public:
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(const AEntry &entry);
-    bool exists(DataPosition data_position);
-
     bool exists(const OPL::Row &row);
+    bool exists(const DataPosition &position);
 
     /*!
      * \brief clear resets the database, i.e. deletes all content in the tables containing
@@ -260,8 +257,6 @@ public:
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(const AEntry &entry);
-
     bool commit(const OPL::Row &row);
 
     /*!
@@ -274,21 +269,21 @@ public:
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    bool insert(const AEntry &new_entry);
+    //bool insert(const AEntry &new_entry);
 
     bool insert(const OPL::Row &new_row);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    bool update(const AEntry &updated_entry);
+    //bool update(const AEntry &updated_entry);
 
     bool update(const OPL::Row &updated_row);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    bool remove(const AEntry &entry);
+    //bool remove(const AEntry &entry);
 
     bool remove(const OPL::Row &row);
 
@@ -296,7 +291,7 @@ public:
      * \brief deletes a list of entries from the database. Optimised for speed when
      * deleting many entries.
      */
-    bool removeMany(const QList<DataPosition> &);
+    bool removeMany(const QList<DataPosition> &position_list);
 
     /*!
      * \brief retreive entry data from the database to create an entry object
@@ -304,21 +299,19 @@ public:
     RowData_T getEntryData(const DataPosition &data_position);
 
     /*!
-     * \brief retreive an Entry from the database.
-     */
-    AEntry getEntry(const DataPosition &data_position);
-
-    /*!
      * \brief retreive a Row from the database
      */
     OPL::Row getRow(const OPL::DbTable table, const int row_id);
 
+    /*!
+     * \brief retreive a Map of <column name, column content> for a specific row in the database.
+     */
     RowData_T getRowData(const OPL::DbTable table, const int row_id);
 
     /*!
      * \brief retreives a PilotEntry from the database.
      *
-     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * This function is a wrapper for DataBase::getRowData,
      * where the table is already set and which returns a PilotEntry
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
@@ -332,7 +325,7 @@ public:
     /*!
      * \brief retreives a TailEntry from the database.
      *
-     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * This function is a wrapper for DataBase::getRowData,
      * where the table is already set and which returns a TailEntry
      * instead of an Entry. It allows for easy access to a tail entry
      * with only the RowId required as input.
@@ -346,7 +339,7 @@ public:
     /*!
      * \brief retreives a TailEntry from the database.
      *
-     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * This function is a wrapper for DataBase::getRowData,
      * where the table is already set and which returns an AAircraftEntry
      * instead of an AEntry. It allows for easy access to an aircraft entry
      * with only the RowId required as input.
@@ -360,7 +353,7 @@ public:
     /*!
      * \brief retreives a flight entry from the database.
      *
-     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * This function is a wrapper for DataBase::getRowData,
      * where the table is already set and which returns an AFlightEntry
      * instead of an AEntry. It allows for easy access to a flight entry
      * with only the RowId required as input.
@@ -374,7 +367,7 @@ public:
     /*!
      * \brief retreives a Simulator entry from the database.
      *
-     * This function is a wrapper for DataBase::getEntry(DataPosition),
+     * This function is a wrapper for DataBase::getRowData,
      * where the table is already set and which returns an ASimEntry
      * instead of an AEntry. It allows for easy access to a Simulator entry
      * with only the RowId required as input.
@@ -388,7 +381,11 @@ public:
     /*!
      * \brief Retreives a currency entry from the database.
      */
-    ACurrencyEntry getCurrencyEntry(const ACurrencyEntry::CurrencyName &currency_name);
+    inline OPL::CurrencyEntry getCurrencyEntry(RowId_T row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Currencies, row_id);
+        return OPL::CurrencyEntry(row_id, data);
+    }
 
     /*!
      * \brief getCompletionList returns a QStringList of values for a
@@ -412,18 +409,6 @@ public:
      * exist.
      */
     QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTable target);
-
-    /*!
-     * \brief Resolves the foreign key in a flight entry
-     * \return The Pilot Entry referencted by the foreign key.
-     */
-    //APilotEntry resolveForeignPilot(RowId_T foreign_key);
-
-    /*!
-     * \brief Resolves the foreign key in a flight entry
-     * \return The Tail Entry referencted by the foreign key.
-     */
-    //ATailEntry resolveForeignTail(RowId_T foreign_key);
 
     /*!
      * \brief Return a summary of a database

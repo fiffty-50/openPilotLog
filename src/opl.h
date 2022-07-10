@@ -115,7 +115,15 @@ enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly
  */
 enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
+/*!
+ * \brief Enumerates the tables in the database
+ */
 enum class DbTable {Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies};
+
+/*!
+ * \brief Enumerates the currency names
+ */
+enum class CurrencyName {Licence = 1, TypeRating = 2, LineCheck = 3, Medical = 4, Custom1 = 5, Custom2 = 6};
 
 /*!
  * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
@@ -299,7 +307,7 @@ const inline auto  PILOTS_EMAIL           = QStringLiteral("email");
 
 // Currencies table
 const inline auto  CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
-const inline auto  CURRENCIES_DESCRIPTION = QStringLiteral("description");
+const inline auto  CURRENCIES_CURRENCYNAME = QStringLiteral("currencyName");
 
 // Simulators table
 const inline auto  SIMULATORS_ROWID       = QStringLiteral("session_id");

@@ -243,8 +243,8 @@ const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot)
     if (!pilot.isValid())
         return QString();
 
-    return pilot.getRowData().value(OPL::Db::PILOTS_LASTNAME).toString() + QLatin1String(", ")
-            + pilot.getRowData().value(OPL::Db::PILOTS_FIRSTNAME).toString();
+    return pilot.getData().value(OPL::Db::PILOTS_LASTNAME).toString() + QLatin1String(", ")
+            + pilot.getData().value(OPL::Db::PILOTS_FIRSTNAME).toString();
 }
 
 const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
@@ -253,7 +253,7 @@ const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) con
     if(!flight.isValid())
         return QString();
 
-    auto tableData = flight.getRowData();
+    auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
