@@ -22,7 +22,7 @@
 #include "src/opl.h"
 #include "src/functions/atime.h"
 
-using namespace ACalc;
+//using namespace ACalc;
 
 /*!
  * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm

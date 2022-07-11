@@ -24,13 +24,42 @@
 
 namespace OPL {
 
-
 Database* Database::self = nullptr;
 
-Database::Database()
-    : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
-                             absoluteFilePath(QStringLiteral("logbook.db"))))
-{}
+bool Database::connect()
+{
+    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
+        LOG << "Error: No SQLITE Driver availabe.";
+        return false;
+    }
+
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
+    db.setDatabaseName(databaseFile.absoluteFilePath());
+
+    if (!db.open()) {
+        LOG << QString("Unable to establish database connection.<br>The following error has ocurred:<br><br>%1")
+               .arg(db.lastError().databaseText());
+        lastError = db.lastError();
+        return false;
+    }
+
+
+    LOG << "Database connection established.";
+    // Enable foreign key restrictions
+    QSqlQuery query;
+    query.prepare(QStringLiteral("PRAGMA foreign_keys = ON;"));
+    query.exec();
+    updateLayout();
+    return true;
+}
+
+void Database::disconnect()
+{
+    auto db = Database::database();
+    db.close();
+    db.removeDatabase(db.connectionName());
+    LOG << "Database connection closed.";
+}
 
 const QString Database::version() const
 {
@@ -109,41 +138,6 @@ const QString Database::sqliteVersion() const
     return query.value(0).toString();
 }
 
-bool Database::connect()
-{
-    if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
-        LOG << "Error: No SQLITE Driver availabe.";
-        return false;
-    }
-
-    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
-    db.setDatabaseName(databaseFile.absoluteFilePath());
-
-    if (!db.open()) {
-        LOG << QString("Unable to establish database connection.<br>The following error has ocurred:<br><br>%1")
-               .arg(db.lastError().databaseText());
-        lastError = db.lastError();
-        return false;
-    }
-
-
-    LOG << "Database connection established.";
-    // Enable foreign key restrictions
-    QSqlQuery query;
-    query.prepare(QStringLiteral("PRAGMA foreign_keys = ON;"));
-    query.exec();
-    updateLayout();
-    return true;
-}
-
-void Database::disconnect()
-{
-    auto db = Database::database();
-    db.close();
-    db.removeDatabase(db.connectionName());
-    LOG << "Database connection closed.";
-}
-
 QSqlDatabase Database::database()
 {
     return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
@@ -206,34 +200,6 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
     else
         return false;
 }
-
-//bool Database::remove(const AEntry &entry)
-//{
-//    if (!exists(entry)) {
-//        LOG << "Error: Database entry not found.";
-//        return false;
-//    }
-//
-//    QString statement = QLatin1String("DELETE FROM ") + entry.getPosition().tableName
-//            + QLatin1String(" WHERE ROWID=?");
-//
-//    QSqlQuery query;
-//    query.prepare(statement);
-//    query.addBindValue(entry.getPosition().rowId);
-//
-//    if (query.exec())
-//    {
-//        LOG << "Entry " << entry.getPosition() << " removed.";
-//        emit dataBaseUpdated();
-//        return true;
-//    } else {
-//        DEB << "Unable to delete.";
-//        DEB << "Query: " << statement;
-//        DEB << "Query Error: " << query.lastError().text();
-//        lastError = query.lastError();
-//        return false;
-//    }
-//}
 
 bool Database::remove(const OPL::Row &row)
 {
@@ -571,28 +537,6 @@ QVector<QVariant> Database::customQuery(QString statement, int return_values)
     }
 }
 
-/*!
- * \brief Database::createBackup copies the currently used database to an external backup location provided by the user
- * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
- */
-bool Database::createBackup(const QString& dest_file)
-{
-    LOG << "Backing up current database to: " << dest_file;
-    Database::disconnect();
-    QFile db_file(databaseFile.absoluteFilePath());
-    //DEB << "File to Overwrite:" << db_file;
-
-    if (!db_file.copy(dest_file)) {
-        LOG << "Unable to backup old database:" << db_file.errorString();
-        return false;
-    }
-
-    LOG << "Backed up old database as:" << dest_file;
-    Database::connect();
-    emit connectionReset();
-    return true;
-}
-
 QVector<RowData_T> Database::getTable(OPL::DbTable table)
 {
     auto query_str = QStringLiteral("SELECT * FROM ");
@@ -638,10 +582,24 @@ QVector<RowData_T> Database::getTable(OPL::DbTable table)
     return entry_data;
 }
 
-/*!
- * \brief Database::restoreBackup restores the database from a given backup file and replaces the currently active database.
- * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
- */
+bool Database::createBackup(const QString& dest_file)
+{
+    LOG << "Backing up current database to: " << dest_file;
+    Database::disconnect();
+    QFile db_file(databaseFile.absoluteFilePath());
+    //DEB << "File to Overwrite:" << db_file;
+
+    if (!db_file.copy(dest_file)) {
+        LOG << "Unable to backup old database:" << db_file.errorString();
+        return false;
+    }
+
+    LOG << "Backed up old database as:" << dest_file;
+    Database::connect();
+    emit connectionReset();
+    return true;
+}
+
 bool Database::restoreBackup(const QString& backup_file)
 {
     LOG << "Restoring backup from file:" << backup_file;

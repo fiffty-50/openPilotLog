@@ -33,6 +33,18 @@ Inherits QObject\&.
 .RI "void \fBoperator=\fP (const \fBDatabase\fP &)=delete"
 .br
 .ti -1c
+.RI "bool \fBconnect\fP ()"
+.br
+.RI "Connect to the database and populate database information\&. "
+.ti -1c
+.RI "void \fBdisconnect\fP ()"
+.br
+.RI "closes the database connection\&. "
+.ti -1c
+.RI "void \fBupdateLayout\fP ()"
+.br
+.RI "Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered\&. This function is normally only required during database setup or maintenance\&. "
+.ti -1c
 .RI "const QString \fBversion\fP () const"
 .br
 .RI "Return the database revision number (not the sqlite version number)\&. "
@@ -48,18 +60,6 @@ Inherits QObject\&.
 .RI "const QStringList \fBgetTableColumns\fP (\fBOPL::DbTable\fP table_name) const"
 .br
 .RI "Return the names of a given table in the database\&. "
-.ti -1c
-.RI "void \fBupdateLayout\fP ()"
-.br
-.RI "Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered\&. This function is normally only required during database setup or maintenance\&. "
-.ti -1c
-.RI "bool \fBconnect\fP ()"
-.br
-.RI "Connect to the database and populate database information\&. "
-.ti -1c
-.RI "void \fBdisconnect\fP ()"
-.br
-.RI "closes the database connection\&. "
 .ti -1c
 .RI "QVector< QVariant > \fBcustomQuery\fP (QString statement, int return_values)"
 .br
@@ -107,43 +107,35 @@ Inherits QObject\&.
 .ti -1c
 .RI "\fBOPL::PilotEntry\fP \fBgetPilotEntry\fP (int row_id)"
 .br
-.RI "retreives a \fBPilotEntry\fP from the database\&. "
+.RI "retreives a \fBPilotEntry\fP from the database\&. See row class for details\&. "
 .ti -1c
 .RI "\fBOPL::TailEntry\fP \fBgetTailEntry\fP (int row_id)"
 .br
-.RI "retreives a \fBTailEntry\fP from the database\&. "
+.RI "retreives a \fBTailEntry\fP from the database\&. See row class for details\&. "
 .ti -1c
 .RI "\fBOPL::AircraftEntry\fP \fBgetAircraftEntry\fP (int row_id)"
 .br
-.RI "retreives a \fBTailEntry\fP from the database\&. "
+.RI "retreives a \fBTailEntry\fP from the database\&. See row class for details\&. "
 .ti -1c
 .RI "\fBOPL::FlightEntry\fP \fBgetFlightEntry\fP (int row_id)"
 .br
-.RI "retreives a flight entry from the database\&. "
+.RI "retreives a flight entry from the database\&. See row class for details\&. "
 .ti -1c
 .RI "\fBOPL::SimulatorEntry\fP \fBgetSimEntry\fP (int row_id)"
 .br
-.RI "retreives a Simulator entry from the database\&. "
+.RI "retreives a Simulator entry from the database\&. See row class for details\&. "
 .ti -1c
 .RI "\fBOPL::CurrencyEntry\fP \fBgetCurrencyEntry\fP (int row_id)"
 .br
-.RI "Retreives a currency entry from the database\&. "
+.RI "Retreives a currency entry from the database\&. See row class for details\&. "
 .ti -1c
 .RI "int \fBgetLastEntry\fP (\fBOPL::DbTable\fP table)"
 .br
-.RI "returns the ROWID for the newest entry in the respective database\&. "
+.RI "returns the ROWID for the newest entry in the respective table\&. "
 .ti -1c
 .RI "QList< int > \fBgetForeignKeyConstraints\fP (int foreign_row_id, \fBOPL::DbTable\fP table)"
 .br
 .RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
-.ti -1c
-.RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
-.br
-.RI "\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. "
-.ti -1c
-.RI "bool \fBcreateBackup\fP (const QString &dest_file)"
-.br
-.RI "\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
 .ti -1c
 .RI "QVector< RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
 .br
@@ -172,6 +164,14 @@ Inherits QObject\&.
 .RI "bool \fBresetUserData\fP ()"
 .br
 .RI "Delete all rows from the user data tables (flights, pliots, tails) "
+.ti -1c
+.RI "bool \fBcreateBackup\fP (const QString &dest_file)"
+.br
+.RI "\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
+.ti -1c
+.RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
+.br
+.RI "\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. "
 .in -1c
 .SS "Static Public Member Functions"
 
@@ -191,9 +191,6 @@ Inherits QObject\&.
 .RI "QSqlError \fBlastError\fP"
 .br
 .RI "Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. "
-.ti -1c
-.RI "const QFileInfo \fBdatabaseFile\fP"
-.br
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -243,22 +240,6 @@ The QSqlDatabase object pertaining to the connection\&.
 .RE
 .PP
 
-.SS "\fBOPL::AircraftEntry\fP OPL::Database::getAircraftEntry (int row_id)\fC [inline]\fP"
-
-.PP
-retreives a \fBTailEntry\fP from the database\&. This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an \fBAAircraftEntry\fP instead of an AEntry\&. It allows for easy access to an aircraft entry with only the RowId required as input\&. 
-.SS "\fBOPL::FlightEntry\fP OPL::Database::getFlightEntry (int row_id)\fC [inline]\fP"
-
-.PP
-retreives a flight entry from the database\&. This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an AFlightEntry instead of an AEntry\&. It allows for easy access to a flight entry with only the RowId required as input\&. 
-.SS "\fBOPL::PilotEntry\fP OPL::Database::getPilotEntry (int row_id)\fC [inline]\fP"
-
-.PP
-retreives a \fBPilotEntry\fP from the database\&. This function is a wrapper for DataBase::getRowData, where the table is already set and which returns a \fBPilotEntry\fP instead of an Entry\&. It allows for easy access to a pilot entry with only the RowId required as input\&. 
-.SS "\fBOPL::SimulatorEntry\fP OPL::Database::getSimEntry (int row_id)\fC [inline]\fP"
-
-.PP
-retreives a Simulator entry from the database\&. This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an ASimEntry instead of an AEntry\&. It allows for easy access to a Simulator entry with only the RowId required as input\&. 
 .SS "QVector< RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
 
 .PP
@@ -270,10 +251,6 @@ getTable returns all contents of a given table from the database
 .RE
 .PP
 
-.SS "\fBOPL::TailEntry\fP OPL::Database::getTailEntry (int row_id)\fC [inline]\fP"
-
-.PP
-retreives a \fBTailEntry\fP from the database\&. This function is a wrapper for DataBase::getRowData, where the table is already set and which returns a \fBTailEntry\fP instead of an Entry\&. It allows for easy access to a tail entry with only the RowId required as input\&. 
 .SS "const \fBUserDataState\fP OPL::Database::getUserDataState () const"
 
 .PP

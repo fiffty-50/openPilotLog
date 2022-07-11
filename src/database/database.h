@@ -42,8 +42,8 @@ namespace OPL {
 /*!
  * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
- * DataBase::getInstance().commit(...)
- * Write this:
+ * OPL::DataBase::getInstance().commit(...)
+ * Use this:
  * DB->commit(...)
  */
 #define DB OPL::Database::instance()
@@ -83,8 +83,12 @@ class Database : public QObject {
 
 private:
     Q_OBJECT
-    Database();
+    Database()
+        : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
+                                 absoluteFilePath(QStringLiteral("logbook.db"))))
+    {}
     static Database* self;
+    const QFileInfo databaseFile;
     QStringList tableNames;
     QHash<QString, QStringList> tableColumns;
 
@@ -108,6 +112,32 @@ public:
     static Database* instance();
 
     /*!
+     * \brief Holds information about the last error that ocurred during
+     * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
+     * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
+     * case error.type() provides further information.
+     *
+     * If the error type is QSqlError::NoError, the last executed database query was successful.
+     */
+    QSqlError lastError;
+
+    /*!
+     * \brief Connect to the database and populate database information.
+     */
+    bool connect();
+
+    /*!
+     * \brief closes the database connection.
+     */
+    void disconnect();
+
+    /*!
+     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
+     * if the database has been altered. This function is normally only required during database setup or maintenance.
+     */
+    void updateLayout();
+
+    /*!
      * \brief Return the database revision number (not the sqlite version number).
      */
     const QString version() const;
@@ -119,18 +149,6 @@ public:
     const QString sqliteVersion() const;
 
     /*!
-     * \brief Holds information about the last error that ocurred during
-     * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
-     * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
-     * case error.type() provides further information.
-     *
-     * If the error type is QSqlError::NoError, the last executed database query was successful.
-     */
-    QSqlError lastError;
-
-    const QFileInfo databaseFile;
-
-    /*!
      * \brief Return the names of all tables in the database
      */
     const QStringList getTableNames() const;
@@ -139,24 +157,6 @@ public:
      * \brief Return the names of a given table in the database.
      */
     const QStringList getTableColumns(OPL::DbTable table_name) const;
-
-    /*!
-     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
-     * if the database has been altered. This function is normally only required during database setup or maintenance.
-     */
-    void updateLayout();
-
-
-
-    /*!
-     * \brief Connect to the database and populate database information.
-     */
-    bool connect();
-
-    /*!
-     * \brief closes the database connection.
-     */
-    void disconnect();
 
     /*!
      * \brief Can be used to access the database connection.
@@ -198,22 +198,16 @@ public:
     /*!
      * \brief Create new entry in the databse based on UserInput
      */
-    //bool insert(const AEntry &new_entry);
-
     bool insert(const OPL::Row &new_row);
 
     /*!
      * \brief Updates entry in database from existing entry tweaked by the user.
      */
-    //bool update(const AEntry &updated_entry);
-
     bool update(const OPL::Row &updated_row);
 
     /*!
      * \brief deletes an entry from the database.
      */
-    //bool remove(const AEntry &entry);
-
     bool remove(const OPL::Row &row);
 
     /*!
@@ -233,12 +227,7 @@ public:
     RowData_T getRowData(const OPL::DbTable table, const int row_id);
 
     /*!
-     * \brief retreives a PilotEntry from the database.
-     *
-     * This function is a wrapper for DataBase::getRowData,
-     * where the table is already set and which returns a PilotEntry
-     * instead of an Entry. It allows for easy access to a pilot entry
-     * with only the RowId required as input.
+     * \brief retreives a PilotEntry from the database. See row class for details.
      */
     inline OPL::PilotEntry getPilotEntry(int row_id)
     {
@@ -247,12 +236,7 @@ public:
     }
 
     /*!
-     * \brief retreives a TailEntry from the database.
-     *
-     * This function is a wrapper for DataBase::getRowData,
-     * where the table is already set and which returns a TailEntry
-     * instead of an Entry. It allows for easy access to a tail entry
-     * with only the RowId required as input.
+     * \brief retreives a TailEntry from the database. See row class for details.
      */
     inline OPL::TailEntry getTailEntry(int row_id)
     {
@@ -261,12 +245,7 @@ public:
     }
 
     /*!
-     * \brief retreives a TailEntry from the database.
-     *
-     * This function is a wrapper for DataBase::getRowData,
-     * where the table is already set and which returns an AAircraftEntry
-     * instead of an AEntry. It allows for easy access to an aircraft entry
-     * with only the RowId required as input.
+     * \brief retreives a TailEntry from the database. See row class for details.
      */
     inline OPL::AircraftEntry getAircraftEntry(int row_id)
     {
@@ -275,12 +254,7 @@ public:
     }
 
     /*!
-     * \brief retreives a flight entry from the database.
-     *
-     * This function is a wrapper for DataBase::getRowData,
-     * where the table is already set and which returns an AFlightEntry
-     * instead of an AEntry. It allows for easy access to a flight entry
-     * with only the RowId required as input.
+     * \brief retreives a flight entry from the database. See row class for details.
      */
     inline OPL::FlightEntry getFlightEntry(int row_id)
     {
@@ -289,12 +263,7 @@ public:
     }
 
     /*!
-     * \brief retreives a Simulator entry from the database.
-     *
-     * This function is a wrapper for DataBase::getRowData,
-     * where the table is already set and which returns an ASimEntry
-     * instead of an AEntry. It allows for easy access to a Simulator entry
-     * with only the RowId required as input.
+     * \brief retreives a Simulator entry from the database. See row class for details.
      */
     inline OPL::SimulatorEntry getSimEntry(int row_id)
     {
@@ -303,7 +272,7 @@ public:
     }
 
     /*!
-     * \brief Retreives a currency entry from the database.
+     * \brief Retreives a currency entry from the database. See row class for details.
      */
     inline OPL::CurrencyEntry getCurrencyEntry(int row_id)
     {
@@ -312,7 +281,7 @@ public:
     }
 
     /*!
-     * \brief returns the ROWID for the newest entry in the respective database.
+     * \brief returns the ROWID for the newest entry in the respective table.
      */
     int getLastEntry(OPL::DbTable table);
 
@@ -321,9 +290,6 @@ public:
      * exist.
      */
     QList<int> getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table);
-
-    bool restoreBackup(const QString& backup_file);
-    bool createBackup(const QString& dest_file);
 
     /*!
      * \brief getTable returns all contents of a given table from the database
@@ -372,6 +338,18 @@ public:
      * \brief Delete all rows from the user data tables (flights, pliots, tails)
      */
     bool resetUserData();
+
+    /*!
+     * \brief Database::createBackup copies the currently used database to an external backup location provided by the user
+     * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+     */
+    bool createBackup(const QString& dest_file);
+
+    /*!
+     * \brief Database::restoreBackup restores the database from a given backup file and replaces the currently active database.
+     * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+     */
+    bool restoreBackup(const QString& backup_file);
 
 
 

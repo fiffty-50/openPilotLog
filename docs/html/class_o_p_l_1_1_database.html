@@ -124,6 +124,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a039830b539f0c81be67ec6796dded105"><td class="memItemLeft" align="right" valign="top"><a id="a039830b539f0c81be67ec6796dded105"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_o_p_l_1_1_database.html">Database</a> &amp;)=delete</td></tr>
 <tr class="separator:a039830b539f0c81be67ec6796dded105"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15dbcef162931776a0bdf6610fdd4cde"><td class="memItemLeft" align="right" valign="top"><a id="a15dbcef162931776a0bdf6610fdd4cde"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a15dbcef162931776a0bdf6610fdd4cde">connect</a> ()</td></tr>
+<tr class="memdesc:a15dbcef162931776a0bdf6610fdd4cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to the database and populate database information. <br /></td></tr>
+<tr class="separator:a15dbcef162931776a0bdf6610fdd4cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceb1bb497d30d413f87d6541716a873b"><td class="memItemLeft" align="right" valign="top"><a id="aceb1bb497d30d413f87d6541716a873b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#aceb1bb497d30d413f87d6541716a873b">disconnect</a> ()</td></tr>
+<tr class="memdesc:aceb1bb497d30d413f87d6541716a873b"><td class="mdescLeft">&#160;</td><td class="mdescRight">closes the database connection. <br /></td></tr>
+<tr class="separator:aceb1bb497d30d413f87d6541716a873b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a01dac1e447f7c41474a39d8f621ef"><td class="memItemLeft" align="right" valign="top"><a id="a55a01dac1e447f7c41474a39d8f621ef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a55a01dac1e447f7c41474a39d8f621ef">updateLayout</a> ()</td></tr>
+<tr class="memdesc:a55a01dac1e447f7c41474a39d8f621ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered. This function is normally only required during database setup or maintenance. <br /></td></tr>
+<tr class="separator:a55a01dac1e447f7c41474a39d8f621ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6df6e6b98679011f747862ca48a3498c"><td class="memItemLeft" align="right" valign="top"><a id="a6df6e6b98679011f747862ca48a3498c"></a>
 const QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a6df6e6b98679011f747862ca48a3498c">version</a> () const</td></tr>
 <tr class="memdesc:a6df6e6b98679011f747862ca48a3498c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the database revision number (not the sqlite version number). <br /></td></tr>
@@ -139,18 +151,6 @@ const QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 const QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#ac5b344097eeb2579da9bcfc7941d074c">getTableColumns</a> (<a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table_name) const</td></tr>
 <tr class="memdesc:ac5b344097eeb2579da9bcfc7941d074c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the names of a given table in the database. <br /></td></tr>
 <tr class="separator:ac5b344097eeb2579da9bcfc7941d074c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55a01dac1e447f7c41474a39d8f621ef"><td class="memItemLeft" align="right" valign="top"><a id="a55a01dac1e447f7c41474a39d8f621ef"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a55a01dac1e447f7c41474a39d8f621ef">updateLayout</a> ()</td></tr>
-<tr class="memdesc:a55a01dac1e447f7c41474a39d8f621ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered. This function is normally only required during database setup or maintenance. <br /></td></tr>
-<tr class="separator:a55a01dac1e447f7c41474a39d8f621ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15dbcef162931776a0bdf6610fdd4cde"><td class="memItemLeft" align="right" valign="top"><a id="a15dbcef162931776a0bdf6610fdd4cde"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a15dbcef162931776a0bdf6610fdd4cde">connect</a> ()</td></tr>
-<tr class="memdesc:a15dbcef162931776a0bdf6610fdd4cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to the database and populate database information. <br /></td></tr>
-<tr class="separator:a15dbcef162931776a0bdf6610fdd4cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aceb1bb497d30d413f87d6541716a873b"><td class="memItemLeft" align="right" valign="top"><a id="aceb1bb497d30d413f87d6541716a873b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#aceb1bb497d30d413f87d6541716a873b">disconnect</a> ()</td></tr>
-<tr class="memdesc:aceb1bb497d30d413f87d6541716a873b"><td class="mdescLeft">&#160;</td><td class="mdescRight">closes the database connection. <br /></td></tr>
-<tr class="separator:aceb1bb497d30d413f87d6541716a873b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf45cf7ba5d25bb5d8f8aac1105bb728"><td class="memItemLeft" align="right" valign="top">QVector&lt; QVariant &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#abf45cf7ba5d25bb5d8f8aac1105bb728">customQuery</a> (QString statement, int return_values)</td></tr>
 <tr class="memdesc:abf45cf7ba5d25bb5d8f8aac1105bb728"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can be used to send a complex query to the database.  <a href="class_o_p_l_1_1_database.html#abf45cf7ba5d25bb5d8f8aac1105bb728">More...</a><br /></td></tr>
 <tr class="separator:abf45cf7ba5d25bb5d8f8aac1105bb728"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,39 +193,38 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 RowData_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a3657d55721b0d3599ce6df55120017de">getRowData</a> (const <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table, const int row_id)</td></tr>
 <tr class="memdesc:a3657d55721b0d3599ce6df55120017de"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreive a Map of &lt;column name, column content&gt; for a specific row in the database. <br /></td></tr>
 <tr class="separator:a3657d55721b0d3599ce6df55120017de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2834aeb5c47bde300c898021eb9bbc48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_p_l_1_1_pilot_entry.html">OPL::PilotEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a2834aeb5c47bde300c898021eb9bbc48">getPilotEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a2834aeb5c47bde300c898021eb9bbc48"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_pilot_entry.html">PilotEntry</a> from the database.  <a href="class_o_p_l_1_1_database.html#a2834aeb5c47bde300c898021eb9bbc48">More...</a><br /></td></tr>
+<tr class="memitem:a2834aeb5c47bde300c898021eb9bbc48"><td class="memItemLeft" align="right" valign="top"><a id="a2834aeb5c47bde300c898021eb9bbc48"></a>
+<a class="el" href="class_o_p_l_1_1_pilot_entry.html">OPL::PilotEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a2834aeb5c47bde300c898021eb9bbc48">getPilotEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a2834aeb5c47bde300c898021eb9bbc48"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_pilot_entry.html">PilotEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a2834aeb5c47bde300c898021eb9bbc48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95340bb482ca788e748a597d013424ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a95340bb482ca788e748a597d013424ea">getTailEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a95340bb482ca788e748a597d013424ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database.  <a href="class_o_p_l_1_1_database.html#a95340bb482ca788e748a597d013424ea">More...</a><br /></td></tr>
+<tr class="memitem:a95340bb482ca788e748a597d013424ea"><td class="memItemLeft" align="right" valign="top"><a id="a95340bb482ca788e748a597d013424ea"></a>
+<a class="el" href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a95340bb482ca788e748a597d013424ea">getTailEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a95340bb482ca788e748a597d013424ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a95340bb482ca788e748a597d013424ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84b40aff7668c0782ae25a8d07f60922"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_p_l_1_1_aircraft_entry.html">OPL::AircraftEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a84b40aff7668c0782ae25a8d07f60922">getAircraftEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a84b40aff7668c0782ae25a8d07f60922"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database.  <a href="class_o_p_l_1_1_database.html#a84b40aff7668c0782ae25a8d07f60922">More...</a><br /></td></tr>
+<tr class="memitem:a84b40aff7668c0782ae25a8d07f60922"><td class="memItemLeft" align="right" valign="top"><a id="a84b40aff7668c0782ae25a8d07f60922"></a>
+<a class="el" href="class_o_p_l_1_1_aircraft_entry.html">OPL::AircraftEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a84b40aff7668c0782ae25a8d07f60922">getAircraftEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a84b40aff7668c0782ae25a8d07f60922"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a84b40aff7668c0782ae25a8d07f60922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a568d32e69f438bc165a2a9c1477eaaed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a568d32e69f438bc165a2a9c1477eaaed">getFlightEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a568d32e69f438bc165a2a9c1477eaaed"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a flight entry from the database.  <a href="class_o_p_l_1_1_database.html#a568d32e69f438bc165a2a9c1477eaaed">More...</a><br /></td></tr>
+<tr class="memitem:a568d32e69f438bc165a2a9c1477eaaed"><td class="memItemLeft" align="right" valign="top"><a id="a568d32e69f438bc165a2a9c1477eaaed"></a>
+<a class="el" href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a568d32e69f438bc165a2a9c1477eaaed">getFlightEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a568d32e69f438bc165a2a9c1477eaaed"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a flight entry from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a568d32e69f438bc165a2a9c1477eaaed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e7e61e354d4438dab48a39fb6de1777"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a9e7e61e354d4438dab48a39fb6de1777">getSimEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a9e7e61e354d4438dab48a39fb6de1777"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a Simulator entry from the database.  <a href="class_o_p_l_1_1_database.html#a9e7e61e354d4438dab48a39fb6de1777">More...</a><br /></td></tr>
+<tr class="memitem:a9e7e61e354d4438dab48a39fb6de1777"><td class="memItemLeft" align="right" valign="top"><a id="a9e7e61e354d4438dab48a39fb6de1777"></a>
+<a class="el" href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a9e7e61e354d4438dab48a39fb6de1777">getSimEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a9e7e61e354d4438dab48a39fb6de1777"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a Simulator entry from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a9e7e61e354d4438dab48a39fb6de1777"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affb40bf4566d45bdf2a68203b53be4db"><td class="memItemLeft" align="right" valign="top"><a id="affb40bf4566d45bdf2a68203b53be4db"></a>
 <a class="el" href="class_o_p_l_1_1_currency_entry.html">OPL::CurrencyEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#affb40bf4566d45bdf2a68203b53be4db">getCurrencyEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:affb40bf4566d45bdf2a68203b53be4db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retreives a currency entry from the database. <br /></td></tr>
+<tr class="memdesc:affb40bf4566d45bdf2a68203b53be4db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retreives a currency entry from the database. See row class for details. <br /></td></tr>
 <tr class="separator:affb40bf4566d45bdf2a68203b53be4db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebf3371c149463c49e818999c427ce6a"><td class="memItemLeft" align="right" valign="top"><a id="aebf3371c149463c49e818999c427ce6a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#aebf3371c149463c49e818999c427ce6a">getLastEntry</a> (<a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table)</td></tr>
-<tr class="memdesc:aebf3371c149463c49e818999c427ce6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the ROWID for the newest entry in the respective database. <br /></td></tr>
+<tr class="memdesc:aebf3371c149463c49e818999c427ce6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the ROWID for the newest entry in the respective table. <br /></td></tr>
 <tr class="separator:aebf3371c149463c49e818999c427ce6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4eb45d764952d44a3c45f16aea2e26d7"><td class="memItemLeft" align="right" valign="top"><a id="a4eb45d764952d44a3c45f16aea2e26d7"></a>
 QList&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a4eb45d764952d44a3c45f16aea2e26d7">getForeignKeyConstraints</a> (int foreign_row_id, <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table)</td></tr>
 <tr class="memdesc:a4eb45d764952d44a3c45f16aea2e26d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a list of ROWID's in the flights table for which foreign key constraints exist. <br /></td></tr>
 <tr class="separator:a4eb45d764952d44a3c45f16aea2e26d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77003350c44e7c6e1c8c4316cc324496"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496">restoreBackup</a> (const QString &amp;backup_file)</td></tr>
-<tr class="memdesc:a77003350c44e7c6e1c8c4316cc324496"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496" title="Database::restoreBackup restores the database from a given backup file and replaces the currently act...">Database::restoreBackup</a> restores the database from a given backup file and replaces the currently active database.  <a href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496">More...</a><br /></td></tr>
-<tr class="separator:a77003350c44e7c6e1c8c4316cc324496"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40cdc1cce81919c42f91e2e16a63df4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a">createBackup</a> (const QString &amp;dest_file)</td></tr>
-<tr class="memdesc:a40cdc1cce81919c42f91e2e16a63df4a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a" title="Database::createBackup copies the currently used database to an external backup location provided by ...">Database::createBackup</a> copies the currently used database to an external backup location provided by the user.  <a href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a">More...</a><br /></td></tr>
-<tr class="separator:a40cdc1cce81919c42f91e2e16a63df4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8145a21f5980cb3c55778fbe94ef52a0"><td class="memItemLeft" align="right" valign="top">QVector&lt; RowData_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a8145a21f5980cb3c55778fbe94ef52a0">getTable</a> (<a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table)</td></tr>
 <tr class="memdesc:a8145a21f5980cb3c55778fbe94ef52a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">getTable returns all contents of a given table from the database  <a href="class_o_p_l_1_1_database.html#a8145a21f5980cb3c55778fbe94ef52a0">More...</a><br /></td></tr>
 <tr class="separator:a8145a21f5980cb3c55778fbe94ef52a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -250,6 +249,12 @@ const QList&lt; <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a63af56a9fbd8cd0290494cc28d327824">resetUserData</a> ()</td></tr>
 <tr class="memdesc:a63af56a9fbd8cd0290494cc28d327824"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete all rows from the user data tables (flights, pliots, tails) <br /></td></tr>
 <tr class="separator:a63af56a9fbd8cd0290494cc28d327824"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40cdc1cce81919c42f91e2e16a63df4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a">createBackup</a> (const QString &amp;dest_file)</td></tr>
+<tr class="memdesc:a40cdc1cce81919c42f91e2e16a63df4a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a" title="Database::createBackup copies the currently used database to an external backup location provided by ...">Database::createBackup</a> copies the currently used database to an external backup location provided by the user.  <a href="class_o_p_l_1_1_database.html#a40cdc1cce81919c42f91e2e16a63df4a">More...</a><br /></td></tr>
+<tr class="separator:a40cdc1cce81919c42f91e2e16a63df4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77003350c44e7c6e1c8c4316cc324496"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496">restoreBackup</a> (const QString &amp;backup_file)</td></tr>
+<tr class="memdesc:a77003350c44e7c6e1c8c4316cc324496"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496" title="Database::restoreBackup restores the database from a given backup file and replaces the currently act...">Database::restoreBackup</a> restores the database from a given backup file and replaces the currently active database.  <a href="class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496">More...</a><br /></td></tr>
+<tr class="separator:a77003350c44e7c6e1c8c4316cc324496"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -265,9 +270,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa5b783822a603bdcfd1d8c93ba0af34b"><td class="memItemLeft" align="right" valign="top">QSqlError&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#aa5b783822a603bdcfd1d8c93ba0af34b">lastError</a></td></tr>
 <tr class="memdesc:aa5b783822a603bdcfd1d8c93ba0af34b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Holds information about the last error that ocurred during a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,...), otherwise the error is related to SQL execution. In this case error.type() provides further information.  <a href="class_o_p_l_1_1_database.html#aa5b783822a603bdcfd1d8c93ba0af34b">More...</a><br /></td></tr>
 <tr class="separator:aa5b783822a603bdcfd1d8c93ba0af34b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7697d81a9fa93d0ce6e9fff2b67b40d5"><td class="memItemLeft" align="right" valign="top"><a id="a7697d81a9fa93d0ce6e9fff2b67b40d5"></a>
-const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFile</b></td></tr>
-<tr class="separator:a7697d81a9fa93d0ce6e9fff2b67b40d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The DB class encapsulates the SQL database by providing fast access to hot database data. </p>
@@ -414,122 +416,6 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
 
 </div>
 </div>
-<a id="a84b40aff7668c0782ae25a8d07f60922"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84b40aff7668c0782ae25a8d07f60922">&#9670;&nbsp;</a></span>getAircraftEntry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_o_p_l_1_1_aircraft_entry.html">OPL::AircraftEntry</a> OPL::Database::getAircraftEntry </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. </p>
-<p>This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an <a class="el" href="struct_a_aircraft_entry.html">AAircraftEntry</a> instead of an AEntry. It allows for easy access to an aircraft entry with only the RowId required as input. </p>
-
-</div>
-</div>
-<a id="a568d32e69f438bc165a2a9c1477eaaed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a568d32e69f438bc165a2a9c1477eaaed">&#9670;&nbsp;</a></span>getFlightEntry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a> OPL::Database::getFlightEntry </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>retreives a flight entry from the database. </p>
-<p>This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an AFlightEntry instead of an AEntry. It allows for easy access to a flight entry with only the RowId required as input. </p>
-
-</div>
-</div>
-<a id="a2834aeb5c47bde300c898021eb9bbc48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2834aeb5c47bde300c898021eb9bbc48">&#9670;&nbsp;</a></span>getPilotEntry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_o_p_l_1_1_pilot_entry.html">OPL::PilotEntry</a> OPL::Database::getPilotEntry </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>retreives a <a class="el" href="class_o_p_l_1_1_pilot_entry.html">PilotEntry</a> from the database. </p>
-<p>This function is a wrapper for DataBase::getRowData, where the table is already set and which returns a <a class="el" href="class_o_p_l_1_1_pilot_entry.html">PilotEntry</a> instead of an Entry. It allows for easy access to a pilot entry with only the RowId required as input. </p>
-
-</div>
-</div>
-<a id="a9e7e61e354d4438dab48a39fb6de1777"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e7e61e354d4438dab48a39fb6de1777">&#9670;&nbsp;</a></span>getSimEntry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a> OPL::Database::getSimEntry </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>retreives a Simulator entry from the database. </p>
-<p>This function is a wrapper for DataBase::getRowData, where the table is already set and which returns an ASimEntry instead of an AEntry. It allows for easy access to a Simulator entry with only the RowId required as input. </p>
-
-</div>
-</div>
 <a id="a8145a21f5980cb3c55778fbe94ef52a0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8145a21f5980cb3c55778fbe94ef52a0">&#9670;&nbsp;</a></span>getTable()</h2>
 
@@ -548,35 +434,6 @@ const QFileInfo&#160;</td><td class="memItemRight" valign="bottom"><b>databaseFi
 
 <p>getTable returns all contents of a given table from the database </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<a id="a95340bb482ca788e748a597d013424ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95340bb482ca788e748a597d013424ea">&#9670;&nbsp;</a></span>getTailEntry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a> OPL::Database::getTailEntry </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. </p>
-<p>This function is a wrapper for DataBase::getRowData, where the table is already set and which returns a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> instead of an Entry. It allows for easy access to a tail entry with only the RowId required as input. </p>
 
 </div>
 </div>

@@ -39,6 +39,5 @@ var class_o_p_l_1_1_database =
     [ "update", "class_o_p_l_1_1_database.html#a4938319e593b9e5d5a334f794301d873", null ],
     [ "updateLayout", "class_o_p_l_1_1_database.html#a55a01dac1e447f7c41474a39d8f621ef", null ],
     [ "version", "class_o_p_l_1_1_database.html#a6df6e6b98679011f747862ca48a3498c", null ],
-    [ "databaseFile", "class_o_p_l_1_1_database.html#a7697d81a9fa93d0ce6e9fff2b67b40d5", null ],
     [ "lastError", "class_o_p_l_1_1_database.html#aa5b783822a603bdcfd1d8c93ba0af34b", null ]
 ];
