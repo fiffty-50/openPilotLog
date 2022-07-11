@@ -1,6 +1,6 @@
 #ifndef ACOMPLETIONDATA_H
 #define ACOMPLETIONDATA_H
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 
 /*!
  * \brief The ACompletionData class provides data to QCompleters and QHashs used
@@ -25,11 +25,11 @@ public:
 
 
     // Maps for input mapping DB key - user input
-    QHash<RowId_T, QString> pilotsIdMap;
-    QHash<RowId_T, QString> tailsIdMap;
-    QHash<RowId_T, QString> airportIcaoIdMap;
-    QHash<RowId_T, QString> airportIataIdMap;
-    QHash<RowId_T, QString> airportNameIdMap;
+    QHash<int, QString> pilotsIdMap;
+    QHash<int, QString> tailsIdMap;
+    QHash<int, QString> airportIcaoIdMap;
+    QHash<int, QString> airportIataIdMap;
+    QHash<int, QString> airportNameIdMap;
     // Lists for QCompleter
     QStringList pilotList;
     QStringList tailsList;

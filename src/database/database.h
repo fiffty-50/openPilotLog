@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ADATABASE_H
-#define ADATABASE_H
+#ifndef DATABASE_H
+#define DATABASE_H
 
 #include <QPair>
 #include <QHash>
@@ -31,67 +31,22 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
-#include "src/database/adatabasetypes.h"
-#include "src/classes/row.h"
-
+#include "src/opl.h"
+#include "src/database/row.h"
 #include "src/classes/astandardpaths.h"
 
-#define SQLITE_DRIVER QStringLiteral("QSQLITE")
+using RowData_T = QHash<QString, QVariant>;
+
+namespace OPL {
 
 /*!
  * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
  * DataBase::getInstance().commit(...)
  * Write this:
- * aDB->commit(...)
+ * DB->commit(...)
  */
-#define aDB ADatabase::instance()
-
-/*!
- * \brief The DBTarget enum lists database items that are
- * used by completers, for content matching or need to be accessed programatically.
- */
-enum class ADatabaseTarget
-{
-    airport_identifier_icao,
-    airport_identifier_iata,
-    airport_identifier_all,
-    airport_names,
-    registrations,
-    companies,
-    tails,
-    pilots,
-    aircraft
-};
-
-/*!
- * \brief enumarates the tables in the database
- */
-enum class ADatabaseTable
-{
-    // user tables
-    tails = 0,
-    pilots = 1,
-    flights = 2,
-    simulators = 3,
-    currencies = 4,
-
-    // template tables
-    aircraft = 4,
-    airports = 5,
-    changelog = 7,
-};
-
-/*!
- * \brief Enumerates the QHash keys used when summarising a database
- */
-enum class ADatabaseSummaryKey {
-    total_flights,
-    total_tails,
-    total_pilots,
-    last_flight,
-    total_time,
-};
+#define DB OPL::Database::instance()
 
 /*!
  * \brief The UserDateState struct caches the current number of entries in relevant database tables
@@ -118,45 +73,50 @@ struct UserDataState {
     int numPilots;
 };
 
-/*!
- * \brief Custom Database Error derived from QSqlError.
- * Extends text() adding "Database Error: " before the text.
- * Errors that are related to SQL are assigned their respective error codes.
- * Errors that occur with data in the database are handled with the error code "opl"
- * and QSqlError::UnknownError
- */
-class ADatabaseError : public QSqlError {
-public:
-    ADatabaseError() = default;
-    ADatabaseError(QString msg);
-    QString text() const;
-    ADatabaseError(QSqlError);
-};
+
 
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
  * to hot database data.
  */
-class ADatabase : public QObject {
+class Database : public QObject {
 
 private:
     Q_OBJECT
-    static ADatabase* self;
-    TableNames_T tableNames;
-    TableColumns_T tableColumns;
-    int databaseRevision;
+    Database();
+    static Database* self;
+    QStringList tableNames;
+    QHash<QString, QStringList> tableColumns;
 
-    ADatabase();
-    int checkDbVersion() const;
+    inline const static QString SQLITE_DRIVER  = QStringLiteral("QSQLITE");
+    inline const static QList<OPL::DbTable> USER_TABLES = {
+        OPL::DbTable::Flights,
+        OPL::DbTable::Pilots,
+        OPL::DbTable::Tails
+    };
+    inline const static QList<OPL::DbTable> TEMPLATE_TABLES = {
+        OPL::DbTable::Aircraft,
+        OPL::DbTable::Airports,
+        OPL::DbTable::Currencies,
+        OPL::DbTable::Changelog
+    };
 
-    const static QStringList userTableNames;
-    const static QStringList templateTableNames;
-    const static int minimumDatabaseRevision;
 
 public:
-    ADatabase(const ADatabase&) = delete;
-    void operator=(const ADatabase&) = delete;
-    static ADatabase* instance();
+    Database(const Database&) = delete;
+    void operator=(const Database&) = delete;
+    static Database* instance();
+
+    /*!
+     * \brief Return the database revision number (not the sqlite version number).
+     */
+    const QString version() const;
+
+    /*!
+     * \brief Database::sqliteVersion returns the database sqlite version. See also dbRevision()
+     * \return sqlite version string
+     */
+    const QString sqliteVersion() const;
 
     /*!
      * \brief Holds information about the last error that ocurred during
@@ -170,41 +130,15 @@ public:
 
     const QFileInfo databaseFile;
 
-
-
-    /*!
-     * \brief Create or restore the database to its ready-to-use but empty state
-     * \details The SQL code for the database creation is stored in a .sql file which is available as a ressource.
-     * This file gets read, and the querys executed. If errors occur, returns false.
-     */
-    bool createSchema();
-
-    /*!
-     * \brief importTemplateData fills an empty database with the template
-     * data (Aircraft, Airports, currencies, changelog) as read from the JSON
-     * templates.
-     * \param use_local_ressources determines whether the included ressource files
-     * or a previously downloaded file should be used.
-     * \return
-     */
-    bool importTemplateData(bool use_local_ressources = true);
-
-    /*!
-     * \brief dbRevision returns the database Revision Number. The Revision refers to what iteration
-     * of the database layout is used. For the sqlite version of the database refer to sqliteVersion()
-     * \return
-     */
-    int dbRevision() const;
-
     /*!
      * \brief Return the names of all tables in the database
      */
-    const TableNames_T getTableNames() const;
+    const QStringList getTableNames() const;
 
     /*!
      * \brief Return the names of a given table in the database.
      */
-    const ColumnNames_T getTableColumns(TableName_T table_name) const;
+    const QStringList getTableColumns(OPL::DbTable table_name) const;
 
     /*!
      * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
@@ -212,11 +146,7 @@ public:
      */
     void updateLayout();
 
-    /*!
-     * \brief ADatabase::sqliteVersion returns the database sqlite version. See also dbRevision()
-     * \return sqlite version string
-     */
-    const QString sqliteVersion() const;
+
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -245,7 +175,6 @@ public:
      * \brief Checks if an entry exists in the database, based on position data
      */
     bool exists(const OPL::Row &row);
-    bool exists(const DataPosition &position);
 
     /*!
      * \brief clear resets the database, i.e. deletes all content in the tables containing
@@ -264,7 +193,7 @@ public:
      * \details This function is used to import values to the databases which are held in JSON documents.
      * These entries are pre-filled data used for providing completion data, such as Airport or Aircraft Type Data.
      */
-    bool commit(const QJsonArray &json_arr, const QString &table_name);
+    bool commit(const QJsonArray &json_arr, const OPL::DbTable table);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
@@ -288,15 +217,10 @@ public:
     bool remove(const OPL::Row &row);
 
     /*!
-     * \brief deletes a list of entries from the database. Optimised for speed when
-     * deleting many entries.
+     * \brief deletes a batch of entries from the database. Optimised for speed when
+     * deleting many entries. The entries are identified using their row id
      */
-    bool removeMany(const QList<DataPosition> &position_list);
-
-    /*!
-     * \brief retreive entry data from the database to create an entry object
-     */
-    RowData_T getEntryData(const DataPosition &data_position);
+    bool removeMany(OPL::DbTable table, const QList<int> &row_id_list);
 
     /*!
      * \brief retreive a Row from the database
@@ -316,7 +240,7 @@ public:
      * instead of an Entry. It allows for easy access to a pilot entry
      * with only the RowId required as input.
      */
-    inline OPL::PilotEntry getPilotEntry(RowId_T row_id)
+    inline OPL::PilotEntry getPilotEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Pilots, row_id);
         return OPL::PilotEntry(row_id, data);
@@ -330,7 +254,7 @@ public:
      * instead of an Entry. It allows for easy access to a tail entry
      * with only the RowId required as input.
      */
-    inline OPL::TailEntry getTailEntry(RowId_T row_id)
+    inline OPL::TailEntry getTailEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Tails, row_id);
         return OPL::TailEntry(row_id, data);
@@ -344,7 +268,7 @@ public:
      * instead of an AEntry. It allows for easy access to an aircraft entry
      * with only the RowId required as input.
      */
-    inline OPL::AircraftEntry getAircraftEntry(RowId_T row_id)
+    inline OPL::AircraftEntry getAircraftEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Aircraft, row_id);
         return OPL::AircraftEntry(row_id, data);
@@ -358,7 +282,7 @@ public:
      * instead of an AEntry. It allows for easy access to a flight entry
      * with only the RowId required as input.
      */
-    inline OPL::FlightEntry getFlightEntry(RowId_T row_id)
+    inline OPL::FlightEntry getFlightEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Flights, row_id);
         return OPL::FlightEntry(row_id, data);
@@ -372,7 +296,7 @@ public:
      * instead of an AEntry. It allows for easy access to a Simulator entry
      * with only the RowId required as input.
      */
-    inline OPL::SimulatorEntry getSimEntry(RowId_T row_id)
+    inline OPL::SimulatorEntry getSimEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Simulators, row_id);
         return OPL::SimulatorEntry(row_id, data);
@@ -381,49 +305,22 @@ public:
     /*!
      * \brief Retreives a currency entry from the database.
      */
-    inline OPL::CurrencyEntry getCurrencyEntry(RowId_T row_id)
+    inline OPL::CurrencyEntry getCurrencyEntry(int row_id)
     {
         const auto data = getRowData(OPL::DbTable::Currencies, row_id);
         return OPL::CurrencyEntry(row_id, data);
     }
 
     /*!
-     * \brief getCompletionList returns a QStringList of values for a
-     * QCompleter based on database values
-     */
-    const QStringList getCompletionList(ADatabaseTarget target);
-
-    /*!
-     * \brief returns a QHash of a human-readable database value and
-     * its row id. Used in the Dialogs to map user input to unique database entries.
-     */
-    const QHash<RowId_T, QString> getIdMap(ADatabaseTarget target);
-
-    /*!
      * \brief returns the ROWID for the newest entry in the respective database.
      */
-    RowId_T getLastEntry(ADatabaseTable table);
+    int getLastEntry(OPL::DbTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<RowId_T> getForeignKeyConstraints(RowId_T foreign_row_id, ADatabaseTable target);
-
-    /*!
-     * \brief Return a summary of a database
-     * \details Creates a summary of the database giving a quick overview of the relevant contents. The
-     * function runs several specialised SQL queries to create a QHash<ADatabaseSummaryKey, QString> containing
-     * Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight. Uses a temporary
-     * database connection separate from the default connection in order to not tamper with the currently active
-     * database connection.
-     */
-    QMap<ADatabaseSummaryKey, QString> databaseSummary(const QString& db_path);
-
-    /*!
-     * \brief returns a short summary string of the database, containing total time and date of last flight.
-     */
-    const QString databaseSummaryString(const QString& db_path);
+    QList<int> getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table);
 
     bool restoreBackup(const QString& backup_file);
     bool createBackup(const QString& dest_file);
@@ -432,36 +329,51 @@ public:
      * \brief getTable returns all contents of a given table from the database
      * \return
      */
-    QVector<RowData_T> getTable(ADatabaseTable table_name);
+    QVector<RowData_T> getTable(OPL::DbTable table);
 
     /*!
-     * \brief getUserTableNames returns a list of the table names of tables that contain user-created data
+     * \brief getUserTables returns a list of the of the tables that contain user-created data
      * (flights, pilots,..)
      */
-    const QStringList &getUserTableNames() const;
+    const QList<OPL::DbTable> &getUserTables() const;
 
     /*!
-     * \brief getTemplateTableNames returns a list of the table names of tables that contain template data
+     * \brief getTemplateTables returns a list of the tables that contain template data
      * (aiports, aircraft,..)
      */
-    const QStringList &getTemplateTableNames() const;
+    const QList<OPL::DbTable> &getTemplateTables() const;
 
     /*!
      * \brief getUserDataState returns a struct containing the current amount of entries in the tails and
      * pilots tables.
      * \return
      */
-    UserDataState getUserDataState();
+    const UserDataState getUserDataState() const;
+
+    // Maintenance and setup
+
+    /*!
+     * \brief Create or restore the database to its ready-to-use but empty state
+     * \details The SQL code for the database creation is stored in a .sql file which is available as a ressource.
+     * This file gets read, and the querys executed. If errors occur, returns false.
+     */
+    bool createSchema();
+    /*!
+     * \brief importTemplateData fills an empty database with the template
+     * data (Aircraft, Airports, currencies, changelog) as read from the JSON
+     * templates.
+     * \param use_local_ressources determines whether the included ressource files
+     * or a previously downloaded file should be used.
+     * \return
+     */
+    bool importTemplateData(bool use_local_ressources);
 
     /*!
      * \brief Delete all rows from the user data tables (flights, pliots, tails)
      */
     bool resetUserData();
 
-    /*!
-     * \brief getMinimumDatabaseRevision returns the minimum required database revision number required by the application.
-     */
-    static int getMinimumDatabaseRevision();
+
 
 signals:
     /*!
@@ -478,4 +390,6 @@ signals:
     void connectionReset();
 };
 
-#endif // ADATABASE_H
+} // namespace OPL
+
+#endif // DATABASE_H

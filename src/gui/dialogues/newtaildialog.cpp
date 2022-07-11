@@ -19,6 +19,7 @@
 #include "ui_newtail.h"
 #include "src/functions/alog.h"
 #include "src/opl.h"
+#include "src/database/dbcompletiondata.h"
 
 NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     QDialog(parent),
@@ -47,7 +48,7 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     ui->line->hide();
 
     setupValidators();
-    entry = aDB->getTailEntry(row_id);
+    entry = DB->getTailEntry(row_id);
     LOG << "Editing: " << entry;
     fillForm(entry, false);
 }
@@ -65,8 +66,8 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    idMap = aDB->getIdMap(ADatabaseTarget::aircraft);
-    aircraftList = aDB->getCompletionList(ADatabaseTarget::aircraft);
+    idMap = OPL::DbCompletionData::getIdMap(OPL::CompleterTarget::AircraftTypes);
+    aircraftList = OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::AircraftTypes);
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -204,12 +205,12 @@ void NewTailDialog::submitForm()
 
     entry.setData(new_data);
     LOG << "Commiting: " << entry;
-    if (!aDB->commit(entry)) {
+    if (!DB->commit(entry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         message_box.exec();
         return;
     } else {
@@ -273,7 +274,7 @@ void NewTailDialog::onSearchCompleterActivated()
 
             DEB << "Template Selected. aircraft_id is: " << idMap.key(text);
             //call autofiller for dialog
-            fillForm(aDB->getAircraftEntry(idMap.key(text)), true);
+            fillForm(DB->getAircraftEntry(idMap.key(text)), true);
             ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
             ui->searchLabel->setText(text);
         } else {

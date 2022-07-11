@@ -19,7 +19,7 @@
 #define AAIRCRAFTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/adatabasetypes.h"
+#include "src/database/databasetypes.h"
 
 struct AAircraftEntry : public AEntry {
 public:

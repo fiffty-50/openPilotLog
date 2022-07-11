@@ -28,8 +28,8 @@
 #include "src/classes/adownload.h"
 #include "src/functions/areadcsv.h"
 
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 #include "src/testing/atimer.h"
 #include "src/functions/alog.h"

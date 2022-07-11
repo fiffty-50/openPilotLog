@@ -19,8 +19,9 @@
 #include "ui_newpilot.h"
 #include "src/opl.h"
 
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
+#include "src/database/row.h"
 #include "src/functions/alog.h"
 
 /*!
@@ -46,7 +47,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
 {
     setup();
 
-    pilotEntry = aDB->getPilotEntry(rowId);
+    pilotEntry = DB->getPilotEntry(rowId);
     DEB << "Editing Pilot: " << pilotEntry;
     formFiller();
     ui->lastnameLineEdit->setFocus();
@@ -61,7 +62,7 @@ void NewPilotDialog::setup()
 {
     ui->setupUi(this);
 
-    auto completer = new QCompleter(aDB->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::Companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
@@ -101,12 +102,12 @@ void NewPilotDialog::submitForm()
     pilotEntry.setData(new_data);
     DEB << "Submitting Pilot:";
     DEB << pilotEntry;
-    if (!aDB->commit(pilotEntry)) {
+    if (!DB->commit(pilotEntry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         message_box.exec();
         return;
     } else {

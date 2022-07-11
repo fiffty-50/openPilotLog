@@ -20,8 +20,8 @@
 #include "src/functions/alog.h"
 #include "src/classes/astyle.h"
 #include "src/classes/asettings.h"
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 #include "src/opl.h"
 #include "src/functions/adate.h"
 
@@ -84,7 +84,7 @@ void SettingsWidget::setupDateEdits()
     };
     for (const auto &pair : currencies_list) {
         const QSignalBlocker signal_blocker(pair.second);
-        const auto entry = aDB->getCurrencyEntry(static_cast<int>(pair.first));
+        const auto entry = DB->getCurrencyEntry(static_cast<int>(pair.first));
         if (entry.isValid()) { // set date
             const auto date = QDate::fromString(
                         entry.getData().value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
@@ -105,7 +105,7 @@ void SettingsWidget::readSettings()
     //const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
     // Personal Data Tab
-    auto user_data = aDB->getPilotEntry(1).getData();
+    auto user_data = DB->getPilotEntry(1).getData();
     ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
     ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
     ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
@@ -212,8 +212,8 @@ void SettingsWidget::updatePersonalDetails()
     TODO << "Changing DB does not currently refresh logbook view";
     TODO << "Check for empty line edits (First, last name should not be empty...validators not a good way because it gives no user feedback)";
 
-    if(!aDB->commit(user))
-        WARN(tr("Unable to update Database:<br>") + aDB->lastError.text());
+    if(!DB->commit(user))
+        WARN(tr("Unable to update Database:<br>") + DB->lastError.text());
     else
         LOG << "User updated successfully.";
 
@@ -333,7 +333,7 @@ void SettingsWidget::on_aboutPushButton_clicked()
     QMessageBox message_box(this);
     QPixmap icon = QPixmap(OPL::Assets::ICON_MAIN);
     message_box.setIconPixmap(icon.scaledToWidth(64, Qt::TransformationMode::SmoothTransformation));
-    QString SQLITE_VERSION = aDB->sqliteVersion();
+    QString SQLITE_VERSION = DB->sqliteVersion();
     QString text = QMessageBox::tr(
 
                        "<h3><center>About</center></h3>"
@@ -475,8 +475,8 @@ void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
     const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Licence), row_data);
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }
@@ -485,8 +485,8 @@ void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
     const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::TypeRating), row_data);
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }
@@ -495,8 +495,8 @@ void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
     const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::LineCheck), row_data);
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }
@@ -505,8 +505,8 @@ void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
     const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Medical), row_data);
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }
@@ -517,8 +517,8 @@ void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
                                 {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom1), row_data);
     DEB << entry;
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }
@@ -528,8 +528,8 @@ void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
     const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
                                 {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom2), row_data);
-    if (!aDB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+    if (!DB->commit(entry))
+        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
 
     emit settingChanged(HomeWidget);
 }

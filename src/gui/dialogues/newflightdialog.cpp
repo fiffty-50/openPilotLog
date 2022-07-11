@@ -31,7 +31,7 @@
 
 const auto CAT_3 = QLatin1String(OPL::GLOBALS->getApproachTypes()[3].toLatin1());
 
-NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
+NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data,
                                        QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewFlightDialog),
@@ -56,13 +56,13 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
     emit ui->doftLineEdit->editingFinished();
 }
 
-NewFlightDialog::NewFlightDialog(ACompletionData &completion_data, RowId_T row_id, QWidget *parent)
+NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data, int row_id, QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewFlightDialog),
       completionData(completion_data)
 {
     init();
-    flightEntry = aDB->getFlightEntry(row_id);
+    flightEntry = DB->getFlightEntry(row_id);
     fillWithEntryData();
 }
 
@@ -304,7 +304,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
         // update map and list, set line edit
         if (ret == QDialog::Accepted) {
             DEB << "New Tail Entry added:";
-            DEB << aDB->getTailEntry(aDB->getLastEntry(ADatabaseTable::tails));
+            DEB << DB->getTailEntry(DB->getLastEntry(OPL::DbTable::Tails));
 
             // update completion Data and Completer
             completionData.updateTails();
@@ -312,7 +312,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
             parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
 
             // update Line Edit
-            parent_line_edit.setText(completionData.tailsIdMap.value(aDB->getLastEntry(ADatabaseTable::tails)));
+            parent_line_edit.setText(completionData.tailsIdMap.value(DB->getLastEntry(OPL::DbTable::Tails)));
             return true;
         } else {
             return false;
@@ -343,14 +343,14 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
         // update map and list, set line edit
         if (ret == QDialog::Accepted) {
             DEB << "New Pilot Entry added:";
-            DEB << aDB->getPilotEntry(aDB->getLastEntry(ADatabaseTable::pilots));
+            DEB << DB->getPilotEntry(DB->getLastEntry(OPL::DbTable::Pilots));
             // update completion Data and Completer
             completionData.updatePilots();
             auto new_model = new QStringListModel(completionData.pilotList, parent_line_edit.completer());
             parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
 
             // update Line Edit
-            parent_line_edit.setText(completionData.pilotsIdMap.value(aDB->getLastEntry(ADatabaseTable::pilots)));
+            parent_line_edit.setText(completionData.pilotsIdMap.value(DB->getLastEntry(OPL::DbTable::Pilots)));
             return true;
         } else {
             return false;
@@ -387,7 +387,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
     // Aircraft
     int acft_id = completionData.tailsIdMap.key(ui->acftLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_ACFT, acft_id);
-    const OPL::TailEntry acft_data = aDB->getTailEntry(acft_id);
+    const OPL::TailEntry acft_data = DB->getTailEntry(acft_id);
     bool multi_pilot = acft_data.getData().value(OPL::Db::TAILS_MULTIPILOT).toBool();
     bool multi_engine = acft_data.getData().value(OPL::Db::TAILS_MULTIENGINE).toBool();
 
@@ -735,7 +735,7 @@ bool NewFlightDialog::checkPilotFunctionsValid()
  * \details When the user is ready to submit a flight entry, a final check for valid entries is made, and the user
  * is prompted to correct unsatisfactory inputs. When this is done, prepareFlightEntryData() collects the input from
  * the user interface and converts it to database format. The data is then stored in a QHash<QString, QVariant>.
- * This data is then used to create a AFlightEntry object, which is then commited to the database by ADatabase::commit()
+ * This data is then used to create a AFlightEntry object, which is then commited to the database by Database::commit()
  */
 void NewFlightDialog::on_buttonBox_accepted()
 {
@@ -779,11 +779,11 @@ void NewFlightDialog::on_buttonBox_accepted()
     flightEntry.setData(newData);
     DEB << "Committing: ";
     DEB << flightEntry;
-    if (!aDB->commit(flightEntry)) {
+    if (!DB->commit(flightEntry)) {
         WARN(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         return;
     } else {
         QDialog::accept();

@@ -54,7 +54,7 @@ OPL::Row::operator QString() const
     }
     QString out("\033[32m[Entry Data]:\t\033[m\n");
     int item_count = 0;
-    QHash<ColName_T, ColData_T>::const_iterator i;
+    QHash<QString, QVariant>::const_iterator i;
     for (i = rowData.constBegin(); i!= rowData.constEnd(); ++i) {
         QString spacer(":");
         int spaces = (14 - i.key().length());

@@ -36,7 +36,7 @@
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/acompletiondata.h"
 
 namespace Ui {

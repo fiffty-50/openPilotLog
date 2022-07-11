@@ -24,7 +24,7 @@
 #include <QPair>
 #include <QVariant>
 
-#include "src/database/adatabasetypes.h"
+#include "src/database/databasetypes.h"
 
 /*!
  * \brief The Entry class encapsulates table metadata(table name, row id)

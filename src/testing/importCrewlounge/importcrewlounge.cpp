@@ -1,7 +1,7 @@
 #include "importcrewlounge.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/opl.h"
-#include "src/classes/row.h"
+#include "src/database/row.h"
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
@@ -13,7 +13,7 @@ namespace ImportCrewlounge
 void exec(const QString &csv_file_path)
 {
     // Inhibit HomeWindow Updating
-    QSignalBlocker blocker(aDB);
+    QSignalBlocker blocker(DB);
 
     // Prepare database and set up exclusive transaction for mass commit
     QSqlQuery q;
@@ -31,7 +31,7 @@ void exec(const QString &csv_file_path)
 
     for (const auto & pilot_data : p_maps) {
         OPL::PilotEntry pe(pilot_data.value(OPL::Db::PILOTS_ROWID).toInt(), pilot_data);
-        aDB->commit(pe);
+        DB->commit(pe);
     }
 
     // Process Tails
@@ -41,7 +41,7 @@ void exec(const QString &csv_file_path)
 
     for (const auto& tail_data : t_maps) {
         OPL::TailEntry te(tail_data.value(OPL::Db::PILOTS_ROWID).toInt(), tail_data);
-        aDB->commit(te);
+        DB->commit(te);
     }
 
     auto proc_flights = ProcessFlights(raw_csv_data,
@@ -54,7 +54,7 @@ void exec(const QString &csv_file_path)
 
     for (const auto &flight_data : flights) {
         OPL::FlightEntry fe(flight_data);
-        aDB->commit(fe);
+        DB->commit(fe);
     }
 
     // Commit the exclusive transaction
@@ -63,6 +63,6 @@ void exec(const QString &csv_file_path)
 
     // destroy blocker
     blocker.unblock();
-    emit aDB->dataBaseUpdated();
+    emit DB->dataBaseUpdated();
 }
 }// namespace ImportCrewLongue

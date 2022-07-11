@@ -1,7 +1,7 @@
 #ifndef ACURRENCYENTRY_H
 #define ACURRENCYENTRY_H
 
-#include "src/database/adatabasetypes.h"
+#include "src/database/databasetypes.h"
 
 /*!
  * \brief The Entry class encapsulates table metadata(table name, row id)

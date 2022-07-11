@@ -25,10 +25,10 @@
 #include <QBitArray>
 
 #include "src/functions/atime.h"
-#include "src/classes/acompletiondata.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
 #include "src/opl.h"
-#include "src/classes/row.h"
+#include "src/database/row.h"
 
 /*!
  * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
@@ -100,7 +100,7 @@ class NewFlightDialog;
  * for each of the database tables which are used to create QCompleters that provide pop-up completion on the respective QLineEdits.
  *
  * Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database,
- * see on_buttonBox_accepted() and ADatabase::commit()
+ * see on_buttonBox_accepted() and Database::commit()
  */
 class NewFlightDialog : public QDialog
 {
@@ -112,18 +112,18 @@ public:
      * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to add a new flight entry to the logbook
      * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
      */
-    explicit NewFlightDialog(ACompletionData& completion_data, QWidget *parent = nullptr);
+    explicit NewFlightDialog(OPL::DbCompletionData& completion_data, QWidget *parent = nullptr);
     /*!
      * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to edit an existing entry in the logbook
      * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
      * \param row_id - The database ROW ID of the entry to be edited
      */
-    explicit NewFlightDialog(ACompletionData& completion_data, RowId_T row_id, QWidget* parent = nullptr);
+    explicit NewFlightDialog(OPL::DbCompletionData& completion_data, int row_id, QWidget* parent = nullptr);
     ~NewFlightDialog();
 
 private:
     Ui::NewFlightDialog *ui;
-    ACompletionData completionData;
+    OPL::DbCompletionData completionData;
     ValidationState validationState;
 
     /*!

@@ -19,9 +19,10 @@
 #include "ui_firstrundialog.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
+#include "src/database/dbsummary.h"
 #include "src/gui/widgets/backupwidget.h"
-#include "src/classes/row.h"
+#include "src/database/row.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
@@ -151,7 +152,7 @@ bool FirstRunDialog::finishSetup()
         }
     } // if database file exists
 
-    if (!aDB->connect()) {
+    if (!DB->connect()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
@@ -166,7 +167,7 @@ bool FirstRunDialog::finishSetup()
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
                                    "The following error has ocurred:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
@@ -175,7 +176,7 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
@@ -184,11 +185,11 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
-    aDB->disconnect(); // connection will be re-established by main()
+    DB->disconnect(); // connection will be re-established by main()
     return true;
 }
 
@@ -201,38 +202,40 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
-    const auto template_tables = aDB->getTemplateTableNames();
+    QStringList template_table_names;
+    for (const auto table : DB->getTemplateTables())
+        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     // Download json files
-    for (const auto& table : template_tables) {
+    for (const auto& table_name : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
-        DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
+        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
+        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
+        DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".json")));
+        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
     }
     // Download checksum files
-    for (const auto& table : template_tables) {
+    for (const auto& table_name : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
+        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
-        LOG << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+        LOG << "Downloading: " << template_url_string + table_name + QLatin1String(".md5");
 
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
+        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".md5")));
         if (downloaded_file.size() == 0)
             return false; // ssl/network error
     }
@@ -241,9 +244,10 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 }
 
 bool FirstRunDialog::verifyTemplates()
-{
-    const auto table_names = aDB->getTemplateTableNames();
-    for (const auto &table_name : table_names) {
+{QStringList template_table_names;
+    for (const auto table : DB->getTemplateTables())
+        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+    for (const auto &table_name : template_table_names) {
         const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
 
         QFileInfo check_file(path + QLatin1String(".json"));
@@ -300,15 +304,15 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    if(!aDB->createSchema()) {
+    if(!DB->createSchema()) {
         WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1")
-             .arg(aDB->lastError.text()));
+             .arg(DB->lastError.text()));
         return false;
     }
 
-    if(!aDB->importTemplateData(useRessourceData)) {
+    if(!DB->importTemplateData(useRessourceData)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-             .arg(aDB->lastError.text()));
+             .arg(DB->lastError.text()));
         return false;
     }
     return true;
@@ -326,7 +330,7 @@ bool FirstRunDialog::createUserEntry()
 
     auto pilot = OPL::PilotEntry(1, data);
 
-    return aDB->commit(pilot);
+    return DB->commit(pilot);
 }
 
 bool FirstRunDialog::writeCurrencies()
@@ -351,7 +355,7 @@ bool FirstRunDialog::writeCurrencies()
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
 
             OPL::CurrencyEntry entry(static_cast<int>(pair.first), row_data);
-            if (!aDB->commit(entry))
+            if (!DB->commit(entry))
                 return false;
         }
     }
@@ -435,9 +439,9 @@ void FirstRunDialog::on_importPushButton_clicked()
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
                        "<br>Is this correct?"
-                       ).arg(aDB->databaseSummaryString(filename)));
+                       ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!aDB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(filename)) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }

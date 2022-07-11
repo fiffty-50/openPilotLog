@@ -18,10 +18,10 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
-#include "src/classes/row.h"
+#include "src/database/row.h"
 
 // EASA FTL Limitations in minutes
 // 100 hours per 28 days
@@ -98,7 +98,7 @@ void HomeWidget::fillTotals()
 
 void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)
 {
-    const auto currency_entry = aDB->getCurrencyEntry(static_cast<int>(currency_name));
+    const auto currency_entry = DB->getCurrencyEntry(static_cast<int>(currency_name));
 
     if (currency_name == OPL::CurrencyName::Custom1) {
         ui->currCustom1Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
@@ -219,7 +219,7 @@ void HomeWidget::fillLimitations()
 const QString HomeWidget::userName()
 {
     const auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
-    const auto name = aDB->customQuery(statement, 1);
+    const auto name = DB->customQuery(statement, 1);
     if (!name.isEmpty())
         return name.first().toString();
 

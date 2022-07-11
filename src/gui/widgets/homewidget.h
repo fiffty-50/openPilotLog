@@ -24,7 +24,7 @@
 #include <QLineEdit>
 #include <QSettings>
 #include "src/functions/astat.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/asettings.h"
 
 namespace Ui {

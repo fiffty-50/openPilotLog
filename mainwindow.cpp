@@ -19,12 +19,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/astyle.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/functions/adatetime.h"
-#include "src/classes/row.h"
+#include "src/database/row.h"
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
@@ -39,8 +39,8 @@ void MainWindow::doDebugStuff()
     //
     //for (int i = 1; i < 1000; i++) {
     //    DataPosition dp("airports", i);
-    //    auto entry = aDB->getEntry(dp);
-    //    //auto entry = aDB->(i);
+    //    auto entry = DB->getEntry(dp);
+    //    //auto entry = DB->(i);
     //}
     //DEB << "getEntry completed";
     //}
@@ -49,18 +49,18 @@ void MainWindow::doDebugStuff()
     //ATimer timer;
     //
     //for (int i = 1; i < 1000; i++) {
-    //    auto row = aDB->getRow(OPL::DbTable::Airports, i);
+    //    auto row = DB->getRow(OPL::DbTable::Airports, i);
     //}
     //DEB << "getRow completed";
     //}
     //OPL::Row new_row(OPL::DbTable::Aircraft, 4, entry.getData());
     //DEB << new_row;
-    //DEB << aDB->commit(new_row);
-    //DEB << aDB->getAircraftEntry(4);
+    //DEB << DB->commit(new_row);
+    //DEB << DB->getAircraftEntry(4);
 
-    auto row = aDB->getRow(OPL::DbTable::Flights, 2);
+    auto row = DB->getRow(OPL::DbTable::Flights, 2);
     DEB << row;
-    auto row_2 = aDB->getRow(OPL::DbTable::Flights, 500);
+    auto row_2 = DB->getRow(OPL::DbTable::Flights, 500);
     DEB << row_2;
 
 }
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (database_file.size() == 0)
         onDatabaseInvalid();
 
-    if(!aDB->connect()){
+    if(!DB->connect()){
         WARN(tr("Error establishing database connection."));
     }
 
@@ -110,13 +110,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->setCurrentWidget(homeWidget);
 
     // check database version (Debug)
-    if (aDB->dbRevision() < aDB->getMinimumDatabaseRevision()) {
-        QString message = tr("Your database is out of date."
-                             "Minimum required revision: %1<br>"
-                             "You have revision: %2<br>")
-                             .arg(aDB->getMinimumDatabaseRevision(), aDB->dbRevision());
-        WARN(message);
-    }
+    //if (DB->dbRevision() < DB->getMinimumDatabaseRevision()) {
+    //    QString message = tr("Your database is out of date."
+    //                         "Minimum required revision: %1<br>"
+    //                         "You have revision: %2<br>")
+    //                         .arg(DB->getMinimumDatabaseRevision(), DB->dbRevision());
+    //    WARN(message);
+    //}
 }
 
 MainWindow::~MainWindow()
@@ -187,33 +187,33 @@ void MainWindow::nope()
  */
 void MainWindow::connectWidgets()
 {
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      homeWidget,     &HomeWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      homeWidget,     &HomeWidget::refresh);
 
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      logbookWidget,  &LogbookWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
 
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
 
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      logbookWidget,   &LogbookWidget::repopulateModel);
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      pilotsWidget,    &PilotsWidget::repopulateModel);
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      aircraftWidget,  &AircraftWidget::repopulateModel);
 }
 
@@ -240,7 +240,7 @@ void MainWindow::onDatabaseInvalid()
                                                        AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
                                                        tr("Database file (*.db)"));
         if (!db_path.isEmpty()) {
-            if(!aDB->restoreBackup(db_path)) {
+            if(!DB->restoreBackup(db_path)) {
                WARN(tr("Unable to restore Backup file: %1").arg(db_path));
                on_actionQuit_triggered();
             } else {

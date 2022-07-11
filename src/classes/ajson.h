@@ -18,7 +18,7 @@
 #ifndef AJSON_H
 #define AJSON_H
 #include "src/opl.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonObject>
@@ -62,7 +62,12 @@ private:
     /*!
      * \brief holds the tables with userdata that need to be processed.
      */
-    const static QList<QPair<TableName_T, ADatabaseTable>> tables;
+    const static inline QList<OPL::DbTable> TABLES = {
+        OPL::DbTable::Tails,
+        OPL::DbTable::Pilots,
+        OPL::DbTable::Currencies,
+        OPL::DbTable::Flights,
+    };
 
 };
 

@@ -17,7 +17,7 @@
  */
 #include "acalc.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/opl.h"
 #include "src/functions/atime.h"
@@ -111,7 +111,7 @@ double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QStr
             + QLatin1String("' OR icao = '")
             + dest
             + QLatin1String("'");
-    auto lat_lon = aDB->customQuery(statement, 2);
+    auto lat_lon = DB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
         DEB << "Invalid input. Aborting.";
@@ -234,7 +234,7 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
             + dept
             + QLatin1String("' OR icao = '") + dest
             + QLatin1String("'");
-    auto lat_lon = aDB->customQuery(statement, 2);
+    auto lat_lon = DB->customQuery(statement, 2);
 
     double dept_lat;
     double dept_lon;
@@ -278,7 +278,7 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
             + icao
             + QLatin1String("'");
-    auto lat_lon = aDB->customQuery(statement, 2);
+    auto lat_lon = DB->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
         DEB << "Invalid input. Aborting.";
@@ -306,17 +306,17 @@ void ACalc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
     const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
-    auto flight_list = aDB->customQuery(statement, 1);
+    auto flight_list = DB->customQuery(statement, 1);
     if (flight_list.isEmpty()) {
         DEB << "No flights for this tail found.";
         return;
     }
     DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
 
-    auto acft = aDB->getTailEntry(acft_id);
+    auto acft = DB->getTailEntry(acft_id);
     auto acft_data = acft.getData();
     for (const auto& item : flight_list) {
-        auto flight = aDB->getFlightEntry(item.toInt());
+        auto flight = DB->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
 
         if(acft_data.value(OPL::Db::TAILS_MULTIPILOT).toInt() == 0
@@ -338,7 +338,7 @@ void ACalc::updateAutoTimes(int acft_id)
             flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
         }
         flight.setData(flight_data);
-        aDB->commit(flight);
+        DB->commit(flight);
     }
 }
 /*!
@@ -351,7 +351,7 @@ void ACalc::updateNightTimes()
 
     //find all flights for aircraft
     auto statement = QStringLiteral("SELECT ROWID FROM flights");
-    auto flight_list = aDB->customQuery(statement, 1);
+    auto flight_list = DB->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {
         DEB << "No flights found.";
@@ -361,7 +361,7 @@ void ACalc::updateNightTimes()
 
     for (const auto& item : flight_list) {
 
-        auto flt = aDB->getFlightEntry(item.toInt());
+        auto flt = DB->getFlightEntry(item.toInt());
         auto data = flt.getData();
         auto dateTime = QDateTime(QDate::fromString(data.value(OPL::Db::FLIGHTS_DOFT).toString(), Qt::ISODate),
                                   QTime().addSecs(data.value(OPL::Db::FLIGHTS_TOFB).toInt() * 60),
@@ -373,6 +373,6 @@ void ACalc::updateNightTimes()
                                        data.value(OPL::Db::FLIGHTS_TBLK).toInt(),
                                        night_angle));
         flt.setData(data);
-        aDB->commit(flt);
+        DB->commit(flt);
     }
 }

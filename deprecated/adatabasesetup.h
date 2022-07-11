@@ -28,12 +28,12 @@ const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiff
 
 
 /*!
- * \brief The ADataBaseSetup class is responsible for the inital setup of the database when
+ * \brief The DataBaseSetup class is responsible for the inital setup of the database when
  * the application is first launched. It creates the database in the specified default
  * location and creates all required tables and views. It can also be used to reset the
  * database currently used
  */
-class ADataBaseSetup
+class DataBaseSetup
 {
 public:
     static void debug();

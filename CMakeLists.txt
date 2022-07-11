@@ -26,7 +26,7 @@ set(PROJECT_SOURCES
     src/opl.h
     src/opl.cpp
 
-    # GUI
+    ##  GUI
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui
@@ -49,7 +49,6 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newsimdialog.h
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
-
     # Widgets
     src/gui/widgets/aircraftwidget.h
     src/gui/widgets/aircraftwidget.cpp
@@ -78,10 +77,6 @@ set(PROJECT_SOURCES
 
 
     # Classes
-    src/classes/row.h
-    src/classes/row.cpp
-    src/classes/acompletiondata.h
-    src/classes/acompletiondata.cpp
     src/classes/astyle.h
     src/classes/astyle.cpp
     src/classes/astandardpaths.h
@@ -114,9 +109,14 @@ set(PROJECT_SOURCES
     src/functions/atime.h
 
     # Database
-    src/database/adatabasetypes.h
-    src/database/adatabase.h
-    src/database/adatabase.cpp
+    src/database/database.h
+    src/database/database.cpp
+    src/database/row.h
+    src/database/row.cpp
+    src/database/dbcompletiondata.h
+    src/database/dbcompletiondata.cpp
+    src/database/dbsummary.h
+    src/database/dbsummary.cpp
 
     # Ressources
     assets/icons.qrc

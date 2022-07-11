@@ -41,9 +41,9 @@
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/classes/arunguard.h"
-#include "src/classes/acompletiondata.h"
 #include "src/testing/atimer.h"
 #include "src/classes/astyle.h"
+#include "src/database/dbcompletiondata.h"
 
 enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
@@ -140,7 +140,7 @@ private:
     DebugWidget* debugWidget;
 
     // Completion Data for QCompleters and Mapping
-    ACompletionData completionData;
+    OPL::DbCompletionData completionData;
 
     void setupToolbar();
     void setActionIcons(StyleType style = StyleType::Light);

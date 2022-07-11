@@ -19,7 +19,7 @@
 #define ATAILENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/adatabasetypes.h"
+#include "src/database/databasetypes.h"
 
 struct ATailEntry : public AEntry {
 public:

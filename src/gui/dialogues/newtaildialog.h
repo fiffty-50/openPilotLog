@@ -26,8 +26,8 @@
 
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 namespace Ui {
 class NewTail;
@@ -84,7 +84,7 @@ private:
 
     QStringList aircraftList;
 
-    QHash<RowId_T, QString> idMap;
+    QHash<int, QString> idMap;
 
     void setupCompleter();
     void setupValidators();

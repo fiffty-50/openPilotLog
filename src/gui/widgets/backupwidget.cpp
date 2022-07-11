@@ -20,8 +20,9 @@
 #include "src/opl.h"
 #include "src/classes/astandardpaths.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/functions/adatetime.h"
+#include "src/database/dbsummary.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -63,13 +64,13 @@ void BackupWidget::refresh()
 
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
-        QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
+        QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(backup_dir.absoluteFilePath(entry));
         model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_time])
                          });
     }
 
@@ -103,7 +104,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
     QString filename = absoluteBackupPath();
     DEB << filename;
 
-    if(!aDB->createBackup(filename)) {
+    if(!DB->createBackup(filename)) {
         WARN(tr("Could not create local file: %1").arg(filename));
         return;
     } else {
@@ -111,13 +112,13 @@ void BackupWidget::on_createLocalPushButton_clicked()
     }
 
     QFileIconProvider provider;
-    QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
+    QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(filename);
     model->insertRow(0, {new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+                      new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
+                      new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
+                      new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
+                      new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
+                      new QStandardItem(summary[OPL::DbSummaryKey::total_time])
                      });
 }
 
@@ -141,11 +142,11 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     confirm.setText(tr("The following backup will be restored:<br><br><b><tt>"
                        "%1</b></tt><br><br>"
                        "This will replace your currently active database with the backup.<br>This action is irreversible.<br><br>Are you sure?"
-                       ).arg(aDB->databaseSummaryString(backup_name)));
+                       ).arg(OPL::DbSummary::summaryString(backup_name)));
     if (confirm.exec() == QMessageBox::No)
         return;
 
-    if(!aDB->restoreBackup(backup_name)) {
+    if(!DB->restoreBackup(backup_name)) {
        WARN(tr("Unable to restore Backup file: %1").arg(backup_name));
     } else {
         INFO(tr("Backup successfully restored."));
@@ -212,7 +213,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
         filename.append(".db");
     }
 
-    if(!aDB->createBackup(filename)) {
+    if(!DB->createBackup(filename)) {
         WARN(tr("Unable to backup file:").arg(filename));
         return;
     } else {
@@ -243,9 +244,9 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
                        "<br>Is this correct?"
-                       ).arg(aDB->databaseSummaryString(filename)));
+                       ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!aDB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(filename)) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }

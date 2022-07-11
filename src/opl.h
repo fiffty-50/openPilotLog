@@ -21,7 +21,6 @@
 #include <QtCore>
 #include <QMessageBox>
 #include <QComboBox>
-#include "src/database/adatabasetypes.h"
 
 /*!
  *  \brief A namespace to collect constants and enums used throughout the application.
@@ -84,6 +83,8 @@ public:
     };
 }; // class ANotificationHandler
 
+using RowData_T = QHash<QString, QVariant>;
+
 /*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
  * \todo At the moment, only ISODate is accepet as a valid date format.
@@ -118,7 +119,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies};
+enum class DbTable {Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
 
 /*!
  * \brief Enumerates the currency names

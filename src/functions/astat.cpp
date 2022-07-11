@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "astat.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/functions/alog.h"
 
 /*!
@@ -57,7 +57,7 @@ int AStat::totalTime(TimeFrame time_frame)
         break;
     }
 
-    auto db_return = aDB->customQuery(statement, 1);
+    auto db_return = DB->customQuery(statement, 1);
 
     if (!db_return.isEmpty())
         return db_return.first().toInt();
@@ -84,7 +84,7 @@ QVector<QVariant> AStat::countTakeOffLanding(int days)
                                       " FROM flights "
                                       " WHERE doft >=") + startdate;
 
-    QVector<QVariant> result = aDB->customQuery(statement, 2);
+    QVector<QVariant> result = DB->customQuery(statement, 2);
     // make sure a value is returned instead of NULL
     for (const auto &var : result) {
         if (var.isNull())

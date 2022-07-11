@@ -19,8 +19,8 @@
 #include "ui_pilotswidget.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -165,7 +165,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
         /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = aDB->getPilotEntry(selectedPilots.first());
+        auto entry = DB->getPilotEntry(selectedPilots.first());
         QMessageBox confirm(this);
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
@@ -175,7 +175,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
         confirm.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
                                "%1</b></tt><br><br>Are you sure?").arg(getPilotName(entry)));
         if (confirm.exec() == QMessageBox::Yes) {
-            if(!aDB->remove(entry))
+            if(!DB->remove(entry))
                 onDeleteUnsuccessful();
         }
     }
@@ -195,16 +195,16 @@ void PilotsWidget::on_deletePilotButton_clicked()
  */
 void PilotsWidget::onDeleteUnsuccessful()
 {
-    const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
-                                                                       ADatabaseTable::pilots);
+    const QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(selectedPilots.first(),
+                                                                       OPL::DbTable::Pilots);
     QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
-        constrained_flights.append(aDB->getFlightEntry(row_id));
+        constrained_flights.append(DB->getFlightEntry(row_id));
     }
 
     if (constrained_flights.isEmpty()) {
         WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         return;
     } else {
         QString constrained_flights_string;

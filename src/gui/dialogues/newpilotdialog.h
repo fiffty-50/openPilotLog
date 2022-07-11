@@ -23,7 +23,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCompleter>
-#include "src/classes/row.h"
+#include "src/database/row.h"
 
 namespace Ui {
 class NewPilot;

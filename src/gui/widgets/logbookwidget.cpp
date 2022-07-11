@@ -18,8 +18,8 @@
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
 
-#include "src/classes/row.h"
-#include "src/database/adatabase.h"
+#include "src/database/row.h"
+#include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
@@ -35,7 +35,7 @@ const QHash<int, QString> FILTER_MAP = {
 };
 const auto NON_WORD_CHAR = QRegularExpression("\\W");
 
-LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) :
+LogbookWidget::LogbookWidget(OPL::DbCompletionData& completion_data, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LogbookWidget),
     completionData(completion_data)
@@ -156,7 +156,7 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         QVector<OPL::FlightEntry> flights_list;
 
         for (const auto &flight_id : qAsConst(selectedEntries)) {
-            flights_list.append(aDB->getFlightEntry(flight_id));
+            flights_list.append(DB->getFlightEntry(flight_id));
         }
 
         QString flights_list_string;
@@ -178,9 +178,9 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         if (confirm.exec() == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
                 DEB << "Deleting flight: " << flight;
-                if(!aDB->remove(flight)) {
+                if(!DB->remove(flight)) {
                     WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-                                       ).arg(aDB->lastError.text()));
+                                       ).arg(DB->lastError.text()));
                     return;
                 }
             }
@@ -199,12 +199,8 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                            "Are you sure you want to proceed?"
                            ).arg(QString::number(selectedEntries.length())));
         if(confirm.exec() == QMessageBox::Yes) {
-            QList<DataPosition> selected_flights;
-            for (const auto& flight_id : qAsConst(selectedEntries)) {
-                selected_flights.append({QStringLiteral("flights"), flight_id});
-            }
-            if (!aDB->removeMany(selected_flights)) {
-                WARN(tr("Unable to delete. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+            if (!DB->removeMany(OPL::DbTable::Flights, selectedEntries)) {
+                WARN(tr("Unable to delete. No changes have been made to the database. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
                 return;
             }
             INFO(tr("%1 flights have been deleted successfully."

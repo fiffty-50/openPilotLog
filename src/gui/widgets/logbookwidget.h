@@ -26,7 +26,7 @@
 #include <QMenu>
 #include <QTableView>
 #include "src/gui/widgets/settingswidget.h"
-#include "src/classes/acompletiondata.h"
+#include "src/database/dbcompletiondata.h"
 #include "src/opl.h"
 
 namespace Ui {
@@ -49,7 +49,7 @@ class LogbookWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LogbookWidget(ACompletionData &completion_data, QWidget *parent = nullptr);
+    explicit LogbookWidget(OPL::DbCompletionData &completion_data, QWidget *parent = nullptr);
     ~LogbookWidget();
 
 private slots:
@@ -82,14 +82,14 @@ private:
 
     QMenu* menu;
 
-    QVector<qint32> selectedEntries;
+    QList<int> selectedEntries;
 
     void setupModelAndView(int view_id);
     void connectSignalsAndSlots();
 
     const QString getFlightSummary(const OPL::FlightEntry &flight) const;
 
-    ACompletionData completionData;
+    OPL::DbCompletionData completionData;
 
     /*!
      * \brief isFlight Determines whether an entry shown in a view is a Flight or a Simulator.

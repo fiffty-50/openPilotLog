@@ -19,8 +19,8 @@
 #include "ui_aircraftwidget.h"
 #include "src/opl.h"
 #include "src/classes/asettings.h"
-#include "src/database/adatabase.h"
-#include "src/classes/row.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 #include "src/functions/alog.h"
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
@@ -180,7 +180,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
         /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedTails.length() == 1) {
-        auto entry = aDB->getTailEntry(selectedTails.first());
+        auto entry = DB->getTailEntry(selectedTails.first());
         QMessageBox message_box(this);
         message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         message_box.setDefaultButton(QMessageBox::No);
@@ -192,7 +192,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
                                      getAircraftTypeString(entry)));
 
         if (message_box.exec() == QMessageBox::Yes) {
-            if(!aDB->remove(entry))
+            if(!DB->remove(entry))
                 onDeleteUnsuccessful();
         }
     }
@@ -212,17 +212,17 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
  */
 void AircraftWidget::onDeleteUnsuccessful()
 {
-    QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedTails.first(),
-                                                                       ADatabaseTable::tails);
+    QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(selectedTails.first(),
+                                                                       OPL::DbTable::Tails);
     QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
-        constrained_flights.append(aDB->getFlightEntry(row_id));
+        constrained_flights.append(DB->getFlightEntry(row_id));
     }
 
     QMessageBox message_box(this);
     if (constrained_flights.isEmpty()) {
         message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         message_box.exec();
         return;
     } else {
