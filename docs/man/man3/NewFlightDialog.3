@@ -1,4 +1,4 @@
-.TH "NewFlightDialog" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "NewFlightDialog" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,11 +15,11 @@ Inherits QDialog\&.
 
 .in +1c
 .ti -1c
-.RI "\fBNewFlightDialog\fP (\fBACompletionData\fP &completion_data, QWidget *parent=nullptr)"
+.RI "\fBNewFlightDialog\fP (\fBOPL::DbCompletionData\fP &completion_data, QWidget *parent=nullptr)"
 .br
 .RI "\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to add a new flight entry to the logbook\&. "
 .ti -1c
-.RI "\fBNewFlightDialog\fP (\fBACompletionData\fP &completion_data, RowId_T row_id, QWidget *parent=nullptr)"
+.RI "\fBNewFlightDialog\fP (\fBOPL::DbCompletionData\fP &completion_data, int row_id, QWidget *parent=nullptr)"
 .br
 .RI "\fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to edit an existing entry in the logbook\&. "
 .in -1c
@@ -43,10 +43,10 @@ To ensure only good data is written to the database, the \fBValidationState\fP c
 .PP
 Inputs from the user are verified with a two-step process\&. The first level of verification is accomplished by QRegularExpressionValidator, which limits the user to only inputting generally acceptable data (like numbers for date or time, or characters for airport identifiers)\&. If the input passes this sanity check, the line edits emit the editingFinished() signal, which triggers a more granular and sophisticated set of input verification, broadly based on cross-checking the entered data against known good values\&. The \fBACompletionData\fP class is used to provide QHashs of known good values from the database and their respective ROW_IDs\&. If user-entered data has been matched to a known good database value, the data is considered acceptable\&. This means that in order to, for example, log a flight with a certain Pilot, that this pilot already has to exist in the pilots table\&. If this is not the case, the user is prompted to add a new pilot (or aircraft) to the database before proceeding\&. In order to make this matching process seamless for the user, the completionData also contains a set of QStringLists for each of the database tables which are used to create QCompleters that provide pop-up completion on the respective QLineEdits\&.
 .PP
-Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database, see on_buttonBox_accepted() and \fBDatabase::commit()\fP 
+Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database, see on_buttonBox_accepted() and Database::commit() 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "NewFlightDialog::NewFlightDialog (\fBACompletionData\fP & completion_data, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+.SS "NewFlightDialog::NewFlightDialog (\fBOPL::DbCompletionData\fP & completion_data, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
 
 .PP
 \fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to add a new flight entry to the logbook\&. 
@@ -57,7 +57,7 @@ Once the user is satisfied with his entries, a final set of input verification i
 .RE
 .PP
 
-.SS "NewFlightDialog::NewFlightDialog (\fBACompletionData\fP & completion_data, RowId_T row_id, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+.SS "NewFlightDialog::NewFlightDialog (\fBOPL::DbCompletionData\fP & completion_data, int row_id, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
 
 .PP
 \fBNewFlightDialog\fP - Creates a \fBNewFlightDialog\fP that can be used to edit an existing entry in the logbook\&. 

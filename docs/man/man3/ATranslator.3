@@ -1,4 +1,4 @@
-.TH "ATranslator" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "ATranslator" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ Inherits QObject\&.
 
 .in +1c
 .ti -1c
-.RI "static void \fBinstallTranslator\fP (Opl::Translations language=Opl::Translations::English)"
+.RI "static void \fBinstallTranslator\fP (\fBOPL::Translation\fP language=OPL::Translation::English)"
 .br
 .RI "Installs a QTranslator with the selected language\&. Defaults to English\&. Call this function before constructing the Main Window\&. "
 .in -1c
@@ -23,7 +23,7 @@ Inherits QObject\&.
 .PP 
 The \fBATranslator\fP class is responsible for managing the QTranslator used for providing localisations\&. Translations are planned, but are not currently being worked on\&. The way QT language tools are working with CMAKE, there are some considerations for when works on translation actually start\&. See \fChere\fP and \fChere\fP\&. Long story short, make sure to use a version of CMake that is 3\&.16 or earlier, or 3\&.19\&.2 or later\&. 
 
-The translation source files (\&.ts) are located at /l10n and once compiled, the translation binaries are at \fC$BINDIR/l10n/\fP and can be accessed via \fCOpl::L10N_FILES\fP\&.
+The translation source files (\&.ts) are located at /l10n and once compiled, the translation binaries are at \fC$BINDIR/l10n/\fP and can be accessed via \fCOPL::L10N_FILES\fP\&.
 .PP
 When a QTranslator is installed, the UI is updated through \fCQWidget::changeEvent()\fP\&. 
 

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logbookwidget_171',['LogbookWidget',['../class_logbook_widget.html',1,'']]]
+  ['homewidget_176',['HomeWidget',['../class_home_widget.html',1,'']]]
 ];

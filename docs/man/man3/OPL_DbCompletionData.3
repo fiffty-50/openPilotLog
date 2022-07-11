@@ -1,0 +1,81 @@
+.TH "OPL::DbCompletionData" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::DbCompletionData \- Provides data for QCompleters and QHashs\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <dbcompletiondata\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP ()"
+.br
+.RI "init Retrieves Data and populates Lists and Maps "
+.ti -1c
+.RI "void \fBupdate\fP ()"
+.br
+.RI "updates data from the user modifiable tables "
+.ti -1c
+.RI "void \fBupdateTails\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdatePilots\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static const QStringList \fBgetCompletionList\fP (\fBCompleterTarget\fP target)"
+.br
+.RI "getCompletionList returns a QStringList of values for a QCompleter based on database values "
+.ti -1c
+.RI "static const QHash< int, QString > \fBgetIdMap\fP (\fBCompleterTarget\fP target)"
+.br
+.RI "returns a QHash of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QHash< int, QString > \fBpilotsIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< int, QString > \fBtailsIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< int, QString > \fBairportIcaoIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< int, QString > \fBairportIataIdMap\fP"
+.br
+.ti -1c
+.RI "QHash< int, QString > \fBairportNameIdMap\fP"
+.br
+.ti -1c
+.RI "QStringList \fBpilotList\fP"
+.br
+.ti -1c
+.RI "QStringList \fBtailsList\fP"
+.br
+.ti -1c
+.RI "QStringList \fBairportList\fP"
+.br
+.ti -1c
+.RI "\fBUserDataState\fP \fBcurrent_state\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provides data for QCompleters and QHashs\&. 
+
+QCompleters and QHashes are used for mapping user input to database keys\&. The required data is retreived from the database and cached for fast access without the need to query the database\&. The \fBDbCompletionData\fP class holds the last state of the database (state of user-modifiable data) in order to intelligently refresh the completion data when needed\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

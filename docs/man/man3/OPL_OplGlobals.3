@@ -1,0 +1,51 @@
+.TH "OPL::OplGlobals" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::OplGlobals \- The \fBOplGlobals\fP class encapsulates non-POD globals to avoid making them static\&. It is available as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once\&. For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <opl\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBfillLanguageComboBox\fP (QComboBox *combo_box) const"
+.br
+.ti -1c
+.RI "void \fBfillViewNamesComboBox\fP (QComboBox *combo_box) const"
+.br
+.ti -1c
+.RI "void \fBloadPilotFunctios\fP (QComboBox *combo_box) const"
+.br
+.ti -1c
+.RI "void \fBloadSimulatorTypes\fP (QComboBox *combo_box) const"
+.br
+.ti -1c
+.RI "void \fBloadApproachTypes\fP (QComboBox *combo_box) const"
+.br
+.ti -1c
+.RI "const QStringList & \fBgetApproachTypes\fP () const"
+.br
+.ti -1c
+.RI "const QString \fBgetLanguageFilePath\fP (\fBTranslation\fP language) const"
+.br
+.ti -1c
+.RI "const QString \fBgetViewIdentifier\fP (\fBDbViewName\fP view_name) const"
+.br
+.ti -1c
+.RI "const QString \fBgetDbTableName\fP (\fBDbTable\fP table_name) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBOplGlobals\fP class encapsulates non-POD globals to avoid making them static\&. It is available as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once\&. For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

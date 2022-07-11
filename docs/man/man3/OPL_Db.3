@@ -1,0 +1,225 @@
+.TH "OPL::Db" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::Db
+.SH SYNOPSIS
+.br
+.PP
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const auto \fBTABLE_FLIGHTS\fP = QStringLiteral('flights')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_PILOTS\fP = QStringLiteral('pilots')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_TAILS\fP = QStringLiteral('tails')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_AIRCRAFT\fP = QStringLiteral('aircraft')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_AIRPORTS\fP = QStringLiteral('airports')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_CURRENCIES\fP = QStringLiteral('currencies')"
+.br
+.ti -1c
+.RI "const auto \fBTABLE_SIMULATORS\fP = QStringLiteral('simulators')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_ROWID\fP = QStringLiteral('flight_id')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_DOFT\fP = QStringLiteral('doft')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_DEPT\fP = QStringLiteral('dept')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_DEST\fP = QStringLiteral('dest')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TOFB\fP = QStringLiteral('tofb')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TONB\fP = QStringLiteral('tonb')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_PIC\fP = QStringLiteral('pic')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_ACFT\fP = QStringLiteral('acft')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TBLK\fP = QStringLiteral('tblk')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TSPSE\fP = QStringLiteral('tSPSE')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TSPME\fP = QStringLiteral('tSPME')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TMP\fP = QStringLiteral('tMP')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TNIGHT\fP = QStringLiteral('tNIGHT')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TIFR\fP = QStringLiteral('tIFR')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TPIC\fP = QStringLiteral('tPIC')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TPICUS\fP = QStringLiteral('tPICUS')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TSIC\fP = QStringLiteral('tSIC')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TDUAL\fP = QStringLiteral('tDUAL')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TFI\fP = QStringLiteral('tFI')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TSIM\fP = QStringLiteral('tSIM')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_PILOTFLYING\fP = QStringLiteral('pilotFlying')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TODAY\fP = QStringLiteral('toDay')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_TONIGHT\fP = QStringLiteral('toNight')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_LDGDAY\fP = QStringLiteral('ldgDay')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_LDGNIGHT\fP = QStringLiteral('ldgNight')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_AUTOLAND\fP = QStringLiteral('autoland')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_SECONDPILOT\fP = QStringLiteral('secondPilot')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_THIRDPILOT\fP = QStringLiteral('thirdPilot')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_APPROACHTYPE\fP = QStringLiteral('approachType')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_FLIGHTNUMBER\fP = QStringLiteral('flightNumber')"
+.br
+.ti -1c
+.RI "const auto \fBFLIGHTS_REMARKS\fP = QStringLiteral('remarks')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_ROWID\fP = QStringLiteral('tail_id')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_REGISTRATION\fP = QStringLiteral('registration')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_COMPANY\fP = QStringLiteral('company')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_MAKE\fP = QStringLiteral('make')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_MODEL\fP = QStringLiteral('model')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_VARIANT\fP = QStringLiteral('variant')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_MULTIPILOT\fP = QStringLiteral('multipilot')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_MULTIENGINE\fP = QStringLiteral('multiengine')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_ENGINETYPE\fP = QStringLiteral('engineType')"
+.br
+.ti -1c
+.RI "const auto \fBTAILS_WEIGHTCLASS\fP = QStringLiteral('weightClass')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_ROWID\fP = QStringLiteral('pilot_id')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_LASTNAME\fP = QStringLiteral('lastname')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_FIRSTNAME\fP = QStringLiteral('firstname')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_ALIAS\fP = QStringLiteral('alias')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_COMPANY\fP = QStringLiteral('company')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_EMPLOYEEID\fP = QStringLiteral('employeeid')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_PHONE\fP = QStringLiteral('phone')"
+.br
+.ti -1c
+.RI "const auto \fBPILOTS_EMAIL\fP = QStringLiteral('email')"
+.br
+.ti -1c
+.RI "const auto \fBCURRENCIES_EXPIRYDATE\fP = QStringLiteral('expiryDate')"
+.br
+.ti -1c
+.RI "const auto \fBCURRENCIES_CURRENCYNAME\fP = QStringLiteral('currencyName')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_ROWID\fP = QStringLiteral('session_id')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_DATE\fP = QStringLiteral('date')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_TIME\fP = QStringLiteral('totalTime')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_TYPE\fP = QStringLiteral('deviceType')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_ACFT\fP = QStringLiteral('aircraftType')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_REG\fP = QStringLiteral('registration')"
+.br
+.ti -1c
+.RI "const auto \fBSIMULATORS_REMARKS\fP = QStringLiteral('remarks')"
+.br
+.ti -1c
+.RI "const auto \fBROWID\fP = QStringLiteral('rowid')"
+.br
+.ti -1c
+.RI "const auto \fBNULL_TIME_hhmm\fP = QStringLiteral('00:00')"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBOPL::Db\fP namespace provides string literals to programatically access the database
+.PP
+Example usage, do: newData\&.insert(OPL::Db::FLIGHTS_DEP, ui->deptLocLineEdit->text()); newData\&.value(OPL::Db::AIRCRAFT_MULTIPILOT);
+.PP
+instead of: newData\&.insert('dept', ui->deptLocLineEdit->text()); newData\&.value('multipilot');
+.PP
+Declaring these literals here avoids memory allocation at runtime for construction of temporary qstrings like ('dept')\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

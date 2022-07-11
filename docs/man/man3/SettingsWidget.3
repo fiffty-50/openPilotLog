@@ -1,4 +1,4 @@
-.TH "SettingsWidget" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "SettingsWidget" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ Inherits QWidget\&.
 
 .in +1c
 .ti -1c
-.RI "enum \fBSettingSignal\fP { \fBLogbookWidget\fP, \fBHomeWidget\fP, \fBAircraftWidget\fP, \fBPilotsWidget\fP }"
+.RI "enum \fBSettingSignal\fP { \fBLogbookWidget\fP, \fBHomeWidget\fP, \fBAircraftWidget\fP, \fBPilotsWidget\fP, \fBMainWindow\fP }"
 .br
 .RI "enumerates Widgets that need to receive a signal when a setting is updated\&. "
 .in -1c
@@ -23,7 +23,7 @@ Inherits QWidget\&.
 
 .in +1c
 .ti -1c
-.RI "void \fBsettingChanged\fP (\fBSettingSignal\fP widget)"
+.RI "void \fBsettingChanged\fP (\fBSettingsWidget::SettingSignal\fP widget)"
 .br
 .RI "settingChanged is emitted when a setting change occurs that needs to trigger an update (repaint) to another widget\&. "
 .in -1c

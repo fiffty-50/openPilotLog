@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['dataposition_167',['DataPosition',['../struct_data_position.html',1,'']]],
-  ['debugwidget_168',['DebugWidget',['../class_debug_widget.html',1,'']]]
+  ['currencyentry_169',['CurrencyEntry',['../class_o_p_l_1_1_currency_entry.html',1,'OPL']]]
 ];

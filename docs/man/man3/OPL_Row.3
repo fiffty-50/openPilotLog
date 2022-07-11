@@ -1,0 +1,70 @@
+.TH "OPL::Row" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::Row \- The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <row\&.h>\fP
+.PP
+Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightEntry\fP, \fBOPL::PilotEntry\fP, \fBOPL::SimulatorEntry\fP, and \fBOPL::TailEntry\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRow\fP (\fBOPL::DbTable\fP table_name, int row_id, const RowData_T &row_data)"
+.br
+.ti -1c
+.RI "\fBRow\fP (\fBOPL::DbTable\fP table_name, int row_id)"
+.br
+.ti -1c
+.RI "\fBRow\fP (\fBOPL::DbTable\fP table_name)"
+.br
+.ti -1c
+.RI "\fBRow\fP (const \fBRow\fP &)=default"
+.br
+.ti -1c
+.RI "\fBRow\fP & \fBoperator=\fP (const \fBRow\fP &)=default"
+.br
+.ti -1c
+.RI "RowData_T \fBgetData\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetData\fP (const RowData_T &value)"
+.br
+.ti -1c
+.RI "int \fBgetRowId\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetRowId\fP (int value)"
+.br
+.ti -1c
+.RI "\fBOPL::DbTable\fP \fBgetTableName\fP () const"
+.br
+.ti -1c
+.RI "bool \fBisValid\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator QString\fP () const"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBhasData\fP"
+.br
+.ti -1c
+.RI "bool \fBvalid\fP = true"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

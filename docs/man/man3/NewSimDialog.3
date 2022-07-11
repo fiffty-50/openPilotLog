@@ -1,0 +1,49 @@
+.TH "NewSimDialog" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NewSimDialog \- The \fBNewSimDialog\fP class enables adding a new Simulator Session to the database or editing an existing one\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <newsimdialog\&.h>\fP
+.PP
+Inherits QDialog\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNewSimDialog\fP (QWidget *parent=nullptr)"
+.br
+.RI "create a \fBNewSimDialog\fP to add a new Simulator Entry to the database "
+.ti -1c
+.RI "\fBNewSimDialog\fP (int row_id, QWidget *parent=nullptr)"
+.br
+.RI "create a \fBNewSimDialog\fP to edit an existing Simulator Entry "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBNewSimDialog\fP class enables adding a new Simulator Session to the database or editing an existing one\&. 
+
+The \fBNewSimDialog\fP offers two constructors, one is used to create a new Simulator Entry from scratch, while the other one is used to edit an existing entry\&. The existing entry is identified by its ROW ID in the database and is then retreived, its data being used to pre-fill the UI to enable editing the existing data\&.
+.PP
+A QCompleter provides in-line completion for the aircraft type field\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "NewSimDialog::NewSimDialog (int row_id, QWidget * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+create a \fBNewSimDialog\fP to edit an existing Simulator Entry 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrow_id\fP of the entry to be edited 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

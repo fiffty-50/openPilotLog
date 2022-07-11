@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('ajson_8h_source.html',''); initResizab
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifndef AJSON_H</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define AJSON_H</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;src/opl.h&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;src/database/adatabase.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;QJsonDocument&gt;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;QJsonValue&gt;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;QJsonObject&gt;</span></div>
@@ -128,16 +128,21 @@ $(document).ready(function(){initNavTree('ajson_8h_source.html',''); initResizab
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> <span class="keyword">static</span> QList&lt;QPair&lt;TableName_T, ADatabaseTable&gt;&gt; tables;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// AJSON_H</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keyword">inline</span> QList&lt;OPL::DbTable&gt; TABLES = {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        OPL::DbTable::Tails,</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        OPL::DbTable::Pilots,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        OPL::DbTable::Currencies,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        OPL::DbTable::Flights,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    };</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;};</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// AJSON_H</span></div>
 <div class="ttc" id="aclass_a_json_html"><div class="ttname"><a href="class_a_json.html">AJson</a></div><div class="ttdoc">The AJSON class is responsible for parsing the database (sqlite) to and from JSON.</div><div class="ttdef"><b>Definition:</b> ajson.h:30</div></div>
-<div class="ttc" id="aclass_a_json_html_a079cd737a5ed89b24f971df73011d9b2"><div class="ttname"><a href="class_a_json.html#a079cd737a5ed89b24f971df73011d9b2">AJson::readFileToDoc</a></div><div class="ttdeci">static QJsonDocument readFileToDoc(const QString &amp;file_path)</div><div class="ttdoc">readToDocument reads data from a JSON file into a QJSonDocument</div><div class="ttdef"><b>Definition:</b> ajson.cpp:60</div></div>
-<div class="ttc" id="aclass_a_json_html_a52e083d17fbb8906b47024bfdda49ca7"><div class="ttname"><a href="class_a_json.html#a52e083d17fbb8906b47024bfdda49ca7">AJson::writeDocToFile</a></div><div class="ttdeci">static void writeDocToFile(const QJsonDocument &amp;doc, const QString &amp;file_name)</div><div class="ttdoc">writes a QJsonDocument to a file</div><div class="ttdef"><b>Definition:</b> ajson.cpp:71</div></div>
-<div class="ttc" id="aclass_a_json_html_a60561d59b4bdb31032f217ba984563a3"><div class="ttname"><a href="class_a_json.html#a60561d59b4bdb31032f217ba984563a3">AJson::exportDatabase</a></div><div class="ttdeci">static void exportDatabase()</div><div class="ttdoc">exportDatabase exports the currently active database to JSON.</div><div class="ttdef"><b>Definition:</b> ajson.cpp:28</div></div>
-<div class="ttc" id="aclass_a_json_html_a6e0e703fb4187d3a02983c09873dae21"><div class="ttname"><a href="class_a_json.html#a6e0e703fb4187d3a02983c09873dae21">AJson::importDatabase</a></div><div class="ttdeci">static void importDatabase()</div><div class="ttdoc">importDatabase imports a dataset from JSON. Files need to be at AStanardPaths::JSON for now.</div><div class="ttdef"><b>Definition:</b> ajson.cpp:42</div></div>
+<div class="ttc" id="aclass_a_json_html_a079cd737a5ed89b24f971df73011d9b2"><div class="ttname"><a href="class_a_json.html#a079cd737a5ed89b24f971df73011d9b2">AJson::readFileToDoc</a></div><div class="ttdeci">static QJsonDocument readFileToDoc(const QString &amp;file_path)</div><div class="ttdoc">readToDocument reads data from a JSON file into a QJSonDocument</div><div class="ttdef"><b>Definition:</b> ajson.cpp:56</div></div>
+<div class="ttc" id="aclass_a_json_html_a52e083d17fbb8906b47024bfdda49ca7"><div class="ttname"><a href="class_a_json.html#a52e083d17fbb8906b47024bfdda49ca7">AJson::writeDocToFile</a></div><div class="ttdeci">static void writeDocToFile(const QJsonDocument &amp;doc, const QString &amp;file_name)</div><div class="ttdoc">writes a QJsonDocument to a file</div><div class="ttdef"><b>Definition:</b> ajson.cpp:67</div></div>
+<div class="ttc" id="aclass_a_json_html_a60561d59b4bdb31032f217ba984563a3"><div class="ttname"><a href="class_a_json.html#a60561d59b4bdb31032f217ba984563a3">AJson::exportDatabase</a></div><div class="ttdeci">static void exportDatabase()</div><div class="ttdoc">exportDatabase exports the currently active database to JSON.</div><div class="ttdef"><b>Definition:</b> ajson.cpp:23</div></div>
+<div class="ttc" id="aclass_a_json_html_a6e0e703fb4187d3a02983c09873dae21"><div class="ttname"><a href="class_a_json.html#a6e0e703fb4187d3a02983c09873dae21">AJson::importDatabase</a></div><div class="ttdeci">static void importDatabase()</div><div class="ttdoc">importDatabase imports a dataset from JSON. Files need to be at AStanardPaths::JSON for now.</div><div class="ttdef"><b>Definition:</b> ajson.cpp:37</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

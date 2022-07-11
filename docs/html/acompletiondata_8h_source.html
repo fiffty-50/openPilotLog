@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('acompletiondata_8h_source.html',''); i
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef ACOMPLETIONDATA_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define ACOMPLETIONDATA_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;src/database/adatabase.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="class_a_completion_data.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_completion_data.html">ACompletionData</a></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
@@ -102,24 +102,23 @@ $(document).ready(function(){initNavTree('acompletiondata_8h_source.html',''); i
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">// Maps for input mapping DB key - user input</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    QHash&lt;RowId_T, QString&gt; pilotsIdMap;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    QHash&lt;RowId_T, QString&gt; tailsIdMap;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    QHash&lt;RowId_T, QString&gt; airportIcaoIdMap;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    QHash&lt;RowId_T, QString&gt; airportIataIdMap;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    QHash&lt;RowId_T, QString&gt; airportNameIdMap;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    QHash&lt;int, QString&gt; pilotsIdMap;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    QHash&lt;int, QString&gt; tailsIdMap;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    QHash&lt;int, QString&gt; airportIcaoIdMap;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    QHash&lt;int, QString&gt; airportIataIdMap;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    QHash&lt;int, QString&gt; airportNameIdMap;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="comment">// Lists for QCompleter</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    QStringList pilotList;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    QStringList tailsList;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    QStringList airportList;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="comment">// User Data State to trigger update if needed</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="struct_user_data_state.html">UserDataState</a> current_state;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    UserDataState current_state;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// ACOMPLETIONDATA_H</span></div>
 <div class="ttc" id="aclass_a_completion_data_html"><div class="ttname"><a href="class_a_completion_data.html">ACompletionData</a></div><div class="ttdoc">The ACompletionData class provides data to QCompleters and QHashs used for mapping user input to data...</div><div class="ttdef"><b>Definition:</b> acompletiondata.h:12</div></div>
 <div class="ttc" id="aclass_a_completion_data_html_aeccf7bcb927ec5dbf2879c0a345161a4"><div class="ttname"><a href="class_a_completion_data.html#aeccf7bcb927ec5dbf2879c0a345161a4">ACompletionData::update</a></div><div class="ttdeci">void update()</div><div class="ttdoc">updates data from the user modifiable tables</div><div class="ttdef"><b>Definition:</b> acompletiondata.cpp:31</div></div>
 <div class="ttc" id="aclass_a_completion_data_html_af476c92d41ac0dce50e098c25e6b035c"><div class="ttname"><a href="class_a_completion_data.html#af476c92d41ac0dce50e098c25e6b035c">ACompletionData::init</a></div><div class="ttdeci">void init()</div><div class="ttdoc">init Retrieves Data and populates Lists and Maps</div><div class="ttdef"><b>Definition:</b> acompletiondata.cpp:3</div></div>
-<div class="ttc" id="astruct_user_data_state_html"><div class="ttname"><a href="struct_user_data_state.html">UserDataState</a></div><div class="ttdoc">The UserDateState struct caches the current number of entries in relevant database tables for fast ac...</div><div class="ttdef"><b>Definition:</b> adatabase.h:97</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
