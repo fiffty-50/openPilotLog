@@ -17,12 +17,20 @@ public:
     explicit AirportWidget(QWidget *parent = nullptr);
     ~AirportWidget();
 
+signals:
+    void airportDatabaseUpdated();
+
 private slots:
     void on_searchLineEdit_textChanged(const QString &arg1);
 
     void on_searchComboBox_currentIndexChanged(int index);
 
     void on_newAirportPushButton_clicked();
+
+    /*!
+     * \brief onUpdate is called whenever the user modifies an entry in the airports table
+     */
+    void onUpdate();
 
 private:
     Ui::AirportWidget *ui;

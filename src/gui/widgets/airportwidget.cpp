@@ -1,6 +1,7 @@
 #include "airportwidget.h"
 #include "ui_airportwidget.h"
 #include "src/gui/dialogues/newairportdialog.h"
+#include "src/database/database.h"
 
 AirportWidget::AirportWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,6 +10,9 @@ AirportWidget::AirportWidget(QWidget *parent) :
     ui->setupUi(this);
     setupModelAndeView();
     setupSearch();
+
+    QObject::connect(model,     &QSqlTableModel::beforeUpdate,
+                     this,      &AirportWidget::onUpdate);
 }
 
 AirportWidget::~AirportWidget()
@@ -19,6 +23,7 @@ AirportWidget::~AirportWidget()
 void AirportWidget::setupModelAndeView()
 {
     model = new QSqlTableModel(this);
+    model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->setTable(TABLE_NAME);
     model->select();
 
@@ -66,4 +71,9 @@ void AirportWidget::on_newAirportPushButton_clicked()
     auto ap_dialog = NewAirportDialog(this);
     if (ap_dialog.exec() == QDialog::Accepted)
         model->select();
+}
+
+void AirportWidget::onUpdate()
+{
+    emit DB->dataBaseUpdated(OPL::DbTable::Airports);
 }

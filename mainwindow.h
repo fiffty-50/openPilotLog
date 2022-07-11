@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/aircraftwidget.h"
 #include "src/gui/widgets/airportwidget.h"
-#include "src/gui/widgets/backupwidget.h"
+#include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/gui/dialogues/newtaildialog.h"
@@ -78,9 +78,9 @@ QT_END_NAMESPACE
  *
  * Shows a view of the pilots table in a QTableView and enables editing the entries by spawning a child NewPilotDialog with the details for a selected pilot.
  *
- * ## Backup
+ * ## Airports
  *
- * Enables backing up and restoring the database.
+ * Enables viewing and editing the airports database
  *
  * ## Settings
  *
@@ -112,7 +112,7 @@ private slots:
 
     void on_actionPilots_triggered();
 
-    void on_actionBackup_triggered();
+    void on_actionAirports_triggered();
 
     void on_actionSettings_triggered();
 
@@ -121,6 +121,8 @@ private slots:
     void on_actionDebug_triggered();
 
     void on_actionNewSim_triggered();
+
+    void onDatabaseUpdated(const OPL::DbTable table);
 
 private:
     Ui::MainWindow *ui;
@@ -133,7 +135,7 @@ private:
 
     PilotsWidget* pilotsWidget;
 
-    BackupWidget* backupWidget;
+    AirportWidget* airportWidget;
 
     SettingsWidget* settingsWidget;
 
@@ -141,6 +143,7 @@ private:
 
     // Completion Data for QCompleters and Mapping
     OPL::DbCompletionData completionData;
+    bool airportDbIsDirty = false;
 
     void setupToolbar();
     void setActionIcons(StyleType style = StyleType::Light);
@@ -185,6 +188,9 @@ protected:
 
         auto tool_bar = this->findChild<QToolBar*>();
         tool_bar->setIconSize(QSize(icon_size, icon_size));
+        event->accept();
     }
+
+    //void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
 };
 #endif // MAINWINDOW_H

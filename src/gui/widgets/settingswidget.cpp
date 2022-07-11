@@ -24,6 +24,7 @@
 #include "src/database/row.h"
 #include "src/opl.h"
 #include "src/functions/adate.h"
+#include "src/gui/widgets/backupwidget.h"
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,6 +33,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tabWidget->setCurrentIndex(0);
 
+    loadBackupWidget();
     setupComboBoxes();
     setupDateEdits();
     setupValidators();
@@ -95,6 +97,13 @@ void SettingsWidget::setupDateEdits()
             pair.second->setDate(QDate::currentDate());
         }
     }
+}
+
+void SettingsWidget::loadBackupWidget()
+{
+    auto bw = new BackupWidget(this);
+    ui->backupStackedWidget->addWidget(bw);
+    ui->backupStackedWidget->setCurrentWidget(bw);
 }
 
 /*!

@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -29,40 +29,7 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    //auto widget = new AirportWidget(this);
-    //ui->stackedWidget->addWidget(widget);
-    //ui->stackedWidget->setCurrentWidget(widget);
-    //DEB << "Testing retreiving...";
-    //DEB << "Old";
-    //{
-    //ATimer timer;
-    //
-    //for (int i = 1; i < 1000; i++) {
-    //    DataPosition dp("airports", i);
-    //    auto entry = DB->getEntry(dp);
-    //    //auto entry = DB->(i);
-    //}
-    //DEB << "getEntry completed";
-    //}
-    //
-    //{
-    //ATimer timer;
-    //
-    //for (int i = 1; i < 1000; i++) {
-    //    auto row = DB->getRow(OPL::DbTable::Airports, i);
-    //}
-    //DEB << "getRow completed";
-    //}
-    //OPL::Row new_row(OPL::DbTable::Aircraft, 4, entry.getData());
-    //DEB << new_row;
-    //DEB << DB->commit(new_row);
-    //DEB << DB->getAircraftEntry(4);
-
-    auto row = DB->getRow(OPL::DbTable::Flights, 2);
-    DEB << row;
-    auto row_2 = DB->getRow(OPL::DbTable::Flights, 500);
-    DEB << row_2;
-
+    completionData.update();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -81,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
         onDatabaseInvalid();
 
     if(!DB->connect()){
-        WARN(tr("Error establishing database connection."));
+        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
+             .arg(DB->lastError.text()));
     }
 
     // retreive completion lists and maps
@@ -97,8 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
     pilotsWidget = new PilotsWidget(this);
     ui->stackedWidget->addWidget(pilotsWidget);
 
-    backupWidget = new BackupWidget(this);
-    ui->stackedWidget->addWidget(backupWidget);
+    airportWidget = new AirportWidget(this);
+    ui->stackedWidget->addWidget(airportWidget);
     settingsWidget = new SettingsWidget(this);
     ui->stackedWidget->addWidget(settingsWidget);
     debugWidget = new DebugWidget(this);
@@ -135,7 +103,7 @@ void MainWindow::setupToolbar()
     toolBar->addAction(ui->actionLogbook);
     toolBar->addAction(ui->actionAircraft);
     toolBar->addAction(ui->actionPilots);
-    toolBar->addAction(ui->actionBackup);
+    toolBar->addAction(ui->actionAirports);
     toolBar->addAction(ui->actionSettings);
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -154,7 +122,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
@@ -166,7 +134,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
@@ -215,6 +183,30 @@ void MainWindow::connectWidgets()
                      pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      aircraftWidget,  &AircraftWidget::repopulateModel);
+
+    // Catch database updates to lazily update CompletionData
+    QObject::connect(DB,              &OPL::Database::dataBaseUpdated,
+                     this,            &MainWindow::onDatabaseUpdated);
+}
+
+void MainWindow::onDatabaseUpdated(const OPL::DbTable table)
+{
+    switch (table) {
+    case OPL::DbTable::Pilots:
+        DEB << "Pilots table updated...";
+        completionData.updatePilots();
+        break;
+    case OPL::DbTable::Tails:
+        DEB << "Tails table updated...";
+        completionData.updateTails();
+        break;
+    case OPL::DbTable::Airports:
+        DEB << "Airports table updated...";
+        completionData.updateAirports();
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -289,9 +281,9 @@ void MainWindow::on_actionPilots_triggered()
     ui->stackedWidget->setCurrentWidget(pilotsWidget);
 }
 
-void MainWindow::on_actionBackup_triggered()
+void MainWindow::on_actionAirports_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(backupWidget);
+    ui->stackedWidget->setCurrentWidget(airportWidget);
 }
 
 void MainWindow::on_actionSettings_triggered()
@@ -314,4 +306,3 @@ void MainWindow::on_actionNewSim_triggered()
     auto nsd = NewSimDialog(this);
     nsd.exec();
 }
-

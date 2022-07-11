@@ -55,6 +55,9 @@ HomeWidget::HomeWidget(QWidget *parent) :
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
+
+    QObject::connect(DB,    &OPL::Database::dataBaseUpdated,
+                     this,  &HomeWidget::onPilotsDatabaseChanged);
 }
 
 HomeWidget::~HomeWidget()
@@ -74,6 +77,13 @@ void HomeWidget::refresh()
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
+}
+
+void HomeWidget::onPilotsDatabaseChanged(const OPL::DbTable table)
+{
+    // maybe logbook owner name has changed, redraw
+    if (table == OPL::DbTable::Pilots)
+        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 }
 
 void HomeWidget::changeEvent(QEvent *event)

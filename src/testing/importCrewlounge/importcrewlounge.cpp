@@ -63,6 +63,6 @@ void exec(const QString &csv_file_path)
 
     // destroy blocker
     blocker.unblock();
-    emit DB->dataBaseUpdated();
+    emit DB->dataBaseUpdated(OPL::DbTable::Any);
 }
 }// namespace ImportCrewLongue

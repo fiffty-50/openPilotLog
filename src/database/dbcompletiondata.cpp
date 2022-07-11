@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2022 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "dbcompletiondata.h"
 
 namespace OPL {
@@ -26,33 +43,37 @@ void DbCompletionData::init()
     airportIataIdMap = getIdMap(CompleterTarget::AirportIdentifierIATA);
     airportNameIdMap = getIdMap(CompleterTarget::AirportNames);
     airportList      = getCompletionList(CompleterTarget::AirportIdentifier);
-
-    current_state = DB->getUserDataState();
 }
 
 void DbCompletionData::update()
 {
-    if (current_state != DB->getUserDataState()) {
-        // retreive user modifiable data
-        pilotList   = getCompletionList(CompleterTarget::PilotNames);
-        tailsList   = getCompletionList(CompleterTarget::Registrations);
-        pilotsIdMap = getIdMap(CompleterTarget::PilotNames);
-        tailsIdMap  = getIdMap(CompleterTarget::Registrations);
+        updatePilots();
+        updateTails();
+        updateAirports();
+};
 
-        current_state = DB->getUserDataState();
-    }
-}
 
 void DbCompletionData::updateTails()
 {
+    DEB << "Updating Tails...";
     tailsIdMap  = getIdMap(CompleterTarget::Registrations);
     tailsList   = getCompletionList(CompleterTarget::Registrations);
 }
 
 void DbCompletionData::updatePilots()
 {
+    DEB << "Updating Pilots...";
     pilotsIdMap  = getIdMap(CompleterTarget::PilotNames);
     pilotList    = getCompletionList(CompleterTarget::PilotNames);
+}
+
+void DbCompletionData::updateAirports()
+{
+    DEB << "Updating Airports...";
+    airportIcaoIdMap = getIdMap(CompleterTarget::AirportIdentifierICAO);
+    airportIataIdMap = getIdMap(CompleterTarget::AirportIdentifierIATA);
+    airportNameIdMap = getIdMap(CompleterTarget::AirportNames);
+    airportList      = getCompletionList(CompleterTarget::AirportIdentifier);
 }
 
 const QStringList DbCompletionData::getCompletionList(CompleterTarget target)

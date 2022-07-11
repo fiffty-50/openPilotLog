@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -47,33 +47,6 @@ namespace OPL {
  * DB->commit(...)
  */
 #define DB OPL::Database::instance()
-
-/*!
- * \brief The UserDateState struct caches the current number of entries in relevant database tables
- * for fast access
- * \param numTails - Number of tails in the database
- * \param numPilots - Number of pilots in the database
- */
-struct UserDataState {
-
-    UserDataState(){numTails = 0; numPilots = 0;}
-    UserDataState(int numTails_, int numPilots_)
-        : numTails(numTails_), numPilots(numPilots_){}
-
-    bool operator==(const UserDataState& other)
-    {
-        return numTails == other.numTails && numPilots == other.numPilots;
-    }
-    bool operator!=(const UserDataState& other)
-    {
-        return numTails != other.numTails || numPilots != other.numPilots;
-    }
-
-    int numTails;
-    int numPilots;
-};
-
-
 
 /*!
  * \brief The DB class encapsulates the SQL database by providing fast access
@@ -309,13 +282,6 @@ public:
      */
     const QList<OPL::DbTable> &getTemplateTables() const;
 
-    /*!
-     * \brief getUserDataState returns a struct containing the current amount of entries in the tails and
-     * pilots tables.
-     * \return
-     */
-    const UserDataState getUserDataState() const;
-
     // Maintenance and setup
 
     /*!
@@ -360,7 +326,7 @@ signals:
      * trigger an update to the models of the views displaying database contents in
      * the user interface so that a user is always presented with up-to-date information.
      */
-    void dataBaseUpdated();
+    void dataBaseUpdated(const DbTable table);
     /*!
      * \brief connectionReset is emitted whenever the database connection is reset, for
      * example when creating or restoring a backup.

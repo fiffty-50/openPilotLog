@@ -101,6 +101,8 @@ private:
 public slots:
     void refresh();
 
+    void onPilotsDatabaseChanged(const OPL::DbTable table);
+
 protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation

@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -78,22 +78,6 @@ const QList<OPL::DbTable> &Database::getUserTables() const
     return USER_TABLES;
 }
 
-const UserDataState Database::getUserDataState() const
-{
-    QSqlQuery q;
-    q.prepare(QStringLiteral("SELECT COUNT (*) FROM tails"));
-    q.exec();
-    q.first();
-    int tails = q.value(0).toInt();
-
-    q.prepare(QStringLiteral("SELECT COUNT (*) FROM pilots"));
-    q.exec();
-    q.first();
-    int pilots = q.value(0).toInt();
-
-    return UserDataState(tails, pilots);
-}
-
 const QStringList Database::getTableColumns(OPL::DbTable table_name) const
 {
     return tableColumns.value(OPL::GLOBALS->getDbTableName(table_name));
@@ -118,7 +102,7 @@ void Database::updateLayout()
         }
         tableColumns.insert(table_name, table_columns);
     }
-    emit dataBaseUpdated();
+    emit dataBaseUpdated(DbTable::Any);
 }
 
 Database* Database::instance()
@@ -208,7 +192,9 @@ bool Database::remove(const OPL::Row &row)
         return false;
     }
 
-    QString statement = QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(row.getTableName())
+    const QString table_name = OPL::GLOBALS->getDbTableName(row.getTable());
+
+    QString statement = QLatin1String("DELETE FROM ") + table_name
             + QLatin1String(" WHERE ROWID=?");
 
     QSqlQuery query;
@@ -219,7 +205,7 @@ bool Database::remove(const OPL::Row &row)
     {
         LOG << "Entry removed:";
         LOG << row;
-        emit dataBaseUpdated();
+        emit dataBaseUpdated(row.getTable());
         return true;
     } else {
         DEB << "Unable to delete.";
@@ -253,7 +239,7 @@ bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
     if (errorCount == 0) {
         query.prepare(QStringLiteral("COMMIT"));
         if(query.exec()) {
-            emit dataBaseUpdated();
+            emit dataBaseUpdated(table);
             LOG << "Transaction successfull.";
             return true;
         } else {
@@ -278,7 +264,7 @@ bool Database::exists(const OPL::Row &row)
         return false;
 
     //Check database for row id
-    QString statement = QLatin1String("SELECT COUNT(*) FROM ") + OPL::GLOBALS->getDbTableName(row.getTableName())
+    QString statement = QLatin1String("SELECT COUNT(*) FROM ") + OPL::GLOBALS->getDbTableName(row.getTable())
             + QLatin1String(" WHERE ROWID=?");
     QSqlQuery query;
     query.prepare(statement);
@@ -318,7 +304,7 @@ bool Database::clear()
 
 bool Database::update(const OPL::Row &updated_row)
 {
-    QString statement = QLatin1String("UPDATE ") + OPL::GLOBALS->getDbTableName(updated_row.getTableName()) + QLatin1String(" SET ");
+    QString statement = QLatin1String("UPDATE ") + OPL::GLOBALS->getDbTableName(updated_row.getTable()) + QLatin1String(" SET ");
     const auto& data = updated_row.getData();
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
         statement.append(i.key() + "=?,");
@@ -341,7 +327,7 @@ bool Database::update(const OPL::Row &updated_row)
     if (query.exec())
     {
         DEB << "Entry successfully committed.";
-        emit dataBaseUpdated();
+        emit dataBaseUpdated(updated_row.getTable());
         return true;
     } else {
         DEB << "Unable to commit.";
@@ -354,7 +340,7 @@ bool Database::update(const OPL::Row &updated_row)
 
 bool Database::insert(const OPL::Row &new_row)
 {
-    QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTableName()) + QLatin1String(" (");
+    QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" (");
     const auto& data = new_row.getData();
     QHash<QString, QVariant>::const_iterator i;
     for (i = data.constBegin(); i != data.constEnd(); ++i) {
@@ -384,7 +370,7 @@ bool Database::insert(const OPL::Row &new_row)
     if (query.exec())
     {
         DEB << "Entry successfully committed.";
-        emit dataBaseUpdated();
+        emit dataBaseUpdated(new_row.getTable());
         return true;
     } else {
         DEB << "Unable to commit.";

@@ -1,6 +1,6 @@
 ﻿/*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
 
 /*!
  * \brief Enumerates the currency names

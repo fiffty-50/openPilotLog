@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
     ATimer timer(this);
     if (DB->resetUserData()){
         LOG << "Database successfully reset";
-        emit DB->dataBaseUpdated();
+        emit DB->dataBaseUpdated(OPL::DbTable::Any);
     } else
         LOG <<"Errors have occurred. Check console for Debug output. ";
 }

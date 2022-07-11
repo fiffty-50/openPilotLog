@@ -101,6 +101,8 @@ private:
 
     void setupDateEdits();
 
+    void loadBackupWidget();
+
     void updatePersonalDetails();
 
     bool usingStylesheet();
