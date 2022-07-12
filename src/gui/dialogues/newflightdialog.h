@@ -30,11 +30,7 @@
 #include "src/opl.h"
 #include "src/database/row.h"
 
-/*!
- * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
- * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
- */
-enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
+
 
 /*!
  * \brief The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether the
@@ -44,6 +40,12 @@ enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, 
 class ValidationState {
 public:
     ValidationState() = default;
+
+    /*!
+     * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
+     * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
+     */
+    enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
 
     void validate(ValidationItem item)             { validationArray[item] = true;};
     void validate(int index)                       { validationArray[index] = true;};

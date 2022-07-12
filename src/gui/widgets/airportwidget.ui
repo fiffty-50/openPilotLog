@@ -14,8 +14,18 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="4">
+    <widget class="QTableView" name="tableView"/>
+   </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="searchLineEdit"/>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QPushButton" name="newAirportPushButton">
+     <property name="text">
+      <string>Add New Airport</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="2">
     <widget class="QLabel" name="searchInLabel">
@@ -34,13 +44,10 @@
    <item row="1" column="3">
     <widget class="QComboBox" name="searchComboBox"/>
    </item>
-   <item row="0" column="0" colspan="4">
-    <widget class="QTableView" name="tableView"/>
-   </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QPushButton" name="newAirportPushButton">
+   <item row="3" column="0" colspan="4">
+    <widget class="QPushButton" name="deletePushButton">
      <property name="text">
-      <string>Add New Airport</string>
+      <string>Delete Selected Airport</string>
      </property>
     </widget>
    </item>

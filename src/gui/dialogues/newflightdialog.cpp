@@ -51,7 +51,6 @@ NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data,
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
     }
-
     ui->doftLineEdit->setText(ADate::currentDate());
     emit ui->doftLineEdit->editingFinished();
 }
@@ -610,6 +609,7 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     const auto line_edit = ui->acftLineEdit;
     int acft_id = completionData.tailsIdMap.key(line_edit->text());
     DEB << line_edit->text() << " has acft_id: " << acft_id;
+    DEB << completionData.tailsIdMap;
 
     if (acft_id != 0) { // Success
         onGoodInputReceived(line_edit);
@@ -617,12 +617,11 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     }
     // check for whitespaces
     acft_id = completionData.tailsIdMap.key(line_edit->text().split(" ").first());
-    if (acft != 0) {
+    if (acft_id != 0) {
         line_edit->setText(completionData.tailsIdMap.value(acft_id));
         onGoodInputReceived(line_edit);
         return;
     }
-
 
 
     // try to use a completion
@@ -745,16 +744,16 @@ void NewFlightDialog::on_buttonBox_accepted()
         emit le->editingFinished();
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
-        const auto display_names = QHash<ValidationItem, QString> {
-            {ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationItem::dept, QObject::tr("Departure Airport")},
-            {ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationItem::tofb, QObject::tr("Time Off Blocks")},
-            {ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationItem::pic, QObject::tr("PIC Name")},
-            {ValidationItem::acft, QObject::tr("Aircraft Registration")}
+        const auto display_names = QHash<ValidationState::ValidationItem, QString> {
+            {ValidationState::ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationState::ValidationItem::dept, QObject::tr("Departure Airport")},
+            {ValidationState::ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationState::ValidationItem::tofb, QObject::tr("Time Off Blocks")},
+            {ValidationState::ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationState::ValidationItem::pic, QObject::tr("PIC Name")},
+            {ValidationState::ValidationItem::acft, QObject::tr("Aircraft Registration")}
         };
         QString missing_items;
         for (int i=0; i < mandatoryLineEdits->size(); i++) {
             if (!validationState.validAt(i)){
-                missing_items.append(display_names.value(static_cast<ValidationItem>(i)) + "<br>");
+                missing_items.append(display_names.value(static_cast<ValidationState::ValidationItem>(i)) + "<br>");
                 mandatoryLineEdits->at(i)->setStyleSheet(QStringLiteral("border: 1px solid red"));
             }
         }

@@ -69,6 +69,13 @@ const QString Row::getTableName() const
     return OPL::GLOBALS->getDbTableName(table);
 }
 
+//TODO: Remove when tweaking for performance. Used for debugging
+const QString Row::getPosition() const
+{
+    return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(table), QString::number(rowId));
+}
+
+//TODO: Remove when tweaking for performance. Used for debugging
 OPL::Row::operator QString() const
 {
     if (!isValid()) {
@@ -187,6 +194,18 @@ CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
 
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Currencies, row_id, row_data)
+{}
+
+AirportEntry::AirportEntry()
+    : Row(DbTable::Airports, 0)
+{}
+
+AirportEntry::AirportEntry(const RowData_T &row_data)
+    : Row(DbTable::Airports, 0, row_data)
+{}
+
+AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
+    : Row(DbTable::Airports, row_id, row_data)
 {}
 
 } // namespace OPL

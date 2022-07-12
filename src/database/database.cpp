@@ -55,9 +55,13 @@ bool Database::connect()
 
 void Database::disconnect()
 {
+    QString connection_name;
+    {
     auto db = Database::database();
+    connection_name = db.connectionName();
     db.close();
-    db.removeDatabase(db.connectionName());
+    }
+    QSqlDatabase::removeDatabase(connection_name);
     LOG << "Database connection closed.";
 }
 
@@ -126,15 +130,6 @@ QSqlDatabase Database::database()
 {
     return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
 }
-
-//bool Database::commit(const AEntry &entry)
-//{
-//    if (exists(entry)) {
-//        return update(entry);
-//    } else {
-//        return insert(entry);
-//    }
-//}
 
 bool Database::commit(const OPL::Row &row)
 {
@@ -326,7 +321,7 @@ bool Database::update(const OPL::Row &updated_row)
 
     if (query.exec())
     {
-        DEB << "Entry successfully committed.";
+        LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
         emit dataBaseUpdated(updated_row.getTable());
         return true;
     } else {
@@ -369,7 +364,7 @@ bool Database::insert(const OPL::Row &new_row)
     //check result.
     if (query.exec())
     {
-        DEB << "Entry successfully committed.";
+        LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
         emit dataBaseUpdated(new_row.getTable());
         return true;
     } else {

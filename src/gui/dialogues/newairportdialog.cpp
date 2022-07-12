@@ -3,6 +3,8 @@
 #include <QValidator>
 
 #include "src/opl.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 NewAirportDialog::NewAirportDialog(QWidget *parent) :
     QDialog(parent),
@@ -37,8 +39,20 @@ void NewAirportDialog::on_buttonBox_accepted()
         return;
     }
     // create Entry object
-    // if submit() then accept()
-    QDialog::accept();
+    RowData_T airport_data = {
+        {OPL::Db::AIRPORTS_ICAO, ui->icaoLineEdit->text()},
+        {OPL::Db::AIRPORTS_IATA, ui->iataLineEdit->text()},
+        {OPL::Db::AIRPORTS_LAT,  ui->latitudeLineEdit->text()},
+        {OPL::Db::AIRPORTS_LON,  ui->longitudeLineEdit->text()},
+    };
+
+    OPL::AirportEntry entry(airport_data);
+    if(DB->commit(entry))
+        QDialog::accept();
+    else {
+        WARN(tr("Unable to add Airport to the database. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
+        return;
+    }
 }
 
 void NewAirportDialog::on_iataLineEdit_textChanged(const QString &arg1)

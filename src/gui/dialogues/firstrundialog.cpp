@@ -189,7 +189,7 @@ bool FirstRunDialog::finishSetup()
         message_box.exec();
         return false;
     }
-    DB->disconnect(); // connection will be re-established by main()
+    DB->disconnect(); // Connection will be re-established by MainWindow
     return true;
 }
 
@@ -205,6 +205,7 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+
     // Download json files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
@@ -218,8 +219,10 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
         QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
-        if (downloaded_file.size() == 0)
+        if (downloaded_file.size() == 0) {
+            LOG << "Unable to download template files (SSL / Network Error)";
             return false; // ssl/network error
+        }
     }
     // Download checksum files
     for (const auto& table_name : template_table_names) {
@@ -236,8 +239,10 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
         QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".md5")));
-        if (downloaded_file.size() == 0)
+        if (downloaded_file.size() == 0) {
+            LOG << "Unable to download checksum files (SSL / Network Error)";
             return false; // ssl/network error
+        }
     }
     // check downloadad files
     return verifyTemplates();
@@ -335,7 +340,7 @@ bool FirstRunDialog::createUserEntry()
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QList<QPair<OPL::CurrencyName, QDateEdit*>> currencies_list = {
+    const QHash<OPL::CurrencyName, QDateEdit*> currencies_list = {
         {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
         {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
         {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
@@ -343,18 +348,28 @@ bool FirstRunDialog::writeCurrencies()
         {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
         {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
+    const QHash<OPL::CurrencyName, ASettings::UserData> settings_list = {
+        {OPL::CurrencyName::Licence,    ASettings::UserData::ShowLicCurrency },
+        {OPL::CurrencyName::TypeRating, ASettings::UserData::ShowTrCurrency },
+        {OPL::CurrencyName::LineCheck,  ASettings::UserData::ShowLckCurrency },
+        {OPL::CurrencyName::Medical,    ASettings::UserData::ShowMedCurrency },
+        {OPL::CurrencyName::Custom1,    ASettings::UserData::ShowCustom1Currency },
+        {OPL::CurrencyName::Custom2,    ASettings::UserData::ShowCustom2Currency },
+    };
 
     QDate today = QDate::currentDate();
-    for (const auto &pair : currencies_list) {
+    for (const auto &date_edit : currencies_list) {
+        const auto enum_value = currencies_list.key(date_edit);
         // only write dates that have been edited
-        if (pair.second->date() != today) {
-            RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, pair.second->date().toString(Qt::ISODate)}};
-            if (pair.first == OPL::CurrencyName::Custom1)
+        if (date_edit->date() != today) {
+            RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
+            if (enum_value == OPL::CurrencyName::Custom1)
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
-            else if(pair.first == OPL::CurrencyName::Custom2)
+            else if(enum_value == OPL::CurrencyName::Custom2)
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
 
-            OPL::CurrencyEntry entry(static_cast<int>(pair.first), row_data);
+            ASettings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
+            OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);
             if (!DB->commit(entry))
                 return false;
         }

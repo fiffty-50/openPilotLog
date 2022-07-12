@@ -194,6 +194,7 @@ private:
         {DbTable::Aircraft,     QStringLiteral("aircraft")},
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
+        {DbTable::Changelog,    QStringLiteral("changelog")},
     };
     const static inline QStringList APPROACH_TYPES = {
             QStringLiteral("VISUAL"),
@@ -318,6 +319,17 @@ const inline auto  SIMULATORS_TYPE        = QStringLiteral("deviceType");
 const inline auto  SIMULATORS_ACFT        = QStringLiteral("aircraftType");
 const inline auto  SIMULATORS_REG         = QStringLiteral("registration");
 const inline auto  SIMULATORS_REMARKS     = QStringLiteral("remarks");
+
+// Airports table
+const inline auto AIRPORTS_ICAO           = QStringLiteral("icao");
+const inline auto AIRPORTS_IATA           = QStringLiteral("iata");
+const inline auto AIRPORTS_NAME           = QStringLiteral("name");
+const inline auto AIRPORTS_LAT            = QStringLiteral("lat");
+const inline auto AIRPORTS_LON            = QStringLiteral("long");
+const inline auto AIRPORTS_COUNTRY        = QStringLiteral("country");
+const inline auto AIRPORTS_ALTITIDUE      = QStringLiteral("alt");
+const inline auto AIRPORTS_UTC_OFFSET     = QStringLiteral("utcoffset");
+const inline auto AIRPORTS_TZ_OLSON       = QStringLiteral("tzolson");
 
 // all tables
 const inline auto  ROWID                  = QStringLiteral("rowid");

@@ -20,7 +20,6 @@
 #include "src/functions/alog.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
-#include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"

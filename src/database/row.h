@@ -60,6 +60,7 @@ public:
     void setRowId(int value);
     OPL::DbTable getTable() const;
     const QString getTableName() const;
+    const QString getPosition() const;
 
     bool isValid() const {return hasData && valid;}
 
@@ -146,6 +147,17 @@ public:
     CurrencyEntry();
     CurrencyEntry(const RowData_T &row_data);
     CurrencyEntry(int row_id, const RowData_T &row_data);
+};
+
+/*!
+ * \brief A Row representing an Airport entry. See Row class for details.
+ */
+class AirportEntry : public Row
+{
+public:
+    AirportEntry();
+    AirportEntry(const RowData_T &row_data);
+    AirportEntry(int row_id, const RowData_T &row_data);
 };
 
 } // namespace OPL

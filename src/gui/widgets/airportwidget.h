@@ -32,10 +32,15 @@ private slots:
      */
     void onUpdate();
 
+    void onSelectionChanged();
+
+    void on_deletePushButton_clicked();
+
 private:
     Ui::AirportWidget *ui;
     QSqlTableModel *model;
     QTableView *view;
+    QList<int> selectedEntries;
 
     void setupModelAndeView();
     void setupSearch();

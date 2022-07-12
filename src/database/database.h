@@ -75,7 +75,7 @@ private:
         OPL::DbTable::Aircraft,
         OPL::DbTable::Airports,
         OPL::DbTable::Currencies,
-        OPL::DbTable::Changelog
+        OPL::DbTable::Changelog,
     };
 
 
