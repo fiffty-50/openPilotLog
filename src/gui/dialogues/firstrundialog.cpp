@@ -340,7 +340,7 @@ bool FirstRunDialog::createUserEntry()
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QHash<OPL::CurrencyName, QDateEdit*> currencies_list = {
+    const QMap<OPL::CurrencyName, QDateEdit*> currencies_list = {
         {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
         {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
         {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
@@ -348,7 +348,7 @@ bool FirstRunDialog::writeCurrencies()
         {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
         {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
-    const QHash<OPL::CurrencyName, ASettings::UserData> settings_list = {
+    const QMap<OPL::CurrencyName, ASettings::UserData> settings_list = {
         {OPL::CurrencyName::Licence,    ASettings::UserData::ShowLicCurrency },
         {OPL::CurrencyName::TypeRating, ASettings::UserData::ShowTrCurrency },
         {OPL::CurrencyName::LineCheck,  ASettings::UserData::ShowLckCurrency },
@@ -362,7 +362,7 @@ bool FirstRunDialog::writeCurrencies()
         const auto enum_value = currencies_list.key(date_edit);
         // only write dates that have been edited
         if (date_edit->date() != today) {
-            RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
+            OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
             if (enum_value == OPL::CurrencyName::Custom1)
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
             else if(enum_value == OPL::CurrencyName::Custom2)

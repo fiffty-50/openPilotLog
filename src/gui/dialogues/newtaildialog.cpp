@@ -178,7 +178,7 @@ bool NewTailDialog::verify()
  */
 void NewTailDialog::submitForm()
 {
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));

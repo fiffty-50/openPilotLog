@@ -20,7 +20,6 @@
 #define ROW_H
 #include "src/opl.h"
 
-
 namespace OPL {
 
 /*!

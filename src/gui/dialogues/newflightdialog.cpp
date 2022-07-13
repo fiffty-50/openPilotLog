@@ -361,14 +361,14 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
 /*!
  * \brief NewFlightDialog::prepareFlightEntryData reads the user input from the UI and converts it into
  * the database format.
- * \return RowData_T a map containing a row ready for database submission
+ * \return OPL::RowData_T a map containing a row ready for database submission
  */
-RowData_T NewFlightDialog::prepareFlightEntryData()
+OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
 {
     if(!validationState.allValid())
         return {};
 
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     // Calculate Block and Night Time
     const int block_minutes = ATime::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
     QDateTime departure_date_time = ADateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());

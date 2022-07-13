@@ -44,7 +44,7 @@ private:
     void init();
     void fillEntryData();
     bool verifyInput(QString &error_msg);
-    RowData_T collectInput();
+    OPL::RowData_T collectInput();
 
     OPL::SimulatorEntry entry;
 };

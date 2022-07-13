@@ -25,7 +25,7 @@ struct AAircraftEntry : public AEntry {
 public:
     AAircraftEntry();
     AAircraftEntry(RowId_T row_id);
-    AAircraftEntry(RowData_T table_data);
+    AAircraftEntry(OPL::RowData_T table_data);
 
     AAircraftEntry(const AAircraftEntry& te) = default;
     AAircraftEntry& operator=(const AAircraftEntry& te) = default;

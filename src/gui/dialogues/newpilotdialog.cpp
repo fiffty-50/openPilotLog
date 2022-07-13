@@ -91,7 +91,7 @@ void NewPilotDialog::formFiller()
 
 void NewPilotDialog::submitForm()
 {
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     const auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));

@@ -29,7 +29,37 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    completionData.update();
+    const auto entry = DB->getPilotEntry(1);
+    DEB << entry;
+
+    const auto hash = entry.getData();
+    QMap<QString, QVariant> map;
+    for (const auto &var : hash) {
+        map.insert(hash.key(var), var);
+    }
+    {
+    ATimer timer;
+    for (int i = 0; i < 1000 ; i++ ) {
+
+
+        QString string;
+        string.append(hash.value(OPL::Db::PILOTS_ALIAS).toString());
+        string.append(hash.value(OPL::Db::PILOTS_FIRSTNAME).toString());
+        string.append(hash.value(OPL::Db::PILOTS_LASTNAME).toString());
+    }
+    LOG << "Hash lookup time:";}
+    {
+    ATimer timer;
+    for (int i = 0; i < 10000 ; i++ ) {
+        QString string;
+        string.append(map.value(OPL::Db::PILOTS_ALIAS).toString());
+        string.append(map.value(OPL::Db::PILOTS_FIRSTNAME).toString());
+        string.append(map.value(OPL::Db::PILOTS_LASTNAME).toString());
+
+    }
+    LOG << "map lookup time:";}
+
+
 }
 
 MainWindow::MainWindow(QWidget *parent)

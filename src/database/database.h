@@ -35,9 +35,11 @@
 #include "src/database/row.h"
 #include "src/classes/astandardpaths.h"
 
-using RowData_T = QHash<QString, QVariant>;
+
 
 namespace OPL {
+
+//using RowData_T = QHash<QString, QVariant>;
 
 /*!
  * \brief Convenience macro that returns instance of DataBase.

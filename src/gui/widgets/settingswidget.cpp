@@ -189,7 +189,7 @@ void SettingsWidget::setupValidators()
  */
 void SettingsWidget::updatePersonalDetails()
 {
-    RowData_T user_data;
+    OPL::RowData_T user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
         user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("self"));
@@ -482,7 +482,7 @@ void SettingsWidget::on_resetStylePushButton_clicked()
 
 void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Licence), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -492,7 +492,7 @@ void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::TypeRating), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -502,7 +502,7 @@ void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::LineCheck), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -512,7 +512,7 @@ void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Medical), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -522,7 +522,7 @@ void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
                                 {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom1), row_data);
     DEB << entry;
@@ -534,7 +534,7 @@ void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
-    const RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
+    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
                                 {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom2), row_data);
     if (!DB->commit(entry))

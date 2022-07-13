@@ -96,7 +96,7 @@ Inherits QObject\&.
 .br
 .RI "deletes a list of entries from the database\&. Optimised for speed when deleting many entries\&. "
 .ti -1c
-.RI "RowData_T \fBgetEntryData\fP (\fBDataPosition\fP data_position)"
+.RI "OPL::RowData_T \fBgetEntryData\fP (\fBDataPosition\fP data_position)"
 .br
 .RI "retreive entry data from the database to create an entry object "
 .ti -1c
@@ -164,7 +164,7 @@ Inherits QObject\&.
 .br
 .RI "\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
 .ti -1c
-.RI "QVector< RowData_T > \fBgetTable\fP (DatabaseTable table_name)"
+.RI "QVector< OPL::RowData_T > \fBgetTable\fP (DatabaseTable table_name)"
 .br
 .RI "getTable returns all contents of a given table from the database "
 .ti -1c
@@ -273,7 +273,7 @@ retreives a flight entry from the database\&. This function is a wrapper for Dat
 
 .PP
 retreives a PilotEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a PilotEntry instead of an Entry\&. It allows for easy access to a pilot entry with only the RowId required as input\&. 
-.SS "QVector< RowData_T > Database::getTable (DatabaseTable table_name)"
+.SS "QVector< OPL::RowData_T > Database::getTable (DatabaseTable table_name)"
 
 .PP
 getTable returns all contents of a given table from the database 

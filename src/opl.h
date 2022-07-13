@@ -149,6 +149,55 @@ public:
 private:
     Q_OBJECT
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    const static inline QHash<Translation, QString> L10N_FilePaths {
+        {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
+        {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
+        {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
+    };
+    const static inline QHash<Translation, QString> L10N_DisplayNames {
+        {Translation::English, QStringLiteral("English")},
+        {Translation::German,  QStringLiteral("Deutsch")},
+        {Translation::Spanish, QStringLiteral("Español")},
+    };
+    const static inline QHash<DbViewName, QString> DATABASE_VIEWS = {
+        {DbViewName::Default,        QStringLiteral("viewDefault")},
+        {DbViewName::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {DbViewName::Easa,           QStringLiteral("viewEasa")},
+        {DbViewName::EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {DbViewName::SimulatorOnly,  QStringLiteral("viewSimulators")},
+    };
+    const QHash<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {DbViewName::Default,        tr("Default")},
+        {DbViewName::DefaultWithSim, tr("Default with Simulator")},
+        {DbViewName::Easa,           tr("EASA-FCL")},
+        {DbViewName::EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {DbViewName::SimulatorOnly,  tr("Simulator Sessions Only")},
+    };
+    const static inline QHash<PilotFunction, QString> PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QStringLiteral("PIC")},
+        {PilotFunction::PICUS, QStringLiteral("PICUS")},
+        {PilotFunction::SIC,   QStringLiteral("SIC")},
+        {PilotFunction::DUAL,  QStringLiteral("DUAL")},
+        {PilotFunction::FI,    QStringLiteral("FI")},
+    };
+    const static inline QHash<SimulatorType, QString> SIMULATOR_TYPES = {
+        {SimulatorType::FNPTI,  QStringLiteral("FNPT I")},
+        {SimulatorType::FNPTII, QStringLiteral("FNPT II")},
+        {SimulatorType::FSTD,   QStringLiteral("FSTD")},
+    };
+    const static inline QHash<DbTable, QString> DB_TABLES = {
+        //Flights, Simulators, Pilots, Tails, Aircraft, Airports
+        {DbTable::Flights,      QStringLiteral("flights")},
+        {DbTable::Simulators,   QStringLiteral("simulators")},
+        {DbTable::Pilots,       QStringLiteral("pilots")},
+        {DbTable::Tails,        QStringLiteral("tails")},
+        {DbTable::Aircraft,     QStringLiteral("aircraft")},
+        {DbTable::Airports,     QStringLiteral("airports")},
+        {DbTable::Currencies,   QStringLiteral("currencies")},
+        {DbTable::Changelog,    QStringLiteral("changelog")},
+    };
+#else
     const static inline QMap<Translation, QString> L10N_FilePaths {
         {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
         {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
@@ -186,7 +235,6 @@ private:
         {SimulatorType::FSTD,   QStringLiteral("FSTD")},
     };
     const static inline QMap<DbTable, QString> DB_TABLES = {
-        //Flights, Simulators, Pilots, Tails, Aircraft, Airports
         {DbTable::Flights,      QStringLiteral("flights")},
         {DbTable::Simulators,   QStringLiteral("simulators")},
         {DbTable::Pilots,       QStringLiteral("pilots")},
@@ -196,6 +244,8 @@ private:
         {DbTable::Currencies,   QStringLiteral("currencies")},
         {DbTable::Changelog,    QStringLiteral("changelog")},
     };
+#endif
+
     const static inline QStringList APPROACH_TYPES = {
             QStringLiteral("VISUAL"),
             QStringLiteral("ILS CAT I"),

@@ -147,9 +147,9 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     return true;
 }
 
-RowData_T NewSimDialog::collectInput()
+OPL::RowData_T NewSimDialog::collectInput()
 {
-    RowData_T new_entry;
+    OPL::RowData_T new_entry;
     // Date
     new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time

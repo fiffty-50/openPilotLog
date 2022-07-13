@@ -39,7 +39,7 @@ void NewAirportDialog::on_buttonBox_accepted()
         return;
     }
     // create Entry object
-    RowData_T airport_data = {
+    OPL::RowData_T airport_data = {
         {OPL::Db::AIRPORTS_ICAO, ui->icaoLineEdit->text()},
         {OPL::Db::AIRPORTS_IATA, ui->iataLineEdit->text()},
         {OPL::Db::AIRPORTS_LAT,  ui->latitudeLineEdit->text()},

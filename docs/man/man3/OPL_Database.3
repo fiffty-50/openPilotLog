@@ -101,7 +101,7 @@ Inherits QObject\&.
 .br
 .RI "retreive a \fBRow\fP from the database "
 .ti -1c
-.RI "RowData_T \fBgetRowData\fP (const \fBOPL::DbTable\fP table, const int row_id)"
+.RI "OPL::RowData_T \fBgetRowData\fP (const \fBOPL::DbTable\fP table, const int row_id)"
 .br
 .RI "retreive a Map of <column name, column content> for a specific row in the database\&. "
 .ti -1c
@@ -137,7 +137,7 @@ Inherits QObject\&.
 .br
 .RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
 .ti -1c
-.RI "QVector< RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
+.RI "QVector< OPL::RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
 .br
 .RI "getTable returns all contents of a given table from the database "
 .ti -1c
@@ -240,7 +240,7 @@ The QSqlDatabase object pertaining to the connection\&.
 .RE
 .PP
 
-.SS "QVector< RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
+.SS "QVector< OPL::RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
 
 .PP
 getTable returns all contents of a given table from the database 

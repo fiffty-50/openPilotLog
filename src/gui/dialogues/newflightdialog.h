@@ -182,7 +182,7 @@ private:
 
 
     bool checkPilotFunctionsValid();
-    RowData_T prepareFlightEntryData();
+    OPL::RowData_T prepareFlightEntryData();
 
 
 private slots:
