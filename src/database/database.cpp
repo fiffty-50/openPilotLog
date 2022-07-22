@@ -686,9 +686,12 @@ bool Database::importTemplateData(bool use_local_ressources)
                                       + table_name + QLatin1String(".json")).array();
             error_message.append(QLatin1String(" (ressource) "));
         } else {
-            data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
-                                          AStandardPaths::Templates).absoluteFilePath(
-                                          table_name + QLatin1String(".json"))).array();
+            const QString file_path = OPL::Paths::filePath(OPL::Paths::Templates,
+                                                           table_name + QLatin1String(".json"));
+            data_to_commit = AJson::readFileToDoc(file_path).array();
+            //data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
+            //                              AStandardPaths::Templates).absoluteFilePath(
+            //                              table_name + QLatin1String(".json"))).array();
             error_message.append(QLatin1String(" (downloaded) "));
         }
 

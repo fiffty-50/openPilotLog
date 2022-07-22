@@ -18,7 +18,7 @@
 #ifndef BACKUPWIDGET_H
 #define BACKUPWIDGET_H
 
-#include "src/classes/astandardpaths.h"
+#include "src/classes/paths.h"
 
 #include <QWidget>
 #include <QStandardItemModel>
@@ -37,19 +37,18 @@ class BackupWidget;
  * the absolute path in the fileInfo attribute for further use while
  * displaying only the base name.
  */
-class AFileStandardItem : public QStandardItem {
+class FileStandardItem : public QStandardItem {
 private:
     QFileInfo fileInfo;
 public:
-    AFileStandardItem(const QIcon& icon, const QString& filename, const AStandardPaths::Directories dir)
+    FileStandardItem(const QIcon& icon, const QString& filename, const OPL::Paths::Directories dir)
         : QStandardItem(icon, filename),
-          fileInfo(QFileInfo(AStandardPaths::asChildOfDir(dir, filename)))
+          fileInfo(QFileInfo(OPL::Paths::filePath(dir, filename)))
     {}
-    AFileStandardItem(const QIcon& icon, const QFileInfo file_info)
+    FileStandardItem(const QIcon& icon, const QFileInfo file_info)
         : QStandardItem(icon, file_info.baseName()),
           fileInfo(QFileInfo(file_info))
     {}
-
 
     const QFileInfo& info() const
     {
@@ -121,9 +120,7 @@ private:
 
     QStandardItemModel *model;
     QTableView *view;
-    AFileStandardItem *selectedFileInfo = nullptr;  // Only the first column is necessary for
-                                                    // any operation and it is encapsulated in the
-                                                    // AFileStandardItem class
+    QList<int> selectedRows;
     void refresh();
 
 protected:

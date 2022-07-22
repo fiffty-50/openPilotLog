@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "alog.h"
+#include "src/classes/paths.h"
 #include <QMessageBox>
 #include <QTextStream>
 
@@ -60,7 +61,7 @@ void deleteOldLogs()
 bool init(bool log_debug)
 {
     logDebug = log_debug;
-    logFolder = AStandardPaths::directory(AStandardPaths::Log);
+    logFolder = OPL::Paths::directory(OPL::Paths::Log);
     deleteOldLogs();
     setLogFileName();
 

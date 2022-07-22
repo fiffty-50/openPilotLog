@@ -79,6 +79,8 @@ set(PROJECT_SOURCES
     # Classes
     src/classes/astyle.h
     src/classes/astyle.cpp
+    src/classes/paths.h
+    src/classes/paths.cpp
     src/classes/astandardpaths.h
     src/classes/astandardpaths.cpp
     src/classes/adownload.h

@@ -18,7 +18,6 @@
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
 #include "src/gui/widgets/backupwidget.h"
@@ -27,9 +26,7 @@
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
 #include "src/classes/astyle.h"
-#include "src/functions/adatetime.h"
 #include "src/classes/ahash.h"
-#include "src/testing/atimer.h"
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -120,8 +117,9 @@ bool FirstRunDialog::finishSetup()
 {
     writeSettings();
 
-    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
-                                 absoluteFilePath(QStringLiteral("logbook.db")));
+    QFileInfo database_file(OPL::Paths::databaseFileInfo());
+    //QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
+    //                             absoluteFilePath(QStringLiteral("logbook.db")));
     if (database_file.exists()) {
 
         QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
@@ -200,7 +198,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
+    //QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
     QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
@@ -253,7 +252,8 @@ bool FirstRunDialog::verifyTemplates()
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     for (const auto &table_name : template_table_names) {
-        const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
+        const QString path = OPL::Paths::filePath(OPL::Paths::Templates, table_name);
+        //const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
 
         QFileInfo check_file(path + QLatin1String(".json"));
         AHash hash(check_file);

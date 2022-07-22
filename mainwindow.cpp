@@ -18,21 +18,26 @@
 #include <QToolBar>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
 #include "src/classes/astyle.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
-#include <QTimeZone>
-#include "src/gui/dialogues/newairportdialog.h"
+#include "src/classes/paths.h"
 void MainWindow::doDebugStuff()
 {
-    //const auto list = QTimeZone::availableTimeZoneIds();
-    //DEB << list;
-    auto nad = new NewAirportDialog(5, this);
-    nad->exec();
+    AStandardPaths::setup();
+    DEB << OPL::Paths::directory(OPL::Paths::Backup);
+    DEB << OPL::Paths::path(OPL::Paths::Backup);
+    DEB << OPL::Paths::filePath(OPL::Paths::Database, "logbook.db");
+    DEB << OPL::Paths::setup();
+
+    QDir dir(QCoreApplication::applicationDirPath());
+    QString filename("file.f");
+
+    DEB << AStandardPaths::asChildOfDir(AStandardPaths::Backup, filename);
+    DEB << OPL::Paths::filePath(OPL::Paths::Backup, filename);
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -44,10 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     setActionIcons(AStyle::getStyleType());
 
     // connect to the Database
-    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
-                                         absoluteFilePath(QStringLiteral("logbook.db")));
-
-    if (database_file.size() == 0)
+    if (OPL::Paths::databaseFileInfo().size() == 0)
         onDatabaseInvalid();
 
     if(!DB->connect()){
@@ -232,7 +234,8 @@ void MainWindow::onDatabaseInvalid()
         DEB << "Yes(Import Backup)";
         QString db_path = QFileDialog::getOpenFileName(this,
                                                        tr("Select Database"),
-                                                       AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
+                                                       OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
+                                                       //AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
                                                        tr("Database file (*.db)"));
         if (!db_path.isEmpty()) {
             if(!DB->restoreBackup(db_path)) {

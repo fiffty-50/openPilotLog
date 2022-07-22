@@ -21,11 +21,10 @@
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
 #include "src/classes/asettings.h"
-#include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astyle.h"
 #include "src/functions/alog.h"
-#include "src/classes/atranslator.h"
+#include "src/classes/paths.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
@@ -46,7 +45,7 @@ namespace Main {
 void init()
 {
     LOG << "Setting up / verifying Application Directories...";
-    if(AStandardPaths::setup()) {
+    if(OPL::Paths::setup()) {
         LOG << "Application Directories... verified";
     } else {
         LOG << "Unable to create directories.";
