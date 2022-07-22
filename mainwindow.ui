@@ -146,7 +146,7 @@
     <string>Airports</string>
    </property>
    <property name="toolTip">
-    <string>Create or restore a backup of the database</string>
+    <string>Add a new or edit an existing airport</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>

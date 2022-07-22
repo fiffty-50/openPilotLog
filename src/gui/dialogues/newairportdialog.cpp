@@ -8,12 +8,21 @@
 #include "src/database/row.h"
 
 NewAirportDialog::NewAirportDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewAirportDialog)
+    QDialog(parent), ui(new Ui::NewAirportDialog)
+{
+    rowId = 0; // new entry
+    ui->setupUi(this);
+    setValidators();
+    loadTimeZones();
+}
+
+NewAirportDialog::NewAirportDialog(int row_id, QWidget *parent)
+    : QDialog(parent), ui(new Ui::NewAirportDialog), rowId(row_id)
 {
     ui->setupUi(this);
     setValidators();
     loadTimeZones();
+    loadAirportData(row_id);
 }
 
 NewAirportDialog::~NewAirportDialog()
@@ -23,10 +32,8 @@ NewAirportDialog::~NewAirportDialog()
 
 void NewAirportDialog::setValidators()
 {
-    ui->latitudeLineEdit ->setValidator(new QDoubleValidator(-90,90,10,this));   // -90  <= Latitude  <= 90
-    ui->longitudeLineEdit->setValidator(new QDoubleValidator(-180,180,10,this)); // -180 <= Longitude <= 180
-    ui->icaoLineEdit     ->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{4}"), this)); // 4 letter code
-    ui->iataLineEdit     ->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{3}"), this)); // 3 letter code
+    ui->icaoLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{4}"), this)); // 4 letter code
+    ui->iataLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{3}"), this)); // 3 letter code
 }
 
 void NewAirportDialog::loadTimeZones()
@@ -37,8 +44,42 @@ void NewAirportDialog::loadTimeZones()
     ui->timeZoneComboBox->addItems(tz_list);
 }
 
-bool NewAirportDialog::confirmTimezone()
+void NewAirportDialog::loadAirportData(int row_id)
 {
+    const auto airport_data = DB->getAirportEntry(row_id).getData();
+    //const auto airport_data = airport.getData();
+    DEB << "Filling Airport Data: " << airport_data;
+
+    ui->nameLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_NAME).toString());
+    ui->icaoLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_ICAO).toString());
+    ui->iataLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_IATA).toString());
+    ui->latDoubleSpinBox->setValue(airport_data.value(OPL::Db::AIRPORTS_LAT).toDouble());
+    ui->lonDoubleSpinBox->setValue(airport_data.value(OPL::Db::AIRPORTS_LON).toDouble());
+    ui->countryLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_COUNTRY).toString());
+
+    const QString timezone = airport_data.value(OPL::Db::AIRPORTS_TZ_OLSON).toString();
+    DEB << "Timezone: " << timezone;
+    if (timezone.isNull())
+        WARN(tr("Unable to read timezone data for this airport. Please verify."));
+    ui->timeZoneComboBox->setCurrentText(timezone);
+}
+
+bool NewAirportDialog::verifyInput()
+{
+    if (ui->nameLineEdit->text().isEmpty()) {
+        WARN(tr("Please enter the airport name."));
+        return false;
+    }
+    if (ui->icaoLineEdit->text().length() != 4) {
+        WARN(tr("Invalid ICAO Code."));
+        return false;
+    }
+    if (ui->latDoubleSpinBox->value() == 0 || ui->lonDoubleSpinBox->value() == 0) {
+        WARN(tr("Please enter the latitude and longitude in decimal degrees.<br><br>"
+                "This data is required for calculation of sunrise and sunset times."));
+        return false;
+    }
+
     if (ui->timeZoneComboBox->currentIndex() == 0) {
 
         QString airport_name = ui->nameLineEdit->text();
@@ -63,29 +104,20 @@ bool NewAirportDialog::confirmTimezone()
 
 void NewAirportDialog::on_buttonBox_accepted()
 {
-    // validate input
-    if (!ui->latitudeLineEdit->hasAcceptableInput()) {
-        WARN(tr("The entered latitude is invalid. Please enter the latitude as a decimal number between -90.0 and 90.0 degrees."));
+    if (!verifyInput())
         return;
-    }
-    if (!ui->longitudeLineEdit->hasAcceptableInput()) {
-        WARN(tr("The entered longitude is invalid. Please enter the longitude as a decimal number between -180.0 and 180.0 degrees."));
-        return;
-    }
-    if (!confirmTimezone())
-        return;
-
     // create Entry object
     OPL::RowData_T airport_data = {
+        {OPL::Db::AIRPORTS_NAME,     ui->nameLineEdit->text()},
         {OPL::Db::AIRPORTS_ICAO,     ui->icaoLineEdit->text()},
         {OPL::Db::AIRPORTS_IATA,     ui->iataLineEdit->text()},
-        {OPL::Db::AIRPORTS_LAT,      ui->latitudeLineEdit->text()},
-        {OPL::Db::AIRPORTS_LON,      ui->longitudeLineEdit->text()},
+        {OPL::Db::AIRPORTS_LAT,      ui->latDoubleSpinBox->value()},
+        {OPL::Db::AIRPORTS_LON,      ui->lonDoubleSpinBox->value()},
         {OPL::Db::AIRPORTS_TZ_OLSON, ui->timeZoneComboBox->currentText()},
         {OPL::Db::AIRPORTS_COUNTRY,  ui->countryLineEdit->text()},
     };
 
-    OPL::AirportEntry entry(airport_data);
+    OPL::AirportEntry entry(rowId, airport_data);
     if(DB->commit(entry))
         QDialog::accept();
     else {
@@ -102,51 +134,6 @@ void NewAirportDialog::on_iataLineEdit_textChanged(const QString &arg1)
 void NewAirportDialog::on_icaoLineEdit_textChanged(const QString &arg1)
 {
     ui->icaoLineEdit->setText(arg1.toUpper());
-}
-
-void NewAirportDialog::on_nameLineEdit_editingFinished()
-{
-    DEB << "Editing finished: ";
-}
-
-void NewAirportDialog::on_iataLineEdit_editingFinished()
-{
-    DEB << "Editing finished: ";
-}
-
-void NewAirportDialog::on_icaoLineEdit_editingFinished()
-{
-    DEB << "Editing finished: ";
-}
-
-void NewAirportDialog::on_latitudeLineEdit_editingFinished()
-{
-    DEB << "Editing finished: ";
-}
-
-void NewAirportDialog::on_longitudeLineEdit_editingFinished()
-{
-    DEB << "Editing finished: ";
-}
-
-void NewAirportDialog::on_latitudeLineEdit_inputRejected()
-{
-    DEB << "Input Rejected";
-}
-
-void NewAirportDialog::on_longitudeLineEdit_inputRejected()
-{
-    DEB << "Input Rejected";
-}
-
-void NewAirportDialog::on_icaoLineEdit_inputRejected()
-{
-    DEB << "Input Rejected";
-}
-
-void NewAirportDialog::on_iataLineEdit_inputRejected()
-{
-    DEB << "Input Rejected";
 }
 
 void NewAirportDialog::on_buttonBox_rejected()

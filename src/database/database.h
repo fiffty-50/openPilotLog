@@ -256,6 +256,15 @@ public:
     }
 
     /*!
+     * \brief Retreives an airport entry from the database. See row class for details.
+     */
+    inline OPL::AirportEntry getAirportEntry(int row_id)
+    {
+        const auto data = getRowData(OPL::DbTable::Airports, row_id);
+        return OPL::AirportEntry(row_id, data);
+    }
+
+    /*!
      * \brief returns the ROWID for the newest entry in the respective table.
      */
     int getLastEntry(OPL::DbTable table);

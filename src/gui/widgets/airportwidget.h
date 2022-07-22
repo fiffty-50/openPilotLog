@@ -27,14 +27,13 @@ private slots:
 
     void on_newAirportPushButton_clicked();
 
-    /*!
-     * \brief onUpdate is called whenever the user modifies an entry in the airports table
-     */
-    void onUpdate();
-
     void onSelectionChanged();
 
     void on_deletePushButton_clicked();
+
+    void on_editAirportPushButton_clicked();
+
+    void refresh();
 
 private:
     Ui::AirportWidget *ui;
@@ -46,13 +45,13 @@ private:
     void setupSearch();
 
     inline const static QString TABLE_NAME = QStringLiteral("airports");
-    inline const static QHash<int, QString> FILTER_MAP = {
+    inline const static QMap<int, QString> FILTER_MAP = {
         {0, QStringLiteral("icao LIKE \"%")},
         {1, QStringLiteral("iata LIKE \"%")},
         {2, QStringLiteral("name LIKE \"%")},
         {3, QStringLiteral("country LIKE \"%")},
     };
-    inline const static QHash<int, QString> HEADER_MAP = {
+    inline const static QMap<int, QString> HEADER_MAP = {
         {0, QStringLiteral("ICAO")},
         {1, QStringLiteral("IATA")},
         {2, QStringLiteral("Name")},

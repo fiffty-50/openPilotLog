@@ -18,7 +18,6 @@
 #include "newflightdialog.h"
 #include "ui_newflightdialog.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/functions/adate.h"
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"

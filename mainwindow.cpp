@@ -26,10 +26,13 @@
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
 #include <QTimeZone>
+#include "src/gui/dialogues/newairportdialog.h"
 void MainWindow::doDebugStuff()
 {
-    const auto list = QTimeZone::availableTimeZoneIds();
-    DEB << list;
+    //const auto list = QTimeZone::availableTimeZoneIds();
+    //DEB << list;
+    auto nad = new NewAirportDialog(5, this);
+    nad->exec();
 }
 
 MainWindow::MainWindow(QWidget *parent)

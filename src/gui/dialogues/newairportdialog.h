@@ -13,7 +13,9 @@ class NewAirportDialog : public QDialog
 
 public:
     explicit NewAirportDialog(QWidget *parent = nullptr);
+    explicit NewAirportDialog(int row_id, QWidget* parent = nullptr);
     ~NewAirportDialog();
+
 
 private slots:
     void on_buttonBox_accepted();
@@ -22,24 +24,6 @@ private slots:
 
     void on_icaoLineEdit_textChanged(const QString &arg1);
 
-    void on_nameLineEdit_editingFinished();
-
-    void on_iataLineEdit_editingFinished();
-
-    void on_icaoLineEdit_editingFinished();
-
-    void on_latitudeLineEdit_editingFinished();
-
-    void on_longitudeLineEdit_editingFinished();
-
-    void on_latitudeLineEdit_inputRejected();
-
-    void on_longitudeLineEdit_inputRejected();
-
-    void on_icaoLineEdit_inputRejected();
-
-    void on_iataLineEdit_inputRejected();
-
     void on_buttonBox_rejected();
 
 private:
@@ -47,6 +31,9 @@ private:
     void setValidators();
     void loadTimeZones();
     bool confirmTimezone();
+    void loadAirportData(int row_id);
+    bool verifyInput();
+    int rowId;
 };
 
 #endif // NEWAIRPORTDIALOG_H

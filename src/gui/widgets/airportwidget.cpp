@@ -11,10 +11,12 @@ AirportWidget::AirportWidget(QWidget *parent) :
     setupModelAndeView();
     setupSearch();
 
-    QObject::connect(model,                  &QSqlTableModel::beforeUpdate,
-                     this,                   &AirportWidget::onUpdate);
+    QObject::connect(DB,                     &OPL::Database::dataBaseUpdated,
+                     this,                   &AirportWidget::refresh);
     QObject::connect(view->selectionModel(), &QItemSelectionModel::selectionChanged,
                      this,                   &AirportWidget::onSelectionChanged);
+    QObject::connect(view,                   &QTableView::doubleClicked,
+                     this,                   &AirportWidget::on_editAirportPushButton_clicked);
 }
 
 AirportWidget::~AirportWidget()
@@ -33,9 +35,10 @@ void AirportWidget::setupModelAndeView()
     view = ui->tableView;
     view->setModel(model);
 
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch); 
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->hideColumn(0);
     view->resizeColumnsToContents();
     view->verticalHeader()->hide();
@@ -59,6 +62,8 @@ void AirportWidget::on_searchLineEdit_textChanged(const QString &arg1)
 
     model->setFilter(FILTER_MAP.value(ui->searchComboBox->currentIndex())
                      + arg1 + QLatin1String("%\""));
+    DEB << "Filter set: " << FILTER_MAP.value(ui->searchComboBox->currentIndex())
+           + arg1 + QLatin1String("%\"");
 }
 
 
@@ -139,9 +144,20 @@ void AirportWidget::on_deletePushButton_clicked()
     }
 }
 
-void AirportWidget::onUpdate()
+void AirportWidget::on_editAirportPushButton_clicked()
 {
-    emit DB->dataBaseUpdated(OPL::DbTable::Airports);
+    if (selectedEntries.isEmpty()) {
+        WARN(tr("No airport selected."));
+        return;
+    }
+
+    auto apd = NewAirportDialog(selectedEntries.first(), this);
+    apd.exec();
+}
+
+void AirportWidget::refresh()
+{
+    model->select();
 }
 
 void AirportWidget::onSelectionChanged()
@@ -152,6 +168,4 @@ void AirportWidget::onSelectionChanged()
         DEB << "Selected Airport(s) with ID: " << selectedEntries;
     }
 }
-
-
 
