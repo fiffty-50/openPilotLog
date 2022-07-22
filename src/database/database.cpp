@@ -16,10 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "database.h"
-#include "src/functions/alog.h"
 #include "src/classes/astandardpaths.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/classes/ajson.h"
 
 namespace OPL {
@@ -166,8 +164,14 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
         q.prepare(statement);
         auto object = entry.toObject();
         const auto keys = object.keys();
+
         for (const auto &key : keys){
-            object.value(key).isNull() ? q.bindValue(key, QVariant(QVariant::String)) : // refactor to use QMetaType with Qt6
+//use QMetaType for binding null value in QT >= 6
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            object.value(key).isNull() ? q.bindValue(key, QVariant(QMetaType(QMetaType::Int))) :
+#else
+            object.value(key).isNull() ? q.bindValue(key, QVariant(QVariant::String)) :
+#endif
                                          q.bindValue(QLatin1Char(':') + key, object.value(key).toVariant());
         }
         q.exec();
@@ -310,11 +314,18 @@ bool Database::update(const OPL::Row &updated_row)
     query.prepare(statement);
     DEB << "Statement: " << statement;
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+//use QMetaType for binding null value in QT >= 6
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
+#else
         if (i.value() == QVariant(QString()) || i.value() == 0) {
             query.addBindValue(QVariant(QVariant::String));
+#endif
         } else {
             query.addBindValue(i.value());
         }
+
     }
     query.addBindValue(updated_row.getRowId());
     DEB << "Bound values: " << query.boundValues();
@@ -354,8 +365,14 @@ bool Database::insert(const OPL::Row &new_row)
     query.prepare(statement);
 
     for (i = data.constBegin(); i != data.constEnd(); ++i) {
+//use QMetaType for binding null value in QT >= 6
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        if (i.value() == QVariant(QString()) || i.value() == 0) {
+            query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
+#else
         if (i.value() == QVariant(QString()) || i.value() == 0) {
             query.addBindValue(QVariant(QVariant::String));
+#endif
         } else {
             query.addBindValue(i.value());
         }
