@@ -115,54 +115,55 @@ $(document).ready(function(){initNavTree('newtaildialog_8h_source.html',''); ini
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;src/classes/asettings.h&quot;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;src/functions/acalc.h&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;src/database/adatabase.h&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;src/classes/atailentry.h&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;src/classes/aaircraftentry.h&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>Ui {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">class </span>NewTail;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_new_tail_dialog.html">   61</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_tail_dialog.html">NewTailDialog</a> : <span class="keyword">public</span> QDialog</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    Q_OBJECT</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog</a>(<span class="keyword">const</span> QString&amp; new_registration, QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog</a>(<span class="keywordtype">int</span> row_id, QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    ~<a class="code" href="class_new_tail_dialog.html">NewTailDialog</a>();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    Ui::NewTail *ui;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="struct_a_tail_entry.html">ATailEntry</a> entry;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;src/database/row.h&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span>Ui {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">class </span>NewTail;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="class_new_tail_dialog.html">   60</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_tail_dialog.html">NewTailDialog</a> : <span class="keyword">public</span> QDialog</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog</a>(<span class="keyword">const</span> QString&amp; new_registration, QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog</a>(<span class="keywordtype">int</span> row_id, QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    ~<a class="code" href="class_new_tail_dialog.html">NewTailDialog</a>();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    Ui::NewTail *ui;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="comment">//ATailEntry entry;</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a> entry;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    QStringList aircraftList;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    QHash&lt;RowId_T, QString&gt; idMap;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> setupCompleter();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">void</span> setupValidators();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> fillForm(<a class="code" href="class_a_entry.html">AEntry</a> entry, <span class="keywordtype">bool</span> is_template);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">bool</span> verify();</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> submitForm();</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">private</span> slots:</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> on_operationComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> on_ppTypeComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> on_ppNumberComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> on_weightComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> on_registrationLineEdit_textChanged(<span class="keyword">const</span> QString &amp;arg1);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> on_buttonBox_accepted();</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> onSearchCompleterActivated();</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;};</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NEWTAIL_H</span></div>
-<div class="ttc" id="aclass_a_entry_html"><div class="ttname"><a href="class_a_entry.html">AEntry</a></div><div class="ttdoc">The Entry class encapsulates table metadata(table name, row id) and data for new and existing entries...</div><div class="ttdef"><b>Definition:</b> aentry.h:33</div></div>
-<div class="ttc" id="aclass_new_tail_dialog_html"><div class="ttname"><a href="class_new_tail_dialog.html">NewTailDialog</a></div><div class="ttdoc">The NewTailDialog enables adding new Tail entries to the database or editing existing ones.</div><div class="ttdef"><b>Definition:</b> newtaildialog.h:62</div></div>
-<div class="ttc" id="aclass_new_tail_dialog_html_a2349c6dcafed3357051991dfc246f92d"><div class="ttname"><a href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog::NewTailDialog</a></div><div class="ttdeci">NewTailDialog(const QString &amp;new_registration, QWidget *parent=nullptr)</div><div class="ttdoc">NewTailDialog - create a new ATailEntry and submit it to the database.</div><div class="ttdef"><b>Definition:</b> newtaildialog.cpp:23</div></div>
-<div class="ttc" id="astruct_a_tail_entry_html"><div class="ttname"><a href="struct_a_tail_entry.html">ATailEntry</a></div><div class="ttdef"><b>Definition:</b> atailentry.h:24</div></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    QStringList aircraftList;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    QHash&lt;int, QString&gt; idMap;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">void</span> setupCompleter();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> setupValidators();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">void</span> fillForm(<a class="code" href="class_o_p_l_1_1_row.html">OPL::Row</a> entry, <span class="keywordtype">bool</span> is_template);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">bool</span> verify();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> submitForm();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">private</span> slots:</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> on_operationComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> on_ppTypeComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> on_ppNumberComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> on_weightComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> on_registrationLineEdit_textChanged(<span class="keyword">const</span> QString &amp;arg1);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> on_buttonBox_accepted();</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> onSearchCompleterActivated();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;};</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NEWTAIL_H</span></div>
+<div class="ttc" id="aclass_new_tail_dialog_html"><div class="ttname"><a href="class_new_tail_dialog.html">NewTailDialog</a></div><div class="ttdoc">The NewTailDialog enables adding new Tail entries to the database or editing existing ones.</div><div class="ttdef"><b>Definition:</b> newtaildialog.h:61</div></div>
+<div class="ttc" id="aclass_new_tail_dialog_html_a2349c6dcafed3357051991dfc246f92d"><div class="ttname"><a href="class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d">NewTailDialog::NewTailDialog</a></div><div class="ttdeci">NewTailDialog(const QString &amp;new_registration, QWidget *parent=nullptr)</div><div class="ttdoc">NewTailDialog - create a new ATailEntry and submit it to the database.</div><div class="ttdef"><b>Definition:</b> newtaildialog.cpp:24</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_row_html"><div class="ttname"><a href="class_o_p_l_1_1_row.html">OPL::Row</a></div><div class="ttdoc">The Row class provides an interface for retreiving and submitting entries from the database....</div><div class="ttdef"><b>Definition:</b> row.h:13</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_tail_entry_html"><div class="ttname"><a href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a></div><div class="ttdef"><b>Definition:</b> row.h:53</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

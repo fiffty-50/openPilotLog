@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -25,18 +25,12 @@
 #include <QBitArray>
 
 #include "src/functions/atime.h"
-#include "src/classes/acompletiondata.h"
-#include "src/classes/aflightentry.h"
-#include "src/classes/apilotentry.h"
-#include "src/classes/atailentry.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
 #include "src/opl.h"
+#include "src/database/row.h"
 
-/*!
- * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
- * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
- */
-enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
+
 
 /*!
  * \brief The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether the
@@ -46,6 +40,12 @@ enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, 
 class ValidationState {
 public:
     ValidationState() = default;
+
+    /*!
+     * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
+     * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
+     */
+    enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
 
     void validate(ValidationItem item)             { validationArray[item] = true;};
     void validate(int index)                       { validationArray[index] = true;};
@@ -102,7 +102,7 @@ class NewFlightDialog;
  * for each of the database tables which are used to create QCompleters that provide pop-up completion on the respective QLineEdits.
  *
  * Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database,
- * see on_buttonBox_accepted() and ADatabase::commit()
+ * see on_buttonBox_accepted() and Database::commit()
  */
 class NewFlightDialog : public QDialog
 {
@@ -114,18 +114,18 @@ public:
      * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to add a new flight entry to the logbook
      * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
      */
-    explicit NewFlightDialog(ACompletionData& completion_data, QWidget *parent = nullptr);
+    explicit NewFlightDialog(OPL::DbCompletionData& completion_data, QWidget *parent = nullptr);
     /*!
      * \brief NewFlightDialog - Creates a NewFlightDialog that can be used to edit an existing entry in the logbook
      * \param completion_data - contains QStringLists for the QCompleter to autocomplete Airport Codes, Pilot Names and aircraft registrationsn
      * \param row_id - The database ROW ID of the entry to be edited
      */
-    explicit NewFlightDialog(ACompletionData& completion_data, RowId_T row_id, QWidget* parent = nullptr);
+    explicit NewFlightDialog(OPL::DbCompletionData& completion_data, int row_id, QWidget* parent = nullptr);
     ~NewFlightDialog();
 
 private:
     Ui::NewFlightDialog *ui;
-    ACompletionData completionData;
+    OPL::DbCompletionData completionData;
     ValidationState validationState;
 
     /*!
@@ -133,7 +133,7 @@ private:
      * from an old entry, is used to fill the form for editing an entry, or is
      * filled with new data for adding a new entry to the logbook.
      */
-    AFlightEntry flightEntry;
+    OPL::FlightEntry flightEntry;
 
     /*!
      * \brief timeLineEdits - Line Edits for time Off Blocks and Time On Blocks
@@ -182,7 +182,7 @@ private:
 
 
     bool checkPilotFunctionsValid();
-    RowData_T prepareFlightEntryData();
+    OPL::RowData_T prepareFlightEntryData();
 
 
 private slots:

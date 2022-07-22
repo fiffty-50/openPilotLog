@@ -1,0 +1,144 @@
+.TH "OPL" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL \- A namespace to collect constants and enums used throughout the application\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBDb\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBUserDataState\fP"
+.br
+.RI "The UserDateState struct caches the current number of entries in relevant database tables for fast access\&. "
+.ti -1c
+.RI "class \fBDatabase\fP"
+.br
+.RI "The DB class encapsulates the SQL database by providing fast access to hot database data\&. "
+.ti -1c
+.RI "class \fBDbCompletionData\fP"
+.br
+.RI "Provides data for QCompleters and QHashs\&. "
+.ti -1c
+.RI "class \fBDbSummary\fP"
+.br
+.RI "The \fBDbSummary\fP class collects summaries of entries and relevant data from the database\&. "
+.ti -1c
+.RI "class \fBRow\fP"
+.br
+.RI "The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&. "
+.ti -1c
+.RI "class \fBAircraftEntry\fP"
+.br
+.ti -1c
+.RI "class \fBTailEntry\fP"
+.br
+.ti -1c
+.RI "class \fBPilotEntry\fP"
+.br
+.ti -1c
+.RI "class \fBSimulatorEntry\fP"
+.br
+.ti -1c
+.RI "class \fBFlightEntry\fP"
+.br
+.ti -1c
+.RI "class \fBCurrencyEntry\fP"
+.br
+.ti -1c
+.RI "class \fBANotificationHandler\fP"
+.br
+.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user in a QMessageBox and forwards the displayed message to \fBALog\fP so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
+.ti -1c
+.RI "class \fBOplGlobals\fP"
+.br
+.RI "The \fBOplGlobals\fP class encapsulates non-POD globals to avoid making them static\&. It is available as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once\&. For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "using \fBRowData_T\fP = QHash< QString, QVariant >"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBCompleterTarget\fP { \fBAirportIdentifierICAO\fP, \fBAirportIdentifierIATA\fP, \fBAirportIdentifier\fP, \fBAirportNames\fP, \fBRegistrations\fP, \fBCompanies\fP, \fBPilotNames\fP, \fBAircraftTypes\fP }"
+.br
+.RI "The DatabaseTarget enum lists database items that are used by completers, for content matching or need to be accessed programatically\&. "
+.ti -1c
+.RI "enum class \fBDbSummaryKey\fP { \fBtotal_flights\fP, \fBtotal_tails\fP, \fBtotal_pilots\fP, \fBlast_flight\fP, \fBtotal_time\fP }"
+.br
+.RI "Enumerates the QHash keys used when summarising a database\&. "
+.ti -1c
+.RI "enum class \fBDateFormat\fP { \fBISODate\fP, \fBDE\fP, \fBEN\fP }"
+.br
+.RI "ADateFormats enumerates the accepted date formats for QDateEdits\&. "
+.ti -1c
+.RI "enum class \fBFlightTimeFormat\fP { \fBDefault\fP, \fBDecimal\fP }"
+.br
+.ti -1c
+.RI "enum class \fBDateTimeFormat\fP { \fBDefault\fP, \fBBackup\fP }"
+.br
+.ti -1c
+.RI "enum class \fBPilotFunction\fP { \fBPIC\fP = 0, \fBPICUS\fP = 1, \fBSIC\fP = 2, \fBDUAL\fP = 3, \fBFI\fP = 4 }"
+.br
+.RI "PilotFunction Pilot in Command, Pilot in Command under Supervision, Second in Command (Co-Pilot), Dual, Flight Instructor\&. "
+.ti -1c
+.RI "enum class \fBTranslation\fP { \fBEnglish\fP, \fBGerman\fP, \fBSpanish\fP }"
+.br
+.RI "Enumerates the available translations\&. "
+.ti -1c
+.RI "enum class \fBDbViewName\fP { \fBDefault\fP, \fBDefaultWithSim\fP, \fBEasa\fP, \fBEasaWithSim\fP, \fBSimulatorOnly\fP }"
+.br
+.RI "Enumerates the available SQL views in the database\&. "
+.ti -1c
+.RI "enum class \fBSimulatorType\fP { \fBFNPTI\fP = 0, \fBFNPTII\fP = 1, \fBFSTD\fP = 2 }"
+.br
+.RI "Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device\&. "
+.ti -1c
+.RI "enum class \fBDbTable\fP { \fBFlights\fP, \fBSimulators\fP, \fBPilots\fP, \fBTails\fP, \fBAircraft\fP, \fBAirports\fP, \fBCurrencies\fP, \fBChangelog\fP }"
+.br
+.RI "Enumerates the tables in the database\&. "
+.ti -1c
+.RI "enum class \fBCurrencyName\fP { \fBLicence\fP = 1, \fBTypeRating\fP = 2, \fBLineCheck\fP = 3, \fBMedical\fP = 4, \fBCustom1\fP = 5, \fBCustom2\fP = 6 }"
+.br
+.RI "Enumerates the currency names\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+A namespace to collect constants and enums used throughout the application\&. 
+
+The opl namespace collects enums and constants that are used throughout the application and provide uniform access\&.
+.PP
+The date, time and datetime namespaces include enums used to differentiate date and time formats for QDate, QTime and QDateTime that deviate from standard values included in the Qt Framework like Qt::ISODate and are to be used in conjunction with the \&.toString() members of these classes\&.
+.PP
+The db namespace contains constants for programatically accessing the database in a fast and uniform manner\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBOPL::DateFormat\fP\fC [strong]\fP"
+
+.PP
+ADateFormats enumerates the accepted date formats for QDateEdits\&. 
+.PP
+\fBTodo\fP
+.RS 4
+At the moment, only ISODate is accepet as a valid date format\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

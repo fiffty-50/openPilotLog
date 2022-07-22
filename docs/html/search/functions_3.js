@@ -1,12 +1,10 @@
 var searchData=
 [
-  ['database_207',['database',['../class_a_database.html#a2379c9da900da8e96add932e4024389a',1,'ADatabase']]],
-  ['databasesummary_208',['databaseSummary',['../class_a_database.html#a56baf4eaf25922030f3cfa6906963f7c',1,'ADatabase']]],
-  ['databasesummarystring_209',['databaseSummaryString',['../class_a_database.html#a2c54b7506faf0f15f5323ed53ff12099',1,'ADatabase']]],
-  ['databaseupdated_210',['dataBaseUpdated',['../class_a_database.html#a5ed8c010ccc022687ce903cfde8ae911',1,'ADatabase']]],
-  ['dbrevision_211',['dbRevision',['../class_a_database.html#a1c026e7784b03fc5822077c7d0071330',1,'ADatabase']]],
-  ['degtorad_212',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
-  ['deleteoldlogs_213',['deleteOldLogs',['../namespace_a_log.html#ae110fbae5b42a1dd106a9c53be104b13',1,'ALog']]],
-  ['directory_214',['directory',['../class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe',1,'AStandardPaths']]],
-  ['disconnect_215',['disconnect',['../class_a_database.html#abc461aaa66304ca638e546f67a694935',1,'ADatabase']]]
+  ['database_218',['database',['../class_o_p_l_1_1_database.html#a233943791f4bca3aa083f46562eb6d50',1,'OPL::Database']]],
+  ['databasesummary_219',['databaseSummary',['../class_o_p_l_1_1_db_summary.html#a7f82bff756d73d1430fda9681fb4a66e',1,'OPL::DbSummary']]],
+  ['databaseupdated_220',['dataBaseUpdated',['../class_o_p_l_1_1_database.html#ab0dbab5f0a97745f8a86b1703abcae38',1,'OPL::Database']]],
+  ['degtorad_221',['degToRad',['../namespace_a_calc.html#acafe6c0bede38e737937e2062fd93c71',1,'ACalc']]],
+  ['deleteoldlogs_222',['deleteOldLogs',['../namespace_a_log.html#ae110fbae5b42a1dd106a9c53be104b13',1,'ALog']]],
+  ['directory_223',['directory',['../class_a_standard_paths.html#a0df7e02331fdf09a81951657d52e0ebe',1,'AStandardPaths']]],
+  ['disconnect_224',['disconnect',['../class_o_p_l_1_1_database.html#aceb1bb497d30d413f87d6541716a873b',1,'OPL::Database']]]
 ];

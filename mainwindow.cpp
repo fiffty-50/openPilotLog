@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,26 +19,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/astyle.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
-#include "src/functions/adatetime.h"
-#include "src/classes/aentry.h"
-
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
+#include <QTimeZone>
+#include "src/gui/dialogues/newairportdialog.h"
 void MainWindow::doDebugStuff()
 {
-    //QSqlQuery query;
-    QFile f(OPL::Assets::DATABASE_SCHEMA);
-    f.open(QIODevice::ReadOnly);
-    QByteArray filedata = f.readAll();
-
-    auto list = filedata.split(';');
-    for (const auto &string : list)
-        //query.exec(string);
-        LOG << string;
+    //const auto list = QTimeZone::availableTimeZoneIds();
+    //DEB << list;
+    auto nad = new NewAirportDialog(5, this);
+    nad->exec();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -56,8 +50,9 @@ MainWindow::MainWindow(QWidget *parent)
     if (database_file.size() == 0)
         onDatabaseInvalid();
 
-    if(!aDB->connect()){
-        WARN(tr("Error establishing database connection."));
+    if(!DB->connect()){
+        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
+             .arg(DB->lastError.text()));
     }
 
     // retreive completion lists and maps
@@ -73,8 +68,8 @@ MainWindow::MainWindow(QWidget *parent)
     pilotsWidget = new PilotsWidget(this);
     ui->stackedWidget->addWidget(pilotsWidget);
 
-    backupWidget = new BackupWidget(this);
-    ui->stackedWidget->addWidget(backupWidget);
+    airportWidget = new AirportWidget(this);
+    ui->stackedWidget->addWidget(airportWidget);
     settingsWidget = new SettingsWidget(this);
     ui->stackedWidget->addWidget(settingsWidget);
     debugWidget = new DebugWidget(this);
@@ -86,13 +81,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->setCurrentWidget(homeWidget);
 
     // check database version (Debug)
-    if (aDB->dbRevision() < aDB->getMinimumDatabaseRevision()) {
-        QString message = tr("Your database is out of date."
-                             "Minimum required revision: %1<br>"
-                             "You have revision: %2<br>")
-                             .arg(aDB->getMinimumDatabaseRevision(), aDB->dbRevision());
-        WARN(message);
-    }
+    //if (DB->dbRevision() < DB->getMinimumDatabaseRevision()) {
+    //    QString message = tr("Your database is out of date."
+    //                         "Minimum required revision: %1<br>"
+    //                         "You have revision: %2<br>")
+    //                         .arg(DB->getMinimumDatabaseRevision(), DB->dbRevision());
+    //    WARN(message);
+    //}
 }
 
 MainWindow::~MainWindow()
@@ -111,7 +106,7 @@ void MainWindow::setupToolbar()
     toolBar->addAction(ui->actionLogbook);
     toolBar->addAction(ui->actionAircraft);
     toolBar->addAction(ui->actionPilots);
-    toolBar->addAction(ui->actionBackup);
+    toolBar->addAction(ui->actionAirports);
     toolBar->addAction(ui->actionSettings);
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -130,7 +125,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
@@ -142,7 +137,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
         ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
         ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionBackup->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
@@ -163,34 +158,58 @@ void MainWindow::nope()
  */
 void MainWindow::connectWidgets()
 {
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      homeWidget,     &HomeWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      homeWidget,     &HomeWidget::refresh);
 
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      logbookWidget,  &LogbookWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
-    QObject::connect(aDB,            &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
 
-    QObject::connect(aDB, &ADatabase::dataBaseUpdated,
+    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
 
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      logbookWidget,   &LogbookWidget::repopulateModel);
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      pilotsWidget,    &PilotsWidget::repopulateModel);
-    QObject::connect(aDB,             &ADatabase::connectionReset,
+    QObject::connect(DB,              &OPL::Database::connectionReset,
                      aircraftWidget,  &AircraftWidget::repopulateModel);
+
+    // Catch database updates to lazily update CompletionData
+    QObject::connect(DB,              &OPL::Database::dataBaseUpdated,
+                     this,            &MainWindow::onDatabaseUpdated);
+}
+
+void MainWindow::onDatabaseUpdated(const OPL::DbTable table)
+{
+    switch (table) {
+    case OPL::DbTable::Pilots:
+        DEB << "Pilots table updated...";
+        completionData.updatePilots();
+        break;
+    case OPL::DbTable::Tails:
+        DEB << "Tails table updated...";
+        completionData.updateTails();
+        break;
+    case OPL::DbTable::Airports:
+        DEB << "Airports table updated...";
+        completionData.updateAirports();
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -216,7 +235,7 @@ void MainWindow::onDatabaseInvalid()
                                                        AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
                                                        tr("Database file (*.db)"));
         if (!db_path.isEmpty()) {
-            if(!aDB->restoreBackup(db_path)) {
+            if(!DB->restoreBackup(db_path)) {
                WARN(tr("Unable to restore Backup file: %1").arg(db_path));
                on_actionQuit_triggered();
             } else {
@@ -265,9 +284,9 @@ void MainWindow::on_actionPilots_triggered()
     ui->stackedWidget->setCurrentWidget(pilotsWidget);
 }
 
-void MainWindow::on_actionBackup_triggered()
+void MainWindow::on_actionAirports_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(backupWidget);
+    ui->stackedWidget->setCurrentWidget(airportWidget);
 }
 
 void MainWindow::on_actionSettings_triggered()
@@ -290,4 +309,3 @@ void MainWindow::on_actionNewSim_triggered()
     auto nsd = NewSimDialog(this);
     nsd.exec();
 }
-

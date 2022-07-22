@@ -85,15 +85,13 @@ CREATE TABLE IF NOT EXISTS 'airports' (
 	'lat'	REAL,
 	'long'	REAL,
 	'country'	TEXT,
-	'alt'	INTEGER,
-	'utcoffset'	INTEGER,
 	'tzolson'	TEXT,
 	PRIMARY KEY('airport_id' AUTOINCREMENT)
 );
 DROP TABLE IF EXISTS 'currencies';
 CREATE TABLE IF NOT EXISTS 'currencies' (
 	'currency_id'	INTEGER NOT NULL,
-	'description'	TEXT,
+	'currencyName'	TEXT,
 	'expiryDate'	NUMERIC,
 	PRIMARY KEY('currency_id' AUTOINCREMENT)
 );

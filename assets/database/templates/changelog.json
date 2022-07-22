@@ -30,8 +30,8 @@
         "revision": 6
     },
     {
-        "comment": "\"Added autoincrement for flights",
-        "date": " pilots and tails tables\"",
+        "comment": "Added autoincrement for flights pilots and tails tables",
+        "date": "2020-11-21",
         "revision": 7
     },
     {
@@ -82,6 +82,11 @@
     {
         "comment": "Added currencies table",
         "date": "2021-02-12",
+        "revision": 17
+    },
+    {
+        "comment": "Revised currencies table column names",
+        "date": "2022-07-10",
         "revision": 17
     }
 ]

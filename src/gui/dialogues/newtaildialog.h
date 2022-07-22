@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@
 
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
-#include "src/database/adatabase.h"
-#include "src/classes/atailentry.h"
-#include "src/classes/aaircraftentry.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 namespace Ui {
 class NewTail;
@@ -75,19 +74,24 @@ public:
     explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();
+
+signals:
+    void tailDataChanged();
 private:
 
     Ui::NewTail *ui;
 
-    ATailEntry entry;
+    //ATailEntry entry;
+    OPL::TailEntry entry;
+
 
     QStringList aircraftList;
 
-    QHash<RowId_T, QString> idMap;
+    QHash<int, QString> idMap;
 
     void setupCompleter();
     void setupValidators();
-    void fillForm(AEntry entry, bool is_template);
+    void fillForm(OPL::Row entry, bool is_template);
     bool verify();
     void submitForm();
 

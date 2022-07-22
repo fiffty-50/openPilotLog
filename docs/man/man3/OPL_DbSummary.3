@@ -1,0 +1,40 @@
+.TH "OPL::DbSummary" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::DbSummary \- The \fBDbSummary\fP class collects summaries of entries and relevant data from the database\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <dbsummary\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static const QMap< \fBDbSummaryKey\fP, QString > \fBdatabaseSummary\fP (const QString &db_path)"
+.br
+.RI "Return a summary of a database\&. "
+.ti -1c
+.RI "static const QString \fBsummaryString\fP (const QString &db_path)"
+.br
+.RI "returns a short summary string of the database, containing total time and date of last flight\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fBDbSummary\fP class collects summaries of entries and relevant data from the database\&. 
+
+Summaries are used mainly in the \fBBackupWidget\fP to give the user a quick overview about the contents of a database so they can decide which backup to delete/restore\&. This class is a helper class to avoid interfacing with the database directly\&. It uses a separate database connection in order to not interfere with the currently active database\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "const QMap< \fBDbSummaryKey\fP, QString > OPL::DbSummary::databaseSummary (const QString & db_path)\fC [static]\fP"
+
+.PP
+Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QHash<DatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. The full path to the database to be summarized has to be provided\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
 
-#include "src/classes/aflightentry.h"
-#include "src/database/adatabase.h"
+#include "src/database/row.h"
+#include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
@@ -35,7 +35,7 @@ const QHash<int, QString> FILTER_MAP = {
 };
 const auto NON_WORD_CHAR = QRegularExpression("\\W");
 
-LogbookWidget::LogbookWidget(ACompletionData& completion_data, QWidget *parent) :
+LogbookWidget::LogbookWidget(OPL::DbCompletionData& completion_data, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LogbookWidget),
     completionData(completion_data)
@@ -97,6 +97,25 @@ void LogbookWidget::connectSignalsAndSlots()
                      this, &LogbookWidget::flightsTableView_selectionChanged);
 }
 
+const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+{
+    if(!flight.isValid())
+        return QString();
+
+    auto tableData = flight.getData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+                          + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+
+    return flight_summary;
+}
+
 void LogbookWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
@@ -134,16 +153,16 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
         WARN(tr("<br>No flight selected.<br>"));
         return;
     } else if (selectedEntries.length() > 0 && selectedEntries.length() <= 10) {
-        QVector<AFlightEntry> flights_list;
+        QVector<OPL::FlightEntry> flights_list;
 
         for (const auto &flight_id : qAsConst(selectedEntries)) {
-            flights_list.append(aDB->getFlightEntry(flight_id));
+            flights_list.append(DB->getFlightEntry(flight_id));
         }
 
         QString flights_list_string;
 
         for (auto &flight : flights_list) {
-            flights_list_string.append(flight.summary());
+            flights_list_string.append(getFlightSummary(flight));
             flights_list_string.append(QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
         }
 
@@ -158,10 +177,10 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                            ).arg(flights_list_string));
         if (confirm.exec() == QMessageBox::Yes) {
             for (auto& flight : flights_list) {
-                DEB << "Deleting flight: " << flight.summary();
-                if(!aDB->remove(flight)) {
+                DEB << "Deleting flight: " << flight;
+                if(!DB->remove(flight)) {
                     WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-                                       ).arg(aDB->lastError.text()));
+                                       ).arg(DB->lastError.text()));
                     return;
                 }
             }
@@ -180,12 +199,8 @@ void LogbookWidget::on_actionDelete_Flight_triggered()
                            "Are you sure you want to proceed?"
                            ).arg(QString::number(selectedEntries.length())));
         if(confirm.exec() == QMessageBox::Yes) {
-            QList<DataPosition> selected_flights;
-            for (const auto& flight_id : qAsConst(selectedEntries)) {
-                selected_flights.append({QStringLiteral("flights"), flight_id});
-            }
-            if (!aDB->removeMany(selected_flights)) {
-                WARN(tr("Unable to delete. The following error has ocurred:<br><br>%1").arg(aDB->lastError.text()));
+            if (!DB->removeMany(OPL::DbTable::Flights, selectedEntries)) {
+                WARN(tr("Unable to delete. No changes have been made to the database. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
                 return;
             }
             INFO(tr("%1 flights have been deleted successfully."

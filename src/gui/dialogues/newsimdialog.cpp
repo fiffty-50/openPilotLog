@@ -11,7 +11,7 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewSimDialog)
 {
-    entry = ASimulatorEntry();
+    //entry = ASimulatorEntry();
     ui->setupUi(this);
     ui->dateLineEdit->setText(ADate::currentDate());
     init();
@@ -20,13 +20,13 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
  * \brief create a NewSimDialog to edit an existing Simulator Entry
  * \param row_id of the entry to be edited
  */
-NewSimDialog::NewSimDialog(RowId_T row_id, QWidget *parent) :
+NewSimDialog::NewSimDialog(int row_id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewSimDialog)
 {
 
     ui->setupUi(this);
-    entry = aDB->getSimEntry(row_id);
+    entry = DB->getSimEntry(row_id);
     init();
     fillEntryData();
 }
@@ -38,7 +38,7 @@ void NewSimDialog::init()
 {
     OPL::GLOBALS->loadSimulatorTypes(ui->deviceTypeComboBox);
 
-    const QStringList aircraft_list = aDB->getCompletionList(ADatabaseTarget::aircraft);
+    const QStringList aircraft_list = OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::AircraftTypes);
     auto completer = new QCompleter(aircraft_list, ui->aircraftTypeLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -147,9 +147,9 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     return true;
 }
 
-RowData_T NewSimDialog::collectInput()
+OPL::RowData_T NewSimDialog::collectInput()
 {
-    RowData_T new_entry;
+    OPL::RowData_T new_entry;
     // Date
     new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time
@@ -180,8 +180,8 @@ void NewSimDialog::on_buttonBox_accepted()
 
     DEB << entry;
 
-    if(aDB->commit(entry))
+    if(DB->commit(entry))
         QDialog::accept();
     else
-        WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1").arg(aDB->lastError.text()));
+        WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1").arg(DB->lastError.text()));
 }

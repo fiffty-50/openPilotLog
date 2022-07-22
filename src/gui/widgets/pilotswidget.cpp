@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 #include "ui_pilotswidget.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
-#include "src/classes/apilotentry.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -165,7 +165,7 @@ void PilotsWidget::on_deletePilotButton_clicked()
         /// I think batch-editing should be implemented at some point, but batch-deleting should not.
 
     } else if (selectedPilots.length() == 1) {
-        auto entry = aDB->getPilotEntry(selectedPilots.first());
+        auto entry = DB->getPilotEntry(selectedPilots.first());
         QMessageBox confirm(this);
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         confirm.setDefaultButton(QMessageBox::No);
@@ -173,9 +173,9 @@ void PilotsWidget::on_deletePilotButton_clicked()
         confirm.setWindowTitle(tr("Delete Pilot"));
 
         confirm.setText(tr("You are deleting the following pilot:<br><br><b><tt>"
-                               "%1</b></tt><br><br>Are you sure?").arg(entry.name()));
+                               "%1</b></tt><br><br>Are you sure?").arg(getPilotName(entry)));
         if (confirm.exec() == QMessageBox::Yes) {
-            if(!aDB->remove(entry))
+            if(!DB->remove(entry))
                 onDeleteUnsuccessful();
         }
     }
@@ -195,21 +195,21 @@ void PilotsWidget::on_deletePilotButton_clicked()
  */
 void PilotsWidget::onDeleteUnsuccessful()
 {
-    const QList<int> foreign_key_constraints = aDB->getForeignKeyConstraints(selectedPilots.first(),
-                                                                       ADatabaseTable::pilots);
-    QList<AFlightEntry> constrained_flights;
+    const QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(selectedPilots.first(),
+                                                                       OPL::DbTable::Pilots);
+    QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : foreign_key_constraints) {
-        constrained_flights.append(aDB->getFlightEntry(row_id));
+        constrained_flights.append(DB->getFlightEntry(row_id));
     }
 
     if (constrained_flights.isEmpty()) {
         WARN(tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1"
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         return;
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].summary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
                 constrained_flights_string.append("<br>[...]<br>");
                 break;
@@ -236,4 +236,34 @@ void PilotsWidget::repopulateModel()
     model = new QSqlTableModel(this);
     setupModelAndView();
     connectSignalsAndSlots();
+}
+
+const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot)
+{
+    if (!pilot.isValid())
+        return QString();
+
+    return pilot.getData().value(OPL::Db::PILOTS_LASTNAME).toString() + QLatin1String(", ")
+            + pilot.getData().value(OPL::Db::PILOTS_FIRSTNAME).toString();
+}
+
+const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+{
+
+    if(!flight.isValid())
+        return QString();
+
+    auto tableData = flight.getData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+                          + space);
+    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+
+    return flight_summary;
+
 }

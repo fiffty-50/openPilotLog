@@ -1,6 +1,7 @@
 var dir_803ee67260c130b45d29089798491ab2 =
 [
-    [ "adatabase.h", "adatabase_8h_source.html", null ],
-    [ "adatabasetypes.h", "adatabasetypes_8h_source.html", null ],
-    [ "adbsetup.h", "adbsetup_8h_source.html", null ]
+    [ "database.h", "database_8h_source.html", null ],
+    [ "dbcompletiondata.h", "dbcompletiondata_8h_source.html", null ],
+    [ "dbsummary.h", "dbsummary_8h_source.html", null ],
+    [ "row.h", "row_8h_source.html", null ]
 ];

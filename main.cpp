@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 #include "src/functions/alog.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
-#include "src/database/adatabase.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astandardpaths.h"
 #include "src/classes/asettings.h"

@@ -1,4 +1,4 @@
-[
+ [
     {
         "aircraft_id": 0,
         "engineType": null,
@@ -1745,7 +1745,7 @@
         "aircraft_id": 134,
         "engineType": null,
         "iata": "E75",
-        "icao": "\\N",
+        "icao": null,
         "make": "Embraer",
         "model": "175",
         "multiengine": 1,
@@ -1861,7 +1861,7 @@
     {
         "aircraft_id": 143,
         "engineType": null,
-        "iata": "\\N",
+        "iata": null,
         "icao": "E545",
         "make": "Embraer",
         "model": "Legacy",
@@ -2576,7 +2576,7 @@
     {
         "aircraft_id": 198,
         "engineType": null,
-        "iata": "\\N",
+        "iata": null,
         "icao": "T144",
         "make": "Tupolev",
         "model": "Tu-144",
@@ -2875,7 +2875,7 @@
     {
         "aircraft_id": 221,
         "engineType": null,
-        "iata": "\\N",
+        "iata": null,
         "icao": "CL30",
         "make": "Bombardier",
         "model": "Challenger",

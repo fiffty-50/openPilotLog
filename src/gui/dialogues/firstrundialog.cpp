@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,9 +19,10 @@
 #include "ui_firstrundialog.h"
 #include "src/opl.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
+#include "src/database/dbsummary.h"
 #include "src/gui/widgets/backupwidget.h"
-#include "src/classes/apilotentry.h"
+#include "src/database/row.h"
 #include "src/classes/adownload.h"
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
@@ -151,7 +152,7 @@ bool FirstRunDialog::finishSetup()
         }
     } // if database file exists
 
-    if (!aDB->connect()) {
+    if (!DB->connect()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
@@ -166,7 +167,7 @@ bool FirstRunDialog::finishSetup()
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
                                    "The following error has ocurred:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
@@ -175,7 +176,7 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
@@ -184,11 +185,11 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
-                                   ).arg(aDB->lastError.text()));
+                                   ).arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
-    aDB->disconnect(); // connection will be re-established by main()
+    DB->disconnect(); // Connection will be re-established by MainWindow
     return true;
 }
 
@@ -201,49 +202,57 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
 
-    const auto template_tables = aDB->getTemplateTableNames();
+    QStringList template_table_names;
+    for (const auto table : DB->getTemplateTables())
+        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+
     // Download json files
-    for (const auto& table : template_tables) {
+    for (const auto& table_name : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
-        DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
+        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
+        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
+        DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".json")));
-        if (downloaded_file.size() == 0)
+        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
+        if (downloaded_file.size() == 0) {
+            LOG << "Unable to download template files (SSL / Network Error)";
             return false; // ssl/network error
+        }
     }
     // Download checksum files
-    for (const auto& table : template_tables) {
+    for (const auto& table_name : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
+        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
-        LOG << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+        LOG << "Downloading: " << template_url_string + table_name + QLatin1String(".md5");
 
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
-        if (downloaded_file.size() == 0)
+        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".md5")));
+        if (downloaded_file.size() == 0) {
+            LOG << "Unable to download checksum files (SSL / Network Error)";
             return false; // ssl/network error
+        }
     }
     // check downloadad files
     return verifyTemplates();
 }
 
 bool FirstRunDialog::verifyTemplates()
-{
-    const auto table_names = aDB->getTemplateTableNames();
-    for (const auto &table_name : table_names) {
+{QStringList template_table_names;
+    for (const auto table : DB->getTemplateTables())
+        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+    for (const auto &table_name : template_table_names) {
         const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
 
         QFileInfo check_file(path + QLatin1String(".json"));
@@ -300,15 +309,15 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    if(!aDB->createSchema()) {
+    if(!DB->createSchema()) {
         WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1")
-             .arg(aDB->lastError.text()));
+             .arg(DB->lastError.text()));
         return false;
     }
 
-    if(!aDB->importTemplateData(useRessourceData)) {
+    if(!DB->importTemplateData(useRessourceData)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-             .arg(aDB->lastError.text()));
+             .arg(DB->lastError.text()));
         return false;
     }
     return true;
@@ -324,29 +333,44 @@ bool FirstRunDialog::createUserEntry()
     data.insert(OPL::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
     data.insert(OPL::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
 
-    auto pilot = APilotEntry(1);
-    pilot.setData(data);
+    auto pilot = OPL::PilotEntry(1, data);
 
-    return aDB->commit(pilot);
+    return DB->commit(pilot);
 }
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QList<QPair<ACurrencyEntry::CurrencyName, QDateEdit*>> currencies_list = {
-        {ACurrencyEntry::CurrencyName::Licence,     ui->currLicDateEdit},
-        {ACurrencyEntry::CurrencyName::TypeRating,  ui->currTrDateEdit},
-        {ACurrencyEntry::CurrencyName::LineCheck,   ui->currLckDateEdit},
-        {ACurrencyEntry::CurrencyName::Medical,     ui->currMedDateEdit},
-        {ACurrencyEntry::CurrencyName::Custom1,     ui->currCustom1DateEdit},
-        {ACurrencyEntry::CurrencyName::Custom2,     ui->currCustom1DateEdit},
+    const QMap<OPL::CurrencyName, QDateEdit*> currencies_list = {
+        {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
+        {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
+        {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
+        {OPL::CurrencyName::Medical,    ui->currMedDateEdit},
+        {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
+        {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
+    };
+    const QMap<OPL::CurrencyName, ASettings::UserData> settings_list = {
+        {OPL::CurrencyName::Licence,    ASettings::UserData::ShowLicCurrency },
+        {OPL::CurrencyName::TypeRating, ASettings::UserData::ShowTrCurrency },
+        {OPL::CurrencyName::LineCheck,  ASettings::UserData::ShowLckCurrency },
+        {OPL::CurrencyName::Medical,    ASettings::UserData::ShowMedCurrency },
+        {OPL::CurrencyName::Custom1,    ASettings::UserData::ShowCustom1Currency },
+        {OPL::CurrencyName::Custom2,    ASettings::UserData::ShowCustom2Currency },
     };
 
     QDate today = QDate::currentDate();
-    for (const auto &pair : currencies_list) {
+    for (const auto &date_edit : currencies_list) {
+        const auto enum_value = currencies_list.key(date_edit);
         // only write dates that have been edited
-        if (pair.second->date() != today) {
-            ACurrencyEntry entry(pair.first, pair.second->date());
-            if (!aDB->commit(entry))
+        if (date_edit->date() != today) {
+            OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
+            if (enum_value == OPL::CurrencyName::Custom1)
+                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
+            else if(enum_value == OPL::CurrencyName::Custom2)
+                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
+
+            ASettings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
+            OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);
+            if (!DB->commit(entry))
                 return false;
         }
     }
@@ -430,9 +454,9 @@ void FirstRunDialog::on_importPushButton_clicked()
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
                        "<br>Is this correct?"
-                       ).arg(aDB->databaseSummaryString(filename)));
+                       ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!aDB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(filename)) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }

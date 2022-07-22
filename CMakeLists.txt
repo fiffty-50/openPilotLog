@@ -26,7 +26,7 @@ set(PROJECT_SOURCES
     src/opl.h
     src/opl.cpp
 
-    # GUI
+    ##  GUI
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui
@@ -34,6 +34,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/firstrundialog.h
     src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/firstrundialog.ui
+    src/gui/dialogues/newairportdialog.h
+    src/gui/dialogues/newairportdialog.cpp
+    src/gui/dialogues/newairportdialog.ui
     src/gui/dialogues/newflightdialog.h
     src/gui/dialogues/newflightdialog.cpp
     src/gui/dialogues/newflightdialog.ui
@@ -46,11 +49,13 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newsimdialog.h
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
-
     # Widgets
     src/gui/widgets/aircraftwidget.h
     src/gui/widgets/aircraftwidget.cpp
     src/gui/widgets/aircraftwidget.ui
+    src/gui/widgets/airportwidget.h
+    src/gui/widgets/airportwidget.cpp
+    src/gui/widgets/airportwidget.ui
     src/gui/widgets/backupwidget.h
     src/gui/widgets/backupwidget.cpp
     src/gui/widgets/backupwidget.ui
@@ -70,39 +75,24 @@ set(PROJECT_SOURCES
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.ui
 
+
     # Classes
-    src/classes/acompletiondata.h
-    src/classes/acompletiondata.cpp
-    src/classes/acurrencyentry.h
-    src/classes/acurrencyentry.cpp
     src/classes/astyle.h
     src/classes/astyle.cpp
     src/classes/astandardpaths.h
     src/classes/astandardpaths.cpp
-    src/classes/aaircraftentry.h
-    src/classes/aaircraftentry.cpp
     src/classes/adownload.h
     src/classes/adownload.cpp
-    src/classes/aentry.h
-    src/classes/aentry.cpp
-    src/classes/aflightentry.h
-    src/classes/aflightentry.cpp
-    src/classes/apilotentry.h
-    src/classes/apilotentry.cpp
     src/classes/arunguard.h
     src/classes/arunguard.cpp
     src/classes/asettings.h
     src/classes/asettings.cpp
-    src/classes/atailentry.h
-    src/classes/atailentry.cpp
     src/classes/atranslator.h
     src/classes/atranslator.cpp
     src/classes/ajson.h
     src/classes/ajson.cpp
     src/classes/ahash.h
     src/classes/ahash.cpp
-    src/classes/asimulatorentry.h
-    src/classes/asimulatorentry.cpp
 
     # Namespaces
     src/functions/acalc.h
@@ -119,9 +109,14 @@ set(PROJECT_SOURCES
     src/functions/atime.h
 
     # Database
-    src/database/adatabasetypes.h
-    src/database/adatabase.h
-    src/database/adatabase.cpp
+    src/database/database.h
+    src/database/database.cpp
+    src/database/row.h
+    src/database/row.cpp
+    src/database/dbcompletiondata.h
+    src/database/dbcompletiondata.cpp
+    src/database/dbsummary.h
+    src/database/dbsummary.cpp
 
     # Ressources
     assets/icons.qrc

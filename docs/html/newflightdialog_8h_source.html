@@ -114,90 +114,90 @@ $(document).ready(function(){initNavTree('newflightdialog_8h_source.html',''); i
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;QBitArray&gt;</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;src/functions/atime.h&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;src/classes/acompletiondata.h&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;src/classes/aflightentry.h&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;src/classes/apilotentry.h&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;src/classes/atailentry.h&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;src/database/adatabase.h&quot;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;src/opl.h&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">enum</span> ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_validation_state.html">   46</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_validation_state.html">ValidationState</a> {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="class_validation_state.html">ValidationState</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> validate(ValidationItem item)             { validationArray[item] = <span class="keyword">true</span>;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> validate(<span class="keywordtype">int</span> index)                       { validationArray[index] = <span class="keyword">true</span>;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> invalidate(ValidationItem item)           { validationArray[item] = <span class="keyword">false</span>;}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> invalidate(<span class="keywordtype">int</span> index)                     { validationArray[index] = <span class="keyword">false</span>;}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> allValid()<span class="keyword"> const                   </span>{ <span class="keywordflow">return</span> validationArray.count(<span class="keyword">true</span>) == 7;};</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> timesValid()<span class="keyword"> const                 </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::tofb] &amp;&amp; validationArray[ValidationItem::tonb];}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> locationsValid()<span class="keyword"> const             </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::dept] &amp;&amp; validationArray[ValidationItem::dest];}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> nightDataValid()<span class="keyword"> const             </span>{ <span class="keywordflow">return</span> timesValid() &amp;&amp; locationsValid() &amp;&amp; validationArray[ValidationItem::doft];}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> acftValid()<span class="keyword"> const                  </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::acft];}</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> validAt(<span class="keywordtype">int</span> index)<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> validationArray[index];}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> validAt(ValidationItem item)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> validationArray[item];}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="comment">// Debug</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> printValidationStatus()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        QString deb_string(<span class="stringliteral">&quot;\033[mValidation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n&quot;</span>);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        deb_string += <span class="stringliteral">&quot;\t\t\t\t&quot;</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 7; i++) { <span class="comment">//\033[32m</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">if</span> (validationArray[i])</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                deb_string += <span class="stringliteral">&quot;\t\033[32m&quot;</span> + QString::number(validationArray[i]);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                deb_string += <span class="stringliteral">&quot;\t\033[31m&quot;</span> + QString::number(validationArray[i]);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        deb_string += QLatin1String(<span class="stringliteral">&quot;\u001b[38;5;75m&quot;</span>); <span class="comment">// return to default DEB</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        qDebug().noquote() &lt;&lt; deb_string;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    QBitArray validationArray = QBitArray(7);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">namespace </span>Ui {</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">class </span><a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
-<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="class_new_flight_dialog.html">  107</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a> : <span class="keyword">public</span> QDialog</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;{</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;src/database/dbcompletiondata.h&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;src/opl.h&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;src/database/row.h&quot;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">enum</span> ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_validation_state.html">   44</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_validation_state.html">ValidationState</a> {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="class_validation_state.html">ValidationState</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> validate(ValidationItem item)             { validationArray[item] = <span class="keyword">true</span>;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">void</span> validate(<span class="keywordtype">int</span> index)                       { validationArray[index] = <span class="keyword">true</span>;};</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> invalidate(ValidationItem item)           { validationArray[item] = <span class="keyword">false</span>;}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> invalidate(<span class="keywordtype">int</span> index)                     { validationArray[index] = <span class="keyword">false</span>;}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> allValid()<span class="keyword"> const                   </span>{ <span class="keywordflow">return</span> validationArray.count(<span class="keyword">true</span>) == 7;};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> timesValid()<span class="keyword"> const                 </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::tofb] &amp;&amp; validationArray[ValidationItem::tonb];}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> locationsValid()<span class="keyword"> const             </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::dept] &amp;&amp; validationArray[ValidationItem::dest];}</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> nightDataValid()<span class="keyword"> const             </span>{ <span class="keywordflow">return</span> timesValid() &amp;&amp; locationsValid() &amp;&amp; validationArray[ValidationItem::doft];}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> acftValid()<span class="keyword"> const                  </span>{ <span class="keywordflow">return</span> validationArray[ValidationItem::acft];}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> validAt(<span class="keywordtype">int</span> index)<span class="keyword"> const           </span>{ <span class="keywordflow">return</span> validationArray[index];}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> validAt(ValidationItem item)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> validationArray[item];}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="comment">// Debug</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> printValidationStatus()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        QString deb_string(<span class="stringliteral">&quot;\033[mValidation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n&quot;</span>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        deb_string += <span class="stringliteral">&quot;\t\t\t\t&quot;</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 7; i++) { <span class="comment">//\033[32m</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keywordflow">if</span> (validationArray[i])</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                deb_string += <span class="stringliteral">&quot;\t\033[32m&quot;</span> + QString::number(validationArray[i]);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                deb_string += <span class="stringliteral">&quot;\t\033[31m&quot;</span> + QString::number(validationArray[i]);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        deb_string += QLatin1String(<span class="stringliteral">&quot;\u001b[38;5;75m&quot;</span>); <span class="comment">// return to default DEB</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        qDebug().noquote() &lt;&lt; deb_string;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    QBitArray validationArray = QBitArray(7);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">namespace </span>Ui {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">class </span><a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="class_new_flight_dialog.html">  105</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a> : <span class="keyword">public</span> QDialog</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;{</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_flight_dialog.html#a69fe866923d7456caf890a8aa2fa0aaa">NewFlightDialog</a>(<a class="code" href="class_a_completion_data.html">ACompletionData</a>&amp; completion_data, QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_flight_dialog.html#a69fe866923d7456caf890a8aa2fa0aaa">NewFlightDialog</a>(<a class="code" href="class_a_completion_data.html">ACompletionData</a>&amp; completion_data, RowId_T row_id, QWidget* parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    ~<a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a>();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    Ui::NewFlightDialog *ui;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="class_a_completion_data.html">ACompletionData</a> completionData;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <a class="code" href="class_validation_state.html">ValidationState</a> validationState;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="class_a_flight_entry.html">AFlightEntry</a> flightEntry;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* timeLineEdits;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* locationLineEdits;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* pilotNameLineEdits;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* mandatoryLineEdits;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QLatin1String <span class="keyword">self</span> = QLatin1String(<span class="stringliteral">&quot;self&quot;</span>);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordtype">void</span> init();</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordtype">void</span> setupRawInputValidation();</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordtype">void</span> setupSignalsAndSlots();</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordtype">void</span> readSettings();</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordtype">void</span> fillWithEntryData();</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordtype">void</span> onGoodInputReceived(QLineEdit *line_edit);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordtype">void</span> onBadInputReceived(QLineEdit *line_edit);</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">void</span> updateNightCheckBoxes();</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">void</span> setNightCheckboxes();</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> updateBlockTimeLabel();</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordtype">bool</span> addNewTail(QLineEdit&amp; parent_line_edit);</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">bool</span> addNewPilot(QLineEdit&amp; parent_line_edit);</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_flight_dialog.html#abb96717e143dac3ea5f3d7f11fc30a5b">NewFlightDialog</a>(<a class="code" href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a>&amp; completion_data, QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_flight_dialog.html#abb96717e143dac3ea5f3d7f11fc30a5b">NewFlightDialog</a>(<a class="code" href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a>&amp; completion_data, <span class="keywordtype">int</span> row_id, QWidget* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    ~<a class="code" href="class_new_flight_dialog.html">NewFlightDialog</a>();</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    Ui::NewFlightDialog *ui;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a> completionData;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <a class="code" href="class_validation_state.html">ValidationState</a> validationState;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <a class="code" href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a> flightEntry;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* timeLineEdits;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* locationLineEdits;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* pilotNameLineEdits;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QList&lt;QLineEdit*&gt;* mandatoryLineEdits;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">inline</span> QLatin1String <span class="keyword">self</span> = QLatin1String(<span class="stringliteral">&quot;self&quot;</span>);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">void</span> init();</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordtype">void</span> setupRawInputValidation();</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordtype">void</span> setupSignalsAndSlots();</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordtype">void</span> readSettings();</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordtype">void</span> fillWithEntryData();</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordtype">void</span> onGoodInputReceived(QLineEdit *line_edit);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">void</span> onBadInputReceived(QLineEdit *line_edit);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordtype">void</span> updateBlockTimeLabel();</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">void</span> updateNightCheckBoxes();</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">void</span> setNightCheckboxes();</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">bool</span> addNewTail(QLineEdit&amp; parent_line_edit);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keywordtype">bool</span> addNewPilot(QLineEdit&amp; parent_line_edit);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordtype">bool</span> checkPilotFunctionsValid();</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    RowData_T prepareFlightEntryData();</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
@@ -212,18 +212,19 @@ $(document).ready(function(){initNavTree('newflightdialog_8h_source.html',''); i
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordtype">void</span> on_pilotFlyingCheckBox_stateChanged(<span class="keywordtype">int</span> arg1);</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="keywordtype">void</span> on_approachComboBox_currentTextChanged(<span class="keyword">const</span> QString &amp;arg1);</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">void</span> on_functionComboBox_currentIndexChanged(<span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_new_flight_dialog.html#a22f8f768399ceb22f064fb8cb24c3c28">eventFilter</a>(QObject* <span class="keywordtype">object</span>, QEvent* event) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;};</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_new_flight_dialog.html#a22f8f768399ceb22f064fb8cb24c3c28">eventFilter</a>(QObject* <span class="keywordtype">object</span>, QEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;};</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NewFlightDialog_H</span></div>
-<div class="ttc" id="aclass_a_completion_data_html"><div class="ttname"><a href="class_a_completion_data.html">ACompletionData</a></div><div class="ttdoc">The ACompletionData class provides data to QCompleters and QHashs used for mapping user input to data...</div><div class="ttdef"><b>Definition:</b> acompletiondata.h:12</div></div>
-<div class="ttc" id="aclass_a_flight_entry_html"><div class="ttname"><a href="class_a_flight_entry.html">AFlightEntry</a></div><div class="ttdef"><b>Definition:</b> aflightentry.h:23</div></div>
-<div class="ttc" id="aclass_new_flight_dialog_html"><div class="ttname"><a href="class_new_flight_dialog.html">NewFlightDialog</a></div><div class="ttdoc">The NewFlightDialog is used to add or edit entries from the flights table in the database.</div><div class="ttdef"><b>Definition:</b> newflightdialog.h:108</div></div>
-<div class="ttc" id="aclass_new_flight_dialog_html_a22f8f768399ceb22f064fb8cb24c3c28"><div class="ttname"><a href="class_new_flight_dialog.html#a22f8f768399ceb22f064fb8cb24c3c28">NewFlightDialog::eventFilter</a></div><div class="ttdeci">bool eventFilter(QObject *object, QEvent *event) override</div><div class="ttdoc">NewFlightDialog::eventFilter invalidates mandatory line edits on focus in.</div><div class="ttdef"><b>Definition:</b> newflightdialog.cpp:164</div></div>
-<div class="ttc" id="aclass_new_flight_dialog_html_a69fe866923d7456caf890a8aa2fa0aaa"><div class="ttname"><a href="class_new_flight_dialog.html#a69fe866923d7456caf890a8aa2fa0aaa">NewFlightDialog::NewFlightDialog</a></div><div class="ttdeci">NewFlightDialog(ACompletionData &amp;completion_data, QWidget *parent=nullptr)</div><div class="ttdoc">NewFlightDialog - Creates a NewFlightDialog that can be used to add a new flight entry to the logbook...</div><div class="ttdef"><b>Definition:</b> newflightdialog.cpp:32</div></div>
-<div class="ttc" id="aclass_validation_state_html"><div class="ttname"><a href="class_validation_state.html">ValidationState</a></div><div class="ttdoc">The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether ...</div><div class="ttdef"><b>Definition:</b> newflightdialog.h:46</div></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NewFlightDialog_H</span></div>
+<div class="ttc" id="aclass_new_flight_dialog_html"><div class="ttname"><a href="class_new_flight_dialog.html">NewFlightDialog</a></div><div class="ttdoc">The NewFlightDialog is used to add or edit entries from the flights table in the database.</div><div class="ttdef"><b>Definition:</b> newflightdialog.h:106</div></div>
+<div class="ttc" id="aclass_new_flight_dialog_html_a22f8f768399ceb22f064fb8cb24c3c28"><div class="ttname"><a href="class_new_flight_dialog.html#a22f8f768399ceb22f064fb8cb24c3c28">NewFlightDialog::eventFilter</a></div><div class="ttdeci">bool eventFilter(QObject *object, QEvent *event) override</div><div class="ttdoc">NewFlightDialog::eventFilter invalidates mandatory line edits on focus in.</div><div class="ttdef"><b>Definition:</b> newflightdialog.cpp:165</div></div>
+<div class="ttc" id="aclass_new_flight_dialog_html_abb96717e143dac3ea5f3d7f11fc30a5b"><div class="ttname"><a href="class_new_flight_dialog.html#abb96717e143dac3ea5f3d7f11fc30a5b">NewFlightDialog::NewFlightDialog</a></div><div class="ttdeci">NewFlightDialog(OPL::DbCompletionData &amp;completion_data, QWidget *parent=nullptr)</div><div class="ttdoc">NewFlightDialog - Creates a NewFlightDialog that can be used to add a new flight entry to the logbook...</div><div class="ttdef"><b>Definition:</b> newflightdialog.cpp:34</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a></div><div class="ttdoc">Provides data for QCompleters and QHashs.</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.h:33</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_flight_entry_html"><div class="ttname"><a href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a></div><div class="ttdef"><b>Definition:</b> row.h:81</div></div>
+<div class="ttc" id="aclass_validation_state_html"><div class="ttname"><a href="class_validation_state.html">ValidationState</a></div><div class="ttdoc">The ValidationState class encapsulates a QBitArray that has a bit set (or unset) depending on wether ...</div><div class="ttdef"><b>Definition:</b> newflightdialog.h:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

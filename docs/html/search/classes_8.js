@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['settingswidget_180',['SettingsWidget',['../class_settings_widget.html',1,'']]],
-  ['stylesheet_181',['StyleSheet',['../struct_style_sheet.html',1,'']]]
+  ['oplglobals_184',['OplGlobals',['../class_o_p_l_1_1_opl_globals.html',1,'OPL']]]
 ];

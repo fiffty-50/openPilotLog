@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@
 #include "src/opl.h"
 #include "src/classes/astandardpaths.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/functions/adatetime.h"
+#include "src/database/dbsummary.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -36,8 +37,8 @@ BackupWidget::BackupWidget(QWidget *parent) :
     ui->setupUi(this);
 
     model = new QStandardItemModel(this);
-    model->setHorizontalHeaderLabels(QStringList{tr("Backup File"),tr("Flights"), tr("Aircraft"),
-                                                 tr("Pilots"), tr("Last Flight"), tr("Total Time")});
+    model->setHorizontalHeaderLabels(QStringList{tr("Total Time"),tr("Flights"), tr("Aircraft"),
+                                                 tr("Pilots"), tr("Last Flight"), tr("Backup File")});
     view = ui->tableView;
     refresh();
 }
@@ -63,13 +64,13 @@ void BackupWidget::refresh()
 
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
-        QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(backup_dir.absoluteFilePath(entry));
-        model->appendRow({new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
-                          new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+        QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(backup_dir.absoluteFilePath(entry));
+        model->appendRow({new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
+                          new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
+                          new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup)
                          });
     }
 
@@ -103,7 +104,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
     QString filename = absoluteBackupPath();
     DEB << filename;
 
-    if(!aDB->createBackup(filename)) {
+    if(!DB->createBackup(filename)) {
         WARN(tr("Could not create local file: %1").arg(filename));
         return;
     } else {
@@ -111,13 +112,13 @@ void BackupWidget::on_createLocalPushButton_clicked()
     }
 
     QFileIconProvider provider;
-    QMap<ADatabaseSummaryKey, QString> summary = aDB->databaseSummary(filename);
-    model->insertRow(0, {new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_flights]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_tails]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_pilots]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::last_flight]),
-                      new QStandardItem(summary[ADatabaseSummaryKey::total_time])
+    QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(filename);
+    model->insertRow(0, {new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
+                         new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
+                         new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
+                         new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
+                         new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
+                         new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
                      });
 }
 
@@ -141,11 +142,11 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     confirm.setText(tr("The following backup will be restored:<br><br><b><tt>"
                        "%1</b></tt><br><br>"
                        "This will replace your currently active database with the backup.<br>This action is irreversible.<br><br>Are you sure?"
-                       ).arg(aDB->databaseSummaryString(backup_name)));
+                       ).arg(OPL::DbSummary::summaryString(backup_name)));
     if (confirm.exec() == QMessageBox::No)
         return;
 
-    if(!aDB->restoreBackup(backup_name)) {
+    if(!DB->restoreBackup(backup_name)) {
        WARN(tr("Unable to restore Backup file: %1").arg(backup_name));
     } else {
         INFO(tr("Backup successfully restored."));
@@ -212,7 +213,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
         filename.append(".db");
     }
 
-    if(!aDB->createBackup(filename)) {
+    if(!DB->createBackup(filename)) {
         WARN(tr("Unable to backup file:").arg(filename));
         return;
     } else {
@@ -243,9 +244,9 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
                        "<br>Is this correct?"
-                       ).arg(aDB->databaseSummaryString(filename)));
+                       ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!aDB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(filename)) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }
@@ -261,14 +262,14 @@ void BackupWidget::on_aboutPushButton_clicked()
                       "<h3><center>About Backups</center></h3>"
                       "<br>"
                       "<p>By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your "
-                      "flights, pilots, aircraft and expiries. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
+                      "flights, pilots, aircraft and currencies. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
                       "later be restored. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
                       "are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting <b>Create Local backup</b> and restored with "
-                      "<b>Restore Local Backup</b>.<br>"
-                      "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be a pen drive, a cloud location or any other location of your choice. "
+                      "<b>Restore Local Backup</b>.<br><br>"
+                      "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be an external hard drive, USB stick, a cloud location or any other location of your choice. "
                       "This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting "
                       "it with <b>Restore external backup</b>.</p>"
-                      "<p>Frequent backups are recommended to guard against data loss or corruption. It is also recommended to keep a backup copy in a seperate location from your main "
+                      "<p>Frequent backups are recommended to prevent data loss or corruption. It is also recommended to keep a backup copy in a location physically seperated from your main "
                       "computer to prevent data loss due to system failures.</p>"
                       //todo "<p>By default, OpenPilotLog creates a weekly automatic backup. If you would like to change this behaviour, you can adjust it in the settings.</p>"
                       "<br>"

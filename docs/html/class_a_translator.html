@@ -104,14 +104,14 @@ Inheritance diagram for ATranslator:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aeb6d08e73db4bf7bdeed793ad8c34d86"><td class="memItemLeft" align="right" valign="top"><a id="aeb6d08e73db4bf7bdeed793ad8c34d86"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_translator.html#aeb6d08e73db4bf7bdeed793ad8c34d86">installTranslator</a> (Opl::Translations language=Opl::Translations::English)</td></tr>
-<tr class="memdesc:aeb6d08e73db4bf7bdeed793ad8c34d86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Installs a QTranslator with the selected language. Defaults to English. Call this function before constructing the Main Window. <br /></td></tr>
-<tr class="separator:aeb6d08e73db4bf7bdeed793ad8c34d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73cf61e2303187b6985e727197b03c69"><td class="memItemLeft" align="right" valign="top"><a id="a73cf61e2303187b6985e727197b03c69"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_translator.html#a73cf61e2303187b6985e727197b03c69">installTranslator</a> (<a class="el" href="namespace_o_p_l.html#a5bd3211ed824e4526fd117ffb667aacc">OPL::Translation</a> language=OPL::Translation::English)</td></tr>
+<tr class="memdesc:a73cf61e2303187b6985e727197b03c69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Installs a QTranslator with the selected language. Defaults to English. Call this function before constructing the Main Window. <br /></td></tr>
+<tr class="separator:a73cf61e2303187b6985e727197b03c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="class_a_translator.html" title="The ATranslator class is responsible for managing the QTranslator used for providing localisations....">ATranslator</a> class is responsible for managing the QTranslator used for providing localisations. Translations are planned, but are not currently being worked on. The way QT language tools are working with CMAKE, there are some considerations for when works on translation actually start. See <a href="https://bugreports.qt.io/browse/QTBUG-41736">here</a> and <a href="https://bugreports.qt.io/browse/QTBUG-76410">here</a>. Long story short, make sure to use a version of CMake that is 3.16 or earlier, or 3.19.2 or later. </p>
-<p>The translation source files (.ts) are located at /l10n and once compiled, the translation binaries are at <code>$BINDIR/l10n/</code> and can be accessed via <code>Opl::L10N_FILES</code>.</p>
+<p>The translation source files (.ts) are located at /l10n and once compiled, the translation binaries are at <code>$BINDIR/l10n/</code> and can be accessed via <code>OPL::L10N_FILES</code>.</p>
 <p>When a QTranslator is installed, the UI is updated through <a href="https://doc.qt.io/qt-5/qwidget.html#changeEvent">QWidget::changeEvent()</a>. </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/classes/<a class="el" href="atranslator_8h_source.html">atranslator.h</a></li>

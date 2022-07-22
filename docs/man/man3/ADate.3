@@ -1,4 +1,4 @@
-.TH "ADate" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "ADate" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,14 +13,14 @@ ADate \- The \fBADate\fP class is responsible for input/output of Dates and hand
 
 .in +1c
 .ti -1c
-.RI "static QDate \fBparseInput\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
+.RI "static QDate \fBparseInput\fP (QString &io_user_input, \fBOPL::DateFormat\fP format)"
 .br
 .RI "takes a user-provided input and tries to convert it to a (valid) QDate\&. "
 .ti -1c
-.RI "static void \fBtryToFix\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
+.RI "static void \fBtryToFix\fP (QString &io_user_input, \fBOPL::DateFormat\fP format)"
 .br
 .ti -1c
-.RI "static void \fBpadCentury\fP (QString &io_user_input, Opl::Date::ADateFormat format)"
+.RI "static void \fBpadCentury\fP (QString &io_user_input, \fBOPL::DateFormat\fP format)"
 .br
 .RI "padCentury adds the century to a date where it was omitted "
 .ti -1c
@@ -28,28 +28,43 @@ ADate \- The \fBADate\fP class is responsible for input/output of Dates and hand
 .br
 .RI "pads a user-provided date string with 0s to facilitate conversion to QDate "
 .ti -1c
-.RI "static void \fBaddSeperators\fP (QString &io_user_input, const Opl::Date::ADateFormat &format)"
+.RI "static void \fBaddSeperators\fP (QString &io_user_input, const \fBOPL::DateFormat\fP &format)"
 .br
 .ti -1c
 .RI "static bool \fBcontainsSeperator\fP (const QString &user_input)"
 .br
 .ti -1c
-.RI "static QString \fBtoString\fP (const QDate &date, Opl::Date::ADateFormat format=Opl::Date::ADateFormat::ISODate)"
+.RI "static QString \fBtoString\fP (const QDate &date, \fBOPL::DateFormat\fP format=OPL::DateFormat::ISODate)"
 .br
-.RI "Reimplements QDate::toString to accept Opl::Date::ADateFormat enums\&. "
+.RI "Reimplements QDate::toString to accept OPL::Date::ADateFormat enums\&. "
 .ti -1c
 .RI "static const QStringList & \fBgetDisplayNames\fP ()"
 .br
 .ti -1c
-.RI "static const QString \fBgetFormatString\fP (Opl::Date::ADateFormat format)"
+.RI "static const QString \fBgetFormatString\fP (\fBOPL::DateFormat\fP format)"
 .br
+.ti -1c
+.RI "static const QString \fBcurrentDate\fP ()"
+.br
+.RI "today Returns a string containing the current date in ISO format "
 .in -1c
 .SH "Detailed Description"
 .PP 
 The \fBADate\fP class is responsible for input/output of Dates and handling the different Date Formats\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "QDate ADate::parseInput (QString & io_user_input, Opl::Date::ADateFormat format)\fC [static]\fP"
+.SS "const QString ADate::currentDate ()\fC [static]\fP"
+
+.PP
+today Returns a string containing the current date in ISO format 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "QDate ADate::parseInput (QString & io_user_input, \fBOPL::DateFormat\fP format)\fC [static]\fP"
 
 .PP
 takes a user-provided input and tries to convert it to a (valid) QDate\&. 

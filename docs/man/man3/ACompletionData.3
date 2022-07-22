@@ -1,4 +1,4 @@
-.TH "ACompletionData" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "ACompletionData" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -31,19 +31,19 @@ ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters 
 
 .in +1c
 .ti -1c
-.RI "QHash< RowId_T, QString > \fBpilotsIdMap\fP"
+.RI "QHash< int, QString > \fBpilotsIdMap\fP"
 .br
 .ti -1c
-.RI "QHash< RowId_T, QString > \fBtailsIdMap\fP"
+.RI "QHash< int, QString > \fBtailsIdMap\fP"
 .br
 .ti -1c
-.RI "QHash< RowId_T, QString > \fBairportIcaoIdMap\fP"
+.RI "QHash< int, QString > \fBairportIcaoIdMap\fP"
 .br
 .ti -1c
-.RI "QHash< RowId_T, QString > \fBairportIataIdMap\fP"
+.RI "QHash< int, QString > \fBairportIataIdMap\fP"
 .br
 .ti -1c
-.RI "QHash< RowId_T, QString > \fBairportNameIdMap\fP"
+.RI "QHash< int, QString > \fBairportNameIdMap\fP"
 .br
 .ti -1c
 .RI "QStringList \fBpilotList\fP"
@@ -55,7 +55,7 @@ ACompletionData \- The \fBACompletionData\fP class provides data to QCompleters 
 .RI "QStringList \fBairportList\fP"
 .br
 .ti -1c
-.RI "\fBUserDataState\fP \fBcurrent_state\fP"
+.RI "UserDataState \fBcurrent_state\fP"
 .br
 .in -1c
 .SH "Detailed Description"

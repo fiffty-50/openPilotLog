@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 #include <QtGlobal>
 #include "src/functions/atime.h"
 #include "src/functions/astat.h"
-#include "src/classes/acurrencyentry.h"
 #include "src/classes/atranslator.h"
 #include "src/classes/ahash.h"
 #include "src/classes/ajson.h"
@@ -60,7 +59,7 @@ DebugWidget::DebugWidget(QWidget *parent) :
     ui(new Ui::DebugWidget)
 {
     ui->setupUi(this);
-    for (const auto& table : aDB->getTableNames()) {
+    for (const auto& table : DB->getTableNames()) {
         if( table != "sqlite_sequence") {
             ui->tableComboBox->addItem(table);
         }
@@ -75,9 +74,9 @@ DebugWidget::~DebugWidget()
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    if (aDB->resetUserData()){
+    if (DB->resetUserData()){
         LOG << "Database successfully reset";
-        emit aDB->dataBaseUpdated();
+        emit DB->dataBaseUpdated(OPL::DbTable::Any);
     } else
         LOG <<"Errors have occurred. Check console for Debug output. ";
 }
@@ -85,7 +84,7 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
 void DebugWidget::on_resetDatabasePushButton_clicked()
 {
     // disconnect and remove old database
-    aDB->disconnect();
+    DB->disconnect();
     QFile db_file(AStandardPaths::directory(AStandardPaths::Database).absoluteFilePath(QStringLiteral("logbook.db")));
     if (!db_file.remove()) {
         WARN(tr("Unable to delete existing database file."));
@@ -102,26 +101,27 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
     QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
-
-    const auto template_tables = aDB->getTemplateTableNames();
+    QStringList template_table_names;
+    for (const auto table : DB->getTemplateTables())
+        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     // Download json files
-    for (const auto& table : template_tables) {
+    for (const auto& table_name : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".json")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".json")));
-        DEB << "Downloading: " << template_url_string + table + QLatin1String(".json");
+        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
+        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
+        DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
         dl->download();
         dl->deleteLater();
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".json")));
+        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
         if (downloaded_file.size() == 0)
             LOG << "ssl/network error";
     }
     // Download checksum files
-    for (const auto& table : template_tables) {
+    for (const auto& table : template_table_names) {
         QEventLoop loop;
         ADownload* dl = new ADownload;
         QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
@@ -139,20 +139,20 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
             LOG << "ssl/network error";
     }
     // Create Database
-    if (!aDB->createSchema()) {
-        WARN(QString("Unable to create database.<br>%1").arg(aDB->lastError.text()));
+    if (!DB->createSchema()) {
+        WARN(QString("Unable to create database.<br>%1").arg(DB->lastError.text()));
         return;
     }
 
     // Load ressources
     bool use_ressource_data = false; // do not use local data, download from github
-    if(!aDB->importTemplateData(use_ressource_data)) {
+    if(!DB->importTemplateData(use_ressource_data)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-             .arg(aDB->lastError.text()));
+             .arg(DB->lastError.text()));
         return ;
     }
 
-    aDB->connect();
+    DB->connect();
 
 }
 
@@ -201,7 +201,7 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
 
     message_box.setText("User tables successfully populated.");
     message_box.exec();
-    emit aDB->dataBaseUpdated();
+    emit DB->dataBaseUpdated();
     */
 }
 
@@ -224,7 +224,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 
     if (file.exists() && file.isFile()) {
 
-        if (ADataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
+        if (DataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
             QMessageBox message_box(this);
             message_box.setText("Data inserted successfully.");
             message_box.exec();

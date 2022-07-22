@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include "ui_newtail.h"
 #include "src/functions/alog.h"
 #include "src/opl.h"
+#include "src/database/dbcompletiondata.h"
 
 NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     QDialog(parent),
@@ -33,7 +34,7 @@ NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid blue"));
     ui->searchLineEdit->setFocus();
 
-    entry = ATailEntry();
+    //entry = OPL::TailEntry();
 }
 
 NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
@@ -47,7 +48,7 @@ NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
     ui->line->hide();
 
     setupValidators();
-    entry = aDB->getTailEntry(row_id);
+    entry = DB->getTailEntry(row_id);
     LOG << "Editing: " << entry;
     fillForm(entry, false);
 }
@@ -65,8 +66,8 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    idMap = aDB->getIdMap(ADatabaseTarget::aircraft);
-    aircraftList = aDB->getCompletionList(ADatabaseTarget::aircraft);
+    idMap = OPL::DbCompletionData::getIdMap(OPL::CompleterTarget::AircraftTypes);
+    aircraftList = OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::AircraftTypes);
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -102,12 +103,12 @@ void NewTailDialog::setupValidators()
 /*!
  * \brief NewTailDialog::fillForm populates the Dialog with the
  * information contained in an entry object. This can be either
- * a template (AAircraft, used when creating a new entry) or
- * a tail (ATail, used when editing an existing entry)
+ * a template (AircraftEntry, used when creating a new entry) or
+ * a tail (TailEntry, used when editing an existing entry)
  * \param is_template - determines whether we are adding a new entry
  * or editing an existing one.
  */
-void NewTailDialog::fillForm(AEntry entry, bool is_template)
+void NewTailDialog::fillForm(OPL::Row entry, bool is_template)
 {
     DEB << "Filling Form for a/c" << entry;
     //fill Line Edits
@@ -177,7 +178,7 @@ bool NewTailDialog::verify()
  */
 void NewTailDialog::submitForm()
 {
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     //retreive Line Edits
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));
@@ -204,18 +205,16 @@ void NewTailDialog::submitForm()
 
     entry.setData(new_data);
     LOG << "Commiting: " << entry;
-    if (!aDB->commit(entry)) {
+    if (!DB->commit(entry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         message_box.exec();
         return;
     } else {
-        if (entry.getPosition().rowId != 0)
-            ACalc::updateAutoTimes(entry.getPosition().rowId);
-
+        emit tailDataChanged();
         QDialog::accept();
     }
 }
@@ -276,7 +275,7 @@ void NewTailDialog::onSearchCompleterActivated()
 
             DEB << "Template Selected. aircraft_id is: " << idMap.key(text);
             //call autofiller for dialog
-            fillForm(aDB->getAircraftEntry(idMap.key(text)), true);
+            fillForm(DB->getAircraftEntry(idMap.key(text)), true);
             ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
             ui->searchLabel->setText(text);
         } else {

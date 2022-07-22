@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,26 +16,21 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "ajson.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 
-const QList<QPair<TableName_T, ADatabaseTable>> AJson::tables {
-    qMakePair(OPL::Db::TABLE_TAILS, ADatabaseTable::tails),
-    qMakePair(OPL::Db::TABLE_PILOTS, ADatabaseTable::pilots),
-    qMakePair(OPL::Db::TABLE_CURRENCIES, ADatabaseTable::currencies),
-    qMakePair(OPL::Db::TABLE_FLIGHTS, ADatabaseTable::flights),
-};
+
 
 void AJson::exportDatabase()
 {
-    for (const auto &pair : tables){
+    for (const auto &table : TABLES){
         QJsonArray array;
-        const auto rows = aDB->getTable(pair.second);
+        const auto rows = DB->getTable(table);
 
         for (const auto &row : rows)
             array.append(QJsonObject::fromVariantHash(row));
 
         QJsonDocument doc(array);
-        writeDocToFile(doc, pair.first + QLatin1String(".json"));
+        writeDocToFile(doc, OPL::GLOBALS->getDbTableName(table) + QLatin1String(".json"));
     }
 }
 
@@ -48,12 +43,13 @@ void AJson::importDatabase()
     // make sure flights is cleared first due to foreign key contstraints
     q.prepare(QStringLiteral("DELETE FROM FLIGHTS"));
     q.exec();
-    for (const auto & pair : tables) {
-        q.prepare(QLatin1String("DELETE FROM ") + pair.first);
+    for (const auto & table : TABLES) {
+        const QString table_name = OPL::GLOBALS->getDbTableName(table);
+        q.prepare(QLatin1String("DELETE FROM ") + table_name);
         q.exec();
         const auto doc = readFileToDoc(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
-                                                               pair.first + QLatin1String(".json")));
-        aDB->commit(doc.array(), pair.first);
+                                                               table_name + QLatin1String(".json")));
+        DB->commit(doc.array(), table);
     }
 }
 

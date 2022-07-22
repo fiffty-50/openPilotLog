@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
 #include "homewidget.h"
 #include "ui_homewidget.h"
 #include "src/functions/alog.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/functions/atime.h"
 #include "src/classes/asettings.h"
+#include "src/database/row.h"
 
 // EASA FTL Limitations in minutes
 // 100 hours per 28 days
@@ -54,6 +55,9 @@ HomeWidget::HomeWidget(QWidget *parent) :
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
+
+    QObject::connect(DB,    &OPL::Database::dataBaseUpdated,
+                     this,  &HomeWidget::onPilotsDatabaseChanged);
 }
 
 HomeWidget::~HomeWidget()
@@ -73,6 +77,13 @@ void HomeWidget::refresh()
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
+}
+
+void HomeWidget::onPilotsDatabaseChanged(const OPL::DbTable table)
+{
+    // maybe logbook owner name has changed, redraw
+    if (table == OPL::DbTable::Pilots)
+        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
 }
 
 void HomeWidget::changeEvent(QEvent *event)
@@ -95,12 +106,19 @@ void HomeWidget::fillTotals()
     }
 }
 
-void HomeWidget::fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel* display_label)
+void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)
 {
-    auto currency_entry = aDB->getCurrencyEntry(currency_name);
+    const auto currency_entry = DB->getCurrencyEntry(static_cast<int>(currency_name));
+
+    if (currency_name == OPL::CurrencyName::Custom1) {
+        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+    } else if (currency_name == OPL::CurrencyName::Custom2) {
+        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+    }
+
     if (currency_entry.isValid()) {
-        auto currency_date = QDate::fromString(currency_entry.tableData.value(
-                                                   OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+        const auto currency_date = QDate::fromString(currency_entry.getData().value(
+                                               OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);
@@ -126,30 +144,26 @@ void HomeWidget::fillSelectedCurrencies()
     fillCurrencyTakeOffLanding();
 
     ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Licence, ui->currLicDisplayLabel)
+                fillCurrency(OPL::CurrencyName::Licence, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
     ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::TypeRating, ui->currTrDisplayLabel)
+                fillCurrency(OPL::CurrencyName::TypeRating, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
     ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::LineCheck, ui->currLckDisplayLabel)
+                fillCurrency(OPL::CurrencyName::LineCheck, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
     ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Medical, ui->currMedDisplayLabel)
+                fillCurrency(OPL::CurrencyName::Medical, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
-
     ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
+                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    const QString custom1_text = ASettings::read(ASettings::UserData::Custom1CurrencyName).toString();
-    if (!custom1_text.isEmpty())
-        ui->currCustom1Label->setText(custom1_text);
+    ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
+                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
+              : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
     ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
-                fillCurrency(ACurrencyEntry::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
+                fillCurrency(OPL::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
-    const QString custom2_text = ASettings::read(ASettings::UserData::Custom2CurrencyName).toString();
-    if (!custom2_text.isEmpty())
-        ui->currCustom2Label->setText(custom2_text);
 }
 
 /*!
@@ -215,7 +229,7 @@ void HomeWidget::fillLimitations()
 const QString HomeWidget::userName()
 {
     const auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
-    const auto name = aDB->customQuery(statement, 1);
+    const auto name = DB->customQuery(statement, 1);
     if (!name.isEmpty())
         return name.first().toString();
 

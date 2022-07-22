@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,8 +19,9 @@
 #include "ui_newpilot.h"
 #include "src/opl.h"
 
-#include "src/database/adatabase.h"
-#include "src/classes/aentry.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
+#include "src/database/row.h"
 #include "src/functions/alog.h"
 
 /*!
@@ -32,7 +33,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
 {
     setup();
 
-    pilotEntry = APilotEntry();
+    //pilotEntry = APilotEntry();
     ui->lastnameLineEdit->setFocus();
 }
 
@@ -46,7 +47,7 @@ NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
 {
     setup();
 
-    pilotEntry = aDB->getPilotEntry(rowId);
+    pilotEntry = DB->getPilotEntry(rowId);
     DEB << "Editing Pilot: " << pilotEntry;
     formFiller();
     ui->lastnameLineEdit->setFocus();
@@ -61,7 +62,7 @@ void NewPilotDialog::setup()
 {
     ui->setupUi(this);
 
-    auto completer = new QCompleter(aDB->getCompletionList(ADatabaseTarget::companies), ui->companyLineEdit);
+    auto completer = new QCompleter(OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::Companies), ui->companyLineEdit);
     completer->setCompletionMode(QCompleter::InlineCompletion);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     ui->companyLineEdit->setCompleter(completer);
@@ -90,7 +91,7 @@ void NewPilotDialog::formFiller()
 
 void NewPilotDialog::submitForm()
 {
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     const auto line_edits = this->findChildren<QLineEdit *>();
     for(auto& le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
@@ -99,14 +100,14 @@ void NewPilotDialog::submitForm()
     }
 
     pilotEntry.setData(new_data);
-    DEB << "Pilot entry position: " << pilotEntry.getPosition().tableName << pilotEntry.getPosition().rowId;
-    DEB << "entry data: " << pilotEntry;
-    if (!aDB->commit(pilotEntry)) {
+    DEB << "Submitting Pilot:";
+    DEB << pilotEntry;
+    if (!DB->commit(pilotEntry)) {
         QMessageBox message_box(this);
         message_box.setText(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         message_box.exec();
         return;
     } else {

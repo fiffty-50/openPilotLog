@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/widgets/settingswidget.h"
+#include "src/functions/acalc.h"
 
 namespace Ui {
 class PilotsWidget;
@@ -94,6 +95,10 @@ private:
     qint32 sortColumn;
 
     QVector<qint32> selectedPilots;
+
+    const QString getPilotName(const OPL::PilotEntry &pilot);
+
+    const QString getFlightSummary(const OPL::FlightEntry &flight) const;
 
     void setupModelAndView();
 

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lasterror_289',['lastError',['../class_a_database.html#a88c8cb3d573d46c1ee8e5af61cf63224',1,'ADatabase']]]
+  ['lasterror_294',['lastError',['../class_o_p_l_1_1_database.html#aa5b783822a603bdcfd1d8c93ba0af34b',1,'OPL::Database']]]
 ];

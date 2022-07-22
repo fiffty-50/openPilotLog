@@ -1,6 +1,6 @@
 ﻿/*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #include <QtCore>
 #include <QMessageBox>
 #include <QComboBox>
-#include "src/database/adatabasetypes.h"
 
 /*!
  *  \brief A namespace to collect constants and enums used throughout the application.
@@ -84,6 +83,8 @@ public:
     };
 }; // class ANotificationHandler
 
+using RowData_T = QHash<QString, QVariant>;
+
 /*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
  * \todo At the moment, only ISODate is accepet as a valid date format.
@@ -116,6 +117,16 @@ enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly
 enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 
 /*!
+ * \brief Enumerates the tables in the database
+ */
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
+
+/*!
+ * \brief Enumerates the currency names
+ */
+enum class CurrencyName {Licence = 1, TypeRating = 2, LineCheck = 3, Medical = 4, Custom1 = 5, Custom2 = 6};
+
+/*!
  * \brief The OplGlobals class encapsulates non-POD globals to avoid making them static. It is available
  * as a global static object via the OPL::GLOBAL makro and may be used as if it were a pointer, guaranteed to be initialized exactly once.
  * For more information, see (Q_GLOBAL_STATIC)[https://doc.qt.io/qt-5/qglobalstatic.html#details]
@@ -133,10 +144,60 @@ public:
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
     inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
+    inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
 
 private:
     Q_OBJECT
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    const static inline QHash<Translation, QString> L10N_FilePaths {
+        {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
+        {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
+        {Translation::Spanish, QStringLiteral("l10n/openpilotlog_es")},
+    };
+    const static inline QHash<Translation, QString> L10N_DisplayNames {
+        {Translation::English, QStringLiteral("English")},
+        {Translation::German,  QStringLiteral("Deutsch")},
+        {Translation::Spanish, QStringLiteral("Español")},
+    };
+    const static inline QHash<DbViewName, QString> DATABASE_VIEWS = {
+        {DbViewName::Default,        QStringLiteral("viewDefault")},
+        {DbViewName::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {DbViewName::Easa,           QStringLiteral("viewEasa")},
+        {DbViewName::EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {DbViewName::SimulatorOnly,  QStringLiteral("viewSimulators")},
+    };
+    const QHash<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {DbViewName::Default,        tr("Default")},
+        {DbViewName::DefaultWithSim, tr("Default with Simulator")},
+        {DbViewName::Easa,           tr("EASA-FCL")},
+        {DbViewName::EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {DbViewName::SimulatorOnly,  tr("Simulator Sessions Only")},
+    };
+    const static inline QHash<PilotFunction, QString> PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QStringLiteral("PIC")},
+        {PilotFunction::PICUS, QStringLiteral("PICUS")},
+        {PilotFunction::SIC,   QStringLiteral("SIC")},
+        {PilotFunction::DUAL,  QStringLiteral("DUAL")},
+        {PilotFunction::FI,    QStringLiteral("FI")},
+    };
+    const static inline QHash<SimulatorType, QString> SIMULATOR_TYPES = {
+        {SimulatorType::FNPTI,  QStringLiteral("FNPT I")},
+        {SimulatorType::FNPTII, QStringLiteral("FNPT II")},
+        {SimulatorType::FSTD,   QStringLiteral("FSTD")},
+    };
+    const static inline QHash<DbTable, QString> DB_TABLES = {
+        //Flights, Simulators, Pilots, Tails, Aircraft, Airports
+        {DbTable::Flights,      QStringLiteral("flights")},
+        {DbTable::Simulators,   QStringLiteral("simulators")},
+        {DbTable::Pilots,       QStringLiteral("pilots")},
+        {DbTable::Tails,        QStringLiteral("tails")},
+        {DbTable::Aircraft,     QStringLiteral("aircraft")},
+        {DbTable::Airports,     QStringLiteral("airports")},
+        {DbTable::Currencies,   QStringLiteral("currencies")},
+        {DbTable::Changelog,    QStringLiteral("changelog")},
+    };
+#else
     const static inline QMap<Translation, QString> L10N_FilePaths {
         {Translation::English, QStringLiteral("l10n/openpilotlog_en")},
         {Translation::German,  QStringLiteral("l10n/openpilotlog_de")},
@@ -173,6 +234,18 @@ private:
         {SimulatorType::FNPTII, QStringLiteral("FNPT II")},
         {SimulatorType::FSTD,   QStringLiteral("FSTD")},
     };
+    const static inline QMap<DbTable, QString> DB_TABLES = {
+        {DbTable::Flights,      QStringLiteral("flights")},
+        {DbTable::Simulators,   QStringLiteral("simulators")},
+        {DbTable::Pilots,       QStringLiteral("pilots")},
+        {DbTable::Tails,        QStringLiteral("tails")},
+        {DbTable::Aircraft,     QStringLiteral("aircraft")},
+        {DbTable::Airports,     QStringLiteral("airports")},
+        {DbTable::Currencies,   QStringLiteral("currencies")},
+        {DbTable::Changelog,    QStringLiteral("changelog")},
+    };
+#endif
+
     const static inline QStringList APPROACH_TYPES = {
             QStringLiteral("VISUAL"),
             QStringLiteral("ILS CAT I"),
@@ -286,7 +359,7 @@ const inline auto  PILOTS_EMAIL           = QStringLiteral("email");
 
 // Currencies table
 const inline auto  CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
-const inline auto  CURRENCIES_DESCRIPTION = QStringLiteral("description");
+const inline auto  CURRENCIES_CURRENCYNAME = QStringLiteral("currencyName");
 
 // Simulators table
 const inline auto  SIMULATORS_ROWID       = QStringLiteral("session_id");
@@ -296,6 +369,17 @@ const inline auto  SIMULATORS_TYPE        = QStringLiteral("deviceType");
 const inline auto  SIMULATORS_ACFT        = QStringLiteral("aircraftType");
 const inline auto  SIMULATORS_REG         = QStringLiteral("registration");
 const inline auto  SIMULATORS_REMARKS     = QStringLiteral("remarks");
+
+// Airports table
+const inline auto AIRPORTS_ICAO           = QStringLiteral("icao");
+const inline auto AIRPORTS_IATA           = QStringLiteral("iata");
+const inline auto AIRPORTS_NAME           = QStringLiteral("name");
+const inline auto AIRPORTS_LAT            = QStringLiteral("lat");
+const inline auto AIRPORTS_LON            = QStringLiteral("long");
+const inline auto AIRPORTS_COUNTRY        = QStringLiteral("country");
+const inline auto AIRPORTS_ALTITIDUE      = QStringLiteral("alt");
+const inline auto AIRPORTS_UTC_OFFSET     = QStringLiteral("utcoffset");
+const inline auto AIRPORTS_TZ_OLSON       = QStringLiteral("tzolson");
 
 // all tables
 const inline auto  ROWID                  = QStringLiteral("rowid");

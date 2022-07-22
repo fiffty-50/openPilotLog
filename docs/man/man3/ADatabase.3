@@ -1,14 +1,14 @@
-.TH "ADatabase" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
+.TH "Database" 3 "Fri Mar 4 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ADatabase \- The DB class encapsulates the SQL database by providing fast access to hot database data\&.  
+Database \- The DB class encapsulates the SQL database by providing fast access to hot database data\&.  
 
 .SH SYNOPSIS
 .br
 .PP
 .PP
-\fC#include <adatabase\&.h>\fP
+\fC#include <database\&.h>\fP
 .PP
 Inherits QObject\&.
 .SS "Signals"
@@ -27,10 +27,10 @@ Inherits QObject\&.
 
 .in +1c
 .ti -1c
-.RI "\fBADatabase\fP (const \fBADatabase\fP &)=delete"
+.RI "\fBDatabase\fP (const \fBDatabase\fP &)=delete"
 .br
 .ti -1c
-.RI "void \fBoperator=\fP (const \fBADatabase\fP &)=delete"
+.RI "void \fBoperator=\fP (const \fBDatabase\fP &)=delete"
 .br
 .ti -1c
 .RI "int \fBdbRevision\fP () const"
@@ -51,7 +51,7 @@ Inherits QObject\&.
 .ti -1c
 .RI "const QString \fBsqliteVersion\fP () const"
 .br
-.RI "\fBADatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP "
+.RI "\fBDatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP "
 .ti -1c
 .RI "bool \fBconnect\fP ()"
 .br
@@ -96,7 +96,7 @@ Inherits QObject\&.
 .br
 .RI "deletes a list of entries from the database\&. Optimised for speed when deleting many entries\&. "
 .ti -1c
-.RI "RowData_T \fBgetEntryData\fP (\fBDataPosition\fP data_position)"
+.RI "OPL::RowData_T \fBgetEntryData\fP (\fBDataPosition\fP data_position)"
 .br
 .RI "retreive entry data from the database to create an entry object "
 .ti -1c
@@ -124,19 +124,19 @@ Inherits QObject\&.
 .br
 .RI "Retreives a currency entry from the database\&. "
 .ti -1c
-.RI "const QStringList \fBgetCompletionList\fP (ADatabaseTarget target)"
+.RI "const QStringList \fBgetCompletionList\fP (DatabaseTarget target)"
 .br
 .RI "getCompletionList returns a QStringList of values for a QCompleter based on database values "
 .ti -1c
-.RI "const QHash< RowId_T, QString > \fBgetIdMap\fP (ADatabaseTarget target)"
+.RI "const QHash< RowId_T, QString > \fBgetIdMap\fP (DatabaseTarget target)"
 .br
 .RI "returns a QHash of a human-readable database value and its row id\&. Used in the Dialogs to map user input to unique database entries\&. "
 .ti -1c
-.RI "RowId_T \fBgetLastEntry\fP (ADatabaseTable table)"
+.RI "RowId_T \fBgetLastEntry\fP (DatabaseTable table)"
 .br
 .RI "returns the ROWID for the newest entry in the respective database\&. "
 .ti -1c
-.RI "QList< RowId_T > \fBgetForeignKeyConstraints\fP (RowId_T foreign_row_id, ADatabaseTable target)"
+.RI "QList< RowId_T > \fBgetForeignKeyConstraints\fP (RowId_T foreign_row_id, DatabaseTable target)"
 .br
 .RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
 .ti -1c
@@ -148,7 +148,7 @@ Inherits QObject\&.
 .br
 .RI "Resolves the foreign key in a flight entry\&. "
 .ti -1c
-.RI "QMap< ADatabaseSummaryKey, QString > \fBdatabaseSummary\fP (const QString &db_path)"
+.RI "QMap< DatabaseSummaryKey, QString > \fBdatabaseSummary\fP (const QString &db_path)"
 .br
 .RI "Return a summary of a database\&. "
 .ti -1c
@@ -158,13 +158,13 @@ Inherits QObject\&.
 .ti -1c
 .RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
 .br
-.RI "\fBADatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. "
+.RI "\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. "
 .ti -1c
 .RI "bool \fBcreateBackup\fP (const QString &dest_file)"
 .br
-.RI "\fBADatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
+.RI "\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
 .ti -1c
-.RI "QVector< RowData_T > \fBgetTable\fP (ADatabaseTable table_name)"
+.RI "QVector< OPL::RowData_T > \fBgetTable\fP (DatabaseTable table_name)"
 .br
 .RI "getTable returns all contents of a given table from the database "
 .ti -1c
@@ -184,7 +184,7 @@ Inherits QObject\&.
 
 .in +1c
 .ti -1c
-.RI "static \fBADatabase\fP * \fBinstance\fP ()"
+.RI "static \fBDatabase\fP * \fBinstance\fP ()"
 .br
 .ti -1c
 .RI "static QSqlDatabase \fBdatabase\fP ()"
@@ -211,10 +211,10 @@ Inherits QObject\&.
 The DB class encapsulates the SQL database by providing fast access to hot database data\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool ADatabase::createBackup (const QString & dest_file)"
+.SS "bool Database::createBackup (const QString & dest_file)"
 
 .PP
-\fBADatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. 
+\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -222,7 +222,7 @@ The DB class encapsulates the SQL database by providing fast access to hot datab
 .RE
 .PP
 
-.SS "QVector< QVariant > ADatabase::customQuery (QString statement, int return_values)"
+.SS "QVector< QVariant > Database::customQuery (QString statement, int return_values)"
 
 .PP
 Can be used to send a complex query to the database\&. 
@@ -235,7 +235,7 @@ Can be used to send a complex query to the database\&.
 .RE
 .PP
 
-.SS "QSqlDatabase ADatabase::database ()\fC [static]\fP"
+.SS "QSqlDatabase Database::database ()\fC [static]\fP"
 
 .PP
 Can be used to access the database connection\&. 
@@ -246,11 +246,11 @@ The QSqlDatabase object pertaining to the connection\&.
 .RE
 .PP
 
-.SS "QMap< ADatabaseSummaryKey, QString > ADatabase::databaseSummary (const QString & db_path)"
+.SS "QMap< DatabaseSummaryKey, QString > Database::databaseSummary (const QString & db_path)"
 
 .PP
-Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QHash<ADatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. 
-.SS "int ADatabase::dbRevision () const"
+Return a summary of a database\&. Creates a summary of the database giving a quick overview of the relevant contents\&. The function runs several specialised SQL queries to create a QHash<DatabaseSummaryKey, QString> containing Total Flight Time, Number of unique aircraft and pilots, as well as the date of last flight\&. Uses a temporary database connection separate from the default connection in order to not tamper with the currently active database connection\&. 
+.SS "int Database::dbRevision () const"
 
 .PP
 dbRevision returns the database Revision Number\&. The Revision refers to what iteration of the database layout is used\&. For the sqlite version of the database refer to \fBsqliteVersion()\fP 
@@ -261,19 +261,19 @@ dbRevision returns the database Revision Number\&. The Revision refers to what i
 .RE
 .PP
 
-.SS "\fBAAircraftEntry\fP ADatabase::getAircraftEntry (RowId_T row_id)"
+.SS "\fBAAircraftEntry\fP Database::getAircraftEntry (RowId_T row_id)"
 
 .PP
 retreives a TailEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAAircraftEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to an aircraft entry with only the RowId required as input\&. 
-.SS "\fBAFlightEntry\fP ADatabase::getFlightEntry (RowId_T row_id)"
+.SS "\fBAFlightEntry\fP Database::getFlightEntry (RowId_T row_id)"
 
 .PP
 retreives a flight entry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns an \fBAFlightEntry\fP instead of an \fBAEntry\fP\&. It allows for easy access to a flight entry with only the RowId required as input\&. 
-.SS "\fBAPilotEntry\fP ADatabase::getPilotEntry (RowId_T row_id)"
+.SS "\fBAPilotEntry\fP Database::getPilotEntry (RowId_T row_id)"
 
 .PP
 retreives a PilotEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a PilotEntry instead of an Entry\&. It allows for easy access to a pilot entry with only the RowId required as input\&. 
-.SS "QVector< RowData_T > ADatabase::getTable (ADatabaseTable table_name)"
+.SS "QVector< OPL::RowData_T > Database::getTable (DatabaseTable table_name)"
 
 .PP
 getTable returns all contents of a given table from the database 
@@ -284,11 +284,11 @@ getTable returns all contents of a given table from the database
 .RE
 .PP
 
-.SS "\fBATailEntry\fP ADatabase::getTailEntry (RowId_T row_id)"
+.SS "\fBATailEntry\fP Database::getTailEntry (RowId_T row_id)"
 
 .PP
 retreives a TailEntry from the database\&. This function is a wrapper for DataBase::getEntry(DataPosition), where the table is already set and which returns a TailEntry instead of an Entry\&. It allows for easy access to a tail entry with only the RowId required as input\&. 
-.SS "\fBUserDataState\fP ADatabase::getUserDataState ()"
+.SS "\fBUserDataState\fP Database::getUserDataState ()"
 
 .PP
 getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. 
@@ -299,7 +299,7 @@ getUserDataState returns a struct containing the current amount of entries in th
 .RE
 .PP
 
-.SS "\fBAPilotEntry\fP ADatabase::resolveForeignPilot (RowId_T foreign_key)"
+.SS "\fBAPilotEntry\fP Database::resolveForeignPilot (RowId_T foreign_key)"
 
 .PP
 Resolves the foreign key in a flight entry\&. 
@@ -310,7 +310,7 @@ The Pilot Entry referencted by the foreign key\&.
 .RE
 .PP
 
-.SS "\fBATailEntry\fP ADatabase::resolveForeignTail (RowId_T foreign_key)"
+.SS "\fBATailEntry\fP Database::resolveForeignTail (RowId_T foreign_key)"
 
 .PP
 Resolves the foreign key in a flight entry\&. 
@@ -321,10 +321,10 @@ The Tail Entry referencted by the foreign key\&.
 .RE
 .PP
 
-.SS "bool ADatabase::restoreBackup (const QString & backup_file)"
+.SS "bool Database::restoreBackup (const QString & backup_file)"
 
 .PP
-\fBADatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. 
+\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -332,10 +332,10 @@ The Tail Entry referencted by the foreign key\&.
 .RE
 .PP
 
-.SS "const QString ADatabase::sqliteVersion () const"
+.SS "const QString Database::sqliteVersion () const"
 
 .PP
-\fBADatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP 
+\fBDatabase::sqliteVersion\fP returns the database sqlite version\&. See also \fBdbRevision()\fP 
 .PP
 \fBReturns\fP
 .RS 4
@@ -345,7 +345,7 @@ sqlite version string
 
 .SH "Member Data Documentation"
 .PP 
-.SS "QSqlError ADatabase::lastError"
+.SS "QSqlError Database::lastError"
 
 .PP
 Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. If the error type is QSqlError::NoError, the last executed database query was successful\&. 

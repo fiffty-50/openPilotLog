@@ -2,9 +2,9 @@
 #define NEWSIMDIALOG_H
 
 #include <QDialog>
-#include "src/classes/asimulatorentry.h"
-#include "src/database/adatabase.h"
-#include "src/classes/acompletiondata.h"
+#include "src/database/row.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
 
 namespace Ui {
 class NewSimDialog;
@@ -25,7 +25,7 @@ class NewSimDialog : public QDialog
 
 public:
     explicit NewSimDialog(QWidget *parent = nullptr);
-    explicit NewSimDialog(RowId_T row_id, QWidget *parent = nullptr);
+    explicit NewSimDialog(int row_id, QWidget *parent = nullptr);
     ~NewSimDialog();
 
 private slots:
@@ -44,9 +44,9 @@ private:
     void init();
     void fillEntryData();
     bool verifyInput(QString &error_msg);
-    RowData_T collectInput();
+    OPL::RowData_T collectInput();
 
-    ASimulatorEntry entry;
+    OPL::SimulatorEntry entry;
 };
 
 #endif // NEWSIMDIALOG_H

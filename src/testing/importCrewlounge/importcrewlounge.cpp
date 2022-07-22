@@ -1,6 +1,7 @@
 #include "importcrewlounge.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/opl.h"
+#include "src/database/row.h"
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
@@ -12,7 +13,7 @@ namespace ImportCrewlounge
 void exec(const QString &csv_file_path)
 {
     // Inhibit HomeWindow Updating
-    QSignalBlocker blocker(aDB);
+    QSignalBlocker blocker(DB);
 
     // Prepare database and set up exclusive transaction for mass commit
     QSqlQuery q;
@@ -28,10 +29,9 @@ void exec(const QString &csv_file_path)
     proc_pilots.init();
     const auto p_maps = proc_pilots.getProcessedPilotMaps();
 
-    for (const auto & pilot : p_maps) {
-        APilotEntry pe(pilot);
-        pe.setPosition(DataPosition(OPL::Db::TABLE_PILOTS, pilot.value(OPL::Db::PILOTS_ROWID).toInt()));
-        aDB->commit(pe);
+    for (const auto & pilot_data : p_maps) {
+        OPL::PilotEntry pe(pilot_data.value(OPL::Db::PILOTS_ROWID).toInt(), pilot_data);
+        DB->commit(pe);
     }
 
     // Process Tails
@@ -39,10 +39,9 @@ void exec(const QString &csv_file_path)
     proc_tails.init();
     const auto t_maps = proc_tails.getProcessedTailMaps();
 
-    for (const auto& tail : t_maps) {
-        ATailEntry te(tail);
-        te.setPosition(DataPosition(OPL::Db::TABLE_TAILS, tail.value(OPL::Db::PILOTS_ROWID).toInt()));
-        aDB->commit(te);
+    for (const auto& tail_data : t_maps) {
+        OPL::TailEntry te(tail_data.value(OPL::Db::PILOTS_ROWID).toInt(), tail_data);
+        DB->commit(te);
     }
 
     auto proc_flights = ProcessFlights(raw_csv_data,
@@ -53,9 +52,9 @@ void exec(const QString &csv_file_path)
 
 
 
-    for (const auto &flight : flights) {
-        AFlightEntry fe(flight);
-        aDB->commit(fe);
+    for (const auto &flight_data : flights) {
+        OPL::FlightEntry fe(flight_data);
+        DB->commit(fe);
     }
 
     // Commit the exclusive transaction
@@ -64,6 +63,6 @@ void exec(const QString &csv_file_path)
 
     // destroy blocker
     blocker.unblock();
-    emit aDB->dataBaseUpdated();
+    emit DB->dataBaseUpdated(OPL::DbTable::Any);
 }
 }// namespace ImportCrewLongue

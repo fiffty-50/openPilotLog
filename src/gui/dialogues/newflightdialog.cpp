@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 #include "newflightdialog.h"
 #include "ui_newflightdialog.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/functions/adate.h"
 #include "src/classes/asettings.h"
 #include "src/functions/acalc.h"
@@ -31,14 +30,14 @@
 
 const auto CAT_3 = QLatin1String(OPL::GLOBALS->getApproachTypes()[3].toLatin1());
 
-NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
+NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data,
                                        QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewFlightDialog),
       completionData(completion_data)
 {
     init();
-    flightEntry = AFlightEntry();
+    //flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << ASettings::read(ASettings::FlightLogging::Function);
     if(ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
@@ -51,18 +50,17 @@ NewFlightDialog::NewFlightDialog(ACompletionData &completion_data,
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
     }
-
     ui->doftLineEdit->setText(ADate::currentDate());
     emit ui->doftLineEdit->editingFinished();
 }
 
-NewFlightDialog::NewFlightDialog(ACompletionData &completion_data, RowId_T row_id, QWidget *parent)
+NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data, int row_id, QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewFlightDialog),
       completionData(completion_data)
 {
     init();
-    flightEntry = aDB->getFlightEntry(row_id);
+    flightEntry = DB->getFlightEntry(row_id);
     fillWithEntryData();
 }
 
@@ -197,18 +195,20 @@ void NewFlightDialog::fillWithEntryData()
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
 
+    const auto &flight_data = flightEntry.getData();
+
     // Date of Flight
-    ui->doftLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DOFT).toString());
+    ui->doftLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DOFT).toString());
     // Location
-    ui->deptLocationLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DEPT).toString());
-    ui->destLocationLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_DEST).toString());
+    ui->deptLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEPT).toString());
+    ui->destLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEST).toString());
     // Times
-    ui->tofbTimeLineEdit->setText(ATime::toString(flightEntry.getData().value(OPL::Db::FLIGHTS_TOFB).toInt()));
-    ui->tonbTimeLineEdit->setText(ATime::toString(flightEntry.getData().value(OPL::Db::FLIGHTS_TONB).toInt()));
-    ui->acftLineEdit->setText(completionData.tailsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_ACFT).toInt()));
-    ui->picNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_PIC).toInt()));
-    ui->sicNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
-    ui->thirdPilotNameLineEdit->setText(completionData.pilotsIdMap.value(flightEntry.getData().value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
+    ui->tofbTimeLineEdit->setText(ATime::toString(flight_data.value(OPL::Db::FLIGHTS_TOFB).toInt()));
+    ui->tonbTimeLineEdit->setText(ATime::toString(flight_data.value(OPL::Db::FLIGHTS_TONB).toInt()));
+    ui->acftLineEdit->setText(completionData.tailsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_ACFT).toInt()));
+    ui->picNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_PIC).toInt()));
+    ui->sicNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
+    ui->thirdPilotNameLineEdit->setText(completionData.pilotsIdMap.value(flight_data.value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
 
     //Function
     const QHash<int, QString> functions = {
@@ -219,31 +219,31 @@ void NewFlightDialog::fillWithEntryData()
         {4, OPL::Db::FLIGHTS_TFI},
     };
     for (int i = 0; i < 5; i++) { // QHash::iterator not guarenteed to be in ordetr
-        if(flightEntry.getData().value(functions.value(i)).toInt() != 0)
+        if(flight_data.value(functions.value(i)).toInt() != 0)
             ui->functionComboBox->setCurrentIndex(i);
     }
     // Approach ComboBox
-    const QString& app = flightEntry.getData().value(OPL::Db::FLIGHTS_APPROACHTYPE).toString();
+    const QString& app = flight_data.value(OPL::Db::FLIGHTS_APPROACHTYPE).toString();
     if(app != QString()){
         ui->approachComboBox->setCurrentText(app);
     }
     // Task
-    bool PF = flightEntry.getData().value(OPL::Db::FLIGHTS_PILOTFLYING).toBool();
+    bool PF = flight_data.value(OPL::Db::FLIGHTS_PILOTFLYING).toBool();
     ui->pilotFlyingCheckBox->setChecked(PF);
     // Flight Rules
-    bool time_ifr = flightEntry.getData().value(OPL::Db::FLIGHTS_TIFR).toBool();
+    bool time_ifr = flight_data.value(OPL::Db::FLIGHTS_TIFR).toBool();
     ui->ifrCheckBox->setChecked(time_ifr);
     // Take-Off and Landing
-    int TO = flightEntry.getData().value(OPL::Db::FLIGHTS_TODAY).toInt()
-            + flightEntry.getData().value(OPL::Db::FLIGHTS_TONIGHT).toInt();
-    int LDG = flightEntry.getData().value(OPL::Db::FLIGHTS_LDGDAY).toInt()
-            + flightEntry.getData().value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
+    int TO =  flight_data.value(OPL::Db::FLIGHTS_TODAY).toInt()
+            + flight_data.value(OPL::Db::FLIGHTS_TONIGHT).toInt();
+    int LDG = flight_data.value(OPL::Db::FLIGHTS_LDGDAY).toInt()
+            + flight_data.value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
     ui->takeOffSpinBox->setValue(TO);
     ui->landingSpinBox->setValue(LDG);
     // Remarks
-    ui->remarksLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_REMARKS).toString());
+    ui->remarksLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_REMARKS).toString());
     // Flight Number
-    ui->flightNumberLineEdit->setText(flightEntry.getData().value(OPL::Db::FLIGHTS_FLIGHTNUMBER).toString());
+    ui->flightNumberLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_FLIGHTNUMBER).toString());
 
     for(const auto &line_edit : *mandatoryLineEdits)
         emit line_edit->editingFinished();
@@ -302,7 +302,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
         // update map and list, set line edit
         if (ret == QDialog::Accepted) {
             DEB << "New Tail Entry added:";
-            DEB << aDB->getTailEntry(aDB->getLastEntry(ADatabaseTable::tails));
+            DEB << DB->getTailEntry(DB->getLastEntry(OPL::DbTable::Tails));
 
             // update completion Data and Completer
             completionData.updateTails();
@@ -310,7 +310,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
             parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
 
             // update Line Edit
-            parent_line_edit.setText(completionData.tailsIdMap.value(aDB->getLastEntry(ADatabaseTable::tails)));
+            parent_line_edit.setText(completionData.tailsIdMap.value(DB->getLastEntry(OPL::DbTable::Tails)));
             return true;
         } else {
             return false;
@@ -341,14 +341,14 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
         // update map and list, set line edit
         if (ret == QDialog::Accepted) {
             DEB << "New Pilot Entry added:";
-            DEB << aDB->getPilotEntry(aDB->getLastEntry(ADatabaseTable::pilots));
+            DEB << DB->getPilotEntry(DB->getLastEntry(OPL::DbTable::Pilots));
             // update completion Data and Completer
             completionData.updatePilots();
             auto new_model = new QStringListModel(completionData.pilotList, parent_line_edit.completer());
             parent_line_edit.completer()->setModel(new_model); //setModel deletes old model if it has the completer as parent
 
             // update Line Edit
-            parent_line_edit.setText(completionData.pilotsIdMap.value(aDB->getLastEntry(ADatabaseTable::pilots)));
+            parent_line_edit.setText(completionData.pilotsIdMap.value(DB->getLastEntry(OPL::DbTable::Pilots)));
             return true;
         } else {
             return false;
@@ -360,14 +360,14 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
 /*!
  * \brief NewFlightDialog::prepareFlightEntryData reads the user input from the UI and converts it into
  * the database format.
- * \return RowData_T a map containing a row ready for database submission
+ * \return OPL::RowData_T a map containing a row ready for database submission
  */
-RowData_T NewFlightDialog::prepareFlightEntryData()
+OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
 {
     if(!validationState.allValid())
         return {};
 
-    RowData_T new_data;
+    OPL::RowData_T new_data;
     // Calculate Block and Night Time
     const int block_minutes = ATime::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
     QDateTime departure_date_time = ADateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
@@ -385,7 +385,7 @@ RowData_T NewFlightDialog::prepareFlightEntryData()
     // Aircraft
     int acft_id = completionData.tailsIdMap.key(ui->acftLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_ACFT, acft_id);
-    const ATailEntry acft_data = aDB->getTailEntry(acft_id);
+    const OPL::TailEntry acft_data = DB->getTailEntry(acft_id);
     bool multi_pilot = acft_data.getData().value(OPL::Db::TAILS_MULTIPILOT).toBool();
     bool multi_engine = acft_data.getData().value(OPL::Db::TAILS_MULTIENGINE).toBool();
 
@@ -608,6 +608,7 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     const auto line_edit = ui->acftLineEdit;
     int acft_id = completionData.tailsIdMap.key(line_edit->text());
     DEB << line_edit->text() << " has acft_id: " << acft_id;
+    DEB << completionData.tailsIdMap;
 
     if (acft_id != 0) { // Success
         onGoodInputReceived(line_edit);
@@ -615,12 +616,11 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     }
     // check for whitespaces
     acft_id = completionData.tailsIdMap.key(line_edit->text().split(" ").first());
-    if (acft != 0) {
+    if (acft_id != 0) {
         line_edit->setText(completionData.tailsIdMap.value(acft_id));
         onGoodInputReceived(line_edit);
         return;
     }
-
 
 
     // try to use a completion
@@ -733,7 +733,7 @@ bool NewFlightDialog::checkPilotFunctionsValid()
  * \details When the user is ready to submit a flight entry, a final check for valid entries is made, and the user
  * is prompted to correct unsatisfactory inputs. When this is done, prepareFlightEntryData() collects the input from
  * the user interface and converts it to database format. The data is then stored in a QHash<QString, QVariant>.
- * This data is then used to create a AFlightEntry object, which is then commited to the database by ADatabase::commit()
+ * This data is then used to create a AFlightEntry object, which is then commited to the database by Database::commit()
  */
 void NewFlightDialog::on_buttonBox_accepted()
 {
@@ -743,16 +743,16 @@ void NewFlightDialog::on_buttonBox_accepted()
         emit le->editingFinished();
     // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
-        const auto display_names = QHash<ValidationItem, QString> {
-            {ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationItem::dept, QObject::tr("Departure Airport")},
-            {ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationItem::tofb, QObject::tr("Time Off Blocks")},
-            {ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationItem::pic, QObject::tr("PIC Name")},
-            {ValidationItem::acft, QObject::tr("Aircraft Registration")}
+        const auto display_names = QHash<ValidationState::ValidationItem, QString> {
+            {ValidationState::ValidationItem::doft, QObject::tr("Date of Flight")},      {ValidationState::ValidationItem::dept, QObject::tr("Departure Airport")},
+            {ValidationState::ValidationItem::dest, QObject::tr("Destination Airport")}, {ValidationState::ValidationItem::tofb, QObject::tr("Time Off Blocks")},
+            {ValidationState::ValidationItem::tonb, QObject::tr("Time on Blocks")},      {ValidationState::ValidationItem::pic, QObject::tr("PIC Name")},
+            {ValidationState::ValidationItem::acft, QObject::tr("Aircraft Registration")}
         };
         QString missing_items;
         for (int i=0; i < mandatoryLineEdits->size(); i++) {
             if (!validationState.validAt(i)){
-                missing_items.append(display_names.value(static_cast<ValidationItem>(i)) + "<br>");
+                missing_items.append(display_names.value(static_cast<ValidationState::ValidationItem>(i)) + "<br>");
                 mandatoryLineEdits->at(i)->setStyleSheet(QStringLiteral("border: 1px solid red"));
             }
         }
@@ -777,11 +777,11 @@ void NewFlightDialog::on_buttonBox_accepted()
     flightEntry.setData(newData);
     DEB << "Committing: ";
     DEB << flightEntry;
-    if (!aDB->commit(flightEntry)) {
+    if (!DB->commit(flightEntry)) {
         WARN(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved."
-                               ).arg(aDB->lastError.text()));
+                               ).arg(DB->lastError.text()));
         return;
     } else {
         QDialog::accept();

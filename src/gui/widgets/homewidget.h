@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,9 +24,8 @@
 #include <QLineEdit>
 #include <QSettings>
 #include "src/functions/astat.h"
-#include "src/database/adatabase.h"
+#include "src/database/database.h"
 #include "src/classes/asettings.h"
-#include "src/classes/acurrencyentry.h"
 
 namespace Ui {
 class HomeWidget;
@@ -67,7 +66,7 @@ private:
     void fillTotals();
     void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
-    void fillCurrency(ACurrencyEntry::CurrencyName currency_name, QLabel *display_label);
+    void fillCurrency(OPL::CurrencyName currency_name, QLabel *display_label);
     void fillLimitations();
 
     enum class Colour {Red, Orange, None};
@@ -101,6 +100,8 @@ private:
 
 public slots:
     void refresh();
+
+    void onPilotsDatabaseChanged(const OPL::DbTable table);
 
 protected:
     /*!

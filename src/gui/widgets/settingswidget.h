@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -100,6 +100,8 @@ private:
     void setupComboBoxes();
 
     void setupDateEdits();
+
+    void loadBackupWidget();
 
     void updatePersonalDetails();
 

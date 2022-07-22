@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2021 Felix Turowsky
+ *Copyright (C) 2020-2022 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #define AAIRCRAFTENTRY_H
 
 #include "src/classes/aentry.h"
-#include "src/database/adatabasetypes.h"
+#include "src/database/databasetypes.h"
 
 struct AAircraftEntry : public AEntry {
 public:
     AAircraftEntry();
     AAircraftEntry(RowId_T row_id);
-    AAircraftEntry(RowData_T table_data);
+    AAircraftEntry(OPL::RowData_T table_data);
 
     AAircraftEntry(const AAircraftEntry& te) = default;
     AAircraftEntry& operator=(const AAircraftEntry& te) = default;

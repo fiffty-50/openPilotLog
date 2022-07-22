@@ -1,0 +1,311 @@
+.TH "OPL::Database" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::Database \- The DB class encapsulates the SQL database by providing fast access to hot database data\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <database\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBdataBaseUpdated\fP ()"
+.br
+.RI "updated is emitted whenever the database contents have been updated\&. This can be either a commit, update or remove\&. This signal should be used to trigger an update to the models of the views displaying database contents in the user interface so that a user is always presented with up-to-date information\&. "
+.ti -1c
+.RI "void \fBconnectionReset\fP ()"
+.br
+.RI "connectionReset is emitted whenever the database connection is reset, for example when creating or restoring a backup\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDatabase\fP (const \fBDatabase\fP &)=delete"
+.br
+.ti -1c
+.RI "void \fBoperator=\fP (const \fBDatabase\fP &)=delete"
+.br
+.ti -1c
+.RI "bool \fBconnect\fP ()"
+.br
+.RI "Connect to the database and populate database information\&. "
+.ti -1c
+.RI "void \fBdisconnect\fP ()"
+.br
+.RI "closes the database connection\&. "
+.ti -1c
+.RI "void \fBupdateLayout\fP ()"
+.br
+.RI "Updates the member variables tableNames and tableColumns with up-to-date layout information if the database has been altered\&. This function is normally only required during database setup or maintenance\&. "
+.ti -1c
+.RI "const QString \fBversion\fP () const"
+.br
+.RI "Return the database revision number (not the sqlite version number)\&. "
+.ti -1c
+.RI "const QString \fBsqliteVersion\fP () const"
+.br
+.RI "\fBDatabase::sqliteVersion\fP returns the database sqlite version\&. See also dbRevision() "
+.ti -1c
+.RI "const QStringList \fBgetTableNames\fP () const"
+.br
+.RI "Return the names of all tables in the database\&. "
+.ti -1c
+.RI "const QStringList \fBgetTableColumns\fP (\fBOPL::DbTable\fP table_name) const"
+.br
+.RI "Return the names of a given table in the database\&. "
+.ti -1c
+.RI "QVector< QVariant > \fBcustomQuery\fP (QString statement, int return_values)"
+.br
+.RI "Can be used to send a complex query to the database\&. "
+.ti -1c
+.RI "bool \fBexists\fP (const \fBOPL::Row\fP &row)"
+.br
+.RI "Checks if an entry exists in the database, based on position data\&. "
+.ti -1c
+.RI "bool \fBclear\fP ()"
+.br
+.RI "clear resets the database, i\&.e\&. deletes all content in the tables containing userdata (pilots, flights, tails) "
+.ti -1c
+.RI "bool \fBcommit\fP (const \fBOPL::Row\fP &row)"
+.br
+.RI "commits an entry to the database, calls either insert or update, based on position data "
+.ti -1c
+.RI "bool \fBcommit\fP (const QJsonArray &json_arr, const \fBOPL::DbTable\fP table)"
+.br
+.RI "commits data imported from JSON "
+.ti -1c
+.RI "bool \fBinsert\fP (const \fBOPL::Row\fP &new_row)"
+.br
+.RI "Create new entry in the databse based on UserInput\&. "
+.ti -1c
+.RI "bool \fBupdate\fP (const \fBOPL::Row\fP &updated_row)"
+.br
+.RI "Updates entry in database from existing entry tweaked by the user\&. "
+.ti -1c
+.RI "bool \fBremove\fP (const \fBOPL::Row\fP &row)"
+.br
+.RI "deletes an entry from the database\&. "
+.ti -1c
+.RI "bool \fBremoveMany\fP (\fBOPL::DbTable\fP table, const QList< int > &row_id_list)"
+.br
+.RI "deletes a batch of entries from the database\&. Optimised for speed when deleting many entries\&. The entries are identified using their row id "
+.ti -1c
+.RI "\fBOPL::Row\fP \fBgetRow\fP (const \fBOPL::DbTable\fP table, const int row_id)"
+.br
+.RI "retreive a \fBRow\fP from the database "
+.ti -1c
+.RI "OPL::RowData_T \fBgetRowData\fP (const \fBOPL::DbTable\fP table, const int row_id)"
+.br
+.RI "retreive a Map of <column name, column content> for a specific row in the database\&. "
+.ti -1c
+.RI "\fBOPL::PilotEntry\fP \fBgetPilotEntry\fP (int row_id)"
+.br
+.RI "retreives a \fBPilotEntry\fP from the database\&. See row class for details\&. "
+.ti -1c
+.RI "\fBOPL::TailEntry\fP \fBgetTailEntry\fP (int row_id)"
+.br
+.RI "retreives a \fBTailEntry\fP from the database\&. See row class for details\&. "
+.ti -1c
+.RI "\fBOPL::AircraftEntry\fP \fBgetAircraftEntry\fP (int row_id)"
+.br
+.RI "retreives a \fBTailEntry\fP from the database\&. See row class for details\&. "
+.ti -1c
+.RI "\fBOPL::FlightEntry\fP \fBgetFlightEntry\fP (int row_id)"
+.br
+.RI "retreives a flight entry from the database\&. See row class for details\&. "
+.ti -1c
+.RI "\fBOPL::SimulatorEntry\fP \fBgetSimEntry\fP (int row_id)"
+.br
+.RI "retreives a Simulator entry from the database\&. See row class for details\&. "
+.ti -1c
+.RI "\fBOPL::CurrencyEntry\fP \fBgetCurrencyEntry\fP (int row_id)"
+.br
+.RI "Retreives a currency entry from the database\&. See row class for details\&. "
+.ti -1c
+.RI "int \fBgetLastEntry\fP (\fBOPL::DbTable\fP table)"
+.br
+.RI "returns the ROWID for the newest entry in the respective table\&. "
+.ti -1c
+.RI "QList< int > \fBgetForeignKeyConstraints\fP (int foreign_row_id, \fBOPL::DbTable\fP table)"
+.br
+.RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
+.ti -1c
+.RI "QVector< OPL::RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
+.br
+.RI "getTable returns all contents of a given table from the database "
+.ti -1c
+.RI "const QList< \fBOPL::DbTable\fP > & \fBgetUserTables\fP () const"
+.br
+.RI "getUserTables returns a list of the of the tables that contain user-created data (flights, pilots,\&.\&.) "
+.ti -1c
+.RI "const QList< \fBOPL::DbTable\fP > & \fBgetTemplateTables\fP () const"
+.br
+.RI "getTemplateTables returns a list of the tables that contain template data (aiports, aircraft,\&.\&.) "
+.ti -1c
+.RI "const \fBUserDataState\fP \fBgetUserDataState\fP () const"
+.br
+.RI "getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. "
+.ti -1c
+.RI "bool \fBcreateSchema\fP ()"
+.br
+.RI "Create or restore the database to its ready-to-use but empty state\&. "
+.ti -1c
+.RI "bool \fBimportTemplateData\fP (bool use_local_ressources)"
+.br
+.RI "importTemplateData fills an empty database with the template data (Aircraft, Airports, currencies, changelog) as read from the JSON templates\&. "
+.ti -1c
+.RI "bool \fBresetUserData\fP ()"
+.br
+.RI "Delete all rows from the user data tables (flights, pliots, tails) "
+.ti -1c
+.RI "bool \fBcreateBackup\fP (const QString &dest_file)"
+.br
+.RI "\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. "
+.ti -1c
+.RI "bool \fBrestoreBackup\fP (const QString &backup_file)"
+.br
+.RI "\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBDatabase\fP * \fBinstance\fP ()"
+.br
+.ti -1c
+.RI "static QSqlDatabase \fBdatabase\fP ()"
+.br
+.RI "Can be used to access the database connection\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "QSqlError \fBlastError\fP"
+.br
+.RI "Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The DB class encapsulates the SQL database by providing fast access to hot database data\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool OPL::Database::commit (const QJsonArray & json_arr, const \fBOPL::DbTable\fP table)"
+
+.PP
+commits data imported from JSON This function is used to import values to the databases which are held in JSON documents\&. These entries are pre-filled data used for providing completion data, such as Airport or Aircraft Type Data\&. 
+.SS "bool OPL::Database::createBackup (const QString & dest_file)"
+
+.PP
+\fBDatabase::createBackup\fP copies the currently used database to an external backup location provided by the user\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdest_file\fP This is the full path and filename of where the backup will be created, e\&.g\&. 'home/Sully/myBackups/backupFromOpl\&.db' 
+.RE
+.PP
+
+.SS "bool OPL::Database::createSchema ()"
+
+.PP
+Create or restore the database to its ready-to-use but empty state\&. The SQL code for the database creation is stored in a \&.sql file which is available as a ressource\&. This file gets read, and the querys executed\&. If errors occur, returns false\&. 
+.SS "QVector< QVariant > OPL::Database::customQuery (QString statement, int return_values)"
+
+.PP
+Can be used to send a complex query to the database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIquery\fP - the full sql query statement 
+.br
+\fIreturnValues\fP - the number of return values 
+.RE
+.PP
+
+.SS "QSqlDatabase OPL::Database::database ()\fC [static]\fP"
+
+.PP
+Can be used to access the database connection\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The QSqlDatabase object pertaining to the connection\&. 
+.RE
+.PP
+
+.SS "QVector< OPL::RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
+
+.PP
+getTable returns all contents of a given table from the database 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "const \fBUserDataState\fP OPL::Database::getUserDataState () const"
+
+.PP
+getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "bool OPL::Database::importTemplateData (bool use_local_ressources)"
+
+.PP
+importTemplateData fills an empty database with the template data (Aircraft, Airports, currencies, changelog) as read from the JSON templates\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIuse_local_ressources\fP determines whether the included ressource files or a previously downloaded file should be used\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+.RE
+.PP
+
+.SS "bool OPL::Database::restoreBackup (const QString & backup_file)"
+
+.PP
+\fBDatabase::restoreBackup\fP restores the database from a given backup file and replaces the currently active database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbackup_file\fP This is the full path and filename of the backup, e\&.g\&. 'home/Sully/myBackups/backupFromOpl\&.db' 
+.RE
+.PP
+
+.SS "const QString OPL::Database::sqliteVersion () const"
+
+.PP
+\fBDatabase::sqliteVersion\fP returns the database sqlite version\&. See also dbRevision() 
+.PP
+\fBReturns\fP
+.RS 4
+sqlite version string 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "QSqlError OPL::Database::lastError"
+
+.PP
+Holds information about the last error that ocurred during a SQL operation\&. If the error type is QSqlError::UnknownError, the error is related to data from the database (entry not found,\&.\&.\&.), otherwise the error is related to SQL execution\&. In this case error\&.type() provides further information\&. If the error type is QSqlError::NoError, the last executed database query was successful\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.
