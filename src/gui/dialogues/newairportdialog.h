@@ -40,9 +40,13 @@ private slots:
 
     void on_iataLineEdit_inputRejected();
 
+    void on_buttonBox_rejected();
+
 private:
     Ui::NewAirportDialog *ui;
     void setValidators();
+    void loadTimeZones();
+    bool confirmTimezone();
 };
 
 #endif // NEWAIRPORTDIALOG_H

@@ -1,6 +1,7 @@
 #include "newairportdialog.h"
 #include "ui_newairportdialog.h"
 #include <QValidator>
+#include <QTimeZone>
 
 #include "src/opl.h"
 #include "src/database/database.h"
@@ -12,6 +13,7 @@ NewAirportDialog::NewAirportDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setValidators();
+    loadTimeZones();
 }
 
 NewAirportDialog::~NewAirportDialog()
@@ -27,6 +29,38 @@ void NewAirportDialog::setValidators()
     ui->iataLineEdit     ->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{3}"), this)); // 3 letter code
 }
 
+void NewAirportDialog::loadTimeZones()
+{
+    QStringList tz_list;
+    for (const auto &tz : QTimeZone::availableTimeZoneIds())
+        tz_list.append(tz);
+    ui->timeZoneComboBox->addItems(tz_list);
+}
+
+bool NewAirportDialog::confirmTimezone()
+{
+    if (ui->timeZoneComboBox->currentIndex() == 0) {
+
+        QString airport_name = ui->nameLineEdit->text();
+        QString timezone = ui->timeZoneComboBox->currentText();
+
+        QMessageBox confirm(this);
+        confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        confirm.setDefaultButton(QMessageBox::No);
+        confirm.setIcon(QMessageBox::Question);
+        confirm.setWindowTitle("Confirm Timezone");
+        confirm.setText(tr("Is the following Timezone correct for the airport %1?<br><br><b><tt>"
+                           "%2<br></b></tt>"
+                           "Correct Timezone data is paramount for correctly converting between UTC and Local Time."
+                           ).arg(airport_name, timezone));
+        if (confirm.exec() == QMessageBox::Yes)
+            return true;
+        else
+            return false;
+    }
+    return true;
+}
+
 void NewAirportDialog::on_buttonBox_accepted()
 {
     // validate input
@@ -38,12 +72,17 @@ void NewAirportDialog::on_buttonBox_accepted()
         WARN(tr("The entered longitude is invalid. Please enter the longitude as a decimal number between -180.0 and 180.0 degrees."));
         return;
     }
+    if (!confirmTimezone())
+        return;
+
     // create Entry object
     OPL::RowData_T airport_data = {
-        {OPL::Db::AIRPORTS_ICAO, ui->icaoLineEdit->text()},
-        {OPL::Db::AIRPORTS_IATA, ui->iataLineEdit->text()},
-        {OPL::Db::AIRPORTS_LAT,  ui->latitudeLineEdit->text()},
-        {OPL::Db::AIRPORTS_LON,  ui->longitudeLineEdit->text()},
+        {OPL::Db::AIRPORTS_ICAO,     ui->icaoLineEdit->text()},
+        {OPL::Db::AIRPORTS_IATA,     ui->iataLineEdit->text()},
+        {OPL::Db::AIRPORTS_LAT,      ui->latitudeLineEdit->text()},
+        {OPL::Db::AIRPORTS_LON,      ui->longitudeLineEdit->text()},
+        {OPL::Db::AIRPORTS_TZ_OLSON, ui->timeZoneComboBox->currentText()},
+        {OPL::Db::AIRPORTS_COUNTRY,  ui->countryLineEdit->text()},
     };
 
     OPL::AirportEntry entry(airport_data);
@@ -109,3 +148,9 @@ void NewAirportDialog::on_iataLineEdit_inputRejected()
 {
     DEB << "Input Rejected";
 }
+
+void NewAirportDialog::on_buttonBox_rejected()
+{
+    QDialog::reject();
+}
+

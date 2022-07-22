@@ -23,43 +23,13 @@
 #include "src/classes/astyle.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
-#include "src/functions/adatetime.h"
-#include "src/database/row.h"
 #include "src/gui/dialogues/newsimdialog.h"
 // Quick and dirty Debug area
+#include <QTimeZone>
 void MainWindow::doDebugStuff()
 {
-    const auto entry = DB->getPilotEntry(1);
-    DEB << entry;
-
-    const auto hash = entry.getData();
-    QMap<QString, QVariant> map;
-    for (const auto &var : hash) {
-        map.insert(hash.key(var), var);
-    }
-    {
-    ATimer timer;
-    for (int i = 0; i < 1000 ; i++ ) {
-
-
-        QString string;
-        string.append(hash.value(OPL::Db::PILOTS_ALIAS).toString());
-        string.append(hash.value(OPL::Db::PILOTS_FIRSTNAME).toString());
-        string.append(hash.value(OPL::Db::PILOTS_LASTNAME).toString());
-    }
-    LOG << "Hash lookup time:";}
-    {
-    ATimer timer;
-    for (int i = 0; i < 10000 ; i++ ) {
-        QString string;
-        string.append(map.value(OPL::Db::PILOTS_ALIAS).toString());
-        string.append(map.value(OPL::Db::PILOTS_FIRSTNAME).toString());
-        string.append(map.value(OPL::Db::PILOTS_LASTNAME).toString());
-
-    }
-    LOG << "map lookup time:";}
-
-
+    const auto list = QTimeZone::availableTimeZoneIds();
+    DEB << list;
 }
 
 MainWindow::MainWindow(QWidget *parent)
