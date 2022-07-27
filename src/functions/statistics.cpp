@@ -15,16 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "astat.h"
+#include "statistics.h"
 #include "src/database/database.h"
-#include "src/functions/alog.h"
 
 /*!
- * \brief AStat::totalTime Looks up Total Blocktime in the flights database
+ * \brief OPL::Statistics::totalTime Looks up Total Blocktime in the flights database
  * \param TimeFrame - The timeframe used for the calculations.
  * \return Amount of Total Block Time in minutes
  */
-int AStat::totalTime(TimeFrame time_frame)
+int OPL::Statistics::totalTime(TimeFrame time_frame)
 {
     QString statement;
     QDate start;
@@ -66,12 +65,12 @@ int AStat::totalTime(TimeFrame time_frame)
 }
 
 /*!
- * \brief AStat::currencyTakeOffLanding Returns the amount of Take Offs and
+ * \brief OPL::Statistics::currencyTakeOffLanding Returns the amount of Take Offs and
  * Landings performed in the last x days. If no vallue for days is provided, 90 is used,
  * as per EASA regulations
  * \return QVector<QString>{#TO,#LDG}
  */
-QVector<QVariant> AStat::countTakeOffLanding(int days)
+QVector<QVariant> OPL::Statistics::countTakeOffLanding(int days)
 {
     QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days);
     QString startdate = start.toString(Qt::ISODate);
@@ -94,7 +93,7 @@ QVector<QVariant> AStat::countTakeOffLanding(int days)
     return result;
 }
 
-QVector<QPair<QString, QString>> AStat::totals()
+QVector<QPair<QString, QString>> OPL::Statistics::totals()
 {
     QString statement = QStringLiteral("SELECT "
             "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
@@ -140,7 +139,7 @@ QVector<QPair<QString, QString>> AStat::totals()
  * The default value for days is 90.
  * \return
  */
-QDate AStat::currencyTakeOffLandingExpiry(int expiration_days)
+QDate OPL::Statistics::currencyTakeOffLandingExpiry(int expiration_days)
 {
     int number_of_days = 0;
     QVector<QVariant> takeoff_landings;

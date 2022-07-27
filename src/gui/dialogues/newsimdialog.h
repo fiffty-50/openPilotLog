@@ -3,8 +3,6 @@
 
 #include <QDialog>
 #include "src/database/row.h"
-#include "src/database/database.h"
-#include "src/database/dbcompletiondata.h"
 
 namespace Ui {
 class NewSimDialog;

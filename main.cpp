@@ -17,13 +17,13 @@
  */
 #include "mainwindow.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/arunguard.h"
 #include "src/classes/asettings.h"
 #include "src/classes/asettings.h"
 #include "src/classes/astyle.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 #include "src/classes/paths.h"
 #include <QApplication>
 #include <QProcess>
@@ -51,7 +51,7 @@ void init()
         LOG << "Unable to create directories.";
     }
     LOG << "Setting up logging facilities...";
-    if(ALog::init(true)) {
+    if(OPL::Log::init(true)) {
         LOG << "Logging enabled.";
     } else {
         LOG << "Unable to initalise logging.";

@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ACALC_H
-#define ACALC_H
+#ifndef CALC_H
+#define CALC_H
 
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
@@ -24,15 +24,14 @@
 #include <cmath>
 #include <QDateTime>
 #include <QDebug>
-#include "src/functions/alog.h"
-#include "src/functions/atime.h"
+#include "src/functions/time.h"
 /*!
  * \brief The ACalc namespace provides various functions for calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
  * or functions calculating block time or night time.
  */
 
-namespace ACalc {
+namespace OPL::Calc {
 
 /*!
  * \brief radToDeg Converts radians to degrees
@@ -78,7 +77,7 @@ inline double radToNauticalMiles(double rad)
 double greatCircleDistance(double lat1, double lon1, double lat2, double lon2);
 
 /*!
- * \brief ACalc::greatCircleDistanceBetweenAirports Calculates Great
+ * \brief Opl::Calc::greatCircleDistanceBetweenAirports Calculates Great
  * Circle distance between two coordinates, return in nautical miles.
  * \param dept ICAO 4-letter Airport Identifier
  * \param dest ICAO 4-letter Airport Identifier
@@ -148,8 +147,8 @@ struct NightTimeValues{
     {
         nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
 
-        nightTime = ATime::qTimefromMinutes(nightMinutes);
-        totalTime = ATime::qTimefromMinutes(block_minutes);
+        nightTime = OPL::Time::qTimefromMinutes(nightMinutes);
+        totalTime = OPL::Time::qTimefromMinutes(block_minutes);
 
         if (nightMinutes == 0) { // all day
             takeOffNight = false;
@@ -185,6 +184,6 @@ struct NightTimeValues{
 };
 
 
-} // namespace ACalc
+} // namespace OPL::Calc
 
-#endif // ACALC_H
+#endif // CALC_H

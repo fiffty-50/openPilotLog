@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ALOG_H
-#define ALOG_H
+#ifndef LOG_H
+#define LOG_H
 
 #include <QTime>
 #include <QFile>
@@ -26,10 +26,9 @@
 #include <QFileInfoList>
 #include <iostream>
 #include <QDebug>
-#include "src/classes/astandardpaths.h"
 
 /*!
- * \brief The ALog namespace encapsulates constants and functions used to provide logging to files
+ * \brief The OPL::Log namespace encapsulates constants and functions used to provide logging to files
  * and logging to console (stdout)
  *
  * \details
@@ -47,7 +46,7 @@
  *
  * Credits to [Andy Dunkel](https://andydunkel.net/) for his excellent blog post on Qt Log File Rotation!
  */
-namespace ALog
+namespace OPL::Log
 {
     static QDir logFolder;
     static QString logFileName;
@@ -109,4 +108,4 @@ QDebug operator<<(QDebug qdb, const cls& object) \
     return qdb; \
 }
 
-#endif // ALOG_H
+#endif // LOG_H

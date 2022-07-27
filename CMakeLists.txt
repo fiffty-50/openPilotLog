@@ -81,8 +81,6 @@ set(PROJECT_SOURCES
     src/classes/astyle.cpp
     src/classes/paths.h
     src/classes/paths.cpp
-    src/classes/astandardpaths.h
-    src/classes/astandardpaths.cpp
     src/classes/adownload.h
     src/classes/adownload.cpp
     src/classes/arunguard.h
@@ -97,18 +95,18 @@ set(PROJECT_SOURCES
     src/classes/ahash.cpp
 
     # Namespaces
-    src/functions/acalc.h
-    src/functions/acalc.cpp
+    src/functions/calc.h
+    src/functions/calc.cpp
     src/functions/adatetime.h
-    src/functions/alog.h
-    src/functions/alog.cpp
+    src/functions/log.h
+    src/functions/log.cpp
     src/functions/areadcsv.h
     src/functions/areadcsv.cpp
-    src/functions/astat.h
-    src/functions/astat.cpp
+    src/functions/statistics.h
+    src/functions/statistics.cpp
     src/functions/adate.h
     src/functions/adate.cpp
-    src/functions/atime.h
+    src/functions/time.h
 
     # Database
     src/database/database.h

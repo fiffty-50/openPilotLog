@@ -15,13 +15,13 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ASTAT_H
-#define ASTAT_H
+#ifndef STAT_H
+#define STAT_H
 #include <QtCore>
 #include <QSqlQuery>
 #include <QSqlError>
 
-namespace AStat {
+namespace OPL::Statistics {
 
 /*!
  * \brief The AStat namespace provides functionality for retreiving various statistics
@@ -42,6 +42,6 @@ namespace AStat {
 
     QVector<QPair<QString, QString>> totals();
 
-} // namespace AStat
+} // namespace OPL::Statistics
 
-#endif // ASTAT_H
+#endif // STAT_H

@@ -17,9 +17,8 @@
  */
 #include "homewidget.h"
 #include "ui_homewidget.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
-#include "src/functions/atime.h"
+#include "src/functions/time.h"
 #include "src/classes/asettings.h"
 #include "src/database/row.h"
 
@@ -94,12 +93,12 @@ void HomeWidget::changeEvent(QEvent *event)
 }
 
 /*!
- * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the AStat::totals
+ * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the OPL::Statistics::totals
  * function and parses the return to fill out the QLineEdits.
  */
 void HomeWidget::fillTotals()
 {
-    const auto data = AStat::totals();
+    const auto data = OPL::Statistics::totals();
     for (const auto &field : data) {
         auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
         line_edit->setText(field.second);
@@ -167,13 +166,13 @@ void HomeWidget::fillSelectedCurrencies()
 }
 
 /*!
- * \brief HomeWidget::fillCurrencyTakeOffLanding Uses AStat::countTakeOffLandings to determine
+ * \brief HomeWidget::fillCurrencyTakeOffLanding Uses OPL::Statistics::countTakeOffLandings to determine
  * the amount of Take-Offs and Landings in the last 90 days and displays data and notifications
  * as required.
  */
 void HomeWidget::fillCurrencyTakeOffLanding()
 {
-    const auto takeoff_landings = AStat::countTakeOffLanding();
+    const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
     if(takeoff_landings.isEmpty())
         return;
 
@@ -185,7 +184,7 @@ void HomeWidget::fillCurrencyTakeOffLanding()
         setLabelColour(ui->LandingsDisplayLabel, Colour::Red);
 
     if (ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool()) {
-        QDate expiration_date = AStat::currencyTakeOffLandingExpiry();
+        QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
         if (expiration_date <= QDate::currentDate())
             setLabelColour(ui->currToLdgDisplayLabel, Colour::Red);
         ui->currToLdgDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
@@ -196,29 +195,29 @@ void HomeWidget::fillCurrencyTakeOffLanding()
 }
 
 /*!
- * \brief HomeWidget::fillLimitations Queries AStat to obtain information regarding cumulative
+ * \brief HomeWidget::fillLimitations Queries OPL::Statistics to obtain information regarding cumulative
  * Flight Times and Calculates and Notifies about approaching Flight Time Limitations
  */
 void HomeWidget::fillLimitations()
 {
-    int minutes = AStat::totalTime(AStat::TimeFrame::Rolling28Days);
-    ui->FlightTime28dDisplayLabel->setText(ATime::toString(minutes));
+    int minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling28Days);
+    ui->FlightTime28dDisplayLabel->setText(OPL::Time::toString(minutes));
     if (minutes >= ROLLING_28_DAYS) {
         setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_28_DAYS * ftlWarningThreshold) {
         setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Orange);
     }
 
-    minutes = AStat::totalTime(AStat::TimeFrame::Rolling12Months);
-    ui->FlightTime12mDisplayLabel->setText(ATime::toString(minutes));
+    minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling12Months);
+    ui->FlightTime12mDisplayLabel->setText(OPL::Time::toString(minutes));
     if (minutes >= ROLLING_12_MONTHS) {
         setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_12_MONTHS * ftlWarningThreshold) {
         setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Orange);
     }
 
-    minutes = AStat::totalTime(AStat::TimeFrame::CalendarYear);
-    ui->FlightTimeCalYearDisplayLabel->setText(ATime::toString(minutes));
+    minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::CalendarYear);
+    ui->FlightTimeCalYearDisplayLabel->setText(OPL::Time::toString(minutes));
     if (minutes >= CALENDAR_YEAR) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Red);
     } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {

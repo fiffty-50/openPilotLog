@@ -18,6 +18,7 @@
 #ifndef AJSON_H
 #define AJSON_H
 #include "src/opl.h"
+#include "src/classes/paths.h"
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonObject>
@@ -36,7 +37,7 @@ public:
      *
      * \details QJsonObject can be constructed from QHash<QString, QVariant> aka QVariantmap.
      * All rows are put into a QJsonArray and the Array is embedded into a QJsonDocument, which
-     * can be exported. The files are created at AStandardPaths::JSON.
+     * can be exported. The files are created at Paths::Export.
      */
     static void exportDatabase();
 

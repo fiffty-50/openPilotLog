@@ -22,7 +22,7 @@
 #include "src/database/database.h"
 #include "src/database/dbcompletiondata.h"
 #include "src/database/row.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database

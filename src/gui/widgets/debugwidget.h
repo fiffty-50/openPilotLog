@@ -32,7 +32,7 @@
 #include "src/database/row.h"
 
 #include "src/testing/atimer.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 
 namespace Ui {
 class DebugWidget;

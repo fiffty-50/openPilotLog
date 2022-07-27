@@ -47,7 +47,7 @@ void AJson::importDatabase()
         const QString table_name = OPL::GLOBALS->getDbTableName(table);
         q.prepare(QLatin1String("DELETE FROM ") + table_name);
         q.exec();
-        const auto doc = readFileToDoc(AStandardPaths::asChildOfDir(AStandardPaths::JSON,
+        const auto doc = readFileToDoc(OPL::Paths::filePath(OPL::Paths::Templates,
                                                                table_name + QLatin1String(".json")));
         DB->commit(doc.array(), table);
     }
@@ -66,7 +66,7 @@ QJsonDocument AJson::readFileToDoc(const QString &file_path)
 
 void AJson::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
 {
-    QFile out(AStandardPaths::asChildOfDir(AStandardPaths::JSON,file_name));
+    QFile out(OPL::Paths::filePath(OPL::Paths::Export,file_name));
     out.open(QFile::WriteOnly);
     out.write(doc.toJson());
     out.close();

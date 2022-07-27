@@ -18,8 +18,6 @@
 #ifndef DBCOMPLETIONDATA_H
 #define DBCOMPLETIONDATA_H
 
-#include "src/database/database.h"
-
 namespace OPL {
 
 /*!

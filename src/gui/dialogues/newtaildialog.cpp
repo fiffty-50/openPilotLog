@@ -17,7 +17,6 @@
  */
 #include "newtaildialog.h"
 #include "ui_newtail.h"
-#include "src/functions/alog.h"
 #include "src/opl.h"
 #include "src/database/dbcompletiondata.h"
 

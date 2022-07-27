@@ -17,7 +17,7 @@
  */
 #include "adownload.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 
 
 

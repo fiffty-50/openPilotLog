@@ -15,16 +15,14 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "src/database/database.h"
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-
 #include "src/database/row.h"
 #include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
-#include "src/functions/alog.h"
-#include "src/functions/alog.h"
 
 const QHash<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
@@ -107,9 +105,9 @@ const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) co
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 

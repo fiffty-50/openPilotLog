@@ -17,21 +17,7 @@
  */
 #include "debugwidget.h"
 #include "ui_debugwidget.h"
-#include "src/classes/astandardpaths.h"
-#include "src/gui/widgets/logbookwidget.h"
-#include "src/gui/widgets/pilotswidget.h"
-#include "src/gui/widgets/aircraftwidget.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/widgets/backupwidget.h"
 #include <QtGlobal>
-#include "src/functions/atime.h"
-#include "src/functions/astat.h"
-#include "src/classes/atranslator.h"
-#include "src/classes/ahash.h"
-#include "src/classes/ajson.h"
-#include "src/functions/adate.h"
-
-
 #include "src/testing/importCrewlounge/processflights.h"
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
@@ -85,7 +71,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
 {
     // disconnect and remove old database
     DB->disconnect();
-    QFile db_file(AStandardPaths::directory(AStandardPaths::Database).absoluteFilePath(QStringLiteral("logbook.db")));
+    QFile db_file(OPL::Paths::databaseFileInfo().absoluteFilePath());
     if (!db_file.remove()) {
         WARN(tr("Unable to delete existing database file."));
         return;
@@ -100,7 +86,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
     QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
@@ -209,7 +195,7 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
                                                  tr("Open CSV File for import"),
-                                                 AStandardPaths::directory(AStandardPaths::Templates).absolutePath(),
+                                                 OPL::Paths::directory(OPL::Paths::Templates).absolutePath(),
                                                  tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }

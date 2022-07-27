@@ -23,7 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/functions/astat.h"
+#include "src/functions/statistics.h"
 #include "src/database/database.h"
 #include "src/classes/asettings.h"
 

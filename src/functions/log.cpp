@@ -15,12 +15,12 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "alog.h"
+#include "log.h"
 #include "src/classes/paths.h"
 #include <QMessageBox>
 #include <QTextStream>
 
-namespace ALog {
+namespace OPL::Log {
 
 static bool logDebug = false; // Debug doesn't log to file by default
 
@@ -67,7 +67,7 @@ bool init(bool log_debug)
 
     QFile log_file((logFileName));
     if(log_file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        qInstallMessageHandler(ALog::aMessageHandler);
+        qInstallMessageHandler(aMessageHandler);
         return true;
     } else {
         return false;

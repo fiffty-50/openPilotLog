@@ -31,36 +31,10 @@ class BackupWidget;
 }
 
 /*!
- * \brief Simple QStandardItem subclass to encapsulate necessary file info.
- * Using only a QStandardItem would mean that the full path should be inputted
- * as data and of course displayed by default. However this way we create
- * the absolute path in the fileInfo attribute for further use while
- * displaying only the base name.
- */
-class FileStandardItem : public QStandardItem {
-private:
-    QFileInfo fileInfo;
-public:
-    FileStandardItem(const QIcon& icon, const QString& filename, const OPL::Paths::Directories dir)
-        : QStandardItem(icon, filename),
-          fileInfo(QFileInfo(OPL::Paths::filePath(dir, filename)))
-    {}
-    FileStandardItem(const QIcon& icon, const QFileInfo file_info)
-        : QStandardItem(icon, file_info.baseName()),
-          fileInfo(QFileInfo(file_info))
-    {}
-
-    const QFileInfo& info() const
-    {
-        return fileInfo;
-    }
-};
-
-/*!
  * \brief The BackupWidget is the interface for the user to create and restore backups of the
  * database.
  * \details OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups
- * are automatically stored in a folder determined by AStandardpaths and automatically presented to the user in a List.
+ * are automatically stored in a folder determined by OPL::Paths and automatically presented to the user in a List.
  * <b>Create Local backup</b> and <b>Restore Local Backup</b>. are convenient shortcuts.<br>
  * When using <b>Create External Backup</b>, the user will be asked where to save the backup file. This can be a pen drive, a cloud location or any other location of his choice.
  * This functionality can also be used to sync the database across devices. External backup files con be restored with <b>Restore external backup</b>.
@@ -86,12 +60,12 @@ private slots:
     void on_tableView_clicked(const QModelIndex &index);
 
     /*!
-     * \brief Creates a local Backup in the location determined by AStandardPaths::Backup
+     * \brief Creates a local Backup in the location determined by Paths::Backup
      */
     void on_createLocalPushButton_clicked();
 
     /*!
-     * \brief Restores a backup from the folder determined by AStandardPaths::Backup
+     * \brief Restores a backup from the folder determined by Paths::Backup
      */
     void on_restoreLocalPushButton_clicked();
 

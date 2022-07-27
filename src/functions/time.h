@@ -15,15 +15,14 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ATIME_H
-#define ATIME_H
+#ifndef TIME_H
+#define TIME_H
 
 #include <QtCore>
 #include <QTime>
 #include "src/opl.h"
-#include "src/functions/alog.h"
 
-namespace ATime {
+namespace OPL::Time {
 
 /*!
  * \brief Converts a QTime to a String to be used in the UI
@@ -144,8 +143,8 @@ inline QTime blocktime(const QTime &tofb, const QTime &tonb)
 
 inline QTime blocktime(const QString& tofb, const QString& tonb)
 {
-    QTime t_tofb = ATime::fromString(tofb);
-    QTime t_tonb = ATime::fromString(tonb);
+    QTime t_tofb = OPL::Time::fromString(tofb);
+    QTime t_tonb = OPL::Time::fromString(tonb);
     return blocktime(t_tofb, t_tonb);
 }
 
@@ -155,11 +154,11 @@ inline QTime blocktime(const QString& tofb, const QString& tonb)
  */
 inline int blockMinutes(const QString& tofb, const QString& tonb)
 {
-    const QTime t_tofb = ATime::fromString(tofb);
-    const QTime t_tonb = ATime::fromString(tonb);
+    const QTime t_tofb = OPL::Time::fromString(tofb);
+    const QTime t_tonb = OPL::Time::fromString(tonb);
     if (t_tofb.isValid() && t_tonb.isValid()) {
-        const auto tblk = ATime::blocktime(t_tofb, t_tonb);
-        return ATime::toMinutes(tblk);
+        const auto tblk = OPL::Time::blocktime(t_tofb, t_tonb);
+        return OPL::Time::toMinutes(tblk);
     } else
         return 0;
 }
@@ -171,8 +170,8 @@ inline int blockMinutes(const QString& tofb, const QString& tonb)
 inline int blockMinutes(const QTime& tofb, const QTime& tonb)
 {
     if (tofb.isValid() && tonb.isValid()) {
-        const auto tblk = ATime::blocktime(tofb, tonb);
-        return ATime::toMinutes(tblk);
+        const auto tblk = OPL::Time::blocktime(tofb, tonb);
+        return OPL::Time::toMinutes(tblk);
     } else
         return 0;
 }
@@ -212,6 +211,6 @@ inline const QString formatTimeInput(QString user_input)
     return output;
 }
 
-} // namespace ATime
+} // namespace OPL::Time
 
-#endif // ATIME_H
+#endif // TIME_H

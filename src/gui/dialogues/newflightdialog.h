@@ -24,7 +24,7 @@
 #include <QList>
 #include <QBitArray>
 
-#include "src/functions/atime.h"
+#include "src/functions/time.h"
 #include "src/database/database.h"
 #include "src/database/dbcompletiondata.h"
 #include "src/opl.h"

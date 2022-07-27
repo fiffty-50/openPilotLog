@@ -1,8 +1,10 @@
 #include "newsimdialog.h"
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
-#include "src/functions/atime.h"
+#include "src/functions/time.h"
 #include "src/functions/adate.h"
+#include "src/database/database.h"
+#include "src/database/dbcompletiondata.h"
 #include <QCompleter>
 /*!
  * \brief create a NewSimDialog to add a new Simulator Entry to the database
@@ -53,7 +55,7 @@ void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
     ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
-    ui->totalTimeLineEdit->setText(ATime::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
+    ui->totalTimeLineEdit->setText(OPL::Time::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
     ui->aircraftTypeLineEdit->setText(data.value(OPL::Db::SIMULATORS_ACFT).toString());
     ui->registrationLineEdit->setText(data.value(OPL::Db::SIMULATORS_REG).toString());
@@ -84,8 +86,8 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
 
 void NewSimDialog::on_totalTimeLineEdit_editingFinished()
 {
-    const QString time_string = ATime::formatTimeInput(ui->totalTimeLineEdit->text());
-    const QTime time = ATime::fromString(time_string);
+    const QString time_string = OPL::Time::formatTimeInput(ui->totalTimeLineEdit->text());
+    const QTime time = OPL::Time::fromString(time_string);
 
     if (time.isValid()) {
         ui->totalTimeLineEdit->setText(time_string);
@@ -127,8 +129,8 @@ bool NewSimDialog::verifyInput(QString& error_msg)
         return false;
     }
     // Time
-    const QString time_string = ATime::formatTimeInput(ui->totalTimeLineEdit->text());
-    const QTime time = ATime::fromString(time_string);
+    const QString time_string = OPL::Time::formatTimeInput(ui->totalTimeLineEdit->text());
+    const QTime time = OPL::Time::fromString(time_string);
 
     if (!time.isValid()) {
         ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
@@ -153,7 +155,7 @@ OPL::RowData_T NewSimDialog::collectInput()
     // Date
     new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(OPL::Db::SIMULATORS_TIME, ATime::toMinutes(ui->totalTimeLineEdit->text()));
+    new_entry.insert(OPL::Db::SIMULATORS_TIME, OPL::Time::toMinutes(ui->totalTimeLineEdit->text()));
     // Device Type
     new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type

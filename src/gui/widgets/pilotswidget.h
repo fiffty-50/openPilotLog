@@ -22,10 +22,8 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QTableView>
-#include "src/classes/asettings.h"
-#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/database/row.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/functions/acalc.h"
 
 namespace Ui {
 class PilotsWidget;

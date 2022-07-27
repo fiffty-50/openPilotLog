@@ -15,22 +15,20 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "acalc.h"
-#include "src/functions/alog.h"
+#include "calc.h"
 #include "src/database/database.h"
 #include "src/classes/asettings.h"
 #include "src/opl.h"
-#include "src/functions/atime.h"
 
 /*!
- * \brief ACalc::formatTimeInput verifies user input and formats to hh:mm
+ * \brief OPL::Calc::formatTimeInput verifies user input and formats to hh:mm
  * if the output is not a valid time, an empty string is returned. Accepts
  * input as hh:mm, h:mm, hhmm or hmm.
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
  */
 QT_DEPRECATED
-QString ACalc::formatTimeInput(QString user_input)
+QString OPL::Calc::formatTimeInput(QString user_input)
 {
     QString output; //
     QTime temp_time; //empty time object is invalid by default
@@ -83,7 +81,7 @@ QString ACalc::formatTimeInput(QString user_input)
  */
 
 
-double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
+double OPL::Calc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
 {
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
@@ -102,7 +100,7 @@ double ACalc::greatCircleDistance(double lat1, double lon1, double lat2, double 
 }
 
 
-double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
+double OPL::Calc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
     QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
             + dept
@@ -132,7 +130,7 @@ double ACalc::greatCircleDistanceBetweenAirports(const QString &dept, const QStr
 }
 
 
-QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, double lon1,
+QVector<QVector<double>> OPL::Calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
                                                                double lat2, double lon2, int tblk)
 {
     double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (Haversine)
@@ -166,7 +164,7 @@ QVector<QVector<double>> ACalc::intermediatePointsOnGreatCircle(double lat1, dou
 }
 
 
-double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
+double OPL::Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 {
     double Alt = 11; // Assuming 11 kilometers as an average cruising height for a commercial passenger airplane.
     // convert current DateTime Object to a J2000 value used in the Calculation
@@ -225,7 +223,7 @@ double ACalc::solarElevation(QDateTime utc_time_point, double lat, double lon)
 }
 
 
-int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int night_angle)
+int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int night_angle)
 {
 
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
@@ -271,7 +269,7 @@ int ACalc::calculateNightTime(const QString &dept, const QString &dest, QDateTim
     return night_time;
 }
 
-bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
+bool OPL::Calc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 {
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
             + icao
@@ -294,13 +292,13 @@ bool ACalc::isNight(const QString &icao, QDateTime event_time, int night_angle)
 }
 
 /*!
- * \brief ACalc::updateAutoTimes When the details of an aircraft are changed,
+ * \brief OPL::Calc::updateAutoTimes When the details of an aircraft are changed,
  * this function recalculates deductable times for this aircraft and updates
  * the database accordingly.
  * \param acft An aircraft object.
  * \return
  */
-void ACalc::updateAutoTimes(int acft_id)
+void OPL::Calc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
     const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
@@ -340,10 +338,10 @@ void ACalc::updateAutoTimes(int acft_id)
     }
 }
 /*!
- * \brief ACalc::updateNightTimes updates the night times in the database,
+ * \brief OPL::Calc::updateNightTimes updates the night times in the database,
  * used when changing night angle setting for example
  */
-void ACalc::updateNightTimes()
+void OPL::Calc::updateNightTimes()
 {
     const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
 

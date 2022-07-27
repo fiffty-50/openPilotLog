@@ -25,7 +25,7 @@
 #include <QComboBox>
 
 #include "src/classes/asettings.h"
-#include "src/functions/acalc.h"
+#include "src/functions/calc.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
 

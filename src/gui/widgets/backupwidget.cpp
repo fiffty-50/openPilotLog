@@ -57,7 +57,6 @@ void BackupWidget::refresh()
 {
     // First column in table, would be created by listing the files in backupdir
     QDir backup_dir = OPL::Paths::directory(OPL::Paths::Backup);
-    //QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
     const QStringList entries = backup_dir.entryList(QStringList{"*.db"}, QDir::Files, QDir::Time);
     QFileIconProvider provider;
 
@@ -70,7 +69,7 @@ void BackupWidget::refresh()
                           new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
                           new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
                           new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
-                          new FileStandardItem(provider.icon(QFileIconProvider::File), entry, OPL::Paths::Backup)
+                          new QStandardItem(provider.icon(QFileIconProvider::File), entry),
                          });
     }
 
@@ -84,7 +83,6 @@ const QString BackupWidget::absoluteBackupPath()
             + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
     return OPL::Paths::filePath(OPL::Paths::Backup, backup_name);
-    //return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
 }
 
 const QString BackupWidget::backupName()
@@ -98,7 +96,6 @@ void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 {
     selectedRows.clear();
     selectedRows.append(index.row());
-    DEB << model->item(index.row(), 5)->data(Qt::DisplayRole);
 }
 
 void BackupWidget::on_createLocalPushButton_clicked()
@@ -113,6 +110,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
         INFO(tr("Backup successfully created."));
     }
 
+    QFileInfo file_info(filename);
     QFileIconProvider provider;
     QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(filename);
     model->insertRow(0, {new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
@@ -120,7 +118,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
                          new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
                          new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
                          new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
-                         new FileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+                         new QStandardItem(provider.icon(QFileIconProvider::File), file_info.fileName()),
                      });
 }
 
@@ -186,7 +184,7 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
 
     LOG << "Deleting backup:" << file_name;
     if(!file.remove()) {
-        WARN(tr("Unable to remove file %1\nError: %2").arg(file_name,file.errorString()));
+        WARN(tr("Unable to remove file %1<br>Error: %2").arg(file_name,file.errorString()));
         return;
     } else {
         INFO(tr("Backup successfully deleted."));
@@ -244,7 +242,7 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     confirm.setWindowTitle(tr("Import Database"));
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
-                       "<br>Is this correct?"
+                       "<br>Continue?"
                        ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
         if(!DB->restoreBackup(filename)) {

@@ -27,7 +27,6 @@
 #include "src/classes/paths.h"
 void MainWindow::doDebugStuff()
 {
-    AStandardPaths::setup();
     DEB << OPL::Paths::directory(OPL::Paths::Backup);
     DEB << OPL::Paths::path(OPL::Paths::Backup);
     DEB << OPL::Paths::filePath(OPL::Paths::Database, "logbook.db");
@@ -36,7 +35,6 @@ void MainWindow::doDebugStuff()
     QDir dir(QCoreApplication::applicationDirPath());
     QString filename("file.f");
 
-    DEB << AStandardPaths::asChildOfDir(AStandardPaths::Backup, filename);
     DEB << OPL::Paths::filePath(OPL::Paths::Backup, filename);
 }
 
@@ -235,7 +233,6 @@ void MainWindow::onDatabaseInvalid()
         QString db_path = QFileDialog::getOpenFileName(this,
                                                        tr("Select Database"),
                                                        OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
-                                                       //AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
                                                        tr("Database file (*.db)"));
         if (!db_path.isEmpty()) {
             if(!DB->restoreBackup(db_path)) {
