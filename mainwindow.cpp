@@ -19,10 +19,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "src/database/database.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
 // Quick and dirty Debug area
 #include "src/classes/paths.h"
 void MainWindow::doDebugStuff()
@@ -44,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setupToolbar();
-    setActionIcons(AStyle::getStyleType());
+    setActionIcons(OPL::Style::getStyleType());
 
     // connect to the Database
     if (OPL::Paths::databaseFileInfo().size() == 0)
@@ -114,10 +115,10 @@ void MainWindow::setupToolbar()
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
 }
 
-void MainWindow::setActionIcons(StyleType style)
+void MainWindow::setActionIcons(OPL::Style::StyleType style)
 {
     switch (style){
-    case StyleType::Light:
+    case OPL::Style::StyleType::Light:
         LOG << "Setting Light Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
@@ -129,7 +130,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
-    case StyleType::Dark:
+    case OPL::Style::StyleType::Dark:
         LOG << "Setting Dark Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));

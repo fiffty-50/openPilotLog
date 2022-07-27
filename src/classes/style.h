@@ -15,15 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ASTYLE_H
-#define ASTYLE_H
+#ifndef STYLE_H
+#define STYLE_H
 #include <QString>
 #include <QFileInfo>
 #include <QHash>
 #include <QTextStream>
 #include <QComboBox>
 
-enum class StyleType {Light, Dark};
+namespace OPL {
 
 /*!
  * \brief The StyleSheet struct holds the Display Name and File Name (in the
@@ -49,15 +49,18 @@ static inline QString read_stylesheet(const QString &stylesheet)
 /*!
  * \brief The AStyle class encapsulates style and stylesheet logic.
  */
-class AStyle
+class Style
 {
 private:
     static QString currentStyle;
     static QLatin1String DARK_PALETTE;
     static void resetStyle();
 public:
+
+    enum class StyleType {Light, Dark};
+
     static const QStringList styles;
-    static const QString defaultStyle;
+    static const inline QString defaultStyle = QStringLiteral("Fusion");
     static const QList<StyleSheet> styleSheets;
 
     static void setup();
@@ -71,8 +74,8 @@ public:
 
     static inline void loadStylesComboBox(QComboBox *combo_box){
         const QSignalBlocker blocker(combo_box);
-        combo_box->addItems(AStyle::styles);
-        for (const auto &style_sheet : AStyle::styleSheets) {
+        combo_box->addItems(Style::styles);
+        for (const auto &style_sheet : Style::styleSheets) {
             combo_box->addItem(style_sheet.styleSheetName);
         }
         combo_box->addItem(QStringLiteral("Dark-Palette"));
@@ -80,4 +83,6 @@ public:
     }
 };
 
-#endif // ASTYLE_H
+} // namespace OPL
+
+#endif // STYLE_H

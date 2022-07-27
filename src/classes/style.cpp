@@ -25,31 +25,30 @@
  * https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle
  *
  */
-#include "astyle.h"
 #include "src/opl.h"
+#include "style.h"
+#include "src/classes/asettings.h"
 #include <QStyle>
 #include <QStyleFactory>
 #include <QApplication>
 #include <QFont>
-#include "src/classes/asettings.h"
-#include "src/functions/log.h"
 
-const QString AStyle::defaultStyle = QLatin1String("Fusion");
+namespace OPL {
 
-const QStringList AStyle::styles = QStyleFactory::keys();
+const QStringList Style::styles = QStyleFactory::keys();
 
-const QList<StyleSheet> AStyle::styleSheets = {
+const QList<StyleSheet> Style::styleSheets = {
     {QLatin1String("Breeze"),      QLatin1String(":breeze_light.qss")},
     {QLatin1String("Breeze-Dark"), QLatin1String(":breeze_dark.qss")},
     {QLatin1String("QDarkStyle"),  QLatin1String(":qdarkstyle/qdarkstyle.qss")},
 };
 
-QString AStyle::currentStyle = defaultStyle;
-QLatin1String AStyle::DARK_PALETTE = QLatin1String("Dark-Palette");
+QString Style::currentStyle = defaultStyle;
+QLatin1String Style::DARK_PALETTE = QLatin1String("Dark-Palette");
 /*!
  * \brief Setup Application style by reading from openPilotLog.ini
  */
-void AStyle::setup()
+void Style::setup()
 {
     if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) // Use system default for first run
         return;
@@ -64,7 +63,7 @@ void AStyle::setup()
     QString style_setting = ASettings::read(ASettings::Main::Style).toString();
 
     if (style_setting == DARK_PALETTE) {
-        AStyle::setStyle(AStyle::darkPalette());
+        Style::setStyle(Style::darkPalette());
         ASettings::write(ASettings::Main::Style, style_setting);
         return;
     }
@@ -84,7 +83,7 @@ void AStyle::setup()
     }
 }
 
-void AStyle::resetStyle()
+void Style::resetStyle()
 {
     qApp->setStyle(QStyleFactory::create(defaultStyle));
     qApp->setStyleSheet(QString());
@@ -92,7 +91,7 @@ void AStyle::resetStyle()
 
 }
 
-void AStyle::setStyle(const QString &style_key)
+void Style::setStyle(const QString &style_key)
 {
     resetStyle();
     LOG << "Setting style: " << style_key;
@@ -100,7 +99,7 @@ void AStyle::setStyle(const QString &style_key)
     currentStyle = style_key;
 }
 
-void AStyle::setStyle(const StyleSheet &style_sheet)
+void Style::setStyle(const StyleSheet &style_sheet)
 {
     resetStyle();
     LOG << "Setting stylesheet: " << style_sheet.styleSheetName;
@@ -108,7 +107,7 @@ void AStyle::setStyle(const StyleSheet &style_sheet)
     currentStyle = style_sheet.styleSheetName;
 }
 
-void AStyle::setStyle(const QPalette &palette)
+void Style::setStyle(const QPalette &palette)
 {
     resetStyle();
     LOG << "Setting Colour Palette...";
@@ -116,7 +115,7 @@ void AStyle::setStyle(const QPalette &palette)
     qApp->setPalette(palette);
 }
 
-StyleType AStyle::getStyleType()
+Style::StyleType Style::getStyleType()
 {
     const QStringList darkStyles = {
         QStringLiteral("Breeze-Dark"),
@@ -130,7 +129,7 @@ StyleType AStyle::getStyleType()
         return StyleType::Light;
 }
 
-QPalette AStyle::darkPalette()
+QPalette Style::darkPalette()
 {
     auto palette = QPalette();
     //palette.setColor(QPalette::Window, QColor(53, 53, 53));
@@ -175,7 +174,9 @@ QPalette AStyle::darkPalette()
 
 }
 
-const QString& AStyle::style()
+const QString& Style::style()
 {
     return currentStyle;
 }
+
+} // namespace OPL

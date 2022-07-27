@@ -17,7 +17,7 @@
  */
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/classes/asettings.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
@@ -55,7 +55,7 @@ void SettingsWidget::changeEvent(QEvent *event)
 void SettingsWidget::setupComboBoxes(){
     {
         // Set up Combo Boxes
-        AStyle::loadStylesComboBox(ui->styleComboBox);
+        OPL::Style::loadStylesComboBox(ui->styleComboBox);
         OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
         OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
         OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
@@ -146,7 +146,7 @@ void SettingsWidget::readSettings()
     ui->acftSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::TailSortColumn).toInt());
     ui->pilotSortComboBox->setCurrentIndex(ASettings::read(ASettings::UserData::PilotSortColumn).toInt());
 
-    // Don't emit signals for style changes during setup
+    // Don't emit signals for OPL::Style changes during setup
     const QSignalBlocker style_blocker(ui->styleComboBox);
     const QSignalBlocker font_blocker_1(ui->fontSpinBox);
     const QSignalBlocker font_blocker_2(ui->fontComboBox);
@@ -386,23 +386,23 @@ void SettingsWidget::on_aboutPushButton_clicked()
 void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_style_setting)
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
-        AStyle::setStyle(AStyle::darkPalette());
+        OPL::Style::setStyle(OPL::Style::darkPalette());
         ASettings::write(ASettings::Main::Style, new_style_setting);
         emit settingChanged(MainWindow);
         return;
     }
-    for (const auto &style_name : AStyle::styles) {
+    for (const auto &style_name : OPL::Style::styles) {
         if (new_style_setting == style_name) {
-            AStyle::setStyle(style_name);
+            OPL::Style::setStyle(style_name);
             ASettings::write(ASettings::Main::Style, new_style_setting);
             emit settingChanged(MainWindow);
             return;
         }
     }
 
-    for (const auto &style_sheet : AStyle::styleSheets) {
+    for (const auto &style_sheet : OPL::Style::styleSheets) {
         if (new_style_setting == style_sheet.styleSheetName) {
-            AStyle::setStyle(style_sheet);
+            OPL::Style::setStyle(style_sheet);
             ASettings::write(ASettings::Main::Style, new_style_setting);
             emit settingChanged(MainWindow);
             return;
@@ -429,7 +429,7 @@ void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
 void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 {
     if (usingStylesheet() && arg1 == Qt::Unchecked) {
-        WARN(tr("The style you have currently selected may not be fully compatible "
+        WARN(tr("The OPL::Style you have currently selected may not be fully compatible "
                 "with changing to a custom font while the application is running.<br><br>"
                 "Applying your changes may require restarting the application.<br>"));
     }
@@ -461,11 +461,11 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
 }
 
 /*!
- * \brief Determines if the user has selected a stylesheet or is using a Qt Style Factory Style
+ * \brief Determines if the user has selected a OPL::Stylesheet or is using a Qt OPL::Style Factory Style
  */
 bool SettingsWidget::usingStylesheet()
 {
-    for (const auto &style_sheet : AStyle::styleSheets) {
+    for (const auto &style_sheet : OPL::Style::styleSheets) {
         if (style_sheet.styleSheetName == ui->styleComboBox->currentText())
             return true;
     }
@@ -474,8 +474,8 @@ bool SettingsWidget::usingStylesheet()
 
 void SettingsWidget::on_resetStylePushButton_clicked()
 {
-    LOG << "Resetting style to default...";
-    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    LOG << "Resetting OPL::Style to default...";
+    ui->styleComboBox->setCurrentText(OPL::Style::defaultStyle);
     ui->fontCheckBox->setChecked(true);
 }
 

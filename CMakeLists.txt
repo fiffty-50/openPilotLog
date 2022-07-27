@@ -77,14 +77,14 @@ set(PROJECT_SOURCES
 
 
     # Classes
-    src/classes/astyle.h
-    src/classes/astyle.cpp
+    src/classes/style.h
+    src/classes/style.cpp
     src/classes/paths.h
     src/classes/paths.cpp
     src/classes/downloadhelper.h
     src/classes/downloadhelper.cpp
-    src/classes/arunguard.h
-    src/classes/arunguard.cpp
+    src/classes/runguard.h
+    src/classes/runguard.cpp
     src/classes/asettings.h
     src/classes/asettings.cpp
     src/classes/translator.h

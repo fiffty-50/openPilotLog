@@ -19,10 +19,10 @@
 #include "src/opl.h"
 #include "src/functions/log.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/classes/arunguard.h"
+#include "src/classes/runguard.h"
 #include "src/classes/asettings.h"
 #include "src/classes/asettings.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/functions/log.h"
 #include "src/classes/paths.h"
 #include <QApplication>
@@ -59,7 +59,7 @@ void init()
     LOG << "Reading Settings...";
     ASettings::setup();
     LOG << "Setting up application style...";
-    AStyle::setup();
+    OPL::Style::setup();
     // Translations to be done at a later stage
     //LOG << "Installing translator...";
     //ATranslator::installTranslator(OPL::Translations::English);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     // Check for another instance already running
-    ARunGuard guard(QStringLiteral("opl_single_key"));
+    RunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
         LOG << "Another Instance of openPilotLog is already running. Exiting.";
         return 0;

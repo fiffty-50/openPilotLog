@@ -25,7 +25,7 @@
 #include "src/classes/downloadhelper.h"
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/classes/md5sum.h"
 #include <QErrorMessage>
 #include <QFileDialog>
@@ -49,8 +49,8 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
 
     // Style combo box
     const QSignalBlocker style_blocker(ui->styleComboBox);
-    AStyle::loadStylesComboBox(ui->styleComboBox);
-    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    OPL::Style::loadStylesComboBox(ui->styleComboBox);
+    ui->styleComboBox->setCurrentText(OPL::Style::defaultStyle);
 
     // Prepare Date Edits
     const auto date_edits = this->findChildren<QDateEdit *>();
@@ -401,18 +401,18 @@ void FirstRunDialog::keyPressEvent(QKeyEvent *keyEvent)
 void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
-        AStyle::setStyle(AStyle::darkPalette());
+        OPL::Style::setStyle(OPL::Style::darkPalette());
         return;
     }
-    for (const auto &style_name : AStyle::styles) {
+    for (const auto &style_name : OPL::Style::styles) {
         if (new_style_setting == style_name) {
-            AStyle::setStyle(style_name);
+            OPL::Style::setStyle(style_name);
             return;
         }
     }
-    for (const auto &style_sheet : AStyle::styleSheets) {
+    for (const auto &style_sheet : OPL::Style::styleSheets) {
         if (new_style_setting == style_sheet.styleSheetName) {
-            AStyle::setStyle(style_sheet);
+            OPL::Style::setStyle(style_sheet);
             return;
         }
     }

@@ -15,7 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "arunguard.h"
+#include "runguard.h"
 
 #include <QCryptographicHash>
 
@@ -37,7 +37,7 @@ QString generateKeyHash(const QString &key, const QString &salt)
 }
 
 
-ARunGuard::ARunGuard(const QString &key )
+RunGuard::RunGuard(const QString &key )
     : key(key )
     , memLockKey(generateKeyHash(key, "_memLockKey" ))
     , sharedmemKey(generateKeyHash(key, "_sharedmemKey" ))
@@ -52,12 +52,12 @@ ARunGuard::ARunGuard(const QString &key )
     memLock.release();
 }
 
-ARunGuard::~ARunGuard()
+RunGuard::~RunGuard()
 {
     release();
 }
 
-bool ARunGuard::isAnotherRunning()
+bool RunGuard::isAnotherRunning()
 {
     if (sharedMem.isAttached())
         return false;
@@ -71,7 +71,7 @@ bool ARunGuard::isAnotherRunning()
     return isRunning;
 }
 
-bool ARunGuard::tryToRun()
+bool RunGuard::tryToRun()
 {
     if (isAnotherRunning())  // Extra check
         return false;
@@ -88,7 +88,7 @@ bool ARunGuard::tryToRun()
     return true;
 }
 
-void ARunGuard::release()
+void RunGuard::release()
 {
     memLock.acquire();
     if (sharedMem.isAttached())

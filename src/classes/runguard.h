@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ARUNGUARD_H
-#define ARUNGUARD_H
+#ifndef RUNGUARD_H
+#define RUNGUARD_H
 
 #include <QObject>
 #include <QSharedMemory>
@@ -26,12 +26,12 @@
  * \brief The RunGuard class ensures only a single instance of the application
  * is running simultaneously.
  */
-class ARunGuard
+class RunGuard
 {
 
 public:
-    ARunGuard(const QString &key);
-    ~ARunGuard();
+    RunGuard(const QString &key);
+    ~RunGuard();
 
     bool isAnotherRunning();
     bool tryToRun();
@@ -45,8 +45,8 @@ private:
     QSharedMemory sharedMem;
     QSystemSemaphore memLock;
 
-    Q_DISABLE_COPY(ARunGuard)
+    Q_DISABLE_COPY(RunGuard)
 };
 
 
-#endif // ARUNGUARD_H
+#endif // RUNGUARD_H
