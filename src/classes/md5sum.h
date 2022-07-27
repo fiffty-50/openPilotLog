@@ -15,30 +15,31 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AHASH_H
-#define AHASH_H
+#ifndef MD5SUM_H
+#define MD5SUM_H
 #include <QtCore>
 #include <QByteArray>
 #include <QCryptographicHash>
 
 /*!
- * \brief The AHash class is responsible for calculating cryptographic hashes of files (used to verify downloads)
+ * \brief The Md5Sum class is responsible for calculating cryptographic hashes of files (used to verify downloads)
  */
-class AHash
+class Md5Sum
 {
 public:
     /*!
-     * \brief AHash - calculates the MD5-checksum for the parameter given in the constructor and
+     * \brief AHash - calculates the MD5-checksum for the input file specified in the constructor and
      * saves the result in the checksum member variable
      */
-    AHash(QFileInfo &file_info);
+    Md5Sum(QFileInfo &file_info);
+    Md5Sum() = delete;
 
     QByteArray checksum;
 
     /*!
      * \brief hashString returns a hex representation of the hash
      */
-    inline const QString hashToHex()
+    inline const QString hashToHex() const
     {
             return QString(checksum.toHex());
     };
@@ -48,7 +49,7 @@ public:
      * \param md5_file - the checkfile containing the md5 checksum in hex format
      * \return true if hashes match
      */
-    bool compare(QFileInfo &md5_file);
+    bool compare(QFileInfo &md5_file) const;
 };
 
-#endif // AHASH_H
+#endif // MD5SUM_H

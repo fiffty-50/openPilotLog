@@ -1,5 +1,5 @@
-#ifndef ATRANSLATOR_H
-#define ATRANSLATOR_H
+#ifndef TRANSLATOR_H
+#define TRANSLATOR_H
 #include "src/opl.h"
 
 /*!
@@ -15,7 +15,7 @@
  * When a QTranslator is installed, the UI is updated through [QWidget::changeEvent()](https://doc.qt.io/qt-5/qwidget.html#changeEvent).
  *
  */
-class ATranslator  : public QObject {
+class Translator  : public QObject {
     Q_OBJECT
 public:
     /*!
@@ -27,4 +27,4 @@ private:
     static QTranslator *translator;
 };
 
-#endif // ATRANSLATOR_H
+#endif // TRANSLATOR_H

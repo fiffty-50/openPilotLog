@@ -15,34 +15,30 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "adownload.h"
+#include "downloadhelper.h"
 #include "src/opl.h"
-#include "src/functions/log.h"
 
-
-
-
-ADownload::ADownload() : QObject(nullptr)
+DownloadHelper::DownloadHelper() : QObject(nullptr)
 {
     QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(downloadFinished(QNetworkReply*)));
 }
 
-ADownload::~ADownload()
+DownloadHelper::~DownloadHelper()
 {
 
 }
 
-void ADownload::setTarget(const QUrl &value)
+void DownloadHelper::setTarget(const QUrl &value)
 {
     this->target = value;
 }
 
-void ADownload::setFileName(const QString &value)
+void DownloadHelper::setFileName(const QString &value)
 {
     this->fileName = value;
 }
 
-void ADownload::download()
+void DownloadHelper::download()
 {
     QNetworkRequest request(target);
     DEB << "Downloading from: " << target.toString();
@@ -51,14 +47,14 @@ void ADownload::download()
 }
 
 
-void ADownload::downloadProgress(qint64 received, qint64 total)
+void DownloadHelper::downloadProgress(qint64 received, qint64 total)
 {
     //DEB << "Received " << received << " bytes of " << total;
 }
 
 
 
-void ADownload::downloadFinished(QNetworkReply *data)
+void DownloadHelper::downloadFinished(QNetworkReply *data)
 {
     QFile localFile(fileName);
     if (!localFile.open(QIODevice::WriteOnly))

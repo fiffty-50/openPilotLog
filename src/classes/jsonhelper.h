@@ -15,22 +15,21 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AJSON_H
-#define AJSON_H
+#ifndef JSONHELPER_H
+#define JSONHELPER_H
 #include "src/opl.h"
-#include "src/classes/paths.h"
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonObject>
 
 /*!
- * \brief The AJSON class is responsible for parsing the database (sqlite) to and from JSON.
+ * \brief The JsonHelper class is responsible for parsing the database (sqlite) to and from JSON.
  */
-class AJson
+class JsonHelper
 {
 public:
-    AJson();
-    AJson(QFileInfo database_file);
+    JsonHelper();
+    JsonHelper(QFileInfo database_file);
 
     /*!
      * \brief exportDatabase exports the currently active database to JSON.
@@ -71,4 +70,4 @@ private:
 
 };
 
-#endif // AJSON_H
+#endif // JSONHELPER_H

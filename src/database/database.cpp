@@ -17,7 +17,7 @@
  */
 #include "database.h"
 #include "src/opl.h"
-#include "src/classes/ajson.h"
+#include "src/classes/jsonhelper.h"
 
 namespace OPL {
 
@@ -681,13 +681,13 @@ bool Database::importTemplateData(bool use_local_ressources)
         QString error_message("Error importing data ");
 
         if (use_local_ressources) {
-            data_to_commit = AJson::readFileToDoc(QLatin1String(":database/templates/")
+            data_to_commit = JsonHelper::readFileToDoc(QLatin1String(":database/templates/")
                                       + table_name + QLatin1String(".json")).array();
             error_message.append(QLatin1String(" (ressource) "));
         } else {
             const QString file_path = OPL::Paths::filePath(OPL::Paths::Templates,
                                                            table_name + QLatin1String(".json"));
-            data_to_commit = AJson::readFileToDoc(file_path).array();
+            data_to_commit = JsonHelper::readFileToDoc(file_path).array();
             //data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
             //                              AStandardPaths::Templates).absoluteFilePath(
             //                              table_name + QLatin1String(".json"))).array();

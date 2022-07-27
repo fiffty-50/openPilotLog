@@ -93,8 +93,8 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // Download json files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -109,8 +109,8 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // Download checksum files
     for (const auto& table : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
 

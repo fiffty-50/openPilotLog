@@ -15,12 +15,11 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "ajson.h"
+#include "jsonhelper.h"
 #include "src/database/database.h"
+#include "src/classes/paths.h"
 
-
-
-void AJson::exportDatabase()
+void JsonHelper::exportDatabase()
 {
     for (const auto &table : TABLES){
         QJsonArray array;
@@ -34,7 +33,7 @@ void AJson::exportDatabase()
     }
 }
 
-void AJson::importDatabase()
+void JsonHelper::importDatabase()
 {
     TODO << "Another function should do some checking here if data exists etc...";
     TODO << "Make the function take a list of files/fileinfo as arguments";
@@ -53,7 +52,7 @@ void AJson::importDatabase()
     }
 }
 
-QJsonDocument AJson::readFileToDoc(const QString &file_path)
+QJsonDocument JsonHelper::readFileToDoc(const QString &file_path)
 {
     QFile file(file_path);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -64,7 +63,7 @@ QJsonDocument AJson::readFileToDoc(const QString &file_path)
     return doc;
 }
 
-void AJson::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
+void JsonHelper::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
 {
     QFile out(OPL::Paths::filePath(OPL::Paths::Export,file_name));
     out.open(QFile::WriteOnly);

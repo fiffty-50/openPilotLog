@@ -81,18 +81,18 @@ set(PROJECT_SOURCES
     src/classes/astyle.cpp
     src/classes/paths.h
     src/classes/paths.cpp
-    src/classes/adownload.h
-    src/classes/adownload.cpp
+    src/classes/downloadhelper.h
+    src/classes/downloadhelper.cpp
     src/classes/arunguard.h
     src/classes/arunguard.cpp
     src/classes/asettings.h
     src/classes/asettings.cpp
-    src/classes/atranslator.h
-    src/classes/atranslator.cpp
-    src/classes/ajson.h
-    src/classes/ajson.cpp
-    src/classes/ahash.h
-    src/classes/ahash.cpp
+    src/classes/translator.h
+    src/classes/translator.cpp
+    src/classes/jsonhelper.h
+    src/classes/jsonhelper.cpp
+    src/classes/md5sum.h
+    src/classes/md5sum.cpp
 
     # Namespaces
     src/functions/calc.h

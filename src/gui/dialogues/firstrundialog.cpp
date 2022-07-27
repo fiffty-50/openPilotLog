@@ -22,11 +22,11 @@
 #include "src/database/dbsummary.h"
 #include "src/gui/widgets/backupwidget.h"
 #include "src/database/row.h"
-#include "src/classes/adownload.h"
+#include "src/classes/downloadhelper.h"
 #include "src/classes/asettings.h"
 #include "src/functions/adate.h"
 #include "src/classes/astyle.h"
-#include "src/classes/ahash.h"
+#include "src/classes/md5sum.h"
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -205,8 +205,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     // Download json files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -223,8 +223,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     // Download checksum files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
@@ -252,7 +252,7 @@ bool FirstRunDialog::verifyTemplates()
         const QString path = OPL::Paths::filePath(OPL::Paths::Templates, table_name);
 
         QFileInfo check_file(path + QLatin1String(".json"));
-        AHash hash(check_file);
+        Md5Sum hash(check_file);
 
         QFileInfo md5_file(path + QLatin1String(".md5"));
         if (!hash.compare(md5_file))

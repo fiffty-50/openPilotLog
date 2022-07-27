@@ -15,10 +15,10 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "ahash.h"
+#include "md5sum.h"
 #include "src/opl.h"
 
-AHash::AHash(QFileInfo &file_info)
+Md5Sum::Md5Sum(QFileInfo &file_info)
 {
     QFile f(file_info.absoluteFilePath());
     if (f.open(QFile::ReadOnly)) {
@@ -36,7 +36,7 @@ AHash::AHash(QFileInfo &file_info)
     f.close();
 }
 
-bool AHash::compare(QFileInfo &md5_file)
+bool Md5Sum::compare(QFileInfo &md5_file) const
 {
     // Open the file and read the first 32 characters
     QFile f(md5_file.absoluteFilePath());
@@ -45,9 +45,10 @@ bool AHash::compare(QFileInfo &md5_file)
         const QString hash_string = in.read(32);
 
         // Verify checksum is not empty and compare to md5 read from file
-        if (checksum == QByteArray())
+        if (checksum == QByteArray()) {
+            LOG << QString("Unable to read checksum from file: %1").arg(md5_file.absoluteFilePath());
             return false;
-        else
+        } else
             if (checksum.toHex() == hash_string)
                 return true;
             else {

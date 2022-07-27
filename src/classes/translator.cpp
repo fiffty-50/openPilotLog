@@ -1,8 +1,8 @@
-#include "atranslator.h"
+#include "translator.h"
 
-QTranslator* ATranslator::translator;
+QTranslator* Translator::translator;
 
-void ATranslator::installTranslator(OPL::Translation language)
+void Translator::installTranslator(OPL::Translation language)
 {
     translator = new QTranslator();
     if (translator->load(OPL::GLOBALS->getLanguageFilePath(language)))
