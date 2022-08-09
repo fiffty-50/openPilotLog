@@ -1,4 +1,4 @@
-.TH "FirstRunDialog" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.TH "FirstRunDialog" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -33,7 +33,7 @@ Inherits QDialog\&.
 .PP 
 The \fBFirstRunDialog\fP is used as a set-up wizard for the application\&. 
 
-The Application does not ship with a database, it is created on the fly\&. This is the main purpose of the \fBFirstRunDialog\fP\&. Apart from this main task, user details and preferences are gathered and saved using \fBASettings\fP\&.
+The Application does not ship with a database, it is created on the fly\&. This is the main purpose of the \fBFirstRunDialog\fP\&. Apart from this main task, user details and preferences are gathered and saved using \fBSettings\fP\&.
 .PP
 The Dialog contains a tabbed widget which guides the user through the set up process\&.
 .SS "1 - Welcome"
@@ -43,9 +43,9 @@ In this tab, the users personal data is collected, which is used to create the f
 .SS "3 - Currencies"
 In this tab, the user can enter the expiration dates of his licenses, medical or other currencies that he wishes to keep track of\&. These are stored in the database within the currencies table\&.
 .SS "4 - Flight Logging"
-In this tab, the user can determine what the defualt selections for logging a new flight will be\&. These selections (Pilot Function, Flight Rules,\&.\&.\&.) are stored in an INI file using the \fBASettings\fP class\&.
+In this tab, the user can determine what the defualt selections for logging a new flight will be\&. These selections (Pilot Function, Flight Rules,\&.\&.\&.) are stored in an INI file using the \fBSettings\fP class\&.
 .SS "5 - Customization"
-In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being displayed\&. These settings are stored in an INI file using the \fBASettings\fP class\&.
+In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being displayed\&. These settings are stored in an INI file using the \fBSettings\fP class\&.
 .SS "6 - Finish / Database creation"
 In this tab the user can select how the database is created\&. There are two options, either downloading database templates from the github repository, or to fall back to a set of JSON files inclnuded in the application ressources (see templates\&.qrc)\&. These built in files are probably not as up-to-date, but enable the application to function if no internet connection is available or the links to the online ressources are broken\&.
 .PP

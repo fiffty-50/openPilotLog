@@ -1,0 +1,136 @@
+.TH "OPL::DateTime" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::DateTime
+.SH SYNOPSIS
+.br
+.PP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static QString \fBdateToString\fP (const QDate &date, \fBOPL::DateFormat\fP format=OPL::DateFormat::ISODate)"
+.br
+.RI "Reimplements QDate::toString to accept OPL::Date::DateFormat enums\&. "
+.ti -1c
+.RI "static QDate \fBparseInput\fP (QString &user_input, \fBOPL::DateFormat\fP format)"
+.br
+.RI "takes a user-provided input and tries to convert it to a (valid) QDate\&. "
+.ti -1c
+.RI "static void \fBtryToFix\fP (QString &user_input, \fBOPL::DateFormat\fP format)"
+.br
+.ti -1c
+.RI "static void \fBpadCentury\fP (QString &io_user_input, \fBOPL::DateFormat\fP format)"
+.br
+.RI "padCentury adds the century to a date where it was omitted "
+.ti -1c
+.RI "static void \fBpadZeroes\fP (QString &io_user_input)"
+.br
+.RI "pads a user-provided date string with 0s to facilitate conversion to QDate "
+.ti -1c
+.RI "static void \fBaddSeperators\fP (QString &io_user_input, const \fBOPL::DateFormat\fP &format)"
+.br
+.ti -1c
+.RI "static bool \fBcontainsSeperator\fP (const QString &user_input)"
+.br
+.ti -1c
+.RI "static const QStringList & \fBgetDisplayNames\fP ()"
+.br
+.ti -1c
+.RI "static const QString \fBgetFormatString\fP (\fBOPL::DateFormat\fP format)"
+.br
+.ti -1c
+.RI "static const QString \fBcurrentDate\fP ()"
+.br
+.RI "today Returns a string containing the current date in ISO format "
+.ti -1c
+.RI "static const QString \fBdateTimeToString\fP (const QDateTime &date_time, OPL::DateTimeFormat format)"
+.br
+.RI "dateTimeToString formats a QDateTime object into a string in a uniform way\&. "
+.ti -1c
+.RI "static QDateTime \fBfromString\fP (const QString &date_time_string)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const QString \fBISO_FORMAT_STRING\fP = QStringLiteral('yyyy\-MM\-dd')"
+.br
+.ti -1c
+.RI "static const QString \fBDE_FORMAT_STRING\fP = QStringLiteral('dd\&.MM\&.yyyy')"
+.br
+.ti -1c
+.RI "static const QString \fBEN_FORMAT_STRING\fP = QStringLiteral('MM/dd/yyyy')"
+.br
+.ti -1c
+.RI "static const QMap< \fBOPL::DateFormat\fP, QString > \fBDATEFORMATSMAP\fP"
+.br
+.ti -1c
+.RI "static const QStringList \fBDISPLAY_NAMES\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "const QString OPL::DateTime::currentDate ()\fC [static]\fP"
+
+.PP
+today Returns a string containing the current date in ISO format 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "static const QString OPL::DateTime::dateTimeToString (const QDateTime & date_time, OPL::DateTimeFormat format)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+dateTimeToString formats a QDateTime object into a string in a uniform way\&. 
+.PP
+\fBReturns\fP
+.RS 4
+
+.RE
+.PP
+
+.SS "QDate OPL::DateTime::parseInput (QString & user_input, \fBOPL::DateFormat\fP format)\fC [static]\fP"
+
+.PP
+takes a user-provided input and tries to convert it to a (valid) QDate\&. 
+.PP
+\fBReturns\fP
+.RS 4
+QDate (invalid if input not recognized) 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "const QMap<\fBOPL::DateFormat\fP, QString> OPL::DateTime::DATEFORMATSMAP\fC [inline]\fP, \fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+        {OPL::DateFormat::ISODate, ISO_FORMAT_STRING},
+        {OPL::DateFormat::DE,      DE_FORMAT_STRING },
+        {OPL::DateFormat::EN,      EN_FORMAT_STRING },
+
+    }
+.fi
+.SS "const QStringList OPL::DateTime::DISPLAY_NAMES\fC [inline]\fP, \fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+        QStringLiteral("ISO 8601: yyyy-MM-dd"),
+        QStringLiteral("DE: dd\&.MM\&.yyyy"),
+        QStringLiteral("EN: MM/dd/yyyy")
+    }
+.fi
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

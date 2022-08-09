@@ -1,10 +1,12 @@
 var annotated_dup =
 [
-    [ "ACalc", "namespace_a_calc.html", [
-      [ "NightTimeValues", "struct_a_calc_1_1_night_time_values.html", "struct_a_calc_1_1_night_time_values" ]
-    ] ],
     [ "OPL", "namespace_o_p_l.html", [
-      [ "UserDataState", "struct_o_p_l_1_1_user_data_state.html", "struct_o_p_l_1_1_user_data_state" ],
+      [ "Calc", "namespace_o_p_l_1_1_calc.html", [
+        [ "NightTimeValues", "struct_o_p_l_1_1_calc_1_1_night_time_values.html", "struct_o_p_l_1_1_calc_1_1_night_time_values" ]
+      ] ],
+      [ "Paths", "class_o_p_l_1_1_paths.html", "class_o_p_l_1_1_paths" ],
+      [ "StyleSheet", "struct_o_p_l_1_1_style_sheet.html", "struct_o_p_l_1_1_style_sheet" ],
+      [ "Style", "class_o_p_l_1_1_style.html", "class_o_p_l_1_1_style" ],
       [ "Database", "class_o_p_l_1_1_database.html", "class_o_p_l_1_1_database" ],
       [ "DbCompletionData", "class_o_p_l_1_1_db_completion_data.html", "class_o_p_l_1_1_db_completion_data" ],
       [ "DbSummary", "class_o_p_l_1_1_db_summary.html", "class_o_p_l_1_1_db_summary" ],
@@ -15,29 +17,22 @@ var annotated_dup =
       [ "SimulatorEntry", "class_o_p_l_1_1_simulator_entry.html", "class_o_p_l_1_1_simulator_entry" ],
       [ "FlightEntry", "class_o_p_l_1_1_flight_entry.html", "class_o_p_l_1_1_flight_entry" ],
       [ "CurrencyEntry", "class_o_p_l_1_1_currency_entry.html", "class_o_p_l_1_1_currency_entry" ],
+      [ "AirportEntry", "class_o_p_l_1_1_airport_entry.html", "class_o_p_l_1_1_airport_entry" ],
+      [ "DateTime", "class_o_p_l_1_1_date_time.html", null ],
       [ "ANotificationHandler", "class_o_p_l_1_1_a_notification_handler.html", null ],
       [ "OplGlobals", "class_o_p_l_1_1_opl_globals.html", "class_o_p_l_1_1_opl_globals" ]
     ] ],
-    [ "AAircraftEntry", "struct_a_aircraft_entry.html", "struct_a_aircraft_entry" ],
-    [ "ACompletionData", "class_a_completion_data.html", "class_a_completion_data" ],
-    [ "ADate", "class_a_date.html", null ],
-    [ "ADownload", "class_a_download.html", "class_a_download" ],
-    [ "AFileStandardItem", "class_a_file_standard_item.html", "class_a_file_standard_item" ],
-    [ "AHash", "class_a_hash.html", "class_a_hash" ],
     [ "AircraftWidget", "class_aircraft_widget.html", "class_aircraft_widget" ],
     [ "AirportWidget", "class_airport_widget.html", "class_airport_widget" ],
-    [ "AJson", "class_a_json.html", "class_a_json" ],
-    [ "ARunGuard", "class_a_run_guard.html", "class_a_run_guard" ],
-    [ "ASettings", "class_a_settings.html", "class_a_settings" ],
-    [ "AStandardPaths", "class_a_standard_paths.html", "class_a_standard_paths" ],
-    [ "AStyle", "class_a_style.html", null ],
     [ "ATimer", "class_a_timer.html", "class_a_timer" ],
-    [ "ATranslator", "class_a_translator.html", null ],
     [ "BackupWidget", "class_backup_widget.html", "class_backup_widget" ],
     [ "DebugWidget", "class_debug_widget.html", "class_debug_widget" ],
+    [ "DownloadHelper", "class_download_helper.html", "class_download_helper" ],
     [ "FirstRunDialog", "class_first_run_dialog.html", "class_first_run_dialog" ],
     [ "HomeWidget", "class_home_widget.html", "class_home_widget" ],
+    [ "JsonHelper", "class_json_helper.html", "class_json_helper" ],
     [ "LogbookWidget", "class_logbook_widget.html", "class_logbook_widget" ],
+    [ "Md5Sum", "class_md5_sum.html", "class_md5_sum" ],
     [ "NewAirportDialog", "class_new_airport_dialog.html", "class_new_airport_dialog" ],
     [ "NewFlightDialog", "class_new_flight_dialog.html", "class_new_flight_dialog" ],
     [ "NewPilotDialog", "class_new_pilot_dialog.html", "class_new_pilot_dialog" ],
@@ -47,7 +42,9 @@ var annotated_dup =
     [ "ProcessAircraft", "class_process_aircraft.html", "class_process_aircraft" ],
     [ "ProcessFlights", "class_process_flights.html", "class_process_flights" ],
     [ "ProcessPilots", "class_process_pilots.html", "class_process_pilots" ],
+    [ "RunGuard", "class_run_guard.html", "class_run_guard" ],
+    [ "Settings", "class_settings.html", "class_settings" ],
     [ "SettingsWidget", "class_settings_widget.html", "class_settings_widget" ],
-    [ "StyleSheet", "struct_style_sheet.html", "struct_style_sheet" ],
+    [ "Translator", "class_translator.html", null ],
     [ "ValidationState", "class_validation_state.html", "class_validation_state" ]
 ];

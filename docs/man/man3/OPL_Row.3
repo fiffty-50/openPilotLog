@@ -1,8 +1,8 @@
-.TH "OPL::Row" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.TH "OPL::Row" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-OPL::Row \- The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&.  
+OPL::Row \- The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&.  
 
 .SH SYNOPSIS
 .br
@@ -10,12 +10,12 @@ OPL::Row \- The \fBRow\fP class provides an interface for retreiving and submitt
 .PP
 \fC#include <row\&.h>\fP
 .PP
-Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightEntry\fP, \fBOPL::PilotEntry\fP, \fBOPL::SimulatorEntry\fP, and \fBOPL::TailEntry\fP\&.
+Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::AirportEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightEntry\fP, \fBOPL::PilotEntry\fP, \fBOPL::SimulatorEntry\fP, and \fBOPL::TailEntry\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBRow\fP (\fBOPL::DbTable\fP table_name, int row_id, const OPL::RowData_T &row_data)"
+.RI "\fBRow\fP (\fBOPL::DbTable\fP table_name, int row_id, const RowData_T &row_data)"
 .br
 .ti -1c
 .RI "\fBRow\fP (\fBOPL::DbTable\fP table_name, int row_id)"
@@ -30,10 +30,10 @@ Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightE
 .RI "\fBRow\fP & \fBoperator=\fP (const \fBRow\fP &)=default"
 .br
 .ti -1c
-.RI "OPL::RowData_T \fBgetData\fP () const"
+.RI "RowData_T \fBgetData\fP () const"
 .br
 .ti -1c
-.RI "void \fBsetData\fP (const OPL::RowData_T &value)"
+.RI "void \fBsetData\fP (const RowData_T &value)"
 .br
 .ti -1c
 .RI "int \fBgetRowId\fP () const"
@@ -42,7 +42,13 @@ Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightE
 .RI "void \fBsetRowId\fP (int value)"
 .br
 .ti -1c
-.RI "\fBOPL::DbTable\fP \fBgetTableName\fP () const"
+.RI "\fBOPL::DbTable\fP \fBgetTable\fP () const"
+.br
+.ti -1c
+.RI "const QString \fBgetTableName\fP () const"
+.br
+.ti -1c
+.RI "const QString \fBgetPosition\fP () const"
 .br
 .ti -1c
 .RI "bool \fBisValid\fP () const"
@@ -50,6 +56,7 @@ Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightE
 .ti -1c
 .RI "\fBoperator QString\fP () const"
 .br
+.RI "operator QString can be used for printing debug information to stdout "
 .in -1c
 .SS "Protected Attributes"
 
@@ -63,7 +70,17 @@ Inherited by \fBOPL::AircraftEntry\fP, \fBOPL::CurrencyEntry\fP, \fBOPL::FlightE
 .in -1c
 .SH "Detailed Description"
 .PP 
-The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&. 
+The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. 
+
+The \fBRow\fP class is a base class and when instantiated, the appropriate subclass should be used\&.
+.PP
+The database holds all the data related to the logbook in different tables\&. Each of these tables is composed of rows\&. Each row has different columns and each column contains the data\&. As such, an entry can be thought of as a row in the database\&. The row class encapsulates the data contained in each row\&.
+.PP
+A row is uniquely identified by its position in the database, consisting of the table name (QString) and the row id (int)\&. A new entry, which is not yet in the database has the row id 0\&. If a new row object is created, the hasData bool is set to false\&. Before submitting the entry to the database, setData() has to be called to fill the row with data and toggle the verification bit\&.
+.PP
+The \fBRow\fP Object holds all the necessary information the \fBDatabase\fP class needs to commit (create or update) it\&. The Identifying information can be accessed with getRowId and getTable() / getTableName()\&.
+.PP
+For convenience and readabilty, subclasses exist that have the table property pre-set\&. These rows are then referred to as entries\&. See \fBAircraftEntry\fP, \fBFlightEntry\fP etc\&. 
 
 .SH "Author"
 .PP 

@@ -107,10 +107,10 @@ Inheritance diagram for OPL::Database:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="signals"></a>
 Signals</h2></td></tr>
-<tr class="memitem:ab0dbab5f0a97745f8a86b1703abcae38"><td class="memItemLeft" align="right" valign="top"><a id="ab0dbab5f0a97745f8a86b1703abcae38"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#ab0dbab5f0a97745f8a86b1703abcae38">dataBaseUpdated</a> ()</td></tr>
-<tr class="memdesc:ab0dbab5f0a97745f8a86b1703abcae38"><td class="mdescLeft">&#160;</td><td class="mdescRight">updated is emitted whenever the database contents have been updated. This can be either a commit, update or remove. This signal should be used to trigger an update to the models of the views displaying database contents in the user interface so that a user is always presented with up-to-date information. <br /></td></tr>
-<tr class="separator:ab0dbab5f0a97745f8a86b1703abcae38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e99ff7cf4173ca1a87ede9acc02be00"><td class="memItemLeft" align="right" valign="top"><a id="a8e99ff7cf4173ca1a87ede9acc02be00"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a8e99ff7cf4173ca1a87ede9acc02be00">dataBaseUpdated</a> (const <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">DbTable</a> table)</td></tr>
+<tr class="memdesc:a8e99ff7cf4173ca1a87ede9acc02be00"><td class="mdescLeft">&#160;</td><td class="mdescRight">updated is emitted whenever the database contents have been updated. This can be either a commit, update or remove. This signal should be used to trigger an update to the models of the views displaying database contents in the user interface so that a user is always presented with up-to-date information. <br /></td></tr>
+<tr class="separator:a8e99ff7cf4173ca1a87ede9acc02be00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc87b25e9ab6a6a6dce1883821292882"><td class="memItemLeft" align="right" valign="top"><a id="acc87b25e9ab6a6a6dce1883821292882"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#acc87b25e9ab6a6a6dce1883821292882">connectionReset</a> ()</td></tr>
 <tr class="memdesc:acc87b25e9ab6a6a6dce1883821292882"><td class="mdescLeft">&#160;</td><td class="mdescRight">connectionReset is emitted whenever the database connection is reset, for example when creating or restoring a backup. <br /></td></tr>
@@ -187,7 +187,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a6c2ebefc6cf6d948d64dfe71bec08540"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae38dc30cb955ffc0e3235e51104dd912"><td class="memItemLeft" align="right" valign="top"><a id="ae38dc30cb955ffc0e3235e51104dd912"></a>
 <a class="el" href="class_o_p_l_1_1_row.html">OPL::Row</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#ae38dc30cb955ffc0e3235e51104dd912">getRow</a> (const <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table, const int row_id)</td></tr>
-<tr class="memdesc:ae38dc30cb955ffc0e3235e51104dd912"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreive a <a class="el" href="class_o_p_l_1_1_row.html" title="The Row class provides an interface for retreiving and submitting entries from the database....">Row</a> from the database <br /></td></tr>
+<tr class="memdesc:ae38dc30cb955ffc0e3235e51104dd912"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreive a <a class="el" href="class_o_p_l_1_1_row.html" title="The Row class provides an interface for retreiving and submitting entries from the database.">Row</a> from the database <br /></td></tr>
 <tr class="separator:ae38dc30cb955ffc0e3235e51104dd912"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3657d55721b0d3599ce6df55120017de"><td class="memItemLeft" align="right" valign="top"><a id="a3657d55721b0d3599ce6df55120017de"></a>
 RowData_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a3657d55721b0d3599ce6df55120017de">getRowData</a> (const <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table, const int row_id)</td></tr>
@@ -195,15 +195,15 @@ RowData_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <tr class="separator:a3657d55721b0d3599ce6df55120017de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2834aeb5c47bde300c898021eb9bbc48"><td class="memItemLeft" align="right" valign="top"><a id="a2834aeb5c47bde300c898021eb9bbc48"></a>
 <a class="el" href="class_o_p_l_1_1_pilot_entry.html">OPL::PilotEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a2834aeb5c47bde300c898021eb9bbc48">getPilotEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a2834aeb5c47bde300c898021eb9bbc48"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_pilot_entry.html">PilotEntry</a> from the database. See row class for details. <br /></td></tr>
+<tr class="memdesc:a2834aeb5c47bde300c898021eb9bbc48"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_pilot_entry.html" title="A Row representing a Pilot entry. See Row class for details.">PilotEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a2834aeb5c47bde300c898021eb9bbc48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95340bb482ca788e748a597d013424ea"><td class="memItemLeft" align="right" valign="top"><a id="a95340bb482ca788e748a597d013424ea"></a>
 <a class="el" href="class_o_p_l_1_1_tail_entry.html">OPL::TailEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a95340bb482ca788e748a597d013424ea">getTailEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a95340bb482ca788e748a597d013424ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. See row class for details. <br /></td></tr>
+<tr class="memdesc:a95340bb482ca788e748a597d013424ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html" title="A Row representing a Tail (Registration) entry. See Row class for details.">TailEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a95340bb482ca788e748a597d013424ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84b40aff7668c0782ae25a8d07f60922"><td class="memItemLeft" align="right" valign="top"><a id="a84b40aff7668c0782ae25a8d07f60922"></a>
 <a class="el" href="class_o_p_l_1_1_aircraft_entry.html">OPL::AircraftEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a84b40aff7668c0782ae25a8d07f60922">getAircraftEntry</a> (int row_id)</td></tr>
-<tr class="memdesc:a84b40aff7668c0782ae25a8d07f60922"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html">TailEntry</a> from the database. See row class for details. <br /></td></tr>
+<tr class="memdesc:a84b40aff7668c0782ae25a8d07f60922"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreives a <a class="el" href="class_o_p_l_1_1_tail_entry.html" title="A Row representing a Tail (Registration) entry. See Row class for details.">TailEntry</a> from the database. See row class for details. <br /></td></tr>
 <tr class="separator:a84b40aff7668c0782ae25a8d07f60922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a568d32e69f438bc165a2a9c1477eaaed"><td class="memItemLeft" align="right" valign="top"><a id="a568d32e69f438bc165a2a9c1477eaaed"></a>
 <a class="el" href="class_o_p_l_1_1_flight_entry.html">OPL::FlightEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a568d32e69f438bc165a2a9c1477eaaed">getFlightEntry</a> (int row_id)</td></tr>
@@ -217,6 +217,10 @@ RowData_T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <a class="el" href="class_o_p_l_1_1_currency_entry.html">OPL::CurrencyEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#affb40bf4566d45bdf2a68203b53be4db">getCurrencyEntry</a> (int row_id)</td></tr>
 <tr class="memdesc:affb40bf4566d45bdf2a68203b53be4db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retreives a currency entry from the database. See row class for details. <br /></td></tr>
 <tr class="separator:affb40bf4566d45bdf2a68203b53be4db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56ae415d548dca9c6ab3cc0fe0bc818d"><td class="memItemLeft" align="right" valign="top"><a id="a56ae415d548dca9c6ab3cc0fe0bc818d"></a>
+<a class="el" href="class_o_p_l_1_1_airport_entry.html">OPL::AirportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a56ae415d548dca9c6ab3cc0fe0bc818d">getAirportEntry</a> (int row_id)</td></tr>
+<tr class="memdesc:a56ae415d548dca9c6ab3cc0fe0bc818d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retreives an airport entry from the database. See row class for details. <br /></td></tr>
+<tr class="separator:a56ae415d548dca9c6ab3cc0fe0bc818d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebf3371c149463c49e818999c427ce6a"><td class="memItemLeft" align="right" valign="top"><a id="aebf3371c149463c49e818999c427ce6a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#aebf3371c149463c49e818999c427ce6a">getLastEntry</a> (<a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> table)</td></tr>
 <tr class="memdesc:aebf3371c149463c49e818999c427ce6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the ROWID for the newest entry in the respective table. <br /></td></tr>
@@ -236,9 +240,6 @@ const QList&lt; <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c
 const QList&lt; <a class="el" href="namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7">OPL::DbTable</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#ad7cd939e58af8f1fd46f835ee34567e3">getTemplateTables</a> () const</td></tr>
 <tr class="memdesc:ad7cd939e58af8f1fd46f835ee34567e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">getTemplateTables returns a list of the tables that contain template data (aiports, aircraft,..) <br /></td></tr>
 <tr class="separator:ad7cd939e58af8f1fd46f835ee34567e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b75d74d59d49c5da3610666de0c2d85"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="struct_o_p_l_1_1_user_data_state.html">UserDataState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a0b75d74d59d49c5da3610666de0c2d85">getUserDataState</a> () const</td></tr>
-<tr class="memdesc:a0b75d74d59d49c5da3610666de0c2d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables.  <a href="class_o_p_l_1_1_database.html#a0b75d74d59d49c5da3610666de0c2d85">More...</a><br /></td></tr>
-<tr class="separator:a0b75d74d59d49c5da3610666de0c2d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92c22cb18c5a23858edd38e0ed9d7117"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_p_l_1_1_database.html#a92c22cb18c5a23858edd38e0ed9d7117">createSchema</a> ()</td></tr>
 <tr class="memdesc:a92c22cb18c5a23858edd38e0ed9d7117"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create or restore the database to its ready-to-use but empty state.  <a href="class_o_p_l_1_1_database.html#a92c22cb18c5a23858edd38e0ed9d7117">More...</a><br /></td></tr>
 <tr class="separator:a92c22cb18c5a23858edd38e0ed9d7117"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -433,26 +434,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>getTable returns all contents of a given table from the database </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<a id="a0b75d74d59d49c5da3610666de0c2d85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b75d74d59d49c5da3610666de0c2d85">&#9670;&nbsp;</a></span>getUserDataState()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="struct_o_p_l_1_1_user_data_state.html">UserDataState</a> OPL::Database::getUserDataState </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables. </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>

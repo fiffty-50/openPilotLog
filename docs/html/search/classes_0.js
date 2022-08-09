@@ -1,20 +1,9 @@
 var searchData=
 [
-  ['aaircraftentry_151',['AAircraftEntry',['../struct_a_aircraft_entry.html',1,'']]],
-  ['acompletiondata_152',['ACompletionData',['../class_a_completion_data.html',1,'']]],
-  ['adate_153',['ADate',['../class_a_date.html',1,'']]],
-  ['adownload_154',['ADownload',['../class_a_download.html',1,'']]],
-  ['afilestandarditem_155',['AFileStandardItem',['../class_a_file_standard_item.html',1,'']]],
-  ['ahash_156',['AHash',['../class_a_hash.html',1,'']]],
-  ['aircraftentry_157',['AircraftEntry',['../class_o_p_l_1_1_aircraft_entry.html',1,'OPL']]],
-  ['aircraftwidget_158',['AircraftWidget',['../class_aircraft_widget.html',1,'']]],
-  ['airportwidget_159',['AirportWidget',['../class_airport_widget.html',1,'']]],
-  ['ajson_160',['AJson',['../class_a_json.html',1,'']]],
-  ['anotificationhandler_161',['ANotificationHandler',['../class_o_p_l_1_1_a_notification_handler.html',1,'OPL']]],
-  ['arunguard_162',['ARunGuard',['../class_a_run_guard.html',1,'']]],
-  ['asettings_163',['ASettings',['../class_a_settings.html',1,'']]],
-  ['astandardpaths_164',['AStandardPaths',['../class_a_standard_paths.html',1,'']]],
-  ['astyle_165',['AStyle',['../class_a_style.html',1,'']]],
-  ['atimer_166',['ATimer',['../class_a_timer.html',1,'']]],
-  ['atranslator_167',['ATranslator',['../class_a_translator.html',1,'']]]
+  ['aircraftentry_150',['AircraftEntry',['../class_o_p_l_1_1_aircraft_entry.html',1,'OPL']]],
+  ['aircraftwidget_151',['AircraftWidget',['../class_aircraft_widget.html',1,'']]],
+  ['airportentry_152',['AirportEntry',['../class_o_p_l_1_1_airport_entry.html',1,'OPL']]],
+  ['airportwidget_153',['AirportWidget',['../class_airport_widget.html',1,'']]],
+  ['anotificationhandler_154',['ANotificationHandler',['../class_o_p_l_1_1_a_notification_handler.html',1,'OPL']]],
+  ['atimer_155',['ATimer',['../class_a_timer.html',1,'']]]
 ];

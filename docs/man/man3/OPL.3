@@ -1,4 +1,4 @@
-.TH "OPL" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.TH "OPL" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,16 +11,31 @@ OPL \- A namespace to collect constants and enums used throughout the applicatio
 
 .in +1c
 .ti -1c
+.RI " \fBCalc\fP"
+.br
+.RI "The ACalc namespace provides various functions for calculations that are performed outside of the database\&. This includes tasks like converting different units and formats, or functions calculating block time or night time\&. "
+.ti -1c
 .RI " \fBDb\fP"
 .br
+.ti -1c
+.RI " \fBLog\fP"
+.br
+.RI "The \fBOPL::Log\fP namespace encapsulates constants and functions used to provide logging to files and logging to console (stdout) "
 .in -1c
 .SS "Classes"
 
 .in +1c
 .ti -1c
-.RI "struct \fBUserDataState\fP"
+.RI "class \fBPaths\fP"
 .br
-.RI "The UserDateState struct caches the current number of entries in relevant database tables for fast access\&. "
+.ti -1c
+.RI "struct \fBStyleSheet\fP"
+.br
+.RI "The \fBStyleSheet\fP struct holds the Display Name and File Name (in the resource system) for the available stylesheets\&. "
+.ti -1c
+.RI "class \fBStyle\fP"
+.br
+.RI "The AStyle class encapsulates style and stylesheet logic\&. "
 .ti -1c
 .RI "class \fBDatabase\fP"
 .br
@@ -36,29 +51,42 @@ OPL \- A namespace to collect constants and enums used throughout the applicatio
 .ti -1c
 .RI "class \fBRow\fP"
 .br
-.RI "The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. It is a bass class and when instantiated, the appropriate subclass should be used\&. "
+.RI "The \fBRow\fP class provides an interface for retreiving and submitting entries from the database\&. "
 .ti -1c
 .RI "class \fBAircraftEntry\fP"
 .br
+.RI "A \fBRow\fP representing an Aircraft entry\&. See \fBRow\fP class for details\&. "
 .ti -1c
 .RI "class \fBTailEntry\fP"
 .br
+.RI "A \fBRow\fP representing a Tail (Registration) entry\&. See \fBRow\fP class for details\&. "
 .ti -1c
 .RI "class \fBPilotEntry\fP"
 .br
+.RI "A \fBRow\fP representing a Pilot entry\&. See \fBRow\fP class for details\&. "
 .ti -1c
 .RI "class \fBSimulatorEntry\fP"
 .br
+.RI "A \fBRow\fP representing a Simulator entry\&. See \fBRow\fP class for details\&. "
 .ti -1c
 .RI "class \fBFlightEntry\fP"
 .br
+.RI "A \fBRow\fP representing a Flight entry\&. See \fBRow\fP class for details\&. "
 .ti -1c
 .RI "class \fBCurrencyEntry\fP"
+.br
+.RI "A \fBRow\fP representing a Currency entry\&. See \fBRow\fP class for details\&. "
+.ti -1c
+.RI "class \fBAirportEntry\fP"
+.br
+.RI "A \fBRow\fP representing an Airport entry\&. See \fBRow\fP class for details\&. "
+.ti -1c
+.RI "class \fBDateTime\fP"
 .br
 .ti -1c
 .RI "class \fBANotificationHandler\fP"
 .br
-.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user in a QMessageBox and forwards the displayed message to \fBALog\fP so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
+.RI "The \fBANotificationHandler\fP class handles displaying of user-directed messages\&. It displays information to the user in a QMessageBox and forwards the displayed message to ALog so it is written to the console and log files\&. The INFO, WARN and CRIT makros provide convenient access\&. "
 .ti -1c
 .RI "class \fBOplGlobals\fP"
 .br
@@ -109,7 +137,7 @@ OPL \- A namespace to collect constants and enums used throughout the applicatio
 .br
 .RI "Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device\&. "
 .ti -1c
-.RI "enum class \fBDbTable\fP { \fBFlights\fP, \fBSimulators\fP, \fBPilots\fP, \fBTails\fP, \fBAircraft\fP, \fBAirports\fP, \fBCurrencies\fP, \fBChangelog\fP }"
+.RI "enum class \fBDbTable\fP { \fBAny\fP, \fBFlights\fP, \fBSimulators\fP, \fBPilots\fP, \fBTails\fP, \fBAircraft\fP, \fBAirports\fP, \fBCurrencies\fP, \fBChangelog\fP }"
 .br
 .RI "Enumerates the tables in the database\&. "
 .ti -1c

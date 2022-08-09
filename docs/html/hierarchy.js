@@ -1,19 +1,12 @@
 var hierarchy =
 [
-    [ "ACompletionData", "class_a_completion_data.html", null ],
-    [ "ADate", "class_a_date.html", null ],
-    [ "AEntry", null, [
-      [ "AAircraftEntry", "struct_a_aircraft_entry.html", null ]
-    ] ],
-    [ "AHash", "class_a_hash.html", null ],
-    [ "AJson", "class_a_json.html", null ],
     [ "OPL::ANotificationHandler", "class_o_p_l_1_1_a_notification_handler.html", null ],
-    [ "ARunGuard", "class_a_run_guard.html", null ],
-    [ "ASettings", "class_a_settings.html", null ],
-    [ "AStandardPaths", "class_a_standard_paths.html", null ],
-    [ "AStyle", "class_a_style.html", null ],
+    [ "OPL::DateTime", "class_o_p_l_1_1_date_time.html", null ],
     [ "OPL::DbCompletionData", "class_o_p_l_1_1_db_completion_data.html", null ],
-    [ "ACalc::NightTimeValues", "struct_a_calc_1_1_night_time_values.html", null ],
+    [ "JsonHelper", "class_json_helper.html", null ],
+    [ "Md5Sum", "class_md5_sum.html", null ],
+    [ "OPL::Calc::NightTimeValues", "struct_o_p_l_1_1_calc_1_1_night_time_values.html", null ],
+    [ "OPL::Paths", "class_o_p_l_1_1_paths.html", null ],
     [ "ProcessAircraft", "class_process_aircraft.html", null ],
     [ "ProcessFlights", "class_process_flights.html", null ],
     [ "ProcessPilots", "class_process_pilots.html", null ],
@@ -26,15 +19,12 @@ var hierarchy =
       [ "NewTailDialog", "class_new_tail_dialog.html", null ]
     ] ],
     [ "QObject", null, [
-      [ "ADownload", "class_a_download.html", null ],
       [ "ATimer", "class_a_timer.html", null ],
-      [ "ATranslator", "class_a_translator.html", null ],
+      [ "DownloadHelper", "class_download_helper.html", null ],
       [ "OPL::Database", "class_o_p_l_1_1_database.html", null ],
       [ "OPL::DbSummary", "class_o_p_l_1_1_db_summary.html", null ],
-      [ "OPL::OplGlobals", "class_o_p_l_1_1_opl_globals.html", null ]
-    ] ],
-    [ "QStandardItem", null, [
-      [ "AFileStandardItem", "class_a_file_standard_item.html", null ]
+      [ "OPL::OplGlobals", "class_o_p_l_1_1_opl_globals.html", null ],
+      [ "Translator", "class_translator.html", null ]
     ] ],
     [ "QWidget", null, [
       [ "AircraftWidget", "class_aircraft_widget.html", null ],
@@ -48,13 +38,16 @@ var hierarchy =
     ] ],
     [ "OPL::Row", "class_o_p_l_1_1_row.html", [
       [ "OPL::AircraftEntry", "class_o_p_l_1_1_aircraft_entry.html", null ],
+      [ "OPL::AirportEntry", "class_o_p_l_1_1_airport_entry.html", null ],
       [ "OPL::CurrencyEntry", "class_o_p_l_1_1_currency_entry.html", null ],
       [ "OPL::FlightEntry", "class_o_p_l_1_1_flight_entry.html", null ],
       [ "OPL::PilotEntry", "class_o_p_l_1_1_pilot_entry.html", null ],
       [ "OPL::SimulatorEntry", "class_o_p_l_1_1_simulator_entry.html", null ],
       [ "OPL::TailEntry", "class_o_p_l_1_1_tail_entry.html", null ]
     ] ],
-    [ "StyleSheet", "struct_style_sheet.html", null ],
-    [ "OPL::UserDataState", "struct_o_p_l_1_1_user_data_state.html", null ],
+    [ "RunGuard", "class_run_guard.html", null ],
+    [ "Settings", "class_settings.html", null ],
+    [ "OPL::Style", "class_o_p_l_1_1_style.html", null ],
+    [ "OPL::StyleSheet", "struct_o_p_l_1_1_style_sheet.html", null ],
     [ "ValidationState", "class_validation_state.html", null ]
 ];

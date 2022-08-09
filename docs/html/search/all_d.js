@@ -1,13 +1,9 @@
 var searchData=
 [
-  ['padcentury_105',['padCentury',['../class_a_date.html#a1cf78be9174827b409376e6df298e905',1,'ADate']]],
-  ['padzeroes_106',['padZeroes',['../class_a_date.html#ac73a41e8dac47a3a2a3fcef5b3d19eee',1,'ADate']]],
-  ['parseinput_107',['parseInput',['../class_a_date.html#a607fa6f1a9d893c5a24e2800c32e69c1',1,'ADate']]],
-  ['pilotentry_108',['PilotEntry',['../class_o_p_l_1_1_pilot_entry.html',1,'OPL']]],
-  ['pilotfunction_109',['PilotFunction',['../namespace_o_p_l.html#a38ae55ad972d58b78a55f5e7f12857d0',1,'OPL']]],
-  ['pilotswidget_110',['PilotsWidget',['../class_pilots_widget.html',1,'']]],
-  ['processaircraft_111',['ProcessAircraft',['../class_process_aircraft.html',1,'']]],
-  ['processflights_112',['ProcessFlights',['../class_process_flights.html',1,'']]],
-  ['processpilots_113',['ProcessPilots',['../class_process_pilots.html',1,'']]],
-  ['project_20overview_114',['Project Overview',['../index.html',1,'']]]
+  ['newairportdialog_84',['NewAirportDialog',['../class_new_airport_dialog.html',1,'']]],
+  ['newflightdialog_85',['NewFlightDialog',['../class_new_flight_dialog.html',1,'NewFlightDialog'],['../class_new_flight_dialog.html#abb96717e143dac3ea5f3d7f11fc30a5b',1,'NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &amp;completion_data, QWidget *parent=nullptr)'],['../class_new_flight_dialog.html#a6743b82918ae8af325723c86bdf31688',1,'NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &amp;completion_data, int row_id, QWidget *parent=nullptr)']]],
+  ['newpilotdialog_86',['NewPilotDialog',['../class_new_pilot_dialog.html',1,'NewPilotDialog'],['../class_new_pilot_dialog.html#ad410c1f4e504c92fe43084a7d10e1ea0',1,'NewPilotDialog::NewPilotDialog(QWidget *parent=nullptr)'],['../class_new_pilot_dialog.html#a1ab8e67282e910895a544e8dea51cb91',1,'NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent=nullptr)']]],
+  ['newsimdialog_87',['NewSimDialog',['../class_new_sim_dialog.html',1,'NewSimDialog'],['../class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f',1,'NewSimDialog::NewSimDialog(QWidget *parent=nullptr)'],['../class_new_sim_dialog.html#a1657b57c5b212319ad1db8a5aea44930',1,'NewSimDialog::NewSimDialog(int row_id, QWidget *parent=nullptr)']]],
+  ['newtaildialog_88',['NewTailDialog',['../class_new_tail_dialog.html',1,'NewTailDialog'],['../class_new_tail_dialog.html#a2349c6dcafed3357051991dfc246f92d',1,'NewTailDialog::NewTailDialog(const QString &amp;new_registration, QWidget *parent=nullptr)'],['../class_new_tail_dialog.html#abac4f77a4b8a80ef7d14790d4ed6700e',1,'NewTailDialog::NewTailDialog(int row_id, QWidget *parent=nullptr)']]],
+  ['nighttimevalues_89',['NightTimeValues',['../struct_o_p_l_1_1_calc_1_1_night_time_values.html',1,'OPL::Calc']]]
 ];

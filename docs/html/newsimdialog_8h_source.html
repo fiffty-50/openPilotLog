@@ -92,47 +92,45 @@ $(document).ready(function(){initNavTree('newsimdialog_8h_source.html',''); init
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;QDialog&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;src/database/row.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;src/database/dbcompletiondata.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>Ui {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">class </span><a class="code" href="class_new_sim_dialog.html">NewSimDialog</a>;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_new_sim_dialog.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_sim_dialog.html">NewSimDialog</a> : <span class="keyword">public</span> QDialog</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    Q_OBJECT</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog</a>(QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog</a>(<span class="keywordtype">int</span> row_id, QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    ~<a class="code" href="class_new_sim_dialog.html">NewSimDialog</a>();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">private</span> slots:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> on_buttonBox_accepted();</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>Ui {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">class </span><a class="code" href="class_new_sim_dialog.html">NewSimDialog</a>;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_new_sim_dialog.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_new_sim_dialog.html">NewSimDialog</a> : <span class="keyword">public</span> QDialog</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog</a>(QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog</a>(<span class="keywordtype">int</span> row_id, QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    ~<a class="code" href="class_new_sim_dialog.html">NewSimDialog</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span> slots:</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> on_buttonBox_accepted();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> on_dateLineEdit_editingFinished();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> on_dateLineEdit_editingFinished();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> on_totalTimeLineEdit_editingFinished();</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> on_totalTimeLineEdit_editingFinished();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> on_helpPushButton_clicked();</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> on_helpPushButton_clicked();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> on_registrationLineEdit_textChanged(<span class="keyword">const</span> QString &amp;arg1);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">void</span> on_registrationLineEdit_textChanged(<span class="keyword">const</span> QString &amp;arg1);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    Ui::NewSimDialog *ui;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> init();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> fillEntryData();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">bool</span> verifyInput(QString &amp;error_msg);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    RowData_T collectInput();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a> entry;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NEWSIMDIALOG_H</span></div>
-<div class="ttc" id="aclass_new_sim_dialog_html"><div class="ttname"><a href="class_new_sim_dialog.html">NewSimDialog</a></div><div class="ttdoc">The NewSimDialog class enables adding a new Simulator Session to the database or editing an existing ...</div><div class="ttdef"><b>Definition:</b> newsimdialog.h:23</div></div>
-<div class="ttc" id="aclass_new_sim_dialog_html_a657c5a974303a1d7b8ad14a6085f488f"><div class="ttname"><a href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog::NewSimDialog</a></div><div class="ttdeci">NewSimDialog(QWidget *parent=nullptr)</div><div class="ttdoc">create a NewSimDialog to add a new Simulator Entry to the database</div><div class="ttdef"><b>Definition:</b> newsimdialog.cpp:10</div></div>
-<div class="ttc" id="aclass_o_p_l_1_1_simulator_entry_html"><div class="ttname"><a href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a></div><div class="ttdef"><b>Definition:</b> row.h:73</div></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    Ui::NewSimDialog *ui;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> init();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> fillEntryData();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">bool</span> verifyInput(QString &amp;error_msg);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    OPL::RowData_T collectInput();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a> entry;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// NEWSIMDIALOG_H</span></div>
+<div class="ttc" id="aclass_new_sim_dialog_html"><div class="ttname"><a href="class_new_sim_dialog.html">NewSimDialog</a></div><div class="ttdoc">The NewSimDialog class enables adding a new Simulator Session to the database or editing an existing ...</div><div class="ttdef"><b>Definition:</b> newsimdialog.h:21</div></div>
+<div class="ttc" id="aclass_new_sim_dialog_html_a657c5a974303a1d7b8ad14a6085f488f"><div class="ttname"><a href="class_new_sim_dialog.html#a657c5a974303a1d7b8ad14a6085f488f">NewSimDialog::NewSimDialog</a></div><div class="ttdeci">NewSimDialog(QWidget *parent=nullptr)</div><div class="ttdoc">create a NewSimDialog to add a new Simulator Entry to the database</div><div class="ttdef"><b>Definition:</b> newsimdialog.cpp:12</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_simulator_entry_html"><div class="ttname"><a href="class_o_p_l_1_1_simulator_entry.html">OPL::SimulatorEntry</a></div><div class="ttdoc">A Row representing a Simulator entry. See Row class for details.</div><div class="ttdef"><b>Definition:</b> row.h:122</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

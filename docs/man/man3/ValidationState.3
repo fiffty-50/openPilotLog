@@ -1,4 +1,4 @@
-.TH "ValidationState" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.TH "ValidationState" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,17 +9,25 @@ ValidationState \- The \fBValidationState\fP class encapsulates a QBitArray that
 .PP
 .PP
 \fC#include <newflightdialog\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBValidationItem\fP { \fBdoft\fP = 0, \fBdept\fP = 1, \fBdest\fP = 2, \fBtofb\fP = 3, \fBtonb\fP = 4, \fBpic\fP = 5, \fBacft\fP = 6 }"
+.br
+.RI "The ValidationItem enum contains the items that are mandatory for logging a flight: Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration\&. "
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "void \fBvalidate\fP (ValidationItem item)"
+.RI "void \fBvalidate\fP (\fBValidationItem\fP item)"
 .br
 .ti -1c
 .RI "void \fBvalidate\fP (int index)"
 .br
 .ti -1c
-.RI "void \fBinvalidate\fP (ValidationItem item)"
+.RI "void \fBinvalidate\fP (\fBValidationItem\fP item)"
 .br
 .ti -1c
 .RI "void \fBinvalidate\fP (int index)"
@@ -43,7 +51,7 @@ ValidationState \- The \fBValidationState\fP class encapsulates a QBitArray that
 .RI "bool \fBvalidAt\fP (int index) const"
 .br
 .ti -1c
-.RI "bool \fBvalidAt\fP (ValidationItem item) const"
+.RI "bool \fBvalidAt\fP (\fBValidationItem\fP item) const"
 .br
 .ti -1c
 .RI "void \fBprintValidationStatus\fP () const"

@@ -120,7 +120,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reject</b> () overrid
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="class_first_run_dialog.html" title="The FirstRunDialog is used as a set-up wizard for the application.">FirstRunDialog</a> is used as a set-up wizard for the application. </p>
-<p>The Application does not ship with a database, it is created on the fly. This is the main purpose of the <a class="el" href="class_first_run_dialog.html" title="The FirstRunDialog is used as a set-up wizard for the application.">FirstRunDialog</a>. Apart from this main task, user details and preferences are gathered and saved using <a class="el" href="class_a_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">ASettings</a>.</p>
+<p>The Application does not ship with a database, it is created on the fly. This is the main purpose of the <a class="el" href="class_first_run_dialog.html" title="The FirstRunDialog is used as a set-up wizard for the application.">FirstRunDialog</a>. Apart from this main task, user details and preferences are gathered and saved using <a class="el" href="class_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">Settings</a>.</p>
 <p>The Dialog contains a tabbed widget which guides the user through the set up process.</p>
 <h3><a class="anchor" id="autotoc_md7"></a>
 1 - Welcome</h3>
@@ -133,10 +133,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reject</b> () overrid
 <p>In this tab, the user can enter the expiration dates of his licenses, medical or other currencies that he wishes to keep track of. These are stored in the database within the currencies table.</p>
 <h3><a class="anchor" id="autotoc_md10"></a>
 4 - Flight Logging</h3>
-<p>In this tab, the user can determine what the defualt selections for logging a new flight will be. These selections (Pilot Function, Flight Rules,...) are stored in an INI file using the <a class="el" href="class_a_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">ASettings</a> class.</p>
+<p>In this tab, the user can determine what the defualt selections for logging a new flight will be. These selections (Pilot Function, Flight Rules,...) are stored in an INI file using the <a class="el" href="class_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">Settings</a> class.</p>
 <h3><a class="anchor" id="autotoc_md11"></a>
 5 - Customization</h3>
-<p>In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being displayed. These settings are stored in an INI file using the <a class="el" href="class_a_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">ASettings</a> class.</p>
+<p>In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being displayed. These settings are stored in an INI file using the <a class="el" href="class_settings.html" title="Thin wrapper for the QSettings class, simplifying reading and writing of settings.">Settings</a> class.</p>
 <h3><a class="anchor" id="autotoc_md12"></a>
 6 - Finish / Database creation</h3>
 <p>In this tab the user can select how the database is created. There are two options, either downloading database templates from the github repository, or to fall back to a set of JSON files inclnuded in the application ressources (see templates.qrc). These built in files are probably not as up-to-date, but enable the application to function if no internet connection is available or the links to the online ressources are broken.</p>

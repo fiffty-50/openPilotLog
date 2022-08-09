@@ -1,0 +1,83 @@
+.TH "OPL::Style" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::Style \- The AStyle class encapsulates style and stylesheet logic\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <style\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBStyleType\fP { \fBLight\fP, \fBDark\fP }"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetup\fP ()"
+.br
+.RI "Setup Application style by reading from openPilotLog\&.ini\&. "
+.ti -1c
+.RI "static void \fBsetStyle\fP (const QString &style_key)"
+.br
+.ti -1c
+.RI "static void \fBsetStyle\fP (const \fBStyleSheet\fP &style_sheet)"
+.br
+.ti -1c
+.RI "static void \fBsetStyle\fP (const QPalette &palette)"
+.br
+.ti -1c
+.RI "static QString \fBgetCurrentStyle\fP ()"
+.br
+.ti -1c
+.RI "static StyleType \fBgetStyleType\fP ()"
+.br
+.ti -1c
+.RI "static QPalette \fBdarkPalette\fP ()"
+.br
+.ti -1c
+.RI "static const QString & \fBstyle\fP ()"
+.br
+.ti -1c
+.RI "static void \fBloadStylesComboBox\fP (QComboBox *combo_box)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const QStringList \fBstyles\fP = QStyleFactory::keys()"
+.br
+.ti -1c
+.RI "static const QString \fBdefaultStyle\fP = QStringLiteral('Fusion')"
+.br
+.ti -1c
+.RI "static const QList< \fBStyleSheet\fP > \fBstyleSheets\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The AStyle class encapsulates style and stylesheet logic\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "const QList< \fBStyleSheet\fP > OPL::Style::styleSheets\fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+    {QLatin1String("Breeze"),      QLatin1String(":breeze_light\&.qss")},
+    {QLatin1String("Breeze-Dark"), QLatin1String(":breeze_dark\&.qss")},
+    {QLatin1String("QDarkStyle"),  QLatin1String(":qdarkstyle/qdarkstyle\&.qss")},
+}
+.fi
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

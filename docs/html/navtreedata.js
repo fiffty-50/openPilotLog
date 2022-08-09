@@ -62,9 +62,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"aaircraftentry_8h_source.html",
-"class_o_p_l_1_1_db_completion_data.html#ad14ab49477b9510617a18ea7c6054900",
-"namespace_o_p_l_1_1_db.html#a877c8152893047b0e23fa1cf97ac4dd3"
+"aircraftwidget_8h_source.html",
+"class_settings.html#a43c8bcc5043cdb47eda97d1386d187e7ac8420fd63340c2098adc389092ffe66d",
+"namespace_o_p_l_1_1_db.html#afbec24bcef6124392c9330e351c5d75c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
