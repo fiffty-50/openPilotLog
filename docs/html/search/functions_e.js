@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['setlogfilename_279',['setLogFileName',['../namespace_a_log.html#a1eeade2b758f2d452e40426f8d37c41a',1,'ALog']]],
-  ['settingchanged_280',['settingChanged',['../class_settings_widget.html#ac043e2af61f3d467f91ba40f5e7bb102',1,'SettingsWidget']]],
-  ['setup_281',['setup',['../class_a_settings.html#a383ea9d59ea8878ca873465eb19bbe85',1,'ASettings::setup()'],['../class_a_standard_paths.html#a233dfe0411b294e64da674ff9c898c62',1,'AStandardPaths::setup()'],['../class_a_style.html#ad061bf79f3e22640e78f8bb65ef0867c',1,'AStyle::setup()']]],
-  ['solarelevation_282',['solarElevation',['../namespace_a_calc.html#acfa830e821e2f9e20bebffda67d393b1',1,'ACalc']]],
-  ['sqliteversion_283',['sqliteVersion',['../class_o_p_l_1_1_database.html#a0b20bec0f8bef0277325492a1dee33ef',1,'OPL::Database']]],
-  ['stringofkey_284',['stringOfKey',['../class_a_settings.html#af88194014c7599e8c9fe488c5b1ebf99',1,'ASettings']]],
-  ['summarystring_285',['summaryString',['../class_o_p_l_1_1_db_summary.html#a64a8a01526b171f5376eae880a7fd148',1,'OPL::DbSummary']]]
+  ['radtodeg_267',['radToDeg',['../namespace_o_p_l_1_1_calc.html#ae4b929bd19437f7e9e5da48e484c3d78',1,'OPL::Calc']]],
+  ['radtonauticalmiles_268',['radToNauticalMiles',['../namespace_o_p_l_1_1_calc.html#a54af04cfc491c441e8f000c8a9c85a5d',1,'OPL::Calc']]],
+  ['readfiletodoc_269',['readFileToDoc',['../class_json_helper.html#af786e08a3a0559bd3febf2e154024048',1,'JsonHelper']]],
+  ['refresh_270',['refresh',['../class_logbook_widget.html#a45048f4dd6ffb82da6a725503df97cf1',1,'LogbookWidget']]],
+  ['remove_271',['remove',['../class_o_p_l_1_1_database.html#a29362ea9a2b1805d42e5ef7823c42e50',1,'OPL::Database']]],
+  ['removemany_272',['removeMany',['../class_o_p_l_1_1_database.html#a6c2ebefc6cf6d948d64dfe71bec08540',1,'OPL::Database']]],
+  ['repopulatemodel_273',['repopulateModel',['../class_aircraft_widget.html#a1b1faca35af681e28472d0b84ad52c4f',1,'AircraftWidget::repopulateModel()'],['../class_logbook_widget.html#ac64b38cc2f5dd012ec1d12647457a8f1',1,'LogbookWidget::repopulateModel()'],['../class_pilots_widget.html#a4997160bff58f13ea78e5894dcbf61e2',1,'PilotsWidget::repopulateModel()']]],
+  ['resettodefaults_274',['resetToDefaults',['../class_settings.html#aa26da663d96a908585fb90c6444f975b',1,'Settings']]],
+  ['resetuserdata_275',['resetUserData',['../class_o_p_l_1_1_database.html#a63af56a9fbd8cd0290494cc28d327824',1,'OPL::Database']]],
+  ['restorebackup_276',['restoreBackup',['../class_o_p_l_1_1_database.html#a77003350c44e7c6e1c8c4316cc324496',1,'OPL::Database']]]
 ];

@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('backupwidget_8h_source.html',''); init
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *openPilotLog - A FOSS Pilot Logbook Application</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *Copyright (C) 2020-2021 Felix Turowsky</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *Copyright (C) 2020-2022 Felix Turowsky</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> *This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> *it under the terms of the GNU General Public License as published by</span></div>
@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('backupwidget_8h_source.html',''); init
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifndef BACKUPWIDGET_H</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define BACKUPWIDGET_H</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;src/classes/astandardpaths.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;src/classes/paths.h&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;QWidget&gt;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;QStandardItemModel&gt;</span></div>
@@ -119,73 +119,49 @@ $(document).ready(function(){initNavTree('backupwidget_8h_source.html',''); init
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">class </span><a class="code" href="class_backup_widget.html">BackupWidget</a>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_a_file_standard_item.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_a_file_standard_item.html">AFileStandardItem</a> : <span class="keyword">public</span> QStandardItem {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    QFileInfo fileInfo;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="class_a_file_standard_item.html">AFileStandardItem</a>(<span class="keyword">const</span> QIcon&amp; icon, <span class="keyword">const</span> QString&amp; filename, <span class="keyword">const</span> AStandardPaths::Directories dir)</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        : QStandardItem(icon, filename),</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;          fileInfo(QFileInfo(<a class="code" href="class_a_standard_paths.html#a43937baa78a53e1427e23f533024221b">AStandardPaths::asChildOfDir</a>(dir, filename)))</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="class_a_file_standard_item.html">AFileStandardItem</a>(<span class="keyword">const</span> QIcon&amp; icon, <span class="keyword">const</span> QFileInfo file_info)</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        : QStandardItem(icon, file_info.baseName()),</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;          fileInfo(QFileInfo(file_info))</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {}</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_backup_widget.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_backup_widget.html">BackupWidget</a> : <span class="keyword">public</span> QWidget</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_backup_widget.html">BackupWidget</a>(QWidget *parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    ~<a class="code" href="class_backup_widget.html">BackupWidget</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QString <a class="code" href="class_backup_widget.html#a49005440ad357c10769b9abd7be693d2">backupName</a>();</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">const</span> QFileInfo&amp; info()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">return</span> fileInfo;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="class_backup_widget.html">   69</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_backup_widget.html">BackupWidget</a> : <span class="keyword">public</span> QWidget</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;{</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    Q_OBJECT</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_backup_widget.html">BackupWidget</a>(QWidget *parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    ~<a class="code" href="class_backup_widget.html">BackupWidget</a>();</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QString <a class="code" href="class_backup_widget.html#a49005440ad357c10769b9abd7be693d2">backupName</a>();</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QString <a class="code" href="class_backup_widget.html#a683bff41fedc248a2bf243f5986a0fce">absoluteBackupPath</a>();</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">private</span> slots:</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> on_tableView_clicked(<span class="keyword">const</span> QModelIndex &amp;index);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> on_createLocalPushButton_clicked();</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> on_restoreLocalPushButton_clicked();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> on_deleteSelectedPushButton_clicked();</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> on_createExternalPushButton_clicked();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> on_restoreExternalPushButton_clicked();</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">void</span> on_aboutPushButton_clicked();</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    Ui::BackupWidget *ui;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    QStandardItemModel *model;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    QTableView *view;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <a class="code" href="class_a_file_standard_item.html">AFileStandardItem</a> *selectedFileInfo = <span class="keyword">nullptr</span>;  <span class="comment">// Only the first column is necessary for</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                                                    <span class="comment">// any operation and it is encapsulated in the</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                                                    <span class="comment">// AFileStandardItem class</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">void</span> refresh();</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_backup_widget.html#a6924f3997be9b143472fa1c61365fb2b">changeEvent</a>(QEvent* event) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;};</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// BACKUPWIDGET_H</span></div>
-<div class="ttc" id="aclass_a_file_standard_item_html"><div class="ttname"><a href="class_a_file_standard_item.html">AFileStandardItem</a></div><div class="ttdoc">Simple QStandardItem subclass to encapsulate necessary file info. Using only a QStandardItem would me...</div><div class="ttdef"><b>Definition:</b> backupwidget.h:40</div></div>
-<div class="ttc" id="aclass_a_standard_paths_html_a43937baa78a53e1427e23f533024221b"><div class="ttname"><a href="class_a_standard_paths.html#a43937baa78a53e1427e23f533024221b">AStandardPaths::asChildOfDir</a></div><div class="ttdeci">static const QString asChildOfDir(Directories location, const QString &amp;filename)</div><div class="ttdoc">Returns a string of the absolute path to directory location concatenated with filename.</div><div class="ttdef"><b>Definition:</b> astandardpaths.cpp:48</div></div>
-<div class="ttc" id="aclass_backup_widget_html"><div class="ttname"><a href="class_backup_widget.html">BackupWidget</a></div><div class="ttdoc">The BackupWidget is the interface for the user to create and restore backups of the database.</div><div class="ttdef"><b>Definition:</b> backupwidget.h:70</div></div>
-<div class="ttc" id="aclass_backup_widget_html_a49005440ad357c10769b9abd7be693d2"><div class="ttname"><a href="class_backup_widget.html#a49005440ad357c10769b9abd7be693d2">BackupWidget::backupName</a></div><div class="ttdeci">static const QString backupName()</div><div class="ttdoc">Generates a filename for creating a backup.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:89</div></div>
-<div class="ttc" id="aclass_backup_widget_html_a683bff41fedc248a2bf243f5986a0fce"><div class="ttname"><a href="class_backup_widget.html#a683bff41fedc248a2bf243f5986a0fce">BackupWidget::absoluteBackupPath</a></div><div class="ttdeci">static const QString absoluteBackupPath()</div><div class="ttdoc">Generates the absolute path for a new local backup file.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:81</div></div>
-<div class="ttc" id="aclass_backup_widget_html_a6924f3997be9b143472fa1c61365fb2b"><div class="ttname"><a href="class_backup_widget.html#a6924f3997be9b143472fa1c61365fb2b">BackupWidget::changeEvent</a></div><div class="ttdeci">void changeEvent(QEvent *event) override</div><div class="ttdoc">Handles change events, like updating the UI to new localisation.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:51</div></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QString <a class="code" href="class_backup_widget.html#a683bff41fedc248a2bf243f5986a0fce">absoluteBackupPath</a>();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">private</span> slots:</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> on_tableView_clicked(<span class="keyword">const</span> QModelIndex &amp;index);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> on_createLocalPushButton_clicked();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> on_restoreLocalPushButton_clicked();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">void</span> on_deleteSelectedPushButton_clicked();</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">void</span> on_createExternalPushButton_clicked();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> on_restoreExternalPushButton_clicked();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> on_aboutPushButton_clicked();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    Ui::BackupWidget *ui;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    QStandardItemModel *model;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    QTableView *view;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    QList&lt;int&gt; selectedRows;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> refresh();</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_backup_widget.html#a6924f3997be9b143472fa1c61365fb2b">changeEvent</a>(QEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;};</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// BACKUPWIDGET_H</span></div>
+<div class="ttc" id="aclass_backup_widget_html"><div class="ttname"><a href="class_backup_widget.html">BackupWidget</a></div><div class="ttdoc">The BackupWidget is the interface for the user to create and restore backups of the database.</div><div class="ttdef"><b>Definition:</b> backupwidget.h:43</div></div>
+<div class="ttc" id="aclass_backup_widget_html_a49005440ad357c10769b9abd7be693d2"><div class="ttname"><a href="class_backup_widget.html#a49005440ad357c10769b9abd7be693d2">BackupWidget::backupName</a></div><div class="ttdeci">static const QString backupName()</div><div class="ttdoc">Generates a filename for creating a backup.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:88</div></div>
+<div class="ttc" id="aclass_backup_widget_html_a683bff41fedc248a2bf243f5986a0fce"><div class="ttname"><a href="class_backup_widget.html#a683bff41fedc248a2bf243f5986a0fce">BackupWidget::absoluteBackupPath</a></div><div class="ttdeci">static const QString absoluteBackupPath()</div><div class="ttdoc">Generates the absolute path for a new local backup file.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:80</div></div>
+<div class="ttc" id="aclass_backup_widget_html_a6924f3997be9b143472fa1c61365fb2b"><div class="ttname"><a href="class_backup_widget.html#a6924f3997be9b143472fa1c61365fb2b">BackupWidget::changeEvent</a></div><div class="ttdeci">void changeEvent(QEvent *event) override</div><div class="ttdoc">Handles change events, like updating the UI to new localisation.</div><div class="ttdef"><b>Definition:</b> backupwidget.cpp:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

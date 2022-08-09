@@ -17,15 +17,14 @@
  */
 #include "mainwindow.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/classes/arunguard.h"
-#include "src/classes/asettings.h"
-#include "src/classes/astandardpaths.h"
-#include "src/classes/asettings.h"
-#include "src/classes/astyle.h"
-#include "src/functions/alog.h"
-#include "src/classes/atranslator.h"
+#include "src/classes/runguard.h"
+#include "src/classes/settings.h"
+#include "src/classes/settings.h"
+#include "src/classes/style.h"
+#include "src/functions/log.h"
+#include "src/classes/paths.h"
 #include <QApplication>
 #include <QProcess>
 #include <QSettings>
@@ -46,21 +45,21 @@ namespace Main {
 void init()
 {
     LOG << "Setting up / verifying Application Directories...";
-    if(AStandardPaths::setup()) {
+    if(OPL::Paths::setup()) {
         LOG << "Application Directories... verified";
     } else {
         LOG << "Unable to create directories.";
     }
     LOG << "Setting up logging facilities...";
-    if(ALog::init(true)) {
+    if(OPL::Log::init(true)) {
         LOG << "Logging enabled.";
     } else {
         LOG << "Unable to initalise logging.";
     }
     LOG << "Reading Settings...";
-    ASettings::setup();
+    Settings::setup();
     LOG << "Setting up application style...";
-    AStyle::setup();
+    OPL::Style::setup();
     // Translations to be done at a later stage
     //LOG << "Installing translator...";
     //ATranslator::installTranslator(OPL::Translations::English);
@@ -72,7 +71,7 @@ bool firstRun()
         LOG << "Initial setup incomplete or unsuccessfull.";
         return false;
     }
-    ASettings::write(ASettings::Main::SetupComplete, true);
+    Settings::write(Settings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
     return true;
 }
@@ -86,7 +85,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     // Check for another instance already running
-    ARunGuard guard(QStringLiteral("opl_single_key"));
+    RunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
         LOG << "Another Instance of openPilotLog is already running. Exiting.";
         return 0;
@@ -96,7 +95,7 @@ int main(int argc, char *argv[])
     Main::init();
 
     // Check for First Run and launch Setup Wizard
-    if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
+    if (!Settings::read(Settings::Main::SetupComplete).toBool())
         if(!Main::firstRun())
             return 0;
 

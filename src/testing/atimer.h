@@ -21,7 +21,7 @@
 #include <QObject>
 #include <chrono>
 #include <QDebug>
-#include "src/functions/alog.h"
+#include "src/functions/log.h"
 
 /*!
  * \brief The ATimer class provides an easy to use performance timer.

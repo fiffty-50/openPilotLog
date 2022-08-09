@@ -1,4 +1,4 @@
-.TH "OPL::Database" 3 "Mon Jul 11 2022" "openPilotLog" \" -*- nroff -*-
+.TH "OPL::Database" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ Inherits QObject\&.
 
 .in +1c
 .ti -1c
-.RI "void \fBdataBaseUpdated\fP ()"
+.RI "void \fBdataBaseUpdated\fP (const \fBDbTable\fP table)"
 .br
 .RI "updated is emitted whenever the database contents have been updated\&. This can be either a commit, update or remove\&. This signal should be used to trigger an update to the models of the views displaying database contents in the user interface so that a user is always presented with up-to-date information\&. "
 .ti -1c
@@ -101,7 +101,7 @@ Inherits QObject\&.
 .br
 .RI "retreive a \fBRow\fP from the database "
 .ti -1c
-.RI "OPL::RowData_T \fBgetRowData\fP (const \fBOPL::DbTable\fP table, const int row_id)"
+.RI "RowData_T \fBgetRowData\fP (const \fBOPL::DbTable\fP table, const int row_id)"
 .br
 .RI "retreive a Map of <column name, column content> for a specific row in the database\&. "
 .ti -1c
@@ -129,6 +129,10 @@ Inherits QObject\&.
 .br
 .RI "Retreives a currency entry from the database\&. See row class for details\&. "
 .ti -1c
+.RI "\fBOPL::AirportEntry\fP \fBgetAirportEntry\fP (int row_id)"
+.br
+.RI "Retreives an airport entry from the database\&. See row class for details\&. "
+.ti -1c
 .RI "int \fBgetLastEntry\fP (\fBOPL::DbTable\fP table)"
 .br
 .RI "returns the ROWID for the newest entry in the respective table\&. "
@@ -137,7 +141,7 @@ Inherits QObject\&.
 .br
 .RI "returns a list of ROWID's in the flights table for which foreign key constraints exist\&. "
 .ti -1c
-.RI "QVector< OPL::RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
+.RI "QVector< RowData_T > \fBgetTable\fP (\fBOPL::DbTable\fP table)"
 .br
 .RI "getTable returns all contents of a given table from the database "
 .ti -1c
@@ -148,10 +152,6 @@ Inherits QObject\&.
 .RI "const QList< \fBOPL::DbTable\fP > & \fBgetTemplateTables\fP () const"
 .br
 .RI "getTemplateTables returns a list of the tables that contain template data (aiports, aircraft,\&.\&.) "
-.ti -1c
-.RI "const \fBUserDataState\fP \fBgetUserDataState\fP () const"
-.br
-.RI "getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. "
 .ti -1c
 .RI "bool \fBcreateSchema\fP ()"
 .br
@@ -240,21 +240,10 @@ The QSqlDatabase object pertaining to the connection\&.
 .RE
 .PP
 
-.SS "QVector< OPL::RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
+.SS "QVector< RowData_T > OPL::Database::getTable (\fBOPL::DbTable\fP table)"
 
 .PP
 getTable returns all contents of a given table from the database 
-.PP
-\fBReturns\fP
-.RS 4
-
-.RE
-.PP
-
-.SS "const \fBUserDataState\fP OPL::Database::getUserDataState () const"
-
-.PP
-getUserDataState returns a struct containing the current amount of entries in the tails and pilots tables\&. 
 .PP
 \fBReturns\fP
 .RS 4

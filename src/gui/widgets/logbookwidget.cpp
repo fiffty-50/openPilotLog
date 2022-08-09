@@ -15,16 +15,14 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "src/database/database.h"
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
-
 #include "src/database/row.h"
 #include "src/database/database.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
-#include "src/functions/alog.h"
-#include "src/functions/alog.h"
 
 const QHash<int, QString> FILTER_MAP = {
     {0, QStringLiteral("Date LIKE \"%")},
@@ -53,7 +51,7 @@ LogbookWidget::LogbookWidget(OPL::DbCompletionData& completion_data, QWidget *pa
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
 
-    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }
@@ -70,7 +68,7 @@ LogbookWidget::~LogbookWidget()
 /*!
  * \brief LogbookWidget::setupModelAndView configures the QTableView and populates the model with data
  * according to the current view.
- * \param view_id - retreived from ASettings::Main::LogbookView
+ * \param view_id - retreived from Settings::Main::LogbookView
  */
 void LogbookWidget::setupModelAndView(int view_id)
 {
@@ -107,9 +105,9 @@ const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) co
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 
@@ -239,7 +237,7 @@ void LogbookWidget::refresh()
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal == SettingsWidget::SettingSignal::LogbookWidget)
-        setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+        setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
 }
 
 //void LogbookWidget::on_showAllButton_clicked()
@@ -288,7 +286,7 @@ void LogbookWidget::repopulateModel()
     delete displayModel;
     // create a new model and populate it
     displayModel = new QSqlTableModel(this);
-    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 }
 

@@ -1,0 +1,65 @@
+.TH "OPL::Paths" 3 "Tue Aug 9 2022" "openPilotLog" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OPL::Paths
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBDirectories\fP { \fBDatabase\fP, \fBTemplates\fP, \fBBackup\fP, \fBLog\fP, \fBExport\fP }"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static const bool \fBsetup\fP ()"
+.br
+.ti -1c
+.RI "static const QDir \fBdirectory\fP (Directories location)"
+.br
+.RI "Returns the QDir for the standard directory referenced by the Directories enum 'loc'\&. "
+.ti -1c
+.RI "static const QString \fBpath\fP (Directories location)"
+.br
+.ti -1c
+.RI "static const QString \fBappDir\fP ()"
+.br
+.ti -1c
+.RI "static const QString \fBfilePath\fP (Directories location, const QString &filename)"
+.br
+.ti -1c
+.RI "static const QFileInfo \fBdatabaseFileInfo\fP ()"
+.br
+.RI "returns a QFileInfo for the default database file\&. "
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const QHash< Directories, QLatin1String > \fBdirectories\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "const QHash<Directories, QLatin1String> OPL::Paths::directories\fC [inline]\fP, \fC [static]\fP"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+        {Database, QLatin1String("/database")},
+        {Templates, QLatin1String("/templates")},
+        {Backup, QLatin1String("/backup")},
+        {Log, QLatin1String("/log")},
+        {Export, QLatin1String("/export")},
+    }
+.fi
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for openPilotLog from the source code\&.

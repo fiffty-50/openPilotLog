@@ -18,18 +18,15 @@
 #include "firstrundialog.h"
 #include "ui_firstrundialog.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
 #include "src/gui/widgets/backupwidget.h"
 #include "src/database/row.h"
-#include "src/classes/adownload.h"
-#include "src/classes/asettings.h"
-#include "src/functions/adate.h"
-#include "src/classes/astyle.h"
-#include "src/functions/adatetime.h"
-#include "src/classes/ahash.h"
-#include "src/testing/atimer.h"
+#include "src/classes/downloadhelper.h"
+#include "src/classes/settings.h"
+#include "src/functions/datetime.h"
+#include "src/classes/style.h"
+#include "src/classes/md5sum.h"
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -52,13 +49,13 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
 
     // Style combo box
     const QSignalBlocker style_blocker(ui->styleComboBox);
-    AStyle::loadStylesComboBox(ui->styleComboBox);
-    ui->styleComboBox->setCurrentText(AStyle::defaultStyle);
+    OPL::Style::loadStylesComboBox(ui->styleComboBox);
+    ui->styleComboBox->setCurrentText(OPL::Style::defaultStyle);
 
     // Prepare Date Edits
     const auto date_edits = this->findChildren<QDateEdit *>();
     for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(ADate::getFormatString(OPL::DateFormat::ISODate));
+        date_edit->setDisplayFormat(OPL::DateTime::getFormatString(OPL::DateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
@@ -119,9 +116,8 @@ void FirstRunDialog::on_nextPushButton_clicked()
 bool FirstRunDialog::finishSetup()
 {
     writeSettings();
+    QFileInfo database_file(OPL::Paths::databaseFileInfo());
 
-    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
-                                 absoluteFilePath(QStringLiteral("logbook.db")));
     if (database_file.exists()) {
 
         QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
@@ -200,7 +196,7 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
 
     QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
@@ -209,8 +205,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     // Download json files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -227,8 +223,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
     // Download checksum files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
@@ -253,10 +249,10 @@ bool FirstRunDialog::verifyTemplates()
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     for (const auto &table_name : template_table_names) {
-        const QString path = AStandardPaths::asChildOfDir(AStandardPaths::Templates, table_name);
+        const QString path = OPL::Paths::filePath(OPL::Paths::Templates, table_name);
 
         QFileInfo check_file(path + QLatin1String(".json"));
-        AHash hash(check_file);
+        Md5Sum hash(check_file);
 
         QFileInfo md5_file(path + QLatin1String(".md5"));
         if (!hash.compare(md5_file))
@@ -267,25 +263,25 @@ bool FirstRunDialog::verifyTemplates()
 
 void FirstRunDialog::writeSettings()
 {
-    ASettings::resetToDefaults();
+    Settings::resetToDefaults();
 
-    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::Function, ui->functionComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
     switch (ui->nightRulesComboBox->currentIndex()) {
     case 0:
-        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
+        Settings::write(Settings::FlightLogging::NightAngle, -6);
         break;
     case 1:
-        ASettings::write(ASettings::FlightLogging::NightAngle, 0);
+        Settings::write(Settings::FlightLogging::NightAngle, 0);
         break;
     }
-    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
-    ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
-    ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
-    ASettings::sync();
+    Settings::write(Settings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
+    Settings::write(Settings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    Settings::write(Settings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
+    Settings::write(Settings::Main::Style, ui->styleComboBox->currentText());
+    Settings::sync();
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -348,13 +344,13 @@ bool FirstRunDialog::writeCurrencies()
         {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
         {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
-    const QMap<OPL::CurrencyName, ASettings::UserData> settings_list = {
-        {OPL::CurrencyName::Licence,    ASettings::UserData::ShowLicCurrency },
-        {OPL::CurrencyName::TypeRating, ASettings::UserData::ShowTrCurrency },
-        {OPL::CurrencyName::LineCheck,  ASettings::UserData::ShowLckCurrency },
-        {OPL::CurrencyName::Medical,    ASettings::UserData::ShowMedCurrency },
-        {OPL::CurrencyName::Custom1,    ASettings::UserData::ShowCustom1Currency },
-        {OPL::CurrencyName::Custom2,    ASettings::UserData::ShowCustom2Currency },
+    const QMap<OPL::CurrencyName, Settings::UserData> settings_list = {
+        {OPL::CurrencyName::Licence,    Settings::UserData::ShowLicCurrency },
+        {OPL::CurrencyName::TypeRating, Settings::UserData::ShowTrCurrency },
+        {OPL::CurrencyName::LineCheck,  Settings::UserData::ShowLckCurrency },
+        {OPL::CurrencyName::Medical,    Settings::UserData::ShowMedCurrency },
+        {OPL::CurrencyName::Custom1,    Settings::UserData::ShowCustom1Currency },
+        {OPL::CurrencyName::Custom2,    Settings::UserData::ShowCustom2Currency },
     };
 
     QDate today = QDate::currentDate();
@@ -368,7 +364,7 @@ bool FirstRunDialog::writeCurrencies()
             else if(enum_value == OPL::CurrencyName::Custom2)
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
 
-            ASettings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
+            Settings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
             OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);
             if (!DB->commit(entry))
                 return false;
@@ -405,18 +401,18 @@ void FirstRunDialog::keyPressEvent(QKeyEvent *keyEvent)
 void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_style_setting)
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
-        AStyle::setStyle(AStyle::darkPalette());
+        OPL::Style::setStyle(OPL::Style::darkPalette());
         return;
     }
-    for (const auto &style_name : AStyle::styles) {
+    for (const auto &style_name : OPL::Style::styles) {
         if (new_style_setting == style_name) {
-            AStyle::setStyle(style_name);
+            OPL::Style::setStyle(style_name);
             return;
         }
     }
-    for (const auto &style_sheet : AStyle::styleSheets) {
+    for (const auto &style_sheet : OPL::Style::styleSheets) {
         if (new_style_setting == style_sheet.styleSheetName) {
-            AStyle::setStyle(style_sheet);
+            OPL::Style::setStyle(style_sheet);
             return;
         }
     }
@@ -424,12 +420,12 @@ void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_styl
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
+    Settings::write(Settings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
 }
 
 void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+    Settings::write(Settings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }
 
 void FirstRunDialog::on_importPushButton_clicked()

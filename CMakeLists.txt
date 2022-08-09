@@ -77,36 +77,34 @@ set(PROJECT_SOURCES
 
 
     # Classes
-    src/classes/astyle.h
-    src/classes/astyle.cpp
-    src/classes/astandardpaths.h
-    src/classes/astandardpaths.cpp
-    src/classes/adownload.h
-    src/classes/adownload.cpp
-    src/classes/arunguard.h
-    src/classes/arunguard.cpp
-    src/classes/asettings.h
-    src/classes/asettings.cpp
-    src/classes/atranslator.h
-    src/classes/atranslator.cpp
-    src/classes/ajson.h
-    src/classes/ajson.cpp
-    src/classes/ahash.h
-    src/classes/ahash.cpp
+    src/classes/style.h
+    src/classes/style.cpp
+    src/classes/paths.h
+    src/classes/paths.cpp
+    src/classes/downloadhelper.h
+    src/classes/downloadhelper.cpp
+    src/classes/runguard.h
+    src/classes/runguard.cpp
+    src/classes/settings.h
+    src/classes/settings.cpp
+    src/classes/translator.h
+    src/classes/translator.cpp
+    src/classes/jsonhelper.h
+    src/classes/jsonhelper.cpp
+    src/classes/md5sum.h
+    src/classes/md5sum.cpp
 
     # Namespaces
-    src/functions/acalc.h
-    src/functions/acalc.cpp
-    src/functions/adatetime.h
-    src/functions/alog.h
-    src/functions/alog.cpp
-    src/functions/areadcsv.h
-    src/functions/areadcsv.cpp
-    src/functions/astat.h
-    src/functions/astat.cpp
-    src/functions/adate.h
-    src/functions/adate.cpp
-    src/functions/atime.h
+    src/functions/calc.h
+    src/functions/calc.cpp
+    src/functions/log.h
+    src/functions/log.cpp
+    src/functions/readcsv.h
+    src/functions/statistics.h
+    src/functions/statistics.cpp
+    src/functions/datetime.h
+    src/functions/datetime.cpp
+    src/functions/time.h
 
     # Database
     src/database/database.h

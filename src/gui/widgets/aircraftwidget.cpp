@@ -18,10 +18,9 @@
 #include "aircraftwidget.h"
 #include "ui_aircraftwidget.h"
 #include "src/opl.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
-#include "src/functions/alog.h"
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent),
@@ -58,7 +57,7 @@ void AircraftWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
 
-    sortColumn = ASettings::read(ASettings::UserData::TailSortColumn).toInt();
+    sortColumn = Settings::read(Settings::UserData::TailSortColumn).toInt();
     view->setSortingEnabled(true);
     view->sortByColumn(sortColumn, Qt::DescendingOrder);
 
@@ -160,7 +159,7 @@ void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
 void AircraftWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write(ASettings::UserData::TailSortColumn, column);
+    Settings::write(Settings::UserData::TailSortColumn, column);
 }
 
 void AircraftWidget::on_deleteAircraftButton_clicked()
@@ -281,9 +280,9 @@ const QString AircraftWidget::getFlightSummary(const OPL::FlightEntry &flight) c
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 

@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('class_validation_state.html',''); init
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="class_validation_state-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -96,16 +97,32 @@ $(document).ready(function(){initNavTree('class_validation_state.html',''); init
 
 <p><code>#include &lt;<a class="el" href="newflightdialog_8h_source.html">newflightdialog.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a8c4e62dfc1c4a117a8cd893e5b5782ed"><td class="memItemLeft" align="right" valign="top"><a id="a8c4e62dfc1c4a117a8cd893e5b5782ed"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_validation_state.html#a8c4e62dfc1c4a117a8cd893e5b5782ed">ValidationItem</a> { <br />
+&#160;&#160;<b>doft</b> = 0
+, <b>dept</b> = 1
+, <b>dest</b> = 2
+, <b>tofb</b> = 3
+, <br />
+&#160;&#160;<b>tonb</b> = 4
+, <b>pic</b> = 5
+, <b>acft</b> = 6
+<br />
+ }</td></tr>
+<tr class="memdesc:a8c4e62dfc1c4a117a8cd893e5b5782ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ValidationItem enum contains the items that are mandatory for logging a flight: Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration. <br /></td></tr>
+<tr class="separator:a8c4e62dfc1c4a117a8cd893e5b5782ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af38ca9b5f3caa4ba6fa0b24fc095e234"><td class="memItemLeft" align="right" valign="top"><a id="af38ca9b5f3caa4ba6fa0b24fc095e234"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>validate</b> (ValidationItem item)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>validate</b> (<a class="el" href="class_validation_state.html#a8c4e62dfc1c4a117a8cd893e5b5782ed">ValidationItem</a> item)</td></tr>
 <tr class="separator:af38ca9b5f3caa4ba6fa0b24fc095e234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af80c6dec8b8dd55b1e154317b352cc94"><td class="memItemLeft" align="right" valign="top"><a id="af80c6dec8b8dd55b1e154317b352cc94"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>validate</b> (int index)</td></tr>
 <tr class="separator:af80c6dec8b8dd55b1e154317b352cc94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a315b02d441579eceba81db1816fc1a55"><td class="memItemLeft" align="right" valign="top"><a id="a315b02d441579eceba81db1816fc1a55"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>invalidate</b> (ValidationItem item)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>invalidate</b> (<a class="el" href="class_validation_state.html#a8c4e62dfc1c4a117a8cd893e5b5782ed">ValidationItem</a> item)</td></tr>
 <tr class="separator:a315b02d441579eceba81db1816fc1a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab01cb5d631abaf8b5e5ad8e7245d7bd1"><td class="memItemLeft" align="right" valign="top"><a id="ab01cb5d631abaf8b5e5ad8e7245d7bd1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>invalidate</b> (int index)</td></tr>
@@ -129,7 +146,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>acftValid</b> () cons
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>validAt</b> (int index) const</td></tr>
 <tr class="separator:a4e0d9cbd3d2b69dc7fdb9926980029a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0689d92451510daf765668965516ee8d"><td class="memItemLeft" align="right" valign="top"><a id="a0689d92451510daf765668965516ee8d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>validAt</b> (ValidationItem item) const</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>validAt</b> (<a class="el" href="class_validation_state.html#a8c4e62dfc1c4a117a8cd893e5b5782ed">ValidationItem</a> item) const</td></tr>
 <tr class="separator:a0689d92451510daf765668965516ee8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a411635ab908b2437c5dcc9748f73dbde"><td class="memItemLeft" align="right" valign="top"><a id="a411635ab908b2437c5dcc9748f73dbde"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>printValidationStatus</b> () const</td></tr>

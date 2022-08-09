@@ -28,7 +28,17 @@ var namespace_o_p_l =
       [ "ICON_TOOLBAR_SETTINGS_DARK", "opl_8h.html#a1b5d0fcf4045219825705926726b995b", null ],
       [ "LOGO", "opl_8h.html#a06db5b06079f075e1440ff4b6a47331f", null ]
     ] ],
+    [ "Calc", "namespace_o_p_l_1_1_calc.html", "namespace_o_p_l_1_1_calc" ],
     [ "Db", "namespace_o_p_l_1_1_db.html", [
+      [ "AIRPORTS_ALTITIDUE", "namespace_o_p_l_1_1_db.html#a50cd7e3042c8ae2e9cb28ea8bb7d2846", null ],
+      [ "AIRPORTS_COUNTRY", "namespace_o_p_l_1_1_db.html#ac261737f125950b95593dd430228a9fe", null ],
+      [ "AIRPORTS_IATA", "namespace_o_p_l_1_1_db.html#aa65bee2014828f9edebfc861a3506de4", null ],
+      [ "AIRPORTS_ICAO", "namespace_o_p_l_1_1_db.html#a116f8bb7ea69cf60532c36b9714aa8b1", null ],
+      [ "AIRPORTS_LAT", "namespace_o_p_l_1_1_db.html#aaf78e2ab5b9217fdec32a8264e390220", null ],
+      [ "AIRPORTS_LON", "namespace_o_p_l_1_1_db.html#abe316e7f71b43d45601f8496e3e60e15", null ],
+      [ "AIRPORTS_NAME", "namespace_o_p_l_1_1_db.html#ab8f7e2053d4f8c717f209adfb8eeac5f", null ],
+      [ "AIRPORTS_TZ_OLSON", "namespace_o_p_l_1_1_db.html#af2ed359415d9d2a6af62501f556b707d", null ],
+      [ "AIRPORTS_UTC_OFFSET", "namespace_o_p_l_1_1_db.html#a09d8e1cbdad5ace659b93f0466b8ad38", null ],
       [ "CURRENCIES_CURRENCYNAME", "namespace_o_p_l_1_1_db.html#aa0b31b50f34dd9ae8e5273604b88ec8c", null ],
       [ "CURRENCIES_EXPIRYDATE", "namespace_o_p_l_1_1_db.html#aecbfb26f5cf4544487d1007040e93215", null ],
       [ "FLIGHTS_ACFT", "namespace_o_p_l_1_1_db.html#a0596290cbec79c2b4ee62f0ac0598d53", null ],
@@ -97,10 +107,49 @@ var namespace_o_p_l =
       [ "TAILS_VARIANT", "namespace_o_p_l_1_1_db.html#a62f7164963dd97e3acfbb7dd4248e323", null ],
       [ "TAILS_WEIGHTCLASS", "namespace_o_p_l_1_1_db.html#afbec24bcef6124392c9330e351c5d75c", null ]
     ] ],
+    [ "Log", "namespace_o_p_l_1_1_log.html", [
+      [ "aMessageHandler", "namespace_o_p_l_1_1_log.html#ace3191abb660b9aa017d252e1ab6b6be", null ],
+      [ "deleteOldLogs", "namespace_o_p_l_1_1_log.html#a7efc415f9f4a8abf734760ccc32dfbbb", null ],
+      [ "init", "namespace_o_p_l_1_1_log.html#afabb6a7d16c19b3f439cdd0a3ccf11d9", null ],
+      [ "setLogFileName", "namespace_o_p_l_1_1_log.html#a3366094ad1b6e443a332fdf72c2cb60a", null ]
+    ] ],
+    [ "Statistics", null, [
+      [ "TimeFrame", "statistics_8h.html#a9f6deb304b106447ce9d395561ab836f", [
+        [ "AllTime", "statistics_8h.html#a9f6deb304b106447ce9d395561ab836fa01101872440576cfea86e9a3f92527bb", null ],
+        [ "CalendarYear", "statistics_8h.html#a9f6deb304b106447ce9d395561ab836fa732a0d61b8373c8a76168cd356774829", null ],
+        [ "Rolling12Months", "statistics_8h.html#a9f6deb304b106447ce9d395561ab836fa83c42cf672adaca8d7c1c5f693ca52e3", null ],
+        [ "Rolling28Days", "statistics_8h.html#a9f6deb304b106447ce9d395561ab836faaf1438de9efced48863b03fea2d0698e", null ]
+      ] ],
+      [ "ToLdg", "statistics_8h.html#a776f52054c7d9790af451ad82f69bca1", [
+        [ "Takeoff", "statistics_8h.html#a776f52054c7d9790af451ad82f69bca1a56373a80447c41b9a29e500e62d6884e", null ],
+        [ "Landing", "statistics_8h.html#a776f52054c7d9790af451ad82f69bca1a41bd61e268fedccfb0d91dd571dd28b2", null ]
+      ] ],
+      [ "countTakeOffLanding", "statistics_8h.html#aee7bf838c487530723d66e068d439662", null ],
+      [ "currencyTakeOffLandingExpiry", "statistics_8h.html#a81d7eecb55e686d9a0028d7abda66bb7", null ],
+      [ "totals", "statistics_8h.html#a06872247544441d10090033f5ec838d5", null ],
+      [ "totalTime", "statistics_8h.html#a77116b77f14151a434eebdfd881b09c4", null ]
+    ] ],
     [ "Styles", null, [
       [ "RED_BORDER", "opl_8h.html#a441c4652259ec9e7edde148ed89cefd6", null ]
     ] ],
-    [ "UserDataState", "struct_o_p_l_1_1_user_data_state.html", "struct_o_p_l_1_1_user_data_state" ],
+    [ "Time", null, [
+      [ "blockMinutes", "time_8h.html#a05c4bd14546acb9e0863c3fa394272a2", null ],
+      [ "blockMinutes", "time_8h.html#aba0dcf334ab2d50b8aa1aae5750906dd", null ],
+      [ "blocktime", "time_8h.html#a3b6006e3caa8f6fec546c0ffd1c097c9", null ],
+      [ "blocktime", "time_8h.html#adf6b3b7950b1ed4875b6ae163aa7befd", null ],
+      [ "formatTimeInput", "time_8h.html#ab909d87338b2cfbb8953a91d457fb77c", null ],
+      [ "fromString", "time_8h.html#a40b2a74a054fef55def94c2f026bd441", null ],
+      [ "fromString", "time_8h.html#ad6f9f70de0c6abdd5cec36e621234aac", null ],
+      [ "qTimefromMinutes", "time_8h.html#a8cd64160fe6ba50c16c5da248913ce13", null ],
+      [ "toDecimalHours", "time_8h.html#a2b03ddd787f0dcceff6188116fc4ecea", null ],
+      [ "toMinutes", "time_8h.html#aaedf9a3329608fdb3e7479cc41bc9b50", null ],
+      [ "toMinutes", "time_8h.html#a240ee2a19c3d636f85712c4363c89af2", null ],
+      [ "toString", "time_8h.html#a9c5e5e0fef9428bc6cda433951e2e0e4", null ],
+      [ "toString", "time_8h.html#a9a9e1d83fac56d27420c6e530941b4a9", null ]
+    ] ],
+    [ "Paths", "class_o_p_l_1_1_paths.html", "class_o_p_l_1_1_paths" ],
+    [ "StyleSheet", "struct_o_p_l_1_1_style_sheet.html", "struct_o_p_l_1_1_style_sheet" ],
+    [ "Style", "class_o_p_l_1_1_style.html", "class_o_p_l_1_1_style" ],
     [ "Database", "class_o_p_l_1_1_database.html", "class_o_p_l_1_1_database" ],
     [ "DbCompletionData", "class_o_p_l_1_1_db_completion_data.html", "class_o_p_l_1_1_db_completion_data" ],
     [ "DbSummary", "class_o_p_l_1_1_db_summary.html", "class_o_p_l_1_1_db_summary" ],
@@ -111,6 +160,8 @@ var namespace_o_p_l =
     [ "SimulatorEntry", "class_o_p_l_1_1_simulator_entry.html", "class_o_p_l_1_1_simulator_entry" ],
     [ "FlightEntry", "class_o_p_l_1_1_flight_entry.html", "class_o_p_l_1_1_flight_entry" ],
     [ "CurrencyEntry", "class_o_p_l_1_1_currency_entry.html", "class_o_p_l_1_1_currency_entry" ],
+    [ "AirportEntry", "class_o_p_l_1_1_airport_entry.html", "class_o_p_l_1_1_airport_entry" ],
+    [ "DateTime", "class_o_p_l_1_1_date_time.html", null ],
     [ "ANotificationHandler", "class_o_p_l_1_1_a_notification_handler.html", null ],
     [ "OplGlobals", "class_o_p_l_1_1_opl_globals.html", "class_o_p_l_1_1_opl_globals" ],
     [ "RowData_T", "namespace_o_p_l.html#a1cbf2d603286988905f430d1480675be", null ],
@@ -149,6 +200,7 @@ var namespace_o_p_l =
       [ "total_time", "namespace_o_p_l.html#a57a78a0fee920e2605638d9fea82b57ea843b9f46c0bf720976d53057a3b40877", null ]
     ] ],
     [ "DbTable", "namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7", [
+      [ "Any", "namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7aed36a1ef76a59ee3f15180e0441188ad", null ],
       [ "Flights", "namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7a504541934e46dc88caac2c0788e10519", null ],
       [ "Simulators", "namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7a7aa8681ab9b4cad30e12f0908c8771b7", null ],
       [ "Pilots", "namespace_o_p_l.html#ada86eb02cea54d91c8c11c9112ec1cf7a0811a9378f6a25444779180cca216277", null ],

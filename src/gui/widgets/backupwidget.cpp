@@ -18,10 +18,8 @@
 #include "backupwidget.h"
 #include "ui_backupwidget.h"
 #include "src/opl.h"
-#include "src/classes/astandardpaths.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
-#include "src/functions/adatetime.h"
+#include "src/functions/datetime.h"
 #include "src/database/dbsummary.h"
 
 #include <QListView>
@@ -58,19 +56,20 @@ void BackupWidget::changeEvent(QEvent *event)
 void BackupWidget::refresh()
 {
     // First column in table, would be created by listing the files in backupdir
-    QDir backup_dir = QDir(AStandardPaths::directory(AStandardPaths::Backup));
+    QDir backup_dir = OPL::Paths::directory(OPL::Paths::Backup);
     const QStringList entries = backup_dir.entryList(QStringList{"*.db"}, QDir::Files, QDir::Time);
     QFileIconProvider provider;
 
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
+        DEB << "Filename string: " << entry;
         QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(backup_dir.absoluteFilePath(entry));
         model->appendRow({new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
                           new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
                           new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
                           new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
                           new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
-                          new AFileStandardItem(provider.icon(QFileIconProvider::File), entry, AStandardPaths::Backup)
+                          new QStandardItem(provider.icon(QFileIconProvider::File), entry),
                          });
     }
 
@@ -81,22 +80,22 @@ void BackupWidget::refresh()
 const QString BackupWidget::absoluteBackupPath()
 {
     const QString backup_name = QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
+            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
-    return AStandardPaths::asChildOfDir(AStandardPaths::Backup, backup_name);
+    return OPL::Paths::filePath(OPL::Paths::Backup, backup_name);
 }
 
 const QString BackupWidget::backupName()
 {
     return  QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
+            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
 }
 
 void BackupWidget::on_tableView_clicked(const QModelIndex &index)
 {
-    selectedFileInfo = static_cast<AFileStandardItem*>(model->item(index.row(), 0));
-    DEB << "Item at row:" << index.row() << "->" << selectedFileInfo->data(Qt::DisplayRole);
+    selectedRows.clear();
+    selectedRows.append(index.row());
 }
 
 void BackupWidget::on_createLocalPushButton_clicked()
@@ -111,6 +110,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
         INFO(tr("Backup successfully created."));
     }
 
+    QFileInfo file_info(filename);
     QFileIconProvider provider;
     QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(filename);
     model->insertRow(0, {new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
@@ -118,21 +118,19 @@ void BackupWidget::on_createLocalPushButton_clicked()
                          new QStandardItem(summary[OPL::DbSummaryKey::total_tails]),
                          new QStandardItem(summary[OPL::DbSummaryKey::total_pilots]),
                          new QStandardItem(summary[OPL::DbSummaryKey::last_flight]),
-                         new AFileStandardItem(provider.icon(QFileIconProvider::File), QFileInfo(filename)),
+                         new QStandardItem(provider.icon(QFileIconProvider::File), file_info.fileName()),
                      });
 }
 
 void BackupWidget::on_restoreLocalPushButton_clicked()
 {
-    if(selectedFileInfo == nullptr) {
+    if(selectedRows.isEmpty()) {
         INFO(tr("No backup selected"));
         return;
     }
 
-    QString backup_name = AStandardPaths::asChildOfDir(
-                AStandardPaths::Backup,
-                selectedFileInfo->data(Qt::DisplayRole).toString()
-                );
+    const QString file_name = model->item(selectedRows.first(), 5)->data(Qt::DisplayRole).toString();
+    const QString backup_name = OPL::Paths::filePath(OPL::Paths::Backup, file_name);
 
     QMessageBox confirm(this);
     confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -153,21 +151,22 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     }
 
     view->clearSelection();
-    selectedFileInfo = nullptr;
+    selectedRows.clear();
 }
 
 void BackupWidget::on_deleteSelectedPushButton_clicked()
 {
-    if(selectedFileInfo == nullptr) {
+    if(selectedRows.isEmpty()) {
         INFO(tr("No backup was selected"));
         return;
     }
 
-    const QFileInfo& filename = selectedFileInfo->info();
-    QFile file(filename.absoluteFilePath());
+    const QString file_name = model->item(selectedRows.first(), 5)->data(Qt::DisplayRole).toString();
+    const QString backup_name = OPL::Paths::filePath(OPL::Paths::Backup, file_name);
+    QFile file(OPL::Paths::filePath(OPL::Paths::Backup, file_name));
 
     if(!file.exists()) {
-        WARN(tr("Selected backup file (<tt>%1</tt>) does not exist.").arg(filename.absolutePath()));
+        WARN(tr("Selected backup file (<tt>%1</tt>) does not exist.").arg(file_name));
         return;
     }
 
@@ -176,24 +175,24 @@ void BackupWidget::on_deleteSelectedPushButton_clicked()
     confirm.setDefaultButton(QMessageBox::No);
     confirm.setIcon(QMessageBox::Question);
     confirm.setWindowTitle(tr("Delete Backup"));
-    confirm.setText(tr("The following backup will be deleted:<br><br><b><tt>"
-                       "%1</b></tt><br><br>"
-                       "Are you sure?"
-                       ).arg(filename.fileName()));
+    confirm.setText(tr("The following backup will be deleted:<br><br><i>%1</i><br><br><b><tt>"
+                       "%2</b></tt><br><br>"
+                       "<b>This action is irreversible.</b><br><br>Continue?"
+                       ).arg(file_name, OPL::DbSummary::summaryString(backup_name)));
     if (confirm.exec() == QMessageBox::No)
         return;
 
-    LOG << "Deleting backup:" << filename;
+    LOG << "Deleting backup:" << file_name;
     if(!file.remove()) {
-        WARN(tr("Unable to remove file %1\nError: %2").arg(filename.fileName(),file.errorString()));
+        WARN(tr("Unable to remove file %1<br>Error: %2").arg(file_name,file.errorString()));
         return;
     } else {
         INFO(tr("Backup successfully deleted."));
     }
 
-    model->removeRow(selectedFileInfo->row());
+    model->removeRow(selectedRows.first());
     view->clearSelection();
-    selectedFileInfo = nullptr;
+    selectedRows.clear();
 }
 
 void BackupWidget::on_createExternalPushButton_clicked()
@@ -243,7 +242,7 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     confirm.setWindowTitle(tr("Import Database"));
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
-                       "<br>Is this correct?"
+                       "<br>Continue?"
                        ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
         if(!DB->restoreBackup(filename)) {

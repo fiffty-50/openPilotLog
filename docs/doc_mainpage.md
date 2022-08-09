@@ -19,7 +19,7 @@ These are the guidelines for this project:
 
 # Compiling the project
 
-The most straight forward way is to get a copy of [Qt](https://www.qt.io/download) and compile the project using either cmake or QtCreator and qmake. The `CMakeList.txt` and `.pro` files are included in the repository. CMake is recommended and will be the standard going forward.
+The most straight forward way is to get a copy of [Qt](https://www.qt.io/download) and compile the project using cmake.
 
 On first launch, you will run through a setup wizard for the database. If you want to test the program with a sample database, use the `Backup` functionality. Select `Restore external backup` from the GUI and import the file `logbook.db` from the assets folder in the repository.
 
@@ -35,15 +35,15 @@ On first launch, you will run through a setup wizard for the database. If you wa
 
 Keeping a logbook of flights is a quintessential database task. This program could thus be seen as a user-friendly front-end to a database. The database is a sqlite3-Database, which is described in detail on the [Database](https://github.com/fiffty-50/openpilotlog/wiki/Database-Layout-and-Description) Wiki Page.
 
-Access to the database is provided by the ADatabase Class, which is responsible for managing the database connection and creating and executing queries. Data is retreived from the database in form of AEntry objects. The AEntry class and its subclasses represent 'lines' in a database table. Internally, they are structs holding a [QMap<QVariant, QVariant>](https://doc.qt.io/qt-5/qmap.html) with the key being the column name and the value its value. These Objects are then parsed by the different widgets and dialogues to read or write user-provided data.
+Access to the database is provided by the OPL::Database Class, which is responsible for managing the database connection and creating and executing queries. Data is retreived from the database in form of Row objects. The OPL::Row class and its subclasses represent 'lines' in a database table. Internally, they are structs holding a [QQHash<QVariant, QVariant>](https://doc.qt.io/qt-5/qhash.html) with the key being the column name and the value its value. These Objects are then parsed by the different widgets and dialogues to read or write user-provided data.
 
 The database contents are displayed to the user in the different widgets. **Flights** are displayed in the LogbookWidget, **Pilots** in the PilotsWidget and **Aircraft** in the AircraftWidget. These widgets also give convenient access to the Dialogues (NewFlightDialog, NewPilotDialog, NewTailDialog), enabling editing, adding or removing entries of their respective categories.
 
-Widget class Elements of the User Interface dispay data from the database in a [QTableView](https://doc.qt.io/qt-5/qtableview.html) with a [QSqlQueryModel](https://doc.qt.io/qt-5.12/qsqlquerymodel.html). Dialog class UI Elements receive and return AEntry objects, which are read and written to and from the database via the ADatabase class.
+Widget class Elements of the User Interface dispay data from the database in a [QTableView](https://doc.qt.io/qt-5/qtableview.html) with a [QSqlQueryModel](https://doc.qt.io/qt-5.12/qsqlquerymodel.html). Dialog class UI Elements receive and return OPL::Row objects, which are read and written to and from the database via the OPL::Database class.
 
 # Settings
 
-The AStandardPaths class is responsible for creating cross-platform compatible directory structures based on [QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html). Settings are stored in a `.ini` file at a standardized location. The Settings widget enables the user to adjust various settings, which are stored and accessed via the ASettings class, based on the [QSettings](https://doc.qt.io/qt-5/qsettings.html) interface.
+Settings are stored in a `.ini` file at a standardized location. The Settings widget enables the user to adjust various settings, which are stored and accessed via the Settings class, based on the [QSettings](https://doc.qt.io/qt-5/qsettings.html) interface.
 
 # Import / Export
 

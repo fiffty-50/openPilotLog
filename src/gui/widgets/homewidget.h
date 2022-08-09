@@ -23,9 +23,9 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/functions/astat.h"
+#include "src/functions/statistics.h"
 #include "src/database/database.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 
 namespace Ui {
 class HomeWidget;
@@ -53,12 +53,12 @@ private:
     QList<QLabel*> limitationDisplayLabels;
     QDate          today;
     /*!
-     * \brief currWarningThreshold - Retreived from ASettings::UserData::CurrWarningThreshold, the number
+     * \brief currWarningThreshold - Retreived from Settings::UserData::CurrWarningThreshold, the number
      * of days before expiry that the user gets notified about impending expiries.
      */
     int currWarningThreshold;
     /*!
-     * \brief ftlWarningThreshold - Retreived from ASettings::UserData::FtlWarningThreshold, the percentage
+     * \brief ftlWarningThreshold - Retreived from Settings::UserData::FtlWarningThreshold, the percentage
      * of how close the user has to be to reaching a Flight Time Limitation before getting notified.
      */
     double ftlWarningThreshold;

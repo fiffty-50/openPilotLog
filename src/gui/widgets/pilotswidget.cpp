@@ -17,10 +17,12 @@
  */
 #include "pilotswidget.h"
 #include "ui_pilotswidget.h"
+#include "src/gui/dialogues/newpilotdialog.h"
 #include "src/opl.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
+#include "src/functions/time.h"
+#include "src/classes/settings.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -57,7 +59,7 @@ void PilotsWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    sortColumn = ASettings::read(ASettings::UserData::PilotSortColumn).toInt();
+    sortColumn = Settings::read(Settings::UserData::PilotSortColumn).toInt();
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
@@ -135,7 +137,7 @@ void PilotsWidget::tableView_selectionChanged()
 void PilotsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write(ASettings::UserData::PilotSortColumn, column);
+    Settings::write(Settings::UserData::PilotSortColumn, column);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()
@@ -258,9 +260,9 @@ const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) con
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
                           + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 

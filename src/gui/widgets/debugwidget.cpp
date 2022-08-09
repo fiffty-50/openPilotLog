@@ -16,28 +16,20 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
-#include "ui_debugwidget.h"
-#include "src/classes/astandardpaths.h"
-#include "src/gui/widgets/logbookwidget.h"
-#include "src/gui/widgets/pilotswidget.h"
-#include "src/gui/widgets/aircraftwidget.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/widgets/backupwidget.h"
-#include <QtGlobal>
-#include "src/functions/atime.h"
-#include "src/functions/astat.h"
-#include "src/classes/atranslator.h"
-#include "src/classes/ahash.h"
-#include "src/classes/ajson.h"
-#include "src/functions/adate.h"
-
-
+#include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
 #include "src/testing/importCrewlounge/processpilots.h"
-#include "src/testing/importCrewlounge/processaircraft.h"
+#include "ui_debugwidget.h"
+#include <QtGlobal>
+#include "src/classes/downloadhelper.h"
+#include "src/functions/readcsv.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
+#include "src/testing/atimer.h"
+#include "src/functions/log.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    auto rawCsvData = aReadCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
+    auto rawCsvData = CSV::readCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
     // Process Pilots
     auto proc_pilots = ProcessPilots(rawCsvData);
     proc_pilots.init();
@@ -85,7 +77,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
 {
     // disconnect and remove old database
     DB->disconnect();
-    QFile db_file(AStandardPaths::directory(AStandardPaths::Database).absoluteFilePath(QStringLiteral("logbook.db")));
+    QFile db_file(OPL::Paths::databaseFileInfo().absoluteFilePath());
     if (!db_file.remove()) {
         WARN(tr("Unable to delete existing database file."));
         return;
@@ -100,15 +92,15 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(AStandardPaths::directory(AStandardPaths::Templates));
+    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
     QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     // Download json files
     for (const auto& table_name : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -123,8 +115,8 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // Download checksum files
     for (const auto& table : template_table_names) {
         QEventLoop loop;
-        ADownload* dl = new ADownload;
-        QObject::connect(dl, &ADownload::done, &loop, &QEventLoop::quit );
+        DownloadHelper* dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
         dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
 
@@ -209,7 +201,7 @@ void DebugWidget::on_selectCsvPushButton_clicked()
 {
     auto fileName = QFileDialog::getOpenFileName(this,
                                                  tr("Open CSV File for import"),
-                                                 AStandardPaths::directory(AStandardPaths::Templates).absolutePath(),
+                                                 OPL::Paths::directory(OPL::Paths::Templates).absolutePath(),
                                                  tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }

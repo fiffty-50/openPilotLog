@@ -37,12 +37,7 @@
 #include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
-#include "src/gui/dialogues/newtaildialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
-#include "src/classes/arunguard.h"
-#include "src/testing/atimer.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/database/dbcompletiondata.h"
 
 enum Style {Light, Dark};
@@ -97,7 +92,7 @@ public:
 public slots:
     void onStyleChanged(SettingsWidget::SettingSignal signal){
         if (signal == SettingsWidget::MainWindow)
-            setActionIcons(AStyle::getStyleType());
+            setActionIcons(OPL::Style::getStyleType());
     }
 
 private slots:
@@ -146,7 +141,7 @@ private:
     bool airportDbIsDirty = false;
 
     void setupToolbar();
-    void setActionIcons(StyleType style = StyleType::Light);
+    void setActionIcons(OPL::Style::StyleType style = OPL::Style::StyleType::Light);
 
     void nope();
 

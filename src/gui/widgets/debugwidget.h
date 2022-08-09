@@ -25,14 +25,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
-#include "src/classes/adownload.h"
-#include "src/functions/areadcsv.h"
-
-#include "src/database/database.h"
-#include "src/database/row.h"
-
-#include "src/testing/atimer.h"
-#include "src/functions/alog.h"
 
 namespace Ui {
 class DebugWidget;

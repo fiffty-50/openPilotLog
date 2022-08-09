@@ -18,21 +18,25 @@
 #include <QToolBar>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/functions/alog.h"
 #include "src/database/database.h"
-#include "src/classes/astyle.h"
+#include "src/classes/style.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
+#include "src/gui/dialogues/newflightdialog.h"
 // Quick and dirty Debug area
-#include <QTimeZone>
-#include "src/gui/dialogues/newairportdialog.h"
+#include "src/classes/paths.h"
 void MainWindow::doDebugStuff()
 {
-    //const auto list = QTimeZone::availableTimeZoneIds();
-    //DEB << list;
-    auto nad = new NewAirportDialog(5, this);
-    nad->exec();
+    DEB << OPL::Paths::directory(OPL::Paths::Backup);
+    DEB << OPL::Paths::path(OPL::Paths::Backup);
+    DEB << OPL::Paths::filePath(OPL::Paths::Database, "logbook.db");
+    DEB << OPL::Paths::setup();
+
+    QDir dir(QCoreApplication::applicationDirPath());
+    QString filename("file.f");
+
+    DEB << OPL::Paths::filePath(OPL::Paths::Backup, filename);
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -41,13 +45,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setupToolbar();
-    setActionIcons(AStyle::getStyleType());
+    setActionIcons(OPL::Style::getStyleType());
 
     // connect to the Database
-    QFileInfo database_file(AStandardPaths::directory(AStandardPaths::Database).
-                                         absoluteFilePath(QStringLiteral("logbook.db")));
-
-    if (database_file.size() == 0)
+    if (OPL::Paths::databaseFileInfo().size() == 0)
         onDatabaseInvalid();
 
     if(!DB->connect()){
@@ -114,10 +115,10 @@ void MainWindow::setupToolbar()
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
 }
 
-void MainWindow::setActionIcons(StyleType style)
+void MainWindow::setActionIcons(OPL::Style::StyleType style)
 {
     switch (style){
-    case StyleType::Light:
+    case OPL::Style::StyleType::Light:
         LOG << "Setting Light Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
@@ -129,7 +130,7 @@ void MainWindow::setActionIcons(StyleType style)
         ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
-    case StyleType::Dark:
+    case OPL::Style::StyleType::Dark:
         LOG << "Setting Dark Icon theme";
         ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
         ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
@@ -232,7 +233,7 @@ void MainWindow::onDatabaseInvalid()
         DEB << "Yes(Import Backup)";
         QString db_path = QFileDialog::getOpenFileName(this,
                                                        tr("Select Database"),
-                                                       AStandardPaths::directory(AStandardPaths::Backup).canonicalPath(),
+                                                       OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
                                                        tr("Database file (*.db)"));
         if (!db_path.isEmpty()) {
             if(!DB->restoreBackup(db_path)) {
@@ -248,7 +249,7 @@ void MainWindow::onDatabaseInvalid()
             LOG << "Initial setup incomplete or unsuccessfull.";
             on_actionQuit_triggered();
         }
-        ASettings::write(ASettings::Main::SetupComplete, true);
+        Settings::write(Settings::Main::SetupComplete, true);
         LOG << "Initial Setup Completed successfully";
     }
 }

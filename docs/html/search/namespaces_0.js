@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['acalc_197',['ACalc',['../namespace_a_calc.html',1,'']]],
-  ['alog_198',['ALog',['../namespace_a_log.html',1,'']]]
+  ['calc_193',['Calc',['../namespace_o_p_l_1_1_calc.html',1,'OPL']]],
+  ['db_194',['Db',['../namespace_o_p_l_1_1_db.html',1,'OPL']]],
+  ['log_195',['Log',['../namespace_o_p_l_1_1_log.html',1,'OPL']]],
+  ['opl_196',['OPL',['../namespace_o_p_l.html',1,'']]]
 ];

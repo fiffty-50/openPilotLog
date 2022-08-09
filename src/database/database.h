@@ -31,9 +31,9 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
+#include "src/classes/paths.h"
 #include "src/opl.h"
 #include "src/database/row.h"
-#include "src/classes/astandardpaths.h"
 
 
 
@@ -59,8 +59,7 @@ class Database : public QObject {
 private:
     Q_OBJECT
     Database()
-        : databaseFile(QFileInfo(AStandardPaths::directory(AStandardPaths::Database).
-                                 absoluteFilePath(QStringLiteral("logbook.db"))))
+        : databaseFile(OPL::Paths::databaseFileInfo())
     {}
     static Database* self;
     const QFileInfo databaseFile;

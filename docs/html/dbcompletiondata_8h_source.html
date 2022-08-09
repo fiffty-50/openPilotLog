@@ -87,64 +87,76 @@ $(document).ready(function(){initNavTree('dbcompletiondata_8h_source.html',''); 
 <div class="title">dbcompletiondata.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef DBCOMPLETIONDATA_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define DBCOMPLETIONDATA_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;src/database/database.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_o_p_l.html">OPL</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">   12</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    AirportIdentifierICAO,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    AirportIdentifierIATA,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    AirportIdentifier,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    AirportNames,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    Registrations,</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    Companies,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    PilotNames,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    AircraftTypes</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="class_o_p_l_1_1_db_completion_data.html">   32</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_o_p_l_1_1_db_completion_data.html">DbCompletionData</a></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_o_p_l_1_1_db_completion_data.html#a0d158b17b9d05fb61250a03c4ff0d33a">init</a>();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_o_p_l_1_1_db_completion_data.html#afc1e1cd7b565004734c0d65f1757a563">update</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> updateTails();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> updatePilots();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="comment">// Maps for input mapping DB key - user input</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    QHash&lt;int, QString&gt; pilotsIdMap;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    QHash&lt;int, QString&gt; tailsIdMap;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    QHash&lt;int, QString&gt; airportIcaoIdMap;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    QHash&lt;int, QString&gt; airportIataIdMap;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    QHash&lt;int, QString&gt; airportNameIdMap;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">// Lists for QCompleter</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    QStringList pilotList;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    QStringList tailsList;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    QStringList airportList;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="comment">// User Data State to trigger update if needed</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="struct_o_p_l_1_1_user_data_state.html">UserDataState</a> current_state;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QStringList <a class="code" href="class_o_p_l_1_1_db_completion_data.html#adf869b051f481654803deed41e9f2179">getCompletionList</a>(<a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a> target);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QHash&lt;int, QString&gt; <a class="code" href="class_o_p_l_1_1_db_completion_data.html#aa11d8a7f4fe7521f1a1b59178ed26972">getIdMap</a>(<a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a> target);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;};</div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *openPilotLog - A FOSS Pilot Logbook Application</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *Copyright (C) 2020-2022 Felix Turowsky</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> *This program is free software: you can redistribute it and/or modify</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> *it under the terms of the GNU General Public License as published by</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> *the Free Software Foundation, either version 3 of the License, or</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> *(at your option) any later version.</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> *This program is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> *but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> *GNU General Public License for more details.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> *You should have received a copy of the GNU General Public License</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> *along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifndef DBCOMPLETIONDATA_H</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define DBCOMPLETIONDATA_H</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespace_o_p_l.html">OPL</a> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">   27</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    AirportIdentifierICAO,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    AirportIdentifierIATA,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    AirportIdentifier,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    AirportNames,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    Registrations,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    Companies,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    PilotNames,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    AircraftTypes</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_o_p_l_1_1_db_completion_data.html">   47</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_o_p_l_1_1_db_completion_data.html">DbCompletionData</a></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_o_p_l_1_1_db_completion_data.html#a0d158b17b9d05fb61250a03c4ff0d33a">init</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_o_p_l_1_1_db_completion_data.html#afc1e1cd7b565004734c0d65f1757a563">update</a>();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> updateTails();</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> updatePilots();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> updateAirports();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="comment">// Maps for input mapping DB key - user input</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    QHash&lt;int, QString&gt; pilotsIdMap;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    QHash&lt;int, QString&gt; tailsIdMap;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    QHash&lt;int, QString&gt; airportIcaoIdMap;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    QHash&lt;int, QString&gt; airportIataIdMap;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    QHash&lt;int, QString&gt; airportNameIdMap;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">// Lists for QCompleter</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    QStringList pilotList;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    QStringList tailsList;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    QStringList airportList;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;} <span class="comment">// namespace OPL</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// DBCOMPLETIONDATA_H</span></div>
-<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a></div><div class="ttdoc">Provides data for QCompleters and QHashs.</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.h:33</div></div>
-<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_a0d158b17b9d05fb61250a03c4ff0d33a"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#a0d158b17b9d05fb61250a03c4ff0d33a">OPL::DbCompletionData::init</a></div><div class="ttdeci">void init()</div><div class="ttdoc">init Retrieves Data and populates Lists and Maps</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:5</div></div>
-<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_aa11d8a7f4fe7521f1a1b59178ed26972"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#aa11d8a7f4fe7521f1a1b59178ed26972">OPL::DbCompletionData::getIdMap</a></div><div class="ttdeci">static const QHash&lt; int, QString &gt; getIdMap(CompleterTarget target)</div><div class="ttdoc">returns a QHash of a human-readable database value and its row id. Used in the Dialogs to map user in...</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:101</div></div>
-<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_adf869b051f481654803deed41e9f2179"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#adf869b051f481654803deed41e9f2179">OPL::DbCompletionData::getCompletionList</a></div><div class="ttdeci">static const QStringList getCompletionList(CompleterTarget target)</div><div class="ttdoc">getCompletionList returns a QStringList of values for a QCompleter based on database values</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:58</div></div>
-<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_afc1e1cd7b565004734c0d65f1757a563"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#afc1e1cd7b565004734c0d65f1757a563">OPL::DbCompletionData::update</a></div><div class="ttdeci">void update()</div><div class="ttdoc">updates data from the user modifiable tables</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:33</div></div>
-<div class="ttc" id="anamespace_o_p_l_html"><div class="ttname"><a href="namespace_o_p_l.html">OPL</a></div><div class="ttdoc">A namespace to collect constants and enums used throughout the application.</div><div class="ttdef"><b>Definition:</b> database.cpp:25</div></div>
-<div class="ttc" id="anamespace_o_p_l_html_a183077dea2ffeb8866c41affcabcc53a"><div class="ttname"><a href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">OPL::CompleterTarget</a></div><div class="ttdeci">CompleterTarget</div><div class="ttdoc">The DatabaseTarget enum lists database items that are used by completers, for content matching or nee...</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.h:13</div></div>
-<div class="ttc" id="astruct_o_p_l_1_1_user_data_state_html"><div class="ttname"><a href="struct_o_p_l_1_1_user_data_state.html">OPL::UserDataState</a></div><div class="ttdoc">The UserDateState struct caches the current number of entries in relevant database tables for fast ac...</div><div class="ttdef"><b>Definition:</b> database.h:57</div></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QStringList <a class="code" href="class_o_p_l_1_1_db_completion_data.html#adf869b051f481654803deed41e9f2179">getCompletionList</a>(<a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a> target);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> QHash&lt;int, QString&gt; <a class="code" href="class_o_p_l_1_1_db_completion_data.html#aa11d8a7f4fe7521f1a1b59178ed26972">getIdMap</a>(<a class="code" href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">CompleterTarget</a> target);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;};</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;} <span class="comment">// namespace OPL</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// DBCOMPLETIONDATA_H</span></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html">OPL::DbCompletionData</a></div><div class="ttdoc">Provides data for QCompleters and QHashs.</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.h:48</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_a0d158b17b9d05fb61250a03c4ff0d33a"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#a0d158b17b9d05fb61250a03c4ff0d33a">OPL::DbCompletionData::init</a></div><div class="ttdeci">void init()</div><div class="ttdoc">init Retrieves Data and populates Lists and Maps</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:24</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_aa11d8a7f4fe7521f1a1b59178ed26972"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#aa11d8a7f4fe7521f1a1b59178ed26972">OPL::DbCompletionData::getIdMap</a></div><div class="ttdeci">static const QHash&lt; int, QString &gt; getIdMap(CompleterTarget target)</div><div class="ttdoc">returns a QHash of a human-readable database value and its row id. Used in the Dialogs to map user in...</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:124</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_adf869b051f481654803deed41e9f2179"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#adf869b051f481654803deed41e9f2179">OPL::DbCompletionData::getCompletionList</a></div><div class="ttdeci">static const QStringList getCompletionList(CompleterTarget target)</div><div class="ttdoc">getCompletionList returns a QStringList of values for a QCompleter based on database values</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:81</div></div>
+<div class="ttc" id="aclass_o_p_l_1_1_db_completion_data_html_afc1e1cd7b565004734c0d65f1757a563"><div class="ttname"><a href="class_o_p_l_1_1_db_completion_data.html#afc1e1cd7b565004734c0d65f1757a563">OPL::DbCompletionData::update</a></div><div class="ttdeci">void update()</div><div class="ttdoc">updates data from the user modifiable tables</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.cpp:50</div></div>
+<div class="ttc" id="anamespace_o_p_l_html"><div class="ttname"><a href="namespace_o_p_l.html">OPL</a></div><div class="ttdoc">A namespace to collect constants and enums used throughout the application.</div><div class="ttdef"><b>Definition:</b> paths.cpp:3</div></div>
+<div class="ttc" id="anamespace_o_p_l_html_a183077dea2ffeb8866c41affcabcc53a"><div class="ttname"><a href="namespace_o_p_l.html#a183077dea2ffeb8866c41affcabcc53a">OPL::CompleterTarget</a></div><div class="ttdeci">CompleterTarget</div><div class="ttdoc">The DatabaseTarget enum lists database items that are used by completers, for content matching or nee...</div><div class="ttdef"><b>Definition:</b> dbcompletiondata.h:28</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
