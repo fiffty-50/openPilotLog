@@ -23,8 +23,8 @@
 #include "src/gui/widgets/backupwidget.h"
 #include "src/database/row.h"
 #include "src/classes/downloadhelper.h"
-#include "src/classes/asettings.h"
-#include "src/functions/adate.h"
+#include "src/classes/settings.h"
+#include "src/functions/datetime.h"
 #include "src/classes/style.h"
 #include "src/classes/md5sum.h"
 #include <QErrorMessage>
@@ -55,7 +55,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     // Prepare Date Edits
     const auto date_edits = this->findChildren<QDateEdit *>();
     for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(ADate::getFormatString(OPL::DateFormat::ISODate));
+        date_edit->setDisplayFormat(OPL::DateTime::getFormatString(OPL::DateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
@@ -263,25 +263,25 @@ bool FirstRunDialog::verifyTemplates()
 
 void FirstRunDialog::writeSettings()
 {
-    ASettings::resetToDefaults();
+    Settings::resetToDefaults();
 
-    ASettings::write(ASettings::FlightLogging::Function, ui->functionComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::Function, ui->functionComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
     switch (ui->nightRulesComboBox->currentIndex()) {
     case 0:
-        ASettings::write(ASettings::FlightLogging::NightAngle, -6);
+        Settings::write(Settings::FlightLogging::NightAngle, -6);
         break;
     case 1:
-        ASettings::write(ASettings::FlightLogging::NightAngle, 0);
+        Settings::write(Settings::FlightLogging::NightAngle, 0);
         break;
     }
-    ASettings::write(ASettings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
-    ASettings::write(ASettings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
-    ASettings::write(ASettings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    ASettings::write(ASettings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
-    ASettings::write(ASettings::Main::Style, ui->styleComboBox->currentText());
-    ASettings::sync();
+    Settings::write(Settings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
+    Settings::write(Settings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
+    Settings::write(Settings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
+    Settings::write(Settings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
+    Settings::write(Settings::Main::Style, ui->styleComboBox->currentText());
+    Settings::sync();
 }
 
 bool FirstRunDialog::setupDatabase()
@@ -344,13 +344,13 @@ bool FirstRunDialog::writeCurrencies()
         {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
         {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
     };
-    const QMap<OPL::CurrencyName, ASettings::UserData> settings_list = {
-        {OPL::CurrencyName::Licence,    ASettings::UserData::ShowLicCurrency },
-        {OPL::CurrencyName::TypeRating, ASettings::UserData::ShowTrCurrency },
-        {OPL::CurrencyName::LineCheck,  ASettings::UserData::ShowLckCurrency },
-        {OPL::CurrencyName::Medical,    ASettings::UserData::ShowMedCurrency },
-        {OPL::CurrencyName::Custom1,    ASettings::UserData::ShowCustom1Currency },
-        {OPL::CurrencyName::Custom2,    ASettings::UserData::ShowCustom2Currency },
+    const QMap<OPL::CurrencyName, Settings::UserData> settings_list = {
+        {OPL::CurrencyName::Licence,    Settings::UserData::ShowLicCurrency },
+        {OPL::CurrencyName::TypeRating, Settings::UserData::ShowTrCurrency },
+        {OPL::CurrencyName::LineCheck,  Settings::UserData::ShowLckCurrency },
+        {OPL::CurrencyName::Medical,    Settings::UserData::ShowMedCurrency },
+        {OPL::CurrencyName::Custom1,    Settings::UserData::ShowCustom1Currency },
+        {OPL::CurrencyName::Custom2,    Settings::UserData::ShowCustom2Currency },
     };
 
     QDate today = QDate::currentDate();
@@ -364,7 +364,7 @@ bool FirstRunDialog::writeCurrencies()
             else if(enum_value == OPL::CurrencyName::Custom2)
                 row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
 
-            ASettings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
+            Settings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
             OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);
             if (!DB->commit(entry))
                 return false;
@@ -420,12 +420,12 @@ void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_styl
 
 void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
+    Settings::write(Settings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
 }
 
 void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 {
-    ASettings::write(ASettings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
+    Settings::write(Settings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }
 
 void FirstRunDialog::on_importPushButton_clicked()

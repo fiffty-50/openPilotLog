@@ -5,7 +5,7 @@
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
-#include "src/functions/areadcsv.h"
+#include "src/functions/readcsv.h"
 
 namespace ImportCrewlounge
 {
@@ -21,7 +21,7 @@ void exec(const QString &csv_file_path)
     q.exec();
 
     // Read from CSV and remove first line (headers)
-    auto raw_csv_data = aReadCsvAsRows(csv_file_path);
+    auto raw_csv_data = CSV::readCsvAsRows(csv_file_path);
     raw_csv_data.removeFirst();
 
     // Process Pilots

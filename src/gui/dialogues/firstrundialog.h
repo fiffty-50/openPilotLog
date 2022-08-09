@@ -30,7 +30,7 @@ class FirstRunDialog;
 /*!
  * \brief The FirstRunDialog is used as a set-up wizard for the application.
  * \details The Application does not ship with a database, it is created on the fly. This is the main purpose of the
- * FirstRunDialog. Apart from this main task, user details and preferences are gathered and saved using ASettings.
+ * FirstRunDialog. Apart from this main task, user details and preferences are gathered and saved using Settings.
  *
  * The Dialog contains a tabbed widget which guides the user through the set up process.
  *
@@ -51,12 +51,12 @@ class FirstRunDialog;
  * ### 4 - Flight Logging
  *
  * In this tab, the user can determine what the defualt selections for logging a new flight will be. These selections (Pilot Function,
- * Flight Rules,...) are stored in an INI file using the ASettings class.
+ * Flight Rules,...) are stored in an INI file using the Settings class.
  *
  * ### 5 - Customization
  *
  * In this tab, the user can make selections regarding the application layout and theming, as well as with regards to how data is being
- * displayed. These settings are stored in an INI file using the ASettings class.
+ * displayed. These settings are stored in an INI file using the Settings class.
  *
  * ### 6 - Finish / Database creation
  *

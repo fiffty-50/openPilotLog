@@ -17,7 +17,7 @@
  */
 #include "calc.h"
 #include "src/database/database.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include "src/opl.h"
 
 /*!
@@ -343,7 +343,7 @@ void OPL::Calc::updateAutoTimes(int acft_id)
  */
 void OPL::Calc::updateNightTimes()
 {
-    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
+    const int night_angle = Settings::read(Settings::FlightLogging::NightAngle).toInt();
 
     //find all flights for aircraft
     auto statement = QStringLiteral("SELECT ROWID FROM flights");

@@ -2,7 +2,7 @@
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
 #include "src/functions/time.h"
-#include "src/functions/adate.h"
+#include "src/functions/datetime.h"
 #include "src/database/database.h"
 #include "src/database/dbcompletiondata.h"
 #include <QCompleter>
@@ -15,7 +15,7 @@ NewSimDialog::NewSimDialog(QWidget *parent) :
 {
     //entry = ASimulatorEntry();
     ui->setupUi(this);
-    ui->dateLineEdit->setText(ADate::currentDate());
+    ui->dateLineEdit->setText(OPL::DateTime::currentDate());
     init();
 }
 /*!
@@ -72,9 +72,9 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
     auto text = ui->dateLineEdit->text();
 
     OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    auto date = ADate::parseInput(text, date_format);
+    auto date = OPL::DateTime::parseInput(text, date_format);
     if (date.isValid()) {
-        ui->dateLineEdit->setText(ADate::toString(date, date_format));
+        ui->dateLineEdit->setText(OPL::DateTime::dateToString(date, date_format));
         ui->dateLineEdit->setStyleSheet(QString());
         return;
     } else {
@@ -120,7 +120,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     // Date
     auto text = ui->dateLineEdit->text();
     OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    const auto date = ADate::parseInput(text, date_format);
+    const auto date = OPL::DateTime::parseInput(text, date_format);
 
     if (!date.isValid()) {
         ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);

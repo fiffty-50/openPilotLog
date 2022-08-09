@@ -33,7 +33,7 @@ class SettingsWidget;
  * \brief The SettingsWidget is used to to display and alter Settings.
  *
  * \details Most Inputs are collected and processed in various slots and
- * written to the settings file via the ASettings class. In the `Personal` Settings
+ * written to the settings file via the Settings class. In the `Personal` Settings
  * tab, the user can edit his personal details, which are then written to the Database
  * (The Logbook owner is registered in the Pilots Database with `pilot_id = 1`).
  */

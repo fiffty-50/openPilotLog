@@ -85,8 +85,8 @@ set(PROJECT_SOURCES
     src/classes/downloadhelper.cpp
     src/classes/runguard.h
     src/classes/runguard.cpp
-    src/classes/asettings.h
-    src/classes/asettings.cpp
+    src/classes/settings.h
+    src/classes/settings.cpp
     src/classes/translator.h
     src/classes/translator.cpp
     src/classes/jsonhelper.h
@@ -97,15 +97,13 @@ set(PROJECT_SOURCES
     # Namespaces
     src/functions/calc.h
     src/functions/calc.cpp
-    src/functions/adatetime.h
     src/functions/log.h
     src/functions/log.cpp
-    src/functions/areadcsv.h
-    src/functions/areadcsv.cpp
+    src/functions/readcsv.h
     src/functions/statistics.h
     src/functions/statistics.cpp
-    src/functions/adate.h
-    src/functions/adate.cpp
+    src/functions/datetime.h
+    src/functions/datetime.cpp
     src/functions/time.h
 
     # Database

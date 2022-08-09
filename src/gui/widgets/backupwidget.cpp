@@ -19,7 +19,7 @@
 #include "ui_backupwidget.h"
 #include "src/opl.h"
 #include "src/database/database.h"
-#include "src/functions/adatetime.h"
+#include "src/functions/datetime.h"
 #include "src/database/dbsummary.h"
 
 #include <QListView>
@@ -80,7 +80,7 @@ void BackupWidget::refresh()
 const QString BackupWidget::absoluteBackupPath()
 {
     const QString backup_name = QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
+            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
     return OPL::Paths::filePath(OPL::Paths::Backup, backup_name);
 }
@@ -88,7 +88,7 @@ const QString BackupWidget::absoluteBackupPath()
 const QString BackupWidget::backupName()
 {
     return  QLatin1String("logbook_backup_")
-            + ADateTime::toString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
+            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
             + QLatin1String(".db");
 }
 

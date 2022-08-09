@@ -15,11 +15,11 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "asettings.h"
+#include "settings.h"
 #include <QSettings>
 
 
-QMap<ASettings::Main, QString> ASettings::mainMap = {
+QMap<Settings::Main, QString> Settings::mainMap = {
     {Main::SetupComplete,               QStringLiteral("setupComplete")},
     {Main::Style,                       QStringLiteral("style")},
     {Main::Font,                        QStringLiteral("font")},
@@ -29,7 +29,7 @@ QMap<ASettings::Main, QString> ASettings::mainMap = {
     {Main::DateFormat,                  QStringLiteral("dateFormat")},
 };
 
-QMap<ASettings::UserData, QString> ASettings::userDataMap = {
+QMap<Settings::UserData, QString> Settings::userDataMap = {
     {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
     {UserData::TailSortColumn,          QStringLiteral("tailSortColumn")},
     {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
@@ -46,7 +46,7 @@ QMap<ASettings::UserData, QString> ASettings::userDataMap = {
     {UserData::Custom2CurrencyName,     QStringLiteral("custom2CurrencyName")},
 };
 
-QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
+QMap<Settings::FlightLogging, QString> Settings::flightLoggingMap = {
     {FlightLogging::Function,           QStringLiteral("function")},
     {FlightLogging::Approach,           QStringLiteral("approach")},
     {FlightLogging::NightLoggingEnabled,QStringLiteral("nightLoggingEnabled")},
@@ -57,16 +57,16 @@ QMap<ASettings::FlightLogging, QString> ASettings::flightLoggingMap = {
     //{FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
 };
 
-void ASettings::setup()
+void Settings::setup()
 {
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings();
 }
 
 /*!
- * \brief ASettings::resetToDefaults (Re-)sets all settings to the default value
+ * \brief Settings::resetToDefaults (Re-)sets all settings to the default value
  */
-void ASettings::resetToDefaults()
+void Settings::resetToDefaults()
 {
     write(Main::Style, QStringLiteral("Fusion"));
     write(Main::UseSystemFont, true);
@@ -92,44 +92,44 @@ void ASettings::resetToDefaults()
 // Read/Write
 //
 
-QVariant ASettings::read(const FlightLogging key)
+QVariant Settings::read(const FlightLogging key)
 { return QSettings().value(groupOfKey(key)); }
 
-void ASettings::write(const FlightLogging key, const QVariant &val)
+void Settings::write(const FlightLogging key, const QVariant &val)
 { QSettings().setValue(groupOfKey(key), val); }
 
-QVariant ASettings::read(const Main key)
+QVariant Settings::read(const Main key)
 { return QSettings().value(groupOfKey(key)); }
 
-void ASettings::write(const Main key, const QVariant &val)
+void Settings::write(const Main key, const QVariant &val)
 { QSettings().setValue(groupOfKey(key), val); }
 
-QVariant ASettings::read(const UserData key)
+QVariant Settings::read(const UserData key)
 { return QSettings().value(groupOfKey(key)); }
 
-void ASettings::write(const UserData key, const QVariant &val)
+void Settings::write(const UserData key, const QVariant &val)
 { QSettings().setValue(groupOfKey(key), val); }
 
 //
 // QString conversion PATH
 //
-QString ASettings::groupOfKey (const ASettings::FlightLogging key)
+QString Settings::groupOfKey (const Settings::FlightLogging key)
 { return QStringLiteral("flightlogging/") + flightLoggingMap[key]; }
 
-QString ASettings::groupOfKey (const ASettings::Main key)
+QString Settings::groupOfKey (const Settings::Main key)
 { return QStringLiteral("main/") + mainMap[key]; }
 
-QString ASettings::groupOfKey (const ASettings::UserData key)
+QString Settings::groupOfKey (const Settings::UserData key)
 { return QStringLiteral("userdata/") + userDataMap[key]; }
 
 //
 // QString conversion ONLY KEY
 //
-QString ASettings::stringOfKey (const ASettings::FlightLogging key)
+QString Settings::stringOfKey (const Settings::FlightLogging key)
 { return  flightLoggingMap[key]; }
 
-QString ASettings::stringOfKey (const ASettings::Main key)
+QString Settings::stringOfKey (const Settings::Main key)
 { return  mainMap[key]; }
 
-QString ASettings::stringOfKey (const ASettings::UserData key)
+QString Settings::stringOfKey (const Settings::UserData key)
 { return  userDataMap[key]; }

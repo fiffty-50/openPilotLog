@@ -20,8 +20,8 @@
 #include "src/functions/log.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/classes/runguard.h"
-#include "src/classes/asettings.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
+#include "src/classes/settings.h"
 #include "src/classes/style.h"
 #include "src/functions/log.h"
 #include "src/classes/paths.h"
@@ -57,7 +57,7 @@ void init()
         LOG << "Unable to initalise logging.";
     }
     LOG << "Reading Settings...";
-    ASettings::setup();
+    Settings::setup();
     LOG << "Setting up application style...";
     OPL::Style::setup();
     // Translations to be done at a later stage
@@ -71,7 +71,7 @@ bool firstRun()
         LOG << "Initial setup incomplete or unsuccessfull.";
         return false;
     }
-    ASettings::write(ASettings::Main::SetupComplete, true);
+    Settings::write(Settings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
     return true;
 }
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     Main::init();
 
     // Check for First Run and launch Setup Wizard
-    if (!ASettings::read(ASettings::Main::SetupComplete).toBool())
+    if (!Settings::read(Settings::Main::SetupComplete).toBool())
         if(!Main::firstRun())
             return 0;
 

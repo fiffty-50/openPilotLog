@@ -15,14 +15,19 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "areadcsv.h"
+#ifndef READCSV_H
+#define READCSV_H
+
+#include<QtCore>
+
+namespace CSV {
 
 /*!
- * \brief aReadCSV reads from a CSV file
+ * \brief readCSV reads from a CSV file
  * \param filename - QString to csv file.
  * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input file
  */
-QVector<QStringList> aReadCsv(QString filename)
+static inline QVector<QStringList> readCSVasColumns(const QString &filename)
 {
     QFile csvfile(filename);
     csvfile.open(QIODevice::ReadOnly);
@@ -50,11 +55,11 @@ QVector<QStringList> aReadCsv(QString filename)
 }
 
 /*!
- * \brief aReadCsvAsRows reads from CSV
+ * \brief readCsvAsRows reads from CSV
  * \param file_name input file path
  * \return QVector<QStringList> of the CSV data, where each QStringList is one row of the input file
  */
-QVector<QStringList> aReadCsvAsRows(const QString &file_name)
+static inline QVector<QStringList> readCsvAsRows(const QString &file_name)
 {
     QFile csvfile(file_name);
     csvfile.open(QIODevice::ReadOnly);
@@ -69,3 +74,7 @@ QVector<QStringList> aReadCsvAsRows(const QString &file_name)
     }
     return csv_rows;
 }
+
+} // namespace CSV
+
+#endif // READCSV_H

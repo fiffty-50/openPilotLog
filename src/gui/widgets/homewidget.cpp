@@ -19,7 +19,7 @@
 #include "ui_homewidget.h"
 #include "src/database/database.h"
 #include "src/functions/time.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include "src/database/row.h"
 
 // EASA FTL Limitations in minutes
@@ -37,8 +37,8 @@ HomeWidget::HomeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     today = QDate::currentDate();
-    ftlWarningThreshold = ASettings::read(ASettings::UserData::FtlWarningThreshold).toDouble();
-    currWarningThreshold = ASettings::read(ASettings::UserData::CurrWarningThreshold).toInt();
+    ftlWarningThreshold = Settings::read(Settings::UserData::FtlWarningThreshold).toDouble();
+    currWarningThreshold = Settings::read(Settings::UserData::CurrWarningThreshold).toInt();
     auto logo = QPixmap(OPL::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
@@ -142,25 +142,25 @@ void HomeWidget::fillSelectedCurrencies()
 {
     fillCurrencyTakeOffLanding();
 
-    ASettings::read(ASettings::UserData::ShowLicCurrency).toBool() ?
+    Settings::read(Settings::UserData::ShowLicCurrency).toBool() ?
                 fillCurrency(OPL::CurrencyName::Licence, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
-    ASettings::read(ASettings::UserData::ShowTrCurrency).toBool() ?
+    Settings::read(Settings::UserData::ShowTrCurrency).toBool() ?
                 fillCurrency(OPL::CurrencyName::TypeRating, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
-    ASettings::read(ASettings::UserData::ShowLckCurrency).toBool() ?
+    Settings::read(Settings::UserData::ShowLckCurrency).toBool() ?
                 fillCurrency(OPL::CurrencyName::LineCheck, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
-    ASettings::read(ASettings::UserData::ShowMedCurrency).toBool() ?
+    Settings::read(Settings::UserData::ShowMedCurrency).toBool() ?
                 fillCurrency(OPL::CurrencyName::Medical, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
-    ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
+    Settings::read(Settings::UserData::ShowCustom1Currency).toBool() ?
                 fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    ASettings::read(ASettings::UserData::ShowCustom1Currency).toBool() ?
+    Settings::read(Settings::UserData::ShowCustom1Currency).toBool() ?
                 fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    ASettings::read(ASettings::UserData::ShowCustom2Currency).toBool() ?
+    Settings::read(Settings::UserData::ShowCustom2Currency).toBool() ?
                 fillCurrency(OPL::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
 }
@@ -183,7 +183,7 @@ void HomeWidget::fillCurrencyTakeOffLanding()
     if (takeoff_landings[1].toUInt() < 3)
         setLabelColour(ui->LandingsDisplayLabel, Colour::Red);
 
-    if (ASettings::read(ASettings::UserData::ShowToLgdCurrency).toBool()) {
+    if (Settings::read(Settings::UserData::ShowToLgdCurrency).toBool()) {
         QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
         if (expiration_date <= QDate::currentDate())
             setLabelColour(ui->currToLdgDisplayLabel, Colour::Red);

@@ -20,7 +20,7 @@
 #include "ui_logbookwidget.h"
 #include "src/database/row.h"
 #include "src/database/database.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
 
@@ -51,7 +51,7 @@ LogbookWidget::LogbookWidget(OPL::DbCompletionData& completion_data, QWidget *pa
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
 
-    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }
@@ -68,7 +68,7 @@ LogbookWidget::~LogbookWidget()
 /*!
  * \brief LogbookWidget::setupModelAndView configures the QTableView and populates the model with data
  * according to the current view.
- * \param view_id - retreived from ASettings::Main::LogbookView
+ * \param view_id - retreived from Settings::Main::LogbookView
  */
 void LogbookWidget::setupModelAndView(int view_id)
 {
@@ -237,7 +237,7 @@ void LogbookWidget::refresh()
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal == SettingsWidget::SettingSignal::LogbookWidget)
-        setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+        setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
 }
 
 //void LogbookWidget::on_showAllButton_clicked()
@@ -286,7 +286,7 @@ void LogbookWidget::repopulateModel()
     delete displayModel;
     // create a new model and populate it
     displayModel = new QSqlTableModel(this);
-    setupModelAndView(ASettings::read(ASettings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 }
 

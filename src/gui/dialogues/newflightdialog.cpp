@@ -18,10 +18,9 @@
 #include "newflightdialog.h"
 #include "ui_newflightdialog.h"
 #include "src/opl.h"
-#include "src/functions/adate.h"
-#include "src/classes/asettings.h"
+#include "src/functions/datetime.h"
+#include "src/classes/settings.h"
 #include "src/functions/calc.h"
-#include "src/functions/adatetime.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include <QDateTime>
@@ -39,18 +38,18 @@ NewFlightDialog::NewFlightDialog(OPL::DbCompletionData &completion_data,
     init();
     //flightEntry = AFlightEntry();
     // Set up UI (New Flight)
-    LOG << ASettings::read(ASettings::FlightLogging::Function);
-    if(ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
+    LOG << Settings::read(Settings::FlightLogging::Function);
+    if(Settings::read(Settings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
         emit ui->picNameLineEdit->editingFinished();
     }
-    if (ASettings::read(ASettings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::SIC)) {
+    if (Settings::read(Settings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::SIC)) {
         ui->sicNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
     }
-    ui->doftLineEdit->setText(ADate::currentDate());
+    ui->doftLineEdit->setText(OPL::DateTime::currentDate());
     emit ui->doftLineEdit->editingFinished();
 }
 
@@ -179,11 +178,11 @@ bool NewFlightDialog::eventFilter(QObject *object, QEvent *event)
  */
 void NewFlightDialog::readSettings()
 {
-    ui->functionComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Function).toInt());
-    ui->approachComboBox->setCurrentIndex(ASettings::read(ASettings::FlightLogging::Approach).toInt());
-    ui->pilotFlyingCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::PilotFlying).toBool());
-    ui->ifrCheckBox->setChecked(ASettings::read(ASettings::FlightLogging::LogIFR).toBool());
-    ui->flightNumberLineEdit->setText(ASettings::read(ASettings::FlightLogging::FlightNumberPrefix).toString());
+    ui->functionComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Function).toInt());
+    ui->approachComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Approach).toInt());
+    ui->pilotFlyingCheckBox->setChecked(Settings::read(Settings::FlightLogging::PilotFlying).toBool());
+    ui->ifrCheckBox->setChecked(Settings::read(Settings::FlightLogging::LogIFR).toBool());
+    ui->flightNumberLineEdit->setText(Settings::read(Settings::FlightLogging::FlightNumberPrefix).toString());
 }
 
 /*!
@@ -370,9 +369,9 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     OPL::RowData_T new_data;
     // Calculate Block and Night Time
     const int block_minutes = OPL::Time::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
-    QDateTime departure_date_time = ADateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
+    QDateTime departure_date_time = OPL::DateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
     const auto night_time_data = OPL::Calc::NightTimeValues(ui->deptLocationLineEdit->text(), ui->destLocationLineEdit->text(),
-                           departure_date_time, block_minutes, ASettings::read(ASettings::FlightLogging::NightAngle).toInt());
+                           departure_date_time, block_minutes, Settings::read(Settings::FlightLogging::NightAngle).toInt());
     // Mandatory data
     new_data.insert(OPL::Db::FLIGHTS_DOFT, ui->doftLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_DEPT, ui->deptLocationLineEdit->text());
@@ -479,9 +478,9 @@ void NewFlightDialog::updateNightCheckBoxes()
 {
     // Calculate Night Time
     const QString dept_date = (ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
-    const auto dept_date_time = ADateTime::fromString(dept_date);
+    const auto dept_date_time = OPL::DateTime::fromString(dept_date);
     const int block_minutes = OPL::Time::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
-    const int night_angle = ASettings::read(ASettings::FlightLogging::NightAngle).toInt();
+    const int night_angle = Settings::read(Settings::FlightLogging::NightAngle).toInt();
     const auto night_values = OPL::Calc::NightTimeValues(
                 ui->deptLocationLineEdit->text(),
                 ui->destLocationLineEdit->text(),
@@ -643,10 +642,10 @@ void NewFlightDialog::on_doftLineEdit_editingFinished()
 
     TODO << "Non-default Date formats not implemented yet.";
     OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    auto date = ADate::parseInput(text, date_format);
+    auto date = OPL::DateTime::parseInput(text, date_format);
     if (date.isValid()) {
         label->setText(date.toString(Qt::TextDate));
-        line_edit->setText(ADate::toString(date, date_format));
+        line_edit->setText(OPL::DateTime::dateToString(date, date_format));
         onGoodInputReceived(line_edit);
         return;
     }

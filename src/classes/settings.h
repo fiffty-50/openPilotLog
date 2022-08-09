@@ -15,8 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ASETTINGS_H
-#define ASETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 #include <QtCore>
 #include <QSettings>
 
@@ -24,7 +24,7 @@
  * \brief Thin wrapper for the QSettings class,
  * simplifying reading and writing of settings.
  */
-class ASettings {
+class Settings {
 public:
     enum class Main {
         SetupComplete,
@@ -102,4 +102,4 @@ private:
     static QMap<FlightLogging, QString> flightLoggingMap;
 };
 
-#endif // ASETTINGS_H
+#endif // SETTINGS_H

@@ -16,14 +16,20 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
-#include "ui_debugwidget.h"
-#include <QtGlobal>
+#include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
 #include "src/testing/importCrewlounge/processpilots.h"
-#include "src/testing/importCrewlounge/processaircraft.h"
+#include "ui_debugwidget.h"
+#include <QtGlobal>
+#include "src/classes/downloadhelper.h"
+#include "src/functions/readcsv.h"
+#include "src/database/database.h"
+#include "src/database/row.h"
+#include "src/testing/atimer.h"
+#include "src/functions/log.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
-    auto rawCsvData = aReadCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
+    auto rawCsvData = CSV::readCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
     // Process Pilots
     auto proc_pilots = ProcessPilots(rawCsvData);
     proc_pilots.init();

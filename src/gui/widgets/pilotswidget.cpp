@@ -22,7 +22,7 @@
 #include "src/database/database.h"
 #include "src/database/row.h"
 #include "src/functions/time.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
     QWidget(parent),
@@ -59,7 +59,7 @@ void PilotsWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    sortColumn = ASettings::read(ASettings::UserData::PilotSortColumn).toInt();
+    sortColumn = Settings::read(Settings::UserData::PilotSortColumn).toInt();
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
@@ -137,7 +137,7 @@ void PilotsWidget::tableView_selectionChanged()
 void PilotsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
-    ASettings::write(ASettings::UserData::PilotSortColumn, column);
+    Settings::write(Settings::UserData::PilotSortColumn, column);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()

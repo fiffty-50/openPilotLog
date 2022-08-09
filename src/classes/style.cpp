@@ -27,7 +27,7 @@
  */
 #include "src/opl.h"
 #include "style.h"
-#include "src/classes/asettings.h"
+#include "src/classes/settings.h"
 #include <QStyle>
 #include <QStyleFactory>
 #include <QApplication>
@@ -50,21 +50,21 @@ QLatin1String Style::DARK_PALETTE = QLatin1String("Dark-Palette");
  */
 void Style::setup()
 {
-    if (!ASettings::read(ASettings::Main::SetupComplete).toBool()) // Use system default for first run
+    if (!Settings::read(Settings::Main::SetupComplete).toBool()) // Use system default for first run
         return;
     // Set Font
-    if (!ASettings::read(ASettings::Main::UseSystemFont).toBool()) {
-        QFont font(ASettings::read(ASettings::Main::Font).toString());
-        font.setPointSize(ASettings::read(ASettings::Main::FontSize).toUInt());
+    if (!Settings::read(Settings::Main::UseSystemFont).toBool()) {
+        QFont font(Settings::read(Settings::Main::Font).toString());
+        font.setPointSize(Settings::read(Settings::Main::FontSize).toUInt());
         qApp->setFont(font);
         LOG << "Application Font set: " << font.toString().split(',').first();
     }
     // Set style, stylesheet or palette
-    QString style_setting = ASettings::read(ASettings::Main::Style).toString();
+    QString style_setting = Settings::read(Settings::Main::Style).toString();
 
     if (style_setting == DARK_PALETTE) {
         Style::setStyle(Style::darkPalette());
-        ASettings::write(ASettings::Main::Style, style_setting);
+        Settings::write(Settings::Main::Style, style_setting);
         return;
     }
     for (const auto &style_name : styles) {

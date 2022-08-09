@@ -249,7 +249,7 @@ void MainWindow::onDatabaseInvalid()
             LOG << "Initial setup incomplete or unsuccessfull.";
             on_actionQuit_triggered();
         }
-        ASettings::write(ASettings::Main::SetupComplete, true);
+        Settings::write(Settings::Main::SetupComplete, true);
         LOG << "Initial Setup Completed successfully";
     }
 }
