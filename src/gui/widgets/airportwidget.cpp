@@ -74,8 +74,8 @@ void AirportWidget::on_searchComboBox_currentIndexChanged(int index)
 
 void AirportWidget::on_newAirportPushButton_clicked()
 {
-    auto ap_dialog = NewAirportDialog(this);
-    if (ap_dialog.exec() == QDialog::Accepted) {
+    auto ap_dialog = new NewAirportDialog(this);
+    if (ap_dialog->exec() == QDialog::Accepted) {
         model->select();
         emit DB->dataBaseUpdated(OPL::DbTable::Airports);
     }
@@ -151,8 +151,8 @@ void AirportWidget::on_editAirportPushButton_clicked()
         return;
     }
 
-    auto apd = NewAirportDialog(selectedEntries.first(), this);
-    apd.exec();
+    auto apd = new NewAirportDialog(selectedEntries.first(), this);
+    apd->exec();
 }
 
 void AirportWidget::refresh()

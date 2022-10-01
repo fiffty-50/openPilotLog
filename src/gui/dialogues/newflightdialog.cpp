@@ -420,7 +420,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
         OPL::Db::FLIGHTS_TFI,
     };
 
-    // Determine function times, zero out all values except one
+    // Determine function times, zero out all values except one (use QString() iso 0 for correct handling of NULL in DB
     // Log Instructor Time as PIC time as well
     const int& function_index = ui->functionComboBox->currentIndex();
     switch (function_index) {
@@ -430,7 +430,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
             if(i == 0 || i == 4)
                 new_data.insert(function_times[i], block_minutes);
             else
-                new_data.insert(function_times[i], 0);
+                new_data.insert(function_times[i], QString());
         }
         break;
     default:
@@ -438,7 +438,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
             if(i == function_index)
                 new_data.insert(function_times[i], block_minutes);
             else
-                new_data.insert(function_times[i], 0);
+                new_data.insert(function_times[i], QString());
         }
         break;
     }

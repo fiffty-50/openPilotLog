@@ -315,10 +315,10 @@ bool Database::update(const OPL::Row &updated_row)
     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
 //use QMetaType for binding null value in QT >= 6
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        if (i.value() == QVariant(QString()) || i.value() == 0) {
+        if (i.value() == QVariant(QString())) {
             query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
 #else
-        if (i.value() == QVariant(QString()) || i.value() == 0) {
+        if (i.value() == QVariant(QString())) {
             query.addBindValue(QVariant(QVariant::String));
 #endif
         } else {
@@ -366,10 +366,10 @@ bool Database::insert(const OPL::Row &new_row)
     for (i = data.constBegin(); i != data.constEnd(); ++i) {
 //use QMetaType for binding null value in QT >= 6
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        if (i.value() == QVariant(QString()) || i.value() == 0) {
+        if (i.value() == QVariant(QString())) {
             query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
 #else
-        if (i.value() == QVariant(QString()) || i.value() == 0) {
+        if (i.value() == QVariant(QString())) {
             query.addBindValue(QVariant(QVariant::String));
 #endif
         } else {

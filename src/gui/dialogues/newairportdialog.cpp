@@ -20,6 +20,7 @@ NewAirportDialog::NewAirportDialog(int row_id, QWidget *parent)
     : QDialog(parent), ui(new Ui::NewAirportDialog), rowId(row_id)
 {
     ui->setupUi(this);
+    this->setWindowTitle(tr("Edit Airport"));
     setValidators();
     loadTimeZones();
     loadAirportData(row_id);
