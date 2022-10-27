@@ -398,7 +398,7 @@ const inline auto  DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/te
 const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
 const inline auto  ICON_APPICON_LINUX            = QStringLiteral(":/icons/opl-icons/app/icon_linux.svg");
-const inline auto  ICON_APPICON_IOS              = QStringLiteral(":/icons/opl-icons/app/icon_ios.svg");
+const inline auto  ICON_APPICON_IOS              = QStringLiteral(":/icons/opl-icons/app/icon_ios.icns");
 const inline auto  ICON_APPICON_WIN              = QStringLiteral(":/icons/opl-icons/app/icon_windows.ico");
 
 const inline auto  ICON_TOOLBAR_HOME             = QStringLiteral(":/icons/opl-icons/toolbar/thick/light/icon_home.svg");

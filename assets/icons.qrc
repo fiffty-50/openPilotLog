@@ -37,5 +37,6 @@
         <file>opl-icons/logos/logo_text.png</file>
         <file>opl-icons/app/icon_main.png</file>
         <file>opl-icons/toolbar/thick/light/icon_backup.png</file>
+        <file>opl-icons/app/icon_ios.icns</file>
     </qresource>
 </RCC>

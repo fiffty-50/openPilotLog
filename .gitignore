@@ -85,3 +85,5 @@ openPilotLog.vcxproj.user
 
 # Disable localization updates
 l10n/
+# DS files
+*.DS_Store
