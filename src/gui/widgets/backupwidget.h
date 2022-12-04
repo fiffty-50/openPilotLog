@@ -87,7 +87,7 @@ private slots:
     /*!
      * \brief Opens a QMessageBox that outlines the different functions of the Backupwidget to the user.
      */
-    void on_aboutPushButton_clicked();
+    void on_createNewLogbookPushButton_clicked();
 
 private:
     Ui::BackupWidget *ui;

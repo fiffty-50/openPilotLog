@@ -224,13 +224,3 @@ void HomeWidget::fillLimitations()
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Orange);
     }
 }
-
-const QString HomeWidget::userName()
-{
-    const auto statement = QStringLiteral("SELECT firstname FROM pilots WHERE ROWID=1");
-    const auto name = DB->customQuery(statement, 1);
-    if (!name.isEmpty())
-        return name.first().toString();
-
-    return QString();
-}

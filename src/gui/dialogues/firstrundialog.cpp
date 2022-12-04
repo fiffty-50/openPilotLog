@@ -118,7 +118,7 @@ bool FirstRunDialog::finishSetup()
     writeSettings();
     QFileInfo database_file(OPL::Paths::databaseFileInfo());
 
-    if (database_file.exists()) {
+    if (database_file.exists() && database_file.size() != 0) {
 
         QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
                                    tr("An existing database file has been detected on your system.<br>"

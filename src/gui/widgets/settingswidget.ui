@@ -981,22 +981,9 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>About</string>
+       <string>Help</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>461</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="aboutPushButton">
          <property name="text">
@@ -1016,6 +1003,26 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="0">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>461</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="aboutBackupsPushButton">
+         <property name="text">
+          <string>About Backups</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

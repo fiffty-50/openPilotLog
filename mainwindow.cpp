@@ -25,18 +25,15 @@
 #include "src/gui/dialogues/newsimdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 // Quick and dirty Debug area
-#include "src/classes/paths.h"
+#include "src/testing/randomgenerator.h"
 void MainWindow::doDebugStuff()
 {
-    DEB << OPL::Paths::directory(OPL::Paths::Backup);
-    DEB << OPL::Paths::path(OPL::Paths::Backup);
-    DEB << OPL::Paths::filePath(OPL::Paths::Database, "logbook.db");
-    DEB << OPL::Paths::setup();
+    auto generator = OPL::RandomGenerator();
+    OPL::FlightEntry entry = generator.randomFlight();
+    DB->commit(entry);
 
-    QDir dir(QCoreApplication::applicationDirPath());
-    QString filename("file.f");
-
-    DEB << OPL::Paths::filePath(OPL::Paths::Backup, filename);
+    auto nfd = NewFlightDialog(completionData, DB->getLastEntry(OPL::DbTable::Flights));
+    nfd.exec();
 }
 
 MainWindow::MainWindow(QWidget *parent)

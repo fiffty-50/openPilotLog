@@ -53,6 +53,7 @@ public:
 private slots:
 
     void on_aboutPushButton_clicked();
+    void on_aboutBackupsPushButton_clicked();
     void on_acftSortComboBox_currentIndexChanged(int index);
     void on_prefixLineEdit_textChanged(const QString &arg1);
     void on_lastnameLineEdit_editingFinished();
@@ -89,6 +90,8 @@ private slots:
     void on_currCustom1LineEdit_editingFinished();
     void on_currCustom2LineEdit_editingFinished();
     void on_languageComboBox_activated(int arg1);
+
+
 
 private:
     Ui::SettingsWidget *ui;

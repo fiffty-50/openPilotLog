@@ -133,6 +133,8 @@ set(PROJECT_SOURCES
     src/testing/importCrewlounge/processflights.cpp
     src/testing/atimer.h
     src/testing/atimer.cpp
+    src/testing/randomgenerator.h
+    src/testing/randomgenerator.cpp
 )
 
 # This is currently a bit buggy, see

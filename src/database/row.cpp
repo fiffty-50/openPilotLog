@@ -38,7 +38,7 @@ Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
     hasData = true;
 };
 
-RowData_T Row::getData() const
+const RowData_T &Row::getData() const
 {
     return rowData;
 }

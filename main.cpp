@@ -33,10 +33,6 @@
 #include <QDebug>
 #include <QTranslator>
 
-#define APPNAME QStringLiteral("openPilotLog")
-#define ORGNAME QStringLiteral("opl")
-#define ORGDOMAIN QStringLiteral("https://github.com/fiffty-50/openpilotlog")
-
 /*!
  *  Helper functions that prepare and set up the application
  */

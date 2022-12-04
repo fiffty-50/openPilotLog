@@ -53,7 +53,7 @@ public:
     Row(const Row&) = default;
     Row& operator=(const Row&) = default;
 
-    RowData_T getData() const;
+    const RowData_T& getData() const;
     void setData(const RowData_T &value);
     int getRowId() const;
     void setRowId(int value);
@@ -99,8 +99,8 @@ public:
     TailEntry(const RowData_T &row_data);
     TailEntry(int row_id, const RowData_T &row_data);
 
-    const QString registration() const;
-    const QString type() const;
+    const QString registration() const { return getData().value(OPL::Db::TAILS_REGISTRATION).toString(); }
+    const QString type()         const { return getData().value(OPL::Db::TAILS_MAKE).toString(); } //TODO - Create String for make-model-variant
 };
 
 /*!
@@ -112,6 +112,9 @@ public:
     PilotEntry();
     PilotEntry(const RowData_T &row_data);
     PilotEntry(int row_id, const RowData_T &row_data);
+
+    const QString lastName()  const { return getData().value(OPL::Db::PILOTS_LASTNAME).toString(); }
+    const QString firstName() const { return getData().value(OPL::Db::PILOTS_FIRSTNAME).toString(); }
 
 };
 
@@ -157,6 +160,9 @@ public:
     AirportEntry();
     AirportEntry(const RowData_T &row_data);
     AirportEntry(int row_id, const RowData_T &row_data);
+
+    const QString iata() const { return getData().value(OPL::Db::AIRPORTS_IATA).toString(); }
+    const QString icao() const { return getData().value(OPL::Db::AIRPORTS_ICAO).toString(); }
 };
 
 } // namespace OPL

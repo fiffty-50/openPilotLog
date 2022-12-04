@@ -21,6 +21,7 @@
 #include "src/database/database.h"
 #include "src/functions/datetime.h"
 #include "src/database/dbsummary.h"
+#include "src/gui/dialogues/firstrundialog.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -62,7 +63,6 @@ void BackupWidget::refresh()
 
     // Get summary of each db file and populate lists (columns) of data
     for (const auto &entry : entries) {
-        DEB << "Filename string: " << entry;
         QMap<OPL::DbSummaryKey, QString> summary = OPL::DbSummary::databaseSummary(backup_dir.absoluteFilePath(entry));
         model->appendRow({new QStandardItem(summary[OPL::DbSummaryKey::total_time]),
                           new QStandardItem(summary[OPL::DbSummaryKey::total_flights]),
@@ -79,17 +79,17 @@ void BackupWidget::refresh()
 
 const QString BackupWidget::absoluteBackupPath()
 {
-    const QString backup_name = QLatin1String("logbook_backup_")
-            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
-            + QLatin1String(".db");
+    const QString backup_name = backupName();
     return OPL::Paths::filePath(OPL::Paths::Backup, backup_name);
 }
 
 const QString BackupWidget::backupName()
 {
-    return  QLatin1String("logbook_backup_")
-            + OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup)
-            + QLatin1String(".db");
+    auto owner = DB->getPilotEntry(1);
+    return  QLatin1String("logbook_backup_%1_%2.db").arg(
+                OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup),
+                owner.lastName()
+                );
 }
 
 void BackupWidget::on_tableView_clicked(const QModelIndex &index)
@@ -253,26 +253,26 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
     }
 }
 
-void BackupWidget::on_aboutPushButton_clicked()
+/*!
+ * \brief BackupWidget::on_createNewLogbookPushButton_clicked Enables the user to reset the database
+ */
+void BackupWidget::on_createNewLogbookPushButton_clicked()
 {
-    TODO << "Implement settings and automatic backups";
-    QString text = tr(
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Warning);
+    confirm.setWindowTitle(tr("Start new Logbook"));
+    confirm.setText(tr("By starting a new logbook, you reset and empty the database currently in use.<br><br>"
+                       "You will be asked if you want to keep a backup of your current database, but it is highly "
+                       "recommended to create an external backup before starting a new logbook.<br><br>"
+                       "Do you want to continue?"
+                       ));
+    if (confirm.exec() == QMessageBox::Yes) {
+        auto frd = new FirstRunDialog(this);
+        if(!frd->exec()) {
+            WARN(tr("Creating New Logbook has been unsuccessful or aborted."));
+        }
+    }
 
-                      "<h3><center>About Backups</center></h3>"
-                      "<br>"
-                      "<p>By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your "
-                      "flights, pilots, aircraft and currencies. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
-                      "later be restored. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
-                      "are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting <b>Create Local backup</b> and restored with "
-                      "<b>Restore Local Backup</b>.<br><br>"
-                      "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be an external hard drive, USB stick, a cloud location or any other location of your choice. "
-                      "This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting "
-                      "it with <b>Restore external backup</b>.</p>"
-                      "<p>Frequent backups are recommended to prevent data loss or corruption. It is also recommended to keep a backup copy in a location physically seperated from your main "
-                      "computer to prevent data loss due to system failures.</p>"
-                      //todo "<p>By default, OpenPilotLog creates a weekly automatic backup. If you would like to change this behaviour, you can adjust it in the settings.</p>"
-                      "<br>"
-                      );
-    QMessageBox msg_box(QMessageBox::Information, "About backups", text, QMessageBox::Ok, this);
-    msg_box.exec();
 }

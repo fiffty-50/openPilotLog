@@ -383,6 +383,29 @@ void SettingsWidget::on_aboutPushButton_clicked()
     message_box.exec();
 }
 
+void SettingsWidget::on_aboutBackupsPushButton_clicked()
+{
+    QString text = tr(
+
+                      "<h3><center>About Backups</center></h3>"
+                      "<br>"
+                      "<p>By creating a backup, you create a copy of your logbook for safekeeping. This copy includes all your "
+                      "flights, pilots, aircraft and currencies. By creating a backup, you are creating a snapshot of your logbook to date. This backup can "
+                      "later be restored. OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups "
+                      "are automatically stored in a folder on this computer and will show up in the list below. They can easily be created by selecting <b>Create Local backup</b> and restored with "
+                      "<b>Restore Local Backup</b>.<br><br>"
+                      "When using <b>Create External Backup</b>, you will be asked where to save your backup file. This can be an external hard drive, USB stick, a cloud location or any other location of your choice. "
+                      "This functionality can also be used to sync your database across devices or to take it with you when you buy a new PC. You can then import your backup file by selecting "
+                      "it with <b>Restore external backup</b>.</p>"
+                      "<p>Frequent backups are recommended to prevent data loss or corruption. It is also recommended to keep a backup copy in a location physically seperated from your main "
+                      "computer to prevent data loss due to system failures.</p>"
+                      //todo "<p>By default, OpenPilotLog creates a weekly automatic backup. If you would like to change this behaviour, you can adjust it in the settings.</p>"
+                      "<br>"
+                      );
+    QMessageBox msg_box(QMessageBox::Information, "About backups", text, QMessageBox::Ok, this);
+    msg_box.exec();
+}
+
 void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_style_setting)
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
