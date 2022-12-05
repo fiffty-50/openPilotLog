@@ -24,6 +24,7 @@
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/database/databasecache.h"
 // Quick and dirty Debug area
 #include "src/testing/randomgenerator.h"
 void MainWindow::doDebugStuff()
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // retreive completion lists and maps
     completionData.init();
+    OPL::DBCache.init();
 
     // Construct Widgets
     homeWidget = new HomeWidget(this);

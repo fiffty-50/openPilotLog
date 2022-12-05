@@ -183,8 +183,10 @@ inline int blockMinutes(const QTime& tofb, const QTime& tonb)
  * \param userinput from a QLineEdit
  * \return formatted QString "hh:mm" or Empty String
  */
+QT_DEPRECATED
 inline const QString formatTimeInput(QString user_input)
 {
+    LOG << "DEPRECATED";
     QTime temp_time; //empty time object is invalid by default
 
     bool contains_seperator = user_input.contains(':');

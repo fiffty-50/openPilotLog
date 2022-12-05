@@ -74,6 +74,17 @@ set(PROJECT_SOURCES
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.ui
+    # Verification
+    src/gui/verification/userinput.h
+    src/gui/verification/userinput.cpp
+    src/gui/verification/timeinput.h
+    src/gui/verification/timeinput.cpp
+    src/gui/verification/airportinput.h
+    src/gui/verification/airportinput.cpp
+    src/gui/verification/pilotinput.h
+    src/gui/verification/pilotinput.cpp
+    src/gui/verification/completerprovider.h
+    src/gui/verification/completerprovider.cpp
 
 
     # Classes
@@ -115,6 +126,8 @@ set(PROJECT_SOURCES
     src/database/dbcompletiondata.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
+    src/database/databasecache.h
+    src/database/databasecache.cpp
 
     # Ressources
     assets/icons.qrc

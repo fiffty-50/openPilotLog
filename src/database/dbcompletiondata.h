@@ -17,6 +17,7 @@
  */
 #ifndef DBCOMPLETIONDATA_H
 #define DBCOMPLETIONDATA_H
+#include "src/opl.h"
 
 namespace OPL {
 
@@ -82,8 +83,15 @@ public:
      * its row id. Used in the Dialogs to map user input to unique database entries.
      */
     static const QHash<int, QString> getIdMap(CompleterTarget target);
-};
 
+    const QHash<int, QString> &getAirportsMapICAO() const;
+    const QHash<int, QString> &getAirportsMapIATA() const;
+
+private:
+    QHash<int, QString> airportsMapICAO;
+    QHash<int, QString> airportsMapIATA;
+
+};
 } // namespace OPL
 
 #endif // DBCOMPLETIONDATA_H
