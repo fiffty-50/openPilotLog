@@ -1,13 +1,12 @@
 #ifndef DATABASECACHE_H
 #define DATABASECACHE_H
-#include "QtWidgets/qcompleter.h"
 #include "src/opl.h"
 #include <QtCore>
 
 namespace OPL{
 
 using IdMap = QHash<int, QString>;
-#define DBCache DatabaseCache::getInstance()
+#define DBCache OPL::DatabaseCache::instance()
 
 /*!
  * \brief Caches certain often accessed database content in memory
@@ -20,9 +19,9 @@ using IdMap = QHash<int, QString>;
 class DatabaseCache : public QObject
 {
 public:
-    static DatabaseCache& getInstance() {
+    static DatabaseCache* instance() {
         static DatabaseCache instance;
-        return instance;
+        return &instance;
     }
 
     DatabaseCache(DatabaseCache const&) = delete;
@@ -35,11 +34,17 @@ public:
     const IdMap &getAirportsMapICAO() const;
     const IdMap &getAirportsMapIATA() const;
     const IdMap &getPilotNamesMap() const;
+    const IdMap &getTailsMap() const;
 
     const QStringList &getPilotNamesList() const;
     const QStringList &getTailsList() const;
     const QStringList &getAirportList() const;
     const QStringList &getCompaniesList() const;
+
+
+    const QStringList &getAircraftList() const;
+
+    const IdMap &getAircraftMap() const;
 
 private:
     Q_OBJECT
@@ -50,9 +55,11 @@ private:
     IdMap airportsMapIATA;
     IdMap pilotNamesMap;
     IdMap tailsMap;
+    IdMap aircraftMap;
     // Lists
     QStringList pilotNamesList;
     QStringList tailsList;
+    QStringList aircraftList;
     QStringList airportList;
     QStringList companiesList;
 
@@ -64,9 +71,12 @@ private:
     void updateAirports();
     void updateSimulators();
     void updatePilots();
+    void updateAircraft();
 
 public slots:
-    void update(const OPL::DbTable table);
+    void onDatabaseUpdated(const OPL::DbTable table);
+signals:
+    void databaseCacheUpdated(const OPL::DbTable table);
 
 };
 

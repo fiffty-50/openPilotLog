@@ -55,6 +55,8 @@ private slots:
 
     void on_debugLineEdit_editingFinished();
 
+    void on_debug2LineEdit_editingFinished();
+
 private:
     Ui::DebugWidget *ui;
 

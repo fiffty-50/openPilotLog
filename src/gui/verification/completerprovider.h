@@ -1,8 +1,9 @@
 #ifndef VALIDATORFACTORY_H
 #define VALIDATORFACTORY_H
+#include "src/opl.h"
 #include <QCompleter>
 
-//#define OPL::CompleterProvider CompleterProvider::getInstance()
+#define QCompleterProvider CompleterProvider::getInstance()
 /*!
  * \brief The CompleterProvider class provides static QCompleter instances
  * that are set up with application-wide behaviour standards.
@@ -13,15 +14,18 @@
  * set up with application-wide behaviour standards in mind to create
  * a consistent user experience. The QCompleters' models are based on
  * input from the database, so whenever the database content is modified,
- * it is important to call updateModel.
+ * the completion model is updated via the databaseCacheUpdated Signal.
  */
-class CompleterProvider
+class CompleterProvider : public QObject
 {
+    Q_OBJECT
     CompleterProvider();
 
     QCompleter* pilotCompleter;
     QCompleter* airportCompleter;
     QCompleter* tailsCompleter;
+    QCompleter* companyCompleter;
+    QCompleter* aircraftCompleter;
 public:
     static CompleterProvider& getInstance() {
         static CompleterProvider instance;
@@ -32,12 +36,7 @@ public:
     void operator=(CompleterProvider const&) = delete;
     ~CompleterProvider();
 
-    enum CompleterTarget {Pilots, Tails, Airports};
-
-    /*!
-     * \brief Create a new QCompleter for the given CompleterTarget
-     */
-    //static QCompleter *newCompleter(CompleterTarget target, QObject* parent = nullptr);
+    enum CompleterTarget { Pilots, Tails, Aircraft, Airports, Companies };
 
     /*!
      * \brief updates the completion model for a given QCompleter
@@ -45,9 +44,11 @@ public:
     void updateModel(CompleterTarget target);
 
     /*!
-     * \brief return a pointer to the static completer instance
+     * \brief return a pointer to the completer instance
      */
     QCompleter *getCompleter(CompleterTarget target) const;
+public slots:
+    void onDatabaseCacheUpdated(const OPL::DbTable table);
 };
 
 #endif // VALIDATORFACTORY_H

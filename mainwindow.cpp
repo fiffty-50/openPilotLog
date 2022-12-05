@@ -33,7 +33,7 @@ void MainWindow::doDebugStuff()
     OPL::FlightEntry entry = generator.randomFlight();
     DB->commit(entry);
 
-    auto nfd = NewFlightDialog(completionData, DB->getLastEntry(OPL::DbTable::Flights));
+    auto nfd = NewFlightDialog(DB->getLastEntry(OPL::DbTable::Flights));
     nfd.exec();
 }
 
@@ -54,14 +54,12 @@ MainWindow::MainWindow(QWidget *parent)
              .arg(DB->lastError.text()));
     }
 
-    // retreive completion lists and maps
-    completionData.init();
-    OPL::DBCache.init();
+    DBCache->init();
 
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
-    logbookWidget = new LogbookWidget(completionData, this);
+    logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
     aircraftWidget = new AircraftWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
@@ -186,30 +184,6 @@ void MainWindow::connectWidgets()
                      pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      aircraftWidget,  &AircraftWidget::repopulateModel);
-
-    // Catch database updates to lazily update CompletionData
-    QObject::connect(DB,              &OPL::Database::dataBaseUpdated,
-                     this,            &MainWindow::onDatabaseUpdated);
-}
-
-void MainWindow::onDatabaseUpdated(const OPL::DbTable table)
-{
-    switch (table) {
-    case OPL::DbTable::Pilots:
-        DEB << "Pilots table updated...";
-        completionData.updatePilots();
-        break;
-    case OPL::DbTable::Tails:
-        DEB << "Tails table updated...";
-        completionData.updateTails();
-        break;
-    case OPL::DbTable::Airports:
-        DEB << "Airports table updated...";
-        completionData.updateAirports();
-        break;
-    default:
-        break;
-    }
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -264,8 +238,7 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    completionData.update();
-    auto* nf = new NewFlightDialog(completionData, this);
+    auto* nf = new NewFlightDialog(this);
     nf->exec();
 }
 

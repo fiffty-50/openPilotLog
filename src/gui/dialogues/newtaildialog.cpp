@@ -16,9 +16,9 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "newtaildialog.h"
+#include "src/database/databasecache.h"
 #include "ui_newtail.h"
 #include "src/opl.h"
-#include "src/database/dbcompletiondata.h"
 
 NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     QDialog(parent),
@@ -65,8 +65,8 @@ NewTailDialog::~NewTailDialog()
  */
 void NewTailDialog::setupCompleter()
 {
-    idMap = OPL::DbCompletionData::getIdMap(OPL::CompleterTarget::AircraftTypes);
-    aircraftList = OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::AircraftTypes);
+    idMap = DBCache->getAircraftMap();
+    aircraftList = DBCache->getAircraftList();
 
     QCompleter *completer = new QCompleter(aircraftList, ui->searchLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -78,8 +78,6 @@ void NewTailDialog::setupCompleter()
                      this, &NewTailDialog::onSearchCompleterActivated);
     QObject::connect(completer, static_cast<void(QCompleter::*)(const QString &)>(&QCompleter::highlighted),
                      this, &NewTailDialog::onSearchCompleterActivated);
-
-
 }
 
 void NewTailDialog::setupValidators()

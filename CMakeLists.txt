@@ -85,6 +85,8 @@ set(PROJECT_SOURCES
     src/gui/verification/pilotinput.cpp
     src/gui/verification/completerprovider.h
     src/gui/verification/completerprovider.cpp
+    src/gui/verification/tailinput.h
+    src/gui/verification/tailinput.cpp
 
 
     # Classes
@@ -122,8 +124,6 @@ set(PROJECT_SOURCES
     src/database/database.cpp
     src/database/row.h
     src/database/row.cpp
-    src/database/dbcompletiondata.h
-    src/database/dbcompletiondata.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
     src/database/databasecache.h

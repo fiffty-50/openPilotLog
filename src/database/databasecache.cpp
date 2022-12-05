@@ -13,10 +13,12 @@ void DatabaseCache::init()
     updatePilots();
     updateAirports();
     updateSimulators();
+    updateAircraft();
 
     // Listen to database for updates, reload cache if needed
-    QObject::connect(DB,   &OPL::Database::dataBaseUpdated,
-                     this, &DatabaseCache::update);
+    QObject::connect(DB,   		   &OPL::Database::dataBaseUpdated,
+                     this,         &OPL::DatabaseCache::onDatabaseUpdated);
+
 }
 
 const IdMap DatabaseCache::fetchMap(CompleterTarget target)
@@ -131,7 +133,13 @@ void DatabaseCache::updatePilots()
     companiesList  = fetchList(Companies);
 }
 
-void DatabaseCache::update(const DbTable table)
+void DatabaseCache::updateAircraft()
+{
+    aircraftList = fetchList(AircraftTypes);
+    aircraftMap = fetchMap(AircraftTypes);
+}
+
+void DatabaseCache::onDatabaseUpdated(const OPL::DbTable table)
 {
     LOG << "Updating Database Cache...";
     switch (table) {
@@ -147,9 +155,13 @@ void DatabaseCache::update(const DbTable table)
     case DbTable::Airports:
         updateAirports();
         break;
+    case DbTable::Aircraft:
+        updateAircraft();
+        break;
     default:
         break;
     }
+    emit databaseCacheUpdated(table);
 }
 const IdMap &DatabaseCache::getAirportsMapICAO() const
 {
@@ -184,6 +196,21 @@ const QStringList &DatabaseCache::getAirportList() const
 const QStringList &DatabaseCache::getCompaniesList() const
 {
     return companiesList;
+}
+
+const QStringList &DatabaseCache::getAircraftList() const
+{
+    return aircraftList;
+}
+
+const IdMap &DatabaseCache::getAircraftMap() const
+{
+    return aircraftMap;
+}
+
+const IdMap &DatabaseCache::getTailsMap() const
+{
+    return tailsMap;
 }
 
 

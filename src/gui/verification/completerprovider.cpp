@@ -5,28 +5,37 @@
 
 CompleterProvider::CompleterProvider()
 {
-    pilotCompleter = new QCompleter(OPL::DBCache.getPilotNamesList());
-    tailsCompleter = new QCompleter(OPL::DBCache.getTailsList());
-    airportCompleter = new QCompleter(OPL::DBCache.getAirportList());
+    pilotCompleter    = new QCompleter(DBCache->getPilotNamesList());
+    tailsCompleter    = new QCompleter(DBCache->getTailsList());
+    airportCompleter  = new QCompleter(DBCache->getAirportList());
+    companyCompleter  = new QCompleter(DBCache->getCompaniesList());
+    aircraftCompleter = new QCompleter(DBCache->getAircraftList());
 
     QList<QCompleter*> completers = {
         pilotCompleter,
         tailsCompleter,
         airportCompleter,
+        companyCompleter,
+        aircraftCompleter,
     };
     for (const auto completer : completers) {
         completer->setCaseSensitivity(Qt::CaseInsensitive);
         completer->setCompletionMode(QCompleter::PopupCompletion);
         completer->setFilterMode(Qt::MatchContains);
     }
+
+    // Listen for changes in Database Cache
+    QObject::connect(DBCache,    	&OPL::DatabaseCache::databaseCacheUpdated,
+                     this,			&CompleterProvider::onDatabaseCacheUpdated);
 }
 
 CompleterProvider::~CompleterProvider()
 {
-    delete pilotCompleter;
-    delete tailsCompleter;
-    delete airportCompleter;
+    pilotCompleter->deleteLater();
+    tailsCompleter->deleteLater();
+    airportCompleter->deleteLater();
 }
+
 
 QCompleter *CompleterProvider::getCompleter(CompleterTarget target) const
 {
@@ -39,38 +48,37 @@ QCompleter *CompleterProvider::getCompleter(CompleterTarget target) const
         break;
     case Tails:
         return tailsCompleter;
+    case Aircraft:
+        return aircraftCompleter;
+    case Companies:
+        return companyCompleter;
         break;
-    default:
-        break;
-    }
-}
-
-/*
-QCompleter *ValidatorProvider::newCompleter(CompleterTarget target, QObject *parent)
-{
-    QCompleter* completer = nullptr;
-    switch(target) {
-    case Airports:
-        completer = new QCompleter(OPL::DBCACHE.getAirportList(), parent);
-        break;
-    case Pilots:
-        completer = new QCompleter(OPL::DBCACHE.getPilotNamesList(), parent);
-        break;
-    case Tails: {
-        completer = new QCompleter(OPL::DBCACHE.getTailsList(), parent);
-        break;
-    }
     default:
         return nullptr;
+        break;
     }
-
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setFilterMode(Qt::MatchContains);
-
-    return completer;
 }
-*/
+
+void CompleterProvider::onDatabaseCacheUpdated(const OPL::DbTable table)
+{
+    switch (table) {
+    case OPL::DbTable::Pilots:
+        DEB << "Pilots completer model updated...";
+        updateModel(CompleterTarget::Pilots);
+        break;
+    case OPL::DbTable::Tails:
+        DEB << "Tails completer model updated...";
+        updateModel(CompleterTarget::Tails);
+        break;
+    case OPL::DbTable::Airports:
+        DEB << "Airports completer model updated...";
+        updateModel(CompleterTarget::Airports);
+        break;
+    default:
+        break;
+    }
+}
+
 void CompleterProvider::updateModel(CompleterTarget target)
 {
     const QStringList *newData = nullptr;
@@ -78,15 +86,15 @@ void CompleterProvider::updateModel(CompleterTarget target)
 
     switch(target) {
     case Airports:
-        newData = &OPL::DBCache.getAirportList();
+        newData = &DBCache->getAirportList();
         model = qobject_cast<QStringListModel*>(airportCompleter->model());
         break;
     case Pilots:
-        newData = &OPL::DBCache.getPilotNamesList();
+        newData = &DBCache->getPilotNamesList();
         model = qobject_cast<QStringListModel*>(pilotCompleter->model());
         break;
     case Tails: {
-        newData = &OPL::DBCache.getTailsList();
+        newData = &DBCache->getTailsList();
         model = qobject_cast<QStringListModel*>(tailsCompleter->model());
         break;
     }

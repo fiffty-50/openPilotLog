@@ -16,8 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
-#include "src/database/dbcompletiondata.h"
 #include "src/gui/verification/airportinput.h"
+#include "src/gui/verification/completerprovider.h"
 #include "src/gui/verification/pilotinput.h"
 #include "src/gui/verification/timeinput.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
@@ -60,6 +60,8 @@ DebugWidget::DebugWidget(QWidget *parent) :
             ui->tableComboBox->addItem(table);
         }
     }
+    ui->debugLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
+    ui->debug2LineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
 }
 
 DebugWidget::~DebugWidget()
@@ -287,5 +289,11 @@ void DebugWidget::on_debugLineEdit_editingFinished()
         DEB << "Fixing...";
         ui->debugLineEdit->setText(user_input.fixup());
     }
+}
+
+
+void DebugWidget::on_debug2LineEdit_editingFinished()
+{
+
 }
 

@@ -23,20 +23,13 @@
 #include "src/classes/settings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
+#include "src/functions/time.h"
 
-const QHash<int, QString> FILTER_MAP = {
-    {0, QStringLiteral("Date LIKE \"%")},
-    {1, QStringLiteral("Dept LIKE \"%")},
-    {2, QStringLiteral("Dest LIKE \"%")},
-    {3, QStringLiteral("Registration LIKE \"%")},
-    {4, QStringLiteral("\"Name PIC\" LIKE \"%")}
-};
-const auto NON_WORD_CHAR = QRegularExpression("\\W");
 
-LogbookWidget::LogbookWidget(OPL::DbCompletionData& completion_data, QWidget *parent) :
+
+LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::LogbookWidget),
-    completionData(completion_data)
+    ui(new Ui::LogbookWidget)
 {
     ui->setupUi(this);
 
@@ -297,9 +290,8 @@ void LogbookWidget::on_viewsComboBox_currentIndexChanged(int index)
 
 void LogbookWidget::on_actionEdit_Flight_triggered()
 {
-    completionData.update();
     if(selectedEntries.length() == 1){
-        NewFlightDialog nff(completionData,selectedEntries.first(), this);
+        NewFlightDialog nff(selectedEntries.first(), this);
         ui->stackedWidget->addWidget(&nff);
         ui->stackedWidget->setCurrentWidget(&nff);
         nff.setWindowFlag(Qt::Widget);

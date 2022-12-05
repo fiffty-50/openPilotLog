@@ -38,7 +38,6 @@
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/classes/style.h"
-#include "src/database/dbcompletiondata.h"
 
 enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
@@ -117,8 +116,6 @@ private slots:
 
     void on_actionNewSim_triggered();
 
-    void onDatabaseUpdated(const OPL::DbTable table);
-
 private:
     Ui::MainWindow *ui;
 
@@ -136,8 +133,6 @@ private:
 
     DebugWidget* debugWidget;
 
-    // Completion Data for QCompleters and Mapping
-    OPL::DbCompletionData completionData;
     bool airportDbIsDirty = false;
 
     void setupToolbar();

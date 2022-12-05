@@ -39,8 +39,6 @@
 
 namespace OPL {
 
-//using RowData_T = QHash<QString, QVariant>;
-
 /*!
  * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
