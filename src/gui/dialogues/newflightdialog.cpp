@@ -535,15 +535,11 @@ void NewFlightDialog::onLocationLineEdit_editingFinished()
 
 
     if(verifyUserInput(line_edit, AirportInput(line_edit->text())) ) {
-        DEB << "verified: " << line_edit->text();
-        DEB << "Key: " << DBCache->getAirportsMapICAO().key(line_edit->text());
-        DEB << "Value: " << DBCache->getAirportsMapNames().value(2617);
-
+        // Match ICAO code with Airport Name and display on label
         name_label->setText(DBCache->getAirportsMapNames().value(
                                 DBCache->getAirportsMapICAO().key(
                                     line_edit->text())));
-    }
-    else
+    } else
         name_label->setText("Unknown Airport");
 }
 
@@ -551,10 +547,9 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
 {
     const auto line_edit = ui->acftLineEdit;
 
-    if(!verifyUserInput(line_edit, TailInput(line_edit->text()))) {
+    if(!verifyUserInput(line_edit, TailInput(line_edit->text())))
         if(!addNewTail(*line_edit))
             onBadInputReceived(line_edit);
-    }
 }
 
 void NewFlightDialog::on_doftLineEdit_editingFinished()
@@ -695,7 +690,6 @@ void NewFlightDialog::on_buttonBox_accepted()
     DEB << "Old Data: ";
     DEB << flightEntry;
 
-    //DEB << "Setting Data for flightEntry...";
     flightEntry.setData(newData);
     DEB << "Committing: ";
     DEB << flightEntry;
