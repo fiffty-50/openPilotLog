@@ -50,8 +50,8 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
     # Widgets
-    src/gui/widgets/aircraftwidget.h
-    src/gui/widgets/aircraftwidget.cpp
+    src/gui/widgets/tailswidget.h
+    src/gui/widgets/tailswidget.cpp
     src/gui/widgets/aircraftwidget.ui
     src/gui/widgets/airportwidget.h
     src/gui/widgets/airportwidget.cpp

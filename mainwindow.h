@@ -32,7 +32,7 @@
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
-#include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/tailswidget.h"
 #include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
@@ -123,7 +123,7 @@ private:
 
     LogbookWidget* logbookWidget;
 
-    AircraftWidget* aircraftWidget;
+    TailsWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
 

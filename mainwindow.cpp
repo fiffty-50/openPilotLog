@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(homeWidget);
     logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
-    aircraftWidget = new AircraftWidget(this);
+    aircraftWidget = new TailsWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
     pilotsWidget = new PilotsWidget(this);
     ui->stackedWidget->addWidget(pilotsWidget);
@@ -167,9 +167,9 @@ void MainWindow::connectWidgets()
                      logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
     QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
+                     aircraftWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
+                     aircraftWidget, &TailsWidget::onAircraftWidget_settingChanged);
 
     QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
@@ -183,7 +183,7 @@ void MainWindow::connectWidgets()
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(DB,              &OPL::Database::connectionReset,
-                     aircraftWidget,  &AircraftWidget::repopulateModel);
+                     aircraftWidget,  &TailsWidget::repopulateModel);
 }
 
 void MainWindow::onDatabaseInvalid()
