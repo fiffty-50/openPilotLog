@@ -32,6 +32,9 @@ const IdMap DatabaseCache::fetchMap(CompleterTarget target)
     case AirportsIATA:
         statement.append(QStringLiteral("SELECT ROWID, iata FROM airports WHERE iata NOT NULL"));
         break;
+    case AirportNames:
+        statement.append(QStringLiteral("SELECT ROWID, name FROM airports"));
+        break;
     case PilotNames:
         statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
@@ -71,7 +74,7 @@ const QStringList DatabaseCache::fetchList(CompleterTarget target)
                          "UNION "
                          "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
-    case Airports:
+    case AirportsAny:
         statement.append(QStringLiteral("SELECT icao FROM airports UNION SELECT iata FROM airports"));
         break;
     case Tails:
@@ -116,9 +119,10 @@ void DatabaseCache::updateTails()
 
 void DatabaseCache::updateAirports()
 {
-    airportsMapIATA = fetchMap(AirportsIATA);
-    airportsMapICAO = fetchMap(AirportsICAO);
-    airportList = fetchList(Airports);
+    airportsMapIATA  = fetchMap(AirportsIATA);
+    airportsMapICAO  = fetchMap(AirportsICAO);
+    airportsMapNames = fetchMap(AirportNames);
+    airportList      = fetchList(AirportsAny);
 }
 
 void DatabaseCache::updateSimulators()
@@ -206,6 +210,11 @@ const QStringList &DatabaseCache::getAircraftList() const
 const IdMap &DatabaseCache::getAircraftMap() const
 {
     return aircraftMap;
+}
+
+const IdMap &DatabaseCache::getAirportsMapNames() const
+{
+    return airportsMapNames;
 }
 
 const IdMap &DatabaseCache::getTailsMap() const

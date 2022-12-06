@@ -39,7 +39,6 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
       ui(new Ui::NewFlightDialog)
 {
     init();
-    //flightEntry = AFlightEntry();
     // Set up UI (New Flight)
     LOG << Settings::read(Settings::FlightLogging::Function);
     if(Settings::read(Settings::FlightLogging::Function).toInt() == static_cast<int>(OPL::PilotFunction::PIC)){
@@ -155,7 +154,6 @@ bool NewFlightDialog::eventFilter(QObject *object, QEvent *event)
         if (mandatoryLineEdits->contains(line_edit) && event->type() == QEvent::FocusIn) {
             // set verification bit to false when entering a mandatory line edit
             validationState.invalidate(mandatoryLineEdits->indexOf(line_edit));
-            DEB << "Invalidating: " << line_edit->objectName();
             return false;
         }
     }
@@ -311,7 +309,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
             DEB << "New Tail Entry added:";
             DEB << DB->getTailEntry(DB->getLastEntry(OPL::DbTable::Tails));
 
-            // update Line Edit
+            // update Line Edit with newly added tail
             parent_line_edit.setText(DBCache->getTailsMap().value(DB->getLastEntry(OPL::DbTable::Tails)));
             return true;
         } else {
@@ -345,7 +343,7 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
             DEB << "New Pilot Entry added:";
             DEB << DB->getPilotEntry(DB->getLastEntry(OPL::DbTable::Pilots));
 
-            // update Line Edit
+            // update Line Edit with newly added pilot
             parent_line_edit.setText(DBCache->getPilotNamesMap().value(DB->getLastEntry(OPL::DbTable::Pilots)));
             return true;
         } else {
@@ -513,29 +511,12 @@ void NewFlightDialog::toUpper(const QString &text)
 void NewFlightDialog::onTimeLineEdit_editingFinished()
 {
     auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    DEB << line_edit->objectName() << "Editing finished -" << line_edit->text();
-
-    TimeInput user_in = TimeInput(line_edit->text());
-    if(!user_in.isValid()) {
-        QString fixed = user_in.fixup();
-        if(fixed == QString()) {
-            onBadInputReceived(line_edit);
-            return;
-        } else {
-            line_edit->setText(fixed);
-            onGoodInputReceived(line_edit);
-            return;
-        }
-    }
-
-    onGoodInputReceived(line_edit);
+    verifyUserInput(line_edit, TimeInput(line_edit->text()));
 }
 
 void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
 {
     auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    DEB << line_edit->objectName() << "Editing Finished -" << line_edit->text();
-
     if(!verifyUserInput(line_edit, PilotInput(line_edit->text()))) {
         if(!addNewPilot(*line_edit))
             onBadInputReceived(line_edit);
@@ -546,15 +527,24 @@ void NewFlightDialog::onLocationLineEdit_editingFinished()
 {
     const QString& line_edit_name = sender()->objectName();
     const auto line_edit = this->findChild<QLineEdit*>(line_edit_name);
+    QLabel* name_label;
+    if (line_edit_name.contains(QLatin1String("dept")))
+        name_label = ui->deptNameLabel;
+    else
+        name_label = ui->destNameLabel;
 
-    if( verifyUserInput(line_edit, AirportInput(line_edit->text())) ) {
-        QLabel* name_label;
-        if (line_edit_name.contains(QLatin1String("dept")))
-            name_label = ui->deptNameLabel;
-        else
-            name_label = ui->destNameLabel;
-    name_label->setText("Lookup Airport ID and match");
+
+    if(verifyUserInput(line_edit, AirportInput(line_edit->text())) ) {
+        DEB << "verified: " << line_edit->text();
+        DEB << "Key: " << DBCache->getAirportsMapICAO().key(line_edit->text());
+        DEB << "Value: " << DBCache->getAirportsMapNames().value(2617);
+
+        name_label->setText(DBCache->getAirportsMapNames().value(
+                                DBCache->getAirportsMapICAO().key(
+                                    line_edit->text())));
     }
+    else
+        name_label->setText("Unknown Airport");
 }
 
 void NewFlightDialog::on_acftLineEdit_editingFinished()

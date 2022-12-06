@@ -27,7 +27,7 @@ public:
     DatabaseCache(DatabaseCache const&) = delete;
     void operator=(DatabaseCache const&) = delete;
 
-    enum CompleterTarget {PilotNames, Tails, AircraftTypes, Airports, AirportsICAO, AirportsIATA, Companies};
+    enum CompleterTarget {PilotNames, Tails, AircraftTypes, AirportsAny, AirportsICAO, AirportNames, AirportsIATA, Companies};
 
     void init();
 
@@ -46,6 +46,8 @@ public:
 
     const IdMap &getAircraftMap() const;
 
+    const IdMap &getAirportsMapNames() const;
+
 private:
     Q_OBJECT
     DatabaseCache() {};
@@ -53,6 +55,7 @@ private:
     // Id Maps
     IdMap airportsMapICAO;
     IdMap airportsMapIATA;
+    IdMap airportsMapNames;
     IdMap pilotNamesMap;
     IdMap tailsMap;
     IdMap aircraftMap;

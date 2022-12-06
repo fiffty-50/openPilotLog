@@ -75,6 +75,7 @@ set(PROJECT_SOURCES
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.ui
     # Verification
+    src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
     src/gui/verification/userinput.cpp
     src/gui/verification/timeinput.h
