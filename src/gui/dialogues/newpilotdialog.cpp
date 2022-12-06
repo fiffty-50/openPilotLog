@@ -31,8 +31,6 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     ui(new Ui::NewPilot)
 {
     setup();
-
-    //pilotEntry = APilotEntry();
     ui->lastnameLineEdit->setFocus();
 }
 

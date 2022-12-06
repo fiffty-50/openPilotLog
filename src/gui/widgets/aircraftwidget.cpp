@@ -99,19 +99,13 @@ void AircraftWidget::changeEvent(QEvent *event)
             ui->retranslateUi(this);
 }
 
-void AircraftWidget::onNewTailDialog_editingFinished()
-{
-    refreshView();
-}
-
 void AircraftWidget::on_newAircraftButton_clicked()
 {
     NewTailDialog nt(QString(), this);
-    QObject::connect(&nt,  &QDialog::accepted,
-                     this, &AircraftWidget::onNewTailDialog_editingFinished);
-    QObject::connect(&nt,  &QDialog::rejected,
-                     this, &AircraftWidget::onNewTailDialog_editingFinished);
+    setUiEnabled(false);
     nt.exec();
+    refreshView();
+    setUiEnabled(true);
 }
 
 /*!
@@ -130,16 +124,15 @@ void AircraftWidget::tableView_selectionChanged()
     }
 
     if(selectedTails.length() == 1) {
-        auto* nt = new NewTailDialog(selectedTails.first(), this);
-        QObject::connect(nt,   &QDialog::accepted,
-                         this, &AircraftWidget::onNewTailDialog_editingFinished);
-        QObject::connect(nt,   &QDialog::rejected,
-                         this, &AircraftWidget::onNewTailDialog_editingFinished);
-        ui->stackedWidget->addWidget(nt);
-        ui->stackedWidget->setCurrentWidget(nt);
-        nt->setWindowFlag(Qt::Widget);
-        nt->setAttribute(Qt::WA_DeleteOnClose);
-        nt->exec();
+        NewTailDialog nt(selectedTails.first(), this);
+        nt.setWindowFlag(Qt::Widget);
+        ui->stackedWidget->addWidget(&nt);
+        ui->stackedWidget->setCurrentWidget(&nt);
+
+        setUiEnabled(false);
+        nt.exec();
+        refreshView();
+        setUiEnabled(true);
     }
 }
 
@@ -244,6 +237,15 @@ void AircraftWidget::onDeleteUnsuccessful()
         message_box.setIcon(QMessageBox::Critical);
         message_box.exec();
     }
+}
+
+void AircraftWidget::setUiEnabled(bool enabled)
+{
+    ui->newAircraftButton->setEnabled(enabled);
+    ui->deleteAircraftButton->setEnabled(enabled);
+    ui->tableView->setEnabled(enabled);
+    ui->aircraftSearchComboBox->setEnabled(enabled);
+    ui->aircraftSearchComboBox->setEnabled(enabled);
 }
 
 void AircraftWidget::repopulateModel()

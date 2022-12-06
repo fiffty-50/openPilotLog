@@ -76,6 +76,15 @@ void PilotsWidget::connectSignalsAndSlots()
                      this,                              &PilotsWidget::tableView_headerClicked);
 }
 
+void PilotsWidget::setUiEnabled(bool enabled)
+{
+   ui->tableView->setEnabled(enabled);
+   ui->newPilotButton->setEnabled(enabled);
+   ui->deletePilotButton->setEnabled(enabled);
+   ui->pilotSearchLineEdit->setEnabled(enabled);
+   ui->pilotsSearchComboBox->setEnabled(enabled);
+}
+
 void PilotsWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
@@ -94,11 +103,6 @@ void PilotsWidget::onPilotsWidget_databaseUpdated()
     refreshView();
 }
 
-void PilotsWidget::onNewPilotDialog_editingFinished()
-{
-    refreshView();
-}
-
 void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
 {
     model->setFilter(QLatin1Char('\"') + ui->pilotsSearchComboBox->currentText()
@@ -112,7 +116,7 @@ void PilotsWidget::tableView_selectionChanged()
         delete this->findChild<NewPilotDialog*>();
     }
 
-    auto *selection = ui->tableView->selectionModel();
+    auto selection = ui->tableView->selectionModel();
     selectedPilots.clear();
 
     for (const auto& row : selection->selectedRows()) {
@@ -120,17 +124,15 @@ void PilotsWidget::tableView_selectionChanged()
         DEB << "Selected Tails(s) with ID: " << selectedPilots;
     }
     if(selectedPilots.length() == 1) {
+        NewPilotDialog np = NewPilotDialog(selectedPilots.first(), this);
+        np.setWindowFlag(Qt::Widget);
+        ui->stackedWidget->addWidget(&np);
+        ui->stackedWidget->setCurrentWidget(&np);
 
-        NewPilotDialog* np = new NewPilotDialog(selectedPilots.first(), this);
-        QObject::connect(np,   &QDialog::accepted,
-                         this, &PilotsWidget::onNewPilotDialog_editingFinished);
-        QObject::connect(np,   &QDialog::rejected,
-                         this, &PilotsWidget::onNewPilotDialog_editingFinished);
-        np->setWindowFlag(Qt::Widget);
-        np->setAttribute(Qt::WA_DeleteOnClose);
-        ui->stackedWidget->addWidget(np);
-        ui->stackedWidget->setCurrentWidget(np);
-        np->exec();
+        setUiEnabled(false);
+        np.exec();
+        refreshView();
+        setUiEnabled(true);
     }
 }
 
@@ -142,13 +144,9 @@ void PilotsWidget::tableView_headerClicked(int column)
 
 void PilotsWidget::on_newPilotButton_clicked()
 {
-    NewPilotDialog* np = new NewPilotDialog(this);
-    QObject::connect(np,   &QDialog::accepted,
-                     this, &PilotsWidget::onNewPilotDialog_editingFinished);
-    QObject::connect(np,   &QDialog::rejected,
-                     this, &PilotsWidget::onNewPilotDialog_editingFinished);
-    np->setAttribute(Qt::WA_DeleteOnClose);
-    np->exec();
+    NewPilotDialog np = NewPilotDialog(this);
+    np.exec();
+    refreshView();
 }
 
 void PilotsWidget::on_deletePilotButton_clicked()

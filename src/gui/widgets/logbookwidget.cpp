@@ -308,7 +308,7 @@ void LogbookWidget::on_actionEdit_Flight_triggered()
 void LogbookWidget::on_actionEdit_Sim_triggered()
 {
     if (selectedEntries.length() == 1) {
-        NewSimDialog nsd((selectedEntries.first() * -1), this);
+        NewSimDialog nsd((selectedEntries.first() * -1), this); // simulator entries have inverse row ID's in the model
         ui->stackedWidget->addWidget(&nsd);
         ui->stackedWidget->setCurrentWidget(&nsd);
         nsd.setWindowFlag(Qt::Widget);

@@ -311,6 +311,7 @@ bool NewFlightDialog::addNewTail(QLineEdit& parent_line_edit)
 
             // update Line Edit with newly added tail
             parent_line_edit.setText(DBCache->getTailsMap().value(DB->getLastEntry(OPL::DbTable::Tails)));
+            emit parent_line_edit.editingFinished();
             return true;
         } else {
             return false;
@@ -345,6 +346,7 @@ bool NewFlightDialog::addNewPilot(QLineEdit& parent_line_edit)
 
             // update Line Edit with newly added pilot
             parent_line_edit.setText(DBCache->getPilotNamesMap().value(DB->getLastEntry(OPL::DbTable::Pilots)));
+            emit parent_line_edit.editingFinished();
             return true;
         } else {
             return false;

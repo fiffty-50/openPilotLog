@@ -67,8 +67,6 @@ private slots:
 
     void on_newAircraftButton_clicked();
 
-    void onNewTailDialog_editingFinished();
-
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
@@ -111,6 +109,8 @@ private:
     void connectSignalsAndSlots();
 
     void onDeleteUnsuccessful();
+
+    void setUiEnabled(bool enabled);
 
     inline void refreshView(){model->select();}
 
