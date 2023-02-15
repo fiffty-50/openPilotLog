@@ -83,6 +83,8 @@ void Settings::resetToDefaults()
     write(UserData::ShowMedCurrency, false);
     write(UserData::ShowCustom1Currency, false);
     write(UserData::ShowCustom2Currency, false);
+    write(UserData::PilotSortColumn, 0);
+    write(UserData::TailSortColumn, 0);
 
     write(FlightLogging::PilotFlying, true);
     write(FlightLogging::NightAngle, -6);
