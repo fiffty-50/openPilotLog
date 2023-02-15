@@ -40,8 +40,7 @@ namespace OPL::Calc {
  */
 inline double radToDeg(double rad)
 {
-    double deg = rad * (180 / M_PI);
-    return deg;
+    return rad * (180 / M_PI);
 }
 
 /*!
@@ -51,8 +50,7 @@ inline double radToDeg(double rad)
  */
 inline double degToRad(double deg)
 {
-    double rad = deg * (M_PI / 180);
-    return rad;
+    return deg * (M_PI / 180);
 }
 
 /*!
@@ -62,8 +60,7 @@ inline double degToRad(double deg)
  */
 inline double radToNauticalMiles(double rad)
 {
-    double nm = rad * 3440.06479482;
-    return nm;
+    return rad * 3440.06479482;
 }
 
 /*!
@@ -116,7 +113,7 @@ QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1,
  * \param lon - Location Longitude in degrees -180:180 W(-) E(+)
  * \return elevation - double of solar elevation in degrees.
  */
-double solarElevation(QDateTime utc_time_point, double lat, double lon);
+double solarElevation(const QDateTime& utc_time_point, double lat, double lon);
 
 /*!
  * \brief Calculates which portion of a flight was conducted in night conditions.
@@ -128,9 +125,9 @@ double solarElevation(QDateTime utc_time_point, double lat, double lon);
  * Default -6 (end of civil evening twilight)
  * \return Total number of minutes under night flying conditions
  */
-int calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int nightAngle);
+int calculateNightTime(const QString &dept, const QString &dest, const QDateTime& departureTime, int tblk, int nightAngle);
 
-bool isNight(const QString &icao, QDateTime event_time, int night_angle);
+bool isNight(const QString &icao, const QDateTime &event_time, int night_angle);
 
 QString formatTimeInput(QString user_input);
 

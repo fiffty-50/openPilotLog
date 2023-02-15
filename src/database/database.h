@@ -39,8 +39,6 @@
 
 namespace OPL {
 
-//using RowData_T = QHash<QString, QVariant>;
-
 /*!
  * \brief Convenience macro that returns instance of DataBase.
  * Instead of this:
@@ -336,7 +334,7 @@ signals:
      * trigger an update to the models of the views displaying database contents in
      * the user interface so that a user is always presented with up-to-date information.
      */
-    void dataBaseUpdated(const DbTable table);
+    void dataBaseUpdated(const OPL::DbTable table);
     /*!
      * \brief connectionReset is emitted whenever the database connection is reset, for
      * example when creating or restoring a backup.

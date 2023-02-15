@@ -25,8 +25,8 @@
 #include <QDebug>
 #include <QMenu>
 #include <QTableView>
+#include "src/database/row.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/database/dbcompletiondata.h"
 #include "src/opl.h"
 
 namespace Ui {
@@ -49,7 +49,7 @@ class LogbookWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LogbookWidget(OPL::DbCompletionData &completion_data, QWidget *parent = nullptr);
+    explicit LogbookWidget(QWidget *parent = nullptr);
     ~LogbookWidget();
 
 private slots:
@@ -89,8 +89,6 @@ private:
 
     const QString getFlightSummary(const OPL::FlightEntry &flight) const;
 
-    OPL::DbCompletionData completionData;
-
     /*!
      * \brief isFlight Determines whether an entry shown in a view is a Flight or a Simulator.
      * \param model_row_id the row id in the QSqlTableModel used for displaying
@@ -99,6 +97,15 @@ private:
      * the flights table, whereas a negative rowid is a row id from the simulators table.
      */
     inline bool isFlight(int model_row_id) { return model_row_id > 0; }
+
+    const static inline QHash<int, QString> FILTER_MAP = {
+        {0, QStringLiteral("Date LIKE \"%")},
+        {1, QStringLiteral("Dept LIKE \"%")},
+        {2, QStringLiteral("Dest LIKE \"%")},
+        {3, QStringLiteral("Registration LIKE \"%")},
+        {4, QStringLiteral("\"Name PIC\" LIKE \"%")}
+    };
+    const static inline QRegularExpression NON_WORD_CHAR = QRegularExpression("\\W");
 
 protected:
     /*!

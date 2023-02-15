@@ -63,7 +63,6 @@ private slots:
     void on_newPilotButton_clicked();
     void on_deletePilotButton_clicked();
     void onDeleteUnsuccessful();
-    void onNewPilotDialog_editingFinished();
     void on_pilotSearchLineEdit_textChanged(const QString &arg1);
 
 public slots:
@@ -101,6 +100,8 @@ private:
     void setupModelAndView();
 
     void connectSignalsAndSlots();
+
+    void setUiEnabled(bool enabled);
 
     inline void refreshView(){model->select();}
 

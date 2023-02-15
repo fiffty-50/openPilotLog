@@ -21,8 +21,10 @@
 
 namespace OPL {
 
+QT_DEPRECATED
 void DbCompletionData::init()
 {
+    LOG << "Initialising Completion Data...";
     // retreive user modifiable data
     pilotsIdMap = getIdMap(CompleterTarget::PilotNames);
     tailsIdMap  = getIdMap(CompleterTarget::Registrations);
@@ -45,8 +47,13 @@ void DbCompletionData::init()
     airportIataIdMap = getIdMap(CompleterTarget::AirportIdentifierIATA);
     airportNameIdMap = getIdMap(CompleterTarget::AirportNames);
     airportList      = getCompletionList(CompleterTarget::AirportIdentifier);
+
+    // retreive default data
+    airportsMapICAO = getIdMap(CompleterTarget::AirportIdentifierICAO);
+    airportsMapIATA = getIdMap(CompleterTarget::AirportIdentifierIATA);
 }
 
+QT_DEPRECATED
 void DbCompletionData::update()
 {
         updatePilots();
@@ -54,7 +61,7 @@ void DbCompletionData::update()
         updateAirports();
 };
 
-
+QT_DEPRECATED
 void DbCompletionData::updateTails()
 {
     DEB << "Updating Tails...";
@@ -62,6 +69,7 @@ void DbCompletionData::updateTails()
     tailsList   = getCompletionList(CompleterTarget::Registrations);
 }
 
+QT_DEPRECATED
 void DbCompletionData::updatePilots()
 {
     DEB << "Updating Pilots...";
@@ -69,6 +77,7 @@ void DbCompletionData::updatePilots()
     pilotList    = getCompletionList(CompleterTarget::PilotNames);
 }
 
+QT_DEPRECATED
 void DbCompletionData::updateAirports()
 {
     DEB << "Updating Airports...";
@@ -78,6 +87,7 @@ void DbCompletionData::updateAirports()
     airportList      = getCompletionList(CompleterTarget::AirportIdentifier);
 }
 
+QT_DEPRECATED
 const QStringList DbCompletionData::getCompletionList(CompleterTarget target)
 {
     QString statement;
@@ -121,6 +131,7 @@ const QStringList DbCompletionData::getCompletionList(CompleterTarget target)
     return completer_list;
 }
 
+QT_DEPRECATED
 const QHash<int, QString> DbCompletionData::getIdMap(CompleterTarget target)
 {
     QString statement;
@@ -161,4 +172,15 @@ const QHash<int, QString> DbCompletionData::getIdMap(CompleterTarget target)
     return id_map;
 }
 
+QT_DEPRECATED
+const QHash<int, QString> &DbCompletionData::getAirportsMapICAO() const
+{
+    return airportsMapICAO;
+}
+
+QT_DEPRECATED
+const QHash<int, QString> &DbCompletionData::getAirportsMapIATA() const
+{
+    return airportsMapIATA;
+}
 } // namespace OPL

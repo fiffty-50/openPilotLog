@@ -24,6 +24,7 @@
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/database/databasecache.h"
 // Quick and dirty Debug area
 #include "src/testing/randomgenerator.h"
 void MainWindow::doDebugStuff()
@@ -32,7 +33,7 @@ void MainWindow::doDebugStuff()
     OPL::FlightEntry entry = generator.randomFlight();
     DB->commit(entry);
 
-    auto nfd = NewFlightDialog(completionData, DB->getLastEntry(OPL::DbTable::Flights));
+    auto nfd = NewFlightDialog(DB->getLastEntry(OPL::DbTable::Flights));
     nfd.exec();
 }
 
@@ -41,56 +42,24 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setupToolbar();
-    setActionIcons(OPL::Style::getStyleType());
+    init();
 
-    // connect to the Database
-    if (OPL::Paths::databaseFileInfo().size() == 0)
-        onDatabaseInvalid();
-
-    if(!DB->connect()){
-        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
-             .arg(DB->lastError.text()));
-    }
-
-    // retreive completion lists and maps
-    completionData.init();
-
-    // Construct Widgets
-    homeWidget = new HomeWidget(this);
-    ui->stackedWidget->addWidget(homeWidget);
-    logbookWidget = new LogbookWidget(completionData, this);
-    ui->stackedWidget->addWidget(logbookWidget);
-    aircraftWidget = new AircraftWidget(this);
-    ui->stackedWidget->addWidget(aircraftWidget);
-    pilotsWidget = new PilotsWidget(this);
-    ui->stackedWidget->addWidget(pilotsWidget);
-
-    airportWidget = new AirportWidget(this);
-    ui->stackedWidget->addWidget(airportWidget);
-    settingsWidget = new SettingsWidget(this);
-    ui->stackedWidget->addWidget(settingsWidget);
-    debugWidget = new DebugWidget(this);
-    ui->stackedWidget->addWidget(debugWidget);
-
-    connectWidgets();
-
-    // Startup Screen (Home Screen)
+    // set Startup Screen (Home Screen)
     ui->stackedWidget->setCurrentWidget(homeWidget);
-
-    // check database version (Debug)
-    //if (DB->dbRevision() < DB->getMinimumDatabaseRevision()) {
-    //    QString message = tr("Your database is out of date."
-    //                         "Minimum required revision: %1<br>"
-    //                         "You have revision: %2<br>")
-    //                         .arg(DB->getMinimumDatabaseRevision(), DB->dbRevision());
-    //    WARN(message);
-    //}
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::init()
+{
+    connectDatabase();
+    initialiseWidgets();
+    setupToolbar();
+    connectWidgets();
+    setActionIcons(OPL::Style::getStyleType());
 }
 
 void MainWindow::setupToolbar()
@@ -110,6 +79,45 @@ void MainWindow::setupToolbar()
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     toolBar->setMovable(false);
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
+}
+
+void MainWindow::initialiseWidgets()
+{
+    // Construct Widgets
+    homeWidget = new HomeWidget(this);
+    ui->stackedWidget->addWidget(homeWidget);
+
+    logbookWidget = new LogbookWidget(this);
+    ui->stackedWidget->addWidget(logbookWidget);
+
+    aircraftWidget = new TailsWidget(this);
+    ui->stackedWidget->addWidget(aircraftWidget);
+
+    pilotsWidget = new PilotsWidget(this);
+    ui->stackedWidget->addWidget(pilotsWidget);
+
+    airportWidget = new AirportWidget(this);
+    ui->stackedWidget->addWidget(airportWidget);
+
+    settingsWidget = new SettingsWidget(this);
+    ui->stackedWidget->addWidget(settingsWidget);
+
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
+}
+
+void MainWindow::connectDatabase()
+{
+    // connect to the Database
+    if (OPL::Paths::databaseFileInfo().size() == 0)
+        onDatabaseInvalid();
+
+    if(!DB->connect()){
+        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
+             .arg(DB->lastError.text()));
+    }
+    DBCache->init();
+    // Load Cache
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -167,9 +175,9 @@ void MainWindow::connectWidgets()
                      logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
     QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     aircraftWidget, &AircraftWidget::onAircraftWidget_dataBaseUpdated);
+                     aircraftWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     aircraftWidget, &AircraftWidget::onAircraftWidget_settingChanged);
+                     aircraftWidget, &TailsWidget::onAircraftWidget_settingChanged);
 
     QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
                      pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
@@ -183,31 +191,7 @@ void MainWindow::connectWidgets()
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(DB,              &OPL::Database::connectionReset,
-                     aircraftWidget,  &AircraftWidget::repopulateModel);
-
-    // Catch database updates to lazily update CompletionData
-    QObject::connect(DB,              &OPL::Database::dataBaseUpdated,
-                     this,            &MainWindow::onDatabaseUpdated);
-}
-
-void MainWindow::onDatabaseUpdated(const OPL::DbTable table)
-{
-    switch (table) {
-    case OPL::DbTable::Pilots:
-        DEB << "Pilots table updated...";
-        completionData.updatePilots();
-        break;
-    case OPL::DbTable::Tails:
-        DEB << "Tails table updated...";
-        completionData.updateTails();
-        break;
-    case OPL::DbTable::Airports:
-        DEB << "Airports table updated...";
-        completionData.updateAirports();
-        break;
-    default:
-        break;
-    }
+                     aircraftWidget,  &TailsWidget::repopulateModel);
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -262,8 +246,7 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    completionData.update();
-    auto* nf = new NewFlightDialog(completionData, this);
+    auto* nf = new NewFlightDialog(this);
     nf->exec();
 }
 

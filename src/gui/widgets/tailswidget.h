@@ -15,16 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef AIRCRAFTWIDGET_H
-#define AIRCRAFTWIDGET_H
+#ifndef TAILSWIDGET_H
+#define TAILSWIDGET_H
 
 #include <QWidget>
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QTableView>
+#include "src/database/row.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/gui/dialogues/newtaildialog.h"
-
 
 namespace Ui {
 class AircraftWidget;
@@ -50,13 +49,13 @@ class AircraftWidget;
  * templates of aircraft types. For example, 'D-ABCD' and 'N-XYZ' are different tails (Registrations), but they might be the same type of aircraft,
  * for example 'Boeing 737-800'.
  */
-class AircraftWidget : public QWidget
+class TailsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit AircraftWidget(QWidget *parent = nullptr);
-    ~AircraftWidget();
+    explicit TailsWidget(QWidget *parent = nullptr);
+    ~TailsWidget();
 
 private slots:
     void tableView_selectionChanged();
@@ -66,8 +65,6 @@ private slots:
     void on_deleteAircraftButton_clicked();
 
     void on_newAircraftButton_clicked();
-
-    void onNewTailDialog_editingFinished();
 
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
@@ -112,6 +109,8 @@ private:
 
     void onDeleteUnsuccessful();
 
+    void setUiEnabled(bool enabled);
+
     inline void refreshView(){model->select();}
 
 protected:
@@ -121,4 +120,4 @@ protected:
     void changeEvent(QEvent* event) override;
 };
 
-#endif // AIRCRAFTWIDGET_H
+#endif // TAILSWIDGET_H

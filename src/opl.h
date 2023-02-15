@@ -280,6 +280,7 @@ private:
             QStringLiteral("OTHER")
     };
 };
+
 //Make available as a global static
 Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
 
@@ -436,6 +437,12 @@ namespace Styles {
 
 const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles
+
+namespace Format {
+
+const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
+
+} // namespace Format
 
 } // namespace opl
 

@@ -16,13 +16,12 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "newpilotdialog.h"
+#include "src/gui/verification/completerprovider.h"
 #include "ui_newpilot.h"
 #include "src/opl.h"
 
 #include "src/database/database.h"
-#include "src/database/dbcompletiondata.h"
 #include "src/database/row.h"
-#include "src/functions/log.h"
 
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database
@@ -32,8 +31,6 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
     ui(new Ui::NewPilot)
 {
     setup();
-
-    //pilotEntry = APilotEntry();
     ui->lastnameLineEdit->setFocus();
 }
 
@@ -61,11 +58,7 @@ NewPilotDialog::~NewPilotDialog()
 void NewPilotDialog::setup()
 {
     ui->setupUi(this);
-
-    auto completer = new QCompleter(OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::Companies), ui->companyLineEdit);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
-    completer->setCaseSensitivity(Qt::CaseSensitive);
-    ui->companyLineEdit->setCompleter(completer);
+    ui->companyLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Companies));
 }
 
 void NewPilotDialog::on_buttonBox_accepted()

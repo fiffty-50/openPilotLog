@@ -50,8 +50,8 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
     # Widgets
-    src/gui/widgets/aircraftwidget.h
-    src/gui/widgets/aircraftwidget.cpp
+    src/gui/widgets/tailswidget.h
+    src/gui/widgets/tailswidget.cpp
     src/gui/widgets/aircraftwidget.ui
     src/gui/widgets/airportwidget.h
     src/gui/widgets/airportwidget.cpp
@@ -74,6 +74,20 @@ set(PROJECT_SOURCES
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.ui
+    # Verification
+    src/gui/verification/validationstate.h
+    src/gui/verification/userinput.h
+    src/gui/verification/userinput.cpp
+    src/gui/verification/timeinput.h
+    src/gui/verification/timeinput.cpp
+    src/gui/verification/airportinput.h
+    src/gui/verification/airportinput.cpp
+    src/gui/verification/pilotinput.h
+    src/gui/verification/pilotinput.cpp
+    src/gui/verification/completerprovider.h
+    src/gui/verification/completerprovider.cpp
+    src/gui/verification/tailinput.h
+    src/gui/verification/tailinput.cpp
 
 
     # Classes
@@ -111,10 +125,10 @@ set(PROJECT_SOURCES
     src/database/database.cpp
     src/database/row.h
     src/database/row.cpp
-    src/database/dbcompletiondata.h
-    src/database/dbcompletiondata.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
+    src/database/databasecache.h
+    src/database/databasecache.cpp
 
     # Ressources
     assets/icons.qrc

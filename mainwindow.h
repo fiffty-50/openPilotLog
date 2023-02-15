@@ -32,13 +32,12 @@
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
-#include "src/gui/widgets/aircraftwidget.h"
+#include "src/gui/widgets/tailswidget.h"
 #include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/airportwidget.h"
 #include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/classes/style.h"
-#include "src/database/dbcompletiondata.h"
 
 enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
@@ -117,8 +116,6 @@ private slots:
 
     void on_actionNewSim_triggered();
 
-    void onDatabaseUpdated(const OPL::DbTable table);
-
 private:
     Ui::MainWindow *ui;
 
@@ -126,7 +123,7 @@ private:
 
     LogbookWidget* logbookWidget;
 
-    AircraftWidget* aircraftWidget;
+    TailsWidget* aircraftWidget;
 
     PilotsWidget* pilotsWidget;
 
@@ -136,11 +133,12 @@ private:
 
     DebugWidget* debugWidget;
 
-    // Completion Data for QCompleters and Mapping
-    OPL::DbCompletionData completionData;
     bool airportDbIsDirty = false;
 
+    void init();
     void setupToolbar();
+    void initialiseWidgets();
+    void connectDatabase();
     void setActionIcons(OPL::Style::StyleType style = OPL::Style::StyleType::Light);
 
     void nope();

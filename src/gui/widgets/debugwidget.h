@@ -53,6 +53,10 @@ private slots:
 
     void on_debugPushButton_clicked();
 
+    void on_debugLineEdit_editingFinished();
+
+    void on_debug2LineEdit_editingFinished();
+
 private:
     Ui::DebugWidget *ui;
 

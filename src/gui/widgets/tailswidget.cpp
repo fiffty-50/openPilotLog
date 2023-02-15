@@ -15,14 +15,16 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aircraftwidget.h"
+#include "tailswidget.h"
 #include "ui_aircraftwidget.h"
 #include "src/opl.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
+#include "src/gui/dialogues/newtaildialog.h"
 
-AircraftWidget::AircraftWidget(QWidget *parent) :
+
+TailsWidget::TailsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AircraftWidget)
 {
@@ -34,12 +36,12 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     setupModelAndView();
 }
 
-AircraftWidget::~AircraftWidget()
+TailsWidget::~TailsWidget()
 {
     delete ui;
 }
 
-void AircraftWidget::setupModelAndView()
+void TailsWidget::setupModelAndView()
 {
     model = new QSqlTableModel(this);
     model->setTable(QStringLiteral("viewTails"));
@@ -67,19 +69,19 @@ void AircraftWidget::setupModelAndView()
     connectSignalsAndSlots();
 }
 
-void AircraftWidget::connectSignalsAndSlots()
+void TailsWidget::connectSignalsAndSlots()
 {
     QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
-                     this,                              &AircraftWidget::tableView_selectionChanged);
+                     this,                              &TailsWidget::tableView_selectionChanged);
     QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this,                              &AircraftWidget::tableView_headerClicked);
+                     this,                              &TailsWidget::tableView_headerClicked);
 }
 
 /*
  * Slots
  */
 
-void AircraftWidget::onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal)
+void TailsWidget::onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal != SettingsWidget::AircraftWidget)
         return;
@@ -87,37 +89,31 @@ void AircraftWidget::onAircraftWidget_settingChanged(SettingsWidget::SettingSign
     setupModelAndView();
 }
 
-void AircraftWidget::onAircraftWidget_dataBaseUpdated()
+void TailsWidget::onAircraftWidget_dataBaseUpdated()
 {
     refreshView();
 }
 
-void AircraftWidget::changeEvent(QEvent *event)
+void TailsWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
         if(event->type() == QEvent::LanguageChange)
             ui->retranslateUi(this);
 }
 
-void AircraftWidget::onNewTailDialog_editingFinished()
-{
-    refreshView();
-}
-
-void AircraftWidget::on_newAircraftButton_clicked()
+void TailsWidget::on_newAircraftButton_clicked()
 {
     NewTailDialog nt(QString(), this);
-    QObject::connect(&nt,  &QDialog::accepted,
-                     this, &AircraftWidget::onNewTailDialog_editingFinished);
-    QObject::connect(&nt,  &QDialog::rejected,
-                     this, &AircraftWidget::onNewTailDialog_editingFinished);
+    setUiEnabled(false);
     nt.exec();
+    refreshView();
+    setUiEnabled(true);
 }
 
 /*!
  * \brief Displays a dialog in which the Tail can be edited
  */
-void AircraftWidget::tableView_selectionChanged()
+void TailsWidget::tableView_selectionChanged()
 {
     if (this->findChild<NewTailDialog*>() != nullptr)
         delete this->findChild<NewTailDialog*>();
@@ -130,23 +126,22 @@ void AircraftWidget::tableView_selectionChanged()
     }
 
     if(selectedTails.length() == 1) {
-        auto* nt = new NewTailDialog(selectedTails.first(), this);
-        QObject::connect(nt,   &QDialog::accepted,
-                         this, &AircraftWidget::onNewTailDialog_editingFinished);
-        QObject::connect(nt,   &QDialog::rejected,
-                         this, &AircraftWidget::onNewTailDialog_editingFinished);
-        ui->stackedWidget->addWidget(nt);
-        ui->stackedWidget->setCurrentWidget(nt);
-        nt->setWindowFlag(Qt::Widget);
-        nt->setAttribute(Qt::WA_DeleteOnClose);
-        nt->exec();
+        NewTailDialog nt(selectedTails.first(), this);
+        nt.setWindowFlag(Qt::Widget);
+        ui->stackedWidget->addWidget(&nt);
+        ui->stackedWidget->setCurrentWidget(&nt);
+
+        setUiEnabled(false);
+        nt.exec();
+        refreshView();
+        setUiEnabled(true);
     }
 }
 
 /*!
  * \brief Acts as a filter on the display model
  */
-void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
+void TailsWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
 {
     if(ui->aircraftSearchComboBox->currentIndex() == 0){
         ui->aircraftSearchLineEdit->setText(arg1.toUpper());
@@ -156,13 +151,13 @@ void AircraftWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
                      + arg1 + QLatin1String("%\""));
 }
 
-void AircraftWidget::tableView_headerClicked(int column)
+void TailsWidget::tableView_headerClicked(int column)
 {
     sortColumn = column;
     Settings::write(Settings::UserData::TailSortColumn, column);
 }
 
-void AircraftWidget::on_deleteAircraftButton_clicked()
+void TailsWidget::on_deleteAircraftButton_clicked()
 {
     if (selectedTails.length() == 0) {
         INFO(tr("No Aircraft selected."));
@@ -209,7 +204,7 @@ void AircraftWidget::on_deleteAircraftButton_clicked()
  *
  * This function is used to inform the user and give hints on how to solve the problem.
  */
-void AircraftWidget::onDeleteUnsuccessful()
+void TailsWidget::onDeleteUnsuccessful()
 {
     QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(selectedTails.first(),
                                                                        OPL::DbTable::Tails);
@@ -246,7 +241,16 @@ void AircraftWidget::onDeleteUnsuccessful()
     }
 }
 
-void AircraftWidget::repopulateModel()
+void TailsWidget::setUiEnabled(bool enabled)
+{
+    ui->newAircraftButton->setEnabled(enabled);
+    ui->deleteAircraftButton->setEnabled(enabled);
+    ui->tableView->setEnabled(enabled);
+    ui->aircraftSearchComboBox->setEnabled(enabled);
+    ui->aircraftSearchComboBox->setEnabled(enabled);
+}
+
+void TailsWidget::repopulateModel()
 {
     // unset the current model and delete it to avoid leak
     view->setModel(nullptr);
@@ -257,7 +261,7 @@ void AircraftWidget::repopulateModel()
     connectSignalsAndSlots();
 }
 
-const QString AircraftWidget::getAircraftTypeString(const OPL::Row &row) const
+const QString TailsWidget::getAircraftTypeString(const OPL::Row &row) const
 {
     QString type_string;
     if (!row.getData().value(OPL::Db::TAILS_MAKE).toString().isEmpty())
@@ -270,7 +274,7 @@ const QString AircraftWidget::getAircraftTypeString(const OPL::Row &row) const
     return type_string;
 }
 
-const QString AircraftWidget::getFlightSummary(const OPL::FlightEntry &flight) const
+const QString TailsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
 {
     if(!flight.isValid())
         return QString();

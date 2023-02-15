@@ -1,10 +1,11 @@
 #include "newsimdialog.h"
+#include "src/database/databasecache.h"
+#include "src/gui/verification/timeinput.h"
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
 #include "src/functions/time.h"
 #include "src/functions/datetime.h"
 #include "src/database/database.h"
-#include "src/database/dbcompletiondata.h"
 #include <QCompleter>
 /*!
  * \brief create a NewSimDialog to add a new Simulator Entry to the database
@@ -40,7 +41,7 @@ void NewSimDialog::init()
 {
     OPL::GLOBALS->loadSimulatorTypes(ui->deviceTypeComboBox);
 
-    const QStringList aircraft_list = OPL::DbCompletionData::getCompletionList(OPL::CompleterTarget::AircraftTypes);
+    const QStringList aircraft_list = DBCache->getAircraftList();
     auto completer = new QCompleter(aircraft_list, ui->aircraftTypeLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -86,15 +87,18 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
 
 void NewSimDialog::on_totalTimeLineEdit_editingFinished()
 {
-    const QString time_string = OPL::Time::formatTimeInput(ui->totalTimeLineEdit->text());
-    const QTime time = OPL::Time::fromString(time_string);
-
-    if (time.isValid()) {
-        ui->totalTimeLineEdit->setText(time_string);
-        ui->totalTimeLineEdit->setStyleSheet(QString());
-    } else {
-        ui->totalTimeLineEdit->setText(QString());
-        ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+    const auto input = TimeInput(ui->totalTimeLineEdit->text());
+    if(input.isValid())
+        return;
+    else {
+        QString fixed = input.fixup();
+        if(fixed == QString()) {
+            ui->totalTimeLineEdit->setText(QString());
+            ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        } else {
+            ui->totalTimeLineEdit->setText(fixed);
+            ui->totalTimeLineEdit->setStyleSheet(QString());
+        }
     }
 }
 
@@ -129,8 +133,9 @@ bool NewSimDialog::verifyInput(QString& error_msg)
         return false;
     }
     // Time
-    const QString time_string = OPL::Time::formatTimeInput(ui->totalTimeLineEdit->text());
-    const QTime time = OPL::Time::fromString(time_string);
+    if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
+        return false;
+    const QTime time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
 
     if (!time.isValid()) {
         ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
