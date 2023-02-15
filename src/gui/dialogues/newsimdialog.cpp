@@ -95,8 +95,10 @@ void NewSimDialog::on_totalTimeLineEdit_editingFinished()
         if(fixed == QString()) {
             ui->totalTimeLineEdit->setText(QString());
             ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
-        } else
+        } else {
             ui->totalTimeLineEdit->setText(fixed);
+            ui->totalTimeLineEdit->setStyleSheet(QString());
+        }
     }
 }
 
@@ -131,8 +133,9 @@ bool NewSimDialog::verifyInput(QString& error_msg)
         return false;
     }
     // Time
-    const QString time_string = OPL::Time::formatTimeInput(ui->totalTimeLineEdit->text());
-    const QTime time = OPL::Time::fromString(time_string);
+    if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
+        return false;
+    const QTime time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
 
     if (!time.isValid()) {
         ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);

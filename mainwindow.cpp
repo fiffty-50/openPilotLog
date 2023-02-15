@@ -42,55 +42,24 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setupToolbar();
-    setActionIcons(OPL::Style::getStyleType());
+    init();
 
-    // connect to the Database
-    if (OPL::Paths::databaseFileInfo().size() == 0)
-        onDatabaseInvalid();
-
-    if(!DB->connect()){
-        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
-             .arg(DB->lastError.text()));
-    }
-
-    DBCache->init();
-
-    // Construct Widgets
-    homeWidget = new HomeWidget(this);
-    ui->stackedWidget->addWidget(homeWidget);
-    logbookWidget = new LogbookWidget(this);
-    ui->stackedWidget->addWidget(logbookWidget);
-    aircraftWidget = new TailsWidget(this);
-    ui->stackedWidget->addWidget(aircraftWidget);
-    pilotsWidget = new PilotsWidget(this);
-    ui->stackedWidget->addWidget(pilotsWidget);
-
-    airportWidget = new AirportWidget(this);
-    ui->stackedWidget->addWidget(airportWidget);
-    settingsWidget = new SettingsWidget(this);
-    ui->stackedWidget->addWidget(settingsWidget);
-    debugWidget = new DebugWidget(this);
-    ui->stackedWidget->addWidget(debugWidget);
-
-    connectWidgets();
-
-    // Startup Screen (Home Screen)
+    // set Startup Screen (Home Screen)
     ui->stackedWidget->setCurrentWidget(homeWidget);
-
-    // check database version (Debug)
-    //if (DB->dbRevision() < DB->getMinimumDatabaseRevision()) {
-    //    QString message = tr("Your database is out of date."
-    //                         "Minimum required revision: %1<br>"
-    //                         "You have revision: %2<br>")
-    //                         .arg(DB->getMinimumDatabaseRevision(), DB->dbRevision());
-    //    WARN(message);
-    //}
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::init()
+{
+    connectDatabase();
+    initialiseWidgets();
+    setupToolbar();
+    connectWidgets();
+    setActionIcons(OPL::Style::getStyleType());
 }
 
 void MainWindow::setupToolbar()
@@ -110,6 +79,45 @@ void MainWindow::setupToolbar()
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     toolBar->setMovable(false);
     addToolBar(Qt::ToolBarArea::LeftToolBarArea, toolBar);
+}
+
+void MainWindow::initialiseWidgets()
+{
+    // Construct Widgets
+    homeWidget = new HomeWidget(this);
+    ui->stackedWidget->addWidget(homeWidget);
+
+    logbookWidget = new LogbookWidget(this);
+    ui->stackedWidget->addWidget(logbookWidget);
+
+    aircraftWidget = new TailsWidget(this);
+    ui->stackedWidget->addWidget(aircraftWidget);
+
+    pilotsWidget = new PilotsWidget(this);
+    ui->stackedWidget->addWidget(pilotsWidget);
+
+    airportWidget = new AirportWidget(this);
+    ui->stackedWidget->addWidget(airportWidget);
+
+    settingsWidget = new SettingsWidget(this);
+    ui->stackedWidget->addWidget(settingsWidget);
+
+    debugWidget = new DebugWidget(this);
+    ui->stackedWidget->addWidget(debugWidget);
+}
+
+void MainWindow::connectDatabase()
+{
+    // connect to the Database
+    if (OPL::Paths::databaseFileInfo().size() == 0)
+        onDatabaseInvalid();
+
+    if(!DB->connect()){
+        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
+             .arg(DB->lastError.text()));
+    }
+    DBCache->init();
+    // Load Cache
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)

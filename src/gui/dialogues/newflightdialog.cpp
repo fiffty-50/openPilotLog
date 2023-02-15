@@ -552,6 +552,10 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
     if(!verifyUserInput(line_edit, TailInput(line_edit->text())))
         if(!addNewTail(*line_edit))
             onBadInputReceived(line_edit);
+
+    const auto space = QLatin1Char(' ');
+    if(line_edit->text().contains(space))
+        line_edit->setText(line_edit->text().split(space)[0]); // strip out autocomplete suggestion
 }
 
 void NewFlightDialog::on_doftLineEdit_editingFinished()
@@ -600,7 +604,6 @@ void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1
  */
 void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
 {
-    DEB << "Current Index: " << index;
     if (index == static_cast<int>(OPL::PilotFunction::PIC)) {
         ui->picNameLineEdit->setText(self);
         emit ui->picNameLineEdit->editingFinished();
@@ -688,7 +691,7 @@ void NewFlightDialog::on_buttonBox_accepted()
         return;
 
     // If input verification passed, collect input and submit to database
-    auto newData = prepareFlightEntryData();
+    const auto newData = prepareFlightEntryData();
     DEB << "Old Data: ";
     DEB << flightEntry;
 

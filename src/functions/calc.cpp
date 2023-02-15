@@ -164,7 +164,7 @@ QVector<QVector<double>> OPL::Calc::intermediatePointsOnGreatCircle(double lat1,
 }
 
 
-double OPL::Calc::solarElevation(QDateTime utc_time_point, double lat, double lon)
+double OPL::Calc::solarElevation(const QDateTime &utc_time_point, double lat, double lon)
 {
     double Alt = 11; // Assuming 11 kilometers as an average cruising height for a commercial passenger airplane.
     // convert current DateTime Object to a J2000 value used in the Calculation
@@ -223,7 +223,7 @@ double OPL::Calc::solarElevation(QDateTime utc_time_point, double lat, double lo
 }
 
 
-int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, QDateTime departureTime, int tblk, int night_angle)
+int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, const QDateTime &departureTime, int tblk, int night_angle)
 {
 
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
@@ -269,7 +269,7 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, QDat
     return night_time;
 }
 
-bool OPL::Calc::isNight(const QString &icao, QDateTime event_time, int night_angle)
+bool OPL::Calc::isNight(const QString &icao, const QDateTime &event_time, int night_angle)
 {
     const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
             + icao

@@ -135,7 +135,10 @@ private:
 
     bool airportDbIsDirty = false;
 
+    void init();
     void setupToolbar();
+    void initialiseWidgets();
+    void connectDatabase();
     void setActionIcons(OPL::Style::StyleType style = OPL::Style::StyleType::Light);
 
     void nope();
