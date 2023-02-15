@@ -984,10 +984,10 @@
        <string>Help</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="aboutPushButton">
+       <item row="1" column="1">
+        <widget class="QPushButton" name="aboutBackupsPushButton">
          <property name="text">
-          <string>About openPilotLog</string>
+          <string>About Backups</string>
          </property>
         </widget>
        </item>
@@ -1004,6 +1004,13 @@
          </property>
         </spacer>
        </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="aboutPushButton">
+         <property name="text">
+          <string>About openPilotLog</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <spacer name="horizontalSpacer_7">
          <property name="orientation">
@@ -1017,10 +1024,10 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="aboutBackupsPushButton">
+       <item row="2" column="1">
+        <widget class="QPushButton" name="exportPushButton">
          <property name="text">
-          <string>About Backups</string>
+          <string>Export Database</string>
          </property>
         </widget>
        </item>

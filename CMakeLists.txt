@@ -49,6 +49,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newsimdialog.h
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui
+    src/gui/dialogues/exporttocsvdialog.h
+    src/gui/dialogues/exporttocsvdialog.cpp
+    src/gui/dialogues/exporttocsvdialog.ui
     # Widgets
     src/gui/widgets/tailswidget.h
     src/gui/widgets/tailswidget.cpp

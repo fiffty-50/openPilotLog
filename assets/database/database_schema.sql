@@ -283,4 +283,49 @@ CAST(SUM(toDay) AS INT) AS 'TO Day',
 CAST(SUM(toNight) AS INT) AS 'TO Night',  
 CAST(SUM(ldgDay) AS INT) AS 'LDG Day', 
 CAST(SUM(ldgNight) AS INT) AS 'LDG Night'  
+FROM flights;
+
+DROP VIEW IF EXISTS 'viewExport';
+CREATE VIEW viewExport AS
+SELECT  flight_id,
+doft as 'Date',
+dept AS 'Dept',
+printf('%02d',(tofb/60))||':'||printf('%02d',(tofb%60)) AS 'Time Out',
+dest AS 'Dest',
+printf('%02d',(tonb/60))||':'||printf('%02d',(tonb%60)) AS 'Time In ',
+CASE  WHEN variant IS NOT NULL THEN make||' '||model||'-'||variant  ELSE make||' '||model  END  AS 'Type',
+registration AS 'Registration',
+(SELECT printf('%02d',(tSPSE/60))||':'||printf('%02d',(tSPSE%60)) WHERE tSPSE IS NOT NULL) AS 'SP SE',
+(SELECT printf('%02d',(tSPME/60))||':'||printf('%02d',(tSPME%60)) WHERE tSPME IS NOT NULL) AS 'SP ME',
+(SELECT printf('%02d',(tMP/60))||':'||printf('%02d',(tMP%60)) WHERE tMP IS NOT NULL) AS 'MP',
+printf('%02d',(tblk/60))||':'||printf('%02d',(tblk%60)) AS 'Total',
+CASE  WHEN pilot_id = 1 THEN alias  ELSE lastname||', '||substr(firstname, 1, 1)||'.'  END  AS 'Name PIC',
+toDay AS 'Take-Off Day',
+ldgDay AS 'Landings Day',
+toNight AS 'Take-Off Night',
+ldgNight AS 'Landings Night',
+(SELECT printf('%02d',(tNight/60))||':'||printf('%02d',(tNight%60)) WHERE tNight IS NOT NULL)  AS 'Night',
+(SELECT printf('%02d',(tIFR/60))||':'||printf('%02d',(tIFR%60)) WHERE tIFR IS NOT NULL)  AS 'IFR',
+(SELECT printf('%02d',(tPIC/60))||':'||printf('%02d',(tPIC%60)) WHERE tPIC IS NOT NULL)  AS 'PIC',
+(SELECT printf('%02d',(tSIC/60))||':'||printf('%02d',(tSIC%60)) WHERE tSIC IS NOT NULL)  AS 'SIC',
+(SELECT printf('%02d',(tDual/60))||':'||printf('%02d',(tDual%60)) WHERE tDual IS NOT NULL)  AS 'Dual',
+(SELECT printf('%02d',(tFI/60))||':'||printf('%02d',(tFI%60)) WHERE tFI IS NOT NULL)  AS 'FI',
+null AS 'Sim Type',
+null AS 'Time of Session',
+remarks AS 'Remarks'
 FROM flights
+INNER JOIN pilots on flights.pic = pilots.pilot_id
+INNER JOIN tails on flights.acft = tails.tail_id
+UNION
+SELECT (session_id * -1),
+date,
+null,  null,  null,  null,
+aircraftType,
+registration,
+null,  null,  null,
+'SIM',
+null,  null,  null,  null,  null,  null,  null,  null,  null,  null, null,
+deviceType,  printf('%02d',(totalTime/60))||':'||printf('%02d',(totalTime%60)),
+remarks
+FROM simulators
+ORDER BY date DESC;

@@ -90,8 +90,7 @@ private slots:
     void on_currCustom1LineEdit_editingFinished();
     void on_currCustom2LineEdit_editingFinished();
     void on_languageComboBox_activated(int arg1);
-
-
+    void on_exportPushButton_clicked();
 
 private:
     Ui::SettingsWidget *ui;
