@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "settingswidget.h"
+#include "src/gui/dialogues/exporttocsvdialog.h"
 #include "ui_settingswidget.h"
 #include "src/classes/style.h"
 #include "src/classes/settings.h"
@@ -688,5 +689,12 @@ void SettingsWidget::on_languageComboBox_activated(int arg1)
              ).arg(QStringLiteral("github.com/fiffty-50/openpilotlog/wiki/Translations")));
         ui->languageComboBox->setCurrentIndex(0);
     }
+}
+
+
+void SettingsWidget::on_exportPushButton_clicked()
+{
+    auto exp = new ExportToCsvDialog(this);
+    exp->exec();
 }
 

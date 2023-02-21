@@ -18,6 +18,7 @@
 #ifndef READCSV_H
 #define READCSV_H
 
+#include "src/opl.h"
 #include<QtCore>
 
 namespace CSV {
@@ -73,6 +74,29 @@ static inline QVector<QStringList> readCsvAsRows(const QString &file_name)
         csv_rows.append(line.split(','));
     }
     return csv_rows;
+}
+
+/*!
+ * \brief writeCsv write to a CSV file
+ * \param output file Path
+ * \param rows
+ * \return
+ */
+static inline bool writeCsv(const QString &fileName, const QVector<QVector<QString>> &rows)
+{
+    QFile csvFile(fileName);
+    if(!csvFile.open(QIODevice::ReadWrite | QFile::Text))
+        return false;
+    QTextStream stream(&csvFile);
+
+    // write each line
+    for(const auto &line : rows) {
+        for(int i = 0; i < line.size() - 1; i++) {
+            stream << line[i] + QLatin1Char(',');
+        }
+        stream << line.last() + QStringLiteral("\n");
+    }
+    return true;
 }
 
 } // namespace CSV
