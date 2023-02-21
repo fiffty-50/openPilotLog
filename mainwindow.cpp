@@ -278,6 +278,7 @@ void MainWindow::on_actionSettings_triggered()
 void MainWindow::on_actionQuit_triggered()
 {
     QApplication::quit();
+    exit(0);
 }
 
 void MainWindow::on_actionDebug_triggered()

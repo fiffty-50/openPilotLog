@@ -131,7 +131,12 @@ const int RandomGenerator::randomTail()
 
 const bool RandomGenerator::randomBool()
 {
+#if HAVE_ARC4RANDOM
     return arc4random() > (RAND_MAX / 2);
+#else
+    auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
+    return gen();
+#endif
 }
 
 } // namespace OPL

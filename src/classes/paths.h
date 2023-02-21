@@ -18,6 +18,7 @@ public:
         Backup,
         Log,
         Export,
+        Settings,
     };
 
     const static inline QHash<Directories, QLatin1String> directories = {
@@ -26,6 +27,7 @@ public:
         {Backup, QLatin1String("/backup")},
         {Log, QLatin1String("/log")},
         {Export, QLatin1String("/export")},
+        {Settings, QLatin1String("/settings")},
     };
 
     Paths();

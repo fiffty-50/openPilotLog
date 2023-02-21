@@ -7,6 +7,9 @@ namespace Ui {
 class ExportToCsvDialog;
 }
 
+/*!
+ * \brief The ExportToCsvDialog class enables the user to export the database to a CSV file
+ */
 class ExportToCsvDialog : public QDialog
 {
     Q_OBJECT
@@ -25,7 +28,8 @@ private:
 
     void init();
     /*!
-     * \brief fill the selectedRows vector with data based on the selected view
+     * \brief fill the selectedRows vector with data based on the selected view.
+     * The selected rows are a subset of the rows available in the database.
      */
     void selectRows();
 };

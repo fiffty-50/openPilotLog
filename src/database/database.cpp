@@ -637,6 +637,10 @@ bool Database::createSchema()
     // create individual queries for each table/view
     auto list = filedata.split(';');
 
+    // make sure last empty line in sql file has not been parsed
+    if(list.last() == QByteArray("\n"))
+        list.removeLast();
+
     // Create Tables
     QSqlQuery q;
     QVector<QSqlError> errors;

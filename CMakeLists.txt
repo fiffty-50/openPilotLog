@@ -182,19 +182,36 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-DQT_NO_DEBUG_OUTPUT)
 endif()
 
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(openPilotLog
-        ${PROJECT_SOURCES}
-        ${QM_FILES}
-        ${app_icon_macos}
-    )
+# set the win32 entry point to avoid terminal popping up
+if(WIN32)
+    MESSAGE("Building for WIN32")
+    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_add_executable(openPilotLog WIN32
+            ${PROJECT_SOURCES}
+            ${QM_FILES}
+            ${app_icon_macos}
+        )
+    else()
+        add_executable(openPilotLog
+            ${PROJECT_SOURCES}
+            ${QM_FILES}
+            ${app_icon_macos}
+        )
+    endif()
 else()
-    add_executable(openPilotLog
-        ${PROJECT_SOURCES}
-        ${QM_FILES}
-        ${app_icon_macos}
-    )
+    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_add_executable(openPilotLog
+            ${PROJECT_SOURCES}
+            ${QM_FILES}
+            ${app_icon_macos}
+     )
+    else()
+     add_executable(openPilotLog
+         ${PROJECT_SOURCES}
+         ${QM_FILES}
+         ${app_icon_macos}
+     )
+    endif()
 endif()
 
 

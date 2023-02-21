@@ -17,6 +17,7 @@
  */
 #include "settings.h"
 #include <QSettings>
+#include "src/classes/paths.h"
 
 
 QMap<Settings::Main, QString> Settings::mainMap = {
@@ -60,6 +61,7 @@ QMap<Settings::FlightLogging, QString> Settings::flightLoggingMap = {
 void Settings::setup()
 {
     QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, OPL::Paths::path(OPL::Paths::Settings));
     QSettings();
 }
 

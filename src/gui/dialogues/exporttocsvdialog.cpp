@@ -23,7 +23,12 @@ void ExportToCsvDialog::on_exportPushButton_clicked()
 {
     selectRows();
     // File Dialog where to save
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Select Location"));
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    tr("Select Location"),
+                                                    QStandardPaths::writableLocation(QStandardPaths::DesktopLocation),
+                                                    QStringLiteral("*.csv"));
+    if(filePath.isEmpty()) return; // user has cancelled file dialog
+
     if(!filePath.endsWith(QStringLiteral(".csv")))
         filePath += ".csv";
     DEB << filePath;

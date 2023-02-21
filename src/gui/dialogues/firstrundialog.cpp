@@ -306,14 +306,14 @@ bool FirstRunDialog::setupDatabase()
     }
 
     if(!DB->createSchema()) {
-        WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1")
-             .arg(DB->lastError.text()));
+        WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1<br><br>%2")
+             .arg(FUNC_IDENT, DB->lastError.text()));
         return false;
     }
 
     if(!DB->importTemplateData(useRessourceData)) {
-        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-             .arg(DB->lastError.text()));
+        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1<br><br>%2")
+             .arg(FUNC_IDENT, DB->lastError.text()));
         return false;
     }
     return true;
