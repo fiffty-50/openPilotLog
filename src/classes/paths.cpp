@@ -1,4 +1,5 @@
 #include "paths.h"
+#include "src/opl.h"
 
 namespace OPL {
 
