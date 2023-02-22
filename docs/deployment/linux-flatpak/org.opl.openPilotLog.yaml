@@ -1,6 +1,6 @@
 id: org.opl.openPilotLog
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: openPilotLog
 finish-args:
@@ -12,8 +12,8 @@ finish-args:
   - --device=dri
 modules:
   - name: openPilotLog
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     sources:
       - type: git
         url: https://github.com/fiffty-50/openpilotlog
-        branch: develop
+        branch: main
