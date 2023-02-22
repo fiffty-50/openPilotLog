@@ -4,6 +4,8 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QHash>
+#include <QStandardPaths>
+#include "src/opl.h"
 
 
 namespace OPL {
@@ -12,6 +14,8 @@ namespace OPL {
 class Paths
 {
 public:
+    Paths() = delete;
+
     enum Directories {
         Database,
         Templates,
@@ -30,8 +34,6 @@ public:
         {Settings, QLatin1String("/settings")},
     };
 
-    Paths();
-
     static const bool setup();
 
     /*!
@@ -42,14 +44,23 @@ public:
 
     static const QString path(Directories location);
 
-    static const QString appDir() {return QCoreApplication::applicationDirPath();}
-
     static const QString filePath(Directories location, const QString &filename);
 
     /*!
      * \brief returns a QFileInfo for the default database file.
      */
     static const QFileInfo databaseFileInfo();
+private:
+    // Define the paths where the application data will be written. This will be standard locations on all platforms eventually
+    // but for now on Windows and MacOS, we use the application runtime directory to make it easier to
+    // debug and develop. On Linux XDG standard directories are required for the flatpak to work.
+#ifdef linux
+    static const inline QString basePath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QDir::toNativeSeparators("/")
+            + ORGNAME + QDir::toNativeSeparators("/");
+#else
+    static const inline QString basePath = QCoreApplication::applicationDirPath();
+#endif
+
 };
 
 
