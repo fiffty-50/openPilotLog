@@ -10,7 +10,14 @@
 
 namespace OPL {
 
-
+/*!
+ * \brief The Paths class provides paths for the applications folder structure.
+ * \details In order to be cross-platform compatible, QStandardPaths returns the default
+ * writable locations for Application Data for the current operating system,
+ * for example `/home/user/.local/share/opl` on linux or `/Users/user/Library/Application Support/opl` on macos.
+ *
+ * OPL writes into a singular directory, with several subdirectories, which are enumerated in Directories.
+ */
 class Paths
 {
 public:
@@ -50,17 +57,12 @@ public:
      * \brief returns a QFileInfo for the default database file.
      */
     static const QFileInfo databaseFileInfo();
-private:
-    // Define the paths where the application data will be written. This will be standard locations on all platforms eventually
-    // but for now on Windows and MacOS, we use the application runtime directory to make it easier to
-    // debug and develop. On Linux XDG standard directories are required for the flatpak to work.
-#ifdef linux
+
+    /*!
+     * \brief the base Path of the Application Directory. Evaluates to an XDG writable App Data location depending on the OS
+     */
     static const inline QString basePath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QDir::toNativeSeparators("/")
             + ORGNAME + QDir::toNativeSeparators("/");
-#else
-    static const inline QString basePath = QCoreApplication::applicationDirPath();
-#endif
-
 };
 
 
