@@ -9,6 +9,7 @@ finish-args:
   - --socket=x11
   - --socket=wayland
   - --filesystem=xdg-data:rw
+  - --filysystem=host:rw
   - --device=dri
 modules:
   - name: openPilotLog
