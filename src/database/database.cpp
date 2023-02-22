@@ -614,7 +614,7 @@ bool Database::restoreBackup(const QString& backup_file)
 
     if (!backup.copy(default_loc))
     {
-        LOG << backup.errorString() << "Could not copy" << backup.fileName() << "to" << databaseFile;
+        LOG << backup.errorString() << "Could not copy" << backup.fileName() << "to" << databaseFile.absoluteFilePath();
         // try to restore previously used db
         current_db.rename(default_loc);
         return false;
