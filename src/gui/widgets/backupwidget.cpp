@@ -86,7 +86,7 @@ const QString BackupWidget::absoluteBackupPath()
 const QString BackupWidget::backupName()
 {
     auto owner = DB->getPilotEntry(1);
-    return  QLatin1String("logbook_backup_%1_%2.db").arg(
+    return  QString("logbook_backup_%1_%2.db").arg(
                 OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup),
                 owner.lastName()
                 );
