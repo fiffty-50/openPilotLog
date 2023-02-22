@@ -9,6 +9,7 @@ Paths::Paths()
 
 const bool Paths::setup()
 {
+    LOG << "Setting up directories at: " << QCoreApplication::applicationDirPath();
     const QString dir_path = QCoreApplication::applicationDirPath();
     for(const auto& str : qAsConst(directories)){
         QDir dir(dir_path + str);
