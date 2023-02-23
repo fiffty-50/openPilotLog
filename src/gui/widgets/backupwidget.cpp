@@ -103,7 +103,7 @@ void BackupWidget::on_createLocalPushButton_clicked()
     QString filename = absoluteBackupPath();
     DEB << filename;
 
-    if(!DB->createBackup(filename)) {
+    if(!DB->createBackup(QDir::toNativeSeparators(filename))) {
         WARN(tr("Could not create local file: %1").arg(filename));
         return;
     } else {
@@ -144,7 +144,7 @@ void BackupWidget::on_restoreLocalPushButton_clicked()
     if (confirm.exec() == QMessageBox::No)
         return;
 
-    if(!DB->restoreBackup(backup_name)) {
+    if(!DB->restoreBackup(QDir::toNativeSeparators(backup_name))) {
        WARN(tr("Unable to restore Backup file: %1").arg(backup_name));
     } else {
         INFO(tr("Backup successfully restored."));
@@ -212,7 +212,7 @@ void BackupWidget::on_createExternalPushButton_clicked()
         filename.append(".db");
     }
 
-    if(!DB->createBackup(filename)) {
+    if(!DB->createBackup(QDir::toNativeSeparators(filename))) {
         WARN(tr("Unable to backup file:").arg(filename));
         return;
     } else {
@@ -245,7 +245,7 @@ void BackupWidget::on_restoreExternalPushButton_clicked()
                        "<br>Continue?"
                        ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!DB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(QDir::toNativeSeparators(filename))) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }

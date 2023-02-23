@@ -204,7 +204,7 @@ void MainWindow::onDatabaseInvalid()
     db_error.setIcon(QMessageBox::Warning);
     db_error.setWindowTitle(tr("No valid database found"));
     db_error.setText(tr("No valid database has been found.<br>"
-                       "Would you like to create a new database or import a backup?"));
+                        "Would you like to create a new database or import a backup?<br><br>"));
 
     int ret = db_error.exec();
     if (ret == QMessageBox::DestructiveRole) {
@@ -212,16 +212,15 @@ void MainWindow::onDatabaseInvalid()
         on_actionQuit_triggered();
     } else if (ret == QMessageBox::ButtonRole::AcceptRole) {
         DEB << "Yes(Import Backup)";
-        QString db_path = QFileDialog::getOpenFileName(this,
-                                                       tr("Select Database"),
-                                                       OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
-                                                       tr("Database file (*.db)"));
+        QString db_path = QDir::toNativeSeparators(
+                          (QFileDialog::getOpenFileName(this,
+                                                        tr("Select Database"),
+                                                        OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
+                                                        tr("Database file (*.db)"))));
         if (!db_path.isEmpty()) {
             if(!DB->restoreBackup(db_path)) {
-               WARN(tr("Unable to restore Backup file: %1").arg(db_path));
-               on_actionQuit_triggered();
-            } else {
-                INFO(tr("Backup successfully restored."));
+                WARN(tr("Unable to restore backup file:<br><br>%1").arg(db_path));
+                on_actionQuit_triggered();
             }
         }
     } else if (ret == QMessageBox::ButtonRole::RejectRole){

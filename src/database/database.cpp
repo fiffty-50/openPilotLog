@@ -583,10 +583,9 @@ bool Database::createBackup(const QString& dest_file)
 {
     LOG << "Backing up current database to: " << dest_file;
     Database::disconnect();
-    QFile db_file(databaseFile.absoluteFilePath());
-    //DEB << "File to Overwrite:" << db_file;
+    QFile db_file(QDir::toNativeSeparators(databaseFile.absoluteFilePath()));
 
-    if (!db_file.copy(dest_file)) {
+    if (!db_file.copy(QDir::toNativeSeparators(dest_file))) {
         LOG << "Unable to backup old database:" << db_file.errorString();
         return false;
     }
@@ -599,29 +598,26 @@ bool Database::createBackup(const QString& dest_file)
 
 bool Database::restoreBackup(const QString& backup_file)
 {
+    Database::disconnect();
     LOG << "Restoring backup from file:" << backup_file;
 
-    QString default_loc = databaseFile.absoluteFilePath();
+    QString databaseFilePath = QDir::toNativeSeparators(databaseFile.absoluteFilePath());
+    DEB << "DB File Path: " << databaseFilePath;
+    QString backupFilePath = QDir::toNativeSeparators(backup_file);
 
-    Database::disconnect();
-    QFile backup(backup_file);
-    QFile current_db(default_loc);
+    QFile dbFile(databaseFilePath);
+    if(dbFile.exists())
+        if(!dbFile.remove()) {
+            LOG << dbFile.errorString() << "Unable to remove current db file";
+            return false;
+        }
 
-    if (!current_db.rename(default_loc + QLatin1String(".tmp"))) { // move previously used db out of the way
-        LOG << current_db.errorString() << "Unable to remove current db file";
+    QFile backupFile(backupFilePath);
+    if(!backupFile.copy(databaseFilePath)) {
+        LOG << backupFile.errorString() << "Could not copy" << backupFile.fileName() << " to " << databaseFilePath;
         return false;
     }
 
-    if (!backup.copy(default_loc))
-    {
-        LOG << backup.errorString() << "Could not copy" << backup.fileName() << "to" << databaseFile.absoluteFilePath();
-        // try to restore previously used db
-        current_db.rename(default_loc);
-        return false;
-    }
-
-    // backup has been restored, clean up the previously moved file
-    current_db.remove();
     LOG << "Backup successfully restored!";
     Database::connect();
     emit connectionReset();
