@@ -638,7 +638,7 @@ bool Database::createSchema()
     auto list = filedata.split(';');
 
     // make sure last empty line in sql file has not been parsed
-    if(list.last() == QByteArray("\n"))
+    if(list.last() == QByteArray("\n") || list.last() == QByteArray("\r\n"))
         list.removeLast();
 
     // Create Tables
