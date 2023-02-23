@@ -1,6 +1,6 @@
 # openPilotLog
 
-Welcome to openPilotLog, the free and open source airline pilot logbook application!
+Welcome to openPilotLog, the free and open source airline pilot logbook application! You can find the latest release [here](https://github.com/fiffty-50/openPilotLog/releases). Please not that this is still an early testing version.
 
 ## Tl;dr
 
@@ -26,14 +26,14 @@ For developers, the code documentation can be found at our [doxygen](https://fif
 
 ## Installation
 
-Right now, there are only testing versions available, so I have not created installers for them. Since this version is aimed at early testers and advanced users, some manual steps may be required to install openPilotLog.
+Right now, there are only [testing versions](https://github.com/fiffty-50/openPilotLog/releases) available, so I have not created installers for them. Since this version is aimed at early testers and advanced users, some manual steps may be required to install openPilotLog.
 
 ### Windows
-Download and install the release and unzip it to a destination folder of your liking.
+Download and install the [release](https://github.com/fiffty-50/openPilotLog/releases/download/beta/openPilotLog_v0_1_windows_x64.zip) and unzip it to a destination folder of your liking.
 ### macOS
-Download and open the .dmg file for your configuration (ARM64 - M1/M2 based machines, x86_64 - Intel based).
+Download and open the .dmg file for your configuration ([arm64](https://github.com/fiffty-50/openPilotLog/releases/download/beta/openPilotLog_0_1_macOS_arm64.dmg) - M1/M2 based machines, [x86_64](https://github.com/fiffty-50/openPilotLog/releases/download/beta/openPilotLog_0_1_macOS_x86_64.dmg) - Intel based).
 ### Linux - using flatpak
-Make sure you have [flatpak](https://flatpak.org/setup/) installed and working. Then download the release and install the package.
+Make sure you have [flatpak](https://flatpak.org/setup/) installed and working. Then download the [release](https://github.com/fiffty-50/openPilotLog/releases/download/beta/openPilotLog_0_1_linux_x86_64.flatpak) and install the package.
 
 ```bash
 # Requires kde platform runtime version `5.15-21.08`.
