@@ -75,9 +75,12 @@ set(PROJECT_SOURCES
     src/gui/widgets/pilotswidget.h
     src/gui/widgets/pilotswidget.cpp
     src/gui/widgets/pilotswidget.ui
-    src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.h
+    src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.ui
+    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.ui
     # Verification
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
