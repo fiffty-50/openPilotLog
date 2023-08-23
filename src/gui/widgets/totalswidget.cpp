@@ -24,7 +24,7 @@ TotalsWidget::~TotalsWidget()
  * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the OPL::Statistics::totals
  * function and parses the return to fill out the QLineEdits.
  */
-void TotalsWidget::fillTotals(WidgetType widgetType)
+void TotalsWidget::fillTotals(const WidgetType widgetType)
 {
     OPL::RowData_T time_data;
 
@@ -50,12 +50,10 @@ void TotalsWidget::fillTotals(WidgetType widgetType)
             if(le_name.contains("to") || le_name.contains("ldg")) {
                 // line edits for take offs and landings
                 line_edit->setText(field.toString());
-//                DEB << "Setting: " + le_name + ": " + field.toString();
             } else {
                 // line edits for total times
                 const QString time_string = OPL::Time::toString(field.toInt());
                 line_edit->setText(time_string);
-//                DEB << "Setting " + le_name + ": " + time_string;
             }
         }
 
@@ -67,29 +65,33 @@ void TotalsWidget::fillTotals(WidgetType widgetType)
  * \details This widget can be used to either display the totals (in the home widget) or
  * to edit the total previous experience, from previous logbooks (in the settings widget).
  */
-void TotalsWidget::setup(WidgetType widgetType)
+void TotalsWidget::setup(const WidgetType widgetType)
 {
-
-    const auto lineEdits = this->findChildren<QLineEdit *>();
+    const QList<QLineEdit *> lineEdits = this->findChildren<QLineEdit *>();
 
     switch (widgetType) {
     case TotalTimeWidget:
         LOG << "Setting up totals widget";
+        // disable editing
         for (const auto &lineEdit : lineEdits) {
             lineEdit->setFocusPolicy(Qt::FocusPolicy::NoFocus);
         }
+        // populate the UI
         fillTotals(widgetType);
         break;
     case PreviousExperienceWidget:
         LOG << "Setting up previous XP widget";
         for (const auto &lineEdit : lineEdits) {
-            lineEdit->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-            lineEdit->setValidator(m_timeValidator);
+            lineEdit->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+            // set a validator for the TO/LDG line edits, the other ones get validated seperately
+            if(lineEdit->objectName().contains(QLatin1String("to")) || lineEdit->objectName().contains(QLatin1String("ldg"))) {
+                lineEdit->setValidator( new QIntValidator(0,  std::numeric_limits<int>::max(), this) );
+            }
         }
         // initialise m_rowData
         m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
 
-        // fill the totals
+        // populate the UI
         fillTotals(widgetType);
         connectSignalsAndSlots();
         break;
@@ -103,41 +105,48 @@ void TotalsWidget::setup(WidgetType widgetType)
  */
 void TotalsWidget::connectSignalsAndSlots()
 {
-    // connect signals and slots that edit the applicable field in the database on editing finished
     connect(ui->tblkLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::totalTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tSPSELineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::spseTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tSPMELineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::spmeTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tMPLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::multipilotTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
 
     connect(ui->tPICLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::picTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tSICLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::sicTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tDUALLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::dualTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tFILineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::fiTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tPICUSLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::picusTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tIFRLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::ifrTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
+    connect(ui->tNIGHTLineEdit, &QLineEdit::editingFinished,
+            this, &TotalsWidget::timeLineEditEditingFinished);
     connect(ui->tSIMLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::simulatorTimeEdited);
+            this, &TotalsWidget::timeLineEditEditingFinished);
 
     connect(ui->toDayLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::toDayEdited);
+            this, &TotalsWidget::movementLineEditEditingFinished);
     connect(ui->toNightLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::toNightedited);
+            this, &TotalsWidget::movementLineEditEditingFinished);
     connect(ui->ldgDayLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::ldgDayEdited);
+            this, &TotalsWidget::movementLineEditEditingFinished);
     connect(ui->ldgNightLineEdit, &QLineEdit::editingFinished,
-            this, &TotalsWidget::ldgNightEdited);
+            this, &TotalsWidget::movementLineEditEditingFinished);
 }
 
+/*!
+ * \brief TotalsWidget::verifyUserTimeInput verify the user input is correct or can be fixed
+ * \param line_edit the line edit that has been edited
+ * \param input the user input
+ * \return if the input is valid or can be fixed
+ */
 bool TotalsWidget::verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input)
 {
     if(!input.isValid()) {
@@ -154,163 +163,60 @@ bool TotalsWidget::verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &in
     return true;
 }
 
-bool TotalsWidget::updateDatabase(const QString &db_field, const QString &value) {
+/*!
+ * \brief TotalsWidget::updateTimeEntry Updates the DB with a time entry
+ * \param line_edit The time line edit that has been edited
+ * \return true on success
+ */
+bool TotalsWidget::updateTimeEntry(const QLineEdit* line_edit) {
+    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
+    const QVariant value = OPL::Time::toMinutes(line_edit->text());
+
     m_rowData.insert(db_field, value);
-    const OPL::FlightEntry entry = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
 
-    return DB->commit(entry);
+    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    return DB->commit(previous_experience);
 }
 
-void TotalsWidget::totalTimeEdited()
+/*!
+ * \brief TotalsWidget::updateMovementEntry Updates the DB with a movement (TO or LDG) entry
+ * \param line_edit The line edit that has been edited
+ * \return true on success
+ */
+bool TotalsWidget::updateMovementEntry(const QLineEdit *line_edit)
+{
+    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
+    const QVariant value = line_edit->text().toInt();
+
+    m_rowData.insert(db_field, value);
+
+    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    return DB->commit(previous_experience);
+}
+
+void TotalsWidget::timeLineEditEditingFinished()
 {
     LOG << sender()->objectName() + "Editing finished.";
     QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
+
+    // verify and if possible fix the user input
+    if (!verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
+        // (re-) set to previous value from DB
+        WARN(tr("Invalid time entry. Please use the following format:<br><br><tt> hh:mm </tt>"));
+        int old_value = m_rowData.value(line_edit->objectName().remove(QLatin1String("LineEdit"))).toInt();
+        line_edit->setText(OPL::Time::toString(old_value));
+        return;
     }
+
+    // write the updated value to the database
+    updateTimeEntry(line_edit);
+
 }
 
-void TotalsWidget::spseTimeEdited()
+void TotalsWidget::movementLineEditEditingFinished()
 {
+    // input validation is already done by the QValidator
     LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
+    updateMovementEntry(this->findChild<QLineEdit*>(sender()->objectName()));
 }
-
-void TotalsWidget::spmeTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::multipilotTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::picTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::sicTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::dualTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::fiTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::picusTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::ifrTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::nightTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::simulatorTimeEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    if (verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // write to DB
-    } else {
-        // (re-) set to previous value from DB (or 0)
-    }
-}
-
-void TotalsWidget::toDayEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-}
-
-void TotalsWidget::toNightedited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-}
-
-void TotalsWidget::ldgDayEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-}
-
-void TotalsWidget::ldgNightEdited()
-{
-    LOG << sender()->objectName() + "Editing finished.";
-}
-
 
