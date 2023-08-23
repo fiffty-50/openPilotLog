@@ -17,6 +17,7 @@
  */
 #include "settingswidget.h"
 #include "src/gui/dialogues/exporttocsvdialog.h"
+#include "src/gui/widgets/totalswidget.h"
 #include "ui_settingswidget.h"
 #include "src/classes/style.h"
 #include "src/classes/settings.h"
@@ -34,6 +35,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     loadBackupWidget();
+    loadPreviousExperienceWidget();
     setupComboBoxes();
     setupDateEdits();
     setupValidators();
@@ -104,6 +106,13 @@ void SettingsWidget::loadBackupWidget()
     auto bw = new BackupWidget(this);
     ui->backupStackedWidget->addWidget(bw);
     ui->backupStackedWidget->setCurrentWidget(bw);
+}
+
+void SettingsWidget::loadPreviousExperienceWidget()
+{
+    auto pxp = new TotalsWidget(TotalsWidget::WidgetType::PreviousExperienceWidget);
+    ui->previousExpStackedWidget->addWidget(pxp);
+    ui->previousExpStackedWidget->setCurrentWidget(pxp);
 }
 
 /*!

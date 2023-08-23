@@ -327,6 +327,11 @@ public:
 
 
 
+    /*!
+     * \brief Retreive the total time of all flight entries in the databasRe
+     * \return The sum of all entries in the flights table
+     */
+    const RowData_T getTotals();
 signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.

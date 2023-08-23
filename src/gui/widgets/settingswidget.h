@@ -105,6 +105,8 @@ private:
 
     void loadBackupWidget();
 
+    void loadPreviousExperienceWidget();
+
     void updatePersonalDetails();
 
     bool usingStylesheet();

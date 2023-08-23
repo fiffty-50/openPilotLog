@@ -30,7 +30,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="totalLineEdit">
+      <widget class="QLineEdit" name="tblkLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -42,6 +42,11 @@
          <width>120</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>.AppleSystemUIFont</family>
+        </font>
        </property>
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
@@ -65,7 +70,7 @@
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QLineEdit" name="picusLineEdit">
+      <widget class="QLineEdit" name="tPICUSLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -97,7 +102,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="spseLineEdit">
+      <widget class="QLineEdit" name="tSPSELineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -129,7 +134,7 @@
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QLineEdit" name="ifrLineEdit">
+      <widget class="QLineEdit" name="tIFRLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -161,7 +166,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="spmeLineEdit">
+      <widget class="QLineEdit" name="tSPMELineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -193,7 +198,7 @@
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QLineEdit" name="nightLineEdit">
+      <widget class="QLineEdit" name="tNIGHTLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -225,7 +230,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="multipilotLineEdit">
+      <widget class="QLineEdit" name="tMPLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -257,7 +262,7 @@
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QLineEdit" name="simLineEdit">
+      <widget class="QLineEdit" name="tSIMLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -289,7 +294,7 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="picLineEdit">
+      <widget class="QLineEdit" name="tPICLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -321,7 +326,7 @@
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QLineEdit" name="todayLineEdit">
+      <widget class="QLineEdit" name="toDayLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -356,7 +361,7 @@
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QLineEdit" name="sicLineEdit">
+      <widget class="QLineEdit" name="tSICLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -388,7 +393,7 @@
       </widget>
      </item>
      <item row="5" column="3">
-      <widget class="QLineEdit" name="tonightLineEdit">
+      <widget class="QLineEdit" name="toNightLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -423,7 +428,7 @@
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QLineEdit" name="dualLineEdit">
+      <widget class="QLineEdit" name="tDUALLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -455,7 +460,7 @@
       </widget>
      </item>
      <item row="6" column="3">
-      <widget class="QLineEdit" name="ldgdayLineEdit">
+      <widget class="QLineEdit" name="ldgDayLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -503,7 +508,7 @@
       </widget>
      </item>
      <item row="7" column="3">
-      <widget class="QLineEdit" name="ldgnightLineEdit">
+      <widget class="QLineEdit" name="ldgNightLineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -525,7 +530,7 @@
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QLineEdit" name="fiLineEdit">
+      <widget class="QLineEdit" name="tFILineEdit">
        <property name="minimumSize">
         <size>
          <width>100</width>

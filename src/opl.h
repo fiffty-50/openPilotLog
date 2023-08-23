@@ -94,6 +94,16 @@ public:
 
 using RowData_T = QHash<QString, QVariant>;
 
+struct ToLdgCount_T {
+    int toDay;
+    int toNight;
+    int ldgDay;
+    int ldgNight;
+
+    ToLdgCount_T(int toDay, int toNight, int ldgDay, int ldgNight)
+        : toDay(toDay), toNight(toNight), ldgDay(ldgDay), ldgNight(ldgNight) {}
+};
+
 /*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
  * \todo At the moment, only ISODate is accepet as a valid date format.

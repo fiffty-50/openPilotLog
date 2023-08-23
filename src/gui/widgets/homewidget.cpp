@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
+#include "src/gui/widgets/totalswidget.h"
 #include "ui_homewidget.h"
 #include "src/database/database.h"
 #include "src/functions/time.h"
@@ -98,11 +99,9 @@ void HomeWidget::changeEvent(QEvent *event)
  */
 void HomeWidget::fillTotals()
 {
-    const auto data = OPL::Statistics::totals();
-    for (const auto &field : data) {
-        auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
-        line_edit->setText(field.second);
-    }
+    auto tw = new TotalsWidget(TotalsWidget::TotalTimeWidget, this);
+    ui->totalsStackedWidget->addWidget(tw);
+    ui->totalsStackedWidget->setCurrentWidget(tw);
 }
 
 void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)

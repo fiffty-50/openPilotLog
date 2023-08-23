@@ -57,7 +57,7 @@ inline const QString toString(int minutes_in, OPL::FlightTimeFormat format = OPL
         if (minute.size() < 2) {
             minute.prepend(QStringLiteral("0"));
         }
-        return hour + ':' + minute;
+        return hour + QLatin1Char(':') + minute;
     }
     case OPL::FlightTimeFormat::Decimal:
     {
