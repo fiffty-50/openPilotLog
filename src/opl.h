@@ -67,6 +67,25 @@ namespace OPL {
 #define WARN(msg) OPL::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
 #define CRIT(msg) OPL::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
 
+/**
+ * @brief Defines the row ID for non-user entries in the database;
+ */
+const static int STUB_ROW_ID = -1;
+
+/**
+ * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
+ */
+const static char* STUB_AIRPORT_CODE = "XXXX";
+/**
+ * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
+ */
+const static char* STUB_AIRCRAFT_REG = "XX-XXX";
+
+/**
+ * @brief Defines a dummy date in the ISO date format: "1900-01-01"
+ */
+const static char* STUB_ISO_DATE = "1900-01-01";
+
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
  * information to the user in a QMessageBox and forwards the displayed message to ALog so it is written

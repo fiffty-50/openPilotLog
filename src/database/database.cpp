@@ -386,6 +386,7 @@ bool Database::insert(const OPL::Row &new_row)
     } else {
         DEB << "Unable to commit.";
         DEB << "Query: " << statement;
+        DEB << "Bound Values: " << query.boundValues();
         DEB << "Query Error: " << query.lastError().text();
         lastError = query.lastError();
         return false;

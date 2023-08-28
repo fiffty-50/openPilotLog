@@ -21,46 +21,6 @@ TotalsWidget::~TotalsWidget()
 }
 
 /*!
- * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the OPL::Statistics::totals
- * function and parses the return to fill out the QLineEdits.
- */
-void TotalsWidget::fillTotals(const WidgetType widgetType)
-{
-    OPL::RowData_T time_data;
-
-    // retreive times from database
-    switch (widgetType) {
-    case TotalTimeWidget:
-        time_data = DB->getTotals();
-        break;
-    case PreviousExperienceWidget:
-        time_data = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
-        DEB << time_data;
-    }
-
-    // fill the line edits with the data obtained
-    const OPL::RowData_T &const_time_data = qAsConst(time_data);
-    for (const auto &field : const_time_data) {
-        // match the db entries to the line edits using their object name
-        const QString search_term = time_data.key(field) + QLatin1String("LineEdit");
-        QLineEdit* line_edit = this->findChild<QLineEdit *>(search_term);
-        // fill the line edit with the corresponding data
-        if(line_edit != nullptr) {
-            const QString &le_name = line_edit->objectName();
-            if(le_name.contains("to") || le_name.contains("ldg")) {
-                // line edits for take offs and landings
-                line_edit->setText(field.toString());
-            } else {
-                // line edits for total times
-                const QString time_string = OPL::Time::toString(field.toInt());
-                line_edit->setText(time_string);
-            }
-        }
-
-    }
-}
-
-/*!
  * \brief TotalsWidget::setup Sets the line edits as editable or read-only and connects signals if required
  * \details This widget can be used to either display the totals (in the home widget) or
  * to edit the total previous experience, from previous logbooks (in the settings widget).
@@ -90,6 +50,10 @@ void TotalsWidget::setup(const WidgetType widgetType)
         }
         // initialise m_rowData
         m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+        // DB returns empty object if no entry exists. Crate a stub to prepare for user data
+        if(m_rowData == OPL::RowData_T()) {
+            fillStubData();
+        }
 
         // populate the UI
         fillTotals(widgetType);
@@ -98,6 +62,66 @@ void TotalsWidget::setup(const WidgetType widgetType)
     default:
         break;
     }
+}
+
+/*!
+ * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the OPL::Statistics::totals
+ * function and parses the return to fill out the QLineEdits.
+ */
+void TotalsWidget::fillTotals(const WidgetType widgetType)
+{
+    OPL::RowData_T time_data;
+
+    // retreive times from database
+    switch (widgetType) {
+    case TotalTimeWidget:
+        time_data = DB->getTotals();
+        break;
+    case PreviousExperienceWidget:
+        time_data = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+    }
+
+    // fill the line edits with the data obtained
+    const OPL::RowData_T &const_time_data = qAsConst(time_data);
+    for (const auto &field : const_time_data) {
+        // match the db entries to the line edits using their object name
+        const QString search_term = time_data.key(field) + QLatin1String("LineEdit");
+        QLineEdit* line_edit = this->findChild<QLineEdit *>(search_term);
+        // fill the line edit with the corresponding data
+        if(line_edit != nullptr) {
+            const QString &le_name = line_edit->objectName();
+            if(le_name.contains("to") || le_name.contains("ldg")) {
+                // line edits for take offs and landings
+                line_edit->setText(field.toString());
+            } else {
+                // line edits for total time
+                const QString time_string = OPL::Time::toString(field.toInt());
+                line_edit->setText(time_string);
+            }
+        }
+
+    }
+}
+
+/**
+ * @brief TotalsWidget::fillStubData Fills the row entry object with stub data if it is empty.
+ * \details The Widget retreives previous experience from the database. If the user has not entered
+ * any previous experience this database entry does not exist. The database returns an empty
+ * row object in this case. In order for the user to be able to fill in the previous experience,
+ * a stub entry has to be created to fulfill the databases NOT NULL constrains.
+ */
+void TotalsWidget::fillStubData()
+{
+    m_rowData.insert(OPL::Db::FLIGHTS_ROWID, OPL::STUB_ROW_ID);
+    m_rowData.insert(OPL::Db::FLIGHTS_DOFT, OPL::STUB_ISO_DATE);
+    m_rowData.insert(OPL::Db::FLIGHTS_TOFB, 0);
+    m_rowData.insert(OPL::Db::FLIGHTS_TONB, 0);
+    m_rowData.insert(OPL::Db::FLIGHTS_TBLK, 0);
+    m_rowData.insert(OPL::Db::FLIGHTS_DEPT, OPL::STUB_AIRPORT_CODE);
+    m_rowData.insert(OPL::Db::FLIGHTS_DEST, OPL::STUB_AIRPORT_CODE);
+    m_rowData.insert(OPL::Db::FLIGHTS_PIC, OPL::STUB_ROW_ID);
+    m_rowData.insert(OPL::Db::FLIGHTS_ACFT, OPL::STUB_ROW_ID);
+    DEB << m_rowData;
 }
 
 /*!
