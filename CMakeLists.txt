@@ -114,6 +114,8 @@ set(PROJECT_SOURCES
     src/classes/jsonhelper.cpp
     src/classes/md5sum.h
     src/classes/md5sum.cpp
+    src/classes/time.h
+    src/classes/time.cpp
 
     # Namespaces
     src/functions/calc.h

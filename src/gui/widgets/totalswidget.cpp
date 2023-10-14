@@ -3,7 +3,7 @@
 #include "src/database/database.h"
 #include "src/gui/verification/timeinput.h"
 #include "src/opl.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/database/row.h"
 #include "ui_totalswidget.h"
 
@@ -95,8 +95,8 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
                 line_edit->setText(field.toString());
             } else {
                 // line edits for total time
-                const QString time_string = OPL::Time::toString(field.toInt());
-                line_edit->setText(time_string);
+                OPL::Time time = OPL::Time(field.toInt());// = Time(field.toInt());
+                line_edit->setText(time.toString());
             }
         }
 
@@ -104,7 +104,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
 }
 
 /**
- * @brief TotalsWidget::fillStubData Fills the row entry object with stub data if it is empty.
+ * \brief TotalsWidget::fillStubData Fills the row entry object with stub data if it is empty.
  * \details The Widget retreives previous experience from the database. If the user has not entered
  * any previous experience this database entry does not exist. The database returns an empty
  * row object in this case. In order for the user to be able to fill in the previous experience,
@@ -166,81 +166,62 @@ void TotalsWidget::connectSignalsAndSlots()
 }
 
 /*!
- * \brief TotalsWidget::verifyUserTimeInput verify the user input is correct or can be fixed
- * \param line_edit the line edit that has been edited
- * \param input the user input
- * \return if the input is valid or can be fixed
- */
-bool TotalsWidget::verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input)
-{
-    if(!input.isValid()) {
-        // try to fix
-        QString fixed = input.fixup();
-        if(fixed == QString()) {
-            WARN(tr("Invalid input. Please use the following format for time:<br><br><tt>hh:mm</tt>"));
-            return false;
-        } else {
-            line_edit->setText(fixed);
-            return true;
-        }
-    }
-    return true;
-}
-
-/*!
- * \brief TotalsWidget::updateTimeEntry Updates the DB with a time entry
- * \param line_edit The time line edit that has been edited
- * \return true on success
- */
-bool TotalsWidget::updateTimeEntry(const QLineEdit* line_edit) {
-    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value = OPL::Time::toMinutes(line_edit->text());
-
-    m_rowData.insert(db_field, value);
-
-    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
-    return DB->commit(previous_experience);
-}
-
-/*!
  * \brief TotalsWidget::updateMovementEntry Updates the DB with a movement (TO or LDG) entry
  * \param line_edit The line edit that has been edited
  * \return true on success
  */
 bool TotalsWidget::updateMovementEntry(const QLineEdit *line_edit)
 {
-    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value = line_edit->text().toInt();
 
-    m_rowData.insert(db_field, value);
-
-    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
-    return DB->commit(previous_experience);
 }
 
 void TotalsWidget::timeLineEditEditingFinished()
 {
     LOG << sender()->objectName() + "Editing finished.";
     QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
+    const QString& text = line_edit->text();
 
-    // verify and if possible fix the user input
-    if (!verifyUserTimeInput(line_edit, TimeInput(line_edit->text()))) {
-        // (re-) set to previous value from DB
-        WARN(tr("Invalid time entry. Please use the following format:<br><br><tt> hh:mm </tt>"));
-        int old_value = m_rowData.value(line_edit->objectName().remove(QLatin1String("LineEdit"))).toInt();
-        line_edit->setText(OPL::Time::toString(old_value));
+    // make sure the input is usable
+    if(!text.contains(QChar(':'))) {
+        WARN(tr("Please enter the time as: <br><br> hh:mm"));
+        line_edit->setText(QString());
         return;
     }
 
     // write the updated value to the database
-    updateTimeEntry(line_edit);
+    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
+    const QVariant value = OPL::Time::fromString(line_edit->text()).toMinutes();
 
+    m_rowData.insert(db_field, value);
+    LOG << "Added row data: " + db_field + ": " + value.toString();
+
+    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    DB->commit(previous_experience);
+
+    // Read back the value and set the line edit to confirm input is correct and provide user feedback
+    m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+    OPL::Time new_time = OPL::Time(m_rowData.value(db_field).toInt());
+    line_edit->setText(new_time.toString());
 }
 
 void TotalsWidget::movementLineEditEditingFinished()
 {
-    // input validation is already done by the QValidator
-    LOG << sender()->objectName() + "Editing finished.";
-    updateMovementEntry(this->findChild<QLineEdit*>(sender()->objectName()));
+    // input validation is done by the QValidator
+    QLineEdit* line_edit = this->findChild<QLineEdit*>(sender()->objectName());
+    LOG << line_edit->objectName() + "Editing finished.";
+
+    // extract the value from the input and update the DB
+    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
+    const QVariant value = line_edit->text().toInt();
+
+    m_rowData.insert(db_field, value);
+
+    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    DB->commit(previous_experience);
+
+    // read back the value and set the line edit to the retreived value to give user feedback
+    m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+    const QString new_value = QString::number(m_rowData.value(db_field).toInt());
+    line_edit->setText(new_value);
 }
 
