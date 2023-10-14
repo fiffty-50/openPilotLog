@@ -19,7 +19,7 @@
 #include "src/gui/widgets/totalswidget.h"
 #include "ui_homewidget.h"
 #include "src/database/database.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/classes/settings.h"
 #include "src/database/row.h"
 
@@ -200,7 +200,7 @@ void HomeWidget::fillCurrencyTakeOffLanding()
 void HomeWidget::fillLimitations()
 {
     int minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling28Days);
-    ui->FlightTime28dDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTime28dDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= ROLLING_28_DAYS) {
         setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_28_DAYS * ftlWarningThreshold) {
@@ -208,7 +208,7 @@ void HomeWidget::fillLimitations()
     }
 
     minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling12Months);
-    ui->FlightTime12mDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTime12mDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= ROLLING_12_MONTHS) {
         setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_12_MONTHS * ftlWarningThreshold) {
@@ -216,7 +216,7 @@ void HomeWidget::fillLimitations()
     }
 
     minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::CalendarYear);
-    ui->FlightTimeCalYearDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTimeCalYearDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= CALENDAR_YEAR) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Red);
     } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {

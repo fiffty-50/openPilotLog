@@ -25,7 +25,7 @@ public:
      * @brief isValidTimeOfDay - determines whether the instance can be converted to a time hh:mm
      * @return true if the total amount of minutes does not exceed one day.
      */
-    bool isValidTimeOfDay();
+    bool isValidTimeOfDay() const;
 
     /**
      * @brief toString returns the time as hh:mm
@@ -35,7 +35,7 @@ public:
     /**
      * @brief toMinutes - returns the number of minutes in the time Object
      */
-    int32_t toMinutes();
+    int32_t toMinutes() const;
 
     /**
      * @brief fromString create a Time Object from a String formatted as hh:mm
@@ -43,6 +43,16 @@ public:
      * @return the Time Object corresponding to the string, equivalent to 0 minutes if conversion fails.
      */
     static Time fromString(const QString& timeString);
+
+    /**
+     * @brief timeDifference returns the time difference between this time and another time object.
+     * @param other - The other time object
+     * @return the number of minutes of time difference, or 0 if one of the two objects is greater than 24h
+     */
+    int32_t timeElapsed(const Time &other);
+
+    static Time blockTime(const Time &offBlocks, const Time& onBlocks);
+    static int32_t blockMinutes(const Time &offBlocks, const Time& onBlocks);
 };
 
 }// namespace OPL

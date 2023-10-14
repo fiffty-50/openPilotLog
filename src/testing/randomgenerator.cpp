@@ -20,8 +20,8 @@ const FlightEntry RandomGenerator::randomFlight()
     const QDateTime dest_dt = dept_dt.addSecs(QRandomGenerator::global()->bounded(900, 50000));
 
     const QString doft = dept_dt.date().toString(Qt::ISODate);
-    int tofb = OPL::Time::toMinutes(dept_dt.time());
-    int tonb = OPL::Time::toMinutes(dest_dt.time());
+    OPL::Time tofb = OPL::Time::fromString(dept_dt.time().toString());
+    OPL::Time tonb = OPL::Time::fromString(dest_dt.time().toString());
 
     int pic = randomPilot();
     int acft = randomTail();
@@ -29,7 +29,7 @@ const FlightEntry RandomGenerator::randomFlight()
     const QString dept = randomAirport();
     const QString dest = randomAirport();
 
-    int tblk = OPL::Time::blockMinutes(dept_dt.time(), dest_dt.time());
+    int tblk = OPL::Time::blockMinutes(tofb, tonb);
     int tNight = OPL::Calc::calculateNightTime(dept, dest, dept_dt, tblk, 6);
 
     auto flt_data = OPL::RowData_T();
@@ -38,8 +38,8 @@ const FlightEntry RandomGenerator::randomFlight()
     flt_data.insert(OPL::Db::FLIGHTS_DEST, dest);
     flt_data.insert(OPL::Db::FLIGHTS_PIC, pic);
     flt_data.insert(OPL::Db::FLIGHTS_ACFT, acft);
-    flt_data.insert(OPL::Db::FLIGHTS_TOFB, tofb);
-    flt_data.insert(OPL::Db::FLIGHTS_TONB, tonb);
+    flt_data.insert(OPL::Db::FLIGHTS_TOFB, tofb.toMinutes());
+    flt_data.insert(OPL::Db::FLIGHTS_TONB, tonb.toMinutes());
     flt_data.insert(OPL::Db::FLIGHTS_TBLK, tblk);
 
     if (tNight > 0) flt_data.insert(OPL::Db::FLIGHTS_TNIGHT, tNight);

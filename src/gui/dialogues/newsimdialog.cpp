@@ -3,7 +3,7 @@
 #include "src/gui/verification/timeinput.h"
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/functions/datetime.h"
 #include "src/database/database.h"
 #include <QCompleter>
@@ -56,7 +56,7 @@ void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
     ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
-    ui->totalTimeLineEdit->setText(OPL::Time::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
+    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::Db::SIMULATORS_TIME).toInt()).toString());
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
     ui->aircraftTypeLineEdit->setText(data.value(OPL::Db::SIMULATORS_ACFT).toString());
     ui->registrationLineEdit->setText(data.value(OPL::Db::SIMULATORS_REG).toString());
@@ -135,9 +135,10 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     // Time
     if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
         return false;
-    const QTime time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
 
-    if (!time.isValid()) {
+    const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
+
+    if (!time.isValidTimeOfDay()) {
         ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
         ui->totalTimeLineEdit->setText(QString());
         error_msg = tr("Invalid time");
@@ -160,7 +161,7 @@ OPL::RowData_T NewSimDialog::collectInput()
     // Date
     new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(OPL::Db::SIMULATORS_TIME, OPL::Time::toMinutes(ui->totalTimeLineEdit->text()));
+    new_entry.insert(OPL::Db::SIMULATORS_TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
     // Device Type
     new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type

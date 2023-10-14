@@ -284,9 +284,9 @@ const QString TailsWidget::getFlightSummary(const OPL::FlightEntry &flight) cons
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString()
                           + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TONB).toInt()).toString()
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 

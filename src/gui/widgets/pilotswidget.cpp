@@ -21,7 +21,7 @@
 #include "src/opl.h"
 #include "src/database/database.h"
 #include "src/database/row.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/classes/settings.h"
 
 PilotsWidget::PilotsWidget(QWidget *parent) :
@@ -258,9 +258,9 @@ const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) con
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString()
                           + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TONB).toInt()).toString()
                           + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 

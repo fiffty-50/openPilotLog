@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "newflightdialog.h"
+#include "src/classes/time.h"
 #include "src/database/databasecache.h"
 #include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
@@ -189,8 +190,8 @@ void NewFlightDialog::fillWithEntryData()
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEPT).toString());
     ui->destLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEST).toString());
     // Times
-    ui->tofbTimeLineEdit->setText(OPL::Time::toString(flight_data.value(OPL::Db::FLIGHTS_TOFB).toInt()));
-    ui->tonbTimeLineEdit->setText(OPL::Time::toString(flight_data.value(OPL::Db::FLIGHTS_TONB).toInt()));
+    ui->tofbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString());
+    ui->tonbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::Db::FLIGHTS_TONB).toInt()).toString());
     ui->acftLineEdit->setText(DBCache->getTailsMap().value(flight_data.value(OPL::Db::FLIGHTS_ACFT).toInt()));
     ui->picNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::Db::FLIGHTS_PIC).toInt()));
     ui->sicNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
@@ -283,8 +284,11 @@ void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 
 void NewFlightDialog::updateBlockTimeLabel()
 {
-    QTime tblk = OPL::Time::blocktime(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
-    ui->tblkDisplayLabel->setText(OPL::Time::toString(tblk));
+    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
+    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
+    const OPL::Time tblk = OPL::Time::blockTime(tofb, tonb);
+
+    ui->tblkDisplayLabel->setText(tblk.toString());
 }
 
 /*!
@@ -365,18 +369,23 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     if(!validationState.allValid())
         return {};
 
+    // prepare the entry data
     OPL::RowData_T new_data;
+
     // Calculate Block and Night Time
-    const int block_minutes = OPL::Time::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
+    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
+    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
+    const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
+
     QDateTime departure_date_time = OPL::DateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
     const auto night_time_data = OPL::Calc::NightTimeValues(ui->deptLocationLineEdit->text(), ui->destLocationLineEdit->text(),
                            departure_date_time, block_minutes, Settings::read(Settings::FlightLogging::NightAngle).toInt());
     // Mandatory data
     new_data.insert(OPL::Db::FLIGHTS_DOFT, ui->doftLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_DEPT, ui->deptLocationLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_TOFB, OPL::Time::toMinutes(ui->tofbTimeLineEdit->text()));
+    new_data.insert(OPL::Db::FLIGHTS_TOFB, tofb.toMinutes());
     new_data.insert(OPL::Db::FLIGHTS_DEST, ui->destLocationLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_TONB, OPL::Time::toMinutes(ui->tonbTimeLineEdit->text()));
+    new_data.insert(OPL::Db::FLIGHTS_TONB, tonb.toMinutes());
     new_data.insert(OPL::Db::FLIGHTS_TBLK, block_minutes);
     // Night
     new_data.insert(OPL::Db::FLIGHTS_TNIGHT, night_time_data.nightMinutes);
@@ -475,10 +484,14 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
  */
 void NewFlightDialog::updateNightCheckBoxes()
 {
+    // calculate Block Time
+    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
+    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
+    const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
+
     // Calculate Night Time
     const QString dept_date = (ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
     const auto dept_date_time = OPL::DateTime::fromString(dept_date);
-    const int block_minutes = OPL::Time::blockMinutes(ui->tofbTimeLineEdit->text(), ui->tonbTimeLineEdit->text());
     const int night_angle = Settings::read(Settings::FlightLogging::NightAngle).toInt();
     const auto night_values = OPL::Calc::NightTimeValues(
                 ui->deptLocationLineEdit->text(),

@@ -1,5 +1,5 @@
 #include "processflights.h"
-#include <src/functions/time.h>
+#include "src/classes/time.h"
 
 void ProcessFlights::parseRawData()
 {
@@ -53,14 +53,14 @@ void ProcessFlights::processParsedData()
         auto time_off = QTime::fromString(row[4], QStringLiteral("hh:mm"));
         if (!time_off.isValid())
             time_off = QTime::fromString(row[4], QStringLiteral("h:mm"));
-        int tofb = OPL::Time::toMinutes(time_off);
+        int tofb = OPL::Time::fromString(time_off.toString()).toMinutes();
         new_flight_data.insert(OPL::Db::FLIGHTS_TOFB, tofb);
 
         auto time_on = QTime::fromString(row[5], QStringLiteral("hh:mm"));
         if (!time_on.isValid())
             time_on = QTime::fromString(row[5], QStringLiteral("h:mm"));
 
-        int tonb = OPL::Time::toMinutes(time_on);
+        int tonb = OPL::Time::fromString(time_on.toString()).toMinutes();
         new_flight_data.insert(OPL::Db::FLIGHTS_TONB, tonb);
 
         // map pilots

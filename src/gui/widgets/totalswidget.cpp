@@ -1,7 +1,6 @@
 #include "totalswidget.h"
 #include "QtWidgets/qlineedit.h"
 #include "src/database/database.h"
-#include "src/gui/verification/timeinput.h"
 #include "src/opl.h"
 #include "src/classes/time.h"
 #include "src/database/row.h"
@@ -165,15 +164,6 @@ void TotalsWidget::connectSignalsAndSlots()
             this, &TotalsWidget::movementLineEditEditingFinished);
 }
 
-/*!
- * \brief TotalsWidget::updateMovementEntry Updates the DB with a movement (TO or LDG) entry
- * \param line_edit The line edit that has been edited
- * \return true on success
- */
-bool TotalsWidget::updateMovementEntry(const QLineEdit *line_edit)
-{
-
-}
 
 void TotalsWidget::timeLineEditEditingFinished()
 {
