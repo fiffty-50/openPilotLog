@@ -48,11 +48,7 @@ void TotalsWidget::setup(const WidgetType widgetType)
             }
         }
         // initialise m_rowData
-        m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
-        // DB returns empty object if no entry exists. Crate a stub to prepare for user data
-        if(m_rowData == OPL::RowData_T()) {
-            fillStubData();
-        }
+        m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
 
         // populate the UI
         fillTotals(widgetType);
@@ -64,8 +60,7 @@ void TotalsWidget::setup(const WidgetType widgetType)
 }
 
 /*!
- * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time via the OPL::Statistics::totals
- * function and parses the return to fill out the QLineEdits.
+ * \brief HomeWidget::fillTotals Retreives a Database Summary of Total Flight Time and fills the UI.
  */
 void TotalsWidget::fillTotals(const WidgetType widgetType)
 {
@@ -74,10 +69,12 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
     // retreive times from database
     switch (widgetType) {
     case TotalTimeWidget:
-        time_data = DB->getTotals();
+        time_data = DB->getTotals(true);
         break;
     case PreviousExperienceWidget:
-        time_data = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+        time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+        LOG << "Previous row data:";
+        LOG << time_data;
     }
 
     // fill the line edits with the data obtained
@@ -91,6 +88,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
             const QString &le_name = line_edit->objectName();
             if(le_name.contains("to") || le_name.contains("ldg")) {
                 // line edits for take offs and landings
+                DEB << "Setting to/ldg: " << le_name << " -> " + field.toString();
                 line_edit->setText(field.toString());
             } else {
                 // line edits for total time
@@ -100,27 +98,6 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
         }
 
     }
-}
-
-/**
- * \brief TotalsWidget::fillStubData Fills the row entry object with stub data if it is empty.
- * \details The Widget retreives previous experience from the database. If the user has not entered
- * any previous experience this database entry does not exist. The database returns an empty
- * row object in this case. In order for the user to be able to fill in the previous experience,
- * a stub entry has to be created to fulfill the databases NOT NULL constrains.
- */
-void TotalsWidget::fillStubData()
-{
-    m_rowData.insert(OPL::Db::FLIGHTS_ROWID, OPL::STUB_ROW_ID);
-    m_rowData.insert(OPL::Db::FLIGHTS_DOFT, OPL::STUB_ISO_DATE);
-    m_rowData.insert(OPL::Db::FLIGHTS_TOFB, 0);
-    m_rowData.insert(OPL::Db::FLIGHTS_TONB, 0);
-    m_rowData.insert(OPL::Db::FLIGHTS_TBLK, 0);
-    m_rowData.insert(OPL::Db::FLIGHTS_DEPT, OPL::STUB_AIRPORT_CODE);
-    m_rowData.insert(OPL::Db::FLIGHTS_DEST, OPL::STUB_AIRPORT_CODE);
-    m_rowData.insert(OPL::Db::FLIGHTS_PIC, OPL::STUB_ROW_ID);
-    m_rowData.insert(OPL::Db::FLIGHTS_ACFT, OPL::STUB_ROW_ID);
-    DEB << m_rowData;
 }
 
 /*!
@@ -185,11 +162,11 @@ void TotalsWidget::timeLineEditEditingFinished()
     m_rowData.insert(db_field, value);
     LOG << "Added row data: " + db_field + ": " + value.toString();
 
-    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
     DB->commit(previous_experience);
 
     // Read back the value and set the line edit to confirm input is correct and provide user feedback
-    m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+    m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
     OPL::Time new_time = OPL::Time(m_rowData.value(db_field).toInt());
     line_edit->setText(new_time.toString());
 }
@@ -206,11 +183,11 @@ void TotalsWidget::movementLineEditEditingFinished()
 
     m_rowData.insert(db_field, value);
 
-    const auto previous_experience = OPL::FlightEntry(TOTALS_DATA_ROW_ID, m_rowData);
+    const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
     DB->commit(previous_experience);
 
     // read back the value and set the line edit to the retreived value to give user feedback
-    m_rowData = DB->getRowData(OPL::DbTable::Flights, TOTALS_DATA_ROW_ID);
+    m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
     const QString new_value = QString::number(m_rowData.value(db_field).toInt());
     line_edit->setText(new_value);
 }

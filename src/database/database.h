@@ -328,10 +328,12 @@ public:
 
 
     /*!
-     * \brief Retreive the total time of all flight entries in the databasRe
-     * \return The sum of all entries in the flights table
+     * @brief Retreive the total time of all flight entries in the databas
+     * @param includePreviousExperience determines whether experience from previous logbooks
+     * is included.
+     * @return The sum of all entries in the flights table
      */
-    const RowData_T getTotals();
+    const RowData_T getTotals(bool includePreviousExperience);
 signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.

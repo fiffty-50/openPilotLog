@@ -81,11 +81,6 @@ const static char* STUB_AIRPORT_CODE = "XXXX";
  */
 const static char* STUB_AIRCRAFT_REG = "XX-XXX";
 
-/**
- * @brief Defines a dummy date in the ISO date format: "1900-01-01"
- */
-const static char* STUB_ISO_DATE = "1900-01-01";
-
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
  * information to the user in a QMessageBox and forwards the displayed message to ALog so it is written
@@ -157,7 +152,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog, PreviousExperience};
 
 /*!
  * \brief Enumerates the currency names
@@ -234,6 +229,7 @@ private:
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
         {DbTable::Changelog,    QStringLiteral("changelog")},
+        {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
     };
 #else
     const static inline QMap<Translation, QString> L10N_FilePaths {
@@ -281,6 +277,7 @@ private:
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
         {DbTable::Changelog,    QStringLiteral("changelog")},
+        {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
     };
 #endif
 
@@ -331,13 +328,14 @@ namespace Db {
 
 
 // Table names
-const inline auto TABLE_FLIGHTS          = QStringLiteral("flights");
-const inline auto TABLE_PILOTS           = QStringLiteral("pilots");
-const inline auto TABLE_TAILS            = QStringLiteral("tails");
-const inline auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
-const inline auto TABLE_AIRPORTS         = QStringLiteral("airports");
-const inline auto TABLE_CURRENCIES       = QStringLiteral("currencies");
-const inline auto TABLE_SIMULATORS       = QStringLiteral("simulators");
+const inline auto TABLE_FLIGHTS         = QStringLiteral("flights");
+const inline auto TABLE_PILOTS          = QStringLiteral("pilots");
+const inline auto TABLE_TAILS           = QStringLiteral("tails");
+const inline auto TABLE_AIRCRAFT        = QStringLiteral("aircraft");
+const inline auto TABLE_AIRPORTS        = QStringLiteral("airports");
+const inline auto TABLE_CURRENCIES  	= QStringLiteral("currencies");
+const inline auto TABLE_SIMULATORS      = QStringLiteral("simulators");
+const inline auto TABLE_PREVIOUS_EXP	= QStringLiteral("previousExperience");
 
 // Flights table columns
 const inline auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
@@ -420,6 +418,24 @@ const inline auto AIRPORTS_ALTITIDUE      = QStringLiteral("alt");
 const inline auto AIRPORTS_UTC_OFFSET     = QStringLiteral("utcoffset");
 const inline auto AIRPORTS_TZ_OLSON       = QStringLiteral("tzolson");
 
+// Previous Experience table
+const inline auto PREVXP_TBLK           = &FLIGHTS_TBLK;
+const inline auto PREVXP_TSPSE          = &FLIGHTS_TSPSE;
+const inline auto PREVXP_TSPME          = &FLIGHTS_TSPME;
+const inline auto PREVXP_TMP            = &FLIGHTS_TMP;
+const inline auto PREVXP_TNIGHT         = &FLIGHTS_TNIGHT;
+const inline auto PREVXP_TIFR           = &FLIGHTS_TIFR;
+const inline auto PREVXP_TPIC           = &FLIGHTS_TPIC;
+const inline auto PREVXP_TPICUS         = &FLIGHTS_TPICUS;
+const inline auto PREVXP_TSIC           = &FLIGHTS_TSIC;
+const inline auto PREVXP_TDUAL          = &FLIGHTS_TDUAL;
+const inline auto PREVXP_TFI            = &FLIGHTS_TFI;
+const inline auto PREVXP_TSIM           = &FLIGHTS_TSIM;
+const inline auto PREVXP_TODAY          = &FLIGHTS_TODAY;
+const inline auto PREVXP_TONIGHT        = &FLIGHTS_TONIGHT;
+const inline auto PREVXP_LDGDAY         = &FLIGHTS_LDGDAY;
+const inline auto PREVXP_LDGNIGHT       = &FLIGHTS_LDGNIGHT;
+
 // all tables
 const inline auto  ROWID                  = QStringLiteral("rowid");
 const inline auto  NULL_TIME_hhmm         = QStringLiteral("00:00");
@@ -462,7 +478,7 @@ const inline auto  ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-i
 
 }
 
-namespace Styles {
+namespace CssStyles {
 
 const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles

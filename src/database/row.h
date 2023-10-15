@@ -165,5 +165,16 @@ public:
     const QString icao() const { return getData().value(OPL::Db::AIRPORTS_ICAO).toString(); }
 };
 
+/*!
+ * \brief A Row representing an Airport entry. See Row class for details.
+ */
+class PreviousExperienceEntry : public Row
+{
+public:
+    PreviousExperienceEntry();
+    PreviousExperienceEntry(const RowData_T &row_data);
+    PreviousExperienceEntry(int row_id, const RowData_T &row_data);
+};
+
 } // namespace OPL
 #endif // ROW_H

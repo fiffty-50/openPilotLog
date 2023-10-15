@@ -28,10 +28,11 @@ private:
      * \brief m_rowData holds the data displayed in the line edits
      */
     OPL::RowData_T m_rowData;
-    const static int TOTALS_DATA_ROW_ID = OPL::STUB_ROW_ID;
-
+    /*!
+     * \brief ROW_ID the row ID for previous experience entries (0)
+     */
+    const static int ROW_ID = 1;
     void fillTotals(const WidgetType widgetType);
-    void fillStubData();
     void setup(const WidgetType widgetType);
     void connectSignalsAndSlots();
     bool verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input);

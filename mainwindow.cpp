@@ -26,15 +26,15 @@
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/database/databasecache.h"
 // Quick and dirty Debug area
-#include "src/testing/randomgenerator.h"
 void MainWindow::doDebugStuff()
 {
-    auto generator = OPL::RandomGenerator();
-    OPL::FlightEntry entry = generator.randomFlight();
-    DB->commit(entry);
+    OPL::RowData_T xp = DB->getTotals(false);
+    LOG << "Totals without previous:";
+    LOG << xp;
 
-    auto nfd = NewFlightDialog(DB->getLastEntry(OPL::DbTable::Flights));
-    nfd.exec();
+    xp = DB->getTotals(true);
+    LOG << "Totals with previous:";
+    LOG << xp;
 }
 
 MainWindow::MainWindow(QWidget *parent)

@@ -80,7 +80,7 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
         return;
     } else {
         ui->dateLineEdit->setText(QString());
-        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
     }
 }
 
@@ -94,7 +94,7 @@ void NewSimDialog::on_totalTimeLineEdit_editingFinished()
         QString fixed = input.fixup();
         if(fixed == QString()) {
             ui->totalTimeLineEdit->setText(QString());
-            ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+            ui->totalTimeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         } else {
             ui->totalTimeLineEdit->setText(fixed);
             ui->totalTimeLineEdit->setStyleSheet(QString());
@@ -127,7 +127,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     const auto date = OPL::DateTime::parseInput(text, date_format);
 
     if (!date.isValid()) {
-        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         ui->dateLineEdit->setText(QString());
         error_msg = tr("Invalid Date");
         return false;
@@ -139,7 +139,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
 
     if (!time.isValidTimeOfDay()) {
-        ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->totalTimeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         ui->totalTimeLineEdit->setText(QString());
         error_msg = tr("Invalid time");
         return false;

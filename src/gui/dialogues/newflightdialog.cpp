@@ -273,7 +273,7 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 void NewFlightDialog::onBadInputReceived(QLineEdit *line_edit)
 {
     DEB << line_edit->objectName() << " - Bad input received - " << line_edit->text();
-    line_edit->setStyleSheet(OPL::Styles::RED_BORDER);
+    line_edit->setStyleSheet(OPL::CssStyles::RED_BORDER);
     line_edit->setText(QString());
 
     if (mandatoryLineEdits->contains(line_edit))

@@ -470,9 +470,9 @@ int Database::getLastEntry(OPL::DbTable table)
     }
 }
 
-const RowData_T Database::getTotals()
+const RowData_T Database::getTotals(bool includePreviousExperience)
 {
-    const QString statement = "SELECT"
+    QString statement = "SELECT"
         " SUM(tblk) AS tblk,"
         " SUM(tSPSE) AS tSPSE,"
         " SUM(tSPME) AS tSPME,"
@@ -490,6 +490,7 @@ const RowData_T Database::getTotals()
         " SUM(ldgDay) AS ldgDay,"
         " SUM(ldgNight) AS ldgNight"
         " FROM flights";
+
     QSqlQuery query;
     query.prepare(statement);
     if (!query.exec()) {
@@ -512,7 +513,60 @@ const RowData_T Database::getTotals()
         }
     }
 
-    return entry_data;
+    if(!includePreviousExperience) {
+        return entry_data;
+    }
+
+    statement = "SELECT"
+                " SUM(tblk) AS tblk,"
+                " SUM(tSPSE) AS tSPSE,"
+                " SUM(tSPME) AS tSPME,"
+                " SUM(tMP) AS tMP,"
+                " SUM(tPIC) AS tPIC,"
+                " SUM(tSIC) AS tSIC,"
+                " SUM(tDUAL) AS tDUAL,"
+                " SUM(tFI) AS tFI,"
+                " SUM(tPICUS) AS tPICUS,"
+                " SUM(tNIGHT) AS tNIGHT,"
+                " SUM(tIFR) AS tIFR,"
+                " SUM(tSIM) AS tSIM,"
+                " SUM(toDay) AS toDay,"
+                " SUM(toNight) AS toNight,"
+                " SUM(ldgDay) AS ldgDay,"
+                " SUM(ldgNight) AS ldgNight"
+                " FROM previousExperience";
+    query.prepare(statement);
+
+    if (!query.exec()) {
+        DEB << "SQL error: " << query.lastError().text();
+        DEB << "Statement: " << query.lastQuery();
+        lastError = query.lastError();
+        return {}; // return invalid Row
+    }
+
+    RowData_T prev_exp_data;
+    if(query.next()) {
+        auto r = query.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            return {};
+
+        for (int i = 0; i < r.count(); i++){ // iterate through fields to get key:value map
+            if(!r.value(i).isNull()) {
+                prev_exp_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+    }
+
+    // add up the two query results
+    for(auto it = prev_exp_data.begin(); it != prev_exp_data.end(); it++) {
+        int prevXpValue = it.value().toInt();
+        int entryValue = entry_data.value(it.key()).toInt();
+
+        const QVariant sum = prevXpValue + entryValue;
+        it.value() = sum;
+    }
+
+    return prev_exp_data;
 }
 
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)
