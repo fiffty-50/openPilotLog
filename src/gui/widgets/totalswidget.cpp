@@ -44,7 +44,7 @@ void TotalsWidget::setup(const WidgetType widgetType)
             lineEdit->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
             // set a validator for the TO/LDG line edits, the other ones get validated seperately
             if(lineEdit->objectName().contains(QLatin1String("to")) || lineEdit->objectName().contains(QLatin1String("ldg"))) {
-                lineEdit->setValidator( new QIntValidator(0,  std::numeric_limits<int>::max(), this) );
+                lineEdit->setValidator(new QIntValidator(0, std::numeric_limits<int>::max(), this));
             }
         }
         // initialise m_rowData

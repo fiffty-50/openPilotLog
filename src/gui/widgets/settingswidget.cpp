@@ -175,22 +175,8 @@ void SettingsWidget::readSettings()
 
 void SettingsWidget::setupValidators()
 {
-    const QHash<QLineEdit*, QRegularExpression> validator_map = {
-        {ui->firstnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
-        {ui->lastnameLineEdit, QRegularExpression(QLatin1String("\\w+"))},
-        {ui->phoneLineEdit, QRegularExpression(QLatin1String("^[+]{0,1}[0-9\\-\\s]+"))},
-        {ui->emailLineEdit, QRegularExpression(QString("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"
-         "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z"))},
-        {ui->companyLineEdit, QRegularExpression(QLatin1String("\\w+"))},
-        {ui->employeeidLineEdit, QRegularExpression(QLatin1String("\\w+"))},
-        {ui->prefixLineEdit, QRegularExpression(QLatin1String("\\w+"))},
-    };
-
-    QHash<QLineEdit*, QRegularExpression>::const_iterator i;
-    for (i = validator_map.constBegin(); i != validator_map.constEnd(); ++i) {
-        auto validator = new QRegularExpressionValidator(i.value(),i.key());
-        i.key()->setValidator(validator);
-    }
+    ui->phoneLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_PHONE_NUMBER, ui->phoneLineEdit));
+    ui->emailLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_EMAIL_ADDRESS, ui->emailLineEdit));
 }
 
 /*!

@@ -105,12 +105,12 @@ void NewFlightDialog::setupRawInputValidation()
 {
     // Time Line Edits
     for (const auto& line_edit : *timeLineEdits) {
-        auto validator = new QRegularExpressionValidator(QRegularExpression("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"), line_edit);
+        const auto validator = new QRegularExpressionValidator(OPL::RegEx::RX_TIME_ENTRY, line_edit);
         line_edit->setValidator(validator);
     }
     // Location Line Edits
     for (const auto& line_edit : *locationLineEdits) {
-        auto validator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9]{1,4}"), line_edit);
+        const auto validator = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
         line_edit->setValidator(validator);
         line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
     }
