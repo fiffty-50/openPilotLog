@@ -18,7 +18,6 @@
 #ifndef READCSV_H
 #define READCSV_H
 
-#include "src/opl.h"
 #include<QtCore>
 
 namespace CSV {

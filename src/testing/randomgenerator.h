@@ -1,7 +1,7 @@
 #ifndef RANDOMGENERATOR_H
 #define RANDOMGENERATOR_H
 
-#include "src/database/row.h"
+#include "src/database/flightentry.h"
 namespace OPL {
 
 /*!
@@ -30,11 +30,11 @@ public:
 private:
     bool safeMode = false;
     const static inline QStringList m_function_times = {
-        OPL::Db::FLIGHTS_TPIC,
-        OPL::Db::FLIGHTS_TPICUS,
-        OPL::Db::FLIGHTS_TSIC,
-        OPL::Db::FLIGHTS_TDUAL,
-        OPL::Db::FLIGHTS_TFI,
+        OPL::FlightEntry::TPIC,
+        OPL::FlightEntry::TPICUS,
+        OPL::FlightEntry::TSIC,
+        OPL::FlightEntry::TDUAL,
+        OPL::FlightEntry::TFI,
     };
 
     int m_numberOfPilots;

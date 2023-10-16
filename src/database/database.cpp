@@ -636,22 +636,7 @@ QVector<QVariant> Database::customQuery(QString statement, int return_values)
 
 QVector<RowData_T> Database::getTable(OPL::DbTable table)
 {
-    auto query_str = QStringLiteral("SELECT * FROM ");
-    switch (table) {
-    case OPL::DbTable::Pilots:
-        query_str.append(OPL::Db::TABLE_PILOTS);
-        break;
-    case OPL::DbTable::Tails:
-        query_str.append(OPL::Db::TABLE_TAILS);
-        break;
-    case OPL::DbTable::Flights:
-        query_str.append(OPL::Db::TABLE_FLIGHTS);
-        break;
-    case OPL::DbTable::Currencies:
-        query_str.append(OPL::Db::TABLE_CURRENCIES);
-    default:
-        break;
-    }
+    const QString query_str = QStringLiteral("SELECT * FROM ") + GLOBALS->getDbTableName(table);
 
     QSqlQuery q;
     q.prepare(query_str);

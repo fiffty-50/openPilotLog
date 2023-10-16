@@ -24,9 +24,9 @@
 #include <QList>
 #include <QBitArray>
 
+#include "src/database/flightentry.h"
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
-#include "src/database/row.h"
 #include "src/gui/verification/validationstate.h"
 
 namespace Ui {

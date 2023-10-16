@@ -25,6 +25,7 @@
 #include "src/gui/dialogues/newsimdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/database/databasecache.h"
+#include "src/classes/settings.h"
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
@@ -35,6 +36,11 @@ void MainWindow::doDebugStuff()
     xp = DB->getTotals(true);
     LOG << "Totals with previous:";
     LOG << xp;
+
+    OPL::FlightEntry fe = OPL::FlightEntry();
+    LOG << "FLIGHT table: " << fe.getTableName();
+    OPL::Row row = OPL::Row();
+    LOG << "ROW table: " << row.getTableName();
 }
 
 MainWindow::MainWindow(QWidget *parent)

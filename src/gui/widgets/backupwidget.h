@@ -18,7 +18,6 @@
 #ifndef BACKUPWIDGET_H
 #define BACKUPWIDGET_H
 
-#include "src/classes/paths.h"
 
 #include <QWidget>
 #include <QStandardItemModel>

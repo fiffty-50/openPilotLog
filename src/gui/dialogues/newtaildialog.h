@@ -24,10 +24,8 @@
 #include <QRegularExpression>
 #include <QComboBox>
 
-#include "src/classes/settings.h"
-#include "src/functions/calc.h"
-#include "src/database/database.h"
 #include "src/database/row.h"
+#include "src/database/tailentry.h"
 
 namespace Ui {
 class NewTail;

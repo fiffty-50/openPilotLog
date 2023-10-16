@@ -16,6 +16,9 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbsummary.h"
+#include "QtCore/qstringliteral.h"
+#include "QtSql/qsqldatabase.h"
+#include "QtSql/qsqlquery.h"
 
 namespace OPL {
 

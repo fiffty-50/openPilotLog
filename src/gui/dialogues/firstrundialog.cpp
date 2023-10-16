@@ -322,12 +322,12 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     QHash<QString, QVariant> data;
-    data.insert(OPL::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
-    data.insert(OPL::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
-    data.insert(OPL::Db::PILOTS_ALIAS,      QStringLiteral("self"));
-    data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(OPL::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
-    data.insert(OPL::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
+    data.insert(OPL::PilotEntry::LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(OPL::PilotEntry::FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(OPL::PilotEntry::ALIAS,      QStringLiteral("self"));
+    data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(OPL::PilotEntry::PHONE,      ui->phoneLineEdit->text());
+    data.insert(OPL::PilotEntry::EMAIL,      ui->emailLineEdit->text());
 
     auto pilot = OPL::PilotEntry(1, data);
 
@@ -358,11 +358,11 @@ bool FirstRunDialog::writeCurrencies()
         const auto enum_value = currencies_list.key(date_edit);
         // only write dates that have been edited
         if (date_edit->date() != today) {
-            OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
+            OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
             if (enum_value == OPL::CurrencyName::Custom1)
-                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
+                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom1LineEdit->text());
             else if(enum_value == OPL::CurrencyName::Custom2)
-                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
+                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom2LineEdit->text());
 
             Settings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
             OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);

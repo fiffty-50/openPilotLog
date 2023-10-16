@@ -28,9 +28,7 @@
 #include "src/classes/downloadhelper.h"
 #include "src/functions/readcsv.h"
 #include "src/database/database.h"
-#include "src/database/row.h"
 #include "src/testing/atimer.h"
-#include "src/functions/log.h"
 void DebugWidget::on_debugPushButton_clicked()
 {
     auto rawCsvData = CSV::readCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");

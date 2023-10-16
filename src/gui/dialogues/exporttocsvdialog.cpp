@@ -3,6 +3,7 @@
 #include "QtSql/qsqlrecord.h"
 #include "QtSql/qsqltablemodel.h"
 #include "QtWidgets/qfiledialog.h"
+#include "src/opl.h"
 #include "ui_exporttocsvdialog.h"
 #include "src/functions/readcsv.h"
 

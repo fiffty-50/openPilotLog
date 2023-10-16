@@ -1,7 +1,6 @@
 #ifndef PROCESSAIRCRAFT_H
 #define PROCESSAIRCRAFT_H
 #include <QtCore>
-#include "src/opl.h"
 
 class ProcessAircraft
 {

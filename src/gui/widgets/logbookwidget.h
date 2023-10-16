@@ -25,9 +25,8 @@
 #include <QDebug>
 #include <QMenu>
 #include <QTableView>
-#include "src/database/row.h"
+#include "src/database/flightentry.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/opl.h"
 
 namespace Ui {
 class LogbookWidget;

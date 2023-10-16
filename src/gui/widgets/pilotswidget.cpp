@@ -238,13 +238,12 @@ void PilotsWidget::repopulateModel()
     connectSignalsAndSlots();
 }
 
-const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot)
+const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot) const
 {
     if (!pilot.isValid())
         return QString();
 
-    return pilot.getData().value(OPL::Db::PILOTS_LASTNAME).toString() + QLatin1String(", ")
-            + pilot.getData().value(OPL::Db::PILOTS_FIRSTNAME).toString();
+    return pilot.getLastName() + QLatin1String(", ") + pilot.getFirstName();
 }
 
 const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
@@ -256,13 +255,13 @@ const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) con
     auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString()
+    flight_summary.append(tableData.value(OPL::FlightEntry::DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
                           + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TONB).toInt()).toString()
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
                           + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
 
     return flight_summary;
 

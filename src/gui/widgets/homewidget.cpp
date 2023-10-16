@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
+#include "src/functions/statistics.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "ui_homewidget.h"
 #include "src/database/database.h"
@@ -109,14 +110,14 @@ void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_l
     const auto currency_entry = DB->getCurrencyEntry(static_cast<int>(currency_name));
 
     if (currency_name == OPL::CurrencyName::Custom1) {
-        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
     } else if (currency_name == OPL::CurrencyName::Custom2) {
-        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
     }
 
     if (currency_entry.isValid()) {
         const auto currency_date = QDate::fromString(currency_entry.getData().value(
-                                               OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+                                               OPL::CurrencyEntry::EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);

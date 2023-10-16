@@ -16,11 +16,11 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "tailswidget.h"
+#include "src/classes/time.h"
 #include "ui_aircraftwidget.h"
 #include "src/opl.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
-#include "src/database/row.h"
 #include "src/gui/dialogues/newtaildialog.h"
 
 
@@ -182,7 +182,7 @@ void TailsWidget::on_deleteAircraftButton_clicked()
         message_box.setWindowTitle(tr("Delete Aircraft"));
         message_box.setText(tr("You are deleting the following aircraft:<br><br><b><tt>"
                                "%1 - (%2)</b></tt><br><br>Are you sure?"
-                               ).arg(entry.getData().value(OPL::Db::TAILS_REGISTRATION).toString(),
+                               ).arg(entry.getData().value(OPL::TailEntry::REGISTRATION).toString(),
                                      getAircraftTypeString(entry)));
 
         if (message_box.exec() == QMessageBox::Yes) {
@@ -264,12 +264,12 @@ void TailsWidget::repopulateModel()
 const QString TailsWidget::getAircraftTypeString(const OPL::Row &row) const
 {
     QString type_string;
-    if (!row.getData().value(OPL::Db::TAILS_MAKE).toString().isEmpty())
-        type_string.append(row.getData().value(OPL::Db::TAILS_MAKE).toString() + QLatin1Char(' '));
-    if (!row.getData().value(OPL::Db::TAILS_MODEL).toString().isEmpty())
-        type_string.append(row.getData().value(OPL::Db::TAILS_MODEL).toString());
-    if (!row.getData().value(OPL::Db::TAILS_VARIANT).toString().isEmpty())
-        type_string.append(QLatin1Char('-') + row.getData().value(OPL::Db::TAILS_VARIANT).toString());
+    if (!row.getData().value(OPL::TailEntry::MAKE).toString().isEmpty())
+        type_string.append(row.getData().value(OPL::TailEntry::MAKE).toString() + QLatin1Char(' '));
+    if (!row.getData().value(OPL::TailEntry::MODEL).toString().isEmpty())
+        type_string.append(row.getData().value(OPL::TailEntry::MODEL).toString());
+    if (!row.getData().value(OPL::TailEntry::VARIANT).toString().isEmpty())
+        type_string.append(QLatin1Char('-') + row.getData().value(OPL::TailEntry::VARIANT).toString());
 
     return type_string;
 }
@@ -282,13 +282,13 @@ const QString TailsWidget::getFlightSummary(const OPL::FlightEntry &flight) cons
     auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString()
+    flight_summary.append(tableData.value(OPL::FlightEntry::DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
                           + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::Db::FLIGHTS_TONB).toInt()).toString()
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
                           + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
 
     return flight_summary;
 }

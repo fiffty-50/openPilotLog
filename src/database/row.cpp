@@ -32,6 +32,11 @@ Row::Row(DbTable table_name)
     rowId = 0; // new entry
 };
 
+Row::Row()
+{
+    valid = false;
+}
+
 Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
     : table(table_name), rowId(row_id), rowData(row_data)
 {
@@ -64,18 +69,22 @@ OPL::DbTable Row::getTable() const
     return table;
 }
 
-const QString Row::getTableName() const
-{
-    return OPL::GLOBALS->getDbTableName(table);
-}
-
-//TODO: Remove when tweaking for performance. Used for debugging
 const QString Row::getPosition() const
 {
     return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(table), QString::number(rowId));
 }
 
-//TODO: Remove when tweaking for performance. Used for debugging
+const QString Row::getTableName() const
+{
+    return {};
+}
+
+bool Row::isValid() const
+{
+    return hasData && valid;
+}
+
+//Used for debugging
 OPL::Row::operator QString() const
 {
     if (!isValid()) {
@@ -122,102 +131,5 @@ OPL::Row::operator QString() const
     return QString();
 }
 
-AircraftEntry::AircraftEntry()
-    : Row(DbTable::Aircraft, 0)
-{}
-
-AircraftEntry::AircraftEntry(const RowData_T &row_data)
-    : Row(DbTable::Aircraft, 0, row_data)
-{}
-
-AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Aircraft, row_id, row_data)
-{}
-
-
-TailEntry::TailEntry()
-    : Row(DbTable::Tails, 0)
-{}
-
-TailEntry::TailEntry(const RowData_T &row_data)
-    : Row(DbTable::Tails, 0, row_data)
-{}
-
-TailEntry::TailEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Tails, row_id, row_data)
-{}
-
-PilotEntry::PilotEntry()
-    : Row(DbTable::Pilots, 0)
-{}
-
-PilotEntry::PilotEntry(const RowData_T &row_data)
-    : Row(DbTable::Pilots, 0, row_data)
-{}
-
-PilotEntry::PilotEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Pilots, row_id, row_data)
-{}
-
-
-SimulatorEntry::SimulatorEntry()
-    : Row(DbTable::Simulators, 0)
-{}
-
-SimulatorEntry::SimulatorEntry(const RowData_T &row_data)
-    : Row(DbTable::Simulators, 0, row_data)
-{}
-
-SimulatorEntry::SimulatorEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Simulators, row_id, row_data)
-{}
-
-FlightEntry::FlightEntry()
-    : Row(DbTable::Flights, 0)
-{}
-
-FlightEntry::FlightEntry(const RowData_T &row_data)
-    : Row(DbTable::Flights, 0, row_data)
-{}
-
-FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Flights, row_id, row_data)
-{}
-
-CurrencyEntry::CurrencyEntry()
-    : Row(DbTable::Currencies, 0)
-{}
-
-CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
-    : Row(DbTable::Currencies, 0, row_data)
-{}
-
-CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Currencies, row_id, row_data)
-{}
-
-AirportEntry::AirportEntry()
-    : Row(DbTable::Airports, 0)
-{}
-
-AirportEntry::AirportEntry(const RowData_T &row_data)
-    : Row(DbTable::Airports, 0, row_data)
-{}
-
-AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Airports, row_id, row_data)
-{}
-
-PreviousExperienceEntry::PreviousExperienceEntry()
-    : Row(DbTable::PreviousExperience, 0)
-{}
-
-PreviousExperienceEntry::PreviousExperienceEntry(const RowData_T &row_data)
-    : Row(DbTable::PreviousExperience, 0, row_data)
-{}
-
-PreviousExperienceEntry::PreviousExperienceEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::PreviousExperience, row_id, row_data)
-{}
-
 } // namespace OPL
+

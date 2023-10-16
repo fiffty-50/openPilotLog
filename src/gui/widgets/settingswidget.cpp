@@ -22,7 +22,6 @@
 #include "src/classes/style.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
-#include "src/database/row.h"
 #include "src/opl.h"
 #include "src/functions/datetime.h"
 #include "src/gui/widgets/backupwidget.h"
@@ -91,7 +90,7 @@ void SettingsWidget::setupDateEdits()
         const auto entry = DB->getCurrencyEntry(static_cast<int>(pair.first));
         if (entry.isValid()) { // set date
             const auto date = QDate::fromString(
-                        entry.getData().value(OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+                entry.getData().value(OPL::CurrencyEntry::EXPIRYDATE).toString(),
                         Qt::ISODate);
             if(date.isValid())
                 pair.second->setDate(date);
@@ -124,12 +123,12 @@ void SettingsWidget::readSettings()
 
     // Personal Data Tab
     auto user_data = DB->getPilotEntry(1).getData();
-    ui->lastnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_LASTNAME).toString());
-    ui->firstnameLineEdit->setText(user_data.value(OPL::Db::PILOTS_FIRSTNAME).toString());
-    ui->companyLineEdit->setText(user_data.value(OPL::Db::PILOTS_COMPANY).toString());
-    ui->employeeidLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMPLOYEEID).toString());
-    ui->phoneLineEdit->setText(user_data.value(OPL::Db::PILOTS_PHONE).toString());
-    ui->emailLineEdit->setText(user_data.value(OPL::Db::PILOTS_EMAIL).toString());
+    ui->lastnameLineEdit->setText(user_data.value(OPL::PilotEntry::LASTNAME).toString());
+    ui->firstnameLineEdit->setText(user_data.value(OPL::PilotEntry::FIRSTNAME).toString());
+    ui->companyLineEdit->setText(user_data.value(OPL::PilotEntry::COMPANY).toString());
+    ui->employeeidLineEdit->setText(user_data.value(OPL::PilotEntry::EMPLOYEEID).toString());
+    ui->phoneLineEdit->setText(user_data.value(OPL::PilotEntry::PHONE).toString());
+    ui->emailLineEdit->setText(user_data.value(OPL::PilotEntry::EMAIL).toString());
 
     // FLight Logging Tab
     ui->functionComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Function).toInt());
@@ -187,10 +186,10 @@ void SettingsWidget::updatePersonalDetails()
     OPL::RowData_T user_data;
     switch (ui->aliasComboBox->currentIndex()) {
     case 0:
-        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("self"));
+        user_data.insert(OPL::PilotEntry::ALIAS, QStringLiteral("self"));
         break;
     case 1:
-        user_data.insert(OPL::Db::PILOTS_ALIAS, QStringLiteral("SELF"));
+        user_data.insert(OPL::PilotEntry::ALIAS, QStringLiteral("SELF"));
         break;
     case 2:{
         QString name;
@@ -198,18 +197,18 @@ void SettingsWidget::updatePersonalDetails()
         name.append(QLatin1String(", "));
         name.append(ui->firstnameLineEdit->text().at(0));
         name.append(QLatin1Char('.'));
-        user_data.insert(OPL::Db::PILOTS_ALIAS, name);
+        user_data.insert(OPL::PilotEntry::ALIAS, name);
     }
         break;
     default:
         break;
     }
-    user_data.insert(OPL::Db::PILOTS_LASTNAME, ui->lastnameLineEdit->text());
-    user_data.insert(OPL::Db::PILOTS_FIRSTNAME, ui->firstnameLineEdit->text());
-    user_data.insert(OPL::Db::PILOTS_COMPANY, ui->companyLineEdit->text());
-    user_data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    user_data.insert(OPL::Db::PILOTS_PHONE, ui->phoneLineEdit->text());
-    user_data.insert(OPL::Db::PILOTS_EMAIL, ui->emailLineEdit->text());
+    user_data.insert(OPL::PilotEntry::LASTNAME, ui->lastnameLineEdit->text());
+    user_data.insert(OPL::PilotEntry::FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(OPL::PilotEntry::COMPANY, ui->companyLineEdit->text());
+    user_data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
+    user_data.insert(OPL::PilotEntry::PHONE, ui->phoneLineEdit->text());
+    user_data.insert(OPL::PilotEntry::EMAIL, ui->emailLineEdit->text());
 
     auto user = OPL::PilotEntry(1, user_data);
 
@@ -500,7 +499,7 @@ void SettingsWidget::on_resetStylePushButton_clicked()
 
 void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Licence), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -510,7 +509,7 @@ void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::TypeRating), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -520,7 +519,7 @@ void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::LineCheck), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -530,7 +529,7 @@ void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Medical), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
@@ -540,8 +539,8 @@ void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
-                                {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text()}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)},
+                                {OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom1LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom1), row_data);
     DEB << entry;
     if (!DB->commit(entry))
@@ -552,8 +551,8 @@ void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
 
 void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
 {
-    const OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date.toString(Qt::ISODate)},
-                                {OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text()}};
+    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)},
+                                {OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom2LineEdit->text()}};
     const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom2), row_data);
     if (!DB->commit(entry))
         WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));

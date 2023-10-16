@@ -18,9 +18,9 @@
 #include "totalswidget.h"
 #include "QtWidgets/qlineedit.h"
 #include "src/database/database.h"
+#include "src/database/previousexperienceentry.h"
 #include "src/opl.h"
 #include "src/classes/time.h"
-#include "src/database/row.h"
 #include "ui_totalswidget.h"
 
 TotalsWidget::TotalsWidget(WidgetType widgetType, QWidget *parent) :

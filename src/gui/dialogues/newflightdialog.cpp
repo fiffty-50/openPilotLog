@@ -17,6 +17,7 @@
  */
 #include "newflightdialog.h"
 #include "src/classes/time.h"
+#include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
@@ -184,50 +185,50 @@ void NewFlightDialog::fillWithEntryData()
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
-    ui->doftLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DOFT).toString());
+    ui->doftLineEdit->setText(flight_data.value(OPL::FlightEntry::DOFT).toString());
     // Location
-    ui->deptLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEPT).toString());
-    ui->destLocationLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_DEST).toString());
+    ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
+    ui->destLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEST).toString());
     // Times
-    ui->tofbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::Db::FLIGHTS_TOFB).toInt()).toString());
-    ui->tonbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::Db::FLIGHTS_TONB).toInt()).toString());
-    ui->acftLineEdit->setText(DBCache->getTailsMap().value(flight_data.value(OPL::Db::FLIGHTS_ACFT).toInt()));
-    ui->picNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::Db::FLIGHTS_PIC).toInt()));
-    ui->sicNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::Db::FLIGHTS_SECONDPILOT).toInt()));
-    ui->thirdPilotNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::Db::FLIGHTS_THIRDPILOT).toInt()));
+    ui->tofbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TOFB).toInt()).toString());
+    ui->tonbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TONB).toInt()).toString());
+    ui->acftLineEdit->setText(DBCache->getTailsMap().value(flight_data.value(OPL::FlightEntry::ACFT).toInt()));
+    ui->picNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::FlightEntry::PIC).toInt()));
+    ui->sicNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::FlightEntry::SECONDPILOT).toInt()));
+    ui->thirdPilotNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::FlightEntry::THIRDPILOT).toInt()));
 
     //Function
     const QHash<int, QString> functions = {
-        {0, OPL::Db::FLIGHTS_TPIC},
-        {1, OPL::Db::FLIGHTS_TPICUS},
-        {2, OPL::Db::FLIGHTS_TSIC},
-        {3, OPL::Db::FLIGHTS_TDUAL},
-        {4, OPL::Db::FLIGHTS_TFI},
+        {0, OPL::FlightEntry::TPIC},
+        {1, OPL::FlightEntry::TPICUS},
+        {2, OPL::FlightEntry::TSIC},
+        {3, OPL::FlightEntry::TDUAL},
+        {4, OPL::FlightEntry::TFI},
     };
     for (int i = 0; i < 5; i++) { // QHash::iterator not guarenteed to be in ordetr
         if(flight_data.value(functions.value(i)).toInt() != 0)
             ui->functionComboBox->setCurrentIndex(i);
     }
     // Approach ComboBox
-    const QString& app = flight_data.value(OPL::Db::FLIGHTS_APPROACHTYPE).toString();
+    const QString& app = flight_data.value(OPL::FlightEntry::APPROACHTYPE).toString();
     if(app != QString()){
         ui->approachComboBox->setCurrentText(app);
     }
     // Flight Rules
-    bool time_ifr = flight_data.value(OPL::Db::FLIGHTS_TIFR).toBool();
+    bool time_ifr = flight_data.value(OPL::FlightEntry::TIFR).toBool();
     int rulesIndex = time_ifr ? 1 : 0;
     ui->flightRulesComboBox->setCurrentIndex(rulesIndex);
     // Take-Off and Landing
-    int takeOffCount =  flight_data.value(OPL::Db::FLIGHTS_TODAY).toInt()
-            + flight_data.value(OPL::Db::FLIGHTS_TONIGHT).toInt();
-    int landingCount = flight_data.value(OPL::Db::FLIGHTS_LDGDAY).toInt()
-            + flight_data.value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
+    int takeOffCount =  flight_data.value(OPL::FlightEntry::TODAY).toInt()
+            + flight_data.value(OPL::FlightEntry::TONIGHT).toInt();
+    int landingCount = flight_data.value(OPL::FlightEntry::LDGDAY).toInt()
+            + flight_data.value(OPL::FlightEntry::LDGNIGHT).toInt();
     ui->takeOffSpinBox->setValue(takeOffCount);
     ui->landingSpinBox->setValue(landingCount);
     // Remarks
-    ui->remarksLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_REMARKS).toString());
+    ui->remarksLineEdit->setText(flight_data.value(OPL::FlightEntry::REMARKS).toString());
     // Flight Number
-    ui->flightNumberLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_FLIGHTNUMBER).toString());
+    ui->flightNumberLineEdit->setText(flight_data.value(OPL::FlightEntry::FLIGHTNUMBER).toString());
 
     for(const auto &line_edit : *mandatoryLineEdits)
         emit line_edit->editingFinished();
@@ -376,51 +377,51 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     const auto night_time_data = OPL::Calc::NightTimeValues(ui->deptLocationLineEdit->text(), ui->destLocationLineEdit->text(),
                            departure_date_time, block_minutes, Settings::read(Settings::FlightLogging::NightAngle).toInt());
     // Mandatory data
-    new_data.insert(OPL::Db::FLIGHTS_DOFT, ui->doftLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_DEPT, ui->deptLocationLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_TOFB, tofb.toMinutes());
-    new_data.insert(OPL::Db::FLIGHTS_DEST, ui->destLocationLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_TONB, tonb.toMinutes());
-    new_data.insert(OPL::Db::FLIGHTS_TBLK, block_minutes);
+    new_data.insert(OPL::FlightEntry::DOFT, ui->doftLineEdit->text());
+    new_data.insert(OPL::FlightEntry::DEPT, ui->deptLocationLineEdit->text());
+    new_data.insert(OPL::FlightEntry::TOFB, tofb.toMinutes());
+    new_data.insert(OPL::FlightEntry::DEST, ui->destLocationLineEdit->text());
+    new_data.insert(OPL::FlightEntry::TONB, tonb.toMinutes());
+    new_data.insert(OPL::FlightEntry::TBLK, block_minutes);
     // Night
-    new_data.insert(OPL::Db::FLIGHTS_TNIGHT, night_time_data.nightMinutes);
+    new_data.insert(OPL::FlightEntry::TNIGHT, night_time_data.nightMinutes);
     // Aircraft
     int acft_id = DBCache->getTailsMap().key(ui->acftLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_ACFT, acft_id);
+    new_data.insert(OPL::FlightEntry::ACFT, acft_id);
     const OPL::TailEntry acft_data = DB->getTailEntry(acft_id);
-    bool multi_pilot = acft_data.getData().value(OPL::Db::TAILS_MULTIPILOT).toBool();
-    bool multi_engine = acft_data.getData().value(OPL::Db::TAILS_MULTIENGINE).toBool();
+    bool multi_pilot = acft_data.getData().value(OPL::TailEntry::MULTI_PILOT).toBool();
+    bool multi_engine = acft_data.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
 
     if (multi_pilot) {
-        new_data.insert(OPL::Db::FLIGHTS_TMP, block_minutes);
-        new_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
-        new_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
+        new_data.insert(OPL::FlightEntry::TMP, block_minutes);
+        new_data.insert(OPL::FlightEntry::TSPSE, QString());
+        new_data.insert(OPL::FlightEntry::TSPME, QString());
     } else if (!multi_pilot && !multi_engine) {
-        new_data.insert(OPL::Db::FLIGHTS_TMP, QString());
-        new_data.insert(OPL::Db::FLIGHTS_TSPSE, block_minutes);
-        new_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
+        new_data.insert(OPL::FlightEntry::TMP, QString());
+        new_data.insert(OPL::FlightEntry::TSPSE, block_minutes);
+        new_data.insert(OPL::FlightEntry::TSPME, QString());
     } else if (!multi_pilot && multi_engine) {
-        new_data.insert(OPL::Db::FLIGHTS_TMP, QString());
-        new_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
-        new_data.insert(OPL::Db::FLIGHTS_TSPME, block_minutes);
+        new_data.insert(OPL::FlightEntry::TMP, QString());
+        new_data.insert(OPL::FlightEntry::TSPSE, QString());
+        new_data.insert(OPL::FlightEntry::TSPME, block_minutes);
     }
     // Pilots
-    new_data.insert(OPL::Db::FLIGHTS_PIC, DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text()));
-    new_data.insert(OPL::Db::FLIGHTS_SECONDPILOT, DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text()));
-    new_data.insert(OPL::Db::FLIGHTS_THIRDPILOT, DBCache->getPilotNamesMap().key(ui->thirdPilotNameLineEdit->text()));
+    new_data.insert(OPL::FlightEntry::PIC, DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text()));
+    new_data.insert(OPL::FlightEntry::SECONDPILOT, DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text()));
+    new_data.insert(OPL::FlightEntry::THIRDPILOT, DBCache->getPilotNamesMap().key(ui->thirdPilotNameLineEdit->text()));
     // IFR time
     if (ui->flightRulesComboBox->currentIndex() > 0) {
-        new_data.insert(OPL::Db::FLIGHTS_TIFR, block_minutes);
+        new_data.insert(OPL::FlightEntry::TIFR, block_minutes);
     } else {
-        new_data.insert(OPL::Db::FLIGHTS_TIFR, QString());
+        new_data.insert(OPL::FlightEntry::TIFR, QString());
     }
     // Function Times
     QStringList function_times = {
-        OPL::Db::FLIGHTS_TPIC,
-        OPL::Db::FLIGHTS_TPICUS,
-        OPL::Db::FLIGHTS_TSIC,
-        OPL::Db::FLIGHTS_TDUAL,
-        OPL::Db::FLIGHTS_TFI,
+        OPL::FlightEntry::TPIC,
+        OPL::FlightEntry::TPICUS,
+        OPL::FlightEntry::TSIC,
+        OPL::FlightEntry::TDUAL,
+        OPL::FlightEntry::TFI,
     };
 
     // Determine function times, zero out all values except one (use QString() iso 0 for correct handling of NULL in DB
@@ -452,21 +453,21 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     int ldgDay   = night_time_data.landingNight ? 0 : ui->landingSpinBox->value();
     int ldgNight = night_time_data.landingNight ? ui->landingSpinBox->value() : 0;
 
-    new_data.insert(OPL::Db::FLIGHTS_TODAY, toDay);
-    new_data.insert(OPL::Db::FLIGHTS_TONIGHT, toNight);
-    new_data.insert(OPL::Db::FLIGHTS_LDGDAY, ldgDay);
-    new_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, ldgNight);
+    new_data.insert(OPL::FlightEntry::TODAY, toDay);
+    new_data.insert(OPL::FlightEntry::TONIGHT, toNight);
+    new_data.insert(OPL::FlightEntry::LDGDAY, ldgDay);
+    new_data.insert(OPL::FlightEntry::LDGNIGHT, ldgNight);
     if (ui->approachComboBox->currentText() == CAT_3) // ILS CAT III
-        new_data.insert(OPL::Db::FLIGHTS_AUTOLAND, ui->landingSpinBox->value());
+        new_data.insert(OPL::FlightEntry::AUTOLAND, ui->landingSpinBox->value());
 
     // Pilot flying / Pilot monitoring
     bool isPilotFlying = toDay + toNight + ldgDay + ldgNight > 0;
-    new_data.insert(OPL::Db::FLIGHTS_PILOTFLYING, isPilotFlying);
+    new_data.insert(OPL::FlightEntry::PILOTFLYING, isPilotFlying);
 
     // Additional Data
-    new_data.insert(OPL::Db::FLIGHTS_APPROACHTYPE, ui->approachComboBox->currentText());
-    new_data.insert(OPL::Db::FLIGHTS_FLIGHTNUMBER, ui->flightNumberLineEdit->text());
-    new_data.insert(OPL::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
+    new_data.insert(OPL::FlightEntry::APPROACHTYPE, ui->approachComboBox->currentText());
+    new_data.insert(OPL::FlightEntry::FLIGHTNUMBER, ui->flightNumberLineEdit->text());
+    new_data.insert(OPL::FlightEntry::REMARKS, ui->remarksLineEdit->text());
     return new_data;
 }
 

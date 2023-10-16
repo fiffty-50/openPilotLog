@@ -2,7 +2,6 @@
 #include "src/database/database.h"
 #include "src/functions/calc.h"
 #include "src/opl.h"
-#include "src/functions/time.h"
 
 namespace OPL {
 
@@ -33,39 +32,39 @@ const FlightEntry RandomGenerator::randomFlight()
     int tNight = OPL::Calc::calculateNightTime(dept, dest, dept_dt, tblk, 6);
 
     auto flt_data = OPL::RowData_T();
-    flt_data.insert(OPL::Db::FLIGHTS_DOFT, doft);
-    flt_data.insert(OPL::Db::FLIGHTS_DEPT, dept);
-    flt_data.insert(OPL::Db::FLIGHTS_DEST, dest);
-    flt_data.insert(OPL::Db::FLIGHTS_PIC, pic);
-    flt_data.insert(OPL::Db::FLIGHTS_ACFT, acft);
-    flt_data.insert(OPL::Db::FLIGHTS_TOFB, tofb.toMinutes());
-    flt_data.insert(OPL::Db::FLIGHTS_TONB, tonb.toMinutes());
-    flt_data.insert(OPL::Db::FLIGHTS_TBLK, tblk);
+    flt_data.insert(OPL::FlightEntry::DOFT, doft);
+    flt_data.insert(OPL::FlightEntry::DEPT, dept);
+    flt_data.insert(OPL::FlightEntry::DEST, dest);
+    flt_data.insert(OPL::FlightEntry::PIC, pic);
+    flt_data.insert(OPL::FlightEntry::ACFT, acft);
+    flt_data.insert(OPL::FlightEntry::TOFB, tofb.toMinutes());
+    flt_data.insert(OPL::FlightEntry::TONB, tonb.toMinutes());
+    flt_data.insert(OPL::FlightEntry::TBLK, tblk);
 
-    if (tNight > 0) flt_data.insert(OPL::Db::FLIGHTS_TNIGHT, tNight);
+    if (tNight > 0) flt_data.insert(OPL::FlightEntry::TNIGHT, tNight);
 
     bool pf = randomBool(); // Pilot Flying
 
     // Take-Off and Landing
     if (pf) {
-        flt_data.insert(OPL::Db::FLIGHTS_PILOTFLYING, 1);
+        flt_data.insert(OPL::FlightEntry::PILOTFLYING, 1);
         if (OPL::Calc::isNight(dept, dept_dt, 6))
-            flt_data.insert(OPL::Db::FLIGHTS_TONIGHT, 1);
+            flt_data.insert(OPL::FlightEntry::TONIGHT, 1);
         else
-            flt_data.insert(OPL::Db::FLIGHTS_TODAY, 1);
+            flt_data.insert(OPL::FlightEntry::TODAY, 1);
         if (OPL::Calc::isNight(dest, dest_dt, 6))
-            flt_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, 1);
+            flt_data.insert(OPL::FlightEntry::LDGNIGHT, 1);
         else
-            flt_data.insert(OPL::Db::FLIGHTS_LDGDAY, 1);
+            flt_data.insert(OPL::FlightEntry::LDGDAY, 1);
     }
 
     int function;
     if (pic == 1) {
-        flt_data.insert(OPL::Db::FLIGHTS_TPIC, tblk);
-        flt_data.insert(OPL::Db::FLIGHTS_SECONDPILOT, randomPilot());
+        flt_data.insert(OPL::FlightEntry::TPIC, tblk);
+        flt_data.insert(OPL::FlightEntry::SECONDPILOT, randomPilot());
     } else {
         function = QRandomGenerator::global()->bounded(1,4);
-        flt_data.insert(OPL::Db::FLIGHTS_SECONDPILOT, 1);
+        flt_data.insert(OPL::FlightEntry::SECONDPILOT, 1);
         flt_data.insert(m_function_times[function], tblk);
     }
 
@@ -100,7 +99,7 @@ const QDateTime RandomGenerator::randomDateTime()
 
 const QString RandomGenerator::randomAirport()
 {
-    return DB->getAirportEntry(QRandomGenerator::global()->bounded(1, m_numberOfAirports)).icao();
+    return DB->getAirportEntry(QRandomGenerator::global()->bounded(1, m_numberOfAirports)).getIcaoCode();
 }
 
 const int RandomGenerator::randomPilot()

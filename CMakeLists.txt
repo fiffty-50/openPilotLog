@@ -117,6 +117,25 @@ set(PROJECT_SOURCES
     src/classes/time.h
     src/classes/time.cpp
 
+    # Database Entries
+    src/database/flightentry.h
+    src/database/flightentry.cpp
+    src/database/aircraftentry.h
+    src/database/aircraftentry.cpp
+    src/database/tailentry.h
+    src/database/tailentry.cpp
+    src/database/airportentry.h
+    src/database/airportentry.cpp
+    src/database/pilotentry.h
+    src/database/pilotentry.cpp
+    src/database/simulatorentry.h
+    src/database/simulatorentry.cpp
+    src/database/currencyentry.h
+    src/database/currencyentry.cpp
+
+    src/database/previousexperienceentry.h
+    src/database/previousexperienceentry.cpp
+
     # Namespaces
     src/functions/calc.h
     src/functions/calc.cpp
@@ -127,7 +146,7 @@ set(PROJECT_SOURCES
     src/functions/statistics.cpp
     src/functions/datetime.h
     src/functions/datetime.cpp
-    src/functions/time.h
+
 
     # Database
     src/database/database.h

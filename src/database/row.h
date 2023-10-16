@@ -40,28 +40,73 @@ namespace OPL {
  * The Identifying information can be accessed with getRowId and getTable() / getTableName().
  *
  * For convenience and readabilty, subclasses exist that have the table property pre-set. These rows are then
- * referred to as entries. See AircraftEntry, FlightEntry etc.
+ * referred to as entries. See AircraftEntry, FlightEntry etc. These subclasses have public static members which
+ * hold the column names used in the sql database. These can be used to access the data held in the row by column.
  */
 class Row
 {
 public:
-    Row() { valid = false;} // Require specifying position
+
+    /*!
+     * \brief Create a new empty row entry
+     */
+    Row();
+    /*!
+     * \brief Create a row entry specifying its table, row id and row data.
+     */
     Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data);
+    /*!
+     * \brief Create a row entry specifying its table and row id.
+     */
     Row(OPL::DbTable table_name, int row_id);
+
+    /*!
+     * \brief Create a row entry specifying its table name.
+     * \param table_name
+     */
     Row(OPL::DbTable table_name);
 
     Row(const Row&) = default;
     Row& operator=(const Row&) = default;
 
+    /*!
+     * \brief get the Row Data contained in the Row
+     * \details The row data is a Map where the sql column name is the key and its value is the value.
+     */
     const RowData_T& getData() const;
+
     void setData(const RowData_T &value);
+
+    /*!
+     * \brief Get the entries row id in the database
+     */
     int getRowId() const;
+
+    /*!
+     * \brief Set the entries row id in the database
+     */
     void setRowId(int value);
+
     OPL::DbTable getTable() const;
-    const QString getTableName() const;
+
+    /*!
+     * \brief returns a string representation of the entries position in the database (Table and Row ID)
+     */
     const QString getPosition() const;
 
-    bool isValid() const {return hasData && valid;}
+    /*!
+     * \brief get the name of the table in the sql database.
+     * \details This method has to be overwritten in any subclass to return the table name, this should be
+     * a purely virtual function but in order to be able to use row class instances this function is implemented
+     * to return an empty strring in the base class.
+     * \return The name of the table in the database containing a valid row, or an empty String
+     */
+    virtual const QString getTableName() const;
+
+    /*!
+     * \brief A Row entry is valid if its table and row are specified and if it contains row data.
+     */
+    bool isValid() const;
 
     /*!
      * \brief operator QString can be used for printing debug information to stdout
@@ -76,104 +121,6 @@ private:
 protected:
     bool hasData;
     bool valid = true;
-};
-
-/*!
- * \brief A Row representing an Aircraft entry. See Row class for details.
- */
-class AircraftEntry : public Row
-{
-public:
-    AircraftEntry();
-    AircraftEntry(const RowData_T &row_data);
-    AircraftEntry(int row_id, const RowData_T &row_data);
-};
-
-/*!
- * \brief A Row representing a Tail (Registration) entry. See Row class for details.
- */
-class TailEntry : public Row
-{
-public:
-    TailEntry();
-    TailEntry(const RowData_T &row_data);
-    TailEntry(int row_id, const RowData_T &row_data);
-
-    const QString registration() const { return getData().value(OPL::Db::TAILS_REGISTRATION).toString(); }
-    const QString type()         const { return getData().value(OPL::Db::TAILS_MAKE).toString(); } //TODO - Create String for make-model-variant
-};
-
-/*!
- * \brief A Row representing a Pilot entry. See Row class for details.
- */
-class PilotEntry : public Row
-{
-public:
-    PilotEntry();
-    PilotEntry(const RowData_T &row_data);
-    PilotEntry(int row_id, const RowData_T &row_data);
-
-    const QString lastName()  const { return getData().value(OPL::Db::PILOTS_LASTNAME).toString(); }
-    const QString firstName() const { return getData().value(OPL::Db::PILOTS_FIRSTNAME).toString(); }
-
-};
-
-/*!
- * \brief A Row representing a Simulator entry. See Row class for details.
- */
-class SimulatorEntry : public Row
-{
-public:
-    SimulatorEntry();
-    SimulatorEntry(const RowData_T &row_data);
-    SimulatorEntry(int row_id, const RowData_T &row_data);
-};
-
-/*!
- * \brief A Row representing a Flight entry. See Row class for details.
- */
-class FlightEntry : public Row
-{
-public:
-    FlightEntry();
-    FlightEntry(const RowData_T &row_data);
-    FlightEntry(int row_id, const RowData_T &row_data);
-};
-
-/*!
- * \brief A Row representing a Currency entry. See Row class for details.
- */
-class CurrencyEntry : public Row
-{
-public:
-    CurrencyEntry();
-    CurrencyEntry(const RowData_T &row_data);
-    CurrencyEntry(int row_id, const RowData_T &row_data);
-};
-
-/*!
- * \brief A Row representing an Airport entry. See Row class for details.
- */
-class AirportEntry : public Row
-{
-public:
-    AirportEntry();
-    AirportEntry(const RowData_T &row_data);
-    AirportEntry(int row_id, const RowData_T &row_data);
-
-    const QString iata() const { return getData().value(OPL::Db::AIRPORTS_IATA).toString(); }
-    const QString icao() const { return getData().value(OPL::Db::AIRPORTS_ICAO).toString(); }
-};
-
-/*!
- * \brief A Row representing an Airport entry. See Row class for details.
- */
-class PreviousExperienceEntry : public Row
-{
-public:
-    PreviousExperienceEntry();
-    PreviousExperienceEntry(const RowData_T &row_data);
-    PreviousExperienceEntry(int row_id, const RowData_T &row_data);
 };
 
 } // namespace OPL

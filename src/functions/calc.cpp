@@ -315,23 +315,23 @@ void OPL::Calc::updateAutoTimes(int acft_id)
         auto flight = DB->getFlightEntry(item.toInt());
         auto flight_data = flight.getData();
 
-        if(acft_data.value(OPL::Db::TAILS_MULTIPILOT).toInt() == 0
-                && acft_data.value(OPL::Db::TAILS_MULTIENGINE) == 0) {
+        if(acft_data.value(OPL::TailEntry::MULTI_PILOT).toInt() == 0
+            && acft_data.value(OPL::TailEntry::MULTI_ENGINE) == 0) {
             DEB << "SPSE";
-            flight_data.insert(OPL::Db::FLIGHTS_TSPSE, flight_data.value(OPL::Db::FLIGHTS_TBLK));
-            flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
-            flight_data.insert(OPL::Db::FLIGHTS_TMP, QString());
-        } else if ((acft_data.value(OPL::Db::TAILS_MULTIPILOT) == 0
-                    && acft.getData().value(OPL::Db::TAILS_MULTIENGINE) == 1)) {
+            flight_data.insert(OPL::FlightEntry::TSPSE, flight_data.value(OPL::FlightEntry::TBLK));
+            flight_data.insert(OPL::FlightEntry::TSPME, QString());
+            flight_data.insert(OPL::FlightEntry::TMP, QString());
+        } else if ((acft_data.value(OPL::TailEntry::MULTI_PILOT) == 0
+                    && acft.getData().value(OPL::TailEntry::MULTI_ENGINE) == 1)) {
             DEB << "SPME";
-            flight_data.insert(OPL::Db::FLIGHTS_TSPME, flight_data.value(OPL::Db::FLIGHTS_TBLK));
-            flight_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
-            flight_data.insert(OPL::Db::FLIGHTS_TMP, QString());
-        } else if ((acft_data.value(OPL::Db::TAILS_MULTIPILOT) == 1)) {
+            flight_data.insert(OPL::FlightEntry::TSPME, flight_data.value(OPL::FlightEntry::TBLK));
+            flight_data.insert(OPL::FlightEntry::TSPSE, QString());
+            flight_data.insert(OPL::FlightEntry::TMP, QString());
+        } else if ((acft_data.value(OPL::TailEntry::MULTI_PILOT) == 1)) {
             DEB << "MPME";
-            flight_data.insert(OPL::Db::FLIGHTS_TMP, flight_data.value(OPL::Db::FLIGHTS_TBLK));
-            flight_data.insert(OPL::Db::FLIGHTS_TSPSE, QString());
-            flight_data.insert(OPL::Db::FLIGHTS_TSPME, QString());
+            flight_data.insert(OPL::FlightEntry::TMP, flight_data.value(OPL::FlightEntry::TBLK));
+            flight_data.insert(OPL::FlightEntry::TSPSE, QString());
+            flight_data.insert(OPL::FlightEntry::TSPME, QString());
         }
         flight.setData(flight_data);
         DB->commit(flight);
@@ -359,14 +359,14 @@ void OPL::Calc::updateNightTimes()
 
         auto flt = DB->getFlightEntry(item.toInt());
         auto data = flt.getData();
-        auto dateTime = QDateTime(QDate::fromString(data.value(OPL::Db::FLIGHTS_DOFT).toString(), Qt::ISODate),
-                                  QTime().addSecs(data.value(OPL::Db::FLIGHTS_TOFB).toInt() * 60),
+        auto dateTime = QDateTime(QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
+                                  QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60),
                                   Qt::UTC);
-        data.insert(OPL::Db::FLIGHTS_TNIGHT,
-                    calculateNightTime(data.value(OPL::Db::FLIGHTS_DEPT).toString(),
-                                       data.value(OPL::Db::FLIGHTS_DEST).toString(),
+        data.insert(OPL::FlightEntry::TNIGHT,
+                    calculateNightTime(data.value(OPL::FlightEntry::DEPT).toString(),
+                                       data.value(OPL::FlightEntry::DEST).toString(),
                                        dateTime,
-                                       data.value(OPL::Db::FLIGHTS_TBLK).toInt(),
+                                       data.value(OPL::FlightEntry::TBLK).toInt(),
                                        night_angle));
         flt.setData(data);
         DB->commit(flt);

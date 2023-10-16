@@ -23,9 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/functions/statistics.h"
 #include "src/database/database.h"
-#include "src/classes/settings.h"
 
 namespace Ui {
 class HomeWidget;
@@ -96,7 +94,7 @@ private:
     /*!
      * \brief Retreives the users first name from the database.
      */
-    const inline QString userName() { return DB->getPilotEntry(1).firstName(); }
+    const inline QString userName() { return DB->getPilotEntry(1).getFirstName(); }
 
 public slots:
     void refresh();

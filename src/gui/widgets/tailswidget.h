@@ -22,7 +22,7 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QTableView>
-#include "src/database/row.h"
+#include "src/database/flightentry.h"
 #include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {

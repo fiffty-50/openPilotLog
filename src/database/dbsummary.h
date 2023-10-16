@@ -17,8 +17,7 @@
  */
 #ifndef DBSUMMARY_H
 #define DBSUMMARY_H
-
-#include "src/database/database.h"
+#include <QtCore>
 
 namespace OPL {
 

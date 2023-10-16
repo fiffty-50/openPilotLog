@@ -32,6 +32,13 @@
 #include <QSqlField>
 
 #include "src/classes/paths.h"
+#include "src/database/aircraftentry.h"
+#include "src/database/airportentry.h"
+#include "src/database/currencyentry.h"
+#include "src/database/flightentry.h"
+#include "src/database/pilotentry.h"
+#include "src/database/simulatorentry.h"
+#include "src/database/tailentry.h"
 #include "src/opl.h"
 #include "src/database/row.h"
 

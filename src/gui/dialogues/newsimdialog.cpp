@@ -55,12 +55,12 @@ void NewSimDialog::init()
 void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
-    ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
-    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::Db::SIMULATORS_TIME).toInt()).toString());
-    ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
-    ui->aircraftTypeLineEdit->setText(data.value(OPL::Db::SIMULATORS_ACFT).toString());
-    ui->registrationLineEdit->setText(data.value(OPL::Db::SIMULATORS_REG).toString());
-    ui->remarksLineEdit->setText(data.value(OPL::Db::SIMULATORS_REMARKS).toString());
+    ui->dateLineEdit->setText(data.value(OPL::SimulatorEntry::DATE).toString());
+    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt()).toString());
+    ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::SimulatorEntry::TYPE).toInt());
+    ui->aircraftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
+    ui->registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
+    ui->remarksLineEdit->setText(data.value(OPL::SimulatorEntry::REMARKS).toString());
 }
 
 NewSimDialog::~NewSimDialog()
@@ -159,19 +159,19 @@ OPL::RowData_T NewSimDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
+    new_entry.insert(OPL::SimulatorEntry::DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(OPL::Db::SIMULATORS_TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
+    new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
     // Device Type
-    new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->deviceTypeComboBox->currentText());
+    new_entry.insert(OPL::SimulatorEntry::TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type
-    new_entry.insert(OPL::Db::SIMULATORS_ACFT, ui->aircraftTypeLineEdit->text());
+    new_entry.insert(OPL::SimulatorEntry::ACFT, ui->aircraftTypeLineEdit->text());
     // Registration
     if (!ui->registrationLineEdit->text().isEmpty())
-        new_entry.insert(OPL::Db::SIMULATORS_REG, ui->registrationLineEdit->text());
+        new_entry.insert(OPL::SimulatorEntry::REG, ui->registrationLineEdit->text());
     // Remarks
     if (!ui->remarksLineEdit->text().isEmpty())
-        new_entry.insert(OPL::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
+        new_entry.insert(OPL::SimulatorEntry::REMARKS, ui->remarksLineEdit->text());
 
     return new_entry;
 }
