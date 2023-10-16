@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -445,14 +445,12 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
         }
         break;
     }
+
     // Take-Off and Landing
-
-    int toDay = night_time_data.takeOffNight ? 0 : ui->takeOffSpinBox->value();
-    int toNight = night_time_data.takeOffNight ? toNight = ui->takeOffSpinBox->value() : 0;
-    int ldgDay = night_time_data.landingNight ? 0 : ui->landingSpinBox->value();
+    int toDay    = night_time_data.takeOffNight ? 0 : ui->takeOffSpinBox->value();
+    int toNight  = night_time_data.takeOffNight ? ui->takeOffSpinBox->value() : 0;
+    int ldgDay   = night_time_data.landingNight ? 0 : ui->landingSpinBox->value();
     int ldgNight = night_time_data.landingNight ? ui->landingSpinBox->value() : 0;
-
-    LOG << "Entering To/Ldg: " << toDay << "," << toNight << "," << ldgDay << ", " << ldgNight << "\n";
 
     new_data.insert(OPL::Db::FLIGHTS_TODAY, toDay);
     new_data.insert(OPL::Db::FLIGHTS_TONIGHT, toNight);
