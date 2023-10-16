@@ -125,7 +125,6 @@ private:
     void onBadInputReceived(QLineEdit *line_edit);
 
     void updateBlockTimeLabel();
-    void updateNightCheckBoxes();
     void setNightCheckboxes();
 
     bool addNewTail(QLineEdit& parent_line_edit);

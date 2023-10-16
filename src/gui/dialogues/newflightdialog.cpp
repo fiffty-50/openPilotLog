@@ -168,8 +168,7 @@ void NewFlightDialog::readSettings()
 {
     ui->functionComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Function).toInt());
     ui->approachComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Approach).toInt());
-    ui->pilotFlyingCheckBox->setChecked(Settings::read(Settings::FlightLogging::PilotFlying).toBool());
-    ui->ifrCheckBox->setChecked(Settings::read(Settings::FlightLogging::LogIFR).toBool());
+    ui->flightRulesComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::LogIFR).toInt());
     ui->flightNumberLineEdit->setText(Settings::read(Settings::FlightLogging::FlightNumberPrefix).toString());
 }
 
@@ -214,19 +213,17 @@ void NewFlightDialog::fillWithEntryData()
     if(app != QString()){
         ui->approachComboBox->setCurrentText(app);
     }
-    // Task
-    bool PF = flight_data.value(OPL::Db::FLIGHTS_PILOTFLYING).toBool();
-    ui->pilotFlyingCheckBox->setChecked(PF);
     // Flight Rules
     bool time_ifr = flight_data.value(OPL::Db::FLIGHTS_TIFR).toBool();
-    ui->ifrCheckBox->setChecked(time_ifr);
+    int rulesIndex = time_ifr ? 1 : 0;
+    ui->flightRulesComboBox->setCurrentIndex(rulesIndex);
     // Take-Off and Landing
-    int TO =  flight_data.value(OPL::Db::FLIGHTS_TODAY).toInt()
+    int takeOffCount =  flight_data.value(OPL::Db::FLIGHTS_TODAY).toInt()
             + flight_data.value(OPL::Db::FLIGHTS_TONIGHT).toInt();
-    int LDG = flight_data.value(OPL::Db::FLIGHTS_LDGDAY).toInt()
+    int landingCount = flight_data.value(OPL::Db::FLIGHTS_LDGDAY).toInt()
             + flight_data.value(OPL::Db::FLIGHTS_LDGNIGHT).toInt();
-    ui->takeOffSpinBox->setValue(TO);
-    ui->landingSpinBox->setValue(LDG);
+    ui->takeOffSpinBox->setValue(takeOffCount);
+    ui->landingSpinBox->setValue(landingCount);
     // Remarks
     ui->remarksLineEdit->setText(flight_data.value(OPL::Db::FLIGHTS_REMARKS).toString());
     // Flight Number
@@ -265,8 +262,6 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
 
     if (validationState.timesValid()) {
         updateBlockTimeLabel();
-        if (validationState.nightDataValid())
-            updateNightCheckBoxes();
     }
 }
 
@@ -414,7 +409,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     new_data.insert(OPL::Db::FLIGHTS_SECONDPILOT, DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text()));
     new_data.insert(OPL::Db::FLIGHTS_THIRDPILOT, DBCache->getPilotNamesMap().key(ui->thirdPilotNameLineEdit->text()));
     // IFR time
-    if (ui->ifrCheckBox->isChecked()) {
+    if (ui->flightRulesComboBox->currentIndex() > 0) {
         new_data.insert(OPL::Db::FLIGHTS_TIFR, block_minutes);
     } else {
         new_data.insert(OPL::Db::FLIGHTS_TIFR, QString());
@@ -450,65 +445,31 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
         }
         break;
     }
-    // Pilot flying / Pilot monitoring
-    new_data.insert(OPL::Db::FLIGHTS_PILOTFLYING, ui->pilotFlyingCheckBox->isChecked());
     // Take-Off and Landing
-    if (ui->toNightCheckBox->isChecked()) {
-        new_data.insert(OPL::Db::FLIGHTS_TONIGHT, ui->takeOffSpinBox->value());
-        new_data.insert(OPL::Db::FLIGHTS_TODAY, 0);
-    } else {
-        new_data.insert(OPL::Db::FLIGHTS_TONIGHT, 0);
-        new_data.insert(OPL::Db::FLIGHTS_TODAY, ui->takeOffSpinBox->value());
-    }
-    if (ui->ldgNightCheckBox->isChecked()) {
-        new_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, ui->landingSpinBox->value());
-        new_data.insert(OPL::Db::FLIGHTS_LDGDAY, 0);
-    } else {
-        new_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, 0);
-        new_data.insert(OPL::Db::FLIGHTS_LDGDAY, ui->landingSpinBox->value());
-    }
+
+    int toDay = night_time_data.takeOffNight ? 0 : ui->takeOffSpinBox->value();
+    int toNight = night_time_data.takeOffNight ? toNight = ui->takeOffSpinBox->value() : 0;
+    int ldgDay = night_time_data.landingNight ? 0 : ui->landingSpinBox->value();
+    int ldgNight = night_time_data.landingNight ? ui->landingSpinBox->value() : 0;
+
+    LOG << "Entering To/Ldg: " << toDay << "," << toNight << "," << ldgDay << ", " << ldgNight << "\n";
+
+    new_data.insert(OPL::Db::FLIGHTS_TODAY, toDay);
+    new_data.insert(OPL::Db::FLIGHTS_TONIGHT, toNight);
+    new_data.insert(OPL::Db::FLIGHTS_LDGDAY, ldgDay);
+    new_data.insert(OPL::Db::FLIGHTS_LDGNIGHT, ldgNight);
     if (ui->approachComboBox->currentText() == CAT_3) // ILS CAT III
         new_data.insert(OPL::Db::FLIGHTS_AUTOLAND, ui->landingSpinBox->value());
+
+    // Pilot flying / Pilot monitoring
+    bool isPilotFlying = toDay + toNight + ldgDay + ldgNight > 0;
+    new_data.insert(OPL::Db::FLIGHTS_PILOTFLYING, isPilotFlying);
 
     // Additional Data
     new_data.insert(OPL::Db::FLIGHTS_APPROACHTYPE, ui->approachComboBox->currentText());
     new_data.insert(OPL::Db::FLIGHTS_FLIGHTNUMBER, ui->flightNumberLineEdit->text());
     new_data.insert(OPL::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
     return new_data;
-}
-
-/*!
- * \brief NewFlightDialog::updateNightCheckBoxes updates the check boxes for take-off and landing
- * at night. Returns the number of minutes of night time.
- * \return
- */
-void NewFlightDialog::updateNightCheckBoxes()
-{
-    // calculate Block Time
-    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
-    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
-    const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
-
-    // Calculate Night Time
-    const QString dept_date = (ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
-    const auto dept_date_time = OPL::DateTime::fromString(dept_date);
-    const int night_angle = Settings::read(Settings::FlightLogging::NightAngle).toInt();
-    const auto night_values = OPL::Calc::NightTimeValues(
-                ui->deptLocationLineEdit->text(),
-                ui->destLocationLineEdit->text(),
-                dept_date_time,
-                block_minutes,
-                night_angle);
-    // set check boxes
-    if (night_values.takeOffNight)
-        ui->toNightCheckBox->setCheckState(Qt::Checked);
-    else
-        ui->toNightCheckBox->setCheckState(Qt::Unchecked);
-
-    if (night_values.landingNight)
-        ui->ldgNightCheckBox->setCheckState(Qt::Checked);
-    else
-        ui->ldgNightCheckBox->setCheckState(Qt::Unchecked);
 }
 
 /*!
@@ -721,3 +682,4 @@ void NewFlightDialog::on_buttonBox_accepted()
         QDialog::accept();
     }
 }
+
