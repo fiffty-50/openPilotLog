@@ -111,6 +111,8 @@ private:
 
     bool usingStylesheet();
 
+    const static int SELF_ROW_ID = 1;
+
 signals:
 
     /*!

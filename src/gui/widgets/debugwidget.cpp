@@ -16,10 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
-#include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/gui/verification/pilotinput.h"
-#include "src/gui/verification/timeinput.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
 #include "src/testing/importCrewlounge/processpilots.h"
@@ -29,6 +27,8 @@
 #include "src/functions/readcsv.h"
 #include "src/database/database.h"
 #include "src/testing/atimer.h"
+#include "src/classes/settings.h"
+
 void DebugWidget::on_debugPushButton_clicked()
 {
     auto rawCsvData = CSV::readCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
@@ -75,6 +75,7 @@ void DebugWidget::on_resetUserTablesPushButton_clicked()
         emit DB->dataBaseUpdated(OPL::DbTable::Any);
     } else
         LOG <<"Errors have occurred. Check console for Debug output. ";
+    Settings::resetToDefaults();
 }
 
 void DebugWidget::on_resetDatabasePushButton_clicked()
@@ -293,5 +294,12 @@ void DebugWidget::on_debugLineEdit_editingFinished()
 void DebugWidget::on_debug2LineEdit_editingFinished()
 {
 
+}
+
+
+void DebugWidget::on_pushButton_clicked()
+{
+    Settings::resetToDefaults();
+    Settings::write(Settings::Main::SetupComplete, false);
 }
 

@@ -122,8 +122,12 @@ void SettingsWidget::readSettings()
     //const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
     // Personal Data Tab
-    auto user_data = DB->getPilotEntry(1).getData();
-    ui->lastnameLineEdit->setText(user_data.value(OPL::PilotEntry::LASTNAME).toString());
+    const auto user_data = DB->getLogbookOwner().getData();
+    QString lastName = user_data.value(OPL::PilotEntry::LASTNAME).toString();
+    if(lastName.isEmpty()) {
+        lastName = "Please enter your last name.";
+    }
+    ui->lastnameLineEdit->setText(lastName);
     ui->firstnameLineEdit->setText(user_data.value(OPL::PilotEntry::FIRSTNAME).toString());
     ui->companyLineEdit->setText(user_data.value(OPL::PilotEntry::COMPANY).toString());
     ui->employeeidLineEdit->setText(user_data.value(OPL::PilotEntry::EMPLOYEEID).toString());
@@ -194,9 +198,11 @@ void SettingsWidget::updatePersonalDetails()
     case 2:{
         QString name;
         name.append(ui->lastnameLineEdit->text());
-        name.append(QLatin1String(", "));
-        name.append(ui->firstnameLineEdit->text().at(0));
-        name.append(QLatin1Char('.'));
+        if(ui->firstnameLineEdit->text().size() > 0) {
+            name.append(QLatin1String(", "));
+            name.append(ui->firstnameLineEdit->text().at(0));
+            name.append(QLatin1Char('.'));
+        }
         user_data.insert(OPL::PilotEntry::ALIAS, name);
     }
         break;
@@ -210,17 +216,10 @@ void SettingsWidget::updatePersonalDetails()
     user_data.insert(OPL::PilotEntry::PHONE, ui->phoneLineEdit->text());
     user_data.insert(OPL::PilotEntry::EMAIL, ui->emailLineEdit->text());
 
-    auto user = OPL::PilotEntry(1, user_data);
-
-    TODO << "Changing DB does not currently refresh logbook view";
-    TODO << "Check for empty line edits (First, last name should not be empty...validators not a good way because it gives no user feedback)";
-
-    if(!DB->commit(user))
+    if(!DB->setLogbookOwner(user_data))
         WARN(tr("Unable to update Database:<br>") + DB->lastError.text());
     else
         LOG << "User updated successfully.";
-
-
 }
 
 /*

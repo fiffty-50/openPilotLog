@@ -132,8 +132,7 @@ CREATE TABLE 'previousExperience' (
         'ldgDay'	INTEGER,
         'ldgNight'	INTEGER,
         'autoland'	INTEGER
-)
-
+);
 DROP VIEW IF EXISTS 'viewDefault';
 CREATE VIEW viewDefault AS  
 SELECT 	flight_id,

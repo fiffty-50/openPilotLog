@@ -118,6 +118,11 @@ private:
     bool createUserEntry();
 
     /*!
+     * \brief setupPreviousExperienceEntry - set up a stub database entry for previous experience
+     */
+    bool setupPreviousExperienceEntry();
+
+    /*!
      * \brief writeCurrencies - submits the user input to the currencies table in the database
      */
     bool writeCurrencies();

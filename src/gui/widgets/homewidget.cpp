@@ -43,7 +43,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
     currWarningThreshold = Settings::read(Settings::UserData::CurrWarningThreshold).toInt();
     auto logo = QPixmap(OPL::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
-    ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
+    ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(getLogbookOwnerName()));
 
 
     limitationDisplayLabels = {
@@ -84,7 +84,7 @@ void HomeWidget::onPilotsDatabaseChanged(const OPL::DbTable table)
 {
     // maybe logbook owner name has changed, redraw
     if (table == OPL::DbTable::Pilots)
-        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
+        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(getLogbookOwnerName()));
 }
 
 void HomeWidget::changeEvent(QEvent *event)
@@ -223,4 +223,15 @@ void HomeWidget::fillLimitations()
     } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Orange);
     }
+}
+
+const QString HomeWidget::getLogbookOwnerName()
+{
+    OPL::PilotEntry owner = DB->getLogbookOwner();
+    QString name = owner.getFirstName();
+    if(name.isEmpty()) {
+        name = owner.getLastName();
+    }
+    DEB << "owner name: " << name;
+    return name;
 }

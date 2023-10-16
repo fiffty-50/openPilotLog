@@ -215,6 +215,30 @@ public:
     }
 
     /*!
+     * \brief get the database entry for the logbook owner (self)
+     */
+    inline OPL::PilotEntry getLogbookOwner()
+    {
+        auto data = getRowData(OPL::DbTable::Pilots, 1);
+        data.insert(OPL::PilotEntry::ROWID, 1);
+        return OPL::PilotEntry(1, data);
+    }
+
+    /*!
+     * \brief Set the database entry for the logbook owner (self)
+     */
+    inline bool setLogbookOwner(RowData_T &ownerData)
+    {
+        if(ownerData.value(OPL::PilotEntry::LASTNAME).isNull()) {
+            lastError = QSqlError("Logbook owners last name is mandatory.");
+            return false;
+        }
+
+        ownerData.insert(OPL::PilotEntry::ROWID, 1);
+        return commit(OPL::PilotEntry(1, ownerData));
+    }
+
+    /*!
      * \brief retreives a TailEntry from the database. See row class for details.
      */
     inline OPL::TailEntry getTailEntry(int row_id)

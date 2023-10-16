@@ -46,7 +46,7 @@ private:
      */
     OPL::RowData_T m_rowData;
     /*!
-     * \brief ROW_ID the row ID for previous experience entries (0)
+     * \brief ROW_ID the row ID for previous experience entries (1)
      */
     const static int ROW_ID = 1;
     void fillTotals(const WidgetType widgetType);

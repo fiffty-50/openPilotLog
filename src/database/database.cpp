@@ -798,7 +798,7 @@ bool Database::resetUserData()
     for (const auto& table : DB->getUserTables()) {
         query.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
         if (!query.exec()) {
-            DEB << "Error: " << query.lastError().text();
+            lastError = query.lastError();
             return false;
         }
     }

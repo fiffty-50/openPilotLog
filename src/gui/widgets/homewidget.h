@@ -94,7 +94,7 @@ private:
     /*!
      * \brief Retreives the users first name from the database.
      */
-    const inline QString userName() { return DB->getPilotEntry(1).getFirstName(); }
+    const QString getLogbookOwnerName();
 
 public slots:
     void refresh();

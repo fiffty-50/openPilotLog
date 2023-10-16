@@ -90,8 +90,6 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
         break;
     case PreviousExperienceWidget:
         time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
-        LOG << "Previous row data:";
-        LOG << time_data;
     }
 
     // fill the line edits with the data obtained
@@ -105,7 +103,6 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
             const QString &le_name = line_edit->objectName();
             if(le_name.contains("to") || le_name.contains("ldg")) {
                 // line edits for take offs and landings
-                DEB << "Setting to/ldg: " << le_name << " -> " + field.toString();
                 line_edit->setText(field.toString());
             } else {
                 // line edits for total time
