@@ -446,12 +446,11 @@ void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
 
 void FirstRunDialog::on_importPushButton_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(
+    QString filename = QDir::toNativeSeparators(QFileDialog::getOpenFileName(
                 this,
                 tr("Choose backup file"),
                 QDir::homePath(),
-                "*.db"
-    );
+                "*.db"));
 
     if(filename.isEmpty()) { // QFileDialog has been cancelled
         WARN(tr("No Database has been selected."));
@@ -468,7 +467,7 @@ void FirstRunDialog::on_importPushButton_clicked()
                        "<br>Is this correct?"
                        ).arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!DB->restoreBackup(filename)) {
+        if(!DB->restoreBackup(QDir::toNativeSeparators(filename))) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }
