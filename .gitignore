@@ -83,6 +83,9 @@ openPilotLog.vcxproj.filters
 
 openPilotLog.vcxproj.user
 
+.vscode/
+build/
+
 # Disable localization updates
 l10n/
 # DS files

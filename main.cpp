@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -34,10 +34,9 @@
 #include <QTranslator>
 
 /*!
- *  Helper functions that prepare and set up the application
+ * \brief init - Sets up the logging facilities, loads the user settings and sets
+ * up the application style before the MainWindow is instantiated
  */
-namespace Main {
-
 void init()
 {
     LOG << "Setting up / verifying Application Directories...";
@@ -61,17 +60,24 @@ void init()
     //ATranslator::installTranslator(OPL::Translations::English);
 }
 
-bool firstRun()
+/*!
+ * \brief firstRun - is run if the application is run for the first time and launches
+ * the FirstRunDialog which guides the user through the initial set-up process.
+ */
+int firstRun()
 {
     if(FirstRunDialog().exec() == QDialog::Rejected){
         LOG << "Initial setup incomplete or unsuccessfull.";
-        return false;
+        return 1;
     }
+
     Settings::write(Settings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
-    return true;
+    QMessageBox mb;
+    mb.setText("Initial set-up has been completed successfully.<br><br>Please re-start the application.");
+    mb.exec();
+    return 0;
 }
-} // namespace Main
 
 int main(int argc, char *argv[])
 {
@@ -80,7 +86,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(ORGDOMAIN);
     QCoreApplication::setApplicationName(APPNAME);
 
-    // Check for another instance already running
+    // Check of another instance of the application is already running, we don't want
+    // different processes writing to the same database
     RunGuard guard(QStringLiteral("opl_single_key"));
     if ( !guard.tryToRun() ){
         LOG << "Another Instance of openPilotLog is already running. Exiting.";
@@ -88,12 +95,11 @@ int main(int argc, char *argv[])
     }
 
     // Set Up the Application
-    Main::init();
+    init();
 
     // Check for First Run and launch Setup Wizard
     if (!Settings::read(Settings::Main::SetupComplete).toBool())
-        if(!Main::firstRun())
-            return 0;
+        return firstRun();
 
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;

@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -32,6 +32,13 @@
 #include <QSqlField>
 
 #include "src/classes/paths.h"
+#include "src/database/aircraftentry.h"
+#include "src/database/airportentry.h"
+#include "src/database/currencyentry.h"
+#include "src/database/flightentry.h"
+#include "src/database/pilotentry.h"
+#include "src/database/simulatorentry.h"
+#include "src/database/tailentry.h"
 #include "src/opl.h"
 #include "src/database/row.h"
 
@@ -208,6 +215,30 @@ public:
     }
 
     /*!
+     * \brief get the database entry for the logbook owner (self)
+     */
+    inline OPL::PilotEntry getLogbookOwner()
+    {
+        auto data = getRowData(OPL::DbTable::Pilots, 1);
+        data.insert(OPL::PilotEntry::ROWID, 1);
+        return OPL::PilotEntry(1, data);
+    }
+
+    /*!
+     * \brief Set the database entry for the logbook owner (self)
+     */
+    inline bool setLogbookOwner(RowData_T &ownerData)
+    {
+        if(ownerData.value(OPL::PilotEntry::LASTNAME).isNull()) {
+            lastError = QSqlError("Logbook owners last name is mandatory.");
+            return false;
+        }
+
+        ownerData.insert(OPL::PilotEntry::ROWID, 1);
+        return commit(OPL::PilotEntry(1, ownerData));
+    }
+
+    /*!
      * \brief retreives a TailEntry from the database. See row class for details.
      */
     inline OPL::TailEntry getTailEntry(int row_id)
@@ -327,6 +358,13 @@ public:
 
 
 
+    /*!
+     * @brief Retreive the total time of all flight entries in the databas
+     * @param includePreviousExperience determines whether experience from previous logbooks
+     * is included.
+     * @return The sum of all entries in the flights table
+     */
+    const RowData_T getTotals(bool includePreviousExperience);
 signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.

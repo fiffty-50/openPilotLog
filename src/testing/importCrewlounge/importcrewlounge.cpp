@@ -1,7 +1,6 @@
 #include "importcrewlounge.h"
 #include "src/database/database.h"
 #include "src/opl.h"
-#include "src/database/row.h"
 #include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
@@ -30,7 +29,7 @@ void exec(const QString &csv_file_path)
     const auto p_maps = proc_pilots.getProcessedPilotMaps();
 
     for (const auto & pilot_data : p_maps) {
-        OPL::PilotEntry pe(pilot_data.value(OPL::Db::PILOTS_ROWID).toInt(), pilot_data);
+        OPL::PilotEntry pe(pilot_data.value(OPL::PilotEntry::ROWID).toInt(), pilot_data);
         DB->commit(pe);
     }
 
@@ -40,7 +39,7 @@ void exec(const QString &csv_file_path)
     const auto t_maps = proc_tails.getProcessedTailMaps();
 
     for (const auto& tail_data : t_maps) {
-        OPL::TailEntry te(tail_data.value(OPL::Db::PILOTS_ROWID).toInt(), tail_data);
+        OPL::TailEntry te(tail_data.value(OPL::PilotEntry::ROWID).toInt(), tail_data);
         DB->commit(te);
     }
 

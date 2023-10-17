@@ -91,7 +91,7 @@ void AirportWidget::on_deletePushButton_clicked()
         QStringList selected_airport_names;
         for (const auto row_id : qAsConst(selectedEntries)) {
             const auto data = DB->getRowData(OPL::DbTable::Airports, row_id);
-            selected_airport_names.append(data.value(OPL::Db::AIRPORTS_NAME).toString());
+            selected_airport_names.append(data.value(OPL::AirportEntry::NAME).toString());
         }
 
         QString selected_airports_string;

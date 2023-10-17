@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "firstrundialog.h"
+#include "src/database/previousexperienceentry.h"
 #include "ui_firstrundialog.h"
 #include "src/opl.h"
 #include "src/database/database.h"
@@ -177,6 +178,15 @@ bool FirstRunDialog::finishSetup()
         return false;
     }
 
+    if (!setupPreviousExperienceEntry()) {
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+                                tr("Unable to execute database query<br>"
+                                   "The following error has occured:<br>%1"
+                                   ).arg(DB->lastError.text()));
+        message_box.exec();
+        return false;
+    }
+
     if (!writeCurrencies()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
                                 tr("Unable to execute database query<br>"
@@ -291,7 +301,7 @@ bool FirstRunDialog::setupDatabase()
                                               "Would you like to download the latest database information?"
                                               "<br>(Recommended, Internet connection required)"),
                                QMessageBox::Yes | QMessageBox::No, this);
-    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::Yes);
 
     if (confirm.exec() == QMessageBox::Yes) {
         useRessourceData = false;
@@ -321,17 +331,23 @@ bool FirstRunDialog::setupDatabase()
 
 bool FirstRunDialog::createUserEntry()
 {
-    QHash<QString, QVariant> data;
-    data.insert(OPL::Db::PILOTS_LASTNAME,   ui->lastnameLineEdit->text());
-    data.insert(OPL::Db::PILOTS_FIRSTNAME,  ui->firstnameLineEdit->text());
-    data.insert(OPL::Db::PILOTS_ALIAS,      QStringLiteral("self"));
-    data.insert(OPL::Db::PILOTS_EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(OPL::Db::PILOTS_PHONE,      ui->phoneLineEdit->text());
-    data.insert(OPL::Db::PILOTS_EMAIL,      ui->emailLineEdit->text());
+    OPL::RowData_T data;
+    data.insert(OPL::PilotEntry::LASTNAME,   ui->lastnameLineEdit->text());
+    data.insert(OPL::PilotEntry::FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(OPL::PilotEntry::ALIAS,      QStringLiteral("self"));
+    data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
+    data.insert(OPL::PilotEntry::PHONE,      ui->phoneLineEdit->text());
+    data.insert(OPL::PilotEntry::EMAIL,      ui->emailLineEdit->text());
 
-    auto pilot = OPL::PilotEntry(1, data);
+    return DB->setLogbookOwner(data);
+}
 
-    return DB->commit(pilot);
+bool FirstRunDialog::setupPreviousExperienceEntry()
+{
+    OPL::RowData_T prevData;
+    prevData.insert(OPL::PreviousExperienceEntry::TBLK, 0);
+    auto pXpEntry = OPL::PreviousExperienceEntry(1, prevData);
+    return DB->commit(pXpEntry);
 }
 
 bool FirstRunDialog::writeCurrencies()
@@ -358,11 +374,11 @@ bool FirstRunDialog::writeCurrencies()
         const auto enum_value = currencies_list.key(date_edit);
         // only write dates that have been edited
         if (date_edit->date() != today) {
-            OPL::RowData_T row_data = {{OPL::Db::CURRENCIES_EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
+            OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
             if (enum_value == OPL::CurrencyName::Custom1)
-                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom1LineEdit->text());
+                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom1LineEdit->text());
             else if(enum_value == OPL::CurrencyName::Custom2)
-                row_data.insert(OPL::Db::CURRENCIES_CURRENCYNAME, ui->currCustom2LineEdit->text());
+                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom2LineEdit->text());
 
             Settings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
             OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);

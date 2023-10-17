@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
 #include <QList>
 #include <QBitArray>
 
+#include "src/database/flightentry.h"
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
-#include "src/database/row.h"
 #include "src/gui/verification/validationstate.h"
 
 namespace Ui {
@@ -125,7 +125,6 @@ private:
     void onBadInputReceived(QLineEdit *line_edit);
 
     void updateBlockTimeLabel();
-    void updateNightCheckBoxes();
     void setNightCheckboxes();
 
     bool addNewTail(QLineEdit& parent_line_edit);

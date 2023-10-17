@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -116,6 +116,11 @@ private:
      * \brief createUserEntry - create the database entry for the logbook owner (identified by ROW_ID = 1)
      */
     bool createUserEntry();
+
+    /*!
+     * \brief setupPreviousExperienceEntry - set up a stub database entry for previous experience
+     */
+    bool setupPreviousExperienceEntry();
 
     /*!
      * \brief writeCurrencies - submits the user input to the currencies table in the database

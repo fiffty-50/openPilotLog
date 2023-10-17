@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/functions/statistics.h"
 #include "src/database/database.h"
-#include "src/classes/settings.h"
 
 namespace Ui {
 class HomeWidget;
@@ -96,7 +94,7 @@ private:
     /*!
      * \brief Retreives the users first name from the database.
      */
-    const inline QString userName() { return DB->getPilotEntry(1).firstName(); }
+    const QString getLogbookOwnerName();
 
 public slots:
     void refresh();

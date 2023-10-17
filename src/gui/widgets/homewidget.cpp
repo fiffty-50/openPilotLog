@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -16,9 +16,11 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
+#include "src/functions/statistics.h"
+#include "src/gui/widgets/totalswidget.h"
 #include "ui_homewidget.h"
 #include "src/database/database.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/classes/settings.h"
 #include "src/database/row.h"
 
@@ -41,7 +43,7 @@ HomeWidget::HomeWidget(QWidget *parent) :
     currWarningThreshold = Settings::read(Settings::UserData::CurrWarningThreshold).toInt();
     auto logo = QPixmap(OPL::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
-    ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
+    ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(getLogbookOwnerName()));
 
 
     limitationDisplayLabels = {
@@ -82,7 +84,7 @@ void HomeWidget::onPilotsDatabaseChanged(const OPL::DbTable table)
 {
     // maybe logbook owner name has changed, redraw
     if (table == OPL::DbTable::Pilots)
-        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(userName()));
+        ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(getLogbookOwnerName()));
 }
 
 void HomeWidget::changeEvent(QEvent *event)
@@ -98,11 +100,9 @@ void HomeWidget::changeEvent(QEvent *event)
  */
 void HomeWidget::fillTotals()
 {
-    const auto data = OPL::Statistics::totals();
-    for (const auto &field : data) {
-        auto line_edit = this->findChild<QLineEdit *>(field.first + QLatin1String("LineEdit"));
-        line_edit->setText(field.second);
-    }
+    auto tw = new TotalsWidget(TotalsWidget::TotalTimeWidget, this);
+    ui->totalsStackedWidget->addWidget(tw);
+    ui->totalsStackedWidget->setCurrentWidget(tw);
 }
 
 void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)
@@ -110,14 +110,14 @@ void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_l
     const auto currency_entry = DB->getCurrencyEntry(static_cast<int>(currency_name));
 
     if (currency_name == OPL::CurrencyName::Custom1) {
-        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
     } else if (currency_name == OPL::CurrencyName::Custom2) {
-        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::Db::CURRENCIES_CURRENCYNAME).toString());
+        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
     }
 
     if (currency_entry.isValid()) {
         const auto currency_date = QDate::fromString(currency_entry.getData().value(
-                                               OPL::Db::CURRENCIES_EXPIRYDATE).toString(),
+                                               OPL::CurrencyEntry::EXPIRYDATE).toString(),
                                                Qt::ISODate);
         display_label->setText(currency_date.toString(Qt::TextDate));
         setLabelColour(display_label, Colour::None);
@@ -201,7 +201,7 @@ void HomeWidget::fillCurrencyTakeOffLanding()
 void HomeWidget::fillLimitations()
 {
     int minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling28Days);
-    ui->FlightTime28dDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTime28dDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= ROLLING_28_DAYS) {
         setLabelColour(ui->FlightTime28dDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_28_DAYS * ftlWarningThreshold) {
@@ -209,7 +209,7 @@ void HomeWidget::fillLimitations()
     }
 
     minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::Rolling12Months);
-    ui->FlightTime12mDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTime12mDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= ROLLING_12_MONTHS) {
         setLabelColour(ui->FlightTime12mDisplayLabel, Colour::Red);
     } else if (minutes >= ROLLING_12_MONTHS * ftlWarningThreshold) {
@@ -217,10 +217,21 @@ void HomeWidget::fillLimitations()
     }
 
     minutes = OPL::Statistics::totalTime(OPL::Statistics::TimeFrame::CalendarYear);
-    ui->FlightTimeCalYearDisplayLabel->setText(OPL::Time::toString(minutes));
+    ui->FlightTimeCalYearDisplayLabel->setText(OPL::Time(minutes).toString());
     if (minutes >= CALENDAR_YEAR) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Red);
     } else if (minutes >= CALENDAR_YEAR * ftlWarningThreshold) {
         setLabelColour(ui->FlightTimeCalYearDisplayLabel, Colour::Orange);
     }
+}
+
+const QString HomeWidget::getLogbookOwnerName()
+{
+    OPL::PilotEntry owner = DB->getLogbookOwner();
+    QString name = owner.getFirstName();
+    if(name.isEmpty()) {
+        name = owner.getLastName();
+    }
+    DEB << "owner name: " << name;
+    return name;
 }

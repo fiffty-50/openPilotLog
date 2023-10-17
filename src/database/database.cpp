@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ bool Database::connect()
     }
 
 
-    LOG << "Database connection established.";
+    LOG << "Database connection established: " + databaseFile.absoluteFilePath();
     // Enable foreign key restrictions
     QSqlQuery query;
     query.prepare(QStringLiteral("PRAGMA foreign_keys = ON;"));
@@ -386,6 +386,7 @@ bool Database::insert(const OPL::Row &new_row)
     } else {
         DEB << "Unable to commit.";
         DEB << "Query: " << statement;
+        DEB << "Bound Values: " << query.boundValues();
         DEB << "Query Error: " << query.lastError().text();
         lastError = query.lastError();
         return false;
@@ -469,6 +470,105 @@ int Database::getLastEntry(OPL::DbTable table)
     }
 }
 
+const RowData_T Database::getTotals(bool includePreviousExperience)
+{
+    QString statement = "SELECT"
+        " SUM(tblk) AS tblk,"
+        " SUM(tSPSE) AS tSPSE,"
+        " SUM(tSPME) AS tSPME,"
+        " SUM(tMP) AS tMP,"
+        " SUM(tPIC) AS tPIC,"
+        " SUM(tSIC) AS tSIC,"
+        " SUM(tDUAL) AS tDUAL,"
+        " SUM(tFI) AS tFI,"
+        " SUM(tPICUS) AS tPICUS,"
+        " SUM(tNIGHT) AS tNIGHT,"
+        " SUM(tIFR) AS tIFR,"
+        " SUM(tSIM) AS tSIM,"
+        " SUM(toDay) AS toDay,"
+        " SUM(toNight) AS toNight,"
+        " SUM(ldgDay) AS ldgDay,"
+        " SUM(ldgNight) AS ldgNight"
+        " FROM flights";
+
+    QSqlQuery query;
+    query.prepare(statement);
+    if (!query.exec()) {
+        DEB << "SQL error: " << query.lastError().text();
+        DEB << "Statement: " << query.lastQuery();
+        lastError = query.lastError();
+        return {}; // return invalid Row
+    }
+
+    RowData_T entry_data;
+    if(query.next()) {
+        auto r = query.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            return {};
+
+        for (int i = 0; i < r.count(); i++){ // iterate through fields to get key:value map
+            if(!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+    }
+
+    if(!includePreviousExperience) {
+        return entry_data;
+    }
+
+    statement = "SELECT"
+                " SUM(tblk) AS tblk,"
+                " SUM(tSPSE) AS tSPSE,"
+                " SUM(tSPME) AS tSPME,"
+                " SUM(tMP) AS tMP,"
+                " SUM(tPIC) AS tPIC,"
+                " SUM(tSIC) AS tSIC,"
+                " SUM(tDUAL) AS tDUAL,"
+                " SUM(tFI) AS tFI,"
+                " SUM(tPICUS) AS tPICUS,"
+                " SUM(tNIGHT) AS tNIGHT,"
+                " SUM(tIFR) AS tIFR,"
+                " SUM(tSIM) AS tSIM,"
+                " SUM(toDay) AS toDay,"
+                " SUM(toNight) AS toNight,"
+                " SUM(ldgDay) AS ldgDay,"
+                " SUM(ldgNight) AS ldgNight"
+                " FROM previousExperience";
+    query.prepare(statement);
+
+    if (!query.exec()) {
+        DEB << "SQL error: " << query.lastError().text();
+        DEB << "Statement: " << query.lastQuery();
+        lastError = query.lastError();
+        return {}; // return invalid Row
+    }
+
+    RowData_T prev_exp_data;
+    if(query.next()) {
+        auto r = query.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            return {};
+
+        for (int i = 0; i < r.count(); i++){ // iterate through fields to get key:value map
+            if(!r.value(i).isNull()) {
+                prev_exp_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+    }
+
+    // add up the two query results
+    for(auto it = prev_exp_data.begin(); it != prev_exp_data.end(); it++) {
+        int prevXpValue = it.value().toInt();
+        int entryValue = entry_data.value(it.key()).toInt();
+
+        const QVariant sum = prevXpValue + entryValue;
+        it.value() = sum;
+    }
+
+    return prev_exp_data;
+}
+
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)
 {
     QString statement = QLatin1String("SELECT ROWID FROM flights WHERE ");
@@ -536,22 +636,7 @@ QVector<QVariant> Database::customQuery(QString statement, int return_values)
 
 QVector<RowData_T> Database::getTable(OPL::DbTable table)
 {
-    auto query_str = QStringLiteral("SELECT * FROM ");
-    switch (table) {
-    case OPL::DbTable::Pilots:
-        query_str.append(OPL::Db::TABLE_PILOTS);
-        break;
-    case OPL::DbTable::Tails:
-        query_str.append(OPL::Db::TABLE_TAILS);
-        break;
-    case OPL::DbTable::Flights:
-        query_str.append(OPL::Db::TABLE_FLIGHTS);
-        break;
-    case OPL::DbTable::Currencies:
-        query_str.append(OPL::Db::TABLE_CURRENCIES);
-    default:
-        break;
-    }
+    const QString query_str = QStringLiteral("SELECT * FROM ") + GLOBALS->getDbTableName(table);
 
     QSqlQuery q;
     q.prepare(query_str);
@@ -709,7 +794,7 @@ bool Database::resetUserData()
     for (const auto& table : DB->getUserTables()) {
         query.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
         if (!query.exec()) {
-            DEB << "Error: " << query.lastError().text();
+            lastError = query.lastError();
             return false;
         }
     }

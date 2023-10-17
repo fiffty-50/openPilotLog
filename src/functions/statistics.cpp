@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -132,7 +132,6 @@ QVector<QPair<QString, QString>> OPL::Statistics::totals()
     }
     return output;
 }
-
 /*!
  * \brief Calculates the date of expiry for the take-off and landing currency.
  *
@@ -166,3 +165,4 @@ QDate OPL::Statistics::currencyTakeOffLandingExpiry(int expiration_days)
 
     return expiration_date.addDays(expiration_days);;
 }
+

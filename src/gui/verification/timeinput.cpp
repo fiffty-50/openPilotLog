@@ -18,13 +18,13 @@ QString TimeInput::fixup() const
 
     if (input.contains(':')) { // contains seperator
         if(input.length() == 4)
-            fixed.prepend('0');
+            fixed.prepend(QLatin1Char('0'));
     } else { // does not contain seperator
         if(input.length() == 4) {
             fixed.insert(2, ':');
         }
         if(input.length() == 3) {
-            fixed.prepend('0');
+            fixed.prepend(QLatin1Char('0'));
             fixed.insert(2, ':');
         }
     }

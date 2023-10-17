@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 #ifndef BACKUPWIDGET_H
 #define BACKUPWIDGET_H
 
-#include "src/classes/paths.h"
 
 #include <QWidget>
 #include <QStandardItemModel>

@@ -75,9 +75,12 @@ set(PROJECT_SOURCES
     src/gui/widgets/pilotswidget.h
     src/gui/widgets/pilotswidget.cpp
     src/gui/widgets/pilotswidget.ui
-    src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.h
+    src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.ui
+    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.ui
     # Verification
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
@@ -111,6 +114,27 @@ set(PROJECT_SOURCES
     src/classes/jsonhelper.cpp
     src/classes/md5sum.h
     src/classes/md5sum.cpp
+    src/classes/time.h
+    src/classes/time.cpp
+
+    # Database Entries
+    src/database/flightentry.h
+    src/database/flightentry.cpp
+    src/database/aircraftentry.h
+    src/database/aircraftentry.cpp
+    src/database/tailentry.h
+    src/database/tailentry.cpp
+    src/database/airportentry.h
+    src/database/airportentry.cpp
+    src/database/pilotentry.h
+    src/database/pilotentry.cpp
+    src/database/simulatorentry.h
+    src/database/simulatorentry.cpp
+    src/database/currencyentry.h
+    src/database/currencyentry.cpp
+
+    src/database/previousexperienceentry.h
+    src/database/previousexperienceentry.cpp
 
     # Namespaces
     src/functions/calc.h
@@ -122,7 +146,7 @@ set(PROJECT_SOURCES
     src/functions/statistics.cpp
     src/functions/datetime.h
     src/functions/datetime.cpp
-    src/functions/time.h
+
 
     # Database
     src/database/database.h

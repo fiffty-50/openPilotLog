@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -25,16 +25,22 @@
 #include "src/gui/dialogues/newsimdialog.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/database/databasecache.h"
+#include "src/classes/settings.h"
 // Quick and dirty Debug area
-#include "src/testing/randomgenerator.h"
 void MainWindow::doDebugStuff()
 {
-    auto generator = OPL::RandomGenerator();
-    OPL::FlightEntry entry = generator.randomFlight();
-    DB->commit(entry);
+    OPL::RowData_T xp = DB->getTotals(false);
+    LOG << "Totals without previous:";
+    LOG << xp;
 
-    auto nfd = NewFlightDialog(DB->getLastEntry(OPL::DbTable::Flights));
-    nfd.exec();
+    xp = DB->getTotals(true);
+    LOG << "Totals with previous:";
+    LOG << xp;
+
+    OPL::FlightEntry fe = OPL::FlightEntry();
+    LOG << "FLIGHT table: " << fe.getTableName();
+    OPL::Row row = OPL::Row();
+    LOG << "ROW table: " << row.getTableName();
 }
 
 MainWindow::MainWindow(QWidget *parent)

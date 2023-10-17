@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -24,10 +24,8 @@
 #include <QRegularExpression>
 #include <QComboBox>
 
-#include "src/classes/settings.h"
-#include "src/functions/calc.h"
-#include "src/database/database.h"
 #include "src/database/row.h"
+#include "src/database/tailentry.h"
 
 namespace Ui {
 class NewTail;

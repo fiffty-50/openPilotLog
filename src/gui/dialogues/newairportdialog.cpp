@@ -51,14 +51,14 @@ void NewAirportDialog::loadAirportData(int row_id)
     //const auto airport_data = airport.getData();
     DEB << "Filling Airport Data: " << airport_data;
 
-    ui->nameLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_NAME).toString());
-    ui->icaoLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_ICAO).toString());
-    ui->iataLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_IATA).toString());
-    ui->latDoubleSpinBox->setValue(airport_data.value(OPL::Db::AIRPORTS_LAT).toDouble());
-    ui->lonDoubleSpinBox->setValue(airport_data.value(OPL::Db::AIRPORTS_LON).toDouble());
-    ui->countryLineEdit->setText(airport_data.value(OPL::Db::AIRPORTS_COUNTRY).toString());
+    ui->nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
+    ui->icaoLineEdit->setText(airport_data.value(OPL::AirportEntry::ICAO).toString());
+    ui->iataLineEdit->setText(airport_data.value(OPL::AirportEntry::IATA).toString());
+    ui->latDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LAT).toDouble());
+    ui->lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LON).toDouble());
+    ui->countryLineEdit->setText(airport_data.value(OPL::AirportEntry::COUNTRY).toString());
 
-    const QString timezone = airport_data.value(OPL::Db::AIRPORTS_TZ_OLSON).toString();
+    const QString timezone = airport_data.value(OPL::AirportEntry::TZ_OLSON).toString();
     DEB << "Timezone: " << timezone;
     if (timezone.isNull())
         WARN(tr("Unable to read timezone data for this airport. Please verify."));
@@ -109,13 +109,13 @@ void NewAirportDialog::on_buttonBox_accepted()
         return;
     // create Entry object
     OPL::RowData_T airport_data = {
-        {OPL::Db::AIRPORTS_NAME,     ui->nameLineEdit->text()},
-        {OPL::Db::AIRPORTS_ICAO,     ui->icaoLineEdit->text()},
-        {OPL::Db::AIRPORTS_IATA,     ui->iataLineEdit->text()},
-        {OPL::Db::AIRPORTS_LAT,      ui->latDoubleSpinBox->value()},
-        {OPL::Db::AIRPORTS_LON,      ui->lonDoubleSpinBox->value()},
-        {OPL::Db::AIRPORTS_TZ_OLSON, ui->timeZoneComboBox->currentText()},
-        {OPL::Db::AIRPORTS_COUNTRY,  ui->countryLineEdit->text()},
+        {OPL::AirportEntry::NAME,     ui->nameLineEdit->text()},
+        {OPL::AirportEntry::ICAO,     ui->icaoLineEdit->text()},
+        {OPL::AirportEntry::IATA,     ui->iataLineEdit->text()},
+        {OPL::AirportEntry::LAT,      ui->latDoubleSpinBox->value()},
+        {OPL::AirportEntry::LON,      ui->lonDoubleSpinBox->value()},
+        {OPL::AirportEntry::TZ_OLSON, ui->timeZoneComboBox->currentText()},
+        {OPL::AirportEntry::COUNTRY,  ui->countryLineEdit->text()},
     };
 
     OPL::AirportEntry entry(rowId, airport_data);

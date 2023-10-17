@@ -3,7 +3,7 @@
 #include "src/gui/verification/timeinput.h"
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
-#include "src/functions/time.h"
+#include "src/classes/time.h"
 #include "src/functions/datetime.h"
 #include "src/database/database.h"
 #include <QCompleter>
@@ -55,12 +55,12 @@ void NewSimDialog::init()
 void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
-    ui->dateLineEdit->setText(data.value(OPL::Db::SIMULATORS_DATE).toString());
-    ui->totalTimeLineEdit->setText(OPL::Time::toString(data.value(OPL::Db::SIMULATORS_TIME).toInt()));
-    ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::Db::SIMULATORS_TYPE).toInt());
-    ui->aircraftTypeLineEdit->setText(data.value(OPL::Db::SIMULATORS_ACFT).toString());
-    ui->registrationLineEdit->setText(data.value(OPL::Db::SIMULATORS_REG).toString());
-    ui->remarksLineEdit->setText(data.value(OPL::Db::SIMULATORS_REMARKS).toString());
+    ui->dateLineEdit->setText(data.value(OPL::SimulatorEntry::DATE).toString());
+    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt()).toString());
+    ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::SimulatorEntry::TYPE).toInt());
+    ui->aircraftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
+    ui->registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
+    ui->remarksLineEdit->setText(data.value(OPL::SimulatorEntry::REMARKS).toString());
 }
 
 NewSimDialog::~NewSimDialog()
@@ -80,7 +80,7 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
         return;
     } else {
         ui->dateLineEdit->setText(QString());
-        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
     }
 }
 
@@ -94,7 +94,7 @@ void NewSimDialog::on_totalTimeLineEdit_editingFinished()
         QString fixed = input.fixup();
         if(fixed == QString()) {
             ui->totalTimeLineEdit->setText(QString());
-            ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+            ui->totalTimeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         } else {
             ui->totalTimeLineEdit->setText(fixed);
             ui->totalTimeLineEdit->setStyleSheet(QString());
@@ -127,7 +127,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     const auto date = OPL::DateTime::parseInput(text, date_format);
 
     if (!date.isValid()) {
-        ui->dateLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+        ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         ui->dateLineEdit->setText(QString());
         error_msg = tr("Invalid Date");
         return false;
@@ -135,10 +135,11 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     // Time
     if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
         return false;
-    const QTime time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
 
-    if (!time.isValid()) {
-        ui->totalTimeLineEdit->setStyleSheet(OPL::Styles::RED_BORDER);
+    const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
+
+    if (!time.isValidTimeOfDay()) {
+        ui->totalTimeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
         ui->totalTimeLineEdit->setText(QString());
         error_msg = tr("Invalid time");
         return false;
@@ -158,19 +159,19 @@ OPL::RowData_T NewSimDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    new_entry.insert(OPL::Db::SIMULATORS_DATE, ui->dateLineEdit->text());
+    new_entry.insert(OPL::SimulatorEntry::DATE, ui->dateLineEdit->text());
     // Time
-    new_entry.insert(OPL::Db::SIMULATORS_TIME, OPL::Time::toMinutes(ui->totalTimeLineEdit->text()));
+    new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
     // Device Type
-    new_entry.insert(OPL::Db::SIMULATORS_TYPE, ui->deviceTypeComboBox->currentText());
+    new_entry.insert(OPL::SimulatorEntry::TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type
-    new_entry.insert(OPL::Db::SIMULATORS_ACFT, ui->aircraftTypeLineEdit->text());
+    new_entry.insert(OPL::SimulatorEntry::ACFT, ui->aircraftTypeLineEdit->text());
     // Registration
     if (!ui->registrationLineEdit->text().isEmpty())
-        new_entry.insert(OPL::Db::SIMULATORS_REG, ui->registrationLineEdit->text());
+        new_entry.insert(OPL::SimulatorEntry::REG, ui->registrationLineEdit->text());
     // Remarks
     if (!ui->remarksLineEdit->text().isEmpty())
-        new_entry.insert(OPL::Db::FLIGHTS_REMARKS, ui->remarksLineEdit->text());
+        new_entry.insert(OPL::SimulatorEntry::REMARKS, ui->remarksLineEdit->text());
 
     return new_entry;
 }

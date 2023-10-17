@@ -1,6 +1,6 @@
 ﻿/*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -67,6 +67,20 @@ namespace OPL {
 #define WARN(msg) OPL::ANotificationHandler::warn(msg, this)  // Use for warnings (will be displayed in GUI)
 #define CRIT(msg) OPL::ANotificationHandler::crit(msg, this)  // Use for critical warnings (will be displayed in GUI)
 
+/**
+ * @brief Defines the row ID for non-user entries in the database;
+ */
+const static int STUB_ROW_ID = -1;
+
+/**
+ * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
+ */
+const static char* STUB_AIRPORT_CODE = "XXXX";
+/**
+ * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
+ */
+const static char* STUB_AIRCRAFT_REG = "XX-XXX";
+
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
  * information to the user in a QMessageBox and forwards the displayed message to ALog so it is written
@@ -93,6 +107,16 @@ public:
 }; // class ANotificationHandler
 
 using RowData_T = QHash<QString, QVariant>;
+
+struct ToLdgCount_T {
+    int toDay;
+    int toNight;
+    int ldgDay;
+    int ldgNight;
+
+    ToLdgCount_T(int toDay, int toNight, int ldgDay, int ldgNight)
+        : toDay(toDay), toNight(toNight), ldgDay(ldgDay), ldgNight(ldgNight) {}
+};
 
 /*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
@@ -128,7 +152,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog, PreviousExperience};
 
 /*!
  * \brief Enumerates the currency names
@@ -202,6 +226,7 @@ private:
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
         {DbTable::Changelog,    QStringLiteral("changelog")},
+        {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
     };
 
     const static inline QStringList APPROACH_TYPES = {
@@ -233,118 +258,6 @@ private:
 //Make available as a global static
 Q_GLOBAL_STATIC(OplGlobals, GLOBALS)
 
-/*!
- *  The OPL::Db namespace provides string literals to programatically access the database
- *
- *  Example usage, do:
- *  newData.insert(OPL::Db::FLIGHTS_DEP, ui->deptLocLineEdit->text());
- *  newData.value(OPL::Db::AIRCRAFT_MULTIPILOT);
- *
- *  instead of:
- *  newData.insert("dept", ui->deptLocLineEdit->text());
- *  newData.value("multipilot");
- *
- *  Declaring these literals here avoids memory allocation at runtime for construction of temporary
- *  qstrings like ("dept").
- */
-namespace Db {
-
-
-// Table names
-const inline auto TABLE_FLIGHTS          = QStringLiteral("flights");
-const inline auto TABLE_PILOTS           = QStringLiteral("pilots");
-const inline auto TABLE_TAILS            = QStringLiteral("tails");
-const inline auto TABLE_AIRCRAFT         = QStringLiteral("aircraft");
-const inline auto TABLE_AIRPORTS         = QStringLiteral("airports");
-const inline auto TABLE_CURRENCIES       = QStringLiteral("currencies");
-const inline auto TABLE_SIMULATORS       = QStringLiteral("simulators");
-
-// Flights table columns
-const inline auto FLIGHTS_ROWID          = QStringLiteral("flight_id");
-const inline auto FLIGHTS_DOFT           = QStringLiteral("doft");
-const inline auto FLIGHTS_DEPT           = QStringLiteral("dept");
-const inline auto FLIGHTS_DEST           = QStringLiteral("dest");
-const inline auto FLIGHTS_TOFB           = QStringLiteral("tofb");
-const inline auto FLIGHTS_TONB           = QStringLiteral("tonb");
-const inline auto FLIGHTS_PIC            = QStringLiteral("pic");
-const inline auto FLIGHTS_ACFT           = QStringLiteral("acft");
-const inline auto FLIGHTS_TBLK           = QStringLiteral("tblk");
-const inline auto FLIGHTS_TSPSE          = QStringLiteral("tSPSE");
-const inline auto FLIGHTS_TSPME          = QStringLiteral("tSPME");
-const inline auto FLIGHTS_TMP            = QStringLiteral("tMP");
-const inline auto FLIGHTS_TNIGHT         = QStringLiteral("tNIGHT");
-const inline auto FLIGHTS_TIFR           = QStringLiteral("tIFR");
-const inline auto FLIGHTS_TPIC           = QStringLiteral("tPIC");
-const inline auto FLIGHTS_TPICUS         = QStringLiteral("tPICUS");
-const inline auto FLIGHTS_TSIC           = QStringLiteral("tSIC");
-const inline auto FLIGHTS_TDUAL          = QStringLiteral("tDUAL");
-const inline auto FLIGHTS_TFI            = QStringLiteral("tFI");
-const inline auto FLIGHTS_TSIM           = QStringLiteral("tSIM");
-const inline auto FLIGHTS_PILOTFLYING    = QStringLiteral("pilotFlying");
-const inline auto FLIGHTS_TODAY          = QStringLiteral("toDay");
-const inline auto FLIGHTS_TONIGHT        = QStringLiteral("toNight");
-const inline auto FLIGHTS_LDGDAY         = QStringLiteral("ldgDay");
-const inline auto FLIGHTS_LDGNIGHT       = QStringLiteral("ldgNight");
-const inline auto FLIGHTS_AUTOLAND       = QStringLiteral("autoland");
-const inline auto FLIGHTS_SECONDPILOT    = QStringLiteral("secondPilot");
-const inline auto FLIGHTS_THIRDPILOT     = QStringLiteral("thirdPilot");
-const inline auto FLIGHTS_APPROACHTYPE   = QStringLiteral("approachType");
-const inline auto FLIGHTS_FLIGHTNUMBER   = QStringLiteral("flightNumber");
-const inline auto FLIGHTS_REMARKS        = QStringLiteral("remarks");
-
-// tails table
-
-const inline auto TAILS_ROWID            = QStringLiteral("tail_id");
-const inline auto TAILS_REGISTRATION     = QStringLiteral("registration");
-const inline auto TAILS_COMPANY          = QStringLiteral("company");
-const inline auto TAILS_MAKE             = QStringLiteral("make");
-const inline auto TAILS_MODEL            = QStringLiteral("model");
-const inline auto TAILS_VARIANT          = QStringLiteral("variant");
-const inline auto TAILS_MULTIPILOT       = QStringLiteral("multipilot");
-const inline auto TAILS_MULTIENGINE      = QStringLiteral("multiengine");
-const inline auto TAILS_ENGINETYPE       = QStringLiteral("engineType");
-const inline auto TAILS_WEIGHTCLASS      = QStringLiteral("weightClass");
-
-// pilots table
-
-const inline auto  PILOTS_ROWID           = QStringLiteral("pilot_id");
-const inline auto  PILOTS_LASTNAME        = QStringLiteral("lastname");
-const inline auto  PILOTS_FIRSTNAME       = QStringLiteral("firstname");
-const inline auto  PILOTS_ALIAS           = QStringLiteral("alias");
-const inline auto  PILOTS_COMPANY         = QStringLiteral("company");
-const inline auto  PILOTS_EMPLOYEEID      = QStringLiteral("employeeid");
-const inline auto  PILOTS_PHONE           = QStringLiteral("phone");
-const inline auto  PILOTS_EMAIL           = QStringLiteral("email");
-
-// Currencies table
-const inline auto  CURRENCIES_EXPIRYDATE  = QStringLiteral("expiryDate");
-const inline auto  CURRENCIES_CURRENCYNAME = QStringLiteral("currencyName");
-
-// Simulators table
-const inline auto  SIMULATORS_ROWID       = QStringLiteral("session_id");
-const inline auto  SIMULATORS_DATE        = QStringLiteral("date");
-const inline auto  SIMULATORS_TIME        = QStringLiteral("totalTime");
-const inline auto  SIMULATORS_TYPE        = QStringLiteral("deviceType");
-const inline auto  SIMULATORS_ACFT        = QStringLiteral("aircraftType");
-const inline auto  SIMULATORS_REG         = QStringLiteral("registration");
-const inline auto  SIMULATORS_REMARKS     = QStringLiteral("remarks");
-
-// Airports table
-const inline auto AIRPORTS_ICAO           = QStringLiteral("icao");
-const inline auto AIRPORTS_IATA           = QStringLiteral("iata");
-const inline auto AIRPORTS_NAME           = QStringLiteral("name");
-const inline auto AIRPORTS_LAT            = QStringLiteral("lat");
-const inline auto AIRPORTS_LON            = QStringLiteral("long");
-const inline auto AIRPORTS_COUNTRY        = QStringLiteral("country");
-const inline auto AIRPORTS_ALTITIDUE      = QStringLiteral("alt");
-const inline auto AIRPORTS_UTC_OFFSET     = QStringLiteral("utcoffset");
-const inline auto AIRPORTS_TZ_OLSON       = QStringLiteral("tzolson");
-
-// all tables
-const inline auto  ROWID                  = QStringLiteral("rowid");
-const inline auto  NULL_TIME_hhmm         = QStringLiteral("00:00");
-
-} // namespace OPL::db
 
 namespace Assets {
 
@@ -382,7 +295,7 @@ const inline auto  ICON_TOOLBAR_BACKUP_DARK      = QStringLiteral(":/icons/opl-i
 
 }
 
-namespace Styles {
+namespace CssStyles {
 
 const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles
@@ -392,6 +305,15 @@ namespace Format {
 const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
 
 } // namespace Format
+
+namespace RegEx {
+
+const inline auto RX_PHONE_NUMBER  = QRegularExpression(QStringLiteral("^[+]{0,1}[0-9\\-\\s]+"));
+const inline auto RX_EMAIL_ADDRESS = QRegularExpression(QStringLiteral("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"));
+const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"));
+const inline auto RX_AIRPORT_CODE  = QRegularExpression(QStringLiteral("[a-zA-Z0-9]{1,4}"));
+
+} // namespace RegEx
 
 } // namespace opl
 

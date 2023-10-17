@@ -2,7 +2,7 @@
 #define NEWSIMDIALOG_H
 
 #include <QDialog>
-#include "src/database/row.h"
+#include "src/database/simulatorentry.h"
 
 namespace Ui {
 class NewSimDialog;

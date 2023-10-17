@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QTableView>
-#include "src/database/row.h"
+#include "src/database/flightentry.h"
+#include "src/database/pilotentry.h"
 #include "src/gui/widgets/settingswidget.h"
 
 namespace Ui {
@@ -93,7 +94,7 @@ private:
 
     QVector<qint32> selectedPilots;
 
-    const QString getPilotName(const OPL::PilotEntry &pilot);
+    const QString getPilotName(const OPL::PilotEntry &pilot) const;
 
     const QString getFlightSummary(const OPL::FlightEntry &flight) const;
 

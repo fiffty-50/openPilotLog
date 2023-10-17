@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ private slots:
     void on_debugLineEdit_editingFinished();
 
     void on_debug2LineEdit_editingFinished();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::DebugWidget *ui;

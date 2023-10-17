@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2022 Felix Turowsky
+ *Copyright (C) 2020-2023 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "src/classes/time.h"
 #include "src/database/database.h"
 #include "logbookwidget.h"
 #include "ui_logbookwidget.h"
@@ -23,9 +24,6 @@
 #include "src/classes/settings.h"
 #include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
-#include "src/functions/time.h"
-
-
 
 LogbookWidget::LogbookWidget(QWidget *parent) :
     QWidget(parent),
@@ -96,13 +94,13 @@ const QString LogbookWidget::getFlightSummary(const OPL::FlightEntry &flight) co
     auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
+    flight_summary.append(tableData.value(OPL::FlightEntry::DOFT).toString() + space);
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
                           + space);
-    flight_summary.append(OPL::Time::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
                           + space);
-    flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
 
     return flight_summary;
 }

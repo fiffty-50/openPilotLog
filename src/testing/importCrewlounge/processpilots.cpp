@@ -1,4 +1,5 @@
 #include "processpilots.h"
+#include "src/database/pilotentry.h"
 
 void ProcessPilots::parseRawData()
 {
@@ -51,19 +52,19 @@ void ProcessPilots::processParsedData()
         // process name [1]
         auto temp_list = pair.first[1].split(QLatin1Char(' '));
         if (!temp_list.isEmpty()) {
-            new_pilot_data.insert(OPL::Db::PILOTS_LASTNAME, temp_list.first());
+            new_pilot_data.insert(OPL::PilotEntry::LASTNAME, temp_list.first());
             temp_list.pop_front();
 
             if (!temp_list.isEmpty())
-                new_pilot_data.insert(OPL::Db::PILOTS_FIRSTNAME, temp_list.join(QLatin1Char(' ')));
+                new_pilot_data.insert(OPL::PilotEntry::FIRSTNAME, temp_list.join(QLatin1Char(' ')));
         } else {
-            new_pilot_data.insert(OPL::Db::PILOTS_LASTNAME, QStringLiteral("UNKNOWN"));
+            new_pilot_data.insert(OPL::PilotEntry::LASTNAME, QStringLiteral("UNKNOWN"));
         }
 
         // add additional data
-        new_pilot_data.insert(OPL::Db::PILOTS_EMPLOYEEID, pair.first[0]);
-        new_pilot_data.insert(OPL::Db::PILOTS_PHONE, pair.first[2]);
-        new_pilot_data.insert(OPL::Db::PILOTS_EMAIL, pair.first[3]);
+        new_pilot_data.insert(OPL::PilotEntry::EMPLOYEEID, pair.first[0]);
+        new_pilot_data.insert(OPL::PilotEntry::PHONE, pair.first[2]);
+        new_pilot_data.insert(OPL::PilotEntry::EMAIL, pair.first[3]);
 
         // add pilot_id (workaround with literal until OPL::Db is updated)
         new_pilot_data.insert(QStringLiteral("pilot_id"), pair.second);
