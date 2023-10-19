@@ -28,5 +28,10 @@
         "currency_id": 6,
         "currencyName": "Custom2",
         "expiryDate": null
+    },
+    {
+        "currency_id": 7,
+        "currencyName": "Take Off / Landing",
+        "expiryDate": null
     }
 ]

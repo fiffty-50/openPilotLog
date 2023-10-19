@@ -29,18 +29,8 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    OPL::RowData_T xp = DB->getTotals(false);
-    LOG << "Totals without previous:";
-    LOG << xp;
-
-    xp = DB->getTotals(true);
-    LOG << "Totals with previous:";
-    LOG << xp;
-
-    OPL::FlightEntry fe = OPL::FlightEntry();
-    LOG << "FLIGHT table: " << fe.getTableName();
-    OPL::Row row = OPL::Row();
-    LOG << "ROW table: " << row.getTableName();
+    LOG << "Setup completed? ";
+    LOG << Settings::getSetupCompleted();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -235,7 +225,8 @@ void MainWindow::onDatabaseInvalid()
             LOG << "Initial setup incomplete or unsuccessfull.";
             on_actionQuit_triggered();
         }
-        Settings::write(Settings::Main::SetupComplete, true);
+        Settings::setSetupCompleted(true);
+//        Settings::write(Settings::Main::SetupComplete, true);
         LOG << "Initial Setup Completed successfully";
     }
 }

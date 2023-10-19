@@ -88,23 +88,47 @@ private:
     /*!
      * \brief timeLineEdits - Line Edits for time Off Blocks and Time On Blocks
      */
-    static const inline QList<QLineEdit*>* timeLineEdits;
+    static const inline QList<QLineEdit*> *timeLineEdits;
     /*!
      * \brief locationLineEdits - Line Edits for Departure and Destination Airports
      */
-    static const inline QList<QLineEdit*>* locationLineEdits;
+    static const inline QList<QLineEdit*> *locationLineEdits;
     /*!
      * \brief pilotNameLineEdits - Line Edits for Pilot in Command, Second in Command (Co-Pilot) and Third Pilot
      */
-    static const inline QList<QLineEdit*>* pilotNameLineEdits;
+    static const inline QList<QLineEdit*> *pilotNameLineEdits;
     /*!
      * \brief mandatoryLineEdits - Contains the Line Edits that are needed for logging a complete flight from A to B.
      * The list is ordered like the ValidationItem enum so that indexed access is possible using the enum.
      */
-    static const inline QList<QLineEdit*>* mandatoryLineEdits;
+    static const inline QList<QLineEdit*> *mandatoryLineEdits;
     static const inline QLatin1String self = QLatin1String("self");
+    static const inline QHash<int, QString> pilotFuncionsMap = {
+                                           {0, OPL::FlightEntry::TPIC},
+                                           {1, OPL::FlightEntry::TPICUS},
+                                           {2, OPL::FlightEntry::TSIC},
+                                           {3, OPL::FlightEntry::TDUAL},
+                                           {4, OPL::FlightEntry::TFI},
+                                           };
+    static const inline QHash<ValidationState::ValidationItem, QString> validationItemsDisplayNames = {
+        {ValidationState::ValidationItem::doft, QObject::tr("Date of Flight")},
+        {ValidationState::ValidationItem::dept, QObject::tr("Departure Airport")},
+        {ValidationState::ValidationItem::dest, QObject::tr("Destination Airport")},
+        {ValidationState::ValidationItem::tofb, QObject::tr("Time Off Blocks")},
+        {ValidationState::ValidationItem::tonb, QObject::tr("Time on Blocks")},
+        {ValidationState::ValidationItem::pic, QObject::tr("PIC Name")},
+        {ValidationState::ValidationItem::acft, QObject::tr("Aircraft Registration")},
+    };
 
+    /*!
+     * \brief init - set up the UI
+     */
     void init();
+    /*!
+     * \brief setPilotFunction - Reads the application setting and pre-fills the logbook owners
+     * desired function
+     */
+    void setPilotFunction();
     void setupRawInputValidation();
     void setupSignalsAndSlots();
     void readSettings();
@@ -124,11 +148,25 @@ private:
      */
     void onBadInputReceived(QLineEdit *line_edit);
 
-    void updateBlockTimeLabel();
-    void setNightCheckboxes();
+    /*!
+     * \brief addNewDatabaseElement Adds a new element to the database
+     * \param parent - The line edit that triggered the event
+     * \param table - The table to which the new element is added
+     * \return true on success
+     * \details The flights database has a couple of NOT NULL constraints which
+     * must be met before a new flight can be submitted. If the user enters a
+     * constrained field which does not exist in a related table (pilots, tails
+     * or airports), the user is prompted to add a new entry to one of those
+     * tables before proceeding to log a flight with the missing element.
+     */
+    bool addNewDatabaseElement(QLineEdit* parent, OPL::DbTable table);
 
-    bool addNewTail(QLineEdit& parent_line_edit);
-    bool addNewPilot(QLineEdit& parent_line_edit);
+    /*!
+     * \brief userWantsToAddNewEntry - Asks the user if he wants to add a new entry to the database
+     * \param table - The table to which the entry will be committed.
+     * \return true if the reply is QMessageBox::Yes
+     */
+    bool userWantsToAddNewEntry(OPL::DbTable table);
 
 
     bool checkPilotFunctionsValid();

@@ -64,7 +64,7 @@ private:
     void fillTotals();
     void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
-    void fillCurrency(OPL::CurrencyName currency_name, QLabel *display_label);
+    void fillCurrency(OPL::CurrencyEntry::Currency currency, QLabel *display_label);
     void fillLimitations();
 
     enum class Colour {Red, Orange, None};

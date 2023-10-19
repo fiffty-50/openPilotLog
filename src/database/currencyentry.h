@@ -29,23 +29,41 @@ namespace OPL {
  */
 class CurrencyEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("currencies");
 public:
-    CurrencyEntry();
-    CurrencyEntry(const RowData_T &row_data);
+
+    enum Currency {Licence = 1, TypeRating = 2, LineCheck = 3, Medical = 4, Custom1 = 5, Custom2 = 6, TakeOffLanding = 7};
+
+    CurrencyEntry() = delete;
+    CurrencyEntry(const RowData_T &row_data) = delete;
     CurrencyEntry(int row_id, const RowData_T &row_data);
 
     const QString getTableName() const override;
 
+    void setDisplayName(const QString& displayName);
+    const QString getDisplayName() const;
 
+    void setExpiryDate(const QDate &date);
+    const QDate getExpiryDate() const;
+
+
+
+private:
     /*!
     * \brief The sql column name for the expiry date
     */
     const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
+
     /*!
-     * \brief The sql column name for the currency name
+     * \brief The sql column name for the row id
      */
-    const static inline QString CURRENCYNAME = QStringLiteral("currencyName");
+    const static inline QString ROW_ID = QStringLiteral("currency_id");
+
+    /*!
+     * \brief The sql column name for the display name
+     */
+    const static inline QString DISPLAY_NAME = QStringLiteral("displayName");
+
+    const static inline QString TABLE_NAME = QStringLiteral("currencies");
 };
 
 } // namespace OPL

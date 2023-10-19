@@ -300,6 +300,6 @@ void DebugWidget::on_debug2LineEdit_editingFinished()
 void DebugWidget::on_pushButton_clicked()
 {
     Settings::resetToDefaults();
-    Settings::write(Settings::Main::SetupComplete, false);
+    Settings::setSetupCompleted(false);
 }
 

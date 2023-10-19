@@ -50,21 +50,22 @@ QLatin1String Style::DARK_PALETTE = QLatin1String("Dark-Palette");
  */
 void Style::setup()
 {
-    if (!Settings::read(Settings::Main::SetupComplete).toBool()) // Use system default for first run
+    if (!Settings::getSetupCompleted()) // Use system default for first run
         return;
+//    if (!Settings::read(Settings::Main::SetupComplete).toBool()) // Use system default for first run
+//        return;
     // Set Font
-    if (!Settings::read(Settings::Main::UseSystemFont).toBool()) {
-        QFont font(Settings::read(Settings::Main::Font).toString());
-        font.setPointSize(Settings::read(Settings::Main::FontSize).toUInt());
+    if (!Settings::getUseSystemFont()) {
+        const QFont font(Settings::getApplicationFontName(), Settings::getApplicationFontSize());
         qApp->setFont(font);
         LOG << "Application Font set: " << font.toString().split(',').first();
     }
     // Set style, stylesheet or palette
-    QString style_setting = Settings::read(Settings::Main::Style).toString();
+    const QString style_setting = Settings::getApplicationStyle();
 
     if (style_setting == DARK_PALETTE) {
         Style::setStyle(Style::darkPalette());
-        Settings::write(Settings::Main::Style, style_setting);
+        Settings::setApplicationStyle(style_setting);
         return;
     }
     for (const auto &style_name : styles) {

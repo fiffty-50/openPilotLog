@@ -89,11 +89,12 @@ CREATE TABLE IF NOT EXISTS 'airports' (
 	PRIMARY KEY('airport_id' AUTOINCREMENT)
 );
 DROP TABLE IF EXISTS 'currencies';
-CREATE TABLE IF NOT EXISTS 'currencies' (
-	'currency_id'	INTEGER NOT NULL,
-	'currencyName'	TEXT,
-	'expiryDate'	NUMERIC,
-	PRIMARY KEY('currency_id' AUTOINCREMENT)
+CREATE TABLE IF NOT EXISTS "currencies" (
+        "currency_id"	INTEGER NOT NULL,
+        "currencyName"	TEXT,
+        "expiryDate"	NUMERIC,
+        "displayName"	TEXT,
+        PRIMARY KEY('currency_id' AUTOINCREMENT)
 );
 DROP TABLE IF EXISTS 'changelog';
 CREATE TABLE IF NOT EXISTS 'changelog' (

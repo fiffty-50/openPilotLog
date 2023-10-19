@@ -59,7 +59,7 @@ void PilotsWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    sortColumn = Settings::read(Settings::UserData::PilotSortColumn).toInt();
+    sortColumn = Settings::getPilotSortColumn();
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
@@ -138,8 +138,7 @@ void PilotsWidget::tableView_selectionChanged()
 
 void PilotsWidget::tableView_headerClicked(int column)
 {
-    sortColumn = column;
-    Settings::write(Settings::UserData::PilotSortColumn, column);
+    Settings::setPilotSortColumn(column);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()

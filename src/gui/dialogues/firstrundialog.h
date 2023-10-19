@@ -18,6 +18,7 @@
 #ifndef FIRSTRUNDIALOG_H
 #define FIRSTRUNDIALOG_H
 
+#include "src/database/currencyentry.h"
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -85,8 +86,6 @@ private slots:
     void on_previousPushButton_clicked();
     void on_nextPushButton_clicked();
     void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
-    void on_currCustom1LineEdit_editingFinished();
-    void on_currCustom2LineEdit_editingFinished();
 
     /*!
      * \brief Import an existing database instead of creating a new one
@@ -125,7 +124,7 @@ private:
     /*!
      * \brief writeCurrencies - submits the user input to the currencies table in the database
      */
-    bool writeCurrencies();
+    void writeCurrencies();
 
     /*!
      * \brief downloadTemplates - Downloads the airports and aircraft database as JSON files from github

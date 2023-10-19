@@ -16,16 +16,17 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "currencyentry.h"
+#include "src/database/database.h"
 
 namespace OPL {
 
-CurrencyEntry::CurrencyEntry()
-    : Row(DbTable::Currencies, 0)
-{}
+//CurrencyEntry::CurrencyEntry()
+//    : Row(DbTable::Currencies, 0)
+//{}
 
-CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
-    : Row(DbTable::Currencies, 0, row_data)
-{}
+//CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
+//    : Row(DbTable::Currencies, 0, row_data)
+//{}
 
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Currencies, row_id, row_data)
@@ -34,6 +35,33 @@ CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
 const QString CurrencyEntry::getTableName() const
 {
     return TABLE_NAME;
+}
+
+void CurrencyEntry::setDisplayName(const QString &displayName)
+{
+    auto data = getData();
+    data.insert(DISPLAY_NAME, displayName);
+    setData(data);
+    DB->commit(*this);
+}
+
+const QString CurrencyEntry::getDisplayName() const
+{
+    return getData().value(DISPLAY_NAME).toString();
+}
+
+void CurrencyEntry::setExpiryDate(const QDate &date)
+{
+    auto data = getData();
+    data.insert(EXPIRYDATE, date.toString(Qt::ISODate));
+    setData(data);
+    DB->commit(*this);
+}
+
+const QDate CurrencyEntry::getExpiryDate() const
+{
+    const QString &date = getData().value(EXPIRYDATE).toString();
+    return QDate::fromString(date, Qt::ISODate);
 }
 
 } // namespace OPL

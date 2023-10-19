@@ -39,8 +39,8 @@ HomeWidget::HomeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     today = QDate::currentDate();
-    ftlWarningThreshold = Settings::read(Settings::UserData::FtlWarningThreshold).toDouble();
-    currWarningThreshold = Settings::read(Settings::UserData::CurrWarningThreshold).toInt();
+    ftlWarningThreshold = Settings::getFtlWarningThreshold();
+    currWarningThreshold = Settings::getCurrencyWarningThreshold();
     auto logo = QPixmap(OPL::Assets::LOGO);
     ui->logoLabel->setPixmap(logo);
     ui->welcomeLabel->setText(tr("Welcome to openPilotLog, %1!").arg(getLogbookOwnerName()));
@@ -52,7 +52,6 @@ HomeWidget::HomeWidget(QWidget *parent) :
         ui->FlightTime12mDisplayLabel
     };
 
-    LOG << "Filling Home Widget...";
     fillTotals();
     fillSelectedCurrencies();
     fillLimitations();
@@ -68,7 +67,6 @@ HomeWidget::~HomeWidget()
 
 void HomeWidget::refresh()
 {
-    LOG << "Updating HomeWidget...";
     const auto label_list = this->findChildren<QLabel *>();
     for (const auto label : label_list)
         label->setVisible(true);
@@ -105,28 +103,28 @@ void HomeWidget::fillTotals()
     ui->totalsStackedWidget->setCurrentWidget(tw);
 }
 
-void HomeWidget::fillCurrency(OPL::CurrencyName currency_name, QLabel* display_label)
+void HomeWidget::fillCurrency(OPL::CurrencyEntry::Currency currency, QLabel* display_label)
 {
-    const auto currency_entry = DB->getCurrencyEntry(static_cast<int>(currency_name));
-
-    if (currency_name == OPL::CurrencyName::Custom1) {
-        ui->currCustom1Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
-    } else if (currency_name == OPL::CurrencyName::Custom2) {
-        ui->currCustom2Label->setText(currency_entry.getData().value(OPL::CurrencyEntry::CURRENCYNAME).toString());
-    }
+    const auto currency_entry = DB->getCurrencyEntry(currency);
 
     if (currency_entry.isValid()) {
-        const auto currency_date = QDate::fromString(currency_entry.getData().value(
-                                               OPL::CurrencyEntry::EXPIRYDATE).toString(),
-                                               Qt::ISODate);
-        display_label->setText(currency_date.toString(Qt::TextDate));
+        // set label for custom currencies
+        if (currency == OPL::CurrencyEntry::Custom1) {
+            ui->currCustom1Label->setText(currency_entry.getDisplayName());
+        } else if (currency == OPL::CurrencyEntry::Custom2) {
+            ui->currCustom2Label->setText(currency_entry.getDisplayName());
+        }
+        // get date and set visible
+        const QDate date = currency_entry.getExpiryDate();
+        display_label->setText(date.toString(Qt::ISODate));
         setLabelColour(display_label, Colour::None);
 
-        if (today >= currency_date) { // is expired
+        if (today >= date) {
+            // currency is expired
             setLabelColour(display_label, Colour::Red);
             return;
-        } else if (today.addDays(currWarningThreshold) >=currency_date) { // expires less than <currWarningThreshold> days from current Date
-
+        } else if (today.addDays(currWarningThreshold) >= date) {
+            // currency expires less than <currWarningThreshold> days from current Date
             setLabelColour(display_label, Colour::Orange);
         }
     } else {
@@ -142,26 +140,23 @@ void HomeWidget::fillSelectedCurrencies()
 {
     fillCurrencyTakeOffLanding();
 
-    Settings::read(Settings::UserData::ShowLicCurrency).toBool() ?
-                fillCurrency(OPL::CurrencyName::Licence, ui->currLicDisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::Licence) ?
+                fillCurrency(OPL::CurrencyEntry::Licence, ui->currLicDisplayLabel)
               : hideLabels(ui->currLicLabel, ui->currLicDisplayLabel);
-    Settings::read(Settings::UserData::ShowTrCurrency).toBool() ?
-                fillCurrency(OPL::CurrencyName::TypeRating, ui->currTrDisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::TypeRating) ?
+                fillCurrency(OPL::CurrencyEntry::TypeRating, ui->currTrDisplayLabel)
               : hideLabels(ui->currTrLabel, ui->currTrDisplayLabel);
-    Settings::read(Settings::UserData::ShowLckCurrency).toBool() ?
-                fillCurrency(OPL::CurrencyName::LineCheck, ui->currLckDisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::LineCheck) ?
+                fillCurrency(OPL::CurrencyEntry::LineCheck, ui->currLckDisplayLabel)
               : hideLabels(ui->currLckLabel, ui->currLckDisplayLabel);
-    Settings::read(Settings::UserData::ShowMedCurrency).toBool() ?
-                fillCurrency(OPL::CurrencyName::Medical, ui->currMedDisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::Medical) ?
+                fillCurrency(OPL::CurrencyEntry::Medical, ui->currMedDisplayLabel)
               : hideLabels(ui->currMedLabel, ui->currMedDisplayLabel);
-    Settings::read(Settings::UserData::ShowCustom1Currency).toBool() ?
-                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::Custom1) ?
+                fillCurrency(OPL::CurrencyEntry::Custom1, ui->currCustom1DisplayLabel)
               : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    Settings::read(Settings::UserData::ShowCustom1Currency).toBool() ?
-                fillCurrency(OPL::CurrencyName::Custom1, ui->currCustom1DisplayLabel)
-              : hideLabels(ui->currCustom1Label, ui->currCustom1DisplayLabel);
-    Settings::read(Settings::UserData::ShowCustom2Currency).toBool() ?
-                fillCurrency(OPL::CurrencyName::Custom2, ui->currCustom2DisplayLabel)
+    Settings::getShowCurrency(OPL::CurrencyEntry::Custom2) ?
+                fillCurrency(OPL::CurrencyEntry::Custom2, ui->currCustom2DisplayLabel)
               : hideLabels(ui->currCustom2Label, ui->currCustom2DisplayLabel);
 }
 
@@ -183,7 +178,7 @@ void HomeWidget::fillCurrencyTakeOffLanding()
     if (takeoff_landings[1].toUInt() < 3)
         setLabelColour(ui->LandingsDisplayLabel, Colour::Red);
 
-    if (Settings::read(Settings::UserData::ShowToLgdCurrency).toBool()) {
+    if (Settings::getShowCurrency(OPL::CurrencyEntry::TakeOffLanding)) {
         QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
         if (expiration_date <= QDate::currentDate())
             setLabelColour(ui->currToLdgDisplayLabel, Colour::Red);
@@ -232,6 +227,5 @@ const QString HomeWidget::getLogbookOwnerName()
     if(name.isEmpty()) {
         name = owner.getLastName();
     }
-    DEB << "owner name: " << name;
     return name;
 }

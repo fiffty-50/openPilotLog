@@ -52,7 +52,7 @@ void init()
         LOG << "Unable to initalise logging.";
     }
     LOG << "Reading Settings...";
-    Settings::setup();
+    Settings::init();
     LOG << "Setting up application style...";
     OPL::Style::setup();
     // Translations to be done at a later stage
@@ -71,7 +71,8 @@ int firstRun()
         return 1;
     }
 
-    Settings::write(Settings::Main::SetupComplete, true);
+    Settings::setSetupCompleted(true);
+//    Settings::write(Settings::Main::SetupComplete, true);
     LOG << "Initial Setup Completed successfully";
     QMessageBox mb;
     mb.setText("Initial set-up has been completed successfully.<br><br>Please re-start the application.");
@@ -98,9 +99,10 @@ int main(int argc, char *argv[])
     init();
 
     // Check for First Run and launch Setup Wizard
-    if (!Settings::read(Settings::Main::SetupComplete).toBool())
+//    if (!Settings::read(Settings::Main::SetupComplete).toBool())
+//        return firstRun();
+    if(!Settings::getSetupCompleted())
         return firstRun();
-
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;
 #ifdef __linux__

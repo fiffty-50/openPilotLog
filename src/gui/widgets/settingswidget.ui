@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="personalTab">
       <attribute name="title">
@@ -930,7 +930,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determines how your logbook is displayed in the logbook tab. This has no influence on what details are logged, just on what is displayed by default.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>Logbook Dispay</string>
+          <string>Logbook Display</string>
          </property>
         </widget>
        </item>

@@ -83,7 +83,7 @@ private:
 
     QList<int> selectedEntries;
 
-    void setupModelAndView(int view_id);
+    void setupModelAndView(OPL::LogbookView logbookView);
     void connectSignalsAndSlots();
 
     const QString getFlightSummary(const OPL::FlightEntry &flight) const;

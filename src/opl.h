@@ -142,7 +142,7 @@ enum class Translation {English, German, Spanish};
 /*!
  * \brief Enumerates the available SQL views in the database
  */
-enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
+enum class LogbookView {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
 
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
@@ -176,7 +176,7 @@ public:
 
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
-    inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
+    inline const QString getViewIdentifier(LogbookView view_name) const {return DATABASE_VIEWS.value(view_name);}
     inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
 
 private:
@@ -191,19 +191,19 @@ private:
         {Translation::German,  QStringLiteral("Deutsch")},
         {Translation::Spanish, QStringLiteral("Español")},
     };
-    const static inline QMap<DbViewName, QString> DATABASE_VIEWS = {
-        {DbViewName::Default,        QStringLiteral("viewDefault")},
-        {DbViewName::DefaultWithSim, QStringLiteral("viewDefaultSim")},
-        {DbViewName::Easa,           QStringLiteral("viewEasa")},
-        {DbViewName::EasaWithSim,    QStringLiteral("viewEasaSim")},
-        {DbViewName::SimulatorOnly,  QStringLiteral("viewSimulators")},
+    const static inline QMap<LogbookView, QString> DATABASE_VIEWS = {
+        {LogbookView::Default,        QStringLiteral("viewDefault")},
+        {LogbookView::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {LogbookView::Easa,           QStringLiteral("viewEasa")},
+        {LogbookView::EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")},
     };
-    const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
-        {DbViewName::Default,        tr("Default")},
-        {DbViewName::DefaultWithSim, tr("Default with Simulator")},
-        {DbViewName::Easa,           tr("EASA-FCL")},
-        {DbViewName::EasaWithSim,    tr("EASA-FCL with Simulator")},
-        {DbViewName::SimulatorOnly,  tr("Simulator Sessions Only")},
+    const QMap<LogbookView, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {LogbookView::Default,        tr("Default")},
+        {LogbookView::DefaultWithSim, tr("Default with Simulator")},
+        {LogbookView::Easa,           tr("EASA-FCL")},
+        {LogbookView::EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {LogbookView::SimulatorOnly,  tr("Simulator Sessions Only")},
     };
     const static inline QMap<PilotFunction, QString> PILOT_FUNCTIONS = {
         {PilotFunction::PIC,   QStringLiteral("PIC")},

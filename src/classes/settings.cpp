@@ -19,50 +19,12 @@
 #include <QSettings>
 #include "src/classes/paths.h"
 
-
-QMap<Settings::Main, QString> Settings::mainMap = {
-    {Main::SetupComplete,               QStringLiteral("setupComplete")},
-    {Main::Style,                       QStringLiteral("style")},
-    {Main::Font,                        QStringLiteral("font")},
-    {Main::FontSize,                    QStringLiteral("fontSize")},
-    {Main::UseSystemFont,               QStringLiteral("useSystemFont")},
-    {Main::LogbookView,                 QStringLiteral("logbookView")},
-    {Main::DateFormat,                  QStringLiteral("dateFormat")},
-};
-
-QMap<Settings::UserData, QString> Settings::userDataMap = {
-    {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
-    {UserData::TailSortColumn,          QStringLiteral("tailSortColumn")},
-    {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
-    {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
-    {UserData::CurrWarningThreshold,    QStringLiteral("currWarningThreshold")},
-    {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
-    {UserData::ShowLicCurrency,         QStringLiteral("showLicCurrency")},
-    {UserData::ShowTrCurrency,          QStringLiteral("showTrCurrency")},
-    {UserData::ShowLckCurrency,         QStringLiteral("showLckCurrency")},
-    {UserData::ShowMedCurrency,         QStringLiteral("showMedCurrency")},
-    {UserData::ShowCustom1Currency,     QStringLiteral("showCustom1Currency")},
-    {UserData::ShowCustom2Currency,     QStringLiteral("showCustom2Currency")},
-    {UserData::Custom1CurrencyName,     QStringLiteral("custom1CurrencyName")},
-    {UserData::Custom2CurrencyName,     QStringLiteral("custom2CurrencyName")},
-};
-
-QMap<Settings::FlightLogging, QString> Settings::flightLoggingMap = {
-    {FlightLogging::Function,           QStringLiteral("function")},
-    {FlightLogging::Approach,           QStringLiteral("approach")},
-    {FlightLogging::NightLoggingEnabled,QStringLiteral("nightLoggingEnabled")},
-    {FlightLogging::LogIFR,             QStringLiteral("logIfr")},
-    {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
-    {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
-    {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
-    //{FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
-};
-
-void Settings::setup()
+void Settings::init()
 {
+    LOG << "Initialising application settings...";
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, OPL::Paths::path(OPL::Paths::Settings));
-    QSettings();
+    Settings::settingsInstance = new QSettings();
 }
 
 /*!
@@ -70,70 +32,24 @@ void Settings::setup()
  */
 void Settings::resetToDefaults()
 {
-    write(Main::Style, QStringLiteral("Fusion"));
-    write(Main::UseSystemFont, true);
-    write(Main::LogbookView, 0);
-    write(Main::DateFormat, 0);
-
-    write(UserData::DisplaySelfAs, 0);
-    write(UserData::FtlWarningThreshold, 0.8); // To Do: UI Option
-    write(UserData::CurrWarningThreshold, 30);
-    write(UserData::ShowToLgdCurrency, true);
-    write(UserData::ShowLicCurrency, false);
-    write(UserData::ShowTrCurrency, false);
-    write(UserData::ShowLckCurrency, false);
-    write(UserData::ShowMedCurrency, false);
-    write(UserData::ShowCustom1Currency, false);
-    write(UserData::ShowCustom2Currency, false);
-    write(UserData::PilotSortColumn, 0);
-    write(UserData::TailSortColumn, 0);
-
-    write(FlightLogging::PilotFlying, true);
-    write(FlightLogging::NightAngle, -6);
+    setApplicationStyle(QStringLiteral("Fusion"));
+    setUseSystemFont(true);
+    setLogbookView(OPL::LogbookView::Default);
+    setDateFormat(OPL::DateFormat::ISODate);
+    setLogAsPilotFlying(true);
+    setNightAngle(-6);
+    setShowSelfAs(0);
+    setFtlWarningThreshold(0.8);
+    setCurrencyWarningThreshold(90);
+    setPilotSortColumn(0);
+    setTailSortColumn(0);
+    setShowCurrency(OPL::CurrencyEntry::TakeOffLanding, true);
+    setShowCurrency(OPL::CurrencyEntry::Licence, false);
+    setShowCurrency(OPL::CurrencyEntry::TypeRating, false);
+    setShowCurrency(OPL::CurrencyEntry::LineCheck, false);
+    setShowCurrency(OPL::CurrencyEntry::Medical, false);
+    setShowCurrency(OPL::CurrencyEntry::Custom1, false);
+    setShowCurrency(OPL::CurrencyEntry::Custom2, false);
+    sync();
 }
 
-//
-// Read/Write
-//
-
-QVariant Settings::read(const FlightLogging key)
-{ return QSettings().value(groupOfKey(key)); }
-
-void Settings::write(const FlightLogging key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
-
-QVariant Settings::read(const Main key)
-{ return QSettings().value(groupOfKey(key)); }
-
-void Settings::write(const Main key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
-
-QVariant Settings::read(const UserData key)
-{ return QSettings().value(groupOfKey(key)); }
-
-void Settings::write(const UserData key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
-
-//
-// QString conversion PATH
-//
-QString Settings::groupOfKey (const Settings::FlightLogging key)
-{ return QStringLiteral("flightlogging/") + flightLoggingMap[key]; }
-
-QString Settings::groupOfKey (const Settings::Main key)
-{ return QStringLiteral("main/") + mainMap[key]; }
-
-QString Settings::groupOfKey (const Settings::UserData key)
-{ return QStringLiteral("userdata/") + userDataMap[key]; }
-
-//
-// QString conversion ONLY KEY
-//
-QString Settings::stringOfKey (const Settings::FlightLogging key)
-{ return  flightLoggingMap[key]; }
-
-QString Settings::stringOfKey (const Settings::Main key)
-{ return  mainMap[key]; }
-
-QString Settings::stringOfKey (const Settings::UserData key)
-{ return  userDataMap[key]; }

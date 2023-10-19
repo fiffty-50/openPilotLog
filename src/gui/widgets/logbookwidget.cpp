@@ -42,7 +42,8 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     displayModel = new QSqlTableModel(this);
     view = ui->tableView;
 
-    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::getLogbookView());
+//    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }
@@ -61,9 +62,10 @@ LogbookWidget::~LogbookWidget()
  * according to the current view.
  * \param view_id - retreived from Settings::Main::LogbookView
  */
-void LogbookWidget::setupModelAndView(int view_id)
+void LogbookWidget::setupModelAndView(OPL::LogbookView logbookView)
 {
-    displayModel->setTable(OPL::GLOBALS->getViewIdentifier(OPL::DbViewName(view_id)));
+    int view_id = static_cast<int>(logbookView);
+    displayModel->setTable(OPL::GLOBALS->getViewIdentifier(OPL::LogbookView(view_id)));
     displayModel->select();
 
     view->setModel(displayModel);
@@ -228,7 +230,7 @@ void LogbookWidget::refresh()
 void LogbookWidget::onLogbookWidget_viewSelectionChanged(SettingsWidget::SettingSignal signal)
 {
     if (signal == SettingsWidget::SettingSignal::LogbookWidget)
-        setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
+        setupModelAndView(Settings::getLogbookView());
 }
 
 //void LogbookWidget::on_showAllButton_clicked()
@@ -277,13 +279,13 @@ void LogbookWidget::repopulateModel()
     delete displayModel;
     // create a new model and populate it
     displayModel = new QSqlTableModel(this);
-    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
+    setupModelAndView(Settings::getLogbookView());
     connectSignalsAndSlots();
 }
 
 void LogbookWidget::on_viewsComboBox_currentIndexChanged(int index)
 {
-    setupModelAndView(index);
+    setupModelAndView(OPL::LogbookView(index));
 }
 
 void LogbookWidget::on_actionEdit_Flight_triggered()

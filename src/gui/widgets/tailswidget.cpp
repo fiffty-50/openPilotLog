@@ -59,7 +59,7 @@ void TailsWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
 
-    sortColumn = Settings::read(Settings::UserData::TailSortColumn).toInt();
+    sortColumn = Settings::getTailSortColumn();
     view->setSortingEnabled(true);
     view->sortByColumn(sortColumn, Qt::DescendingOrder);
 
@@ -153,8 +153,7 @@ void TailsWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
 
 void TailsWidget::tableView_headerClicked(int column)
 {
-    sortColumn = column;
-    Settings::write(Settings::UserData::TailSortColumn, column);
+    Settings::setTailSortColumn(column);
 }
 
 void TailsWidget::on_deleteAircraftButton_clicked()
