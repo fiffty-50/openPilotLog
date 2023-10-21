@@ -95,6 +95,8 @@ set(PROJECT_SOURCES
     src/gui/verification/completerprovider.cpp
     src/gui/verification/tailinput.h
     src/gui/verification/tailinput.cpp
+    src/gui/widgets/currencywidget.h
+    src/gui/widgets/currencywidget.cpp
 
 
     # Classes

@@ -62,6 +62,7 @@ private:
     double ftlWarningThreshold;
 
     void fillTotals();
+    void fillCurrencies();
     void fillSelectedCurrencies();
     void fillCurrencyTakeOffLanding();
     void fillCurrency(OPL::CurrencyEntry::Currency currency, QLabel *display_label);
