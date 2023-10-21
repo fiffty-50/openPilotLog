@@ -3,6 +3,7 @@
 #include "QtWidgets/qgridlayout.h"
 #include "QtWidgets/qheaderview.h"
 #include "src/database/database.h"
+#include "src/functions/statistics.h"
 #include <QCalendarWidget>
 #include <QInputDialog>
 #include <QLabel>
@@ -14,6 +15,9 @@ CurrencyWidget::CurrencyWidget(QWidget *parent)
     dateFormat = QStringLiteral("yyyy-MM-dd"); // TODO implement date formats
     setupModelAndView();
     setupUI();
+
+    fillTakeOffAndLandingCurrencies();
+    fillFlightTimeLimitations();
 }
 
 void CurrencyWidget::setupModelAndView()
@@ -21,8 +25,8 @@ void CurrencyWidget::setupModelAndView()
     model = new QSqlTableModel(this, DB->database());
     model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Currencies));
     model->select();
-    model->setHeaderData(2, Qt::Horizontal, "Expiry Date");
-    model->setHeaderData(3, Qt::Horizontal, "Name");
+    model->setHeaderData(2, Qt::Horizontal, tr("Expiry Date"));
+    model->setHeaderData(3, Qt::Horizontal, tr("Name"));
 
     tableView = new QTableView(this);
     tableView->setModel(model);
@@ -44,14 +48,14 @@ void CurrencyWidget::setupUI()
     int colM = 1; // middle column
     int colR = 2; // right column
     int allColSpan = 3; // span all columns
-    int noRowSpan = 1; // span only a single row
+    int singleRowSpan = 1; // span only a single row
     int row = 0;
     auto gridLayout = new QGridLayout(this);
 
     // Take-off and Landing Currency
     gridLayout->addWidget(takeOffLandingHeaderLabel, row, colM, Qt::AlignCenter);
     row++;
-    gridLayout->addWidget(getHorizontalLine(), row, colL, noRowSpan, allColSpan);
+    gridLayout->addWidget(getHorizontalLine(), row, colL, singleRowSpan, allColSpan);
     row++;
 
     gridLayout->addWidget(takeOffCountLabel, row, colL, Qt::AlignLeft);
@@ -69,7 +73,7 @@ void CurrencyWidget::setupUI()
     // Flight Time Limitations
     gridLayout->addWidget(flightTimeHeaderLabel, row, colM, Qt::AlignCenter);
     row++;
-    gridLayout->addWidget(getHorizontalLine(), row, colL, noRowSpan, allColSpan);
+    gridLayout->addWidget(getHorizontalLine(), row, colL, singleRowSpan, allColSpan);
     row++;
 
     gridLayout->addWidget(flightTime28DaysLabel, row, colL, Qt::AlignLeft);
@@ -87,9 +91,9 @@ void CurrencyWidget::setupUI()
     // Expiries (currencies table)
     gridLayout->addWidget(expiriesHeaderLabel, row, colM, Qt::AlignCenter);
     row++;
-    gridLayout->addWidget(getHorizontalLine(), row, colL, noRowSpan, allColSpan);
+    gridLayout->addWidget(getHorizontalLine(), row, colL, singleRowSpan, allColSpan);
     row++;
-    gridLayout->addWidget(tableView, row, colL, noRowSpan, allColSpan);
+    gridLayout->addWidget(tableView, row, colL, singleRowSpan, allColSpan);
 
     // set the layout active
     layout = gridLayout;
@@ -97,7 +101,7 @@ void CurrencyWidget::setupUI()
     // allocate a widget for date selection
     calendar = new QCalendarWidget(this);
     calendar->setVisible(false);
-    calendar->setWindowFlags(Qt::Dialog);
+    calendar->setWindowFlags(Qt::Dialog); // pop-up calendar
 
 
     // connect signals
@@ -107,7 +111,33 @@ void CurrencyWidget::setupUI()
                      this, &CurrencyWidget::newExpiryDateSelected);
 }
 
+void CurrencyWidget::fillTakeOffAndLandingCurrencies()
+{
+        const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
+        if(takeoff_landings.isEmpty() || takeoff_landings.size() != 2)
+            return;
 
+        QList<QLabel*> displayLabels = {
+            takeOffCountDisplayLabel,
+            landingCountDisplayLabel
+        };
+
+        for(int i = 0; i < 2; i++) {
+            int count = takeoff_landings[i].toInt();
+            if(count < 3)
+                setLabelColour(displayLabels[i], Colour::Red);
+            displayLabels[i]->setText(displayLabels[i]->text().arg(count));
+        }
+         QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
+            if (expiration_date <= QDate::currentDate())
+                setLabelColour(takeOffLandingExpiryDisplayLabel, Colour::Red);
+            takeOffLandingExpiryDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
+}
+
+void CurrencyWidget::fillFlightTimeLimitations()
+{
+    TODO << "Fill flight time limitations";
+}
 
 void CurrencyWidget::editRequested(const QModelIndex &index)
 {
@@ -133,6 +163,13 @@ void CurrencyWidget::newExpiryDateSelected()
     const QString selectedDate = calendar->selectedDate().toString(dateFormat);
     model->setData(lastSelection, selectedDate);
     model->submitAll();
+}
+
+void CurrencyWidget::refresh()
+{
+    model->select();
+    fillTakeOffAndLandingCurrencies();
+    fillFlightTimeLimitations();
 }
 
 void CurrencyWidget::displayNameEditRequested(QModelIndex index)

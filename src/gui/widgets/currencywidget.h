@@ -18,13 +18,15 @@ class CurrencyWidget : public QWidget
 
     void setupModelAndView();
     void setupUI();
+    void fillTakeOffAndLandingCurrencies();
+    void fillFlightTimeLimitations();
     void displayNameEditRequested(QModelIndex index);
 
     QFrame *getHorizontalLine();
     QLabel *takeOffLandingHeaderLabel   		= new QLabel(tr("<b>Take-off and Landing Currency<\b>"), this);
-    QLabel *takeOffCountLabel					= new QLabel(tr("Take offs ( last 90 days)"), this);
+    QLabel *takeOffCountLabel					= new QLabel(tr("Take offs (last 90 days)"), this);
     QLabel *takeOffCountDisplayLabel 			= new QLabel(QStringLiteral("<b>%1<\b>"), this);
-    QLabel *landingCountLabel 					= new QLabel(tr("Landings ( last 90 days)"), this);
+    QLabel *landingCountLabel 					= new QLabel(tr("Landings (last 90 days)"), this);
     QLabel *landingCountDisplayLabel			= new QLabel(QStringLiteral("<b>%1<\b>"), this);
     QLabel *takeOffLandingExpiryLabel   		= new QLabel(tr("3 Take-offs and Landings expiry date"), this);
     QLabel *takeOffLandingExpiryDisplayLabel    = new QLabel(QStringLiteral("<b>%1<\b>"), this);
@@ -37,10 +39,32 @@ class CurrencyWidget : public QWidget
     QLabel *flightTimeCalendarYearDisplayLabel  = new QLabel(QStringLiteral("<b>%1<\b>"), this);
     QLabel *expiriesHeaderLabel			   		= new QLabel(tr("<b>Expiries<\b>"), this);
 
+    enum class Colour {Red, Orange, None};
+    inline void setLabelColour(QLabel* label, Colour colour)
+    {
+        switch (colour) {
+        case Colour::None:
+            label->setStyleSheet(QString());
+            break;
+        case Colour::Red:
+            label->setStyleSheet(QStringLiteral("color: red"));
+            break;
+        case Colour::Orange:
+            label->setStyleSheet(QStringLiteral("color: orange"));
+            break;
+        default:
+            label->setStyleSheet(QString());
+            break;
+        }
+    }
+
 
 private slots:
     void editRequested(const QModelIndex &index);
     void newExpiryDateSelected();
+
+public slots:
+    void refresh();
 
 public:
     explicit CurrencyWidget(QWidget *parent = nullptr);
