@@ -21,6 +21,8 @@ public:
     Time();
     Time(int32_t minutes) : m_minutes(minutes) {};
 
+    enum TimeFrame {Day, Week, Year};
+
     /**
      * @brief isValidTimeOfDay - determines whether the instance can be converted to a time hh:mm
      * @return true if the total amount of minutes does not exceed one day.
@@ -36,6 +38,13 @@ public:
      * @brief toMinutes - returns the number of minutes in the time Object
      */
     int32_t toMinutes() const;
+
+    /*!
+     * \brief toMinutes returns the number of minutes in the given time frame
+     * \param count - The number of time frames (e.g. '7' days)
+     * \return
+     */
+    static int toMinutes(TimeFrame timeFrame, int count);
 
     /**
      * @brief fromString create a Time Object from a String formatted as hh:mm

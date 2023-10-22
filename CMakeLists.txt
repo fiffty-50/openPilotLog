@@ -118,6 +118,8 @@ set(PROJECT_SOURCES
     src/classes/md5sum.cpp
     src/classes/time.h
     src/classes/time.cpp
+    src/classes/easaftl.h
+    src/classes/easaftl.cpp
 
     # Database Entries
     src/database/flightentry.h

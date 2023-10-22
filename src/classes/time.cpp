@@ -22,6 +22,20 @@ int32_t Time::toMinutes() const
     return m_minutes;
 }
 
+int Time::toMinutes(TimeFrame timeFrame, int count)
+{
+    switch (timeFrame) {
+    case Day:
+        return count * MINUTES_PER_DAY;
+    case Week:
+        return count * 7 * MINUTES_PER_DAY;
+    case Year:
+        return count * 7 * 52 * MINUTES_PER_DAY;
+    default:
+        return 0;
+    }
+}
+
 Time Time::fromString(const QString &timeString)
 {
     const QStringList parts = timeString.split(QChar(':'));
