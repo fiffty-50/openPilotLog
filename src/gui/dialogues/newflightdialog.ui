@@ -14,10 +14,307 @@
    <string>Add New Flight</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="doftLabel">
+   <item row="13" column="0">
+    <widget class="QLabel" name="tblkLabel">
      <property name="text">
-      <string>Date of flight</string>
+      <string>Total Time</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="functionLabel">
+     <property name="text">
+      <string>Function</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QComboBox" name="flightRulesComboBox">
+     <item>
+      <property name="text">
+       <string>VFR</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>IFR</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="pilotFlyingLabel">
+     <property name="text">
+      <string>Pilot Flying</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="destLocationLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="approachLabel">
+     <property name="text">
+      <string>Approach</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="flightRulesLabel">
+     <property name="text">
+      <string>Flight Rules</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="3" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="2">
+    <widget class="QLabel" name="submissionReadyLabel">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="deptNameLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QCheckBox" name="pilotFlyingCheckBox">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="tonbLabel">
+     <property name="text">
+      <string>On Blocks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QComboBox" name="approachComboBox"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLabel" name="tofbSpacerLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLabel" name="tonbSpacerLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="tonbTimeLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLabel" name="destNameLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="tofbTimeLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QComboBox" name="functionComboBox"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="deptLabel">
+     <property name="text">
+      <string>Departure</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="deptLocationLineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="tofbLabel">
+     <property name="text">
+      <string>Off Blocks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="destLabel">
+     <property name="text">
+      <string>Destination</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="QLabel" name="tblkDisplayLabel">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>00:00</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Date Of flight</string>
      </property>
     </widget>
    </item>
@@ -37,25 +334,6 @@
      </property>
      <property name="placeholderText">
       <string>YYYY-MM-DD</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="doftDisplayLabel">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
      </property>
     </widget>
    </item>
@@ -85,57 +363,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="deptLabel">
-     <property name="text">
-      <string>Departure</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="deptLocationLineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>160</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLabel" name="deptNameLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
+   <item row="2" column="3">
     <widget class="QLabel" name="picLabel">
      <property name="text">
       <string>PIC</string>
@@ -145,7 +373,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="4">
+   <item row="2" column="4">
     <widget class="QLineEdit" name="picNameLineEdit">
      <property name="minimumSize">
       <size>
@@ -161,57 +389,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="destLabel">
-     <property name="text">
-      <string>Destination</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="destLocationLineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>160</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="destNameLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
+   <item row="4" column="3">
     <widget class="QLabel" name="sicLabel">
      <property name="text">
       <string>SIC</string>
@@ -221,7 +399,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="4">
+   <item row="4" column="4">
     <widget class="QLineEdit" name="sicNameLineEdit">
      <property name="minimumSize">
       <size>
@@ -237,52 +415,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="tofbLabel">
-     <property name="text">
-      <string>Off Blocks</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="tofbTimeLineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>160</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QLabel" name="tofbSpacerLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3">
+   <item row="5" column="3">
     <widget class="QLabel" name="thirdPilotLabel">
      <property name="text">
       <string>Third Pilot</string>
@@ -292,7 +425,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="4">
+   <item row="5" column="4">
     <widget class="QLineEdit" name="thirdPilotNameLineEdit">
      <property name="minimumSize">
       <size>
@@ -308,52 +441,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="tonbLabel">
-     <property name="text">
-      <string>On Blocks</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="tonbTimeLineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>160</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
-    <widget class="QLabel" name="tonbSpacerLabel">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
+   <item row="6" column="3">
     <widget class="QLabel" name="flightNumberLabel">
      <property name="text">
       <string>Flight Number</string>
@@ -363,7 +451,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="4">
+   <item row="6" column="4">
     <widget class="QLineEdit" name="flightNumberLineEdit">
      <property name="minimumSize">
       <size>
@@ -379,17 +467,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="functionLabel">
-     <property name="text">
-      <string>Function</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="functionComboBox"/>
-   </item>
-   <item row="5" column="3">
+   <item row="7" column="3">
     <widget class="QLabel" name="remarksLabel">
      <property name="text">
       <string>Remarks</string>
@@ -399,7 +477,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="4">
+   <item row="7" column="4">
     <widget class="QLineEdit" name="remarksLineEdit">
      <property name="minimumSize">
       <size>
@@ -415,122 +493,25 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="approachLabel">
-     <property name="text">
-      <string>Approach</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QComboBox" name="approachComboBox"/>
-   </item>
-   <item row="6" column="3">
+   <item row="8" column="3">
     <widget class="QLabel" name="takeOffLabel">
      <property name="text">
       <string>Take Off</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="4">
+   <item row="8" column="4">
     <widget class="QSpinBox" name="takeOffSpinBox"/>
    </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="flightRulesLabel">
-     <property name="text">
-      <string>Flight Rules</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QComboBox" name="flightRulesComboBox">
-     <item>
-      <property name="text">
-       <string>VFR</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>IFR</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="3">
+   <item row="9" column="3">
     <widget class="QLabel" name="landingLabel">
      <property name="text">
       <string>Landing</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="4">
+   <item row="9" column="4">
     <widget class="QSpinBox" name="landingSpinBox"/>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="pilotFlyingLabel">
-     <property name="text">
-      <string>Pilot Flying</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QCheckBox" name="pilotFlyingCheckBox">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="tblkLabel">
-     <property name="text">
-      <string>Total Time</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="QLabel" name="tblkDisplayLabel">
-     <property name="minimumSize">
-      <size>
-       <width>160</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>00:00</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="2">
-    <widget class="QLabel" name="submissionReadyLabel">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="3" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -539,12 +520,6 @@
   <tabstop>destLocationLineEdit</tabstop>
   <tabstop>tofbTimeLineEdit</tabstop>
   <tabstop>tonbTimeLineEdit</tabstop>
-  <tabstop>picNameLineEdit</tabstop>
-  <tabstop>sicNameLineEdit</tabstop>
-  <tabstop>thirdPilotNameLineEdit</tabstop>
-  <tabstop>flightNumberLineEdit</tabstop>
-  <tabstop>remarksLineEdit</tabstop>
-  <tabstop>takeOffSpinBox</tabstop>
   <tabstop>approachComboBox</tabstop>
  </tabstops>
  <resources/>

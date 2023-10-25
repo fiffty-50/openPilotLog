@@ -24,6 +24,7 @@
 #include <QList>
 #include <QBitArray>
 
+#include "QtWidgets/qcalendarwidget.h"
 #include "src/database/flightentry.h"
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
@@ -78,6 +79,7 @@ public:
 private:
     Ui::NewFlightDialog *ui;
     ValidationState validationState;
+    QCalendarWidget *calendar;
 
     OPL::Date::Format dateFormat;
 
@@ -188,6 +190,10 @@ private slots:
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
+
+    void on_pushButton_clicked();
+
+    void calendarDateSelected();
 
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;

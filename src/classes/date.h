@@ -29,6 +29,20 @@ public:
 
     Date(int julianDay);
 
+    const static inline Date fromString(const QString &dateString, Format format = Default) {
+        switch (format) {
+        case Default:
+            return Date(QDate::fromString(dateString, Qt::ISODate).toJulianDay());
+        case SystemLocaleLong:
+            return Date(QDate::fromString(dateString, QLocale::system().dateFormat(QLocale::LongFormat)).toJulianDay());
+        case SystemLocaleShort:
+            return Date(QDate::fromString(dateString, QLocale::system().dateFormat(QLocale::ShortFormat)).toJulianDay());
+        default:
+            return Date(0);
+            break;
+        }
+    }
+
     const static inline Date fromJulianDay(int julianDay) { return Date(julianDay); }
 
     const static inline Date today() { return Date(QDate::currentDate().toJulianDay()); }
@@ -36,6 +50,8 @@ public:
     const static inline QString julianDayToString(int julianDay) { return Date(julianDay).toString(); }
 
     const QString toString(Format format = Format::Default) const;
+
+    const bool isValid() { return date.isValid(); }
 
 private:
     QDate date;

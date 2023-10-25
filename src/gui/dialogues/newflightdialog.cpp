@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "newflightdialog.h"
+#include "QtWidgets/qcalendarwidget.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
@@ -100,6 +101,11 @@ void NewFlightDialog::init()
     OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
     OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
 
+    // allocate a widget for date selection
+    calendar = new QCalendarWidget(this);
+    calendar->setVisible(false);
+    calendar->setWindowFlags(Qt::Dialog); // pop-up calendar
+
     setupRawInputValidation();
     setupSignalsAndSlots();
     readSettings();
@@ -146,6 +152,9 @@ void NewFlightDialog::setupSignalsAndSlots()
     for (const auto& line_edit : *pilotNameLineEdits)
         QObject::connect(line_edit, &QLineEdit::editingFinished,
                          this, &NewFlightDialog::onPilotNameLineEdit_editingFinshed);
+
+    QObject::connect(calendar, &QCalendarWidget::selectionChanged,
+                     this, &NewFlightDialog::calendarDateSelected);
 }
 
 /*!
@@ -551,20 +560,20 @@ void NewFlightDialog::on_doftLineEdit_editingFinished()
 {
     const auto line_edit = ui->doftLineEdit;
     auto text = ui->doftLineEdit->text();
-    auto label = ui->doftDisplayLabel;
 
-    TODO << "Non-default Date formats not implemented yet.";
-    OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    auto date = OPL::DateTime::parseInput(text, date_format);
-    if (date.isValid()) {
-        label->setText(date.toString(Qt::TextDate));
-        line_edit->setText(OPL::DateTime::dateToString(date, date_format));
-        onGoodInputReceived(line_edit);
+    OPL::Date date = OPL::Date::fromString(ui->doftLineEdit->text(), dateFormat);
+
+
+    LOG << "Date: " << date.toString();
+    LOG << "is valid? " << date.isValid();
+
+    line_edit->setText(date.toString(dateFormat));
+    if(ui->doftLineEdit->text().isEmpty()) {
+        onBadInputReceived(line_edit);
         return;
     }
 
-    label->setText(tr("Invalid Date."));
-    onBadInputReceived(line_edit);
+    onGoodInputReceived(line_edit);
 }
 
 void NewFlightDialog::on_pilotFlyingCheckBox_stateChanged(int arg1)
@@ -691,5 +700,18 @@ void NewFlightDialog::on_buttonBox_accepted()
     } else {
         QDialog::accept();
     }
+}
+
+
+void NewFlightDialog::on_pushButton_clicked()
+{
+    calendar->setVisible(true);
+}
+
+void NewFlightDialog::calendarDateSelected()
+{
+    calendar->setVisible(false);
+    ui->doftLineEdit->setText(OPL::Date(calendar->selectedDate().toJulianDay()).toString(dateFormat));
+    emit ui->doftLineEdit->editingFinished();
 }
 
