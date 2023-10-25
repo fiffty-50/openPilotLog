@@ -28,6 +28,7 @@
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
 #include "src/gui/verification/validationstate.h"
+#include "src/classes/date.h"
 
 namespace Ui {
 class NewFlightDialog;
@@ -77,6 +78,8 @@ public:
 private:
     Ui::NewFlightDialog *ui;
     ValidationState validationState;
+
+    OPL::Date::Format dateFormat;
 
     /*!
      * \brief a AFlightEntry object that is used to store either position data

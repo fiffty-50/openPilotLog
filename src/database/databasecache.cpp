@@ -58,6 +58,11 @@ const IdMap DatabaseCache::fetchMap(CompleterTarget target)
     case Tails:
         statement.append(QStringLiteral("SELECT ROWID, registration FROM tails"));
         break;
+    case Types:
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM tails WHERE model IS NOT NULL AND variant IS NULL "
+                                        " UNION "
+                                        " SELECT ROWID, make||' '||model||'-'||variant FROM tails WHERE variant IS NOT NULL"));
+        break;
     case AircraftTypes:
         statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
                          "UNION "
@@ -132,6 +137,7 @@ void DatabaseCache::updateTails()
             reg = copy + " (" + reg + QLatin1Char(')');
         }
     }
+    typesMap = fetchMap(Types);
 }
 
 void DatabaseCache::updateAirports()
@@ -144,7 +150,7 @@ void DatabaseCache::updateAirports()
 
 void DatabaseCache::updateSimulators()
 {
-    TODO << "not yet implemented";
+    TODO << "Simulators map not yet cached";
 }
 
 void DatabaseCache::updatePilots()
@@ -237,6 +243,11 @@ const IdMap &DatabaseCache::getAirportsMapNames() const
 const IdMap &DatabaseCache::getTailsMap() const
 {
     return tailsMap;
+}
+
+const IdMap &DatabaseCache::getTypesMap() const
+{
+    return typesMap;
 }
 
 

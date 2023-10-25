@@ -29,6 +29,7 @@
 #include "src/opl.h"
 #include "src/functions/datetime.h"
 #include "src/classes/settings.h"
+#include "src/classes/date.h"
 #include "src/functions/calc.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
@@ -44,7 +45,7 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
     init();
     setPilotFunction();
 
-    ui->doftLineEdit->setText(OPL::DateTime::currentDate());
+    ui->doftLineEdit->setText(OPL::Date::today().toString(dateFormat));
     emit ui->doftLineEdit->editingFinished();
 }
 
@@ -176,6 +177,7 @@ void NewFlightDialog::readSettings()
     ui->approachComboBox->setCurrentText(Settings::getApproachType());
     ui->flightRulesComboBox->setCurrentIndex(Settings::getLogIfr());
     ui->flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
+    dateFormat = Settings::getDateFormat();
 }
 
 /*!
@@ -190,7 +192,7 @@ void NewFlightDialog::fillWithEntryData()
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
-    ui->doftLineEdit->setText(flight_data.value(OPL::FlightEntry::DOFT).toString());
+    ui->doftLineEdit->setText(OPL::Date::julianDayToString(flight_data.value(OPL::FlightEntry::DOFT).toInt()));
     // Location
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
     ui->destLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEST).toString());
@@ -386,7 +388,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     const auto night_time_data = OPL::Calc::NightTimeValues(ui->deptLocationLineEdit->text(), ui->destLocationLineEdit->text(),
                            departure_date_time, block_minutes, Settings::getNightAngle());
     // Mandatory data
-    new_data.insert(OPL::FlightEntry::DOFT, ui->doftLineEdit->text());
+    new_data.insert(OPL::FlightEntry::DOFT, QDate::fromString(ui->doftLineEdit->text(), Qt::ISODate).toJulianDay());
     new_data.insert(OPL::FlightEntry::DEPT, ui->deptLocationLineEdit->text());
     new_data.insert(OPL::FlightEntry::TOFB, tofb.toMinutes());
     new_data.insert(OPL::FlightEntry::DEST, ui->destLocationLineEdit->text());

@@ -44,7 +44,7 @@ public:
     DatabaseCache(DatabaseCache const&) = delete;
     void operator=(DatabaseCache const&) = delete;
 
-    enum CompleterTarget {PilotNames, Tails, AircraftTypes, AirportsAny, AirportsICAO, AirportNames, AirportsIATA, Companies};
+    enum CompleterTarget {PilotNames, Tails, AircraftTypes, AirportsAny, AirportsICAO, AirportNames, AirportsIATA, Companies, Types};
 
     void init();
 
@@ -52,6 +52,7 @@ public:
     const IdMap &getAirportsMapIATA() const;
     const IdMap &getPilotNamesMap() const;
     const IdMap &getTailsMap() const;
+    const IdMap &getTypesMap() const;
 
     const QStringList &getPilotNamesList() const;
     const QStringList &getTailsList() const;
@@ -74,7 +75,14 @@ private:
     IdMap airportsMapIATA;
     IdMap airportsMapNames;
     IdMap pilotNamesMap;
+    /*!
+     * \brief key: tail_id / value: registration
+     */
     IdMap tailsMap;
+    /*!
+     * \brief key: tail_id value: type string ("Boeing 737-800")
+     */
+    IdMap typesMap;
     IdMap aircraftMap;
     // Lists
     QStringList pilotNamesList;

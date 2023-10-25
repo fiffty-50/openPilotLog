@@ -15,7 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "src/classes/defaultlogbookview.h"
+#include "src/classes/styleddatedelegate.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "logbookwidget.h"
@@ -68,17 +68,21 @@ void LogbookWidget::setupModelAndView(OPL::LogbookView logbookView)
     displayModel->setTable(OPL::GLOBALS->getViewIdentifier(OPL::LogbookView(view_id)));
     displayModel->select();
 
+
     view->setModel(displayModel);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->setContextMenuPolicy(Qt::CustomContextMenu);
-    view->resizeColumnsToContents();
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->hideColumn(0);
-    view->show();
+
+    // Set a custom delegate on the date column to style the date according to the users preference
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormat(), this);
+    view->setItemDelegateForColumn(1, dateDelegate);
+    view->resizeColumnsToContents();
 }
 
 void LogbookWidget::connectSignalsAndSlots()

@@ -31,6 +31,10 @@ public:
 
     const static inline Date fromJulianDay(int julianDay) { return Date(julianDay); }
 
+    const static inline Date today() { return Date(QDate::currentDate().toJulianDay()); }
+
+    const static inline QString julianDayToString(int julianDay) { return Date(julianDay).toString(); }
+
     const QString toString(Format format = Format::Default) const;
 
 private:
