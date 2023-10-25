@@ -17,8 +17,8 @@
  */
 #ifndef SETTINGS_H
 #define SETTINGS_H
-#include "src/database/currencyentry.h"
 #include "src/opl.h"
+#include "src/classes/date.h"
 #include <QtCore>
 #include <QSettings>
 
@@ -110,12 +110,12 @@ public:
     /*!
      * \brief returns the date format to be used in the application
      */
-    static OPL::DateFormat getDateFormat() { return OPL::DateFormat(settingsInstance->value(MAIN_DATE_FORMAT).toInt()); }
+    static OPL::Date::Format getDateFormat() { return OPL::Date::Format(settingsInstance->value(MAIN_DATE_FORMAT).toInt()); }
 
     /*!
      * \brief sets the date format to be used in the application
      */
-    static void setDateFormat(OPL::DateFormat format) { (settingsInstance->setValue(MAIN_DATE_FORMAT, static_cast<int>(format))); }
+    static void setDateFormat(OPL::Date::Format format) { (settingsInstance->setValue(MAIN_DATE_FORMAT, static_cast<int>(format))); }
 
     /*!
      * \brief returns the default pilot function for new flights
@@ -232,23 +232,13 @@ private:
     const static inline QString LOG_AS_PF	 	= QStringLiteral("flightlogging/pilotFlying");
     const static inline QString LOG_PREFIX	 	= QStringLiteral("flightlogging/flightnumberPrefix");
 
-    const static inline QString MAIN_SETUP_COMPLETE  = QStringLiteral("main/setupComplete");
-    const static inline QString MAIN_STYLE			 = QStringLiteral("main/style");
-    const static inline QString MAIN_FONT_NAME		 = QStringLiteral("main/font");
-    const static inline QString MAIN_FONT_SIZE 		 = QStringLiteral("main/fontSize");
-    const static inline QString MAIN_USE_SYSTEM_FONT = QStringLiteral("main/useSystemFont");
-    const static inline QString MAIN_LOGBOOK_VIEW 	 = QStringLiteral("main/logbookView");
-    const static inline QString MAIN_DATE_FORMAT 	 = QStringLiteral("main/dateFormat");
-
-    const static inline QHash<OPL::CurrencyEntry::Currency, QString> CURRENCIES = {
-        {OPL::CurrencyEntry::Licence, QStringLiteral("Licence")},
-        {OPL::CurrencyEntry::TypeRating, QStringLiteral("Type Rating")},
-        {OPL::CurrencyEntry::LineCheck, QStringLiteral("Line Check")},
-        {OPL::CurrencyEntry::Medical, QStringLiteral("Medical")},
-        {OPL::CurrencyEntry::Custom1, QStringLiteral("Custom1")},
-        {OPL::CurrencyEntry::Custom2, QStringLiteral("Custom2")},
-        {OPL::CurrencyEntry::TakeOffLanding, QStringLiteral("TakeOffLanding")},
-        };
+    const static inline QString MAIN_SETUP_COMPLETE  	= QStringLiteral("main/setupComplete");
+    const static inline QString MAIN_STYLE			 	= QStringLiteral("main/style");
+    const static inline QString MAIN_FONT_NAME		 	= QStringLiteral("main/font");
+    const static inline QString MAIN_FONT_SIZE 		 	= QStringLiteral("main/fontSize");
+    const static inline QString MAIN_USE_SYSTEM_FONT 	= QStringLiteral("main/useSystemFont");
+    const static inline QString MAIN_LOGBOOK_VIEW 	 	= QStringLiteral("main/logbookView");
+    const static inline QString MAIN_DATE_FORMAT 	 	= QStringLiteral("main/dateFormat");
 
 };
 

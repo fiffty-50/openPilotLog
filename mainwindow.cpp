@@ -17,6 +17,7 @@
  */
 #include <QToolBar>
 #include "mainwindow.h"
+#include "src/classes/defaultlogbookview.h"
 #include "ui_mainwindow.h"
 #include "src/database/database.h"
 #include "src/classes/style.h"
@@ -29,8 +30,12 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    LOG << "Setup completed? ";
-    LOG << Settings::getSetupCompleted();
+    auto widget = new QWidget(this);
+    widget->setWindowFlags(Qt::Dialog);
+    auto layout = new QGridLayout();
+    layout->addWidget(new DefaultLogbookView(this));
+    widget->setLayout(layout);
+    widget->show();
 }
 
 MainWindow::MainWindow(QWidget *parent)

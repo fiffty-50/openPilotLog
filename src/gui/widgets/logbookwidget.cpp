@@ -15,6 +15,7 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "src/classes/defaultlogbookview.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "logbookwidget.h"
@@ -43,7 +44,6 @@ LogbookWidget::LogbookWidget(QWidget *parent) :
     view = ui->tableView;
 
     setupModelAndView(Settings::getLogbookView());
-//    setupModelAndView(Settings::read(Settings::Main::LogbookView).toInt());
     connectSignalsAndSlots();
 
 }

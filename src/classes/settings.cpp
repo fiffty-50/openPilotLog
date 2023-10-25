@@ -35,7 +35,7 @@ void Settings::resetToDefaults()
     setApplicationStyle(QStringLiteral("Fusion"));
     setUseSystemFont(true);
     setLogbookView(OPL::LogbookView::Default);
-    setDateFormat(OPL::DateFormat::ISODate);
+    setDateFormat(OPL::Date::Format::Default);
     setLogAsPilotFlying(true);
     setNightAngle(-6);
     setShowSelfAs(0);

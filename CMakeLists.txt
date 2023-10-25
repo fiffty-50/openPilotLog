@@ -120,6 +120,8 @@ set(PROJECT_SOURCES
     src/classes/time.cpp
     src/classes/easaftl.h
     src/classes/easaftl.cpp
+    src/classes/defaultlogbookview.h
+    src/classes/defaultlogbookview.cpp
 
     # Database Entries
     src/database/flightentry.h
@@ -136,6 +138,16 @@ set(PROJECT_SOURCES
     src/database/simulatorentry.cpp
     src/database/currencyentry.h
     src/database/currencyentry.cpp
+    src/classes/date.h
+    src/classes/date.cpp
+    src/classes/styleddatedelegate.h
+    src/classes/styleddatedelegate.cpp
+    src/classes/styledtimedelegate.h
+    src/classes/styledtimedelegate.cpp
+    src/classes/styledpilotdelegate.h
+    src/classes/styledpilotdelegate.cpp
+    src/classes/styledregistrationdelegate.h
+    src/classes/styledregistrationdelegate.cpp
 
     src/database/previousexperienceentry.h
     src/database/previousexperienceentry.cpp
@@ -228,7 +240,7 @@ if(WIN32)
         )
     endif()
 else()
-    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(openPilotLog
             ${PROJECT_SOURCES}
             ${QM_FILES}
