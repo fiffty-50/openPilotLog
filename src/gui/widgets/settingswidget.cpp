@@ -23,7 +23,6 @@
 #include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/opl.h"
-#include "src/functions/datetime.h"
 #include "src/gui/widgets/backupwidget.h"
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
@@ -36,7 +35,6 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     loadBackupWidget();
     loadPreviousExperienceWidget();
     setupComboBoxes();
-    setupDateEdits();
     setupValidators();
     readSettings();
 }
@@ -62,37 +60,9 @@ void SettingsWidget::setupComboBoxes(){
         OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
         OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
         OPL::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
-    }
-}
 
-
-void SettingsWidget::setupDateEdits()
-{
-    // Read Display Format Setting
-    const QString dateFormatString = OPL::DateTime::getFormatString(Settings::getDateFormat());
-    const auto date_edits = this->findChildren<QDateEdit*>();
-    for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(dateFormatString);
-    }
-    // Fill currencies
-    const QList<QPair<OPL::CurrencyEntry::Currency, QDateEdit*>> currencies_list = {
-        {OPL::CurrencyEntry::Licence,    ui->currLicDateEdit},
-        {OPL::CurrencyEntry::TypeRating, ui->currTrDateEdit},
-        {OPL::CurrencyEntry::LineCheck,  ui->currLckDateEdit},
-        {OPL::CurrencyEntry::Medical,    ui->currMedDateEdit},
-        {OPL::CurrencyEntry::Custom1,    ui->currCustom1DateEdit},
-        {OPL::CurrencyEntry::Custom2,    ui->currCustom2DateEdit},
-    };
-    for (const auto &pair : currencies_list) {
-        const QSignalBlocker signal_blocker(pair.second);
-        const auto entry = DB->getCurrencyEntry(pair.first);
-        if (entry.isValid()) { // set date
-            const auto date = entry.getExpiryDate();
-            if(date.isValid())
-                pair.second->setDate(date);
-        } else { // set current date
-            pair.second->setDate(QDate::currentDate());
-        }
+        // Set up the currency warning threshold spin box
+        ui->currencyWarningDaysSpinBox->setValue(Settings::getCurrencyWarningThreshold());
     }
 }
 
@@ -140,17 +110,6 @@ void SettingsWidget::readSettings()
     ui->logbookViewComboBox->setCurrentIndex(static_cast<int>(Settings::getLogbookView()));
     ui->aliasComboBox->setCurrentIndex(Settings::getShowSelfAs());
 
-    // Currencies Tab
-    ui->currToLdgCheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::TakeOffLanding));
-    ui->currLicCheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::LineCheck));
-    ui->currTrCheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::TypeRating));
-    ui->currLckCheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::TypeRating));
-    ui->currMedCheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::Medical));
-    ui->currCustom1CheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::Custom1));
-    ui->currCustom2CheckBox->setChecked(Settings::getShowCurrency(OPL::CurrencyEntry::Custom2));
-
-    ui->currCustom1LineEdit->setText(DB->getCurrencyEntry(OPL::CurrencyEntry::Custom1).getDisplayName());
-    ui->currCustom2LineEdit->setText(DB->getCurrencyEntry(OPL::CurrencyEntry::Custom2).getDisplayName());
     // Misc Tab
     ui->acftSortComboBox->setCurrentIndex(Settings::getTailSortColumn());
     ui->pilotSortComboBox->setCurrentIndex(Settings::getPilotSortColumn());
@@ -456,7 +415,6 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
     {
         ui->fontComboBox->setEnabled(true);
         ui->fontSpinBox->setEnabled(true);
-//        Settings::write(Settings::Main::UseSystemFont, false);
         Settings::setUseSystemFont(false);
         QFont font(ui->fontComboBox->currentFont());
         font.setPointSize(ui->fontSpinBox->value());
@@ -468,7 +426,6 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
     {
         ui->fontComboBox->setEnabled(false);
         ui->fontSpinBox->setEnabled(false);
-//        Settings::write(Settings::Main::UseSystemFont, true);
         Settings::setUseSystemFont(true);
         INFO(tr("The application will be restarted for this change to take effect."));
         qApp->quit();
@@ -499,167 +456,6 @@ void SettingsWidget::on_resetStylePushButton_clicked()
     ui->fontCheckBox->setChecked(true);
 }
 
-void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Licence);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::TypeRating);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::LineCheck);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Medical);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Custom1);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Custom2);
-    entry.setExpiryDate(date);
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::TakeOffLanding, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::TakeOffLanding, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLicCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Licence, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Licence, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currTrCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::TypeRating, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::TypeRating, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLckCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::LineCheck, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::LineCheck, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currMedCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Medical, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Medical, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1CheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Custom1, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Custom1, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Custom2, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::setShowCurrency(OPL::CurrencyEntry::Custom2, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1LineEdit_editingFinished()
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Custom1);
-    entry.setDisplayName(ui->currCustom1LineEdit->text());
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom2LineEdit_editingFinished()
-{
-    auto entry = DB->getCurrencyEntry(OPL::CurrencyEntry::Custom2);
-    entry.setDisplayName(ui->currCustom2LineEdit->text());
-    emit settingChanged(HomeWidget);
-}
-
 void SettingsWidget::on_languageComboBox_activated(int arg1)
 {
     if (arg1 != 0) {
@@ -670,10 +466,15 @@ void SettingsWidget::on_languageComboBox_activated(int arg1)
     }
 }
 
-
 void SettingsWidget::on_exportPushButton_clicked()
 {
     auto exp = new ExportToCsvDialog(this);
     exp->exec();
+}
+
+
+void SettingsWidget::on_currencyWarningDaysSpinBox_valueChanged(int arg1)
+{
+    Settings::setCurrencyWarningThreshold(arg1);
 }
 

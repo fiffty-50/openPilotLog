@@ -16,11 +16,15 @@ class CurrencyWidget : public QWidget
     QString dateFormat;
     QModelIndex lastSelection;
 
+    int EXPIRY_DATE_COLUMN = 2;
+    int CURRENCY_NAME_COLUMN = 3;
+
     void setupModelAndView();
     void setupUI();
     void fillTakeOffAndLandingCurrencies();
     void fillFlightTimeLimitations();
     void displayNameEditRequested(QModelIndex index);
+    void warnAboutExpiries(int warningThreshold);
 
     QFrame *getHorizontalLine();
     QLabel *takeOffLandingHeaderLabel   		= new QLabel(tr("<b>Take-off and Landing Currency<\b>"), this);

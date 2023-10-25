@@ -186,18 +186,6 @@ public:
      */
     static void setFlightNumberPrefix(const QString &value) { settingsInstance->setValue(LOG_PREFIX, value); }
 
-    // TODO test these
-
-    /*!
-     * \brief returns whether the Currency passed as a parameter is shown on the Home screen
-     */
-    static bool getShowCurrency(OPL::CurrencyEntry::Currency currency) { return settingsInstance->value(CURRENCY_STUB.arg(CURRENCIES.value(currency))).toBool(); }
-
-    /*!
-     * \brief sets whether the Currency passed as a parameter is shown on the home screen
-     */
-    static void setShowCurrency(OPL::CurrencyEntry::Currency currency, bool value) { settingsInstance->setValue(CURRENCY_STUB.arg(CURRENCIES.value(currency)), value); }
-
     /*!
      * \brief sets how the logbook owner is shown in the view
      * \details

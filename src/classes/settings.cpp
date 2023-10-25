@@ -43,13 +43,6 @@ void Settings::resetToDefaults()
     setCurrencyWarningThreshold(90);
     setPilotSortColumn(0);
     setTailSortColumn(0);
-    setShowCurrency(OPL::CurrencyEntry::TakeOffLanding, true);
-    setShowCurrency(OPL::CurrencyEntry::Licence, false);
-    setShowCurrency(OPL::CurrencyEntry::TypeRating, false);
-    setShowCurrency(OPL::CurrencyEntry::LineCheck, false);
-    setShowCurrency(OPL::CurrencyEntry::Medical, false);
-    setShowCurrency(OPL::CurrencyEntry::Custom1, false);
-    setShowCurrency(OPL::CurrencyEntry::Custom2, false);
     sync();
 }
 

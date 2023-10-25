@@ -21,6 +21,12 @@ CurrencyWidget::CurrencyWidget(QWidget *parent)
 
     fillTakeOffAndLandingCurrencies();
     fillFlightTimeLimitations();
+
+    // warn the user about impending currencies if warning threshold > 0
+    int warningThreshold = Settings::getCurrencyWarningThreshold();
+    if(warningThreshold) {
+        warnAboutExpiries(warningThreshold);
+    }
 }
 
 void CurrencyWidget::setupModelAndView()
@@ -28,8 +34,8 @@ void CurrencyWidget::setupModelAndView()
     model = new QSqlTableModel(this, DB->database());
     model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Currencies));
     model->select();
-    model->setHeaderData(2, Qt::Horizontal, tr("Expiry Date"));
-    model->setHeaderData(3, Qt::Horizontal, tr("Name"));
+    model->setHeaderData(EXPIRY_DATE_COLUMN, Qt::Horizontal, tr("Expiry Date"));
+    model->setHeaderData(CURRENCY_NAME_COLUMN, Qt::Horizontal, tr("Name"));
 
     tableView = new QTableView(this);
     tableView->setModel(model);
@@ -202,6 +208,23 @@ void CurrencyWidget::displayNameEditRequested(QModelIndex index)
 
     model->setData(index, text);
     model->submitAll();
+}
+
+void CurrencyWidget::warnAboutExpiries(int warningThreshold)
+{
+    const QDate today = QDate::currentDate();
+
+    for(int i = 0; i < model->rowCount(); i++) {
+        const QModelIndex dateIndex = model->index(i, EXPIRY_DATE_COLUMN);
+        QDate date = QDate::fromString(dateIndex.data().toString(), Qt::ISODate);
+
+        if(date.addDays(warningThreshold) > today) {
+            const QString dateString = date.toString(Qt::ISODate);
+            const QString nameString = model->index(i, CURRENCY_NAME_COLUMN).data().toString();
+            QString msg = tr("%1 expires on<br><br>%2").arg(nameString, dateString);
+            WARN(msg);
+        }
+    }
 }
 
 QFrame *CurrencyWidget::getHorizontalLine()
