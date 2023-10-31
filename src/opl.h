@@ -265,7 +265,6 @@ const inline auto  DATABASE_SCHEMA               = QStringLiteral(":/database/da
 const inline auto  DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
 const inline auto  DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
 const inline auto  DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
-const inline auto  DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/templates/currencies.json");
 
 const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");

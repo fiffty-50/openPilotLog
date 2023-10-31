@@ -187,7 +187,10 @@ bool FirstRunDialog::finishSetup()
         return false;
     }
 
-    writeCurrencies();
+    // non-critical error
+    if(!writeCurrencies())
+        LOG << "Error writing currencies during initial setup.";
+
     DB->disconnect(); // Connection will be re-established by MainWindow
     return true;
 }
@@ -344,28 +347,36 @@ bool FirstRunDialog::setupPreviousExperienceEntry()
     return DB->commit(pXpEntry);
 }
 
-void FirstRunDialog::writeCurrencies()
+bool FirstRunDialog::writeCurrencies()
 {
-    const QList<std::tuple<OPL::CurrencyEntry::Currency, const QString&, QDateEdit*>> currencies = {
-        {OPL::CurrencyEntry::Licence,    ui->currLicLabel->text(), 		  ui->currLicDateEdit},
-        {OPL::CurrencyEntry::TypeRating, ui->currTrLabel->text(), 		  ui->currTrDateEdit},
-        {OPL::CurrencyEntry::LineCheck,  ui->currLckLabel->text(),		  ui->currLckDateEdit},
-        {OPL::CurrencyEntry::Medical,    ui->currMedLabel->text(), 		  ui->currMedDateEdit},
-        {OPL::CurrencyEntry::Custom1,    ui->currCustom1LineEdit->text(), ui->currCustom1DateEdit},
-        {OPL::CurrencyEntry::Custom2,    ui->currCustom2LineEdit->text(), ui->currCustom2DateEdit},
+    const QList<QPair<QString, QDateEdit*>> currencies = {
+        { ui->currLicLabel->text(), 		ui->currLicDateEdit },
+        { ui->currTrLabel->text(), 			ui->currTrDateEdit },
+        { ui->currLckLabel->text(), 		ui->currLckDateEdit },
+        { ui->currMedLabel->text(), 		ui->currMedDateEdit },
+        { ui->currCustom1LineEdit->text(), 	ui->currCustom1DateEdit },
+        { ui->currCustom2LineEdit->text(), 	ui->currCustom2DateEdit },
     };
 
     const QDate today = QDate::currentDate();
 
-    for(const auto &tuple : currencies) {
-        OPL::CurrencyEntry currencyEntry = DB->getCurrencyEntry(std::get<0>(tuple));
-        currencyEntry.setDisplayName(std::get<1>(tuple));
+    for(const auto &pair : currencies) {
+        // list 0-indexed, db row indexes start at 1
+        OPL::CurrencyEntry currencyEntry = OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
+
+        currencyEntry.setName(pair.first);
 
         // only set expiry date if user has modified it
-        const QDate date = std::get<2>(tuple)->date();
-        if(date != today)
-            currencyEntry.setExpiryDate(date);
+        const QDate date = pair.second->date();
+        if(date != today) {
+            int julianDay = date.toJulianDay();
+            currencyEntry.setExpiryDate(OPL::Date(julianDay));
+        }
+
+        if(!DB->commit(currencyEntry))
+            return false;
     }
+    return true;
 }
 
 void FirstRunDialog::reject()

@@ -47,6 +47,8 @@ public:
         }
     }
 
+    const inline int toJulianDay() const { return date.toJulianDay(); }
+
     const static inline Date fromJulianDay(int julianDay) { return Date(julianDay); }
 
     const static inline Date today() { return Date(QDate::currentDate().toJulianDay()); }

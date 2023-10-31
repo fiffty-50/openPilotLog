@@ -1,8 +1,9 @@
 #include "currencywidget.h"
 #include "QtSql/qsqltablemodel.h"
-#include "QtWidgets/qgridlayout.h"
 #include "QtWidgets/qheaderview.h"
+#include "qgridlayout.h"
 #include "src/classes/easaftl.h"
+#include "src/classes/styleddatedelegate.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/functions/statistics.h"
@@ -37,17 +38,19 @@ void CurrencyWidget::setupModelAndView()
     model->setHeaderData(EXPIRY_DATE_COLUMN, Qt::Horizontal, tr("Expiry Date"));
     model->setHeaderData(CURRENCY_NAME_COLUMN, Qt::Horizontal, tr("Name"));
 
-    tableView = new QTableView(this);
-    tableView->setModel(model);
-    tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    tableView->resizeColumnsToContents();
-    tableView->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    tableView->verticalHeader()->hide();
-    tableView->setAlternatingRowColors(true);
-    tableView->hideColumn(0);
-    tableView->hideColumn(1); // TODO remove once sql table is adjusted
+    view = new QTableView(this);
+    view->setModel(model);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setSelectionBehavior(QAbstractItemView::SelectItems);
+    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    view->resizeColumnsToContents();
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->verticalHeader()->hide();
+    view->setAlternatingRowColors(true);
+    view->hideColumn(ROWID_COLUMN);
+
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormat(), this);
+    view->setItemDelegateForColumn(EXPIRY_DATE_COLUMN, dateDelegate);
 }
 
 void CurrencyWidget::setupUI()
@@ -102,7 +105,7 @@ void CurrencyWidget::setupUI()
     row++;
     gridLayout->addWidget(getHorizontalLine(), row, colL, singleRowSpan, allColSpan);
     row++;
-    gridLayout->addWidget(tableView, row, colL, singleRowSpan, allColSpan);
+    gridLayout->addWidget(view, row, colL, singleRowSpan, allColSpan);
 
     // set the layout active
     layout = gridLayout;
@@ -114,7 +117,7 @@ void CurrencyWidget::setupUI()
 
 
     // connect signals
-    QObject::connect(tableView,	&QTableView::activated,
+    QObject::connect(view,	&QTableView::activated,
                      this, &CurrencyWidget::editRequested);
     QObject::connect(calendar, &QCalendarWidget::selectionChanged,
                      this, &CurrencyWidget::newExpiryDateSelected);
@@ -168,27 +171,16 @@ void CurrencyWidget::fillFlightTimeLimitations()
 
 void CurrencyWidget::editRequested(const QModelIndex &index)
 {
-    lastSelection = index;
-    const QString selection = index.data().toString();
-    const QDate selectedDate = QDate::fromString(selection, dateFormat);
-    if(selectedDate.isValid()) {
-        // the date column has been selected for editing
-        const QSignalBlocker blocker(calendar);
-        calendar->setSelectedDate(selectedDate);
-        calendar->show();
-    } else {
-        // the displayName column has been selected for editing
+    if(index.column() == EXPIRY_DATE_COLUMN) {
+        expiryDateEditRequested(index);
+    }
+
+    if(index.column() == CURRENCY_NAME_COLUMN) {
         displayNameEditRequested(index);
     }
 }
 
-void CurrencyWidget::newExpiryDateSelected()
-{
-    calendar->hide();
-    const QString selectedDate = calendar->selectedDate().toString(dateFormat);
-    model->setData(lastSelection, selectedDate);
-    model->submitAll();
-}
+
 
 void CurrencyWidget::refresh()
 {
@@ -197,17 +189,46 @@ void CurrencyWidget::refresh()
     fillFlightTimeLimitations();
 }
 
-void CurrencyWidget::displayNameEditRequested(QModelIndex index)
+void CurrencyWidget::displayNameEditRequested(const QModelIndex &index)
 {
+    QString oldData = index.data().toString();
+    bool textEdited;
     const QString text = QInputDialog::getText(
         this,
         tr("Edit Currency Name"),
         tr("Please enter a name for this currency"),
         QLineEdit::Normal,
-        index.data().toString());
+        oldData,
+        &textEdited);
 
-    model->setData(index, text);
+    if(textEdited) {
+        model->setData(index, text);
+        model->submitAll();
+    }
+    view->resizeColumnsToContents();
+
+}
+
+void CurrencyWidget::expiryDateEditRequested(const QModelIndex &index)
+{
+    const QString selection = index.data().toString();
+    const QDate selectedDate = QDate::fromString(selection, dateFormat);
+    if(selectedDate.isValid()) {
+        const QSignalBlocker blocker(calendar);
+        calendar->setSelectedDate(selectedDate);
+        calendar->show();
+    } else {
+        calendar->show();
+    }
+    // calendars date selected signal is connected to newExpiryDateSelected()
+}
+
+void CurrencyWidget::newExpiryDateSelected()
+{
+    calendar->hide();
+    model->setData(view->selectionModel()->currentIndex(), calendar->selectedDate().toJulianDay());
     model->submitAll();
+    model->select();
 }
 
 void CurrencyWidget::warnAboutExpiries(int warningThreshold)

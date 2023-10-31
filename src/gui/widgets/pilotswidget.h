@@ -118,8 +118,6 @@ private:
 
     const QString getPilotName(const OPL::PilotEntry &pilot) const;
 
-    const QString getFlightSummary(const OPL::FlightEntry &flight) const;
-
     void setupModelAndView();
 
     void connectSignalsAndSlots();

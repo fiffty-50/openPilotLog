@@ -33,24 +33,57 @@
 #include <QDebug>
 #include <QTranslator>
 
+
+
+/*!
+ * \brief firstRun - is run if the application is run for the first time and launches
+ * the FirstRunDialog which guides the user through the initial set-up process.
+ */
+bool firstRun()
+{
+    if(FirstRunDialog().exec() == QDialog::Rejected){
+        LOG << "Initial setup incomplete or unsuccessfull.";
+        return false;
+    }
+
+    Settings::setSetupCompleted(true);
+    LOG << "Initial Setup Completed successfully";
+    QMessageBox mb;
+    mb.setText("Initial set-up has been completed successfully.<br><br>Please re-start the application.");
+    mb.exec();
+    return true;
+}
+
+
 /*!
  * \brief init - Sets up the logging facilities, loads the user settings and sets
  * up the application style before the MainWindow is instantiated
  */
-void init()
+bool init()
 {
+    // Check if another instance of the application is already running, we don't want
+    // different processes writing to the same database
+    RunGuard guard(QStringLiteral("opl_single_key"));
+    if ( !guard.tryToRun() ){
+        LOG << "Another Instance of openPilotLog is already running. Exiting.";
+        return false;
+    }
+
     LOG << "Setting up / verifying Application Directories...";
     if(OPL::Paths::setup()) {
         LOG << "Application Directories... verified";
     } else {
+        return false;
         LOG << "Unable to create directories.";
     }
+
     LOG << "Setting up logging facilities...";
     if(OPL::Log::init(true)) {
         LOG << "Logging enabled.";
     } else {
         LOG << "Unable to initalise logging.";
     }
+
     LOG << "Reading Settings...";
     Settings::init();
     LOG << "Setting up application style...";
@@ -58,26 +91,12 @@ void init()
     // Translations to be done at a later stage
     //LOG << "Installing translator...";
     //ATranslator::installTranslator(OPL::Translations::English);
-}
 
-/*!
- * \brief firstRun - is run if the application is run for the first time and launches
- * the FirstRunDialog which guides the user through the initial set-up process.
- */
-int firstRun()
-{
-    if(FirstRunDialog().exec() == QDialog::Rejected){
-        LOG << "Initial setup incomplete or unsuccessfull.";
-        return 1;
-    }
+    // Check for First Run and launch Setup Wizard
+    if(!Settings::getSetupCompleted())
+        return firstRun();
 
-    Settings::setSetupCompleted(true);
-//    Settings::write(Settings::Main::SetupComplete, true);
-    LOG << "Initial Setup Completed successfully";
-    QMessageBox mb;
-    mb.setText("Initial set-up has been completed successfully.<br><br>Please re-start the application.");
-    mb.exec();
-    return 0;
+    return true;
 }
 
 int main(int argc, char *argv[])
@@ -87,22 +106,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(ORGDOMAIN);
     QCoreApplication::setApplicationName(APPNAME);
 
-    // Check of another instance of the application is already running, we don't want
-    // different processes writing to the same database
-    RunGuard guard(QStringLiteral("opl_single_key"));
-    if ( !guard.tryToRun() ){
-        LOG << "Another Instance of openPilotLog is already running. Exiting.";
-        return 0;
-    }
-
     // Set Up the Application
-    init();
+    if(!init())
+        return 1;
 
-    // Check for First Run and launch Setup Wizard
-//    if (!Settings::read(Settings::Main::SetupComplete).toBool())
-//        return firstRun();
-    if(!Settings::getSetupCompleted())
-        return firstRun();
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;
 #ifdef __linux__

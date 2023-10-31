@@ -196,7 +196,7 @@ void PilotsWidget::onDeleteUnsuccessful()
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(OPL::FlightEntry(constrained_flights[i]).getFlightSummary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
                 constrained_flights_string.append("<br>[...]<br>");
                 break;
@@ -231,11 +231,4 @@ const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot) const
         return QString();
 
     return pilot.getLastName() + QLatin1String(", ") + pilot.getFirstName();
-}
-
-const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
-{
-
-
-
 }

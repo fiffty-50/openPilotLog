@@ -18,6 +18,7 @@
 #ifndef CURRENCYENTRY_H
 #define CURRENCYENTRY_H
 #include "src/database/row.h"
+#include "src/classes/date.h"
 
 namespace OPL {
 
@@ -39,19 +40,15 @@ public:
 
     const QString getTableName() const override;
 
-    void setDisplayName(const QString& displayName);
-    const QString getDisplayName() const;
+    void setName(const QString& displayName);
+    const QString getName() const;
 
-    void setExpiryDate(const QDate &date);
-    const QDate getExpiryDate() const;
+    void setExpiryDate(const OPL::Date &date);
+    const OPL::Date getExpiryDate() const;
 
 
 
 private:
-    /*!
-    * \brief The sql column name for the expiry date
-    */
-    const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
 
     /*!
      * \brief The sql column name for the row id
@@ -61,7 +58,11 @@ private:
     /*!
      * \brief The sql column name for the display name
      */
-    const static inline QString DISPLAY_NAME = QStringLiteral("displayName");
+    const static inline QString NAME = QStringLiteral("currencyName");
+    /*!
+    * \brief The sql column name for the expiry date
+    */
+    const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
 
     const static inline QString TABLE_NAME = QStringLiteral("currencies");
 };

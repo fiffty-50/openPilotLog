@@ -124,7 +124,7 @@ private:
     /*!
      * \brief writeCurrencies - submits the user input to the currencies table in the database
      */
-    void writeCurrencies();
+    bool writeCurrencies();
 
     /*!
      * \brief downloadTemplates - Downloads the airports and aircraft database as JSON files from github
