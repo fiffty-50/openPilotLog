@@ -1,7 +1,6 @@
 #include "tableeditwidget.h"
 #include "src/database/database.h"
 #include "src/opl.h"
-#include "src/classes/settings.h"
 #include <QGridLayout>
 #include <QLabel>
 
@@ -43,18 +42,38 @@ void TableEditWidget::setupUI()
     gridLayout->addWidget(setupFilterWidget(), row, colL);
 }
 
+QWidget *TableEditWidget::setupFilterWidget()
+{
+    // place the filter items in a grid layout so they occupy one cell in parent layout
+    QWidget *widget = new QWidget(this);
+    QGridLayout *layout = new QGridLayout(widget);
+
+    // one row, three columns
+    layout->addWidget(new QLabel(tr("Filter"), this), 0, 0);
+    layout->addWidget(filterLineEdit,				  0, 1);
+    layout->addWidget(filterSelectionComboBox,		  0, 2);
+
+    return widget;
+}
+
 void TableEditWidget::setupSignalsAndSlots()
 {
+    // refresh the view when the database is updated
     QObject::connect(DB,             		   &OPL::Database::dataBaseUpdated,
                      this,     		 		   &TableEditWidget::databaseContentChanged);
+    // filter the view
     QObject::connect(filterLineEdit,  		   &QLineEdit::textChanged,
                      this,                     &TableEditWidget::filterTextChanged);
+    // sort the view by column
     QObject::connect(view->horizontalHeader(), &QHeaderView::sectionClicked,
                      this,                     &TableEditWidget::sortColumnChanged);
+    // Edit an entry
     QObject::connect(view,					   &QTableView::clicked,
                      this, 			    	   &TableEditWidget::editEntryRequested);
+    // Add a new entry
     QObject::connect(addNewEntryPushButton,    &QPushButton::clicked,
                      this, 					   &TableEditWidget::addEntryRequested);
+    // Delete a selected entry
     QObject::connect(deleteEntryPushButton,    &QPushButton::clicked,
                      this, 					   &TableEditWidget::deleteEntryRequested);
 }
@@ -70,7 +89,6 @@ void TableEditWidget::addEntryRequested()
     editDialog->exec();
 
     stackedWidget->hide();
-
 }
 
 
@@ -89,7 +107,6 @@ void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
     editEntryDialog->exec();
 
     stackedWidget->hide();
-
 }
 
 void TableEditWidget::deleteEntryRequested()
@@ -120,35 +137,9 @@ void TableEditWidget::deleteEntryRequested()
     }
 }
 
-void TableEditWidget::filterTextChanged(const QString &filterString)
-{
-    TODO << "Create map <index, column Name> and implement func in derived";
-    model->setFilter(QLatin1Char('\"') + filterSelectionComboBox->currentText()
-                     + QLatin1String("\" LIKE '%") + filterString
-                     + QLatin1String("%' AND ID > 1"));
-}
-
 void TableEditWidget::sortColumnChanged(int newSortColumn)
 {
     view->sortByColumn(newSortColumn, Qt::AscendingOrder);
-    Settings::setPilotSortColumn(newSortColumn);
-}
-
-QWidget *TableEditWidget::setupFilterWidget()
-{
-    QWidget *widget = new QWidget(this);
-    QGridLayout *layout = new QGridLayout(widget);
-
-    int row =  0;
-    int colL = 0;
-    int colM = 1;
-    int colR = 2;
-
-    layout->addWidget(new QLabel(tr("Filter"), this), row, colL);
-    layout->addWidget(filterLineEdit, row, colM);
-    layout->addWidget(filterSelectionComboBox, row, colR);
-
-    return widget;
 }
 
 void TableEditWidget::clearStackedWidget()

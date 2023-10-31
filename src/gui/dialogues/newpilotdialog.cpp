@@ -58,7 +58,9 @@ NewPilotDialog::~NewPilotDialog()
 void NewPilotDialog::setup()
 {
     ui->setupUi(this);
-    ui->companyLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Companies));
+    auto completer = QCompleterProvider.getCompleter(CompleterProvider::Companies);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()

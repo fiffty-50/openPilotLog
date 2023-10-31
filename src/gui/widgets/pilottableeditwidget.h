@@ -2,6 +2,7 @@
 #define PILOTTABLEEDITWIDGET_H
 
 #include "tableeditwidget.h"
+#include "src/database/pilotentry.h"
 
 class PilotTableEditWidget : public TableEditWidget
 {
@@ -20,6 +21,12 @@ private:
     const int COL_COMPANY = 4;
     const int COLS_TO_HIDE[5] = {0, 3, 5, 6, 7};
 
+    const static inline QStringList FILTER_COLUMNS = { tr("First Name"), tr("Last Name"), tr("Company") };
+    const static inline QStringList FILTER_COLUMN_NAMES = {
+                                                            OPL::PilotEntry::FIRSTNAME,
+                                                            OPL::PilotEntry::LASTNAME,
+                                                            OPL::PilotEntry::COMPANY };
+
     /*!
     * \brief Informs the user that deleting a Pilot has been unsuccessful
     *
@@ -33,9 +40,8 @@ private:
 
     virtual QString confirmDeleteString(int rowId) override;
 
-
 private slots:
-//    virtual void deleteEntryRequested() override;
+    virtual void filterTextChanged(const QString &filterText) override;
 };
 
 #endif // PILOTTABLEEDITWIDGET_H

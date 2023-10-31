@@ -97,8 +97,8 @@ private slots:
     void addEntryRequested();
     void editEntryRequested(const QModelIndex &selectedIndex);
     void deleteEntryRequested();
-    void filterTextChanged(const QString &filterString);
     void sortColumnChanged(int newSortColumn);
+    virtual void filterTextChanged(const QString &filterString) = 0;
 
 public slots:
     void databaseContentChanged();

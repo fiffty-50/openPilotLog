@@ -23,8 +23,8 @@ void PilotTableEditWidget::setupModelAndView()
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->resizeColumnsToContents();
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    view->resizeColumnsToContents();
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     for(const int i : COLS_TO_HIDE)
@@ -34,10 +34,13 @@ void PilotTableEditWidget::setupModelAndView()
 
 void PilotTableEditWidget::setupUI()
 {
+    // the base class does most of the setup
     TableEditWidget::setupUI();
+
+    // only need to set the table specific labels and combo box items
     addNewEntryPushButton->setText(tr("Add New Pilot"));
     deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
-    filterSelectionComboBox->addItems({""});
+    filterSelectionComboBox->addItems(FILTER_COLUMNS);
 }
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
@@ -84,7 +87,26 @@ QString PilotTableEditWidget::confirmDeleteString(int rowId)
 {
     const auto entry = DB->getPilotEntry(rowId);
     return tr("You are deleting the following pilot:<br><br><b><tt>"
-           "%1, %2</b></tt><br><br>Are you sure?").arg(entry.getLastName(), entry.getFirstName());
+              "%1, %2</b></tt><br><br>Are you sure?").arg(entry.getLastName(), entry.getFirstName());
+}
+
+void PilotTableEditWidget::filterTextChanged(const QString &filterText)
+{
+    if(filterText.isEmpty()) {
+        model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
+        return;
+    }
+
+    int i = filterSelectionComboBox->currentIndex();
+    const QString filter =
+        QLatin1Char('\"')
+        + FILTER_COLUMN_NAMES.at(i)
+        + QLatin1String("\" LIKE '%")
+        + filterText
+        + QLatin1String("%' AND ")
+        + OPL::PilotEntry::ROWID
+        + QLatin1String(" > 1");
+    model->setFilter(filter);
 }
 
 
