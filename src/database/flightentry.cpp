@@ -16,6 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightentry.h"
+#include "src/classes/date.h"
+#include "src/classes/time.h"
 
 namespace OPL {
 
@@ -35,5 +37,26 @@ const QString FlightEntry::getTableName() const
 {
     return TABLE_NAME;
 }
+
+const QString FlightEntry::getFlightSummary() const
+{
+    if(!isValid())
+        return QString();
+
+    auto tableData = getData();
+    QString flight_summary;
+    auto space = QLatin1Char(' ');
+    flight_summary.append(OPL::Date(tableData.value(OPL::FlightEntry::DOFT).toInt()).toString() + space);
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
+                          + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
+                          + space);
+    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
+
+    return flight_summary;
+}
+
+
 
 } // namespace OPL

@@ -53,6 +53,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/exporttocsvdialog.h
     src/gui/dialogues/exporttocsvdialog.cpp
     src/gui/dialogues/exporttocsvdialog.ui
+    src/gui/dialogues/entryeditdialog.h
+    src/gui/dialogues/entryeditdialog.cpp
+
     # Widgets
     src/gui/widgets/tailswidget.h
     src/gui/widgets/tailswidget.cpp
@@ -81,6 +84,11 @@ set(PROJECT_SOURCES
     src/gui/widgets/totalswidget.h
     src/gui/widgets/totalswidget.cpp
     src/gui/widgets/totalswidget.ui
+    src/gui/widgets/tableeditwidget.h
+    src/gui/widgets/tableeditwidget.cpp
+    src/gui/widgets/pilottableeditwidget.h
+    src/gui/widgets/pilottableeditwidget.cpp
+
     # Verification
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
@@ -97,7 +105,6 @@ set(PROJECT_SOURCES
     src/gui/verification/tailinput.cpp
     src/gui/widgets/currencywidget.h
     src/gui/widgets/currencywidget.cpp
-
 
     # Classes
     src/classes/style.h

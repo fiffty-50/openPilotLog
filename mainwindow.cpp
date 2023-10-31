@@ -17,6 +17,7 @@
  */
 #include <QToolBar>
 #include "mainwindow.h"
+#include "src/gui/widgets/pilottableeditwidget.h"
 #include "ui_mainwindow.h"
 #include "src/database/database.h"
 #include "src/classes/style.h"
@@ -29,7 +30,10 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-
+    PilotTableEditWidget *widget = new PilotTableEditWidget(this);
+    widget->init();
+    widget->setWindowFlags(Qt::Dialog);
+    widget->show();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -88,7 +92,10 @@ void MainWindow::initialiseWidgets()
     aircraftWidget = new TailsWidget(this);
     ui->stackedWidget->addWidget(aircraftWidget);
 
-    pilotsWidget = new PilotsWidget(this);
+//    pilotsWidget = new PilotsWidget(this);
+//    ui->stackedWidget->addWidget(pilotsWidget);
+    pilotsWidget = new PilotTableEditWidget(this);
+    pilotsWidget->init();
     ui->stackedWidget->addWidget(pilotsWidget);
 
     airportWidget = new AirportWidget(this);
@@ -174,17 +181,17 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      aircraftWidget, &TailsWidget::onAircraftWidget_settingChanged);
 
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
+//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
+//                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
+//    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+//                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
 
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      logbookWidget,   &LogbookWidget::repopulateModel);
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     pilotsWidget,    &PilotsWidget::repopulateModel);
+//    QObject::connect(DB,              &OPL::Database::connectionReset,
+//                     pilotsWidget,    &PilotsWidget::repopulateModel);
     QObject::connect(DB,              &OPL::Database::connectionReset,
                      aircraftWidget,  &TailsWidget::repopulateModel);
 }

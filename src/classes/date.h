@@ -29,6 +29,10 @@ public:
 
     Date(int julianDay);
 
+    const QString toString(Format format = Format::Default) const;
+
+    const bool isValid() { return date.isValid(); }
+
     const static inline Date fromString(const QString &dateString, Format format = Default) {
         switch (format) {
         case Default:
@@ -48,10 +52,6 @@ public:
     const static inline Date today() { return Date(QDate::currentDate().toJulianDay()); }
 
     const static inline QString julianDayToString(int julianDay) { return Date(julianDay).toString(); }
-
-    const QString toString(Format format = Format::Default) const;
-
-    const bool isValid() { return date.isValid(); }
 
 private:
     QDate date;

@@ -201,7 +201,10 @@ void NewFlightDialog::fillWithEntryData()
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
-    ui->doftLineEdit->setText(OPL::Date::julianDayToString(flight_data.value(OPL::FlightEntry::DOFT).toInt()));
+    QDate date = QDate::fromJulianDay(flight_data.value(OPL::FlightEntry::DOFT).toInt());
+    calendar->setSelectedDate(date);
+    ui->doftLineEdit->setText(OPL::Date::fromJulianDay(date.toJulianDay()).toString(dateFormat));
+
     // Location
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
     ui->destLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEST).toString());
@@ -559,8 +562,6 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
 void NewFlightDialog::on_doftLineEdit_editingFinished()
 {
     const auto line_edit = ui->doftLineEdit;
-    auto text = ui->doftLineEdit->text();
-
     OPL::Date date = OPL::Date::fromString(ui->doftLineEdit->text(), dateFormat);
 
 

@@ -26,8 +26,8 @@
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database
  */
-NewPilotDialog::NewPilotDialog(QWidget *parent) :
-    QDialog(parent),
+NewPilotDialog::NewPilotDialog(QWidget *parent)
+    : EntryEditDialog{parent},
     ui(new Ui::NewPilot)
 {
     setup();
@@ -39,7 +39,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
  * \param rowId - the rowid of the entry to be edited in the database
  */
 NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
-    QDialog(parent),
+    EntryEditDialog{rowId, parent},
     ui(new Ui::NewPilot)
 {
     setup();
@@ -106,4 +106,29 @@ void NewPilotDialog::submitForm()
     } else {
         QDialog::accept();
     }
+}
+
+void NewPilotDialog::reset()
+{
+    pilotEntry = OPL::PilotEntry();
+    auto line_edits = this->findChildren<QLineEdit *>();
+
+    for (const auto &le : line_edits) {
+        le->setText(QString());
+    }
+    ui->lastnameLineEdit->setFocus();
+}
+
+void NewPilotDialog::loadEntry(int rowID)
+{
+    pilotEntry = DB->getPilotEntry(rowID);
+    formFiller();
+    ui->lastnameLineEdit->setFocus();
+}
+
+bool NewPilotDialog::deleteEntry(int rowID)
+{
+    auto entry = DB->getPilotEntry(rowID);
+    return DB->remove(entry);
+
 }
