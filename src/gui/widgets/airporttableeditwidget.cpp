@@ -3,7 +3,7 @@
 #include "src/gui/dialogues/newairportdialog.h"
 
 AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
-    : TableEditWidget{parent}
+    : TableEditWidget(Vertical, parent)
 {}
 
 void AirportTableEditWidget::setupModelAndView()

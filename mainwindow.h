@@ -33,14 +33,9 @@
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/tableeditwidget.h"
-#include "src/gui/widgets/tailswidget.h"
-#include "src/gui/widgets/airportwidget.h"
-#include "src/gui/widgets/airportwidget.h"
-#include "src/gui/widgets/pilotswidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/classes/style.h"
 
-enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;

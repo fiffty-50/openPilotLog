@@ -6,7 +6,7 @@
 #include <QGridLayout>
 
 PilotTableEditWidget::PilotTableEditWidget(QWidget *parent)
-    : TableEditWidget(parent)
+    : TableEditWidget(Horizontal, parent)
 {}
 
 void PilotTableEditWidget::setupModelAndView()

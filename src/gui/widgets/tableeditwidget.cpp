@@ -4,8 +4,8 @@
 #include <QGridLayout>
 #include <QLabel>
 
-TableEditWidget::TableEditWidget(QWidget *parent)
-    : QWidget{parent}
+TableEditWidget::TableEditWidget(Orientation orientation, QWidget *parent)
+    : QWidget{parent}, _orientation(orientation)
 {}
 
 void TableEditWidget::init() {
@@ -17,8 +17,25 @@ void TableEditWidget::setupUI()
 {
     // Setting up the model and view is done in the derived class
     setupModelAndView();
+    _entryEditDialog = getEntryEditDialog(this);
+    stackedWidget->addWidget(_entryEditDialog);
 
-    // Set up the editing widget
+    // set up the UI
+    switch (_orientation) {
+    case Horizontal:
+        setupHorizontalUI();
+        break;
+    case Vertical:
+        setupVerticalUI();
+    default:
+        break;
+    }
+
+}
+
+void TableEditWidget::setupHorizontalUI()
+{
+    // In the horizontal view, the editing widget is hidden on the right hand side
     stackedWidget->hide();
 
     // create a 2-column grid layout and fill the cells
@@ -33,16 +50,38 @@ void TableEditWidget::setupUI()
     gridLayout->addWidget(stackedWidget, row, colR, allRowSpan, 1);
     row++;
 
-    gridLayout->addWidget(addNewEntryPushButton, row, colL);
+    setupButtonWidget();
+    gridLayout->addWidget(_buttonWidget);
     row++;
 
-    gridLayout->addWidget(deleteEntryPushButton, row, colL);
-    row++;
-
-    gridLayout->addWidget(setupFilterWidget(), row, colL);
+    setupFilterWidget();
+    gridLayout->addWidget(_filterWidget, row, colL);
 }
 
-QWidget *TableEditWidget::setupFilterWidget()
+void TableEditWidget::setupVerticalUI()
+{
+    // create a single column grid layout and fill the cells
+    int col = 0;
+    int row = 0;
+    auto gridLayout = new QGridLayout(this);
+
+    gridLayout->addWidget(view, row, col);
+    row++;
+
+    gridLayout->addWidget(stackedWidget, row, col);
+    row++;
+
+    setupButtonWidget();
+    gridLayout->addWidget(_buttonWidget);
+    row++;
+
+    setupFilterWidget();
+    stackedWidget->addWidget(_filterWidget);
+    stackedWidget->setCurrentWidget(_filterWidget);
+    gridLayout->addWidget(stackedWidget);
+}
+
+void TableEditWidget::setupFilterWidget()
 {
     // place the filter items in a grid layout so they occupy one cell in parent layout
     QWidget *widget = new QWidget(this);
@@ -53,7 +92,28 @@ QWidget *TableEditWidget::setupFilterWidget()
     layout->addWidget(filterLineEdit,				  0, 1);
     layout->addWidget(filterSelectionComboBox,		  0, 2);
 
-    return widget;
+    _filterWidget = widget;
+}
+
+void TableEditWidget::setupButtonWidget()
+{
+    auto buttonWidget = new QWidget(this);
+    auto buttonGridLayout = new QGridLayout(buttonWidget);
+
+    switch (_orientation) {
+    case Horizontal:
+        buttonGridLayout->addWidget(addNewEntryPushButton, 0, 0);
+        buttonGridLayout->addWidget(deleteEntryPushButton, 1, 0);
+        break;
+    case Vertical:
+        buttonGridLayout->addWidget(addNewEntryPushButton, 0, 0);
+        buttonGridLayout->addWidget(deleteEntryPushButton, 0, 1);
+    default:
+        break;
+    }
+
+    buttonWidget->setLayout(buttonGridLayout);
+    _buttonWidget = buttonWidget;
 }
 
 void TableEditWidget::setupSignalsAndSlots()
@@ -87,19 +147,22 @@ void TableEditWidget::addEntryRequested()
 
 void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
-    clearStackedWidget();
-
-    // create a Dialog for editing the selected entry and put it on the stackedWidget
     int rowId = model->index(selectedIndex.row(), 0).data().toInt();
-    auto editEntryDialog = getEntryEditDialog(this);
-    editEntryDialog->loadEntry(rowId);
+    _entryEditDialog->loadEntry(rowId);
+    stackedWidget->setCurrentWidget(_entryEditDialog);
 
-    stackedWidget->addWidget(editEntryDialog);
-    stackedWidget->setCurrentWidget(editEntryDialog);
-    stackedWidget->show();
-    editEntryDialog->exec();
-
-    stackedWidget->hide();
+    switch (_orientation) {
+    case Horizontal:
+        stackedWidget->show();
+        _entryEditDialog->exec();
+        stackedWidget->hide();
+        break;
+    case Vertical:
+        _entryEditDialog->exec();
+        stackedWidget->setCurrentWidget(_filterWidget);
+    default:
+        break;
+    }
 }
 
 void TableEditWidget::deleteEntryRequested()
@@ -111,7 +174,7 @@ void TableEditWidget::deleteEntryRequested()
     }
 
     stackedWidget->hide();
-    clearStackedWidget();
+    //clearStackedWidget();
     int rowId = model->index(selectedIndex.row(), 0).data().toInt();
     view->selectionModel()->reset();
 
@@ -133,15 +196,6 @@ void TableEditWidget::deleteEntryRequested()
 void TableEditWidget::sortColumnChanged(int newSortColumn)
 {
     view->sortByColumn(newSortColumn, Qt::AscendingOrder);
-}
-
-void TableEditWidget::clearStackedWidget()
-{
-    while (stackedWidget->count() > 0) {
-        QWidget *orphan = stackedWidget->currentWidget();
-        stackedWidget->removeWidget(orphan);
-        delete orphan;
-    }
 }
 
 void TableEditWidget::databaseContentChanged()

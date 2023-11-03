@@ -57,33 +57,25 @@ set(PROJECT_SOURCES
     src/gui/dialogues/entryeditdialog.cpp
 
     # Widgets
-    src/gui/widgets/tailswidget.h
-    src/gui/widgets/tailswidget.cpp
-    src/gui/widgets/aircraftwidget.ui
-    src/gui/widgets/airportwidget.h
-    src/gui/widgets/airportwidget.cpp
-    src/gui/widgets/airportwidget.ui
+    src/gui/widgets/homewidget.h
+    src/gui/widgets/homewidget.cpp
+    src/gui/widgets/homewidget.ui
+    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.ui
     src/gui/widgets/backupwidget.h
     src/gui/widgets/backupwidget.cpp
     src/gui/widgets/backupwidget.ui
     src/gui/widgets/debugwidget.h
     src/gui/widgets/debugwidget.cpp
     src/gui/widgets/debugwidget.ui
-    src/gui/widgets/homewidget.h
-    src/gui/widgets/homewidget.cpp
-    src/gui/widgets/homewidget.ui
     src/gui/widgets/logbookwidget.h
     src/gui/widgets/logbookwidget.cpp
     src/gui/widgets/logbookwidget.ui
-    src/gui/widgets/pilotswidget.h
-    src/gui/widgets/pilotswidget.cpp
-    src/gui/widgets/pilotswidget.ui
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.ui
-    src/gui/widgets/totalswidget.h
-    src/gui/widgets/totalswidget.cpp
-    src/gui/widgets/totalswidget.ui
+
     src/gui/widgets/tableeditwidget.h
     src/gui/widgets/tableeditwidget.cpp
     src/gui/widgets/pilottableeditwidget.h

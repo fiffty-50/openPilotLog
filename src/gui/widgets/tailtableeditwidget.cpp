@@ -3,7 +3,7 @@
 #include "src/gui/dialogues/newtaildialog.h"
 
 TailTableEditWidget::TailTableEditWidget(QWidget *parent)
-    : TableEditWidget{parent}
+    : TableEditWidget(Horizontal, parent)
 {}
 
 void TailTableEditWidget::setupModelAndView()

@@ -15,15 +15,39 @@
 /*!
  * \brief The TableEditWidget class is a base class for widgets which enable
  * editing certain tables in the datbase.
+ * \details The TableEditWidget consists of a QTableView which displays the data
+ * from a given table. The data is held in a QSqlTableModel. The views edit triggers
+ * are disabled. Whenever a row is selected in the view, the selected entry is displayed
+ * for editing in a suitable EntryEditDialog which is responsible for the verification of
+ * the user input as well as reading and writing to and from the database.
+ *
+ * The TableEditWidget has two Orientation options: Horizontal and Vertical
+ *
+ * In the Horizontal layout, the table view is split horizontally to make space
+ * for the TableEditWidget on the right hand side, whereas on the Vertical layout
+ * it is split vertically with the TableEditWidget occupying the lower half of the screen.
+ *
+ * When implementing the TableEditWidget it is important to set up the model and call the
+ * Base Class implementation of setupUI before performing any specialisations. Before the
+ * TableEditWidget is shown, the init method must be run.
  */
 class TableEditWidget : public QWidget
 {
     Q_OBJECT
 public:
     /*!
+     * \brief Determines how the layout is created
+     * \details <ul>
+     * <li> Horizontal: The edit widget is shown besides the table </li>
+     * <li> Vertical: The edit widget is shown below the table </li>
+     * </ul>
+     */
+    enum Orientation {Horizontal, Vertical};
+
+    /*!
      * \brief Create a new TableEditWidget
      */
-    explicit TableEditWidget(QWidget *parent = nullptr);
+    explicit TableEditWidget(Orientation orientation = Horizontal, QWidget *parent = nullptr);
 
     /*!
      * \brief Initialises the dialog by calling its virtual setup functions.
@@ -71,8 +95,12 @@ public:
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
 
 protected:
+    Orientation _orientation;
     QSqlTableModel *model = nullptr;
     QTableView *view = new QTableView(this);
+    QWidget *_filterWidget = nullptr;
+    QWidget *_buttonWidget = nullptr;
+    EntryEditDialog *_entryEditDialog = nullptr;
 
     QPushButton *addNewEntryPushButton = new QPushButton(this);
     QPushButton *deleteEntryPushButton = new QPushButton(this);
@@ -82,16 +110,11 @@ protected:
     QComboBox *filterSelectionComboBox = new QComboBox(this);
 
 private:
+    void setupHorizontalUI();
+    void setupVerticalUI();
     void setupSignalsAndSlots();
-    QWidget *setupFilterWidget();
-
-    /*!
-     * \brief Remove orphaned editing widgets from the stacked widget.
-     * \details When the user selects another entry without finishing editing a previous one,
-     * the previously created entry edit never finished. To prevent a leak, this function is called
-     * to clean up stale dialogs
-     */
-    void clearStackedWidget();
+    void setupFilterWidget();
+    void setupButtonWidget();
 
 private slots:
     void addEntryRequested();
