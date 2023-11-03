@@ -2,6 +2,7 @@
 #define TAILTABLEEDITWIDGET_H
 
 #include "tableeditwidget.h"
+#include "src/database/tailentry.h"
 
 class TailTableEditWidget : public TableEditWidget
 {
@@ -21,9 +22,9 @@ private:
     const int COL_ROWID = 0;
     const int COL_REGISTRATION = 1;
     const int COL_TYPE = 10;
-    const int COL_COMPANY = 3;
+    const int COL_COMPANY = 2;
 
-    const int COLS_TO_HIDE[8] = {0, 2, 4, 5, 6, 7, 8, 9};
+    const int COLS_TO_HIDE[8] = {0, 3, 4, 5, 6, 7, 8, 9};
 
     const QString COLUMN_NAME_REGISTRATION = tr("Registration");
     const QString COLUMN_NAME_TYPE = tr("Type");
@@ -33,6 +34,12 @@ private:
         COLUMN_NAME_REGISTRATION,
         COLUMN_NAME_TYPE,
         COLUMN_NAME_COMPANY,
+    };
+
+    const static inline QStringList FILTER_COLUMN_NAMES = {
+        OPL::TailEntry::REGISTRATION,
+        OPL::TailEntry::TYPE_STRING,
+        OPL::TailEntry::COMPANY
     };
 
 private slots:

@@ -64,6 +64,7 @@ EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
 void AirportTableEditWidget::filterTextChanged(const QString &filterString)
 {
     if(filterString.isEmpty()) {
+        model->setFilter(QString());
         return;
     }
 

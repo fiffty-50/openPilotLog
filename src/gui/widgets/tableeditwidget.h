@@ -113,7 +113,15 @@ private:
     void setupHorizontalUI();
     void setupVerticalUI();
     void setupSignalsAndSlots();
+
+    /*!
+     * \brief Place the filter items in a widget to facilitate easier placement in parent layout
+     */
     void setupFilterWidget();
+
+    /*!
+     * \brief Place the new and edit buttons in a widget to facilitate easier placement in parent layout
+     */
     void setupButtonWidget();
 
 private slots:
@@ -121,6 +129,10 @@ private slots:
     void editEntryRequested(const QModelIndex &selectedIndex);
     void deleteEntryRequested();
     void sortColumnChanged(int newSortColumn);
+
+    /*!
+     * \brief Set a filter on the model
+     */
     virtual void filterTextChanged(const QString &filterString) = 0;
 
 public slots:

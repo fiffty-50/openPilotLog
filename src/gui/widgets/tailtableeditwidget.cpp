@@ -95,5 +95,17 @@ EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)
 
 void TailTableEditWidget::filterTextChanged(const QString &filterString)
 {
-    TODO << "not implemented.";
+    if(filterString.isEmpty()) {
+        model->setFilter(QString());
+        return;
+    }
+
+    int i = filterSelectionComboBox->currentIndex();
+    const QString filter =
+        QLatin1Char('\"')
+        + FILTER_COLUMN_NAMES.at(i)
+        + QLatin1String("\" LIKE '%")
+        + filterString
+        + QLatin1String("%'");
+    model->setFilter(filter);
 }
