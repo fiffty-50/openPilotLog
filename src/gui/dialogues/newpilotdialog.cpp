@@ -110,27 +110,16 @@ void NewPilotDialog::submitForm()
     }
 }
 
-void NewPilotDialog::reset()
+bool NewPilotDialog::deleteEntry(int rowId)
 {
-    pilotEntry = OPL::PilotEntry();
-    auto line_edits = this->findChildren<QLineEdit *>();
-
-    for (const auto &le : line_edits) {
-        le->setText(QString());
-    }
-    ui->lastnameLineEdit->setFocus();
-}
-
-void NewPilotDialog::loadEntry(int rowID)
-{
-    pilotEntry = DB->getPilotEntry(rowID);
-    formFiller();
-    ui->lastnameLineEdit->setFocus();
-}
-
-bool NewPilotDialog::deleteEntry(int rowID)
-{
-    auto entry = DB->getPilotEntry(rowID);
+    auto entry = DB->getPilotEntry(rowId);
     return DB->remove(entry);
 
+}
+
+void NewPilotDialog::loadEntry(int rowId)
+{
+    pilotEntry = DB->getPilotEntry(rowId);
+    formFiller();
+    ui->lastnameLineEdit->setFocus();
 }

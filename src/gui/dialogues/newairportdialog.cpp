@@ -8,19 +8,18 @@
 #include "src/database/row.h"
 
 NewAirportDialog::NewAirportDialog(QWidget *parent) :
-    QDialog(parent), ui(new Ui::NewAirportDialog)
+    EntryEditDialog(parent), ui(new Ui::NewAirportDialog)
 {
-    rowId = 0; // new entry
+    m_rowId = 0; // new entry
     ui->setupUi(this);
     setValidators();
     loadTimeZones();
 }
 
 NewAirportDialog::NewAirportDialog(int row_id, QWidget *parent)
-    : QDialog(parent), ui(new Ui::NewAirportDialog), rowId(row_id)
+    : EntryEditDialog(parent), ui(new Ui::NewAirportDialog), m_rowId(row_id)
 {
     ui->setupUi(this);
-    this->setWindowTitle(tr("Edit Airport"));
     setValidators();
     loadTimeZones();
     loadAirportData(row_id);
@@ -47,8 +46,8 @@ void NewAirportDialog::loadTimeZones()
 
 void NewAirportDialog::loadAirportData(int row_id)
 {
+    this->setWindowTitle(tr("Edit Airport"));
     const auto airport_data = DB->getAirportEntry(row_id).getData();
-    //const auto airport_data = airport.getData();
     DEB << "Filling Airport Data: " << airport_data;
 
     ui->nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
@@ -118,7 +117,7 @@ void NewAirportDialog::on_buttonBox_accepted()
         {OPL::AirportEntry::COUNTRY,  ui->countryLineEdit->text()},
     };
 
-    OPL::AirportEntry entry(rowId, airport_data);
+    OPL::AirportEntry entry(m_rowId, airport_data);
     if(DB->commit(entry))
         QDialog::accept();
     else {
@@ -140,5 +139,18 @@ void NewAirportDialog::on_icaoLineEdit_textChanged(const QString &arg1)
 void NewAirportDialog::on_buttonBox_rejected()
 {
     QDialog::reject();
+}
+
+// EntryEditDialog interface
+void NewAirportDialog::loadEntry(int rowId)
+{
+    m_rowId = rowId;
+    loadAirportData(rowId);
+}
+
+bool NewAirportDialog::deleteEntry(int rowId)
+{
+    auto entry = DB->getAirportEntry(rowId);
+    return DB->remove(entry);
 }
 

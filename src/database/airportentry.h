@@ -44,6 +44,18 @@ public:
     const QString getIcaoCode() const;
 
     /*!
+     * \brief Returns the airport common given name
+     */
+    const QString getAirportName() const;
+
+    /*!
+     * \brief return a string describing the airport
+     * \details The string consists of the Airport ICAO Code, and if available
+     * IATA Code and Airport Name
+     */
+    const QString getAirportDescriptor() const;
+
+    /*!
      * \brief The ICAO code is a 4-letter alphanumeric identifier for airports
      */
     const static inline QString ICAO           = QStringLiteral("icao");

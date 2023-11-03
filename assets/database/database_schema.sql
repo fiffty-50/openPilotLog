@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS 'tails' (
 	'multiengine'	INTEGER,
 	'engineType'	INTEGER,
 	'weightClass'	INTEGER,
+        'typeString'	TEXT,
 	PRIMARY KEY('tail_id' AUTOINCREMENT)
 );
 DROP TABLE IF EXISTS 'flights';

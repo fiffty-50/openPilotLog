@@ -17,7 +17,9 @@
  */
 #include <QToolBar>
 #include "mainwindow.h"
+#include "src/gui/widgets/airporttableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
+#include "src/gui/widgets/tailtableeditwidget.h"
 #include "ui_mainwindow.h"
 #include "src/database/database.h"
 #include "src/classes/style.h"
@@ -30,7 +32,7 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    PilotTableEditWidget *widget = new PilotTableEditWidget(this);
+    AirportTableEditWidget *widget = new AirportTableEditWidget(this);
     widget->init();
     widget->setWindowFlags(Qt::Dialog);
     widget->show();
@@ -89,16 +91,16 @@ void MainWindow::initialiseWidgets()
     logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
 
-    aircraftWidget = new TailsWidget(this);
-    ui->stackedWidget->addWidget(aircraftWidget);
+    tailsWidget = new TailTableEditWidget(this);
+    tailsWidget->init();
+    ui->stackedWidget->addWidget(tailsWidget);
 
-//    pilotsWidget = new PilotsWidget(this);
-//    ui->stackedWidget->addWidget(pilotsWidget);
     pilotsWidget = new PilotTableEditWidget(this);
     pilotsWidget->init();
     ui->stackedWidget->addWidget(pilotsWidget);
 
-    airportWidget = new AirportWidget(this);
+    airportWidget = new AirportTableEditWidget(this);
+    airportWidget->init();
     ui->stackedWidget->addWidget(airportWidget);
 
     settingsWidget = new SettingsWidget(this);
@@ -176,10 +178,10 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
 
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     aircraftWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     aircraftWidget, &TailsWidget::onAircraftWidget_settingChanged);
+//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
+//                     tailsWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
+//    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+//                     tailsWidget, &TailsWidget::onAircraftWidget_settingChanged);
 
 //    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
 //                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
@@ -192,8 +194,8 @@ void MainWindow::connectWidgets()
                      logbookWidget,   &LogbookWidget::repopulateModel);
 //    QObject::connect(DB,              &OPL::Database::connectionReset,
 //                     pilotsWidget,    &PilotsWidget::repopulateModel);
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     aircraftWidget,  &TailsWidget::repopulateModel);
+//    QObject::connect(DB,              &OPL::Database::connectionReset,
+//                     tailsWidget,  &TailsWidget::repopulateModel);
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -259,7 +261,7 @@ void MainWindow::on_actionLogbook_triggered()
 
 void MainWindow::on_actionAircraft_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(aircraftWidget);
+    ui->stackedWidget->setCurrentWidget(tailsWidget);
 }
 
 void MainWindow::on_actionPilots_triggered()

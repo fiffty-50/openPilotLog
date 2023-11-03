@@ -16,16 +16,10 @@ public:
     EntryEditDialog(int rowID, QWidget *parent = nullptr);
 
     /*!
-     * \brief reset the Entry Dialog to accept a new entry
-     */
-    virtual void reset() = 0;
-
-    /*!
      * \brief load an entry from the database for editing
      * \param rowID - The row ID of the entry
      */
     virtual void loadEntry(int rowID) = 0;
-
 
     /*!
      * \brief delete an entry from the database

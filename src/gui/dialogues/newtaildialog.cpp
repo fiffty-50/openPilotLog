@@ -21,8 +21,8 @@
 #include "ui_newtail.h"
 #include "src/opl.h"
 
-NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
-    QDialog(parent),
+NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
+    EntryEditDialog(parent),
     ui(new Ui::NewTail)
 {
     ui->setupUi(this);
@@ -38,7 +38,7 @@ NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
 }
 
 NewTailDialog::NewTailDialog(int row_id, QWidget *parent) :
-    QDialog(parent),
+    EntryEditDialog(parent),
     ui(new Ui::NewTail)
 {
     ui->setupUi(this);
@@ -202,6 +202,12 @@ void NewTailDialog::submitForm()
     //create db object
 
     entry.setData(new_data);
+
+    // add type string
+    auto data = entry.getData();
+    data.insert(OPL::TailEntry::TYPE_STRING, entry.type());
+    entry.setData(data);
+
     LOG << "Commiting: " << entry;
     if (!DB->commit(entry)) {
         QMessageBox message_box(this);
@@ -271,15 +277,32 @@ void NewTailDialog::onSearchCompleterActivated()
     const auto &text = ui->searchLineEdit->text();
     if (aircraftList.contains(text)) {
 
-            DEB << "Template Selected. aircraft_id is: " << idMap.key(text);
-            //call autofiller for dialog
-            fillForm(DB->getAircraftEntry(idMap.key(text)), true);
-            ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
-            ui->searchLabel->setText(text);
-        } else {
-            //for example, editing finished without selecting a result from Qcompleter
-            ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid orange"));
-        }
+        DEB << "Template Selected. aircraft_id is: " << idMap.key(text);
+        //call autofiller for dialog
+        fillForm(DB->getAircraftEntry(idMap.key(text)), true);
+        ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid green"));
+        ui->searchLabel->setText(text);
+    } else {
+        //for example, editing finished without selecting a result from Qcompleter
+        ui->searchLineEdit->setStyleSheet(QStringLiteral("border: 1px solid orange"));
+    }
+}
+
+bool NewTailDialog::deleteEntry(int rowID)
+{
+    auto entry = DB->getTailEntry(rowID);
+    return DB->remove(entry);
+}
+
+void NewTailDialog::loadEntry(int rowId)
+{
+    ui->searchLabel->hide();
+    ui->searchLineEdit->hide();
+    ui->line->hide();
+
+    setupValidators();
+    entry = DB->getTailEntry(rowId);
+    fillForm(entry, false);
 }
 
 void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)

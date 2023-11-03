@@ -80,15 +80,8 @@ void TableEditWidget::setupSignalsAndSlots()
 
 void TableEditWidget::addEntryRequested()
 {
-    clearStackedWidget();
-
-    // create a Dialog for adding a new entry and put it on the stackedWidget
     auto editDialog = getEntryEditDialog(this);
-    stackedWidget->addWidget(editDialog);
-    stackedWidget->show();
     editDialog->exec();
-
-    stackedWidget->hide();
 }
 
 

@@ -123,12 +123,12 @@ private:
     HomeWidget* homeWidget;
 
     LogbookWidget* logbookWidget;
-
-    TailsWidget* aircraftWidget;
+    
+    TableEditWidget* tailsWidget;
 
     TableEditWidget* pilotsWidget;
 
-    AirportWidget* airportWidget;
+    TableEditWidget* airportWidget;
 
     SettingsWidget* settingsWidget;
 

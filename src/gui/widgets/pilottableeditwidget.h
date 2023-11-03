@@ -6,6 +6,7 @@
 
 class PilotTableEditWidget : public TableEditWidget
 {
+    Q_OBJECT
 public:
     PilotTableEditWidget(QWidget *parent = nullptr);
 
@@ -21,7 +22,11 @@ private:
     const int COL_COMPANY = 4;
     const int COLS_TO_HIDE[5] = {0, 3, 5, 6, 7};
 
-    const static inline QStringList FILTER_COLUMNS = { tr("First Name"), tr("Last Name"), tr("Company") };
+    const QString COLUMN_1_NAME = tr("First Name");
+    const QString COLUMN_2_NAME = tr("Last Name");
+    const QString COLUMN_3_NAME = tr("Company");
+
+    const QStringList FILTER_COLUMNS = { COLUMN_1_NAME, COLUMN_2_NAME, COLUMN_3_NAME };
     const static inline QStringList FILTER_COLUMN_NAMES = {
                                                             OPL::PilotEntry::FIRSTNAME,
                                                             OPL::PilotEntry::LASTNAME,

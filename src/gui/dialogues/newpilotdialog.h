@@ -74,9 +74,9 @@ private:
 
     // EntryEditDialog interface
 public:
-    virtual void reset() override;
-    virtual void loadEntry(int rowID) override;
-    virtual bool deleteEntry(int rowID) override;
+    virtual bool deleteEntry(int rowId) override;
+    virtual void loadEntry(int rowId) override;
+
 };
 
 

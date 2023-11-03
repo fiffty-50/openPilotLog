@@ -88,6 +88,10 @@ set(PROJECT_SOURCES
     src/gui/widgets/tableeditwidget.cpp
     src/gui/widgets/pilottableeditwidget.h
     src/gui/widgets/pilottableeditwidget.cpp
+    src/gui/widgets/tailtableeditwidget.h
+    src/gui/widgets/tailtableeditwidget.cpp
+    src/gui/widgets/airporttableeditwidget.h
+    src/gui/widgets/airporttableeditwidget.cpp
 
     # Verification
     src/gui/verification/validationstate.h
