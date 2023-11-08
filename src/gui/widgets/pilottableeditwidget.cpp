@@ -11,24 +11,24 @@ PilotTableEditWidget::PilotTableEditWidget(QWidget *parent)
 
 void PilotTableEditWidget::setupModelAndView()
 {
-    model = new QSqlTableModel(this, DB->database());
-    model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots));
-    model->select();
-    model->setHeaderData(COL_LASTNAME, Qt::Horizontal, tr("Last Name"));
-    model->setHeaderData(COL_FIRSTNAME, Qt::Horizontal, tr("First Name"));
-    model->setHeaderData(COL_COMPANY, Qt::Horizontal, tr("Company"));
-    model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
+    m_model = new QSqlTableModel(this, DB->database());
+    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots));
+    m_model->select();
+    m_model->setHeaderData(COL_LASTNAME, Qt::Horizontal, tr("Last Name"));
+    m_model->setHeaderData(COL_FIRSTNAME, Qt::Horizontal, tr("First Name"));
+    m_model->setHeaderData(COL_COMPANY, Qt::Horizontal, tr("Company"));
+    m_model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
 
-    view->setModel(model);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->resizeColumnsToContents();
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
+    m_view->setModel(m_model);
+    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    m_view->resizeColumnsToContents();
+    m_view->verticalHeader()->hide();
+    m_view->setAlternatingRowColors(true);
     for(const int i : COLS_TO_HIDE)
-        view->hideColumn(i);
+        m_view->hideColumn(i);
 
 }
 
@@ -38,9 +38,9 @@ void PilotTableEditWidget::setupUI()
     TableEditWidget::setupUI();
 
     // only need to set the table specific labels and combo box items
-    addNewEntryPushButton->setText(tr("Add New Pilot"));
-    deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
-    filterSelectionComboBox->addItems(FILTER_COLUMNS);
+    m_addNewEntryPushButton->setText(tr("Add New Pilot"));
+    m_deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
+    m_filterSelectionComboBox->addItems(FILTER_COLUMNS);
 }
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
@@ -93,11 +93,11 @@ QString PilotTableEditWidget::confirmDeleteString(int rowId)
 void PilotTableEditWidget::filterTextChanged(const QString &filterText)
 {
     if(filterText.isEmpty()) {
-        model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
+        m_model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
         return;
     }
 
-    int i = filterSelectionComboBox->currentIndex();
+    int i = m_filterSelectionComboBox->currentIndex();
     const QString filter =
         QLatin1Char('\"')
         + FILTER_COLUMN_NAMES.at(i)
@@ -106,7 +106,7 @@ void PilotTableEditWidget::filterTextChanged(const QString &filterText)
         + QLatin1String("%' AND ")
         + OPL::PilotEntry::ROWID
         + QLatin1String(" > 1");
-    model->setFilter(filter);
+    m_model->setFilter(filter);
 }
 
 

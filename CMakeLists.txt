@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_MIN_VERSION "5.5.1")
@@ -84,6 +84,8 @@ set(PROJECT_SOURCES
     src/gui/widgets/tailtableeditwidget.cpp
     src/gui/widgets/airporttableeditwidget.h
     src/gui/widgets/airporttableeditwidget.cpp
+    src/gui/widgets/logbooktableeditwidget.h
+    src/gui/widgets/logbooktableeditwidget.cpp
 
     # Verification
     src/gui/verification/validationstate.h
@@ -133,6 +135,8 @@ set(PROJECT_SOURCES
     src/classes/styledpilotdelegate.cpp
     src/classes/styledregistrationdelegate.h
     src/classes/styledregistrationdelegate.cpp
+    src/classes/styledtypedelegate.h
+    src/classes/styledtypedelegate.cpp
 
     # Database Entries
     src/database/flightentry.h
@@ -173,6 +177,8 @@ set(PROJECT_SOURCES
     src/database/dbsummary.cpp
     src/database/databasecache.h
     src/database/databasecache.cpp
+
+    src/database/views/logbookviewinfo.h
 
     # Ressources
     assets/icons.qrc

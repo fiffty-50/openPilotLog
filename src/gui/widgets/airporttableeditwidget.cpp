@@ -8,23 +8,23 @@ AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
 
 void AirportTableEditWidget::setupModelAndView()
 {
-    model = new QSqlTableModel(this, DB->database());
-    model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Airports));
-    model->select();
+    m_model = new QSqlTableModel(this, DB->database());
+    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Airports));
+    m_model->select();
 
     for(int i = 0; i < HEADER_NAMES.size(); i++) {
-        model->setHeaderData(i + 1, Qt::Horizontal, HEADER_NAMES.at(i));
+        m_model->setHeaderData(i + 1, Qt::Horizontal, HEADER_NAMES.at(i));
     }
 
-    view->setModel(model);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    view->resizeColumnsToContents();
-    view->verticalHeader()->hide();
-    view->setAlternatingRowColors(true);
-    view->hideColumn(COL_ROWID);
+    m_view->setModel(m_model);
+    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    m_view->resizeColumnsToContents();
+    m_view->verticalHeader()->hide();
+    m_view->setAlternatingRowColors(true);
+    m_view->hideColumn(COL_ROWID);
 
 }
 
@@ -34,10 +34,10 @@ void AirportTableEditWidget::setupUI()
     TableEditWidget::setupUI();
 
     // only need to set the table specific labels and combo box items
-    addNewEntryPushButton->setText(tr("Add New Airport"));
-    deleteEntryPushButton->setText(tr("Delete Selected Airport"));
+    m_addNewEntryPushButton->setText(tr("Add New Airport"));
+    m_deleteEntryPushButton->setText(tr("Delete Selected Airport"));
     for(const int i : FILTER_COLUMNS) {
-        filterSelectionComboBox->addItem(HEADER_NAMES.at(i));
+        m_filterSelectionComboBox->addItem(HEADER_NAMES.at(i));
     }
 }
 
@@ -64,16 +64,16 @@ EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
 void AirportTableEditWidget::filterTextChanged(const QString &filterString)
 {
     if(filterString.isEmpty()) {
-        model->setFilter(QString());
+        m_model->setFilter(QString());
         return;
     }
 
-    int i = filterSelectionComboBox->currentIndex();
+    int i = m_filterSelectionComboBox->currentIndex();
     const QString filter =
         QLatin1Char('\"')
         + HEADER_NAMES.at(FILTER_COLUMNS[i])
         + QLatin1String("\" LIKE '%")
         + filterString
         + QLatin1String("%'");
-    model->setFilter(filter);
+    m_model->setFilter(filter);
 }

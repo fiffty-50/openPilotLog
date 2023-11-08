@@ -5,7 +5,7 @@
 #include <QLabel>
 
 TableEditWidget::TableEditWidget(Orientation orientation, QWidget *parent)
-    : QWidget{parent}, _orientation(orientation)
+    : QWidget{parent}, m_orientation(orientation)
 {}
 
 void TableEditWidget::init() {
@@ -17,11 +17,11 @@ void TableEditWidget::setupUI()
 {
     // Setting up the model and view is done in the derived class
     setupModelAndView();
-    _entryEditDialog = getEntryEditDialog(this);
-    stackedWidget->addWidget(_entryEditDialog);
+    m_entryEditDialog = getEntryEditDialog(this);
+    m_stackedWidget->addWidget(m_entryEditDialog);
 
     // set up the UI
-    switch (_orientation) {
+    switch (m_orientation) {
     case Horizontal:
         setupHorizontalUI();
         break;
@@ -36,7 +36,7 @@ void TableEditWidget::setupUI()
 void TableEditWidget::setupHorizontalUI()
 {
     // In the horizontal view, the editing widget is hidden on the right hand side
-    stackedWidget->hide();
+    m_stackedWidget->hide();
 
     // create a 2-column grid layout and fill the cells
     int colL = 0; // left column
@@ -46,16 +46,16 @@ void TableEditWidget::setupHorizontalUI()
 
     auto gridLayout = new QGridLayout(this);
 
-    gridLayout->addWidget(view, row, colL);
-    gridLayout->addWidget(stackedWidget, row, colR, allRowSpan, 1);
+    gridLayout->addWidget(m_view, row, colL);
+    gridLayout->addWidget(m_stackedWidget, row, colR, allRowSpan, 1);
     row++;
 
     setupButtonWidget();
-    gridLayout->addWidget(_buttonWidget);
+    gridLayout->addWidget(m_buttonWidget);
     row++;
 
     setupFilterWidget();
-    gridLayout->addWidget(_filterWidget, row, colL);
+    gridLayout->addWidget(m_filterWidget, row, colL);
 }
 
 void TableEditWidget::setupVerticalUI()
@@ -65,20 +65,20 @@ void TableEditWidget::setupVerticalUI()
     int row = 0;
     auto gridLayout = new QGridLayout(this);
 
-    gridLayout->addWidget(view, row, col);
+    gridLayout->addWidget(m_view, row, col);
     row++;
 
-    gridLayout->addWidget(stackedWidget, row, col);
+    gridLayout->addWidget(m_stackedWidget, row, col);
     row++;
 
     setupButtonWidget();
-    gridLayout->addWidget(_buttonWidget);
+    gridLayout->addWidget(m_buttonWidget);
     row++;
 
     setupFilterWidget();
-    stackedWidget->addWidget(_filterWidget);
-    stackedWidget->setCurrentWidget(_filterWidget);
-    gridLayout->addWidget(stackedWidget);
+    m_stackedWidget->addWidget(m_filterWidget);
+    m_stackedWidget->setCurrentWidget(m_filterWidget);
+    gridLayout->addWidget(m_stackedWidget);
 }
 
 void TableEditWidget::setupFilterWidget()
@@ -89,10 +89,10 @@ void TableEditWidget::setupFilterWidget()
 
     // one row, three columns
     layout->addWidget(new QLabel(tr("Filter"), this), 0, 0);
-    layout->addWidget(filterLineEdit,				  0, 1);
-    layout->addWidget(filterSelectionComboBox,		  0, 2);
+    layout->addWidget(m_filterLineEdit,				  0, 1);
+    layout->addWidget(m_filterSelectionComboBox,		  0, 2);
 
-    _filterWidget = widget;
+    m_filterWidget = widget;
 }
 
 void TableEditWidget::setupButtonWidget()
@@ -100,20 +100,19 @@ void TableEditWidget::setupButtonWidget()
     auto buttonWidget = new QWidget(this);
     auto buttonGridLayout = new QGridLayout(buttonWidget);
 
-    switch (_orientation) {
+    switch (m_orientation) {
     case Horizontal:
-        buttonGridLayout->addWidget(addNewEntryPushButton, 0, 0);
-        buttonGridLayout->addWidget(deleteEntryPushButton, 1, 0);
+        buttonGridLayout->addWidget(m_addNewEntryPushButton, 0, 0);
+        buttonGridLayout->addWidget(m_deleteEntryPushButton, 1, 0);
         break;
     case Vertical:
-        buttonGridLayout->addWidget(addNewEntryPushButton, 0, 0);
-        buttonGridLayout->addWidget(deleteEntryPushButton, 0, 1);
+        buttonGridLayout->addWidget(m_addNewEntryPushButton, 0, 0);
+        buttonGridLayout->addWidget(m_deleteEntryPushButton, 0, 1);
     default:
         break;
     }
 
-    buttonWidget->setLayout(buttonGridLayout);
-    _buttonWidget = buttonWidget;
+    m_buttonWidget = buttonWidget;
 }
 
 void TableEditWidget::setupSignalsAndSlots()
@@ -122,44 +121,42 @@ void TableEditWidget::setupSignalsAndSlots()
     QObject::connect(DB,             		   &OPL::Database::dataBaseUpdated,
                      this,     		 		   &TableEditWidget::databaseContentChanged);
     // filter the view
-    QObject::connect(filterLineEdit,  		   &QLineEdit::textChanged,
+    QObject::connect(m_filterLineEdit,  		   &QLineEdit::textChanged,
                      this,                     &TableEditWidget::filterTextChanged);
     // sort the view by column
-    QObject::connect(view->horizontalHeader(), &QHeaderView::sectionClicked,
+    QObject::connect(m_view->horizontalHeader(), &QHeaderView::sectionClicked,
                      this,                     &TableEditWidget::sortColumnChanged);
     // Edit an entry
-    QObject::connect(view,					   &QTableView::clicked,
+    QObject::connect(m_view,					   &QTableView::clicked,
                      this, 			    	   &TableEditWidget::editEntryRequested);
     // Add a new entry
-    QObject::connect(addNewEntryPushButton,    &QPushButton::clicked,
+    QObject::connect(m_addNewEntryPushButton,    &QPushButton::clicked,
                      this, 					   &TableEditWidget::addEntryRequested);
     // Delete a selected entry
-    QObject::connect(deleteEntryPushButton,    &QPushButton::clicked,
+    QObject::connect(m_deleteEntryPushButton,    &QPushButton::clicked,
                      this, 					   &TableEditWidget::deleteEntryRequested);
 }
 
 void TableEditWidget::addEntryRequested()
 {
-    auto editDialog = getEntryEditDialog(this);
-    editDialog->exec();
+    getEntryEditDialog(this)->exec();
 }
-
 
 void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
-    int rowId = model->index(selectedIndex.row(), 0).data().toInt();
-    _entryEditDialog->loadEntry(rowId);
-    stackedWidget->setCurrentWidget(_entryEditDialog);
+    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    m_entryEditDialog->loadEntry(rowId);
+    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
 
-    switch (_orientation) {
+    switch (m_orientation) {
     case Horizontal:
-        stackedWidget->show();
-        _entryEditDialog->exec();
-        stackedWidget->hide();
+        m_stackedWidget->show();
+        m_entryEditDialog->exec();
+        m_stackedWidget->hide();
         break;
     case Vertical:
-        _entryEditDialog->exec();
-        stackedWidget->setCurrentWidget(_filterWidget);
+        m_entryEditDialog->exec();
+        m_stackedWidget->setCurrentWidget(m_filterWidget);
     default:
         break;
     }
@@ -167,16 +164,15 @@ void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 
 void TableEditWidget::deleteEntryRequested()
 {
-    const QModelIndex selectedIndex = view->selectionModel()->currentIndex();
+    const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
     if(!selectedIndex.isValid()) {
         WARN(tr("No entry selected."));
         return;
     }
+    m_stackedWidget->hide();
 
-    stackedWidget->hide();
-    //clearStackedWidget();
-    int rowId = model->index(selectedIndex.row(), 0).data().toInt();
-    view->selectionModel()->reset();
+    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    m_view->selectionModel()->reset();
 
     // get user confirmation
     QMessageBox confirm(this);
@@ -191,15 +187,21 @@ void TableEditWidget::deleteEntryRequested()
         if(!editDialog->deleteEntry(rowId))
             WARN(deleteErrorString(rowId));
     }
+
+    // re-set stackedWidget for Vertical Layout
+    if(m_orientation == Vertical) {
+        m_stackedWidget->setCurrentWidget(m_filterWidget);
+        m_stackedWidget->show();
+    }
 }
 
 void TableEditWidget::sortColumnChanged(int newSortColumn)
 {
-    view->sortByColumn(newSortColumn, Qt::AscendingOrder);
+    m_view->sortByColumn(newSortColumn, Qt::AscendingOrder);
 }
 
 void TableEditWidget::databaseContentChanged()
 {
-    model->select();
-    view->resizeColumnsToContents();
+    m_model->select();
+    m_view->resizeColumnsToContents();
 }

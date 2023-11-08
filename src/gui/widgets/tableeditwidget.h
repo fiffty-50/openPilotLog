@@ -95,19 +95,19 @@ public:
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
 
 protected:
-    Orientation _orientation;
-    QSqlTableModel *model = nullptr;
-    QTableView *view = new QTableView(this);
-    QWidget *_filterWidget = nullptr;
-    QWidget *_buttonWidget = nullptr;
-    EntryEditDialog *_entryEditDialog = nullptr;
+    Orientation m_orientation;
+    QSqlTableModel *m_model = nullptr;
+    QTableView *m_view = new QTableView(this);
+    QWidget *m_filterWidget = nullptr;
+    QWidget *m_buttonWidget = nullptr;
+    EntryEditDialog *m_entryEditDialog = nullptr;
 
-    QPushButton *addNewEntryPushButton = new QPushButton(this);
-    QPushButton *deleteEntryPushButton = new QPushButton(this);
+    QPushButton *m_addNewEntryPushButton = new QPushButton(this);
+    QPushButton *m_deleteEntryPushButton = new QPushButton(this);
 
-    QStackedWidget *stackedWidget = new QStackedWidget(this);
-    QLineEdit *filterLineEdit = new QLineEdit(this);
-    QComboBox *filterSelectionComboBox = new QComboBox(this);
+    QStackedWidget *m_stackedWidget = new QStackedWidget(this);
+    QLineEdit *m_filterLineEdit = new QLineEdit(this);
+    QComboBox *m_filterSelectionComboBox = new QComboBox(this);
 
 private:
     void setupHorizontalUI();

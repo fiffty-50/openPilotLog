@@ -26,6 +26,7 @@
 
 #include "QtWidgets/qcalendarwidget.h"
 #include "src/database/flightentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
 #include "src/gui/verification/validationstate.h"
@@ -59,7 +60,7 @@ class NewFlightDialog;
  * Once the user is satisfied with his entries, a final set of input verification is triggered and the entry is submitted to the database,
  * see on_buttonBox_accepted() and Database::commit()
  */
-class NewFlightDialog : public QDialog
+class NewFlightDialog : public EntryEditDialog
 {
     Q_OBJECT
 
@@ -75,6 +76,8 @@ public:
      */
     explicit NewFlightDialog(int row_id, QWidget* parent = nullptr);
     ~NewFlightDialog();
+
+
 
 private:
     Ui::NewFlightDialog *ui;
@@ -197,6 +200,17 @@ private slots:
 
 protected:
     bool eventFilter(QObject* object, QEvent* event) override;
+
+    // EntryEditDialog interface
+public:
+    virtual void loadEntry(int rowID) override
+    {
+        LOG << "Not implemented.";
+    }
+    virtual bool deleteEntry(int rowID) override
+    {
+        LOG << "Not implemented.";
+    }
 };
 
 

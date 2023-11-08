@@ -40,7 +40,7 @@
 
 
 NewFlightDialog::NewFlightDialog(QWidget *parent)
-    : QDialog(parent),
+    : EntryEditDialog(parent),
       ui(new Ui::NewFlightDialog)
 {
     init();
@@ -51,7 +51,7 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
 }
 
 NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent)
-    : QDialog(parent),
+    : EntryEditDialog(parent),
       ui(new Ui::NewFlightDialog)
 {
     init();

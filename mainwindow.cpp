@@ -18,6 +18,7 @@
 #include <QToolBar>
 #include "mainwindow.h"
 #include "src/gui/widgets/airporttableeditwidget.h"
+#include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
 #include "ui_mainwindow.h"
@@ -32,7 +33,7 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    AirportTableEditWidget *widget = new AirportTableEditWidget(this);
+    LogbookTableEditWidget *widget = new LogbookTableEditWidget(this);
     widget->init();
     widget->setWindowFlags(Qt::Dialog);
     widget->show();
