@@ -89,7 +89,11 @@ void MainWindow::initialiseWidgets()
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
 
-    logbookWidget = new LogbookWidget(this);
+//    logbookWidget = new LogbookWidget(this);
+//    ui->stackedWidget->addWidget(logbookWidget);
+
+    logbookWidget = new LogbookTableEditWidget(this);
+    logbookWidget->init();
     ui->stackedWidget->addWidget(logbookWidget);
 
     tailsWidget = new TailTableEditWidget(this);
@@ -174,10 +178,10 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      homeWidget,     &HomeWidget::refresh);
 
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     logbookWidget,  &LogbookWidget::refresh);
+//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
+//                     logbookWidget,  &LogbookWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
+                     logbookWidget,  &LogbookTableEditWidget::viewSelectionChanged);
 
 //    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
 //                     tailsWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
@@ -191,8 +195,8 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
 
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     logbookWidget,   &LogbookWidget::repopulateModel);
+//    QObject::connect(DB,              &OPL::Database::connectionReset,
+//                     logbookWidget,   &LogbookWidget::repopulateModel);
 //    QObject::connect(DB,              &OPL::Database::connectionReset,
 //                     pilotsWidget,    &PilotsWidget::repopulateModel);
 //    QObject::connect(DB,              &OPL::Database::connectionReset,

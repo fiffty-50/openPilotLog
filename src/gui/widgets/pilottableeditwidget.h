@@ -16,11 +16,11 @@ public:
 
 
 private:
-    const int COL_ROWID = 0;
-    const int COL_LASTNAME = 1;
-    const int COL_FIRSTNAME = 2;
-    const int COL_COMPANY = 4;
-    const int COLS_TO_HIDE[5] = {0, 3, 5, 6, 7};
+    static constexpr int COL_ROWID = 0;
+    static constexpr int COL_LASTNAME = 1;
+    static constexpr int COL_FIRSTNAME = 2;
+    static constexpr int COL_COMPANY = 4;
+    static constexpr int COLS_TO_HIDE[5] = {0, 3, 5, 6, 7};
 
     const QString COLUMN_1_NAME = tr("First Name");
     const QString COLUMN_2_NAME = tr("Last Name");

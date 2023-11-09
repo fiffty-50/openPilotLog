@@ -2,7 +2,10 @@
 #define NEWSIMDIALOG_H
 
 #include <QDialog>
+#include "src/database/database.h"
 #include "src/database/simulatorentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
+#include "src/classes/date.h"
 
 namespace Ui {
 class NewSimDialog;
@@ -17,7 +20,7 @@ class NewSimDialog;
  *
  * A QCompleter provides in-line completion for the aircraft type field.
  */
-class NewSimDialog : public QDialog
+class NewSimDialog : public EntryEditDialog
 {
     Q_OBJECT
 
@@ -39,12 +42,18 @@ private slots:
 
 private:
     Ui::NewSimDialog *ui;
+    OPL::Date::Format m_dateFormat;
+
     void init();
     void fillEntryData();
     bool verifyInput(QString &error_msg);
     OPL::RowData_T collectInput();
-
     OPL::SimulatorEntry entry;
+
+    // EntryEditDialog interface
+public:
+    virtual void loadEntry(int rowID) override;
+    virtual bool deleteEntry(int rowID) override;
 };
 
 #endif // NEWSIMDIALOG_H

@@ -31,7 +31,7 @@ public:
 
     const QString toString(Format format = Format::Default) const;
 
-    const bool isValid() { return date.isValid(); }
+    const bool isValid() const { return date.isValid(); }
 
     const static inline Date fromString(const QString &dateString, Format format = Default) {
         switch (format) {

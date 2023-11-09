@@ -25,6 +25,7 @@
 #include <QBitArray>
 
 #include "QtWidgets/qcalendarwidget.h"
+#include "src/database/database.h"
 #include "src/database/flightentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 #include "src/gui/verification/userinput.h"
@@ -194,7 +195,7 @@ private slots:
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
 
-    void on_pushButton_clicked();
+    void on_calendarPushButton_clicked();
 
     void calendarDateSelected();
 
@@ -203,14 +204,8 @@ protected:
 
     // EntryEditDialog interface
 public:
-    virtual void loadEntry(int rowID) override
-    {
-        LOG << "Not implemented.";
-    }
-    virtual bool deleteEntry(int rowID) override
-    {
-        LOG << "Not implemented.";
-    }
+    virtual void loadEntry(int rowID) override;
+    virtual bool deleteEntry(int rowID) override;
 };
 
 

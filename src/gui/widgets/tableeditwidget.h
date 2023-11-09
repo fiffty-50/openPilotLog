@@ -93,6 +93,7 @@ public:
      * EntryEditDialog for the selected table.
      */
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
+//    virtual EntryEditDialog getEntryEditDialog(QWidget *parent = nullptr) = 0;
 
 protected:
     Orientation m_orientation;
@@ -100,7 +101,7 @@ protected:
     QTableView *m_view = new QTableView(this);
     QWidget *m_filterWidget = nullptr;
     QWidget *m_buttonWidget = nullptr;
-    EntryEditDialog *m_entryEditDialog = nullptr;
+    EntryEditDialog* m_entryEditDialog = nullptr;
 
     QPushButton *m_addNewEntryPushButton = new QPushButton(this);
     QPushButton *m_deleteEntryPushButton = new QPushButton(this);
@@ -125,10 +126,10 @@ private:
     void setupButtonWidget();
 
 private slots:
-    void addEntryRequested();
-    void editEntryRequested(const QModelIndex &selectedIndex);
-    void deleteEntryRequested();
-    void sortColumnChanged(int newSortColumn);
+    virtual void addEntryRequested();
+    virtual void editEntryRequested(const QModelIndex &selectedIndex);
+    virtual void deleteEntryRequested();
+    virtual void sortColumnChanged(int newSortColumn);
 
     /*!
      * \brief Set a filter on the model

@@ -2,12 +2,12 @@
 #include "src/classes/settings.h"
 #include "src/classes/styleddatedelegate.h"
 #include "src/classes/styledpilotdelegate.h"
-#include "src/classes/styledregistrationdelegate.h"
 #include "src/classes/styledtimedelegate.h"
 #include "src/classes/styledtypedelegate.h"
 #include "src/database/database.h"
 #include "src/database/views/logbookviewinfo.h"
 #include "src/gui/dialogues/newflightdialog.h"
+#include "src/gui/dialogues/newsimdialog.h"
 
 LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent)
     : TableEditWidget(Vertical, parent)
@@ -45,18 +45,29 @@ void LogbookTableEditWidget::setupUI()
 {
     TableEditWidget::setupUI();
     m_addNewEntryPushButton->setText(tr("Add new Flight"));
-    m_deleteEntryPushButton->setText(tr("Delete selected Flight"));
-    TODO << "Set up filters";
+    m_deleteEntryPushButton->setText(tr("Delete selected Entry"));
+    m_filterWidget->hide();
+    m_stackedWidget->hide();
 }
 
 QString LogbookTableEditWidget::deleteErrorString(int rowId)
 {
-    return "Not implemented";
+    return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
+              ).arg(DB->lastError.text());
 }
 
 QString LogbookTableEditWidget::confirmDeleteString(int rowId)
 {
-    return "Not implemented";
+    if(rowId > 0) {
+    const auto selectedEntry = DB->getFlightEntry(rowId);
+    return tr("The following flight will be deleted:<br><br><b><tt>"
+               "%1<br></b></tt><br><br>"
+               "Deleting flights is irreversible.<br>Do you want to proceed?"
+              ).arg(selectedEntry.getFlightSummary());
+
+    }
+
+    return tr("Deleting entries is irreversible.<br>Do you want to proceed?");
 }
 
 EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
@@ -64,9 +75,75 @@ EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
     return new NewFlightDialog(parent);
 }
 
-void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
+void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
 {
-    LOG << "Not implemented.";
+    if(widget == SettingsWidget::SettingSignal::LogbookWidget)
+        setupModelAndView();
+}
+
+void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
+{}
+
+void LogbookTableEditWidget::addEntryRequested()
+{
+    auto nfd = NewFlightDialog(this);
+    nfd.exec();
+}
+
+void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
+{
+    m_stackedWidget->show();
+    const auto idx = m_view->selectionModel()->currentIndex();
+    const auto rowId = m_model->index(idx.row(), 0).data().toInt();
+    if(rowId > 0) {
+        auto nfd = NewFlightDialog(rowId, this);
+        m_stackedWidget->addWidget(&nfd);
+        m_stackedWidget->setCurrentWidget(&nfd);
+        nfd.exec();
+    } else {
+        auto nsd = NewSimDialog(rowId * -1, this);
+        m_stackedWidget->addWidget(&nsd);
+        m_stackedWidget->setCurrentWidget(&nsd);
+        nsd.exec();
+    }
+    m_stackedWidget->hide();
+}
+
+void LogbookTableEditWidget::deleteEntryRequested()
+{
+    const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
+    if(!selectedIndex.isValid()) {
+        WARN(tr("No entry selected."));
+        return;
+    }
+    m_stackedWidget->hide();
+
+    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    m_view->selectionModel()->reset();
+
+    // get user confirmation
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Confirm Deletion"));
+
+    confirm.setText(confirmDeleteString(rowId));
+    if (confirm.exec() == QMessageBox::Yes) {
+        if(rowId > 0) {
+            const auto selectedEntry = DB->getFlightEntry(rowId);
+            if(!DB->remove(selectedEntry))
+                WARN(deleteErrorString(rowId));
+        } else {
+            const auto selectedEntry = DB->getSimEntry(rowId * - 1);
+            if(!DB->remove(selectedEntry))
+                WARN(deleteErrorString(rowId));
+        }
+    }
+
+    // re-set stackedWidget for Vertical Layout
+//    m_stackedWidget->setCurrentWidget(m_filterWidget);
+//    m_stackedWidget->show();
 }
 
 // private implementations

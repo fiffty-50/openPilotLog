@@ -29,6 +29,8 @@
 #include <QKeyEvent>
 #include <QToolBar>
 
+#include <src/gui/widgets/logbooktableeditwidget.h>
+
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/logbookwidget.h"
@@ -117,7 +119,7 @@ private:
 
     HomeWidget* homeWidget;
 
-    LogbookWidget* logbookWidget;
+    LogbookTableEditWidget* logbookWidget;
     
     TableEditWidget* tailsWidget;
 

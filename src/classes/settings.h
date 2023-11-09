@@ -110,7 +110,7 @@ public:
     /*!
      * \brief returns the date format to be used in the application
      */
-    static OPL::Date::Format getDateFormat() { return OPL::Date::Format(settingsInstance->value(MAIN_DATE_FORMAT).toInt()); }
+    static OPL::Date::Format getDateFormat() { return OPL::Date::Format(settingsInstance->value(MAIN_DATE_FORMAT, OPL::Date::Format::Default).toInt()); }
 
     /*!
      * \brief sets the date format to be used in the application

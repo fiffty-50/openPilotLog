@@ -4,31 +4,33 @@
 #include "ui_newsimdialog.h"
 #include "src/opl.h"
 #include "src/classes/time.h"
-#include "src/functions/datetime.h"
 #include "src/database/database.h"
+#include "src/classes/settings.h"
 #include <QCompleter>
 /*!
  * \brief create a NewSimDialog to add a new Simulator Entry to the database
  */
-NewSimDialog::NewSimDialog(QWidget *parent) :
-    QDialog(parent),
+NewSimDialog::NewSimDialog(QWidget *parent)
+    : EntryEditDialog(parent),
     ui(new Ui::NewSimDialog)
 {
     //entry = ASimulatorEntry();
     ui->setupUi(this);
-    ui->dateLineEdit->setText(OPL::DateTime::currentDate());
+
+    m_dateFormat = Settings::getDateFormat();
+    ui->dateLineEdit->setText(OPL::Date::today().toString(m_dateFormat));
     init();
 }
 /*!
  * \brief create a NewSimDialog to edit an existing Simulator Entry
  * \param row_id of the entry to be edited
  */
-NewSimDialog::NewSimDialog(int row_id, QWidget *parent) :
-    QDialog(parent),
+NewSimDialog::NewSimDialog(int row_id, QWidget *parent)
+    : EntryEditDialog(parent),
     ui(new Ui::NewSimDialog)
 {
-
     ui->setupUi(this);
+    m_dateFormat = Settings::getDateFormat();
     entry = DB->getSimEntry(row_id);
     init();
     fillEntryData();
@@ -55,7 +57,7 @@ void NewSimDialog::init()
 void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
-    ui->dateLineEdit->setText(data.value(OPL::SimulatorEntry::DATE).toString());
+    ui->dateLineEdit->setText(OPL::Date::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt()).toString(m_dateFormat));
     ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt()).toString());
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::SimulatorEntry::TYPE).toInt());
     ui->aircraftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
@@ -70,12 +72,9 @@ NewSimDialog::~NewSimDialog()
 
 void NewSimDialog::on_dateLineEdit_editingFinished()
 {
-    auto text = ui->dateLineEdit->text();
-
-    OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    auto date = OPL::DateTime::parseInput(text, date_format);
-    if (date.isValid()) {
-        ui->dateLineEdit->setText(OPL::DateTime::dateToString(date, date_format));
+    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
+    if(date.isValid()) {
+        ui->dateLineEdit->setText(date.toString(m_dateFormat));
         ui->dateLineEdit->setStyleSheet(QString());
         return;
     } else {
@@ -122,9 +121,7 @@ void NewSimDialog::on_helpPushButton_clicked()
 bool NewSimDialog::verifyInput(QString& error_msg)
 {
     // Date
-    auto text = ui->dateLineEdit->text();
-    OPL::DateFormat date_format = OPL::DateFormat::ISODate;
-    const auto date = OPL::DateTime::parseInput(text, date_format);
+    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
 
     if (!date.isValid()) {
         ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
@@ -159,7 +156,8 @@ OPL::RowData_T NewSimDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    new_entry.insert(OPL::SimulatorEntry::DATE, ui->dateLineEdit->text());
+    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
+    new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
     // Time
     new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
     // Device Type
@@ -192,4 +190,18 @@ void NewSimDialog::on_buttonBox_accepted()
         QDialog::accept();
     else
         WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1").arg(DB->lastError.text()));
+}
+
+// EntryEdit interface
+void NewSimDialog::loadEntry(int rowID)
+{
+    entry = DB->getSimEntry(rowID);
+    init();
+    fillEntryData();
+}
+
+bool NewSimDialog::deleteEntry(int rowID)
+{
+    const auto entry = DB->getSimEntry(rowID);
+    return DB->remove(entry);
 }

@@ -1,6 +1,7 @@
 #ifndef LOGBOOKTABLEEDITWIDGET_H
 #define LOGBOOKTABLEEDITWIDGET_H
 
+#include "settingswidget.h"
 #include "tableeditwidget.h"
 #include "src/opl.h"
 #include <QObject>
@@ -37,8 +38,13 @@ public:
     virtual QString confirmDeleteString(int rowId) override;
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
 
+public slots:
+    void viewSelectionChanged(SettingsWidget::SettingSignal widget);
 private slots:
     virtual void filterTextChanged(const QString &filterString) override;
+    virtual void addEntryRequested() override;
+    virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
+    virtual void deleteEntryRequested() override;
 };
 
 #endif // LOGBOOKTABLEEDITWIDGET_H

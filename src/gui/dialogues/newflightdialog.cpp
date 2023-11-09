@@ -76,6 +76,7 @@ void NewFlightDialog::setPilotFunction()
         ui->functionComboBox->setCurrentIndex(2);
         emit ui->sicNameLineEdit->editingFinished();
     }
+    ui->pilotFlyingCheckBox->setCheckState(Qt::Checked);
 }
 
 void NewFlightDialog::init()
@@ -704,7 +705,7 @@ void NewFlightDialog::on_buttonBox_accepted()
 }
 
 
-void NewFlightDialog::on_pushButton_clicked()
+void NewFlightDialog::on_calendarPushButton_clicked()
 {
     calendar->setVisible(true);
 }
@@ -714,5 +715,19 @@ void NewFlightDialog::calendarDateSelected()
     calendar->setVisible(false);
     ui->doftLineEdit->setText(OPL::Date(calendar->selectedDate().toJulianDay()).toString(dateFormat));
     emit ui->doftLineEdit->editingFinished();
+}
+
+// EntryEditDialog interface
+
+void NewFlightDialog::loadEntry(int rowID)
+{
+    flightEntry = DB->getFlightEntry(rowID);
+    fillWithEntryData();
+}
+
+bool NewFlightDialog::deleteEntry(int rowID)
+{
+    const auto entry = DB->getFlightEntry(rowID);
+    return DB->remove(entry);
 }
 
