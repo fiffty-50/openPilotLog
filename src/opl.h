@@ -148,17 +148,18 @@ struct DateTimeFormat {
         m_dateFormatString(QStringLiteral("yyyy-MM-dd")),
         m_timeFormat(TimeFormat::Default),
         m_timeFormatString(QStringLiteral("hh:mm"))
-        {}
+    {}
 
     DateTimeFormat(DateFormat dateFormat_,
                    const QString &dateFormatString_,
                    TimeFormat timeFormat_,
                    const QString &timeFormatString_)
         :
-            m_dateFormat(dateFormat_),
+        m_dateFormat(dateFormat_),
         m_dateFormatString(dateFormatString_),
         m_timeFormat(timeFormat_),
-            m_timeFormatString(timeFormatString_) {}
+        m_timeFormatString(timeFormatString_)
+    {}
 
 
 public:

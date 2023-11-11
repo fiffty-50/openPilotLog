@@ -16,7 +16,7 @@
 CurrencyWidget::CurrencyWidget(QWidget *parent)
     : QWidget{parent}
 {
-    dateFormat = QStringLiteral("yyyy-MM-dd"); // TODO implement date formats
+    m_format = Settings::getDisplayFormat();
     setupModelAndView();
     setupUI();
 
@@ -159,7 +159,7 @@ void CurrencyWidget::fillFlightTimeLimitations()
     for (const auto &pair : limits) {
         int accruedMinutes = OPL::Statistics::totalTime(pair.second);
         int limitMinutes = EasaFTL::getLimit(pair.second);
-        pair.first->setText(OPL::Time(accruedMinutes).toString());
+        pair.first->setText(OPL::Time(accruedMinutes, m_format).toString());
 
 
         if (accruedMinutes >= limitMinutes)
@@ -212,7 +212,7 @@ void CurrencyWidget::displayNameEditRequested(const QModelIndex &index)
 void CurrencyWidget::expiryDateEditRequested(const QModelIndex &index)
 {
     const QString selection = index.data().toString();
-    const QDate selectedDate = QDate::fromString(selection, dateFormat);
+    const QDate selectedDate = QDate::fromString(selection, Qt::ISODate);
     if(selectedDate.isValid()) {
         const QSignalBlocker blocker(calendar);
         calendar->setSelectedDate(selectedDate);

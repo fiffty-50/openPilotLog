@@ -1,6 +1,7 @@
 #ifndef STYLEDTIMEDELEGATE_H
 #define STYLEDTIMEDELEGATE_H
 
+#include "src/opl.h"
 #include <QStyledItemDelegate>
 
 /*!
@@ -11,9 +12,11 @@
 class StyledTimeDelegate : public QStyledItemDelegate
 {
 public:
-    explicit StyledTimeDelegate(QObject *parent = nullptr);
+    explicit StyledTimeDelegate(const OPL::DateTimeFormat &format, QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;
+private:
+    OPL::DateTimeFormat m_format;
 };
 
 #endif // STYLEDTIMEDELEGATE_H

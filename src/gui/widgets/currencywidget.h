@@ -1,6 +1,7 @@
 #ifndef CURRENCYWIDGET_H
 #define CURRENCYWIDGET_H
 
+#include "src/opl.h"
 #include <QWidget>
 #include <QCalendarWidget>
 #include <QTableView>
@@ -13,8 +14,8 @@ class CurrencyWidget : public QWidget
     QTableView *view;
     QSqlTableModel *model;
     QCalendarWidget *calendar;
-    QString dateFormat;
     QModelIndex lastSelection;
+    OPL::DateTimeFormat m_format;
 
     int ROWID_COLUMN = 0;
     int CURRENCY_NAME_COLUMN = 1;

@@ -46,8 +46,6 @@ public:
     void setExpiryDate(const OPL::Date &date);
     const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
 
-
-
 private:
 
     /*!

@@ -54,14 +54,14 @@ void ProcessFlights::processParsedData()
         auto time_off = QTime::fromString(row[4], QStringLiteral("hh:mm"));
         if (!time_off.isValid())
             time_off = QTime::fromString(row[4], QStringLiteral("h:mm"));
-        int tofb = OPL::Time::fromString(time_off.toString()).toMinutes();
+        int tofb = OPL::Time::fromString(time_off.toString(), OPL::DateTimeFormat()).toMinutes();
         new_flight_data.insert(OPL::FlightEntry::TOFB, tofb);
 
         auto time_on = QTime::fromString(row[5], QStringLiteral("hh:mm"));
         if (!time_on.isValid())
             time_on = QTime::fromString(row[5], QStringLiteral("h:mm"));
 
-        int tonb = OPL::Time::fromString(time_on.toString()).toMinutes();
+        int tonb = OPL::Time::fromString(time_on.toString(), OPL::DateTimeFormat()).toMinutes();
         new_flight_data.insert(OPL::FlightEntry::TONB, tonb);
 
         // map pilots

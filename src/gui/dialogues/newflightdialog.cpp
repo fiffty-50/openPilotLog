@@ -213,8 +213,8 @@ void NewFlightDialog::fillWithEntryData()
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
     ui->destLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEST).toString());
     // Times
-    ui->tofbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TOFB).toInt()).toString());
-    ui->tonbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TONB).toInt()).toString());
+    ui->tofbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TOFB).toInt(), m_format).toString());
+    ui->tonbTimeLineEdit->setText(OPL::Time(flight_data.value(OPL::FlightEntry::TONB).toInt(), m_format).toString());
     ui->acftLineEdit->setText(DBCache->getTailsMap().value(flight_data.value(OPL::FlightEntry::ACFT).toInt()));
     ui->picNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::FlightEntry::PIC).toInt()));
     ui->sicNameLineEdit->setText(DBCache->getPilotNamesMap().value(flight_data.value(OPL::FlightEntry::SECONDPILOT).toInt()));
@@ -277,8 +277,8 @@ void NewFlightDialog::onGoodInputReceived(QLineEdit *line_edit)
         validationState.validate(mandatoryLineEdits->indexOf(line_edit));
 
     if (validationState.timesValid()) {
-        const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
-        const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
+        const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text(), m_format);
+        const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text(), m_format);
         const OPL::Time tblk = OPL::Time::blockTime(tofb, tonb);
         ui->tblkDisplayLabel->setText(tblk.toString());
     }
@@ -396,8 +396,8 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     OPL::RowData_T new_data;
 
     // Calculate Block and Night Time
-    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text());
-    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text());
+    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text(), m_format);
+    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text(), m_format);
     const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
 
     QDateTime departure_date_time = OPL::DateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());

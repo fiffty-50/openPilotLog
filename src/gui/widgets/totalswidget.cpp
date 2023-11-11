@@ -22,6 +22,7 @@
 #include "src/opl.h"
 #include "src/classes/time.h"
 #include "ui_totalswidget.h"
+#include "src/classes/settings.h"
 
 TotalsWidget::TotalsWidget(WidgetType widgetType, QWidget *parent) :
     QWidget(parent),
@@ -43,6 +44,7 @@ TotalsWidget::~TotalsWidget()
  */
 void TotalsWidget::setup(const WidgetType widgetType)
 {
+    m_format = Settings::getDisplayFormat();
     const QList<QLineEdit *> lineEdits = this->findChildren<QLineEdit *>();
 
     switch (widgetType) {
@@ -106,7 +108,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
                 line_edit->setText(field.toString());
             } else {
                 // line edits for total time
-                OPL::Time time = OPL::Time(field.toInt());// = Time(field.toInt());
+                OPL::Time time = OPL::Time(field.toInt(), m_format);// = Time(field.toInt());
                 line_edit->setText(time.toString());
             }
         }
@@ -171,7 +173,7 @@ void TotalsWidget::timeLineEditEditingFinished()
 
     // write the updated value to the database
     const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value = OPL::Time::fromString(line_edit->text()).toMinutes();
+    const QVariant value = OPL::Time::fromString(line_edit->text(), m_format).toMinutes();
 
     m_rowData.insert(db_field, value);
     LOG << "Added row data: " + db_field + ": " + value.toString();
@@ -181,7 +183,7 @@ void TotalsWidget::timeLineEditEditingFinished()
 
     // Read back the value and set the line edit to confirm input is correct and provide user feedback
     m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
-    OPL::Time new_time = OPL::Time(m_rowData.value(db_field).toInt());
+    OPL::Time new_time = OPL::Time(m_rowData.value(db_field).toInt(), m_format);
     line_edit->setText(new_time.toString());
 }
 

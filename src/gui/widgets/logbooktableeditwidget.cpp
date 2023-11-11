@@ -48,6 +48,7 @@ void LogbookTableEditWidget::setupUI()
     m_deleteEntryPushButton->setText(tr("Delete selected Entry"));
     m_filterWidget->hide();
     m_stackedWidget->hide();
+    m_format = Settings::getDisplayFormat();
 }
 
 QString LogbookTableEditWidget::deleteErrorString(int rowId)
@@ -140,10 +141,6 @@ void LogbookTableEditWidget::deleteEntryRequested()
                 WARN(deleteErrorString(rowId));
         }
     }
-
-    // re-set stackedWidget for Vertical Layout
-//    m_stackedWidget->setCurrentWidget(m_filterWidget);
-//    m_stackedWidget->show();
 }
 
 // private implementations
@@ -151,7 +148,7 @@ void LogbookTableEditWidget::deleteEntryRequested()
 void LogbookTableEditWidget::setupDelegates()
 {
     // minutes to hh:mm
-    const auto timeDelegate = new StyledTimeDelegate(m_model);
+    const auto timeDelegate = new StyledTimeDelegate(m_format, m_model);
     m_view->setItemDelegateForColumn(-1, timeDelegate); // shut up ctidy
     for(const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
         m_view->setItemDelegateForColumn(col, timeDelegate);

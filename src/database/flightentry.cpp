@@ -40,19 +40,20 @@ const QString FlightEntry::getTableName() const
 
 const QString FlightEntry::getFlightSummary() const
 {
+    using namespace OPL;
     if(!isValid())
         return QString();
 
     auto tableData = getData();
     QString flight_summary;
-    auto space = QLatin1Char(' ');
-    flight_summary.append(OPL::Date(tableData.value(OPL::FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
-    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
+    const auto space = QLatin1Char(' ');
+    flight_summary.append(Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
+    flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
+    flight_summary.append(Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString()
                           + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
+    flight_summary.append(Time(tableData.value(FlightEntry::TONB).toInt(), DateTimeFormat()).toString()
                           + space);
-    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
+    flight_summary.append(tableData.value(FlightEntry::DEST).toString());
 
     return flight_summary;
 }

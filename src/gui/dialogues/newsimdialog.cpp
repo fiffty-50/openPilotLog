@@ -58,7 +58,7 @@ void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
     ui->dateLineEdit->setText(OPL::Date(data.value(OPL::SimulatorEntry::DATE).toInt(), m_format).toString());
-    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt()).toString());
+    ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt(), m_format).toString());
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::SimulatorEntry::TYPE).toInt());
     ui->aircraftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
     ui->registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
@@ -133,7 +133,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
     if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
         return false;
 
-    const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text());
+    const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text(), m_format);
 
     if (!time.isValidTimeOfDay()) {
         ui->totalTimeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
@@ -159,7 +159,7 @@ OPL::RowData_T NewSimDialog::collectInput()
     const auto date = OPL::Date(ui->dateLineEdit->text(), m_format);
     new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
     // Time
-    new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());
+    new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text(), m_format).toMinutes());
     // Device Type
     new_entry.insert(OPL::SimulatorEntry::TYPE, ui->deviceTypeComboBox->currentText());
     // Aircraft Type

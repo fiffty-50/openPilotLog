@@ -48,6 +48,8 @@ private:
     /*!
      * \brief ROW_ID the row ID for previous experience entries (1)
      */
+
+    OPL::DateTimeFormat m_format;
     const static int ROW_ID = 1;
     void fillTotals(const WidgetType widgetType);
     void setup(const WidgetType widgetType);

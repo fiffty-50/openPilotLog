@@ -1,10 +1,17 @@
 #ifndef DATETIME_H
 #define DATETIME_H
 #include "src/opl.h"
+#include "src/classes/date.h"
+#include "src/classes/time.h"
 
 namespace OPL {
 
 class DateTime {
+
+public:
+//    DateTime(const OPL::Date date, const OPL::Time &time);
+
+
 public:
     const inline static QString ISO_FORMAT_STRING = QStringLiteral("yyyy-MM-dd");
     const inline static QString DE_FORMAT_STRING = QStringLiteral("dd.MM.yyyy");

@@ -27,6 +27,7 @@ public:
 
 private:
     OPL::LogbookView m_logbookView;
+    OPL::DateTimeFormat m_format;
 
     /*!
      * \brief Set up the QStyledItemDelegate instances that transform the database values to user-readable values.
