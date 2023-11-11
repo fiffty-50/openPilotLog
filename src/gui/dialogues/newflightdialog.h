@@ -84,8 +84,7 @@ private:
     Ui::NewFlightDialog *ui;
     ValidationState validationState;
     QCalendarWidget *calendar;
-
-    OPL::Date::Format dateFormat;
+    OPL::DateTimeFormat m_format;
 
     /*!
      * \brief a AFlightEntry object that is used to store either position data

@@ -69,11 +69,11 @@ public:
      * \brief dateTimeToString formats a QDateTime object into a string in a uniform way.
      * \return
      */
-    static inline const QString dateTimeToString (const QDateTime& date_time, OPL::DateTimeFormat format) {
+    static inline const QString dateTimeToString (const QDateTime& date_time, OPL::DateTimeFormat_deprecated format) {
         switch (format) {
-        case OPL::DateTimeFormat::Default:
+        case OPL::DateTimeFormat_deprecated::Default:
             return date_time.toString(Qt::ISODate);
-        case OPL::DateTimeFormat::Backup:
+        case OPL::DateTimeFormat_deprecated::Backup:
             return date_time.toString(QStringLiteral("yyyy_MM_dd_T_hh_mm"));
         default:
             return QString();

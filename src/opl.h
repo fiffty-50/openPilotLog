@@ -119,6 +119,62 @@ struct ToLdgCount_T {
 };
 
 /*!
+ * \brief The DateFormat struct encapsulates how date and time values are displayed.
+ * \details Stores how the user wishes to display and enter Date and Time Entries.
+ * These are stored numerically in the database and thus need to be converted to
+ * human-readably form.
+ */
+struct DateTimeFormat {
+    /*!
+     * \brief Enumerates how dates can be formatted to a localised format.
+     * \value Default - The Application standard, Equivalent to Qt::ISODate
+     * \value SystemLocale - The current system locale date format
+     */
+    enum class DateFormat { Default, SystemLocale, Custom };
+
+    /*!
+     * \brief Enumerates how time values can be formatted
+     * \value Default - The application default is 'hh:mm'
+     * \value Decimal - Time as Decmial hours (01:30 == 1.5)
+     * \value Custom - A user-provided custom format string
+     */
+    enum class TimeFormat { Default, Decimal, Custom };
+
+    /*!
+     * \brief Initialise a DateTimeFormat instance with default values
+     */
+    DateTimeFormat()
+        : m_dateFormat(DateFormat::Default),
+        m_dateFormatString(QStringLiteral("yyyy-MM-dd")),
+        m_timeFormat(TimeFormat::Default),
+        m_timeFormatString(QStringLiteral("hh:mm"))
+        {}
+
+    DateTimeFormat(DateFormat dateFormat_,
+                   const QString &dateFormatString_,
+                   TimeFormat timeFormat_,
+                   const QString &timeFormatString_)
+        :
+            m_dateFormat(dateFormat_),
+        m_dateFormatString(dateFormatString_),
+        m_timeFormat(timeFormat_),
+            m_timeFormatString(timeFormatString_) {}
+
+
+public:
+    DateFormat dateFormat() const { return m_dateFormat; }
+    TimeFormat timeFormat() const { return m_timeFormat; }
+    const QString &dateFormatString() const { return m_dateFormatString; }
+    const QString &timeFormatString() const { return m_timeFormatString; }
+
+private:
+    DateFormat m_dateFormat;
+    TimeFormat m_timeFormat;
+    QString m_dateFormatString;
+    QString m_timeFormatString;
+};
+
+/*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
  * \todo At the moment, only ISODate is accepet as a valid date format.
  */
@@ -126,7 +182,7 @@ enum class DateFormat {ISODate, DE, EN };
 
 enum class FlightTimeFormat {Default, Decimal};
 
-enum class DateTimeFormat {Default, Backup};
+enum class DateTimeFormat_deprecated {Default, Backup};
 
 /*!
  * \brief PilotFunction

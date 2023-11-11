@@ -33,10 +33,17 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    LogbookTableEditWidget *widget = new LogbookTableEditWidget(this);
-    widget->init();
-    widget->setWindowFlags(Qt::Dialog);
-    widget->show();
+    const OPL::DateTimeFormat defaultFormat(
+        OPL::DateTimeFormat::DateFormat::Default,
+        QStringLiteral("yyyy-MM-dd"),
+        OPL::DateTimeFormat::TimeFormat::Default,
+        QStringLiteral("hh:mm")
+        );
+    Settings::setDisplayFormat(defaultFormat);
+//    LogbookTableEditWidget *widget = new LogbookTableEditWidget(this);
+//    widget->init();
+//    widget->setWindowFlags(Qt::Dialog);
+//    widget->show();
 }
 
 MainWindow::MainWindow(QWidget *parent)

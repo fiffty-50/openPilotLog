@@ -1,7 +1,7 @@
 #ifndef DATE_H
 #define DATE_H
 #include <QDate>
-#include <QLocale>
+#include "src/opl.h"
 namespace OPL {
 
 /*!
@@ -12,53 +12,33 @@ namespace OPL {
  *
  * Storing a given date as an integer value allows for easy conversion to localised strings
  * as well as calculations like date ranges.
+ *
+ * Julian day is also used to store a date in the database.
  */
 class Date
 {
 public:
 
-    /*!
-     * \brief Enumerates how dates can be formatted to a localised format.
-     * \value Default - The Application standard, Equivalent to Qt::ISODate
-     * \value SystemLocaleLong - The current system locale, elaborate
-     * \value SystemLocaleShort - The current system locale, short
-     */
-    enum Format {Default, SystemLocaleLong, SystemLocaleShort};
-
     Date() = delete;
+    Date(int julianDay, const DateTimeFormat &format);
+    Date(const QString &textDate, const DateTimeFormat &format);
+    Date(const QDate &date, const DateTimeFormat &format);
 
-    Date(int julianDay);
+    const QString toString() const;
+    const bool isValid() const { return m_date.isValid(); }
 
-    const QString toString(Format format = Format::Default) const;
+    const inline int toJulianDay() const { return m_date.toJulianDay(); }
+    const static inline Date today(const DateTimeFormat &format) { return Date(QDate::currentDate().toJulianDay(), format); }
 
-    const bool isValid() const { return date.isValid(); }
-
-    const static inline Date fromString(const QString &dateString, Format format = Default) {
-        switch (format) {
-        case Default:
-            return Date(QDate::fromString(dateString, Qt::ISODate).toJulianDay());
-        case SystemLocaleLong:
-            return Date(QDate::fromString(dateString, QLocale::system().dateFormat(QLocale::LongFormat)).toJulianDay());
-        case SystemLocaleShort:
-            return Date(QDate::fromString(dateString, QLocale::system().dateFormat(QLocale::ShortFormat)).toJulianDay());
-        default:
-            return Date(0);
-            break;
-        }
-    }
-
-    const inline int toJulianDay() const { return date.toJulianDay(); }
-
-    const static inline Date fromJulianDay(int julianDay) { return Date(julianDay); }
-
-    const static inline Date today() { return Date(QDate::currentDate().toJulianDay()); }
-
-    const static inline QString julianDayToString(int julianDay) { return Date(julianDay).toString(); }
+//    void setDateFormat(const DateFormat_ &format) {m_format = format}
+    // todo copy constructor
 
 private:
-    QDate date;
-
+    QDate m_date;
+    DateTimeFormat m_format;
 };
+
+
 
 } // namespace OPL
 

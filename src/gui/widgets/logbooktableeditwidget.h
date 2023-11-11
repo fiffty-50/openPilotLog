@@ -15,7 +15,8 @@
  * The user can select a view from a list of available views in the SettingsWidget.
  *
  * Some of the selectable views aggregate data from the flights and simulators table. In those views, flight
- * entries have positive row id's whereas the simulators have inverse (negative) row id's.
+ * entries have positive row id's whereas the simulators have inverse (negative) row id's. This necessitates
+ * checking the row id's value before deciding on the apropriate EntryEditDialog.
  */
 class LogbookTableEditWidget : public TableEditWidget
 {
@@ -26,6 +27,10 @@ public:
 
 private:
     OPL::LogbookView m_logbookView;
+
+    /*!
+     * \brief Set up the QStyledItemDelegate instances that transform the database values to user-readable values.
+     */
     void setupDelegates();
 
     static constexpr int COL_ROWID = 0;

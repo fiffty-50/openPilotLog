@@ -14,12 +14,10 @@ NewSimDialog::NewSimDialog(QWidget *parent)
     : EntryEditDialog(parent),
     ui(new Ui::NewSimDialog)
 {
-    //entry = ASimulatorEntry();
     ui->setupUi(this);
-
-    m_dateFormat = Settings::getDateFormat();
-    ui->dateLineEdit->setText(OPL::Date::today().toString(m_dateFormat));
     init();
+
+    ui->dateLineEdit->setText(OPL::Date::today(m_format).toString());
 }
 /*!
  * \brief create a NewSimDialog to edit an existing Simulator Entry
@@ -30,9 +28,9 @@ NewSimDialog::NewSimDialog(int row_id, QWidget *parent)
     ui(new Ui::NewSimDialog)
 {
     ui->setupUi(this);
-    m_dateFormat = Settings::getDateFormat();
-    entry = DB->getSimEntry(row_id);
     init();
+
+    entry = DB->getSimEntry(row_id);
     fillEntryData();
 }
 
@@ -49,6 +47,8 @@ void NewSimDialog::init()
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
     ui->aircraftTypeLineEdit->setCompleter(completer);
+
+    m_format = Settings::getDisplayFormat();
 }
 
 /*!
@@ -57,7 +57,7 @@ void NewSimDialog::init()
 void NewSimDialog::fillEntryData()
 {
     const auto& data = entry.getData();
-    ui->dateLineEdit->setText(OPL::Date::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt()).toString(m_dateFormat));
+    ui->dateLineEdit->setText(OPL::Date(data.value(OPL::SimulatorEntry::DATE).toInt(), m_format).toString());
     ui->totalTimeLineEdit->setText(OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt()).toString());
     ui->deviceTypeComboBox->setCurrentIndex(data.value(OPL::SimulatorEntry::TYPE).toInt());
     ui->aircraftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
@@ -72,9 +72,9 @@ NewSimDialog::~NewSimDialog()
 
 void NewSimDialog::on_dateLineEdit_editingFinished()
 {
-    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
+    const auto date = OPL::Date(ui->dateLineEdit->text(), m_format);
     if(date.isValid()) {
-        ui->dateLineEdit->setText(date.toString(m_dateFormat));
+        ui->dateLineEdit->setText(date.toString());
         ui->dateLineEdit->setStyleSheet(QString());
         return;
     } else {
@@ -121,7 +121,7 @@ void NewSimDialog::on_helpPushButton_clicked()
 bool NewSimDialog::verifyInput(QString& error_msg)
 {
     // Date
-    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
+    const auto date = OPL::Date(ui->dateLineEdit->text(), m_format);
 
     if (!date.isValid()) {
         ui->dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
@@ -156,7 +156,7 @@ OPL::RowData_T NewSimDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    const auto date = OPL::Date::fromString(ui->dateLineEdit->text());
+    const auto date = OPL::Date(ui->dateLineEdit->text(), m_format);
     new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
     // Time
     new_entry.insert(OPL::SimulatorEntry::TIME, OPL::Time::fromString(ui->totalTimeLineEdit->text()).toMinutes());

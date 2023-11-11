@@ -49,7 +49,7 @@ void CurrencyWidget::setupModelAndView()
     view->setAlternatingRowColors(true);
     view->hideColumn(ROWID_COLUMN);
 
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormat(), this);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), this);
     view->setItemDelegateForColumn(EXPIRY_DATE_COLUMN, dateDelegate);
 }
 

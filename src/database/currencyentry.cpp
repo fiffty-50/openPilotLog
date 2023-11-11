@@ -47,9 +47,9 @@ void CurrencyEntry::setExpiryDate(const Date &date)
     setData(data);
 }
 
-const Date CurrencyEntry::getExpiryDate() const
+const Date CurrencyEntry::getExpiryDate(const OPL::DateTimeFormat &format) const
 {
-    return OPL::Date(getData().value(EXPIRYDATE).toInt());
+    return OPL::Date(getData().value(EXPIRYDATE).toInt(), format);
 }
 
 } // namespace OPL

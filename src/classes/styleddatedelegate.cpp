@@ -1,13 +1,13 @@
 #include "styleddatedelegate.h"
+#include "src/classes/date.h"
 
-StyledDateDelegate::StyledDateDelegate(OPL::Date::Format dateFormat, QObject *parent)
+StyledDateDelegate::StyledDateDelegate(const OPL::DateTimeFormat &dateFormat, QObject *parent)
     :
     QStyledItemDelegate(parent),
-    m_dateFormat(dateFormat)
+    m_format(dateFormat)
 {}
 
 QString StyledDateDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
-    const OPL::Date date(value.toInt());
-    return date.toString(m_dateFormat);
+    return OPL::Date(value.toInt(), m_format).toString();
 }

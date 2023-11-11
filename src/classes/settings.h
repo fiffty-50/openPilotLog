@@ -18,7 +18,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 #include "src/opl.h"
-#include "src/classes/date.h"
 #include <QtCore>
 #include <QSettings>
 
@@ -108,14 +107,14 @@ public:
     static void setLogbookView(OPL::LogbookView view) { (settingsInstance->setValue(MAIN_LOGBOOK_VIEW, static_cast<int>(view))); }
 
     /*!
-     * \brief returns the date format to be used in the application
+     * \brief returns the Display Format used in the application
      */
-    static OPL::Date::Format getDateFormat() { return OPL::Date::Format(settingsInstance->value(MAIN_DATE_FORMAT, OPL::Date::Format::Default).toInt()); }
+    static OPL::DateTimeFormat getDisplayFormat();
 
     /*!
-     * \brief sets the date format to be used in the application
+     * \brief sets the Display Format used in the application
      */
-    static void setDateFormat(OPL::Date::Format format) { (settingsInstance->setValue(MAIN_DATE_FORMAT, static_cast<int>(format))); }
+    static void setDisplayFormat(const OPL::DateTimeFormat &format);
 
     /*!
      * \brief returns the default pilot function for new flights
@@ -238,7 +237,12 @@ private:
     const static inline QString MAIN_FONT_SIZE 		 	= QStringLiteral("main/fontSize");
     const static inline QString MAIN_USE_SYSTEM_FONT 	= QStringLiteral("main/useSystemFont");
     const static inline QString MAIN_LOGBOOK_VIEW 	 	= QStringLiteral("main/logbookView");
-    const static inline QString MAIN_DATE_FORMAT 	 	= QStringLiteral("main/dateFormat");
+
+    const static inline QString FORMAT_DATE_FORMAT 	= QStringLiteral("format/dateFormat");
+    const static inline QString FORMAT_DATE_STRING 	= QStringLiteral("format/dateFormatString");
+    const static inline QString FORMAT_TIME_FORMAT	= QStringLiteral("format/timeFormat");
+    const static inline QString FORMAT_TIME_STRING 	= QStringLiteral("format/timeFormatString");
+
 
 };
 

@@ -46,7 +46,7 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
     init();
     setPilotFunction();
 
-    ui->doftLineEdit->setText(OPL::Date::today().toString(dateFormat));
+    ui->doftLineEdit->setText(OPL::Date::today(m_format).toString());
     emit ui->doftLineEdit->editingFinished();
 }
 
@@ -187,7 +187,8 @@ void NewFlightDialog::readSettings()
     ui->approachComboBox->setCurrentText(Settings::getApproachType());
     ui->flightRulesComboBox->setCurrentIndex(Settings::getLogIfr());
     ui->flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
-    dateFormat = Settings::getDateFormat();
+
+    m_format = Settings::getDisplayFormat();
 }
 
 /*!
@@ -198,13 +199,15 @@ void NewFlightDialog::fillWithEntryData()
 {
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
+    using namespace OPL;
 
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
-    QDate date = QDate::fromJulianDay(flight_data.value(OPL::FlightEntry::DOFT).toInt());
+    const QDate date = QDate::fromJulianDay(flight_data.value(FlightEntry::DOFT).toInt());
     calendar->setSelectedDate(date);
-    ui->doftLineEdit->setText(OPL::Date::fromJulianDay(date.toJulianDay()).toString(dateFormat));
+    ui->doftLineEdit->setText(Date(date, m_format).toString());
+//    ui->doftLineEdit->setText(OPL::Date::fromJulianDay(date.toJulianDay()).toString(dateFormat));
 
     // Location
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
@@ -563,13 +566,13 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
 void NewFlightDialog::on_doftLineEdit_editingFinished()
 {
     const auto line_edit = ui->doftLineEdit;
-    OPL::Date date = OPL::Date::fromString(ui->doftLineEdit->text(), dateFormat);
+    OPL::Date date(ui->doftLineEdit->text(), m_format);
 
 
     LOG << "Date: " << date.toString();
     LOG << "is valid? " << date.isValid();
 
-    line_edit->setText(date.toString(dateFormat));
+    line_edit->setText(date.toString());
     if(ui->doftLineEdit->text().isEmpty()) {
         onBadInputReceived(line_edit);
         return;
@@ -713,7 +716,7 @@ void NewFlightDialog::on_calendarPushButton_clicked()
 void NewFlightDialog::calendarDateSelected()
 {
     calendar->setVisible(false);
-    ui->doftLineEdit->setText(OPL::Date(calendar->selectedDate().toJulianDay()).toString(dateFormat));
+    ui->doftLineEdit->setText(OPL::Date(calendar->selectedDate(), m_format).toString());
     emit ui->doftLineEdit->editingFinished();
 }
 

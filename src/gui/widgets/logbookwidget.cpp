@@ -80,7 +80,7 @@ void LogbookWidget::setupModelAndView(OPL::LogbookView logbookView)
     view->hideColumn(0);
 
     // Set a custom delegate on the date column to style the date according to the users preference
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormat(), this);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), this);
     view->setItemDelegateForColumn(1, dateDelegate);
     view->resizeColumnsToContents();
 }

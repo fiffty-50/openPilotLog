@@ -2,7 +2,7 @@
 #define STYLEDDATEDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include "src/classes/date.h"
+#include "src/opl.h"
 
 /*!
  * \brief The StyledDateDelegate class is used to display a database date value human-readable.
@@ -13,11 +13,11 @@
 class StyledDateDelegate : public QStyledItemDelegate
 {
 public:
-    StyledDateDelegate(OPL::Date::Format dateFormat, QObject * parent = nullptr);
+    StyledDateDelegate(const OPL::DateTimeFormat &dateFormat, QObject * parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;
 private:
-    OPL::Date::Format m_dateFormat;
+    OPL::DateTimeFormat m_format;
 };
 
 #endif // STYLEDDATEDELEGATE_H

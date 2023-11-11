@@ -35,7 +35,6 @@ void Settings::resetToDefaults()
     setApplicationStyle(QStringLiteral("Fusion"));
     setUseSystemFont(true);
     setLogbookView(OPL::LogbookView::Default);
-    setDateFormat(OPL::Date::Format::Default);
     setLogAsPilotFlying(true);
     setNightAngle(-6);
     setShowSelfAs(0);
@@ -43,6 +42,33 @@ void Settings::resetToDefaults()
     setCurrencyWarningThreshold(90);
     setPilotSortColumn(0);
     setTailSortColumn(0);
+    setDisplayFormat(OPL::DateTimeFormat());
+
     sync();
+}
+
+OPL::DateTimeFormat Settings::getDisplayFormat()
+{
+    using namespace OPL;
+
+    // date format
+    const DateTimeFormat::DateFormat dateFormat = static_cast<DateTimeFormat::DateFormat>(
+        settingsInstance->value(FORMAT_DATE_FORMAT, 0).toInt());
+    const QString dateFormatString = settingsInstance->value(FORMAT_DATE_STRING, QStringLiteral("yyyy-MM-dd")).toString();
+    // time format
+    const DateTimeFormat::TimeFormat timeFormat = static_cast<DateTimeFormat::TimeFormat>(
+        settingsInstance->value(FORMAT_TIME_FORMAT, 0).toInt());
+    const QString timeFormatString = settingsInstance->value(FORMAT_TIME_STRING, QStringLiteral("hh:mm")).toString();
+
+    return DateTimeFormat(dateFormat, dateFormatString, timeFormat, timeFormatString);
+
+}
+
+void Settings::setDisplayFormat(const OPL::DateTimeFormat &format)
+{
+    settingsInstance->setValue(FORMAT_DATE_FORMAT, static_cast<int>(format.dateFormat()));
+    settingsInstance->setValue(FORMAT_DATE_STRING, format.dateFormatString());
+    settingsInstance->setValue(FORMAT_TIME_FORMAT, static_cast<int>(format.timeFormat()));
+    settingsInstance->setValue(FORMAT_TIME_STRING, format.timeFormatString());
 }
 

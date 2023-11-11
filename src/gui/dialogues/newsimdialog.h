@@ -42,7 +42,13 @@ private slots:
 
 private:
     Ui::NewSimDialog *ui;
-    OPL::Date::Format m_dateFormat;
+    //TODO load from settings
+    OPL::DateTimeFormat m_format = OPL::DateTimeFormat(
+        OPL::DateTimeFormat::DateFormat::Default,
+        QStringLiteral("yyyy-MM-dd"),
+        OPL::DateTimeFormat::TimeFormat::Default,
+        QStringLiteral("hh:mm")
+        );
 
     void init();
     void fillEntryData();

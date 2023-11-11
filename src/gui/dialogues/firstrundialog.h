@@ -96,6 +96,14 @@ private:
     Ui::FirstRunDialog *ui;
     bool useRessourceData;
 
+    //TODO load from settings
+    OPL::DateTimeFormat m_format = OPL::DateTimeFormat(
+        OPL::DateTimeFormat::DateFormat::Default,
+        QStringLiteral("yyyy-MM-dd"),
+        OPL::DateTimeFormat::TimeFormat::Default,
+        QStringLiteral("hh:mm")
+        );
+
     /*!
      * \brief finishSetup - once all the necessary data is entered by the user, this functions executes the steps necessary
      * to collect the data, process it and create the database

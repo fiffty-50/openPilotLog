@@ -87,7 +87,7 @@ const QString BackupWidget::backupName()
 {
     auto owner = DB->getPilotEntry(1);
     return  QString("logbook_backup_%1_%2.db").arg(
-                OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat::Backup),
+        OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat_deprecated::Backup),
                                                   owner.getLastName()
                 );
 }

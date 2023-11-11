@@ -158,7 +158,7 @@ void LogbookTableEditWidget::setupDelegates()
     }
 
     // julian day to Date Format
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormat(), m_model);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), m_model);
     m_view->setItemDelegateForColumn(OPL::LogbookViewInfo::getDateColumn(m_logbookView), dateDelegate);
 
     // pilot_id to names

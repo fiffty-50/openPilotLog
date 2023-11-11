@@ -370,7 +370,7 @@ bool FirstRunDialog::writeCurrencies()
         const QDate date = pair.second->date();
         if(date != today) {
             int julianDay = date.toJulianDay();
-            currencyEntry.setExpiryDate(OPL::Date(julianDay));
+            currencyEntry.setExpiryDate(OPL::Date(julianDay, m_format));
         }
 
         if(!DB->commit(currencyEntry))

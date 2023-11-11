@@ -44,7 +44,7 @@ public:
     const QString getName() const;
 
     void setExpiryDate(const OPL::Date &date);
-    const OPL::Date getExpiryDate() const;
+    const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
 
 
 
