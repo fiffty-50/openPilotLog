@@ -36,6 +36,9 @@ private:
 
     static constexpr int COL_ROWID = 0;
 
+    // keep track of default and custom delegates set on certain columns
+    QHash<int, QAbstractItemDelegate*> m_defaultDelegates;
+
     // TableEditWidget interface
 public:
     virtual void setupModelAndView() override;

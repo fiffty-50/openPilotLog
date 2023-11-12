@@ -47,7 +47,7 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
     setPilotFunction();
 
     ui->doftLineEdit->setText(OPL::Date::today(m_format).toString());
-    emit ui->doftLineEdit->editingFinished();
+//    emit ui->doftLineEdit->editingFinished();
 }
 
 NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent)
@@ -69,12 +69,10 @@ void NewFlightDialog::setPilotFunction()
     if(Settings::getPilotFunction() == OPL::PilotFunction::PIC){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
-        emit ui->picNameLineEdit->editingFinished();
     }
     if (Settings::getPilotFunction() == OPL::PilotFunction::SIC) {
         ui->sicNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(2);
-        emit ui->sicNameLineEdit->editingFinished();
     }
     ui->pilotFlyingCheckBox->setCheckState(Qt::Checked);
 }
@@ -367,11 +365,11 @@ bool NewFlightDialog::userWantsToAddNewEntry(OPL::DbTable table)
                                       QMessageBox::Yes|QMessageBox::No);
         break;
     case OPL::DbTable::Airports:
-        reply = QMessageBox::question(this, tr("No Aircraft found"),
-                                      tr("No aircraft with this registration found.<br>"
-                                         "If this is the first time you log a flight with this aircraft, "
-                                         "you have to add the registration to the database first."
-                                         "<br><br>Would you like to add a new aircraft to the database?"),
+        reply = QMessageBox::question(this, tr("No Airport found"),
+                                      tr("No Airport with this identifier found.<br>"
+                                         "If this is the first time you log a flight to this airport, "
+                                         "you have to add the airport to the database first."
+                                         "<br><br>Would you like to add a new airport to the database?"),
                                       QMessageBox::Yes|QMessageBox::No);
         break;
     default:
@@ -400,7 +398,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
     const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text(), m_format);
     const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
 
-    QDateTime departure_date_time = OPL::DateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
+    const QDateTime departure_date_time = OPL::DateTime::fromString(ui->doftLineEdit->text() + ui->tofbTimeLineEdit->text());
     const auto night_time_data = OPL::Calc::NightTimeValues(ui->deptLocationLineEdit->text(), ui->destLocationLineEdit->text(),
                            departure_date_time, block_minutes, Settings::getNightAngle());
     // Mandatory data
@@ -513,7 +511,43 @@ void NewFlightDialog::toUpper(const QString &text)
 void NewFlightDialog::onTimeLineEdit_editingFinished()
 {
     auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
-    verifyUserInput(line_edit, TimeInput(line_edit->text()));
+
+    if(OPL::Time::fromString(line_edit->text(), m_format).isValidTimeOfDay()) {
+        onGoodInputReceived(line_edit);
+        return;
+    }
+
+    // try to fix up the input
+    QString text = line_edit->text();
+    // don't mess with decimal time formats
+    if(text.contains('.')) {
+        DEB << "Bad input received: " << text;
+        onBadInputReceived(line_edit);
+    }
+
+    DEB << "Trying to fix input: " << text;
+    // try inserting a ':' for hhmm inputs
+    QString fixed = text;
+    if (text.contains(':')) { // contains seperator
+        if(text.length() == 4)
+            fixed.prepend(QLatin1Char('0'));
+    } else { // does not contain seperator
+        if(text.length() == 4) {
+            fixed.insert(2, ':');
+        }
+        if(text.length() == 3) {
+            fixed.prepend(QLatin1Char('0'));
+            fixed.insert(2, ':');
+        }
+    }
+
+    if(OPL::Time::fromString(fixed, m_format).isValidTimeOfDay()) {
+        line_edit->setText(fixed);
+        onGoodInputReceived(line_edit);
+    } else {
+        DEB << "Bad input received: " << text;
+        onBadInputReceived(line_edit);
+    }
 }
 
 void NewFlightDialog::onPilotNameLineEdit_editingFinshed()

@@ -366,7 +366,8 @@ namespace RegEx {
 
 const inline auto RX_PHONE_NUMBER  = QRegularExpression(QStringLiteral("^[+]{0,1}[0-9\\-\\s]+"));
 const inline auto RX_EMAIL_ADDRESS = QRegularExpression(QStringLiteral("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"));
-const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"));
+//const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"));
+const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("^(?:(?:([01]?\\d|2[0-3])(?::?)([0-5]\\d))|(?:([01]?\\d|2[0-3])([0-5]\\d))|(?:([1-9]|[1-9]\\d)\\:([0-5]\\d)?)|(?:([01]?\\d|2[0-3])\\.([0-5]?\\d)))$"));
 const inline auto RX_AIRPORT_CODE  = QRegularExpression(QStringLiteral("[a-zA-Z0-9]{1,4}"));
 
 } // namespace RegEx

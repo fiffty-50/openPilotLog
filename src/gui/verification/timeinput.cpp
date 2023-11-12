@@ -12,23 +12,28 @@ bool TimeInput::isValid() const
  * \details If the user input is not a valid time, this function tries to fix it. Accepted Inputs are
  * hh:mm, h:mm, hhmm or hmm. Returns "hh:mm" or an empty string if the resulting time is invalid.
  */
+QT_DEPRECATED // time input verification depends on display format...fix this TODO
 QString TimeInput::fixup() const
 {
-    QString fixed = input;
+     // don't mess with decimal time formats
+     if(input.contains('.'))
+         return input;
 
-    if (input.contains(':')) { // contains seperator
-        if(input.length() == 4)
-            fixed.prepend(QLatin1Char('0'));
-    } else { // does not contain seperator
-        if(input.length() == 4) {
-            fixed.insert(2, ':');
-        }
-        if(input.length() == 3) {
-            fixed.prepend(QLatin1Char('0'));
-            fixed.insert(2, ':');
-        }
-    }
+     // try inserting a ':' for hhmm inputs
+     QString fixed = input;
+     if (input.contains(':')) { // contains seperator
+         if(input.length() == 4)
+             fixed.prepend(QLatin1Char('0'));
+     } else { // does not contain seperator
+         if(input.length() == 4) {
+             fixed.insert(2, ':');
+         }
+         if(input.length() == 3) {
+             fixed.prepend(QLatin1Char('0'));
+             fixed.insert(2, ':');
+         }
+     }
 
-    QTime time = QTime::fromString(fixed, OPL::Format::TIME_FORMAT);
-    return time.toString(OPL::Format::TIME_FORMAT);
+     QTime time = QTime::fromString(fixed, OPL::Format::TIME_FORMAT);
+     return time.toString(OPL::Format::TIME_FORMAT);
 }

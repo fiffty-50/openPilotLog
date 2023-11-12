@@ -517,6 +517,7 @@ const RowData_T Database::getTotals(bool includePreviousExperience)
         return entry_data;
     }
 
+    // name the return types for easy mapping to QLineEdit names
     statement = "SELECT"
                 " SUM(tblk) AS tblk,"
                 " SUM(tSPSE) AS tSPSE,"

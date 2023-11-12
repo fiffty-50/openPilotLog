@@ -76,12 +76,6 @@ EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
     return new NewFlightDialog(parent);
 }
 
-void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
-{
-    if(widget == SettingsWidget::SettingSignal::LogbookWidget)
-        setupModelAndView();
-}
-
 void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
 {}
 
@@ -145,25 +139,43 @@ void LogbookTableEditWidget::deleteEntryRequested()
 
 // private implementations
 
+void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
+{
+    for(auto i = m_defaultDelegates.constBegin(); i != m_defaultDelegates.constEnd(); i++) {
+        m_view->setItemDelegateForColumn(i.key(), i.value());
+        // should probably delete the old custom delegate, Qt docs say the
+        // view does not take ownership of the delegates so they might be leaking
+        // https://doc.qt.io/qt-6/qabstractitemdelegate.html
+    }
+
+    if(widget == SettingsWidget::SettingSignal::LogbookWidget)
+        setupModelAndView();
+}
+
 void LogbookTableEditWidget::setupDelegates()
 {
     // minutes to hh:mm
     const auto timeDelegate = new StyledTimeDelegate(m_format, m_model);
-    m_view->setItemDelegateForColumn(-1, timeDelegate); // shut up ctidy
     for(const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
+        m_defaultDelegates.insert(col, m_view->itemDelegateForColumn(col));
         m_view->setItemDelegateForColumn(col, timeDelegate);
     }
 
     // julian day to Date Format
+    const int dateCol = OPL::LogbookViewInfo::getDateColumn(m_logbookView);
     const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), m_model);
-    m_view->setItemDelegateForColumn(OPL::LogbookViewInfo::getDateColumn(m_logbookView), dateDelegate);
+    m_defaultDelegates.insert(dateCol, m_view->itemDelegateForColumn(dateCol));
+    m_view->setItemDelegateForColumn(dateCol, dateDelegate);
 
     // pilot_id to names
+    const int pilCol = OPL::LogbookViewInfo::getPicColumn(m_logbookView);
     const auto pilotDelegate = new StyledPilotDelegate(m_model);
-    m_view->setItemDelegateForColumn(OPL::LogbookViewInfo::getPicColumn(m_logbookView), pilotDelegate);
+    m_defaultDelegates.insert(pilCol, m_view->itemDelegateForColumn(pilCol));
+    m_view->setItemDelegateForColumn(pilCol, pilotDelegate);
 
     // tail_id to aircraft type and registration
+    const int typeCol = OPL::LogbookViewInfo::getTypeColumn(m_logbookView);
     const auto typeDelegate = new StyledTypeDelegate(m_model);
-    m_view->setItemDelegateForColumn(OPL::LogbookViewInfo::getTypeColumn(m_logbookView), typeDelegate);
-
+    m_defaultDelegates.insert(typeCol, m_view->itemDelegateForColumn(typeCol));
+    m_view->setItemDelegateForColumn(typeCol, typeDelegate);
 }

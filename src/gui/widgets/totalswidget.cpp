@@ -108,7 +108,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
                 line_edit->setText(field.toString());
             } else {
                 // line edits for total time
-                OPL::Time time = OPL::Time(field.toInt(), m_format);// = Time(field.toInt());
+                OPL::Time time = OPL::Time(field.toInt(), m_format);
                 line_edit->setText(time.toString());
             }
         }
