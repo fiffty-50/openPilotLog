@@ -63,10 +63,6 @@ private:
 
     void fillTotals();
     void fillCurrencies();
-    void fillSelectedCurrencies();
-    void fillCurrencyTakeOffLanding();
-    void fillCurrency(OPL::CurrencyEntry::Currency currency, QLabel *display_label);
-    void fillLimitations();
 
     enum class Colour {Red, Orange, None};
     inline void setLabelColour(QLabel* label, Colour colour)
@@ -95,11 +91,9 @@ private:
     /*!
      * \brief Retreives the users first name from the database.
      */
-    const QString getLogbookOwnerName();
+    const QString getLogbookOwnerName() const;
 
 public slots:
-    void refresh();
-
     void onPilotsDatabaseChanged(const OPL::DbTable table);
 
 protected:

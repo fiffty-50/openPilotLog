@@ -118,23 +118,23 @@ void TableEditWidget::setupButtonWidget()
 void TableEditWidget::setupSignalsAndSlots()
 {
     // refresh the view when the database is updated
-    QObject::connect(DB,             		   &OPL::Database::dataBaseUpdated,
-                     this,     		 		   &TableEditWidget::databaseContentChanged);
+    QObject::connect(DB,             		   	&OPL::Database::dataBaseUpdated,
+                     this,     		 		   	&TableEditWidget::databaseContentChanged);
     // filter the view
-    QObject::connect(m_filterLineEdit,  		   &QLineEdit::textChanged,
-                     this,                     &TableEditWidget::filterTextChanged);
+    QObject::connect(m_filterLineEdit,  		&QLineEdit::textChanged,
+                     this,                     	&TableEditWidget::filterTextChanged);
     // sort the view by column
-    QObject::connect(m_view->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this,                     &TableEditWidget::sortColumnChanged);
+    QObject::connect(m_view->horizontalHeader(),&QHeaderView::sectionClicked,
+                     this,                     	&TableEditWidget::sortColumnChanged);
     // Edit an entry
-    QObject::connect(m_view,					   &QTableView::clicked,
-                     this, 			    	   &TableEditWidget::editEntryRequested);
+    QObject::connect(m_view,					&QTableView::clicked,
+                     this, 			    	   	&TableEditWidget::editEntryRequested);
     // Add a new entry
-    QObject::connect(m_addNewEntryPushButton,    &QPushButton::clicked,
-                     this, 					   &TableEditWidget::addEntryRequested);
+    QObject::connect(m_addNewEntryPushButton,   &QPushButton::clicked,
+                     this, 					   	&TableEditWidget::addEntryRequested);
     // Delete a selected entry
-    QObject::connect(m_deleteEntryPushButton,    &QPushButton::clicked,
-                     this, 					   &TableEditWidget::deleteEntryRequested);
+    QObject::connect(m_deleteEntryPushButton,   &QPushButton::clicked,
+                     this, 					   	&TableEditWidget::deleteEntryRequested);
 }
 
 void TableEditWidget::addEntryRequested()
@@ -145,8 +145,15 @@ void TableEditWidget::addEntryRequested()
 void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
     int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
-    m_entryEditDialog->loadEntry(rowId);
-    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+
+    // clean up old dialog
+    if(m_stackedWidget->indexOf(m_entryEditDialog) != -1) {
+        delete m_entryEditDialog;
+        m_entryEditDialog = getEntryEditDialog(this);
+        m_entryEditDialog->loadEntry(rowId);
+        m_stackedWidget->addWidget(m_entryEditDialog);
+        m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+    }
 
     switch (m_orientation) {
     case Horizontal:

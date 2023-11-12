@@ -25,7 +25,7 @@ class CurrencyWidget : public QWidget
     void setupUI();
     void fillTakeOffAndLandingCurrencies();
     void fillFlightTimeLimitations();
-    void warnAboutExpiries(int warningThreshold);
+    void warnAboutExpiries();
 
     void displayNameEditRequested(const QModelIndex &index);
     void expiryDateEditRequested(const QModelIndex &index);

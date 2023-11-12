@@ -33,13 +33,6 @@
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    const OPL::DateTimeFormat defaultFormat(
-        OPL::DateTimeFormat::DateFormat::Default,
-        QStringLiteral("yyyy-MM-dd"),
-        OPL::DateTimeFormat::TimeFormat::Default,
-        QStringLiteral("hh:mm")
-        );
-    Settings::setDisplayFormat(defaultFormat);
 //    LogbookTableEditWidget *widget = new LogbookTableEditWidget(this);
 //    widget->init();
 //    widget->setWindowFlags(Qt::Dialog);
@@ -52,9 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     init();
-
-    // set Startup Screen (Home Screen)
-    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +59,7 @@ void MainWindow::init()
     setupToolbar();
     connectWidgets();
     setActionIcons(OPL::Style::getStyleType());
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 void MainWindow::setupToolbar()
@@ -95,9 +86,6 @@ void MainWindow::initialiseWidgets()
     // Construct Widgets
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
-
-//    logbookWidget = new LogbookWidget(this);
-//    ui->stackedWidget->addWidget(logbookWidget);
 
     logbookWidget = new LogbookTableEditWidget(this);
     logbookWidget->init();
@@ -132,8 +120,9 @@ void MainWindow::connectDatabase()
         WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
              .arg(DB->lastError.text()));
     }
-    DBCache->init();
+
     // Load Cache
+    DBCache->init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -141,27 +130,27 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
     switch (style){
     case OPL::Style::StyleType::Light:
         LOG << "Setting Light Icon theme";
-        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
-        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // pending seperate icon
-        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
-        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
-        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
-        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
+        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
+        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
+        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
+        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
+        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
     case OPL::Style::StyleType::Dark:
         LOG << "Setting Dark Icon theme";
-        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
-        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
-        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
-        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
-        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
-        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
-        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
+        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
+        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
+        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
+        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
+        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
+        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
     }
 }
@@ -180,40 +169,16 @@ void MainWindow::nope()
  */
 void MainWindow::connectWidgets()
 {
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     homeWidget,     &HomeWidget::refresh);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     homeWidget,     &HomeWidget::refresh);
-
-//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-//                     logbookWidget,  &LogbookWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget,  &LogbookTableEditWidget::viewSelectionChanged);
 
-//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-//                     tailsWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
-//    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-//                     tailsWidget, &TailsWidget::onAircraftWidget_settingChanged);
-
-//    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-//                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
-//    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-//                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
-
-//    QObject::connect(DB,              &OPL::Database::connectionReset,
-//                     logbookWidget,   &LogbookWidget::repopulateModel);
-//    QObject::connect(DB,              &OPL::Database::connectionReset,
-//                     pilotsWidget,    &PilotsWidget::repopulateModel);
-//    QObject::connect(DB,              &OPL::Database::connectionReset,
-//                     tailsWidget,  &TailsWidget::repopulateModel);
 }
 
 void MainWindow::onDatabaseInvalid()
 {
     QMessageBox db_error(this);
-    //db_error.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     db_error.addButton(tr("Restore Backup"), QMessageBox::ButtonRole::AcceptRole);
     db_error.addButton(tr("Create New Database"), QMessageBox::ButtonRole::RejectRole);
     db_error.addButton(tr("Abort"), QMessageBox::ButtonRole::DestructiveRole);
@@ -246,7 +211,6 @@ void MainWindow::onDatabaseInvalid()
             on_actionQuit_triggered();
         }
         Settings::setSetupCompleted(true);
-//        Settings::write(Settings::Main::SetupComplete, true);
         LOG << "Initial Setup Completed successfully";
     }
 }

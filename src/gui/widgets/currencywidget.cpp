@@ -12,7 +12,6 @@
 #include <QInputDialog>
 #include <QLabel>
 
-
 CurrencyWidget::CurrencyWidget(QWidget *parent)
     : QWidget{parent}
 {
@@ -23,11 +22,10 @@ CurrencyWidget::CurrencyWidget(QWidget *parent)
     fillTakeOffAndLandingCurrencies();
     fillFlightTimeLimitations();
 
+    warnAboutExpiries();
+
     // warn the user about impending currencies if warning threshold > 0
-    int warningThreshold = Settings::getCurrencyWarningThreshold();
-    if(warningThreshold) {
-        warnAboutExpiries(warningThreshold);
-    }
+
 }
 
 void CurrencyWidget::setupModelAndView()
@@ -187,6 +185,9 @@ void CurrencyWidget::refresh()
     model->select();
     fillTakeOffAndLandingCurrencies();
     fillFlightTimeLimitations();
+
+    view->resizeColumnsToContents();
+    view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
 }
 
 void CurrencyWidget::displayNameEditRequested(const QModelIndex &index)
@@ -205,17 +206,15 @@ void CurrencyWidget::displayNameEditRequested(const QModelIndex &index)
         model->setData(index, text);
         model->submitAll();
     }
-    view->resizeColumnsToContents();
-
 }
 
 void CurrencyWidget::expiryDateEditRequested(const QModelIndex &index)
 {
-    const QString selection = index.data().toString();
-    const QDate selectedDate = QDate::fromString(selection, Qt::ISODate);
-    if(selectedDate.isValid()) {
+    const int selectedDate = index.data().toInt();
+
+    if(selectedDate > 0) {
         const QSignalBlocker blocker(calendar);
-        calendar->setSelectedDate(selectedDate);
+        calendar->setSelectedDate(QDate::fromJulianDay(selectedDate));
         calendar->show();
     } else {
         calendar->show();
@@ -231,18 +230,29 @@ void CurrencyWidget::newExpiryDateSelected()
     model->select();
 }
 
-void CurrencyWidget::warnAboutExpiries(int warningThreshold)
+void CurrencyWidget::warnAboutExpiries()
 {
+    int warningThreshold = Settings::getCurrencyWarningThreshold();
+    if(warningThreshold < 1) {
+        return;
+    }
+
     const QDate today = QDate::currentDate();
 
     for(int i = 0; i < model->rowCount(); i++) {
         const QModelIndex dateIndex = model->index(i, EXPIRY_DATE_COLUMN);
-        QDate date = QDate::fromString(dateIndex.data().toString(), Qt::ISODate);
+        if(dateIndex.data().toInt() == 0) {
+            continue;
+        }
+        const auto expiryDate = QDate::fromJulianDay(dateIndex.data().toInt());
+        const auto warningDate = QDate::fromJulianDay(expiryDate.toJulianDay() - warningThreshold);
 
-        if(date.addDays(warningThreshold) > today) {
-            const QString dateString = date.toString(Qt::ISODate);
+        if(today >= warningDate) {
+            const QString dateString = expiryDate.toString(Qt::ISODate);
             const QString nameString = model->index(i, CURRENCY_NAME_COLUMN).data().toString();
-            QString msg = tr("%1 expires on<br><br>%2").arg(nameString, dateString);
+            const QString daysLeft = QString::number(expiryDate.toJulianDay() - today.toJulianDay());
+
+            QString msg = tr("Your %1 expires in %2 days: <br><br><tt>%3</tt>").arg(nameString, daysLeft, dateString);
             WARN(msg);
         }
     }
