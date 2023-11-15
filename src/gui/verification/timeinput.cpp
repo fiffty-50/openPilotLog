@@ -1,10 +1,11 @@
 #include "timeinput.h"
+#include "src/classes/time.h"
 #include "src/opl.h"
 #include <QTime>
 
 bool TimeInput::isValid() const
 {
-     return QTime::fromString(input, OPL::Format::TIME_FORMAT).isValid();
+    return OPL::Time::fromString(input, m_format).isValid();
 }
 
 /*!
@@ -12,28 +13,43 @@ bool TimeInput::isValid() const
  * \details If the user input is not a valid time, this function tries to fix it. Accepted Inputs are
  * hh:mm, h:mm, hhmm or hmm. Returns "hh:mm" or an empty string if the resulting time is invalid.
  */
-QT_DEPRECATED // time input verification depends on display format...fix this TODO
 QString TimeInput::fixup() const
 {
-     // don't mess with decimal time formats
-     if(input.contains('.'))
-         return input;
-
-     // try inserting a ':' for hhmm inputs
-     QString fixed = input;
-     if (input.contains(':')) { // contains seperator
-         if(input.length() == 4)
-             fixed.prepend(QLatin1Char('0'));
-     } else { // does not contain seperator
-         if(input.length() == 4) {
-             fixed.insert(2, ':');
-         }
-         if(input.length() == 3) {
-             fixed.prepend(QLatin1Char('0'));
-             fixed.insert(2, ':');
-         }
-     }
-
-     QTime time = QTime::fromString(fixed, OPL::Format::TIME_FORMAT);
-     return time.toString(OPL::Format::TIME_FORMAT);
+    switch(m_format.timeFormat()) {
+    case OPL::DateTimeFormat::TimeFormat::Default:
+        return fixDefaultFormat();
+    case OPL::DateTimeFormat::TimeFormat::Decimal:
+        return fixDecimalFormat();
+    case OPL::DateTimeFormat::TimeFormat::Custom:
+        return input; // custom formats cannot be fixed
+        break;
+    }
 }
+
+const QString TimeInput::fixDefaultFormat() const
+{
+    // try inserting a ':' for hhmm inputs
+    QString fixed = input;
+    if (input.contains(':')) { // contains seperator
+        if(input.length() == 4)
+            fixed.prepend(QLatin1Char('0'));
+    } else { // does not contain seperator
+        if(input.length() == 4) {
+            fixed.insert(2, ':');
+        }
+        if(input.length() == 3) {
+            fixed.prepend(QLatin1Char('0'));
+            fixed.insert(2, ':');
+        }
+    }
+
+    return OPL::Time::fromString(fixed, m_format).toString();
+}
+
+const QString TimeInput::fixDecimalFormat() const
+{
+    // try to replace an erroneus decimal seperator
+    QString fixed = input;
+    return OPL::Time::fromString(fixed.replace(QLatin1Char(','), OPL::DECIMAL_SEPERATOR), m_format).toString();
+}
+

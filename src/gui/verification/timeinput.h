@@ -1,13 +1,15 @@
 #ifndef TIMEINPUT_H
 #define TIMEINPUT_H
 
+#include "src/opl.h"
 #include "userinput.h"
 
 class TimeInput : public UserInput
 {
 public:
     TimeInput() = delete;
-    TimeInput(const QString &input) : UserInput(input) {}
+    TimeInput(const QString &input, const OPL::DateTimeFormat &format)
+        : UserInput(input), m_format(format) {}
 
     /*!
      * \brief Checks if a user entered String is a valid time input
@@ -25,6 +27,10 @@ public:
      */
     QString fixup() const override;
 private:
+    const OPL::DateTimeFormat &m_format;
+
+    const QString fixDefaultFormat() const;
+    const QString fixDecimalFormat() const;
 };
 
 #endif // TIMEINPUT_H

@@ -510,43 +510,11 @@ void NewFlightDialog::toUpper(const QString &text)
 
 void NewFlightDialog::onTimeLineEdit_editingFinished()
 {
-    auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
+    const auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
 
-    if(OPL::Time::fromString(line_edit->text(), m_format).isValidTimeOfDay()) {
-        onGoodInputReceived(line_edit);
-        return;
-    }
-
-    // try to fix up the input
-    QString text = line_edit->text();
-    // don't mess with decimal time formats
-    if(text.contains('.')) {
-        DEB << "Bad input received: " << text;
-        onBadInputReceived(line_edit);
-    }
-
-    DEB << "Trying to fix input: " << text;
-    // try inserting a ':' for hhmm inputs
-    QString fixed = text;
-    if (text.contains(':')) { // contains seperator
-        if(text.length() == 4)
-            fixed.prepend(QLatin1Char('0'));
-    } else { // does not contain seperator
-        if(text.length() == 4) {
-            fixed.insert(2, ':');
-        }
-        if(text.length() == 3) {
-            fixed.prepend(QLatin1Char('0'));
-            fixed.insert(2, ':');
-        }
-    }
-
-    if(OPL::Time::fromString(fixed, m_format).isValidTimeOfDay()) {
-        line_edit->setText(fixed);
-        onGoodInputReceived(line_edit);
-    } else {
-        DEB << "Bad input received: " << text;
-        onBadInputReceived(line_edit);
+    if(!verifyUserInput(line_edit, TimeInput(line_edit->text(), m_format))) {
+        if(!addNewDatabaseElement(line_edit, OPL::DbTable::Pilots))
+            onBadInputReceived(line_edit);
     }
 }
 

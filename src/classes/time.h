@@ -33,7 +33,7 @@ public:
     bool isValid() const;
 
     /**
-     * @brief toString returns the time as hh:mm
+     * @brief toString returns the time in the specified format
      */
     const QString toString() const;
 
@@ -86,9 +86,8 @@ public:
 
 private:
     static constexpr int MINUTES_PER_DAY = 24 * 60;
-    static constexpr QLatin1Char DECIMAL_SEPERATOR = QLatin1Char('.');
 
-    DateTimeFormat m_format;
+    const DateTimeFormat m_format;
     int32_t m_minutes;
 
 };

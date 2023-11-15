@@ -70,16 +70,22 @@ namespace OPL {
 /**
  * @brief Defines the row ID for non-user entries in the database;
  */
-const static int STUB_ROW_ID = -1;
+constexpr static int STUB_ROW_ID = -1;
 
 /**
  * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
  */
-const static char* STUB_AIRPORT_CODE = "XXXX";
+constexpr static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
 /**
  * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
  */
-const static char* STUB_AIRCRAFT_REG = "XX-XXX";
+constexpr static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
+
+/*!
+ * \brief The decimal seperator used internally
+ */
+constexpr static char DECIMAL_SEPERATOR = '.';
+
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
@@ -356,17 +362,16 @@ namespace CssStyles {
 const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles
 
-namespace Format {
+//namespace Format {
 
-const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
+//const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
 
-} // namespace Format
+//} // namespace Format
 
 namespace RegEx {
 
 const inline auto RX_PHONE_NUMBER  = QRegularExpression(QStringLiteral("^[+]{0,1}[0-9\\-\\s]+"));
 const inline auto RX_EMAIL_ADDRESS = QRegularExpression(QStringLiteral("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"));
-//const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"));
 const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("^(?:(?:([01]?\\d|2[0-3])(?::?)([0-5]\\d))|(?:([01]?\\d|2[0-3])([0-5]\\d))|(?:([1-9]|[1-9]\\d)\\:([0-5]\\d)?)|(?:([01]?\\d|2[0-3])\\.([0-5]?\\d)))$"));
 const inline auto RX_AIRPORT_CODE  = QRegularExpression(QStringLiteral("[a-zA-Z0-9]{1,4}"));
 

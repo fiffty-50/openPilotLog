@@ -86,7 +86,7 @@ void NewSimDialog::on_dateLineEdit_editingFinished()
 
 void NewSimDialog::on_totalTimeLineEdit_editingFinished()
 {
-    const auto input = TimeInput(ui->totalTimeLineEdit->text());
+    const auto input = TimeInput(ui->totalTimeLineEdit->text(), m_format);
     if(input.isValid())
         return;
     else {
@@ -130,7 +130,7 @@ bool NewSimDialog::verifyInput(QString& error_msg)
         return false;
     }
     // Time
-    if(!TimeInput(ui->totalTimeLineEdit->text()).isValid())
+    if(!TimeInput(ui->totalTimeLineEdit->text(), m_format).isValid())
         return false;
 
     const OPL::Time time = OPL::Time::fromString(ui->totalTimeLineEdit->text(), m_format);
