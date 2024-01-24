@@ -564,10 +564,10 @@ const RowData_T Database::getTotals(bool includePreviousExperience)
         int entryValue = entry_data.value(it.key()).toInt();
 
         const QVariant sum = prevXpValue + entryValue;
-        it.value() = sum;
+        entry_data.insert(it.key(), sum);
     }
 
-    return prev_exp_data;
+    return entry_data;
 }
 
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)

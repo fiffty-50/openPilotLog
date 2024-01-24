@@ -28,6 +28,18 @@ namespace Ui {
 class TotalsWidget;
 }
 
+/*!
+ * \brief The TotalsWidget is used to display or edit total time values.
+ * \details This widget has two different purposes.
+ * <ul>
+ * <li> It displays the cumulative total time in the logbook </li>
+ * <li> It is used to enter and edit the total time accumulated in previous logbooks </li>
+ * </ul>
+ *
+ * In its total time form, the Widget functions purely as a display widget, whereas when used
+ * for previous experience, its fields are editable.
+ *
+ */
 class TotalsWidget : public QWidget
 {
     Q_OBJECT

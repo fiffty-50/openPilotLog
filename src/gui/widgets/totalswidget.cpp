@@ -92,6 +92,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
         break;
     case PreviousExperienceWidget:
         time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+        break;
     }
 
     // fill the line edits with the data obtained
