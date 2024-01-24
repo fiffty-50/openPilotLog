@@ -81,6 +81,13 @@ void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
 
 void LogbookTableEditWidget::addEntryRequested()
 {
+    // close open edit dialog(s), if present
+    if(m_stackedWidget->count() > 2) {
+        while (m_stackedWidget->count() > 2) {
+            m_stackedWidget->removeWidget(m_stackedWidget->widget(2));
+        }
+    }
+
     auto nfd = NewFlightDialog(this);
     nfd.exec();
 }

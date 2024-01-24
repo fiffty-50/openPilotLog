@@ -69,9 +69,7 @@ set(PROJECT_SOURCES
     src/gui/widgets/debugwidget.h
     src/gui/widgets/debugwidget.cpp
     src/gui/widgets/debugwidget.ui
-    src/gui/widgets/logbookwidget.h
-    src/gui/widgets/logbookwidget.cpp
-    src/gui/widgets/logbookwidget.ui
+
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.ui

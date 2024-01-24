@@ -33,7 +33,6 @@
 
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/tableeditwidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/classes/style.h"
@@ -119,7 +118,7 @@ private:
 
     HomeWidget* homeWidget;
 
-    LogbookTableEditWidget* logbookWidget;
+    LogbookTableEditWidget* logbookWidget; // This widget has a slot not present in TableEditWidget
     
     TableEditWidget* tailsWidget;
 

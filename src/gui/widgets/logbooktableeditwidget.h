@@ -49,6 +49,7 @@ public:
 
 public slots:
     void viewSelectionChanged(SettingsWidget::SettingSignal widget);
+
 private slots:
     virtual void filterTextChanged(const QString &filterString) override;
     virtual void addEntryRequested() override;
