@@ -65,7 +65,7 @@ public:
      * \brief NewTailDialog - create a new ATailEntry and submit it to the database
      * \param new_registration - when called from the NewFlightDialog, pre-fills the registration already entered.
      */
-    explicit NewTailDialog(QString new_registration, QWidget *parent = nullptr);
+    explicit NewTailDialog(const QString &new_registration, QWidget *parent = nullptr);
     /*!
      * \brief NewTailDialog - edit an existing Tail Entry
      * \param row_id - the ROW_ID of the entry to be edited in the database

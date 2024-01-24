@@ -516,11 +516,24 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>doftLineEdit</tabstop>
   <tabstop>deptLocationLineEdit</tabstop>
   <tabstop>destLocationLineEdit</tabstop>
   <tabstop>tofbTimeLineEdit</tabstop>
   <tabstop>tonbTimeLineEdit</tabstop>
+  <tabstop>functionComboBox</tabstop>
   <tabstop>approachComboBox</tabstop>
+  <tabstop>flightRulesComboBox</tabstop>
+  <tabstop>pilotFlyingCheckBox</tabstop>
+  <tabstop>acftLineEdit</tabstop>
+  <tabstop>picNameLineEdit</tabstop>
+  <tabstop>sicNameLineEdit</tabstop>
+  <tabstop>thirdPilotNameLineEdit</tabstop>
+  <tabstop>flightNumberLineEdit</tabstop>
+  <tabstop>remarksLineEdit</tabstop>
+  <tabstop>takeOffSpinBox</tabstop>
+  <tabstop>landingSpinBox</tabstop>
+  <tabstop>calendarPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

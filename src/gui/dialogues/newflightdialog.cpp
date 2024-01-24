@@ -521,6 +521,9 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
 void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
 {
     auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
+    if(line_edit->text() == QString())
+        return;
+
     if(!verifyUserInput(line_edit, PilotInput(line_edit->text()))) {
         if(!addNewDatabaseElement(line_edit, OPL::DbTable::Pilots))
             onBadInputReceived(line_edit);
@@ -556,9 +559,18 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
         return;
     }
 
-    if(!verifyUserInput(line_edit, TailInput(line_edit->text())))
-        if(!addNewDatabaseElement(line_edit, OPL::DbTable::Tails))
+    const QString input = line_edit->text(); // keep around for adding new tail if needed
+
+    if(!verifyUserInput(line_edit, TailInput(line_edit->text()))) {
+        // re-populate user input to hand through to NewTailDialog
+        {
+            QSignalBlocker blocker(line_edit);
+            line_edit->setText(input);
+        }
+        if(!addNewDatabaseElement(line_edit, OPL::DbTable::Tails)) {
             onBadInputReceived(line_edit);
+        }
+    }
 
     const auto space = QLatin1Char(' ');
     if(line_edit->text().contains(space))

@@ -21,7 +21,7 @@
 #include "ui_newtail.h"
 #include "src/opl.h"
 
-NewTailDialog::NewTailDialog(QString new_registration, QWidget *parent) :
+NewTailDialog::NewTailDialog(const QString &new_registration, QWidget *parent) :
     EntryEditDialog(parent),
     ui(new Ui::NewTail)
 {
