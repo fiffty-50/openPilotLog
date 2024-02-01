@@ -559,13 +559,13 @@ void NewFlightDialog::on_acftLineEdit_editingFinished()
         return;
     }
 
-    const QString input = line_edit->text(); // keep around for adding new tail if needed
+    const QString user_input = line_edit->text(); // keep around for adding new tail if needed
 
     if(!verifyUserInput(line_edit, TailInput(line_edit->text()))) {
         // re-populate user input to hand through to NewTailDialog
         {
             QSignalBlocker blocker(line_edit);
-            line_edit->setText(input);
+            line_edit->setText(user_input);
         }
         if(!addNewDatabaseElement(line_edit, OPL::DbTable::Tails)) {
             onBadInputReceived(line_edit);

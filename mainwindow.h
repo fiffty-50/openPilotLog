@@ -181,6 +181,8 @@ protected:
         event->accept();
     }
 
+signals:
+    void addFlightRequested();
     //void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
 };
 #endif // MAINWINDOW_H

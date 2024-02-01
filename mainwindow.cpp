@@ -25,9 +25,7 @@
 #include "src/database/database.h"
 #include "src/classes/style.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
 #include "src/database/databasecache.h"
 #include "src/classes/settings.h"
 // Quick and dirty Debug area
@@ -174,6 +172,9 @@ void MainWindow::connectWidgets()
 
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
+
+    QObject::connect(this,			 &MainWindow::addFlightRequested,
+                     logbookWidget,  &LogbookTableEditWidget::addEntryRequested);
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -226,8 +227,8 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    auto* nf = new NewFlightDialog(this);
-    nf->exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
+    emit addFlightRequested();
 }
 
 void MainWindow::on_actionLogbook_triggered()

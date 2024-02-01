@@ -8,7 +8,8 @@ TableEditWidget::TableEditWidget(Orientation orientation, QWidget *parent)
     : QWidget{parent}, m_orientation(orientation)
 {}
 
-void TableEditWidget::init() {
+void TableEditWidget::init()
+{
     setupUI();
     setupSignalsAndSlots();
 }
@@ -139,34 +140,31 @@ void TableEditWidget::setupSignalsAndSlots()
 
 void TableEditWidget::addEntryRequested()
 {
-    getEntryEditDialog(this)->exec();
+    cleanUpOldEditDialog();
+
+    m_entryEditDialog = getEntryEditDialog(this);
+    m_stackedWidget->addWidget(m_entryEditDialog);
+    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+
+    showEditWidget();
+    m_entryEditDialog->exec();
+    hideEditWidget();
 }
 
 void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
-    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    int rowIdToEdit = m_model->index(selectedIndex.row(), 0).data().toInt();
 
-    // clean up old dialog
-    if(m_stackedWidget->indexOf(m_entryEditDialog) != -1) {
-        delete m_entryEditDialog;
-        m_entryEditDialog = getEntryEditDialog(this);
-        m_entryEditDialog->loadEntry(rowId);
-        m_stackedWidget->addWidget(m_entryEditDialog);
-        m_stackedWidget->setCurrentWidget(m_entryEditDialog);
-    }
+    cleanUpOldEditDialog();
 
-    switch (m_orientation) {
-    case Horizontal:
-        m_stackedWidget->show();
-        m_entryEditDialog->exec();
-        m_stackedWidget->hide();
-        break;
-    case Vertical:
-        m_entryEditDialog->exec();
-        m_stackedWidget->setCurrentWidget(m_filterWidget);
-    default:
-        break;
-    }
+    m_entryEditDialog = getEntryEditDialog(this);
+    m_entryEditDialog->loadEntry(rowIdToEdit);
+    m_stackedWidget->addWidget(m_entryEditDialog);
+    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+
+    showEditWidget();
+    m_entryEditDialog->exec();
+    hideEditWidget();
 }
 
 void TableEditWidget::deleteEntryRequested()
@@ -211,4 +209,23 @@ void TableEditWidget::databaseContentChanged()
 {
     m_model->select();
     m_view->resizeColumnsToContents();
+}
+
+void TableEditWidget::showEditWidget()
+{
+    m_buttonWidget->hide();
+    m_stackedWidget->show();
+}
+
+void TableEditWidget::hideEditWidget()
+{
+    m_stackedWidget->hide();
+    m_buttonWidget->show();
+}
+
+void TableEditWidget::cleanUpOldEditDialog()
+{
+    if(m_stackedWidget->indexOf(m_entryEditDialog) != -1) {
+        delete m_entryEditDialog;
+    }
 }

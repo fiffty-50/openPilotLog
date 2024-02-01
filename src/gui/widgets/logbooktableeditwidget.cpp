@@ -88,13 +88,21 @@ void LogbookTableEditWidget::addEntryRequested()
         }
     }
 
+    showEditWidget();
+
     auto nfd = NewFlightDialog(this);
+    m_stackedWidget->addWidget(&nfd);
+    m_stackedWidget->setCurrentWidget(&nfd);
     nfd.exec();
+
+    hideEditWidget();
+    // auto nfd = NewFlightDialog(this);
+    // nfd.exec();
 }
 
 void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
-    m_stackedWidget->show();
+    showEditWidget();
     const auto idx = m_view->selectionModel()->currentIndex();
     const auto rowId = m_model->index(idx.row(), 0).data().toInt();
     if(rowId > 0) {
@@ -108,7 +116,7 @@ void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex
         m_stackedWidget->setCurrentWidget(&nsd);
         nsd.exec();
     }
-    m_stackedWidget->hide();
+    hideEditWidget();
 }
 
 void LogbookTableEditWidget::deleteEntryRequested()

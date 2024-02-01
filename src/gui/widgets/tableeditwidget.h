@@ -93,7 +93,6 @@ public:
      * EntryEditDialog for the selected table.
      */
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
-//    virtual EntryEditDialog getEntryEditDialog(QWidget *parent = nullptr) = 0;
 
 protected:
     Orientation m_orientation;
@@ -110,6 +109,14 @@ protected:
     QLineEdit *m_filterLineEdit = new QLineEdit(this);
     QComboBox *m_filterSelectionComboBox = new QComboBox(this);
 
+    virtual void showEditWidget();
+    virtual void hideEditWidget();
+    /*!
+     * \brief makes sure heap allocated widgets are destroyed when a user requests another add or edit before completing
+     * a proviously opened one.
+     */
+    void cleanUpOldEditDialog();
+
 private:
     void setupHorizontalUI();
     void setupVerticalUI();
@@ -125,7 +132,7 @@ private:
      */
     void setupButtonWidget();
 
-private slots:
+public slots:
     virtual void addEntryRequested();
     virtual void editEntryRequested(const QModelIndex &selectedIndex);
     virtual void deleteEntryRequested();
@@ -137,6 +144,9 @@ private slots:
     virtual void filterTextChanged(const QString &filterString) = 0;
 
 public slots:
+    /*!
+     * \brief refresh the view after a Database change
+     */
     void databaseContentChanged();
 
 };
