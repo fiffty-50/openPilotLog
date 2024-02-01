@@ -79,27 +79,6 @@ EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
 void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
 {}
 
-void LogbookTableEditWidget::addEntryRequested()
-{
-    // close open edit dialog(s), if present
-    if(m_stackedWidget->count() > 2) {
-        while (m_stackedWidget->count() > 2) {
-            m_stackedWidget->removeWidget(m_stackedWidget->widget(2));
-        }
-    }
-
-    showEditWidget();
-
-    auto nfd = NewFlightDialog(this);
-    m_stackedWidget->addWidget(&nfd);
-    m_stackedWidget->setCurrentWidget(&nfd);
-    nfd.exec();
-
-    hideEditWidget();
-    // auto nfd = NewFlightDialog(this);
-    // nfd.exec();
-}
-
 void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
     showEditWidget();
@@ -153,6 +132,18 @@ void LogbookTableEditWidget::deleteEntryRequested()
 }
 
 // private implementations
+
+void LogbookTableEditWidget::addSimulatorEntryRequested()
+{
+        showEditWidget();
+
+        auto nsd = NewSimDialog(this);
+        m_stackedWidget->addWidget(&nsd);
+        m_stackedWidget->setCurrentWidget(&nsd);
+        nsd.exec();
+
+        hideEditWidget();
+}
 
 void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
 {

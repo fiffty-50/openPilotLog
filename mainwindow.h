@@ -182,7 +182,8 @@ protected:
     }
 
 signals:
-    void addFlightRequested();
+    void addFlightEntryRequested();
+    void addSimulatorEntryRequested();
     //void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
 };
 #endif // MAINWINDOW_H

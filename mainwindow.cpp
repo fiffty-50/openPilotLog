@@ -173,8 +173,10 @@ void MainWindow::connectWidgets()
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
 
-    QObject::connect(this,			 &MainWindow::addFlightRequested,
+    QObject::connect(this,			 &MainWindow::addFlightEntryRequested,
                      logbookWidget,  &LogbookTableEditWidget::addEntryRequested);
+    QObject::connect(this,			 &MainWindow::addSimulatorEntryRequested,
+                     logbookWidget,  &LogbookTableEditWidget::addSimulatorEntryRequested);
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -228,7 +230,15 @@ void MainWindow::on_actionHome_triggered()
 void MainWindow::on_actionNewFlight_triggered()
 {
     ui->stackedWidget->setCurrentWidget(logbookWidget);
-    emit addFlightRequested();
+    emit addFlightEntryRequested();
+}
+
+void MainWindow::on_actionNewSim_triggered()
+{
+    // auto nsd = NewSimDialog(this);
+    // nsd.exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
+    emit addSimulatorEntryRequested();
 }
 
 void MainWindow::on_actionLogbook_triggered()
@@ -267,8 +277,4 @@ void MainWindow::on_actionDebug_triggered()
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
-void MainWindow::on_actionNewSim_triggered()
-{
-    auto nsd = NewSimDialog(this);
-    nsd.exec();
-}
+

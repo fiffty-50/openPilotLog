@@ -90,8 +90,8 @@ void TableEditWidget::setupFilterWidget()
 
     // one row, three columns
     layout->addWidget(new QLabel(tr("Filter"), this), 0, 0);
-    layout->addWidget(m_filterLineEdit,				  0, 1);
-    layout->addWidget(m_filterSelectionComboBox,		  0, 2);
+    layout->addWidget(m_filterLineEdit,               0, 1);
+    layout->addWidget(m_filterSelectionComboBox,      0, 2);
 
     m_filterWidget = widget;
 }

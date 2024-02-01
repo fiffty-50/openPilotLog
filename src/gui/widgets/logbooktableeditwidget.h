@@ -52,9 +52,16 @@ public slots:
 
 public slots:
     virtual void filterTextChanged(const QString &filterString) override;
-    virtual void addEntryRequested() override;
+
     virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
     virtual void deleteEntryRequested() override;
+
+    /*!
+     * \brief add a new Simulator Entry to the datbase
+     * \details The Primary Entry handled by the LogbookTableEditWidget are Flights, which are stored in the flights table.
+     * However, this widget also handles adding simulator tables which are stored in the simulators table.
+     */
+    void addSimulatorEntryRequested();
 };
 
 #endif // LOGBOOKTABLEEDITWIDGET_H
