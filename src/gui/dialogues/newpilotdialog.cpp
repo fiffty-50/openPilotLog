@@ -21,16 +21,17 @@
 #include "src/opl.h"
 
 #include "src/database/database.h"
-#include "src/database/row.h"
 
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database
  */
-NewPilotDialog::NewPilotDialog(QWidget *parent)
+NewPilotDialog::NewPilotDialog(const QString &userInput, QWidget* parent)
     : EntryEditDialog{parent},
     ui(new Ui::NewPilot)
 {
     setup();
+    if(userInput != QString())
+        ui->lastnameLineEdit->setText(userInput);
     ui->lastnameLineEdit->setFocus();
 }
 

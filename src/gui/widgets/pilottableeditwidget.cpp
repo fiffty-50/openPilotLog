@@ -45,7 +45,7 @@ void PilotTableEditWidget::setupUI()
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
-    return new NewPilotDialog(parent);
+    return new NewPilotDialog(QString(), parent);
 }
 
 QString PilotTableEditWidget::deleteErrorString(int pilotId)

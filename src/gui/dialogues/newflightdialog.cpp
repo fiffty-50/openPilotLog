@@ -300,7 +300,7 @@ bool NewFlightDialog::addNewDatabaseElement(QLineEdit *parent, OPL::DbTable tabl
     if(userWantsToAddNewEntry(table)) {
         switch (table) {
         case OPL::DbTable::Pilots:
-            dialog = new NewPilotDialog(this);
+            dialog = new NewPilotDialog(parent->text(), this);
             break;
         case OPL::DbTable::Tails:
             dialog = new NewTailDialog(ui->acftLineEdit->text(), this);
@@ -354,7 +354,7 @@ bool NewFlightDialog::userWantsToAddNewEntry(OPL::DbTable table)
                                         "If this is the first time you log a flight with this pilot, "
                                         "you have to add the pilot to the database first."
                                         "<br><br>Would you like to add a new pilot to the database?"),
-                                     QMessageBox::Yes|QMessageBox::No);
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
     case OPL::DbTable::Tails:
         reply = QMessageBox::question(this, tr("No Aircraft found"),
@@ -362,7 +362,7 @@ bool NewFlightDialog::userWantsToAddNewEntry(OPL::DbTable table)
                                          "If this is the first time you log a flight with this aircraft, "
                                          "you have to add the registration to the database first."
                                          "<br><br>Would you like to add a new aircraft to the database?"),
-                                      QMessageBox::Yes|QMessageBox::No);
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
     case OPL::DbTable::Airports:
         reply = QMessageBox::question(this, tr("No Airport found"),
@@ -370,7 +370,7 @@ bool NewFlightDialog::userWantsToAddNewEntry(OPL::DbTable table)
                                          "If this is the first time you log a flight to this airport, "
                                          "you have to add the airport to the database first."
                                          "<br><br>Would you like to add a new airport to the database?"),
-                                      QMessageBox::Yes|QMessageBox::No);
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
     default:
         reply = QMessageBox::No;
@@ -524,7 +524,13 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
     if(line_edit->text() == QString())
         return;
 
+    QString userInput = line_edit->text();
+
     if(!verifyUserInput(line_edit, PilotInput(line_edit->text()))) {
+        {
+            QSignalBlocker blocker(line_edit);
+            line_edit->setText(userInput);
+        }
         if(!addNewDatabaseElement(line_edit, OPL::DbTable::Pilots))
             onBadInputReceived(line_edit);
     }

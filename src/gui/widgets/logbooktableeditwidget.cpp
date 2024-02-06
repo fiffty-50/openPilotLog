@@ -48,6 +48,7 @@ void LogbookTableEditWidget::setupUI()
     m_deleteEntryPushButton->setText(tr("Delete selected Entry"));
     m_filterWidget->hide();
     m_stackedWidget->hide();
+
     m_format = Settings::getDisplayFormat();
 }
 

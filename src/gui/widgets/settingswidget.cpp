@@ -134,7 +134,6 @@ void SettingsWidget::readSettings()
 void SettingsWidget::setupValidators()
 {
     ui->phoneLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_PHONE_NUMBER, ui->phoneLineEdit));
-    ui->emailLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_EMAIL_ADDRESS, ui->emailLineEdit));
 }
 
 /*!
