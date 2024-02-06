@@ -524,6 +524,7 @@ void NewFlightDialog::onPilotNameLineEdit_editingFinshed()
     if(line_edit->text() == QString())
         return;
 
+    // create a copy to refill line edit and pass through to creation dialog if verification fails
     QString userInput = line_edit->text();
 
     if(!verifyUserInput(line_edit, PilotInput(line_edit->text()))) {

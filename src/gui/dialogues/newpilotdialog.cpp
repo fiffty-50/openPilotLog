@@ -25,13 +25,14 @@
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database
  */
-NewPilotDialog::NewPilotDialog(const QString &userInput, QWidget* parent)
+NewPilotDialog::NewPilotDialog(QString userInput, QWidget* parent)
     : EntryEditDialog{parent},
     ui(new Ui::NewPilot)
 {
     setup();
-    if(userInput != QString())
-        ui->lastnameLineEdit->setText(userInput);
+    if(userInput != QString()) {
+        ui->lastnameLineEdit->setText(userInput.replace(0, 1, userInput.first(1).toUpper()));
+    }
     ui->lastnameLineEdit->setFocus();
 }
 

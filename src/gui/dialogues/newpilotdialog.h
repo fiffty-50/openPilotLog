@@ -46,7 +46,7 @@ class NewPilotDialog : public EntryEditDialog
 {
     Q_OBJECT
 public:
-    explicit NewPilotDialog(const QString& userInput = QString(), QWidget *parent = nullptr);
+    explicit NewPilotDialog(QString userInput = QString(), QWidget *parent = nullptr);
     explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
     ~NewPilotDialog();
 
