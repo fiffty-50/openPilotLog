@@ -25,7 +25,6 @@
 #include "src/database/database.h"
 #include "src/classes/style.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newsimdialog.h"
 #include "src/database/databasecache.h"
 #include "src/classes/settings.h"
 // Quick and dirty Debug area
@@ -169,14 +168,12 @@ void MainWindow::connectWidgets()
 {
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      logbookWidget,  &LogbookTableEditWidget::viewSelectionChanged);
-
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     this,           &MainWindow::onStyleChanged);
-
     QObject::connect(this,			 &MainWindow::addFlightEntryRequested,
                      logbookWidget,  &LogbookTableEditWidget::addEntryRequested);
     QObject::connect(this,			 &MainWindow::addSimulatorEntryRequested,
                      logbookWidget,  &LogbookTableEditWidget::addSimulatorEntryRequested);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
+                     this,           &MainWindow::onStyleChanged);
 }
 
 void MainWindow::onDatabaseInvalid()

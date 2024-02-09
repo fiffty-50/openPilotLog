@@ -66,6 +66,7 @@ NewFlightDialog::~NewFlightDialog()
 
 void NewFlightDialog::setPilotFunction()
 {
+    const QString &self = DBCache->getPilotNamesMap().value(1);
     if(Settings::getPilotFunction() == OPL::PilotFunction::PIC){
         ui->picNameLineEdit->setText(self);
         ui->functionComboBox->setCurrentIndex(0);
@@ -513,8 +514,7 @@ void NewFlightDialog::onTimeLineEdit_editingFinished()
     const auto line_edit = this->findChild<QLineEdit*>(sender()->objectName());
 
     if(!verifyUserInput(line_edit, TimeInput(line_edit->text(), m_format))) {
-        if(!addNewDatabaseElement(line_edit, OPL::DbTable::Pilots))
-            onBadInputReceived(line_edit);
+        onBadInputReceived(line_edit);
     }
 }
 
@@ -628,18 +628,45 @@ void NewFlightDialog::on_approachComboBox_currentTextChanged(const QString &arg1
  */
 void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
 {
-    if (index == static_cast<int>(OPL::PilotFunction::PIC)) {
+    int picPilotId = DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text());
+    int sicPilotId = DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text());
+    int thirdPilotId = DBCache->getPilotNamesMap().key(ui->thirdPilotNameLineEdit->text());
+    const QString &self = DBCache->getPilotNamesMap().value(1);
+
+    switch (index) {
+    case static_cast<int>(OPL::PilotFunction::PIC):
+        DEB << "PIC selected...";
         ui->picNameLineEdit->setText(self);
         emit ui->picNameLineEdit->editingFinished();
-        if (DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text())
-         == DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text()))
-                ui->sicNameLineEdit->setText(QString());
-    } else if (index == static_cast<int>(OPL::PilotFunction::SIC)) {
+        picPilotId = DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text());
+
+        if (picPilotId == sicPilotId) {
+            ui->sicNameLineEdit->setText(QString());
+            onBadInputReceived(ui->sicNameLineEdit);
+        }
+        if (picPilotId == thirdPilotId) {
+            ui->thirdPilotNameLineEdit->setText(QString());
+            onBadInputReceived(ui->thirdPilotNameLineEdit);
+        }
+        break;
+    case static_cast<int>(OPL::PilotFunction::SIC):
+        DEB << "SIC selected...";
         ui->sicNameLineEdit->setText(self);
         emit ui->sicNameLineEdit->editingFinished();
-        if (DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text())
-         == DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text()))
+        sicPilotId = DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text());
+
+        if (sicPilotId == picPilotId) {
             ui->picNameLineEdit->setText(QString());
+            onBadInputReceived(ui->picNameLineEdit);
+        }
+        if (sicPilotId == thirdPilotId) {
+            ui->thirdPilotNameLineEdit->setText(QString());
+            onBadInputReceived(ui->thirdPilotNameLineEdit);
+        }
+        break;
+    default:
+        break;
+
     }
 }
 
@@ -652,7 +679,7 @@ void NewFlightDialog::on_functionComboBox_currentIndexChanged(int index)
  * \param error_msg - the error string displayed to the user
  * \return
  */
-bool NewFlightDialog::checkPilotFunctionsValid()
+bool NewFlightDialog::pilotFunctionsInvalid()
 {
     int pic_id = DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text());
     int function_index = ui->functionComboBox->currentIndex();
@@ -661,17 +688,52 @@ bool NewFlightDialog::checkPilotFunctionsValid()
         if (!(function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI))) {
             INFO(tr("The PIC is set to %1 but the Pilot Function is set to %2")
                     .arg(ui->picNameLineEdit->text(), ui->functionComboBox->currentText()));
-            return false;
+            return true;
         }
     } else {
         if (function_index == static_cast<int>(OPL::PilotFunction::PIC) || function_index == static_cast<int>(OPL::PilotFunction::FI)) {
             INFO(tr("The Pilot Function is set to %1, but the PIC is set to %2")
                     .arg(ui->functionComboBox->currentText(), ui->picNameLineEdit->text()));
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
+}
+
+bool NewFlightDialog::duplicateNamesPresent()
+{
+    const int picId = DBCache->getPilotNamesMap().key(ui->picNameLineEdit->text());
+    const int sicId = DBCache->getPilotNamesMap().key(ui->sicNameLineEdit->text());
+    const int thirdPilotId = DBCache->getPilotNamesMap().key(ui->thirdPilotNameLineEdit->text());
+
+    // this is a bit explicit but better point out to the user what the case is
+    if (picId == sicId) {
+        INFO(tr("PIC and SIC names are the same."));
+        return true;
+    }
+    if (picId == thirdPilotId && picId > 0) {
+        INFO(tr("PIC and third Pilot names are the same."));
+        return true;
+    }
+    if (sicId == thirdPilotId && sicId > 0) {
+        INFO(tr("SIC and third Pilot names are the same."));
+        return true;
+    }
+
+    return false;
+}
+
+bool NewFlightDialog::flightTimeIsZero()
+{
+    const OPL::Time tofb = OPL::Time::fromString(ui->tofbTimeLineEdit->text(), m_format);
+    const OPL::Time tonb = OPL::Time::fromString(ui->tonbTimeLineEdit->text(), m_format);
+    const int block_minutes = OPL::Time::blockMinutes(tofb, tonb);
+    if(block_minutes == 0) {
+        INFO(tr("Total time of flight is zero."));
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -706,7 +768,11 @@ void NewFlightDialog::on_buttonBox_accepted()
         return;
     }
 
-    if(!checkPilotFunctionsValid())
+    if(pilotFunctionsInvalid())
+        return;
+    if(duplicateNamesPresent())
+        return;
+    if(flightTimeIsZero())
         return;
 
     // If input verification passed, collect input and submit to database

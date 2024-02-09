@@ -28,6 +28,8 @@ QString TimeInput::fixup() const
 
 const QString TimeInput::fixDefaultFormat() const
 {
+    if(input == QString())
+        return QStringLiteral("00:00");
     // try inserting a ':' for hhmm inputs
     QString fixed = input;
     if (input.contains(':')) { // contains seperator
@@ -43,7 +45,14 @@ const QString TimeInput::fixDefaultFormat() const
         }
     }
 
-    return OPL::Time::fromString(fixed, m_format).toString();
+    OPL::Time fixedTime = OPL::Time::fromString(fixed, m_format);
+    if(fixedTime.isValid()) {
+        return OPL::Time::fromString(fixed, m_format).toString();
+    } else {
+        return QString();
+    }
+
+
 }
 
 const QString TimeInput::fixDecimalFormat() const

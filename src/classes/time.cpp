@@ -95,6 +95,8 @@ Time Time::blockTime(const Time &offBlocks, const Time &onBlocks)
         // take-off and landing on the same day
         return Time(onBlocks.m_minutes - offBlocks.m_minutes, offBlocks.m_format);
     } else {
+        if(offBlocks.m_minutes == onBlocks.m_minutes)
+            return Time(0, offBlocks.m_format);
         // landing the day after take off
         int minutesToMidnight = MINUTES_PER_DAY - offBlocks.m_minutes;
         return Time(minutesToMidnight + onBlocks.m_minutes, offBlocks.m_format);

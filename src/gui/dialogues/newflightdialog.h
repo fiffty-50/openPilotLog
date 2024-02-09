@@ -110,7 +110,7 @@ private:
      * The list is ordered like the ValidationItem enum so that indexed access is possible using the enum.
      */
     static const inline QList<QLineEdit*> *mandatoryLineEdits;
-    static const inline QLatin1String self = QLatin1String("self");
+    // static const inline QLatin1String self = QLatin1String("self");
     static const inline QHash<int, QString> pilotFuncionsMap = {
                                            {0, OPL::FlightEntry::TPIC},
                                            {1, OPL::FlightEntry::TPICUS},
@@ -177,7 +177,9 @@ private:
     bool userWantsToAddNewEntry(OPL::DbTable table);
 
 
-    bool checkPilotFunctionsValid();
+    bool pilotFunctionsInvalid();
+    bool duplicateNamesPresent();
+    bool flightTimeIsZero();
     OPL::RowData_T prepareFlightEntryData();
 
     const static inline auto CAT_3 = QLatin1String(OPL::GLOBALS->getApproachTypes()[3].toLatin1());
