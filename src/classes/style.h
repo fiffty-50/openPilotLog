@@ -75,9 +75,10 @@ public:
     static inline void loadStylesComboBox(QComboBox *combo_box){
         const QSignalBlocker blocker(combo_box);
         combo_box->addItems(Style::styles);
-        for (const auto &style_sheet : Style::styleSheets) {
-            combo_box->addItem(style_sheet.styleSheetName);
-        }
+        // TODO enable style sheets.. disabled for now because they are yanky, inconsistant and randomly break the layout
+        // for (const auto &style_sheet : Style::styleSheets) {
+        //     combo_box->addItem(style_sheet.styleSheetName);
+        // }
         combo_box->addItem(QStringLiteral("Dark-Palette"));
         combo_box->model()->sort(0);
     }
