@@ -59,7 +59,7 @@ void PilotsWidget::setupModelAndView()
     view->verticalHeader()->hide();
     view->setAlternatingRowColors(true);
     view->setSortingEnabled(true);
-    sortColumn = Settings::read(Settings::UserData::PilotSortColumn).toInt();
+    sortColumn = Settings::getPilotSortColumn();
     view->sortByColumn(sortColumn, Qt::AscendingOrder);
 
     view->show();
@@ -70,10 +70,12 @@ void PilotsWidget::setupModelAndView()
 
 void PilotsWidget::connectSignalsAndSlots()
 {
-    QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
-                     this,                              &PilotsWidget::tableView_selectionChanged);
-    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this,                              &PilotsWidget::tableView_headerClicked);
+    QObject::connect(ui->pilotSearchLineEdit,  &QLineEdit::textChanged,
+                     this,                     &PilotsWidget::filterLineEdit_textChanged);
+    QObject::connect(view->horizontalHeader(), &QHeaderView::sectionClicked,
+                     this,                     &PilotsWidget::newSortColumnSelected);
+    QObject::connect(view,					   &QTableView::clicked,
+                     this, 			    	   &PilotsWidget::editRequested);
 }
 
 void PilotsWidget::setUiEnabled(bool enabled)
@@ -103,43 +105,28 @@ void PilotsWidget::onPilotsWidget_databaseUpdated()
     refreshView();
 }
 
-void PilotsWidget::on_pilotSearchLineEdit_textChanged(const QString &arg1)
+void PilotsWidget::filterLineEdit_textChanged(const QString &arg1)
 {
     model->setFilter(QLatin1Char('\"') + ui->pilotsSearchComboBox->currentText()
                      + QLatin1String("\" LIKE '%") + arg1
                      + QLatin1String("%' AND ID > 1"));
 }
 
-void PilotsWidget::tableView_selectionChanged()
+void PilotsWidget::editRequested(const QModelIndex &index)
 {
-    if (this->findChild<NewPilotDialog*>() != nullptr) {
-        delete this->findChild<NewPilotDialog*>();
-    }
+    int pilotID = model->index(index.row(), 0).data().toInt();
 
-    auto selection = ui->tableView->selectionModel();
-    selectedPilots.clear();
-
-    for (const auto& row : selection->selectedRows()) {
-        selectedPilots.append(row.data().toInt());
-        DEB << "Selected Tails(s) with ID: " << selectedPilots;
-    }
-    if(selectedPilots.length() == 1) {
-        NewPilotDialog np = NewPilotDialog(selectedPilots.first(), this);
-        np.setWindowFlag(Qt::Widget);
-        ui->stackedWidget->addWidget(&np);
-        ui->stackedWidget->setCurrentWidget(&np);
-
-        setUiEnabled(false);
-        np.exec();
-        refreshView();
-        setUiEnabled(true);
-    }
+    NewPilotDialog np = NewPilotDialog(pilotID, this);
+    np.setWindowFlag(Qt::Widget);
+    ui->stackedWidget->addWidget(&np);
+    ui->stackedWidget->setCurrentWidget(&np);
+    np.exec();
+    refreshView();
 }
 
-void PilotsWidget::tableView_headerClicked(int column)
+void PilotsWidget::newSortColumnSelected(int newSortColumn)
 {
-    sortColumn = column;
-    Settings::write(Settings::UserData::PilotSortColumn, column);
+    Settings::setPilotSortColumn(newSortColumn);
 }
 
 void PilotsWidget::on_newPilotButton_clicked()
@@ -209,7 +196,7 @@ void PilotsWidget::onDeleteUnsuccessful()
     } else {
         QString constrained_flights_string;
         for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            constrained_flights_string.append(OPL::FlightEntry(constrained_flights[i]).getFlightSummary() + QStringLiteral("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
             if (i>10) {
                 constrained_flights_string.append("<br>[...]<br>");
                 break;
@@ -244,25 +231,4 @@ const QString PilotsWidget::getPilotName(const OPL::PilotEntry &pilot) const
         return QString();
 
     return pilot.getLastName() + QLatin1String(", ") + pilot.getFirstName();
-}
-
-const QString PilotsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
-{
-
-    if(!flight.isValid())
-        return QString();
-
-    auto tableData = flight.getData();
-    QString flight_summary;
-    auto space = QLatin1Char(' ');
-    flight_summary.append(tableData.value(OPL::FlightEntry::DOFT).toString() + space);
-    flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
-                          + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
-                          + space);
-    flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
-
-    return flight_summary;
-
 }

@@ -18,6 +18,7 @@
 #ifndef FIRSTRUNDIALOG_H
 #define FIRSTRUNDIALOG_H
 
+#include "src/database/currencyentry.h"
 #include <QDialog>
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -85,8 +86,6 @@ private slots:
     void on_previousPushButton_clicked();
     void on_nextPushButton_clicked();
     void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
-    void on_currCustom1LineEdit_editingFinished();
-    void on_currCustom2LineEdit_editingFinished();
 
     /*!
      * \brief Import an existing database instead of creating a new one
@@ -96,6 +95,14 @@ private slots:
 private:
     Ui::FirstRunDialog *ui;
     bool useRessourceData;
+
+    //TODO load from settings
+    OPL::DateTimeFormat m_format = OPL::DateTimeFormat(
+        OPL::DateTimeFormat::DateFormat::Default,
+        QStringLiteral("yyyy-MM-dd"),
+        OPL::DateTimeFormat::TimeFormat::Default,
+        QStringLiteral("hh:mm")
+        );
 
     /*!
      * \brief finishSetup - once all the necessary data is entered by the user, this functions executes the steps necessary

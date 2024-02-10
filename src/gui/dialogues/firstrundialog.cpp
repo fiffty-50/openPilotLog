@@ -150,7 +150,7 @@ bool FirstRunDialog::finishSetup()
     } // if database file exists
 
     if (!DB->connect()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (connect)"),
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
                                    "The following error has ocurred:<br>"
@@ -160,7 +160,7 @@ bool FirstRunDialog::finishSetup()
     }
 
     if (!setupDatabase()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (create schema)"),
                                 tr("Errors have ocurred creating the database."
                                    "Without a working database The application will not be usable.<br>"
                                    "The following error has ocurred:<br>%1"
@@ -170,7 +170,7 @@ bool FirstRunDialog::finishSetup()
     }
 
     if (!createUserEntry()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (user entry)"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
                                    ).arg(DB->lastError.text()));
@@ -179,7 +179,7 @@ bool FirstRunDialog::finishSetup()
     }
 
     if (!setupPreviousExperienceEntry()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
+        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (previous Experience)"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1"
                                    ).arg(DB->lastError.text()));
@@ -187,14 +187,10 @@ bool FirstRunDialog::finishSetup()
         return false;
     }
 
-    if (!writeCurrencies()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed"),
-                                tr("Unable to execute database query<br>"
-                                   "The following error has occured:<br>%1"
-                                   ).arg(DB->lastError.text()));
-        message_box.exec();
-        return false;
-    }
+    // non-critical error
+    if(!writeCurrencies())
+        LOG << "Error writing currencies during initial setup.";
+
     DB->disconnect(); // Connection will be re-established by MainWindow
     return true;
 }
@@ -274,23 +270,24 @@ bool FirstRunDialog::verifyTemplates()
 void FirstRunDialog::writeSettings()
 {
     Settings::resetToDefaults();
+    Settings::setPilotFunction(OPL::PilotFunction(ui->functionComboBox->currentIndex()));
+    Settings::setApproachType(ui->approachComboBox->currentText());
+    Settings::setNightLoggingEnabled(ui->nightComboBox->currentIndex());
+    Settings::setLogIfr(ui->rulesComboBox->currentIndex());
+    Settings::setFlightNumberPrefix(ui->prefixLineEdit->text());
+    Settings::setLogbookView(OPL::LogbookView(ui->logbookViewComboBox->currentIndex()));
+    Settings::setApplicationStyle(ui->styleComboBox->currentText());
 
-    Settings::write(Settings::FlightLogging::Function, ui->functionComboBox->currentIndex());
-    Settings::write(Settings::FlightLogging::Approach, ui->approachComboBox->currentIndex());
-    Settings::write(Settings::FlightLogging::NightLoggingEnabled, ui->nightComboBox->currentIndex());
     switch (ui->nightRulesComboBox->currentIndex()) {
     case 0:
-        Settings::write(Settings::FlightLogging::NightAngle, -6);
+        Settings::setNightAngle(-6);
         break;
     case 1:
-        Settings::write(Settings::FlightLogging::NightAngle, 0);
+        Settings::setNightAngle(0);
         break;
     }
-    Settings::write(Settings::FlightLogging::LogIFR, ui->rulesComboBox->currentIndex());
-    Settings::write(Settings::FlightLogging::FlightNumberPrefix, ui->prefixLineEdit->text());
-    Settings::write(Settings::UserData::DisplaySelfAs, ui->aliasComboBox->currentIndex());
-    Settings::write(Settings::Main::LogbookView, ui->logbookViewComboBox->currentIndex());
-    Settings::write(Settings::Main::Style, ui->styleComboBox->currentText());
+
+    Settings::setShowSelfAs(ui->aliasComboBox->currentIndex());
     Settings::sync();
 }
 
@@ -352,39 +349,32 @@ bool FirstRunDialog::setupPreviousExperienceEntry()
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QMap<OPL::CurrencyName, QDateEdit*> currencies_list = {
-        {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
-        {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
-        {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
-        {OPL::CurrencyName::Medical,    ui->currMedDateEdit},
-        {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
-        {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
-    };
-    const QMap<OPL::CurrencyName, Settings::UserData> settings_list = {
-        {OPL::CurrencyName::Licence,    Settings::UserData::ShowLicCurrency },
-        {OPL::CurrencyName::TypeRating, Settings::UserData::ShowTrCurrency },
-        {OPL::CurrencyName::LineCheck,  Settings::UserData::ShowLckCurrency },
-        {OPL::CurrencyName::Medical,    Settings::UserData::ShowMedCurrency },
-        {OPL::CurrencyName::Custom1,    Settings::UserData::ShowCustom1Currency },
-        {OPL::CurrencyName::Custom2,    Settings::UserData::ShowCustom2Currency },
+    const QList<QPair<QString, QDateEdit*>> currencies = {
+        { ui->currLicLabel->text(), 		ui->currLicDateEdit },
+        { ui->currTrLabel->text(), 			ui->currTrDateEdit },
+        { ui->currLckLabel->text(), 		ui->currLckDateEdit },
+        { ui->currMedLabel->text(), 		ui->currMedDateEdit },
+        { ui->currCustom1LineEdit->text(), 	ui->currCustom1DateEdit },
+        { ui->currCustom2LineEdit->text(), 	ui->currCustom2DateEdit },
     };
 
-    QDate today = QDate::currentDate();
-    for (const auto &date_edit : currencies_list) {
-        const auto enum_value = currencies_list.key(date_edit);
-        // only write dates that have been edited
-        if (date_edit->date() != today) {
-            OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date_edit->date().toString(Qt::ISODate)}};
-            if (enum_value == OPL::CurrencyName::Custom1)
-                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom1LineEdit->text());
-            else if(enum_value == OPL::CurrencyName::Custom2)
-                row_data.insert(OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom2LineEdit->text());
+    const QDate today = QDate::currentDate();
 
-            Settings::write(settings_list.value(enum_value), true); // Show selected currency on Home Screen
-            OPL::CurrencyEntry entry(static_cast<int>(enum_value), row_data);
-            if (!DB->commit(entry))
-                return false;
+    for(const auto &pair : currencies) {
+        // list 0-indexed, db row indexes start at 1
+        OPL::CurrencyEntry currencyEntry = OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
+
+        currencyEntry.setName(pair.first);
+
+        // only set expiry date if user has modified it
+        const QDate date = pair.second->date();
+        if(date != today) {
+            int julianDay = date.toJulianDay();
+            currencyEntry.setExpiryDate(OPL::Date(julianDay, m_format));
         }
+
+        if(!DB->commit(currencyEntry))
+            return false;
     }
     return true;
 }
@@ -432,16 +422,6 @@ void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_styl
             return;
         }
     }
-}
-
-void FirstRunDialog::on_currCustom1LineEdit_editingFinished()
-{
-    Settings::write(Settings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
-}
-
-void FirstRunDialog::on_currCustom2LineEdit_editingFinished()
-{
-    Settings::write(Settings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
 }
 
 void FirstRunDialog::on_importPushButton_clicked()

@@ -59,12 +59,34 @@ public:
     ~PilotsWidget();
 
 private slots:
-    void tableView_selectionChanged();
-    void tableView_headerClicked(int);
+    /*!
+     * \brief Creates a dialog to add a new Pilot to the database
+     */
     void on_newPilotButton_clicked();
+
+    /*!
+     * \brief Deletes the selected pilot from the database if the selection is valid.
+     */
     void on_deletePilotButton_clicked();
+
+    /*!
+     * \brief Informs the user about a error that ocurred when trying to delete an entry.
+     */
     void onDeleteUnsuccessful();
-    void on_pilotSearchLineEdit_textChanged(const QString &arg1);
+
+    /*!
+     * \brief Sets a filter on the model
+     */
+    void filterLineEdit_textChanged(const QString &arg1);
+
+    /*!
+     * \brief Creates a new PilotWidget to allow editing of the selected item
+     */
+    void editRequested(const QModelIndex &index);
+    /*!
+     * \brief Sorts the table on the selected column
+     */
+    void newSortColumnSelected(int newSortColumn);
 
 public slots:
     /*!
@@ -95,8 +117,6 @@ private:
     QVector<qint32> selectedPilots;
 
     const QString getPilotName(const OPL::PilotEntry &pilot) const;
-
-    const QString getFlightSummary(const OPL::FlightEntry &flight) const;
 
     void setupModelAndView();
 

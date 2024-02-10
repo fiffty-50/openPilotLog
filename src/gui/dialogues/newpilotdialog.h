@@ -24,6 +24,7 @@
 #include <QRegularExpressionValidator>
 #include <QCompleter>
 #include "src/database/pilotentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
 
 namespace Ui {
 class NewPilot;
@@ -41,13 +42,16 @@ class NewPilot;
  * come in all different forms and shapes around the world. In order to maintain a maximum
  * amount of flexibility, any unicode input is allowed.
  */
-class NewPilotDialog : public QDialog
+class NewPilotDialog : public EntryEditDialog
 {
     Q_OBJECT
 public:
-    explicit NewPilotDialog(QWidget *parent = nullptr);
+    explicit NewPilotDialog(QString userInput = QString(), QWidget *parent = nullptr);
     explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
     ~NewPilotDialog();
+
+
+
 
 private slots:
     void on_buttonBox_accepted();
@@ -67,6 +71,12 @@ private:
      * \brief submitForm - retreives the input from the line edits and commits to the database.
      */
     void submitForm();
+
+    // EntryEditDialog interface
+public:
+    virtual bool deleteEntry(int rowId) override;
+    virtual void loadEntry(int rowId) override;
+
 };
 
 

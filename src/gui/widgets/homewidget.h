@@ -18,12 +18,12 @@
 #ifndef HOMEWIDGET_H
 #define HOMEWIDGET_H
 
+#include "src/opl.h"
 #include <QWidget>
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/database/database.h"
 
 namespace Ui {
 class HomeWidget;
@@ -62,10 +62,7 @@ private:
     double ftlWarningThreshold;
 
     void fillTotals();
-    void fillSelectedCurrencies();
-    void fillCurrencyTakeOffLanding();
-    void fillCurrency(OPL::CurrencyName currency_name, QLabel *display_label);
-    void fillLimitations();
+    void fillCurrencies();
 
     enum class Colour {Red, Orange, None};
     inline void setLabelColour(QLabel* label, Colour colour)
@@ -94,11 +91,9 @@ private:
     /*!
      * \brief Retreives the users first name from the database.
      */
-    const QString getLogbookOwnerName();
+    const QString getLogbookOwnerName() const;
 
 public slots:
-    void refresh();
-
     void onPilotsDatabaseChanged(const OPL::DbTable table);
 
 protected:

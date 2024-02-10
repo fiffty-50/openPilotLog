@@ -26,6 +26,7 @@
 
 #include "src/database/row.h"
 #include "src/database/tailentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
 
 namespace Ui {
 class NewTail;
@@ -55,7 +56,7 @@ class NewTail;
  *
  *
  */
-class NewTailDialog : public QDialog
+class NewTailDialog : public EntryEditDialog
 {
     Q_OBJECT
 
@@ -64,7 +65,7 @@ public:
      * \brief NewTailDialog - create a new ATailEntry and submit it to the database
      * \param new_registration - when called from the NewFlightDialog, pre-fills the registration already entered.
      */
-    explicit NewTailDialog(const QString& new_registration, QWidget *parent = nullptr);
+    explicit NewTailDialog(const QString &new_registration, QWidget *parent = nullptr);
     /*!
      * \brief NewTailDialog - edit an existing Tail Entry
      * \param row_id - the ROW_ID of the entry to be edited in the database
@@ -72,6 +73,8 @@ public:
     explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
 
     ~NewTailDialog();
+
+
 
 signals:
     void tailDataChanged();
@@ -102,6 +105,11 @@ private slots:
     void on_buttonBox_accepted();
     void onSearchCompleterActivated();
 
+
+    // EntryEditDialog interface
+public:
+    virtual bool deleteEntry(int rowID) override;
+    virtual void loadEntry(int rowId) override;
 };
 
 #endif // NEWTAIL_H

@@ -18,6 +18,7 @@
 #ifndef CURRENCYENTRY_H
 #define CURRENCYENTRY_H
 #include "src/database/row.h"
+#include "src/classes/date.h"
 
 namespace OPL {
 
@@ -29,23 +30,39 @@ namespace OPL {
  */
 class CurrencyEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("currencies");
 public:
-    CurrencyEntry();
-    CurrencyEntry(const RowData_T &row_data);
+
+    enum Currency {Licence = 1, TypeRating = 2, LineCheck = 3, Medical = 4, Custom1 = 5, Custom2 = 6, TakeOffLanding = 7};
+
+    CurrencyEntry() = delete;
+    CurrencyEntry(const RowData_T &row_data) = delete;
     CurrencyEntry(int row_id, const RowData_T &row_data);
 
     const QString getTableName() const override;
 
+    void setName(const QString& displayName);
+    const QString getName() const;
 
+    void setExpiryDate(const OPL::Date &date);
+    const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
+
+private:
+
+    /*!
+     * \brief The sql column name for the row id
+     */
+    const static inline QString ROW_ID = QStringLiteral("currency_id");
+
+    /*!
+     * \brief The sql column name for the display name
+     */
+    const static inline QString NAME = QStringLiteral("currencyName");
     /*!
     * \brief The sql column name for the expiry date
     */
     const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
-    /*!
-     * \brief The sql column name for the currency name
-     */
-    const static inline QString CURRENCYNAME = QStringLiteral("currencyName");
+
+    const static inline QString TABLE_NAME = QStringLiteral("currencies");
 };
 
 } // namespace OPL

@@ -1,10 +1,17 @@
 #ifndef DATETIME_H
 #define DATETIME_H
 #include "src/opl.h"
+#include "src/classes/date.h"
+#include "src/classes/time.h"
 
 namespace OPL {
 
 class DateTime {
+
+public:
+//    DateTime(const OPL::Date date, const OPL::Time &time);
+
+
 public:
     const inline static QString ISO_FORMAT_STRING = QStringLiteral("yyyy-MM-dd");
     const inline static QString DE_FORMAT_STRING = QStringLiteral("dd.MM.yyyy");
@@ -69,11 +76,11 @@ public:
      * \brief dateTimeToString formats a QDateTime object into a string in a uniform way.
      * \return
      */
-    static inline const QString dateTimeToString (const QDateTime& date_time, OPL::DateTimeFormat format) {
+    static inline const QString dateTimeToString (const QDateTime& date_time, OPL::DateTimeFormat_deprecated format) {
         switch (format) {
-        case OPL::DateTimeFormat::Default:
+        case OPL::DateTimeFormat_deprecated::Default:
             return date_time.toString(Qt::ISODate);
-        case OPL::DateTimeFormat::Backup:
+        case OPL::DateTimeFormat_deprecated::Backup:
             return date_time.toString(QStringLiteral("yyyy_MM_dd_T_hh_mm"));
         default:
             return QString();

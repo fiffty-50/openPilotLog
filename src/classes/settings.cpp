@@ -19,50 +19,12 @@
 #include <QSettings>
 #include "src/classes/paths.h"
 
-
-QMap<Settings::Main, QString> Settings::mainMap = {
-    {Main::SetupComplete,               QStringLiteral("setupComplete")},
-    {Main::Style,                       QStringLiteral("style")},
-    {Main::Font,                        QStringLiteral("font")},
-    {Main::FontSize,                    QStringLiteral("fontSize")},
-    {Main::UseSystemFont,               QStringLiteral("useSystemFont")},
-    {Main::LogbookView,                 QStringLiteral("logbookView")},
-    {Main::DateFormat,                  QStringLiteral("dateFormat")},
-};
-
-QMap<Settings::UserData, QString> Settings::userDataMap = {
-    {UserData::DisplaySelfAs,           QStringLiteral("displayselfas")},
-    {UserData::TailSortColumn,          QStringLiteral("tailSortColumn")},
-    {UserData::PilotSortColumn,         QStringLiteral("pilotSortColumn")},
-    {UserData::FtlWarningThreshold,     QStringLiteral("ftlWarningThreshold")},
-    {UserData::CurrWarningThreshold,    QStringLiteral("currWarningThreshold")},
-    {UserData::ShowToLgdCurrency,       QStringLiteral("showToLdgCurrency")},
-    {UserData::ShowLicCurrency,         QStringLiteral("showLicCurrency")},
-    {UserData::ShowTrCurrency,          QStringLiteral("showTrCurrency")},
-    {UserData::ShowLckCurrency,         QStringLiteral("showLckCurrency")},
-    {UserData::ShowMedCurrency,         QStringLiteral("showMedCurrency")},
-    {UserData::ShowCustom1Currency,     QStringLiteral("showCustom1Currency")},
-    {UserData::ShowCustom2Currency,     QStringLiteral("showCustom2Currency")},
-    {UserData::Custom1CurrencyName,     QStringLiteral("custom1CurrencyName")},
-    {UserData::Custom2CurrencyName,     QStringLiteral("custom2CurrencyName")},
-};
-
-QMap<Settings::FlightLogging, QString> Settings::flightLoggingMap = {
-    {FlightLogging::Function,           QStringLiteral("function")},
-    {FlightLogging::Approach,           QStringLiteral("approach")},
-    {FlightLogging::NightLoggingEnabled,QStringLiteral("nightLoggingEnabled")},
-    {FlightLogging::LogIFR,             QStringLiteral("logIfr")},
-    {FlightLogging::FlightNumberPrefix, QStringLiteral("flightnumberPrefix")},
-    {FlightLogging::PilotFlying,        QStringLiteral("pilotFlying")},
-    {FlightLogging::NightAngle,         QStringLiteral("nightangle")},
-    //{FlightLogging::FlightTimeFormat,   QStringLiteral("flightTimeFormat")},
-};
-
-void Settings::setup()
+void Settings::init()
 {
+    LOG << "Initialising application settings...";
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, OPL::Paths::path(OPL::Paths::Settings));
-    QSettings();
+    Settings::settingsInstance = new QSettings();
 }
 
 /*!
@@ -70,70 +32,43 @@ void Settings::setup()
  */
 void Settings::resetToDefaults()
 {
-    write(Main::Style, QStringLiteral("Fusion"));
-    write(Main::UseSystemFont, true);
-    write(Main::LogbookView, 0);
-    write(Main::DateFormat, 0);
+    setApplicationStyle(QStringLiteral("Fusion"));
+    setUseSystemFont(true);
+    setLogbookView(OPL::LogbookView::Default);
+    setLogAsPilotFlying(true);
+    setNightAngle(-6);
+    setShowSelfAs(0);
+    setFtlWarningThreshold(0.8);
+    setCurrencyWarningThreshold(90);
+    setPilotSortColumn(0);
+    setTailSortColumn(0);
+    setDisplayFormat(OPL::DateTimeFormat());
 
-    write(UserData::DisplaySelfAs, 0);
-    write(UserData::FtlWarningThreshold, 0.8); // To Do: UI Option
-    write(UserData::CurrWarningThreshold, 30);
-    write(UserData::ShowToLgdCurrency, true);
-    write(UserData::ShowLicCurrency, false);
-    write(UserData::ShowTrCurrency, false);
-    write(UserData::ShowLckCurrency, false);
-    write(UserData::ShowMedCurrency, false);
-    write(UserData::ShowCustom1Currency, false);
-    write(UserData::ShowCustom2Currency, false);
-    write(UserData::PilotSortColumn, 0);
-    write(UserData::TailSortColumn, 0);
-
-    write(FlightLogging::PilotFlying, true);
-    write(FlightLogging::NightAngle, -6);
+    sync();
 }
 
-//
-// Read/Write
-//
+OPL::DateTimeFormat Settings::getDisplayFormat()
+{
+    using namespace OPL;
 
-QVariant Settings::read(const FlightLogging key)
-{ return QSettings().value(groupOfKey(key)); }
+    // date format
+    const DateTimeFormat::DateFormat dateFormat = static_cast<DateTimeFormat::DateFormat>(
+        settingsInstance->value(FORMAT_DATE_FORMAT, 0).toInt());
+    const QString dateFormatString = settingsInstance->value(FORMAT_DATE_STRING, QStringLiteral("yyyy-MM-dd")).toString();
+    // time format
+    const DateTimeFormat::TimeFormat timeFormat = static_cast<DateTimeFormat::TimeFormat>(
+        settingsInstance->value(FORMAT_TIME_FORMAT, 0).toInt());
+    const QString timeFormatString = settingsInstance->value(FORMAT_TIME_STRING, QStringLiteral("hh:mm")).toString();
 
-void Settings::write(const FlightLogging key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
+    return DateTimeFormat(dateFormat, dateFormatString, timeFormat, timeFormatString);
 
-QVariant Settings::read(const Main key)
-{ return QSettings().value(groupOfKey(key)); }
+}
 
-void Settings::write(const Main key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
+void Settings::setDisplayFormat(const OPL::DateTimeFormat &format)
+{
+    settingsInstance->setValue(FORMAT_DATE_FORMAT, static_cast<int>(format.dateFormat()));
+    settingsInstance->setValue(FORMAT_DATE_STRING, format.dateFormatString());
+    settingsInstance->setValue(FORMAT_TIME_FORMAT, static_cast<int>(format.timeFormat()));
+    settingsInstance->setValue(FORMAT_TIME_STRING, format.timeFormatString());
+}
 
-QVariant Settings::read(const UserData key)
-{ return QSettings().value(groupOfKey(key)); }
-
-void Settings::write(const UserData key, const QVariant &val)
-{ QSettings().setValue(groupOfKey(key), val); }
-
-//
-// QString conversion PATH
-//
-QString Settings::groupOfKey (const Settings::FlightLogging key)
-{ return QStringLiteral("flightlogging/") + flightLoggingMap[key]; }
-
-QString Settings::groupOfKey (const Settings::Main key)
-{ return QStringLiteral("main/") + mainMap[key]; }
-
-QString Settings::groupOfKey (const Settings::UserData key)
-{ return QStringLiteral("userdata/") + userDataMap[key]; }
-
-//
-// QString conversion ONLY KEY
-//
-QString Settings::stringOfKey (const Settings::FlightLogging key)
-{ return  flightLoggingMap[key]; }
-
-QString Settings::stringOfKey (const Settings::Main key)
-{ return  mainMap[key]; }
-
-QString Settings::stringOfKey (const Settings::UserData key)
-{ return  userDataMap[key]; }

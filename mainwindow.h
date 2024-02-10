@@ -29,17 +29,14 @@
 #include <QKeyEvent>
 #include <QToolBar>
 
+#include <src/gui/widgets/logbooktableeditwidget.h>
+
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
-#include "src/gui/widgets/logbookwidget.h"
-#include "src/gui/widgets/tailswidget.h"
-#include "src/gui/widgets/airportwidget.h"
-#include "src/gui/widgets/airportwidget.h"
-#include "src/gui/widgets/pilotswidget.h"
+#include "src/gui/widgets/tableeditwidget.h"
 #include "src/gui/widgets/debugwidget.h"
 #include "src/classes/style.h"
 
-enum Style {Light, Dark};
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -121,13 +118,13 @@ private:
 
     HomeWidget* homeWidget;
 
-    LogbookWidget* logbookWidget;
+    LogbookTableEditWidget* logbookWidget; // This widget has a slot not present in TableEditWidget
+    
+    TableEditWidget* tailsWidget;
 
-    TailsWidget* aircraftWidget;
+    TableEditWidget* pilotsWidget;
 
-    PilotsWidget* pilotsWidget;
-
-    AirportWidget* airportWidget;
+    TableEditWidget* airportWidget;
 
     SettingsWidget* settingsWidget;
 
@@ -172,18 +169,15 @@ protected:
      */
     void resizeEvent(QResizeEvent *event) override
     {
-        //DEB << "SIZE:" << this->size();
-        int icon_size;
-        if (this->height() < 760)
-            icon_size = (this->height() / 16);
-        else
-            icon_size = (this->height() / 14);
-
-        auto tool_bar = this->findChild<QToolBar*>();
-        tool_bar->setIconSize(QSize(icon_size, icon_size));
+        const auto icon_size = this->height() / 14;
+        const auto toolBar = this->findChild<QToolBar*>();
+        toolBar->setIconSize(QSize(icon_size, icon_size));
         event->accept();
     }
 
+signals:
+    void addFlightEntryRequested();
+    void addSimulatorEntryRequested();
     //void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
 };
 #endif // MAINWINDOW_H

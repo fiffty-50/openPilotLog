@@ -23,7 +23,6 @@
 #include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/opl.h"
-#include "src/functions/datetime.h"
 #include "src/gui/widgets/backupwidget.h"
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
@@ -36,7 +35,6 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     loadBackupWidget();
     loadPreviousExperienceWidget();
     setupComboBoxes();
-    setupDateEdits();
     setupValidators();
     readSettings();
 }
@@ -62,41 +60,9 @@ void SettingsWidget::setupComboBoxes(){
         OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
         OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
         OPL::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
-    }
-}
 
-
-void SettingsWidget::setupDateEdits()
-{
-    // Read Display Format Setting
-    int date_format_index = Settings::read(Settings::Main::DateFormat).toInt();
-    const QString date_format_string = OPL::DateTime::getFormatString(
-                static_cast<OPL::DateFormat>(date_format_index));
-    const auto date_edits = this->findChildren<QDateEdit*>();
-    for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(date_format_string);
-    }
-    // Fill currencies
-    const QList<QPair<OPL::CurrencyName, QDateEdit*>> currencies_list = {
-        {OPL::CurrencyName::Licence,    ui->currLicDateEdit},
-        {OPL::CurrencyName::TypeRating, ui->currTrDateEdit},
-        {OPL::CurrencyName::LineCheck,  ui->currLckDateEdit},
-        {OPL::CurrencyName::Medical,    ui->currMedDateEdit},
-        {OPL::CurrencyName::Custom1,    ui->currCustom1DateEdit},
-        {OPL::CurrencyName::Custom2,    ui->currCustom2DateEdit},
-    };
-    for (const auto &pair : currencies_list) {
-        const QSignalBlocker signal_blocker(pair.second);
-        const auto entry = DB->getCurrencyEntry(static_cast<int>(pair.first));
-        if (entry.isValid()) { // set date
-            const auto date = QDate::fromString(
-                entry.getData().value(OPL::CurrencyEntry::EXPIRYDATE).toString(),
-                        Qt::ISODate);
-            if(date.isValid())
-                pair.second->setDate(date);
-        } else { // set current date
-            pair.second->setDate(QDate::currentDate());
-        }
+        // Set up the currency warning threshold spin box
+        ui->currencyWarningDaysSpinBox->setValue(Settings::getCurrencyWarningThreshold());
     }
 }
 
@@ -135,29 +101,18 @@ void SettingsWidget::readSettings()
     ui->emailLineEdit->setText(user_data.value(OPL::PilotEntry::EMAIL).toString());
 
     // FLight Logging Tab
-    ui->functionComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Function).toInt());
-    ui->rulesComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::LogIFR).toInt());
-    ui->approachComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::Approach).toInt());
-    ui->nightComboBox->setCurrentIndex(Settings::read(Settings::FlightLogging::NightLoggingEnabled).toInt());
-    ui->prefixLineEdit->setText(Settings::read(Settings::FlightLogging::FlightNumberPrefix).toString());
+    ui->functionComboBox->setCurrentIndex(static_cast<int>(Settings::getPilotFunction()));
+    ui->rulesComboBox->setCurrentIndex(Settings::getLogIfr());
+    ui->approachComboBox->setCurrentText(Settings::getApproachType());
+    ui->nightComboBox->setCurrentIndex(Settings::getNightLoggingEnabled());
+    ui->prefixLineEdit->setText(Settings::getFlightNumberPrefix());
 
-    ui->logbookViewComboBox->setCurrentIndex(Settings::read(Settings::Main::LogbookView).toInt());
-    ui->aliasComboBox->setCurrentIndex(Settings::read(Settings::UserData::DisplaySelfAs).toInt());
-
-    // Currencies Tab
-    ui->currToLdgCheckBox->setChecked(Settings::read(Settings::UserData::ShowToLgdCurrency).toBool());
-    ui->currLicCheckBox->setChecked(Settings::read(Settings::UserData::ShowLicCurrency).toBool());
-    ui->currTrCheckBox->setChecked(Settings::read(Settings::UserData::ShowTrCurrency).toBool());
-    ui->currLckCheckBox->setChecked(Settings::read(Settings::UserData::ShowLckCurrency).toBool());
-    ui->currMedCheckBox->setChecked(Settings::read(Settings::UserData::ShowMedCurrency).toBool());
-    ui->currCustom1CheckBox->setChecked(Settings::read(Settings::UserData::ShowCustom1Currency).toBool());
-    ui->currCustom2CheckBox->setChecked(Settings::read(Settings::UserData::ShowCustom2Currency).toBool());
-    ui->currCustom1LineEdit->setText(Settings::read(Settings::UserData::Custom1CurrencyName).toString());
-    ui->currCustom2LineEdit->setText(Settings::read(Settings::UserData::Custom2CurrencyName).toString());
+    ui->logbookViewComboBox->setCurrentIndex(static_cast<int>(Settings::getLogbookView()));
+    ui->aliasComboBox->setCurrentIndex(Settings::getShowSelfAs());
 
     // Misc Tab
-    ui->acftSortComboBox->setCurrentIndex(Settings::read(Settings::UserData::TailSortColumn).toInt());
-    ui->pilotSortComboBox->setCurrentIndex(Settings::read(Settings::UserData::PilotSortColumn).toInt());
+    ui->acftSortComboBox->setCurrentIndex(Settings::getTailSortColumn());
+    ui->pilotSortComboBox->setCurrentIndex(Settings::getPilotSortColumn());
 
     // Don't emit signals for OPL::Style changes during setup
     const QSignalBlocker style_blocker(ui->styleComboBox);
@@ -165,10 +120,10 @@ void SettingsWidget::readSettings()
     const QSignalBlocker font_blocker_2(ui->fontComboBox);
     const QSignalBlocker font_blocker_3(ui->fontCheckBox);
 
-    ui->styleComboBox->setCurrentText(Settings::read(Settings::Main::Style).toString());
-    ui->fontSpinBox->setValue(Settings::read(Settings::Main::FontSize).toUInt());
-    ui->fontComboBox->setCurrentFont(QFont(Settings::read(Settings::Main::Font).toString()));
-    bool use_system_font = Settings::read(Settings::Main::UseSystemFont).toBool();
+    ui->styleComboBox->setCurrentText(Settings::getApplicationStyle());
+    ui->fontSpinBox->setValue(Settings::getApplicationFontSize());
+    ui->fontComboBox->setCurrentFont(QFont(Settings::getApplicationFontName()));
+    bool use_system_font = Settings::getUseSystemFont();
     ui->fontCheckBox->setChecked(use_system_font);
     if (!use_system_font) {
         ui->fontComboBox->setEnabled(true);
@@ -179,7 +134,6 @@ void SettingsWidget::readSettings()
 void SettingsWidget::setupValidators()
 {
     ui->phoneLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_PHONE_NUMBER, ui->phoneLineEdit));
-    ui->emailLineEdit->setValidator(new QRegularExpressionValidator(OPL::RegEx::RX_EMAIL_ADDRESS, ui->emailLineEdit));
 }
 
 /*!
@@ -262,44 +216,43 @@ void SettingsWidget::on_phoneLineEdit_editingFinished()
 
 void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
 {
-    Settings::write(Settings::UserData::DisplaySelfAs, index);
+    Settings::setShowSelfAs(index);
     updatePersonalDetails();
 }
 
 void SettingsWidget::on_functionComboBox_currentIndexChanged(int arg1)
 {
-    Settings::write(Settings::FlightLogging::Function, arg1);
+    Settings::setPilotFunction(OPL::PilotFunction(arg1));
 }
 
 void SettingsWidget::on_rulesComboBox_currentIndexChanged(int arg1)
 {
-    Settings::write(Settings::FlightLogging::LogIFR, arg1);
+    Settings::setLogIfr(arg1);
 }
 
 void SettingsWidget::on_approachComboBox_currentIndexChanged(int arg1)
 {
-    Settings::write(Settings::FlightLogging::Approach, arg1);
+    Settings::setApproachType(ui->approachComboBox->currentText());
 }
 
 void SettingsWidget::on_nightComboBox_currentIndexChanged(int index)
 {
-    Settings::write(Settings::FlightLogging::NightLoggingEnabled, index);
+    Settings::setNightLoggingEnabled(index);
     switch (index) {
     case 1:
-        Settings::write(Settings::FlightLogging::NightAngle, -6);
+        Settings::setNightAngle(-6);
         break;
     case 2:
-        Settings::write(Settings::FlightLogging::NightAngle, 0);
+        Settings::setNightAngle(0);
         break;
     default:
-        Settings::write(Settings::FlightLogging::NightAngle, -6);
+        Settings::setNightAngle(-6);
     }
 }
 
 void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 {
-    Settings::write(Settings::FlightLogging::FlightNumberPrefix, arg1);
-
+    Settings::setFlightNumberPrefix(arg1);
 }
 
 /*
@@ -308,18 +261,19 @@ void SettingsWidget::on_prefixLineEdit_textChanged(const QString &arg1)
 
 void SettingsWidget::on_logbookViewComboBox_currentIndexChanged(int index)
 {
-    Settings::write(Settings::Main::LogbookView, index);
+//    Settings::write(Settings::Main::LogbookView, index);
+    Settings::setLogbookView(OPL::LogbookView(index));
     emit settingChanged(SettingSignal::LogbookWidget);
 }
 void SettingsWidget::on_pilotSortComboBox_currentIndexChanged(int index)
 {
-    Settings::write(Settings::UserData::PilotSortColumn, index);
+    Settings::setPilotSortColumn(index);
     emit settingChanged(PilotsWidget);
 }
 
 void SettingsWidget::on_acftSortComboBox_currentIndexChanged(int index)
 {
-    Settings::write(Settings::UserData::TailSortColumn, index);
+    Settings::setTailSortColumn(index);
     emit settingChanged(AircraftWidget);
 }
 
@@ -404,14 +358,16 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
 {
     if (new_style_setting == QLatin1String("Dark-Palette")) {
         OPL::Style::setStyle(OPL::Style::darkPalette());
-        Settings::write(Settings::Main::Style, new_style_setting);
+//        Settings::write(Settings::Main::Style, new_style_setting);
+        Settings::setApplicationStyle(new_style_setting);
         emit settingChanged(MainWindow);
         return;
     }
     for (const auto &style_name : OPL::Style::styles) {
         if (new_style_setting == style_name) {
             OPL::Style::setStyle(style_name);
-            Settings::write(Settings::Main::Style, new_style_setting);
+//            Settings::write(Settings::Main::Style, new_style_setting);
+            Settings::setApplicationStyle(style_name);
             emit settingChanged(MainWindow);
             return;
         }
@@ -420,7 +376,8 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
     for (const auto &style_sheet : OPL::Style::styleSheets) {
         if (new_style_setting == style_sheet.styleSheetName) {
             OPL::Style::setStyle(style_sheet);
-            Settings::write(Settings::Main::Style, new_style_setting);
+//            Settings::write(Settings::Main::Style, new_style_setting);
+            Settings::setApplicationStyle(new_style_setting);
             emit settingChanged(MainWindow);
             return;
         }
@@ -430,7 +387,8 @@ void SettingsWidget::on_styleComboBox_currentTextChanged(const QString& new_styl
 void SettingsWidget::on_fontComboBox_currentFontChanged(const QFont &f)
 {
     qApp->setFont(f);
-    Settings::write(Settings::Main::Font, f.toString());
+//    Settings::write(Settings::Main::Font, f.toString());
+    Settings::setApplicationFontName(f.toString());
     DEB << "Setting Font:" << f.toString();
 }
 
@@ -439,7 +397,8 @@ void SettingsWidget::on_fontSpinBox_valueChanged(int arg1)
     QFont f = qApp->font();
     f.setPointSize(arg1);
     qApp->setFont(f);
-    Settings::write(Settings::Main::FontSize, arg1);
+//    Settings::write(Settings::Main::FontSize, arg1);
+    Settings::setApplicationFontSize(arg1);
     DEB << "Setting Font:" << f.toString();
 }
 
@@ -455,7 +414,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
     {
         ui->fontComboBox->setEnabled(true);
         ui->fontSpinBox->setEnabled(true);
-        Settings::write(Settings::Main::UseSystemFont, false);
+        Settings::setUseSystemFont(false);
         QFont font(ui->fontComboBox->currentFont());
         font.setPointSize(ui->fontSpinBox->value());
         qApp->setFont(font);
@@ -466,7 +425,7 @@ void SettingsWidget::on_fontCheckBox_stateChanged(int arg1)
     {
         ui->fontComboBox->setEnabled(false);
         ui->fontSpinBox->setEnabled(false);
-        Settings::write(Settings::Main::UseSystemFont, true);
+        Settings::setUseSystemFont(true);
         INFO(tr("The application will be restarted for this change to take effect."));
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
@@ -496,184 +455,6 @@ void SettingsWidget::on_resetStylePushButton_clicked()
     ui->fontCheckBox->setChecked(true);
 }
 
-void SettingsWidget::on_currLicDateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Licence), row_data);
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currTrDateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::TypeRating), row_data);
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLckDateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::LineCheck), row_data);
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currMedDateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Medical), row_data);
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1DateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)},
-                                {OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom1LineEdit->text()}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom1), row_data);
-    DEB << entry;
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom2DateEdit_userDateChanged(const QDate &date)
-{
-    const OPL::RowData_T row_data = {{OPL::CurrencyEntry::EXPIRYDATE, date.toString(Qt::ISODate)},
-                                {OPL::CurrencyEntry::CURRENCYNAME, ui->currCustom2LineEdit->text()}};
-    const OPL::CurrencyEntry entry(static_cast<int>(OPL::CurrencyName::Custom2), row_data);
-    if (!DB->commit(entry))
-        WARN(tr("Unable to update currency. The following error has ocurred:<br><br>%1").arg(DB->lastError.text()));
-
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currToLdgCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowToLgdCurrency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowToLgdCurrency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLicCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowLicCurrency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowLicCurrency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currTrCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowTrCurrency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowTrCurrency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currLckCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowLckCurrency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowLckCurrency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currMedCheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowMedCurrency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowMedCurrency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1CheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowCustom1Currency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowCustom1Currency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom2CheckBox_stateChanged(int arg1)
-{
-    switch (arg1) {
-    case Qt::CheckState::Checked:
-        Settings::write(Settings::UserData::ShowCustom2Currency, true);
-        break;
-    case Qt::CheckState::Unchecked:
-        Settings::write(Settings::UserData::ShowCustom2Currency, false);
-        break;
-    default:
-        break;
-    }
-    emit settingChanged(HomeWidget);
-}
-
-void SettingsWidget::on_currCustom1LineEdit_editingFinished()
-{
-    Settings::write(Settings::UserData::Custom1CurrencyName, ui->currCustom1LineEdit->text());
-}
-
-void SettingsWidget::on_currCustom2LineEdit_editingFinished()
-{
-    Settings::write(Settings::UserData::Custom2CurrencyName, ui->currCustom2LineEdit->text());
-}
-
 void SettingsWidget::on_languageComboBox_activated(int arg1)
 {
     if (arg1 != 0) {
@@ -684,10 +465,15 @@ void SettingsWidget::on_languageComboBox_activated(int arg1)
     }
 }
 
-
 void SettingsWidget::on_exportPushButton_clicked()
 {
     auto exp = new ExportToCsvDialog(this);
     exp->exec();
+}
+
+
+void SettingsWidget::on_currencyWarningDaysSpinBox_valueChanged(int arg1)
+{
+    Settings::setCurrencyWarningThreshold(arg1);
 }
 

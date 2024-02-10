@@ -34,6 +34,11 @@ public:
 
     const QString getTableName() const override;
 
+    /*!
+     * \brief returns a String representation of the key data of this flight
+     */
+    const QString getFlightSummary() const;
+
     const static inline QString ROWID          = QStringLiteral("flight_id");
     const static inline QString DOFT           = QStringLiteral("doft");
     const static inline QString DEPT           = QStringLiteral("dept");

@@ -19,14 +19,6 @@
 
 namespace OPL {
 
-CurrencyEntry::CurrencyEntry()
-    : Row(DbTable::Currencies, 0)
-{}
-
-CurrencyEntry::CurrencyEntry(const RowData_T &row_data)
-    : Row(DbTable::Currencies, 0, row_data)
-{}
-
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Currencies, row_id, row_data)
 {}
@@ -34,6 +26,30 @@ CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
 const QString CurrencyEntry::getTableName() const
 {
     return TABLE_NAME;
+}
+
+void CurrencyEntry::setName(const QString &displayName)
+{
+    auto data = getData();
+    data.insert(NAME, displayName);
+    setData(data);
+}
+
+const QString CurrencyEntry::getName() const
+{
+    return getData().value(NAME).toString();
+}
+
+void CurrencyEntry::setExpiryDate(const Date &date)
+{
+    auto data = getData();
+    data.insert(EXPIRYDATE, date.toJulianDay());
+    setData(data);
+}
+
+const Date CurrencyEntry::getExpiryDate(const OPL::DateTimeFormat &format) const
+{
+    return OPL::Date(getData().value(EXPIRYDATE).toInt(), format);
 }
 
 } // namespace OPL

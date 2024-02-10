@@ -70,16 +70,22 @@ namespace OPL {
 /**
  * @brief Defines the row ID for non-user entries in the database;
  */
-const static int STUB_ROW_ID = -1;
+constexpr static int STUB_ROW_ID = -1;
 
 /**
  * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
  */
-const static char* STUB_AIRPORT_CODE = "XXXX";
+constexpr static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
 /**
  * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
  */
-const static char* STUB_AIRCRAFT_REG = "XX-XXX";
+constexpr static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
+
+/*!
+ * \brief The decimal seperator used internally
+ */
+constexpr static char DECIMAL_SEPERATOR = '.';
+
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
@@ -119,6 +125,63 @@ struct ToLdgCount_T {
 };
 
 /*!
+ * \brief The DateFormat struct encapsulates how date and time values are displayed.
+ * \details Stores how the user wishes to display and enter Date and Time Entries.
+ * These are stored numerically in the database and thus need to be converted to
+ * human-readably form.
+ */
+struct DateTimeFormat {
+    /*!
+     * \brief Enumerates how dates can be formatted to a localised format.
+     * \value Default - The Application standard, Equivalent to Qt::ISODate
+     * \value SystemLocale - The current system locale date format
+     */
+    enum class DateFormat { Default, SystemLocale, Custom };
+
+    /*!
+     * \brief Enumerates how time values can be formatted
+     * \value Default - The application default is 'hh:mm'
+     * \value Decimal - Time as Decmial hours (01:30 == 1.5)
+     * \value Custom - A user-provided custom format string
+     */
+    enum class TimeFormat { Default, Decimal, Custom };
+
+    /*!
+     * \brief Initialise a DateTimeFormat instance with default values
+     */
+    DateTimeFormat()
+        : m_dateFormat(DateFormat::Default),
+        m_dateFormatString(QStringLiteral("yyyy-MM-dd")),
+        m_timeFormat(TimeFormat::Default),
+        m_timeFormatString(QStringLiteral("hh:mm"))
+    {}
+
+    DateTimeFormat(DateFormat dateFormat_,
+                   const QString &dateFormatString_,
+                   TimeFormat timeFormat_,
+                   const QString &timeFormatString_)
+        :
+        m_dateFormat(dateFormat_),
+        m_dateFormatString(dateFormatString_),
+        m_timeFormat(timeFormat_),
+        m_timeFormatString(timeFormatString_)
+    {}
+
+
+public:
+    DateFormat dateFormat() const { return m_dateFormat; }
+    TimeFormat timeFormat() const { return m_timeFormat; }
+    const QString &dateFormatString() const { return m_dateFormatString; }
+    const QString &timeFormatString() const { return m_timeFormatString; }
+
+private:
+    DateFormat m_dateFormat;
+    TimeFormat m_timeFormat;
+    QString m_dateFormatString;
+    QString m_timeFormatString;
+};
+
+/*!
  * \brief ADateFormats enumerates the accepted date formats for QDateEdits
  * \todo At the moment, only ISODate is accepet as a valid date format.
  */
@@ -126,7 +189,7 @@ enum class DateFormat {ISODate, DE, EN };
 
 enum class FlightTimeFormat {Default, Decimal};
 
-enum class DateTimeFormat {Default, Backup};
+enum class DateTimeFormat_deprecated {Default, Backup};
 
 /*!
  * \brief PilotFunction
@@ -142,7 +205,7 @@ enum class Translation {English, German, Spanish};
 /*!
  * \brief Enumerates the available SQL views in the database
  */
-enum class DbViewName {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
+enum class LogbookView {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
 
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
@@ -176,7 +239,7 @@ public:
 
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
-    inline const QString getViewIdentifier(DbViewName view_name) const {return DATABASE_VIEWS.value(view_name);}
+    inline const QString getViewIdentifier(LogbookView view_name) const {return DATABASE_VIEWS.value(view_name);}
     inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
 
 private:
@@ -191,19 +254,19 @@ private:
         {Translation::German,  QStringLiteral("Deutsch")},
         {Translation::Spanish, QStringLiteral("Español")},
     };
-    const static inline QMap<DbViewName, QString> DATABASE_VIEWS = {
-        {DbViewName::Default,        QStringLiteral("viewDefault")},
-        {DbViewName::DefaultWithSim, QStringLiteral("viewDefaultSim")},
-        {DbViewName::Easa,           QStringLiteral("viewEasa")},
-        {DbViewName::EasaWithSim,    QStringLiteral("viewEasaSim")},
-        {DbViewName::SimulatorOnly,  QStringLiteral("viewSimulators")},
+    const static inline QMap<LogbookView, QString> DATABASE_VIEWS = {
+        {LogbookView::Default,        QStringLiteral("viewDefault")},
+        {LogbookView::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {LogbookView::Easa,           QStringLiteral("viewEasa")},
+        {LogbookView::EasaWithSim,    QStringLiteral("viewEasaSim")},
+        {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")},
     };
-    const QMap<DbViewName, QString> DATABASE_VIEW_DISPLAY_NAMES = {
-        {DbViewName::Default,        tr("Default")},
-        {DbViewName::DefaultWithSim, tr("Default with Simulator")},
-        {DbViewName::Easa,           tr("EASA-FCL")},
-        {DbViewName::EasaWithSim,    tr("EASA-FCL with Simulator")},
-        {DbViewName::SimulatorOnly,  tr("Simulator Sessions Only")},
+    const QMap<LogbookView, QString> DATABASE_VIEW_DISPLAY_NAMES = {
+        {LogbookView::Default,        tr("Default")},
+        {LogbookView::DefaultWithSim, tr("Default with Simulator")},
+        {LogbookView::Easa,           tr("EASA-FCL")},
+        {LogbookView::EasaWithSim,    tr("EASA-FCL with Simulator")},
+        {LogbookView::SimulatorOnly,  tr("Simulator Sessions Only")},
     };
     const static inline QMap<PilotFunction, QString> PILOT_FUNCTIONS = {
         {PilotFunction::PIC,   QStringLiteral("PIC")},
@@ -265,7 +328,6 @@ const inline auto  DATABASE_SCHEMA               = QStringLiteral(":/database/da
 const inline auto  DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
 const inline auto  DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
 const inline auto  DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
-const inline auto  DATABASE_TEMPLATE_CURRENCIES  = QStringLiteral(":/database/templates/currencies.json");
 
 const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");
@@ -300,17 +362,16 @@ namespace CssStyles {
 const inline auto  RED_BORDER = QStringLiteral("border: 1px solid red");
 } // namespace Styles
 
-namespace Format {
+//namespace Format {
 
-const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
+//const inline auto TIME_FORMAT = QStringLiteral("hh:mm");
 
-} // namespace Format
+//} // namespace Format
 
 namespace RegEx {
 
 const inline auto RX_PHONE_NUMBER  = QRegularExpression(QStringLiteral("^[+]{0,1}[0-9\\-\\s]+"));
-const inline auto RX_EMAIL_ADDRESS = QRegularExpression(QStringLiteral("\\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@"));
-const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("([01]?[0-9]|2[0-3]):?[0-5][0-9]?"));
+const inline auto RX_TIME_ENTRY    = QRegularExpression(QStringLiteral("^(?:(?:([01]?\\d|2[0-3])(?::?)([0-5]\\d))|(?:([01]?\\d|2[0-3])([0-5]\\d))|(?:([1-9]|[1-9]\\d)\\:([0-5]\\d)?)|(?:([01]?\\d|2[0-3])\\.([0-5]?\\d)))$"));
 const inline auto RX_AIRPORT_CODE  = QRegularExpression(QStringLiteral("[a-zA-Z0-9]{1,4}"));
 
 } // namespace RegEx

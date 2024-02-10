@@ -19,8 +19,8 @@ const FlightEntry RandomGenerator::randomFlight()
     const QDateTime dest_dt = dept_dt.addSecs(QRandomGenerator::global()->bounded(900, 50000));
 
     const QString doft = dept_dt.date().toString(Qt::ISODate);
-    OPL::Time tofb = OPL::Time::fromString(dept_dt.time().toString());
-    OPL::Time tonb = OPL::Time::fromString(dest_dt.time().toString());
+    OPL::Time tofb = OPL::Time::fromString(dept_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
+    OPL::Time tonb = OPL::Time::fromString(dest_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
 
     int pic = randomPilot();
     int acft = randomTail();

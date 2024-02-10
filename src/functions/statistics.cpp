@@ -35,21 +35,21 @@ int OPL::Statistics::totalTime(TimeFrame time_frame)
         break;
     case TimeFrame::CalendarYear:
         start.setDate(QDate::currentDate().year(), 1, 1);
-        start_date = start.toString(Qt::ISODate);
+        start_date = QString::number(start.toJulianDay());
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
     case TimeFrame::Rolling12Months:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
-        start_date = start.toString(Qt::ISODate);
+        start_date = QString::number(start.toJulianDay());
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
     case TimeFrame::Rolling28Days:
         start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 28);
-        start_date = start.toString(Qt::ISODate);
+        start_date = QString::number(start.toJulianDay());
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
@@ -72,16 +72,17 @@ int OPL::Statistics::totalTime(TimeFrame time_frame)
  */
 QVector<QVariant> OPL::Statistics::countTakeOffLanding(int days)
 {
-    QDate start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days);
-    QString startdate = start.toString(Qt::ISODate);
-    startdate.append(QLatin1Char('\''));
-    startdate.prepend(QLatin1Char('\''));
+    QString startDate = QString::number(QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days).toJulianDay());
+
+    // QString startdate = start.toString(Qt::ISODate);
+    startDate.append(QLatin1Char('\''));
+    startDate.prepend(QLatin1Char('\''));
 
     QString statement = QLatin1String("SELECT "
                                       " SUM(IFNULL(flights.toDay,0) + IFNULL(flights.toNight,0)) AS 'TO', "
                                       " SUM(IFNULL(flights.ldgDay,0) + IFNULL(flights.ldgNight,0)) AS 'LDG' "
                                       " FROM flights "
-                                      " WHERE doft >=") + startdate;
+                                      " WHERE doft >=") + startDate;
 
     QVector<QVariant> result = DB->customQuery(statement, 2);
     // make sure a value is returned instead of NULL

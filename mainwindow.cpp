@@ -17,30 +17,23 @@
  */
 #include <QToolBar>
 #include "mainwindow.h"
+#include "src/gui/widgets/airporttableeditwidget.h"
+#include "src/gui/widgets/logbooktableeditwidget.h"
+#include "src/gui/widgets/pilottableeditwidget.h"
+#include "src/gui/widgets/tailtableeditwidget.h"
 #include "ui_mainwindow.h"
 #include "src/database/database.h"
 #include "src/classes/style.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
-#include "src/gui/dialogues/newsimdialog.h"
-#include "src/gui/dialogues/newflightdialog.h"
 #include "src/database/databasecache.h"
 #include "src/classes/settings.h"
 // Quick and dirty Debug area
 void MainWindow::doDebugStuff()
 {
-    OPL::RowData_T xp = DB->getTotals(false);
-    LOG << "Totals without previous:";
-    LOG << xp;
-
-    xp = DB->getTotals(true);
-    LOG << "Totals with previous:";
-    LOG << xp;
-
-    OPL::FlightEntry fe = OPL::FlightEntry();
-    LOG << "FLIGHT table: " << fe.getTableName();
-    OPL::Row row = OPL::Row();
-    LOG << "ROW table: " << row.getTableName();
+//    LogbookTableEditWidget *widget = new LogbookTableEditWidget(this);
+//    widget->init();
+//    widget->setWindowFlags(Qt::Dialog);
+//    widget->show();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -49,9 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     init();
-
-    // set Startup Screen (Home Screen)
-    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 MainWindow::~MainWindow()
@@ -66,6 +56,7 @@ void MainWindow::init()
     setupToolbar();
     connectWidgets();
     setActionIcons(OPL::Style::getStyleType());
+    ui->stackedWidget->setCurrentWidget(homeWidget);
 }
 
 void MainWindow::setupToolbar()
@@ -93,16 +84,20 @@ void MainWindow::initialiseWidgets()
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
 
-    logbookWidget = new LogbookWidget(this);
+    logbookWidget = new LogbookTableEditWidget(this);
+    logbookWidget->init();
     ui->stackedWidget->addWidget(logbookWidget);
 
-    aircraftWidget = new TailsWidget(this);
-    ui->stackedWidget->addWidget(aircraftWidget);
+    tailsWidget = new TailTableEditWidget(this);
+    tailsWidget->init();
+    ui->stackedWidget->addWidget(tailsWidget);
 
-    pilotsWidget = new PilotsWidget(this);
+    pilotsWidget = new PilotTableEditWidget(this);
+    pilotsWidget->init();
     ui->stackedWidget->addWidget(pilotsWidget);
 
-    airportWidget = new AirportWidget(this);
+    airportWidget = new AirportTableEditWidget(this);
+    airportWidget->init();
     ui->stackedWidget->addWidget(airportWidget);
 
     settingsWidget = new SettingsWidget(this);
@@ -122,8 +117,9 @@ void MainWindow::connectDatabase()
         WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
              .arg(DB->lastError.text()));
     }
-    DBCache->init();
+
     // Load Cache
+    DBCache->init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -131,27 +127,27 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
     switch (style){
     case OPL::Style::StyleType::Light:
         LOG << "Setting Light Icon theme";
-        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
-        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // pending seperate icon
-        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
-        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
-        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
-        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
+        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
+        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
+        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
+        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
+        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
     case OPL::Style::StyleType::Dark:
         LOG << "Setting Dark Icon theme";
-        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
-        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
-        ui->actionNewSim->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
-        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
-        ui->actionAircraft->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
-        ui->actionPilots->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionAirports->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
-        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
-        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
+        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
+        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
+        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
+        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
+        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
+        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
     }
 }
@@ -170,40 +166,19 @@ void MainWindow::nope()
  */
 void MainWindow::connectWidgets()
 {
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     homeWidget,     &HomeWidget::refresh);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     homeWidget,     &HomeWidget::refresh);
-
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     logbookWidget,  &LogbookWidget::refresh);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     logbookWidget,  &LogbookWidget::onLogbookWidget_viewSelectionChanged);
-
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     aircraftWidget, &TailsWidget::onAircraftWidget_dataBaseUpdated);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     aircraftWidget, &TailsWidget::onAircraftWidget_settingChanged);
-
-    QObject::connect(DB,             &OPL::Database::dataBaseUpdated,
-                     pilotsWidget,   &PilotsWidget::onPilotsWidget_databaseUpdated);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     pilotsWidget,   &PilotsWidget::onPilotsWidget_settingChanged);
+                     logbookWidget,  &LogbookTableEditWidget::viewSelectionChanged);
+    QObject::connect(this,			 &MainWindow::addFlightEntryRequested,
+                     logbookWidget,  &LogbookTableEditWidget::addEntryRequested);
+    QObject::connect(this,			 &MainWindow::addSimulatorEntryRequested,
+                     logbookWidget,  &LogbookTableEditWidget::addSimulatorEntryRequested);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
                      this,           &MainWindow::onStyleChanged);
-
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     logbookWidget,   &LogbookWidget::repopulateModel);
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     pilotsWidget,    &PilotsWidget::repopulateModel);
-    QObject::connect(DB,              &OPL::Database::connectionReset,
-                     aircraftWidget,  &TailsWidget::repopulateModel);
 }
 
 void MainWindow::onDatabaseInvalid()
 {
     QMessageBox db_error(this);
-    //db_error.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     db_error.addButton(tr("Restore Backup"), QMessageBox::ButtonRole::AcceptRole);
     db_error.addButton(tr("Create New Database"), QMessageBox::ButtonRole::RejectRole);
     db_error.addButton(tr("Abort"), QMessageBox::ButtonRole::DestructiveRole);
@@ -235,7 +210,7 @@ void MainWindow::onDatabaseInvalid()
             LOG << "Initial setup incomplete or unsuccessfull.";
             on_actionQuit_triggered();
         }
-        Settings::write(Settings::Main::SetupComplete, true);
+        Settings::setSetupCompleted(true);
         LOG << "Initial Setup Completed successfully";
     }
 }
@@ -251,8 +226,16 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    auto* nf = new NewFlightDialog(this);
-    nf->exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
+    emit addFlightEntryRequested();
+}
+
+void MainWindow::on_actionNewSim_triggered()
+{
+    // auto nsd = NewSimDialog(this);
+    // nsd.exec();
+    ui->stackedWidget->setCurrentWidget(logbookWidget);
+    emit addSimulatorEntryRequested();
 }
 
 void MainWindow::on_actionLogbook_triggered()
@@ -262,7 +245,7 @@ void MainWindow::on_actionLogbook_triggered()
 
 void MainWindow::on_actionAircraft_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(aircraftWidget);
+    ui->stackedWidget->setCurrentWidget(tailsWidget);
 }
 
 void MainWindow::on_actionPilots_triggered()
@@ -291,8 +274,4 @@ void MainWindow::on_actionDebug_triggered()
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
-void MainWindow::on_actionNewSim_triggered()
-{
-    auto nsd = NewSimDialog(this);
-    nsd.exec();
-}
+

@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_MIN_VERSION "5.5.1")
@@ -53,34 +53,38 @@ set(PROJECT_SOURCES
     src/gui/dialogues/exporttocsvdialog.h
     src/gui/dialogues/exporttocsvdialog.cpp
     src/gui/dialogues/exporttocsvdialog.ui
+    src/gui/dialogues/entryeditdialog.h
+    src/gui/dialogues/entryeditdialog.cpp
+
     # Widgets
-    src/gui/widgets/tailswidget.h
-    src/gui/widgets/tailswidget.cpp
-    src/gui/widgets/aircraftwidget.ui
-    src/gui/widgets/airportwidget.h
-    src/gui/widgets/airportwidget.cpp
-    src/gui/widgets/airportwidget.ui
+    src/gui/widgets/homewidget.h
+    src/gui/widgets/homewidget.cpp
+    src/gui/widgets/homewidget.ui
+    src/gui/widgets/totalswidget.h
+    src/gui/widgets/totalswidget.cpp
+    src/gui/widgets/totalswidget.ui
     src/gui/widgets/backupwidget.h
     src/gui/widgets/backupwidget.cpp
     src/gui/widgets/backupwidget.ui
     src/gui/widgets/debugwidget.h
     src/gui/widgets/debugwidget.cpp
     src/gui/widgets/debugwidget.ui
-    src/gui/widgets/homewidget.h
-    src/gui/widgets/homewidget.cpp
-    src/gui/widgets/homewidget.ui
-    src/gui/widgets/logbookwidget.h
-    src/gui/widgets/logbookwidget.cpp
-    src/gui/widgets/logbookwidget.ui
-    src/gui/widgets/pilotswidget.h
-    src/gui/widgets/pilotswidget.cpp
-    src/gui/widgets/pilotswidget.ui
+
     src/gui/widgets/settingswidget.h
     src/gui/widgets/settingswidget.cpp
     src/gui/widgets/settingswidget.ui
-    src/gui/widgets/totalswidget.h
-    src/gui/widgets/totalswidget.cpp
-    src/gui/widgets/totalswidget.ui
+
+    src/gui/widgets/tableeditwidget.h
+    src/gui/widgets/tableeditwidget.cpp
+    src/gui/widgets/pilottableeditwidget.h
+    src/gui/widgets/pilottableeditwidget.cpp
+    src/gui/widgets/tailtableeditwidget.h
+    src/gui/widgets/tailtableeditwidget.cpp
+    src/gui/widgets/airporttableeditwidget.h
+    src/gui/widgets/airporttableeditwidget.cpp
+    src/gui/widgets/logbooktableeditwidget.h
+    src/gui/widgets/logbooktableeditwidget.cpp
+
     # Verification
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
@@ -95,7 +99,8 @@ set(PROJECT_SOURCES
     src/gui/verification/completerprovider.cpp
     src/gui/verification/tailinput.h
     src/gui/verification/tailinput.cpp
-
+    src/gui/widgets/currencywidget.h
+    src/gui/widgets/currencywidget.cpp
 
     # Classes
     src/classes/style.h
@@ -116,6 +121,20 @@ set(PROJECT_SOURCES
     src/classes/md5sum.cpp
     src/classes/time.h
     src/classes/time.cpp
+    src/classes/easaftl.h
+    src/classes/easaftl.cpp
+    src/classes/date.h
+    src/classes/date.cpp
+    src/classes/styleddatedelegate.h
+    src/classes/styleddatedelegate.cpp
+    src/classes/styledtimedelegate.h
+    src/classes/styledtimedelegate.cpp
+    src/classes/styledpilotdelegate.h
+    src/classes/styledpilotdelegate.cpp
+    src/classes/styledregistrationdelegate.h
+    src/classes/styledregistrationdelegate.cpp
+    src/classes/styledtypedelegate.h
+    src/classes/styledtypedelegate.cpp
 
     # Database Entries
     src/database/flightentry.h
@@ -132,7 +151,6 @@ set(PROJECT_SOURCES
     src/database/simulatorentry.cpp
     src/database/currencyentry.h
     src/database/currencyentry.cpp
-
     src/database/previousexperienceentry.h
     src/database/previousexperienceentry.cpp
 
@@ -157,6 +175,8 @@ set(PROJECT_SOURCES
     src/database/dbsummary.cpp
     src/database/databasecache.h
     src/database/databasecache.cpp
+
+    src/database/views/logbookviewinfo.h
 
     # Ressources
     assets/icons.qrc
@@ -224,7 +244,7 @@ if(WIN32)
         )
     endif()
 else()
-    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(openPilotLog
             ${PROJECT_SOURCES}
             ${QM_FILES}

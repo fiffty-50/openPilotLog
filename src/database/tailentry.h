@@ -44,9 +44,9 @@ public:
      */
     const QString registration() const;
     /*!
-     * \brief Return the aircraft type
+     * \brief Return the aircraft type (Make and  - if available - Model and Variant)
      */
-    const QString type()         const; //TODO - Create String for make-model-variant
+    const QString type() const;
 
     /*!
      * \brief The entries row id in the database
@@ -102,6 +102,11 @@ public:
      * <\ul>
      */
     static const inline QString WEIGHT_CLASS = QStringLiteral("weightClass");
+
+    /*!
+     * \brief The aircraft type string ("Make Model-Variant")
+     */
+    static const inline QString TYPE_STRING = QStringLiteral("typeString");
 };
 
 } // namespace OPL

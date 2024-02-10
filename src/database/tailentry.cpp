@@ -42,7 +42,22 @@ const QString TailEntry::registration() const
 }
 
 const QString TailEntry::type() const {
-    return getData().value(MAKE).toString();
+    const auto &data = getData();
+
+    if(data.value(VARIANT).toString().isEmpty()) {
+        if(data.value(MODEL).toString().isEmpty()) {
+            return data.value(MAKE).toString();
+        }
+        return data.value(MAKE).toString()
+               + QLatin1Char(' ')
+               + data.value(MODEL).toString();
+    }
+
+    return data.value(MAKE).toString()
+           + QLatin1Char(' ')
+           + data.value(MODEL).toString()
+           + QLatin1Char('-')
+           + data.value(VARIANT).toString();
 }
 
 } // namespace OPL

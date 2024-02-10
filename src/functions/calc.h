@@ -144,8 +144,8 @@ struct NightTimeValues{
     {
         nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
 
-        nightTime = OPL::Time(nightMinutes);
-        totalTime = OPL::Time(block_minutes);
+        OPL::Time nightTime = OPL::Time(nightMinutes, DateTimeFormat());
+        OPL::Time totalTime = OPL::Time(block_minutes, DateTimeFormat());
 
         if (nightMinutes == 0) { // all day
             takeOffNight = false;
@@ -167,13 +167,13 @@ struct NightTimeValues{
 
     };
 
-    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, OPL::Time night_time, OPL::Time total_time)
-        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes), nightTime(night_time), totalTime(total_time){};
+//    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, OPL::Time night_time, OPL::Time total_time)
+//        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes), nightTime(night_time), totalTime(total_time){};
     bool takeOffNight;
     bool landingNight;
     int nightMinutes;
-    OPL::Time nightTime;
-    OPL::Time totalTime;
+//    OPL::Time nightTime;
+//    OPL::Time totalTime;
 
     inline bool isAllDay()      {return (!takeOffNight  && !landingNight);}
     inline bool isAllNight()    {return ( takeOffNight  &&  landingNight);}

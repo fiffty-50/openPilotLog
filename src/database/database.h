@@ -277,10 +277,10 @@ public:
     /*!
      * \brief Retreives a currency entry from the database. See row class for details.
      */
-    inline OPL::CurrencyEntry getCurrencyEntry(int row_id)
+    inline OPL::CurrencyEntry getCurrencyEntry(OPL::CurrencyEntry::Currency currency)
     {
-        const auto data = getRowData(OPL::DbTable::Currencies, row_id);
-        return OPL::CurrencyEntry(row_id, data);
+        const auto data = getRowData(OPL::DbTable::Currencies, currency);
+        return OPL::CurrencyEntry(currency, data);
     }
 
     /*!

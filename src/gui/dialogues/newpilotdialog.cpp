@@ -21,16 +21,18 @@
 #include "src/opl.h"
 
 #include "src/database/database.h"
-#include "src/database/row.h"
 
 /*!
  * \brief NewPilotDialog::NewPilotDialog - creates a new pilot dialog which can be used to add a new entry to the database
  */
-NewPilotDialog::NewPilotDialog(QWidget *parent) :
-    QDialog(parent),
+NewPilotDialog::NewPilotDialog(QString userInput, QWidget* parent)
+    : EntryEditDialog{parent},
     ui(new Ui::NewPilot)
 {
     setup();
+    if(userInput != QString()) {
+        ui->lastnameLineEdit->setText(userInput.replace(0, 1, userInput.first(1).toUpper()));
+    }
     ui->lastnameLineEdit->setFocus();
 }
 
@@ -39,7 +41,7 @@ NewPilotDialog::NewPilotDialog(QWidget *parent) :
  * \param rowId - the rowid of the entry to be edited in the database
  */
 NewPilotDialog::NewPilotDialog(int rowId, QWidget *parent) :
-    QDialog(parent),
+    EntryEditDialog{rowId, parent},
     ui(new Ui::NewPilot)
 {
     setup();
@@ -58,7 +60,9 @@ NewPilotDialog::~NewPilotDialog()
 void NewPilotDialog::setup()
 {
     ui->setupUi(this);
-    ui->companyLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Companies));
+    auto completer = QCompleterProvider.getCompleter(CompleterProvider::Companies);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    ui->companyLineEdit->setCompleter(completer);
 }
 
 void NewPilotDialog::on_buttonBox_accepted()
@@ -106,4 +110,18 @@ void NewPilotDialog::submitForm()
     } else {
         QDialog::accept();
     }
+}
+
+bool NewPilotDialog::deleteEntry(int rowId)
+{
+    auto entry = DB->getPilotEntry(rowId);
+    return DB->remove(entry);
+
+}
+
+void NewPilotDialog::loadEntry(int rowId)
+{
+    pilotEntry = DB->getPilotEntry(rowId);
+    formFiller();
+    ui->lastnameLineEdit->setFocus();
 }

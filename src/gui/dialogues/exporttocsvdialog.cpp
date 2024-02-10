@@ -56,7 +56,7 @@ void ExportToCsvDialog::selectRows()
     // create a QSqlTableModel based on the selected views
     const auto model = new QSqlTableModel(this);
     if(ui->viewComboBox->currentIndex() < 4)
-        model->setTable(OPL::GLOBALS->getViewIdentifier(OPL::DbViewName(ui->viewComboBox->currentIndex())));
+        model->setTable(OPL::GLOBALS->getViewIdentifier(OPL::LogbookView(ui->viewComboBox->currentIndex())));
     else
         model->setTable(exportView);
     model->select();
