@@ -206,7 +206,6 @@ void NewFlightDialog::fillWithEntryData()
     const QDate date = QDate::fromJulianDay(flight_data.value(FlightEntry::DOFT).toInt());
     calendar->setSelectedDate(date);
     ui->doftLineEdit->setText(Date(date, m_format).toString());
-//    ui->doftLineEdit->setText(OPL::Date::fromJulianDay(date.toJulianDay()).toString(dateFormat));
 
     // Location
     ui->deptLocationLineEdit->setText(flight_data.value(OPL::FlightEntry::DEPT).toString());
@@ -232,6 +231,7 @@ void NewFlightDialog::fillWithEntryData()
     // Flight Rules, check if tIFR > 0
     bool time_ifr = flight_data.value(OPL::FlightEntry::TIFR).toBool();
     ui->flightRulesComboBox->setCurrentIndex(time_ifr);
+
     // Take-Off and Landing
     int takeOffCount = flight_data.value(OPL::FlightEntry::TODAY).toInt()
             + flight_data.value(OPL::FlightEntry::TONIGHT).toInt();
@@ -239,11 +239,13 @@ void NewFlightDialog::fillWithEntryData()
             + flight_data.value(OPL::FlightEntry::LDGNIGHT).toInt();
     ui->takeOffSpinBox->setValue(takeOffCount);
     ui->landingSpinBox->setValue(landingCount);
-    // Remarks
+    ui->pilotFlyingCheckBox->setChecked(flight_data.value(OPL::FlightEntry::PILOTFLYING).toBool());
+
+    // Remarks and Flight Number
     ui->remarksLineEdit->setText(flight_data.value(OPL::FlightEntry::REMARKS).toString());
-    // Flight Number
     ui->flightNumberLineEdit->setText(flight_data.value(OPL::FlightEntry::FLIGHTNUMBER).toString());
 
+    // re-trigger input verification
     for(const auto &line_edit : *mandatoryLineEdits)
         emit line_edit->editingFinished();
 }
