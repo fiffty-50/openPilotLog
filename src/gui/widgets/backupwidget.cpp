@@ -22,6 +22,8 @@
 #include "src/functions/datetime.h"
 #include "src/database/dbsummary.h"
 #include "src/gui/dialogues/firstrundialog.h"
+#include "src/classes/settings.h"
+#include "src/classes/styleddatedelegate.h"
 
 #include <QListView>
 #include <QStandardItemModel>
@@ -39,6 +41,12 @@ BackupWidget::BackupWidget(QWidget *parent) :
     model->setHorizontalHeaderLabels(QStringList{tr("Total Time"),tr("Flights"), tr("Aircraft"),
                                                  tr("Pilots"), tr("Last Flight"), tr("Backup File")});
     view = ui->tableView;
+
+
+    // julian day to Date Format
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), model);
+    view->setItemDelegateForColumn(DATE_COLUMN, dateDelegate);
+
     refresh();
 }
 
@@ -86,7 +94,7 @@ const QString BackupWidget::absoluteBackupPath()
 const QString BackupWidget::backupName()
 {
     auto owner = DB->getPilotEntry(1);
-    return  QString("logbook_backup_%1_%2.db").arg(
+    return  QStringLiteral("logbook_backup_%1_%2.db").arg(
         OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(), OPL::DateTimeFormat_deprecated::Backup),
                                                   owner.getLastName()
                 );

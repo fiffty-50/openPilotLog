@@ -96,6 +96,8 @@ private:
     QList<int> selectedRows;
     void refresh();
 
+    static constexpr int DATE_COLUMN = 4;
+
 protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
