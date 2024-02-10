@@ -18,12 +18,12 @@
 #ifndef HOMEWIDGET_H
 #define HOMEWIDGET_H
 
+#include "src/opl.h"
 #include <QWidget>
 #include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
-#include "src/database/database.h"
 
 namespace Ui {
 class HomeWidget;

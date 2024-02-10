@@ -23,9 +23,6 @@ CurrencyWidget::CurrencyWidget(QWidget *parent)
     fillFlightTimeLimitations();
 
     warnAboutExpiries();
-
-    // warn the user about impending currencies if warning threshold > 0
-
 }
 
 void CurrencyWidget::setupModelAndView()
@@ -124,6 +121,7 @@ void CurrencyWidget::setupUI()
 void CurrencyWidget::fillTakeOffAndLandingCurrencies()
 {
     const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
+    LOG << "Currencies: " << takeoff_landings;
     if(takeoff_landings.isEmpty() || takeoff_landings.size() != 2)
         return;
 
