@@ -18,11 +18,12 @@ public:
      */
     enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
 
-    void validate(ValidationItem item)             { validationArray[item] = true;};
+    void validate(ValidationItem item)             { validationArray[item]  = true;};
     void validate(int index)                       { validationArray[index] = true;};
-    void invalidate(ValidationItem item)           { validationArray[item] = false;}
+    void invalidate(ValidationItem item)           { validationArray[item]  = false;}
     void invalidate(int index)                     { validationArray[index] = false;}
-    inline bool allValid() const                   { return validationArray.count(true) == 7;};
+    inline bool allValid() const                   { return validationArray.count(true) == 7; }
+    inline bool allButOneValid() const			   { return validationArray.count(false) < 2; }
     inline bool timesValid() const                 { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
     inline bool locationsValid() const             { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
     inline bool nightDataValid() const             { return timesValid() && locationsValid() && validationArray[ValidationItem::doft];}

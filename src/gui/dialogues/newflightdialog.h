@@ -177,6 +177,7 @@ private:
     bool userWantsToAddNewEntry(OPL::DbTable table);
 
 
+    void informUserAboutMissingItems();
     bool pilotFunctionsInvalid();
     bool duplicateNamesPresent();
     bool flightTimeIsZero();

@@ -47,7 +47,7 @@ NewFlightDialog::NewFlightDialog(QWidget *parent)
     setPilotFunction();
 
     ui->doftLineEdit->setText(OPL::Date::today(m_format).toString());
-//    emit ui->doftLineEdit->editingFinished();
+   emit ui->doftLineEdit->editingFinished();
 }
 
 NewFlightDialog::NewFlightDialog(int row_id, QWidget *parent)
@@ -155,6 +155,9 @@ void NewFlightDialog::setupSignalsAndSlots()
 
     QObject::connect(calendar, &QCalendarWidget::selectionChanged,
                      this, &NewFlightDialog::calendarDateSelected);
+    QObject::connect(calendar, &QCalendarWidget::clicked,
+                     this, &NewFlightDialog::calendarDateSelected);
+
 }
 
 /*!
@@ -381,6 +384,24 @@ bool NewFlightDialog::userWantsToAddNewEntry(OPL::DbTable table)
     }
 
     return reply == QMessageBox::Yes;
+}
+
+void NewFlightDialog::informUserAboutMissingItems()
+{
+    QString missing_items;
+    for (int i=0; i < mandatoryLineEdits->size(); i++) {
+        if (!validationState.validAt(i)){
+            missing_items.append(validationItemsDisplayNames.value(static_cast<ValidationState::ValidationItem>(i)) + QStringLiteral("<br>"));
+            mandatoryLineEdits->at(i)->setStyleSheet(OPL::CssStyles::RED_BORDER);
+        }
+    }
+
+    INFO(tr("Not all mandatory entries are valid.<br>"
+            "The following item(s) are empty or invalid:"
+            "<br><br><center><b>%1</b></center><br>"
+            "Please go back and fill in the required data."
+            ).arg(missing_items));
+    return;
 }
 
 /*!
@@ -747,29 +768,20 @@ bool NewFlightDialog::flightTimeIsZero()
  */
 void NewFlightDialog::on_buttonBox_accepted()
 {
-    // Debug
-    validationState.printValidationStatus();
+    // one item is always invalid if the user accepts when the currently edited line edit is mandatory (invalidation on focus in event)
+    if(!validationState.allButOneValid()) {
+        informUserAboutMissingItems();
+        return;
+    }
+    // trigger validation for all mandatory items to toggle verification state
     for (const auto& le : *mandatoryLineEdits)
         emit le->editingFinished();
-    // If input verification is passed, continue, otherwise prompt user to correct
     if (!validationState.allValid()) {
-
-        QString missing_items;
-        for (int i=0; i < mandatoryLineEdits->size(); i++) {
-            if (!validationState.validAt(i)){
-                missing_items.append(validationItemsDisplayNames.value(static_cast<ValidationState::ValidationItem>(i)) + "<br>");
-                mandatoryLineEdits->at(i)->setStyleSheet(OPL::CssStyles::RED_BORDER);
-            }
-        }
-
-        INFO(tr("Not all mandatory entries are valid.<br>"
-                "The following item(s) are empty or invalid:"
-                "<br><br><center><b>%1</b></center><br>"
-                "Please go back and fill in the required data."
-                ).arg(missing_items));
+        informUserAboutMissingItems();
         return;
     }
 
+    // run a couple of reasonableness checks
     if(pilotFunctionsInvalid())
         return;
     if(duplicateNamesPresent())
@@ -777,7 +789,7 @@ void NewFlightDialog::on_buttonBox_accepted()
     if(flightTimeIsZero())
         return;
 
-    // If input verification passed, collect input and submit to database
+    // collect input and submit to database
     const auto newData = prepareFlightEntryData();
     DEB << "Old Data: ";
     DEB << flightEntry;
