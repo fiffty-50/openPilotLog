@@ -396,12 +396,15 @@ void NewFlightDialog::informUserAboutMissingItems()
         }
     }
 
+    if(missing_items.isEmpty()) {
+        return;
+    }
+
     INFO(tr("Not all mandatory entries are valid.<br>"
             "The following item(s) are empty or invalid:"
             "<br><br><center><b>%1</b></center><br>"
             "Please go back and fill in the required data."
             ).arg(missing_items));
-    return;
 }
 
 /*!

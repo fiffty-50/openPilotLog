@@ -25,13 +25,11 @@
 #include <QBitArray>
 
 #include "QtWidgets/qcalendarwidget.h"
-#include "src/database/database.h"
 #include "src/database/flightentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 #include "src/gui/verification/userinput.h"
 #include "src/opl.h"
 #include "src/gui/verification/validationstate.h"
-#include "src/classes/date.h"
 
 namespace Ui {
 class NewFlightDialog;
@@ -177,6 +175,9 @@ private:
     bool userWantsToAddNewEntry(OPL::DbTable table);
 
 
+    /*!
+     * \brief informUserAboutMissingItems - collect information about missing mandatory items and display a messagebox to the user
+     */
     void informUserAboutMissingItems();
     bool pilotFunctionsInvalid();
     bool duplicateNamesPresent();
