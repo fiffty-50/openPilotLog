@@ -184,6 +184,14 @@ set(PROJECT_SOURCES
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
 
+    # network
+    src/network/flightawareflightdata.h
+    src/network/flightawarequery.h
+    src/network/flightawarequery.cpp
+    src/network/flightawarejsonparser.h
+    src/network/flightawarejsonparser.cpp
+
+
     # Testing / Debug
     src/testing/importCrewlounge/importcrewlounge.h
     src/testing/importCrewlounge/importcrewlounge.cpp

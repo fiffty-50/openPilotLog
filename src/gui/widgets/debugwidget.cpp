@@ -16,8 +16,12 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
+#include "src/classes/time.h"
+#include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/gui/verification/pilotinput.h"
+#include "src/network/flightawarequery.h"
+#include "src/opl.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
 #include "src/testing/importCrewlounge/processpilots.h"
@@ -31,21 +35,30 @@
 
 void DebugWidget::on_debugPushButton_clicked()
 {
-    auto rawCsvData = CSV::readCsvAsRows("/home/felix/git/importMCC/assets/data/felix.csv");
-    // Process Pilots
-    auto proc_pilots = ProcessPilots(rawCsvData);
-    proc_pilots.init();
-    const auto p_maps = proc_pilots.getProcessedPilotMaps();
-    // Process Tails
-    auto proc_tails = ProcessAircraft(rawCsvData);
-    proc_tails.init();
-    const auto t_maps = proc_tails.getProcessedTailMaps();
-    // Process Flights
-    auto proc_flights = ProcessFlights(rawCsvData,proc_pilots.getProcessedPilotsIds(), proc_tails.getProcessedTailIds());
-    proc_flights.init();
+    // FlightAwareQuery query;
+    // const auto result = query.getFlightData(ui->debugLineEdit->text(), ui->dateEdit->date());
+    // if(result.isEmpty()) {
+    //     WARN("No flight found.");
+    //     return;
+    // }
 
-    auto flights = proc_flights.getProcessedFlights();
-    DEB << "Flight:" << flights[1000];
+    // const FlightAwareFlightData data = result.first();
+    // const auto format = OPL::DateTimeFormat();
+    // int departureTime = OPL::Time(data.out.time(), format).toMinutes();
+    // int arrivalTime = OPL::Time(data.in.time(), format).toMinutes();
+    OPL::RowData_T flight_data;
+    // flight_data.insert(OPL::FlightEntry::DEPT, data.departure);
+    // flight_data.insert(OPL::FlightEntry::DEST ,data.destination);
+    // flight_data.insert(OPL::FlightEntry::TOFB , departureTime);
+    // flight_data.insert(OPL::FlightEntry::TONB , arrivalTime);
+    // flight_data.insert(OPL::FlightEntry::ACFT , data.registration);
+    // flight_data.insert(OPL::FlightEntry::FLIGHTNUMBER, data.iataFlightNumber);
+
+    // DEB << "Parsed Flight Data:" << flight_data;
+
+    // NewFlightDialog nfd(flight_data, this);
+    flight_data.insert(OPL::FlightEntry::DOFT, 22000);
+    // NewFlightDialog nfd(flight_data, this);
 }
 
 DebugWidget::DebugWidget(QWidget *parent) :
@@ -281,13 +294,13 @@ void DebugWidget::changeEvent(QEvent *event)
 
 void DebugWidget::on_debugLineEdit_editingFinished()
 {
-    PilotInput user_input = PilotInput(ui->debugLineEdit->text());
-    if(user_input.isValid())
-        DEB << "Good Input";
-    else {
-        DEB << "Fixing...";
-        ui->debugLineEdit->setText(user_input.fixup());
-    }
+    // PilotInput user_input = PilotInput(ui->debugLineEdit->text());
+    // if(user_input.isValid())
+    //     DEB << "Good Input";
+    // else {
+    //     DEB << "Fixing...";
+    //     ui->debugLineEdit->setText(user_input.fixup());
+    // }
 }
 
 
