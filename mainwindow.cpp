@@ -17,6 +17,7 @@
  */
 #include <QToolBar>
 #include "mainwindow.h"
+#include "src/gui/dialogues/flightentryeditdialog.h"
 #include "src/gui/widgets/airporttableeditwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
@@ -32,15 +33,17 @@
 #include "src/network/flightawarequery.h"
 void MainWindow::doDebugStuff()
 {
-    FlightAwareQuery query;
-    auto result = query.getFlightData("DY606", QDate::currentDate());
-    LOG << "Querying API...";
-    if(result.isEmpty()) {
-        LOG << "No flights found.";
-    }
-    for(const auto &flight : result) {
-        flight.print();
-    }
+    // FlightAwareQuery query;
+    // auto result = query.getFlightData("DY606", QDate::currentDate());
+    // LOG << "Querying API...";
+    // if(result.isEmpty()) {
+    //     LOG << "No flights found.";
+    // }
+    // for(const auto &flight : result) {
+    //     flight.print();
+    // }
+    FlightEntryEditDialog feed = new FlightEntryEditDialog(this);
+    feed.exec();
 }
 
 MainWindow::MainWindow(QWidget *parent)

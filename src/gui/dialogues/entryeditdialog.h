@@ -1,13 +1,14 @@
 #ifndef ENTRYEDITDIALOG_H
 #define ENTRYEDITDIALOG_H
 
+#include "src/database/row.h"
 #include <QDialog>
 #include <QObject>
 
 /*!
  * \brief The EntryEditDialog class is a base class for Dialogs that enable editing of individual database entries
  */
-class EntryEditDialog : public QDialog
+class  EntryEditDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -20,6 +21,17 @@ public:
      * \param rowID - The row ID of the entry
      */
     virtual void loadEntry(int rowID) = 0;
+
+    /*!
+     * \brief load an entry for editing
+     * \param entry - The (stub) entry.
+     * \details This function can be used to edit an incomplete entry which may or may not exist in the
+     * database yet.
+     */
+    virtual void loadEntry(OPL::Row entry) {
+        TODO << "Implement in all subclasses";
+        qApp->quit();
+    }
 
     /*!
      * \brief delete an entry from the database

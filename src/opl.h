@@ -236,6 +236,7 @@ public:
     void loadPilotFunctios(QComboBox *combo_box) const;
     void loadSimulatorTypes(QComboBox *combo_box) const;
     void loadApproachTypes(QComboBox *combo_box) const;
+    void loadFlightRules(QComboBox *combo_box) const;
 
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}

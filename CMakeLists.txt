@@ -53,8 +53,11 @@ set(PROJECT_SOURCES
     src/gui/dialogues/exporttocsvdialog.h
     src/gui/dialogues/exporttocsvdialog.cpp
     src/gui/dialogues/exporttocsvdialog.ui
+
     src/gui/dialogues/entryeditdialog.h
     src/gui/dialogues/entryeditdialog.cpp
+    src/gui/dialogues/flightentryeditdialog.h
+    src/gui/dialogues/flightentryeditdialog.cpp
 
     # Widgets
     src/gui/widgets/homewidget.h

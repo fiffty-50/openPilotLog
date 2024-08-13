@@ -37,4 +37,11 @@ void OplGlobals::loadApproachTypes(QComboBox *combo_box) const
         combo_box->addItem(approach);
 }
 
+void OplGlobals::loadFlightRules(QComboBox *combo_box) const
+{
+    const QSignalBlocker blocker(combo_box);
+    combo_box->addItem(QStringLiteral("VFR"));
+    combo_box->addItem(QStringLiteral("IFR"));
+}
+
 } // namespace Opl
