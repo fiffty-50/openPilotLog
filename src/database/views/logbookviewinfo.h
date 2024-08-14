@@ -44,7 +44,7 @@ public:
     /*!
      * \brief Return the column(s) in the view which contain Time entries
      */
-    static constexpr std::vector<int> getTimeColumns(LogbookView view)
+    static const std::vector<int> getTimeColumns(LogbookView view)
     {
         switch (view) {
         case LogbookView::Default:

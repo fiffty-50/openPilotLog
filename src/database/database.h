@@ -75,13 +75,12 @@ private:
     inline const static QList<OPL::DbTable> USER_TABLES = {
         OPL::DbTable::Flights,
         OPL::DbTable::Pilots,
-        OPL::DbTable::Tails
+        OPL::DbTable::Tails,
+        OPL::DbTable::Currencies,
     };
     inline const static QList<OPL::DbTable> TEMPLATE_TABLES = {
         OPL::DbTable::Aircraft,
         OPL::DbTable::Airports,
-        OPL::DbTable::Currencies,
-        OPL::DbTable::Changelog,
     };
 
 
@@ -115,11 +114,6 @@ public:
      * if the database has been altered. This function is normally only required during database setup or maintenance.
      */
     void updateLayout();
-
-    /*!
-     * \brief Return the database revision number (not the sqlite version number).
-     */
-    const QString version() const;
 
     /*!
      * \brief Database::sqliteVersion returns the database sqlite version. See also dbRevision()
@@ -331,7 +325,7 @@ public:
     bool createSchema();
     /*!
      * \brief importTemplateData fills an empty database with the template
-     * data (Aircraft, Airports, currencies, changelog) as read from the JSON
+     * data (Aircraft, Airports) as read from the JSON
      * templates.
      * \param use_local_ressources determines whether the included ressource files
      * or a previously downloaded file should be used.

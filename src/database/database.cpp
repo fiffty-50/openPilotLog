@@ -62,13 +62,6 @@ void Database::disconnect()
     LOG << "Database connection closed.";
 }
 
-const QString Database::version() const
-{
-    QSqlQuery query(QStringLiteral("SELECT COUNT(*) FROM changelog"));
-    query.next();
-    return QStringLiteral("OPL Database Revision: ") + QString::number(query.value(0).toInt());
-}
-
 const QList<OPL::DbTable> &Database::getTemplateTables() const
 {
     return TEMPLATE_TABLES;
@@ -95,7 +88,7 @@ void Database::updateLayout()
     tableNames = db.tables();
 
     tableColumns.clear();
-    for (const auto &table_name : qAsConst(tableNames)) {
+    for (const auto &table_name : std::as_const(tableNames)) {
         QStringList table_columns;
         QSqlRecord fields = db.record(table_name);
         for (int i = 0; i < fields.count(); i++) {
@@ -742,7 +735,7 @@ bool Database::createSchema()
         return true;
     } else {
         LOG << "Database creation has failed. The following error(s) have ocurred: ";
-        for (const auto &error : qAsConst(errors)) {
+        for (const auto &error : std::as_const(errors)) {
             LOG << error.type() << error.text();
         }
         return false;

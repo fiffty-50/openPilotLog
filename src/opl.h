@@ -215,7 +215,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog, PreviousExperience};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience};
 
 /*!
  * \brief Enumerates the currency names
@@ -289,7 +289,6 @@ private:
         {DbTable::Aircraft,     QStringLiteral("aircraft")},
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
-        {DbTable::Changelog,    QStringLiteral("changelog")},
         {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
     };
 
@@ -328,7 +327,6 @@ namespace Assets {
 const inline auto  DATABASE_SCHEMA               = QStringLiteral(":/database/database_schema.sql");
 const inline auto  DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
 const inline auto  DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
-const inline auto  DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
 
 const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");

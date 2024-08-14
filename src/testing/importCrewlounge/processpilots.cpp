@@ -27,7 +27,7 @@ void ProcessPilots::parseRawData()
     unique_pilot_id ++;
 
 
-    for (const auto &row : qAsConst(rawData)) {
+    for (const auto &row : std::as_const(rawData)) {
         for (const auto &col_array : pilot_cols) {
             for (const auto &col : col_array) {
                 pilot_data.append(row[col]);
@@ -45,7 +45,7 @@ void ProcessPilots::parseRawData()
 
 void ProcessPilots::processParsedData()
 {
-    for (const auto &pair : qAsConst(rawPilotsAndIds)) {
+    for (const auto &pair : std::as_const(rawPilotsAndIds)) {
         //DEB << "ID:" << pair.second << "Details:" << pair.first;
         QHash<QString, QVariant> new_pilot_data;
 

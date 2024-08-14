@@ -96,13 +96,6 @@ CREATE TABLE IF NOT EXISTS "currencies" (
         "expiryDate"	NUMERIC,
         PRIMARY KEY('currency_id' AUTOINCREMENT)
 );
-DROP TABLE IF EXISTS 'changelog';
-CREATE TABLE IF NOT EXISTS 'changelog' (
-	'revision'	INTEGER NOT NULL,
-	'comment'	TEXT,
-        'date'		NUMERIC,
-	PRIMARY KEY('revision' AUTOINCREMENT)
-);
 DROP TABLE IF EXISTS 'simulators';
 CREATE TABLE IF NOT EXISTS 'simulators' (
 	'session_id'	INTEGER NOT NULL,
@@ -151,8 +144,7 @@ SELECT 	flight_id,
 FROM flights
 INNER JOIN pilots on flights.pic = pilots.pilot_id
 INNER JOIN tails on flights.acft = tails.tail_id
-ORDER BY doft DESC
-
+ORDER BY doft DESC;
 DROP VIEW IF EXISTS 'viewDefaultSim';
 CREATE VIEW viewDefaultSim AS
 SELECT 	flights.flight_id,
@@ -181,8 +173,7 @@ UNION
         simulators.totalTime,
         remarks
 FROM simulators
-ORDER BY date DESC
-
+ORDER BY date DESC;
 DROP VIEW IF EXISTS 'viewEasa';
 CREATE VIEW viewEasa AS
 SELECT
@@ -210,8 +201,7 @@ SELECT
         remarks
 FROM flights
 INNER JOIN pilots on flights.pic = pilots.pilot_id
-INNER JOIN tails on flights.acft = tails.tail_id  ORDER BY doft DESC
-
+INNER JOIN tails on flights.acft = tails.tail_id  ORDER BY doft DESC;
 DROP VIEW IF EXISTS 'viewEasaSim';
 CREATE VIEW viewEasaSim AS
 SELECT  flight_id,
@@ -255,8 +245,7 @@ SELECT (session_id * -1),
         simulators.totalTime,
         simulators.remarks
 FROM simulators
-ORDER BY date DESC
-
+ORDER BY date DESC;
 DROP VIEW IF EXISTS 'viewSimulators';
 CREATE VIEW viewSimulators AS
 SELECT (session_id * -1),
@@ -267,8 +256,7 @@ SELECT (session_id * -1),
         totalTime,
         remarks
 FROM simulators
-ORDER BY date DESC
-
+ORDER BY date DESC;
 DROP VIEW IF EXISTS 'viewTails';
 CREATE VIEW viewTails AS  
 SELECT  tail_id AS 'ID',  
@@ -282,7 +270,6 @@ SELECT  tail_id AS 'ID',
         make||' '||model||'-'||variant AS 'Type',
         company AS 'Company'
 FROM tails WHERE variant IS NOT NULL;
-
 DROP VIEW IF EXISTS 'viewPilots';
 CREATE VIEW viewPilots AS  
 SELECT  pilot_id AS 'ID',  
@@ -290,7 +277,6 @@ SELECT  pilot_id AS 'ID',
         firstname AS 'First Name',
         company AS 'Company'
 FROM pilots;
-
 DROP VIEW IF EXISTS 'viewTotals';
 CREATE VIEW viewTotals AS  
 SELECT  printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL',  
@@ -310,7 +296,6 @@ SELECT  printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tb
         CAST(SUM(ldgDay) AS INT) AS 'LDG Day',
         CAST(SUM(ldgNight) AS INT) AS 'LDG Night'
 FROM flights;
-
 DROP VIEW IF EXISTS 'viewExport';
 CREATE VIEW viewExport AS
 SELECT  flight_id,

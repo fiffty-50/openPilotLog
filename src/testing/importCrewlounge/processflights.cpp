@@ -7,7 +7,7 @@ void ProcessFlights::parseRawData()
     // doft, flightNumber, dept, dest, tofb, tonb, tblk, tPIC, tSIC, tDUAL, tPICUS, tFI, tNight, pic, secondPilot, thirdPilot   toDN,ldDN   pilotFlying, appType, remarks,  acftReg
     int relevant_cols[24] = {0,3,5,7,9,11,17,19,20,21,22,23,25,38,42,46,53,54,55,56,58,60,64,79};
     QStringList row_data;
-    for (const auto &row : qAsConst(rawData)) {
+    for (const auto &row : std::as_const(rawData)) {
         for (const auto &col : relevant_cols) {
             row_data.append(row[col]);
         }
@@ -22,7 +22,7 @@ void ProcessFlights::processParsedData()
     QHash<QString, QVariant> new_flight_data;
     int flight_id = 1;
 
-    for (const auto &row : qAsConst(rawFlightData)) {
+    for (const auto &row : std::as_const(rawFlightData)) {
         // insert values that don't require editing
         new_flight_data.insert(OPL::FlightEntry::FLIGHTNUMBER, row[1]);
         new_flight_data.insert(OPL::FlightEntry::DEPT, row[2]);

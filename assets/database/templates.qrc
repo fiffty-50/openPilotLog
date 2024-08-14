@@ -2,7 +2,6 @@
     <qresource prefix="/database">
         <file>templates/aircraft.json</file>
         <file>templates/airports.json</file>
-        <file>templates/changelog.json</file>
         <file>database_schema.sql</file>
     </qresource>
 </RCC>
