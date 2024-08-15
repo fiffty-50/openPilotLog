@@ -54,8 +54,17 @@ Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
     switch(format.timeFormat()) {
     case DateTimeFormat::TimeFormat::Default:
     {
-        const auto qTime = QTime::fromString(timeString, QStringLiteral("hh:mm"));
-        return Time(qTime, format);
+        int seperatorIndex = timeString.indexOf(QLatin1Char(':'));
+        if(seperatorIndex < 0) {
+            LOG << "Invalid Time Input:" << timeString;
+            return Time(-1, format);
+        }
+
+        int hours = timeString.first(seperatorIndex).toInt();
+        int minutes = timeString.last(2).toInt();
+        int totalMinutes = hours * 60 + minutes;
+
+        return Time(totalMinutes, format);
         break;
     }
     case DateTimeFormat::TimeFormat::Decimal:
