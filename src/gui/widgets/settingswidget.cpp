@@ -106,6 +106,7 @@ void SettingsWidget::readSettings()
     ui->approachComboBox->setCurrentText(Settings::getApproachType());
     ui->nightComboBox->setCurrentIndex(Settings::getNightLoggingEnabled());
     ui->prefixLineEdit->setText(Settings::getFlightNumberPrefix());
+    ui->apiKeyLineEdit->setText(Settings::getFlightAwareApiKey());
 
     ui->logbookViewComboBox->setCurrentIndex(static_cast<int>(Settings::getLogbookView()));
     ui->aliasComboBox->setCurrentIndex(Settings::getShowSelfAs());
@@ -475,5 +476,11 @@ void SettingsWidget::on_exportPushButton_clicked()
 void SettingsWidget::on_currencyWarningDaysSpinBox_valueChanged(int arg1)
 {
     Settings::setCurrencyWarningThreshold(arg1);
+}
+
+
+void SettingsWidget::on_apiKeyLineEdit_editingFinished()
+{
+    Settings::setFlightAwareApiKey(ui->apiKeyLineEdit->text());
 }
 

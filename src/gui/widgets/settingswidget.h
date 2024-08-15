@@ -79,6 +79,8 @@ private slots:
 
     void on_currencyWarningDaysSpinBox_valueChanged(int arg1);
 
+    void on_apiKeyLineEdit_editingFinished();
+
 private:
     Ui::SettingsWidget *ui;
 

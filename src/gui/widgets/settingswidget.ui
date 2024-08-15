@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="generalTab">
       <attribute name="title">
@@ -321,7 +321,7 @@
        <item row="2" column="2">
         <widget class="QLineEdit" name="companyLineEdit">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="text">
           <string/>
@@ -344,7 +344,7 @@
        <item row="3" column="2">
         <widget class="QLineEdit" name="employeeidLineEdit">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="text">
           <string/>
@@ -377,7 +377,7 @@
        <item row="5" column="0">
         <spacer name="horizontalSpacer_5">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -407,7 +407,7 @@
        <item row="5" column="3">
         <spacer name="horizontalSpacer_6">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -424,19 +424,6 @@
        <string>Flight Logging</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="1">
-        <widget class="QLabel" name="functionLabel">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default function for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Function</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="functionComboBox"/>
-       </item>
        <item row="1" column="1">
         <widget class="QLabel" name="rulesLabel">
          <property name="toolTip">
@@ -461,36 +448,13 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="0">
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>176</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="approachLabel">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default approach for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Approach</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QComboBox" name="approachComboBox"/>
+       <item row="0" column="2">
+        <widget class="QComboBox" name="functionComboBox"/>
        </item>
        <item row="2" column="3">
         <spacer name="horizontalSpacer_4">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -510,6 +474,39 @@
          </property>
          <property name="text">
           <string>Night Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="approachLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default approach for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Approach</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="prefixLineEdit">
+         <property name="maxLength">
+          <number>10</number>
+         </property>
+         <property name="placeholderText">
+          <string>optional</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QComboBox" name="approachComboBox"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="functionLabel">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default function for auto-logging&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Function</string>
          </property>
         </widget>
        </item>
@@ -548,13 +545,26 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QLineEdit" name="prefixLineEdit">
-         <property name="maxLength">
-          <number>10</number>
+       <item row="2" column="0">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
-         <property name="placeholderText">
-          <string>optional</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>176</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLineEdit" name="apiKeyLineEdit"/>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="apiKeyLabel">
+         <property name="text">
+          <string>API key</string>
          </property>
         </widget>
        </item>
@@ -598,7 +608,7 @@
        <item row="0" column="2">
         <spacer name="horizontalSpacer_8">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -618,7 +628,7 @@
        <item row="0" column="0">
         <spacer name="horizontalSpacer_7">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>

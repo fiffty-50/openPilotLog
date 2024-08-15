@@ -197,7 +197,7 @@ private slots:
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
-
+    void on_retreivePushButton_clicked();
     void on_calendarPushButton_clicked();
 
     void calendarDateSelected();

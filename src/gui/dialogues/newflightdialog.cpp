@@ -26,6 +26,7 @@
 #include "src/gui/verification/pilotinput.h"
 #include "src/gui/verification/tailinput.h"
 #include "src/gui/verification/timeinput.h"
+#include "src/network/flightawarequery.h"
 #include "ui_newflightdialog.h"
 #include "src/opl.h"
 #include "src/functions/datetime.h"
@@ -836,5 +837,61 @@ bool NewFlightDialog::deleteEntry(int rowID)
 {
     const auto entry = DB->getFlightEntry(rowID);
     return DB->remove(entry);
+}
+
+
+void NewFlightDialog::on_retreivePushButton_clicked()
+{
+    // verify requisites are met
+    if(Settings::getFlightAwareApiKey().length() < 1) {
+        WARN(tr("Using this feature requires a FlightAware API key to be set."));
+        return;
+    }
+
+    if(ui->flightNumberLineEdit->text().length() < 3 || !validationState.validAt(ValidationState::doft)) {
+        WARN(tr("Please enter a valid Flight Number and Date."));
+        return;
+    }
+
+    // Query the API
+    FlightAwareQuery query;
+    auto result = query.getFlightData(ui->flightNumberLineEdit->text(), QDate::fromString(ui->doftLineEdit->text(), Qt::ISODate));
+    LOG << "Querying API...";
+    if(result.isEmpty()) {
+        WARN("Flight not found.");
+        return;
+    }
+
+
+    for(const auto &flight : result) {
+        flight.print();
+    }
+
+    // Fill the form with the result
+    const auto flight = result.first();
+    LOG << "Filling flight data:";
+    flight.print();
+
+    // validation needed because the data may be incomplete or erroneous
+    const QHash<QString, QLineEdit*> data = {
+        {flight.departure,              ui->deptLocationLineEdit},
+        {flight.destination,            ui->destLocationLineEdit},
+        {flight.out.toString("hh:mm"),  ui->tofbTimeLineEdit},
+        {flight.in.toString("hh:mm"),   ui->tonbTimeLineEdit},
+        {flight.registration,           ui->acftLineEdit},
+    };
+
+    QString info = tr("The following data has been retreived:<br>");
+
+    for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+        if(it.key().isEmpty()) {
+            continue;
+        }
+        it.value()->setText(it.key());
+        emit it.value()->editingFinished();
+        info.append(it.value()->objectName().first(4) + ": " + it.key() + "<br>");
+    }
+
+    INFO(info);
 }
 
