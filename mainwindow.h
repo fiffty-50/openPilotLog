@@ -169,7 +169,7 @@ protected:
      */
     void resizeEvent(QResizeEvent *event) override
     {
-        const auto icon_size = this->height() / 14;
+        const auto icon_size = this->height() / 16;
         const auto toolBar = this->findChild<QToolBar*>();
         toolBar->setIconSize(QSize(icon_size, icon_size));
         event->accept();
