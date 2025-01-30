@@ -75,11 +75,11 @@ constexpr static int STUB_ROW_ID = -1;
 /**
  * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
  */
-constexpr static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
+const static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
 /**
  * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
  */
-constexpr static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
+const static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
 
 /*!
  * \brief The decimal seperator used internally

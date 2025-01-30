@@ -73,10 +73,8 @@ private:
     QLabel remarksLabel = QLabel(tr("Remarks"), this);
     QLabel flightNumberLabel = QLabel(tr("Flight Number"), this);
     QLabel pilotFlyingLabel = QLabel(tr("Pilot Flying"), this);
-    QLabel *takeOffCountLabel;
-    // QLabel takeOffCountLabel = QLabel(tr("Take Off"), this);
-    // QLabel landingCountLabel = QLabel(tr("Landing"), this);
-    QLabel *landingCountLabel;
+    QLabel takeOffCountLabel = QLabel(tr("Take Off"), this);
+    QLabel landingCountLabel = QLabel(tr("Landing"), this);
     QLabel totalTimeLabel = QLabel(tr("Total Time"), this);
     QLabel totalTimeDisplayLabel = QLabel("00:00", this);
     QLabel pilotFunctionLabel = QLabel(tr("Function"), this);

@@ -49,6 +49,11 @@ void FlightEntryEditDialog::init()
 
 void FlightEntryEditDialog::setupUI()
 {
+    // TODO implement OOIB logging, hide for now
+    timeOffLabel.hide();
+    timeOffLineEdit.hide();
+    timeOnLabel.hide();
+    timeOnLineEdit.hide();
     // setup layout
     // const int column0 = 0;
     // const int column1 = 1;
@@ -85,9 +90,9 @@ void FlightEntryEditDialog::setupUI()
 
     column = 0;
     thirdPilotLineEdit.setObjectName(QStringLiteral("thirdPilotLineEdit"));
-    timeOffLineEdit.setObjectName(QStringLiteral("timeOffLineEdit"));
+    timeOffLineEdit.setObjectName(QStringLiteral("timeOutLineEdit"));
     layout->addWidget(&timeOutLabel, ++row, column++);
-    layout->addWidget(&timeOffLineEdit, row, column++);
+    layout->addWidget(&timeOutLineEdit, row, column++);
     column++;
     layout->addWidget(&thirdPilotLabel, row, column++);
     layout->addWidget(&thirdPilotLineEdit, row, column++);
@@ -117,21 +122,17 @@ void FlightEntryEditDialog::setupUI()
 
 
     column = 0;
-    // TODO
-    // troubleshoot why this label is floating in the top right corner
-    takeOffCountLabel = new QLabel(tr("Take Off"), this);
-    landingCountLabel = new QLabel(tr("Landing"), this);
     layout->addWidget(&approachTypeLabel, ++row, column++);
     layout->addWidget(&approachTypeComboBox, row, column++);
     column++;
-    layout->addWidget(takeOffCountLabel, row, column++);
+    layout->addWidget(&takeOffCountLabel, row, column++);
     layout->addWidget(&takeOffCountSpinBox, row, column++);
 
     column = 0;
     layout->addWidget(&flightRulesLabel, ++row, column++);
     layout->addWidget(&flightRulesComboBox, row, column++);
     column++;
-    layout->addWidget(landingCountLabel, row, column++);
+    layout->addWidget(&landingCountLabel, row, column++);
     layout->addWidget(&landingCountSpinBox, row, column++);
 
     layout->addWidget(&acceptButtonBox, ++row, lastCol);
