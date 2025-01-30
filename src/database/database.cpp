@@ -21,8 +21,6 @@
 
 namespace OPL {
 
-Database* Database::self = nullptr;
-
 bool Database::connect()
 {
     if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
@@ -99,13 +97,6 @@ void Database::updateLayout()
     emit dataBaseUpdated(DbTable::Any);
 }
 
-Database* Database::instance()
-{
-    if(!self)
-        self = new Database();
-
-    return self;
-}
 
 const QString Database::sqliteVersion() const
 {

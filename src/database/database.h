@@ -66,7 +66,6 @@ private:
     Database()
         : databaseFile(OPL::Paths::databaseFileInfo())
     {}
-    static Database* self;
     const QFileInfo databaseFile;
     QStringList tableNames;
     QHash<QString, QStringList> tableColumns;
@@ -87,7 +86,10 @@ private:
 public:
     Database(const Database&) = delete;
     void operator=(const Database&) = delete;
-    static Database* instance();
+    static Database* instance() {
+        static Database instance;
+        return &instance;
+    }
 
     /*!
      * \brief Holds information about the last error that ocurred during
