@@ -93,11 +93,11 @@ private:
     void setupSignalsAndSlots();
     void readSettings();
     bool verifyUserInput(QLineEdit *lineEdit, const UserInput &input);
-    inline void setRedBorder(QLineEdit &lineEdit) {
-        lineEdit.setStyleSheet(OPL::CssStyles::RED_BORDER);
+    inline void setRedBorder(QLineEdit *lineEdit) {
+        lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
     }
-    inline void clearBorder(QLineEdit &lineEdit) {
-        lineEdit.setStyleSheet(QString());
+    inline void clearBorder(QLineEdit *lineEdit) {
+        lineEdit->setStyleSheet(QString());
     }
 
 
@@ -109,7 +109,7 @@ private slots:
 
     // line edits
     void onDateEditingFinished();
-    void onTimeEditingFinished();
+    void onTimeEditingFinished(QLineEdit *lineEdit);
     void onNameEditingFinished();
     void onRegistrationEditingFinished();
     void onLocationEditingFinished();

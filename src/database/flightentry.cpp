@@ -46,7 +46,7 @@ const QString FlightEntry::getFlightSummary() const
 
     auto tableData = getData();
     QString flight_summary;
-    const auto space = QLatin1Char(' ');
+    constexpr auto space = QLatin1Char(' ');
     flight_summary.append(Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
     flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
     flight_summary.append(Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString()

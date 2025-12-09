@@ -1,6 +1,5 @@
 #include "flightentryeditdialog.h"
 #include "src/classes/date.h"
-#include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/timeinput.h"
 #include <src/classes/settings.h>
 #include <QGridLayout>
@@ -137,6 +136,31 @@ void FlightEntryEditDialog::setupUI()
 
     layout->addWidget(&acceptButtonBox, ++row, lastCol);
 
+    // set order for tabbing through the line edits
+    setTabOrder({
+        &dateButton,
+        &dateLineEdit,
+        &departureLineEdit,
+        &destinationLineEdit,
+        &timeOutLineEdit,
+        &timeOffLineEdit,
+        &timeOnLineEdit,
+        &timeInLineEdit,
+        &pilotFunctionComboBox,
+        &approachTypeComboBox,
+        &flightRulesComboBox,
+        &registrationLineEdit,
+        &firstPilotLineEdit,
+        &secondPilotLineEdit,
+        &thirdPilotLineEdit,
+        &flightNumberLineEdit,
+        &remarksLineEdit,
+        &pilotFlyingCheckBox,
+        &takeOffCountSpinBox,
+        &landingCountSpinBox,
+        &acceptButtonBox
+                });
+
     // initialise auto-completion
     // finish up
     OPL::GLOBALS->loadApproachTypes(&approachTypeComboBox);
@@ -149,10 +173,12 @@ void FlightEntryEditDialog::setupUI()
     readSettings();
 
     // use the dateDisplayLabel as a spacer
+    dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
+    // set the current date
     OPL::Date today = OPL::Date::today(displayFormat);
     dateLineEdit.setText(today.toString());
-    dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
-    dateDisplayLabel.setText(today.toString());
+    //dateDisplayLabel.setText(today.toString());
+    dateLineEdit.setFocus();
 
 }
 
@@ -171,17 +197,32 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
     QObject::connect(calendarWidget, &QCalendarWidget::clicked,
                      this, &FlightEntryEditDialog::onCalendarDateSelected);
     // QLineEdits
-    QObject::connect(&dateLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onDateEditingFinished);
-    QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished,
+    // QObject::connect(&dateLineEdit, &QLineEdit::editingFinished,
+    //                  this, &FlightEntryEditDialog::onDateEditingFinished);
+    // QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished,
 
-                     this, &FlightEntryEditDialog::onTimeEditingFinished);
-    QObject::connect(&timeOffLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onTimeEditingFinished);
-    QObject::connect(&timeOnLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onTimeEditingFinished);
-    QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onTimeEditingFinished);
+    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
+    // QObject::connect(&timeOffLineEdit, &QLineEdit::editingFinished,
+    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
+    // QObject::connect(&timeOnLineEdit, &QLineEdit::editingFinished,
+    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
+    // QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished,
+    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
+
+
+    QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished, this, [this](){
+        onTimeEditingFinished(&timeOutLineEdit);
+    });
+    QObject::connect(&timeOffLineEdit, &QLineEdit::editingFinished, this, [this](){
+        onTimeEditingFinished(&timeOffLineEdit);
+    });
+    QObject::connect(&timeOnLineEdit, &QLineEdit::editingFinished, this, [this](){
+        onTimeEditingFinished(&timeOnLineEdit);
+    });
+    QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished, this, [this](){
+        onTimeEditingFinished(&timeInLineEdit);
+    });
+
 
     QObject::connect(&firstPilotLineEdit, &QLineEdit::editingFinished,
                      this, &FlightEntryEditDialog::onNameEditingFinished);
@@ -244,26 +285,28 @@ void FlightEntryEditDialog::onCalendarDateSelected()
 
 void FlightEntryEditDialog::onDateEditingFinished()
 {
+    DEB << "Date editing finished";
     OPL::Date date(dateLineEdit.text(), dateTimeFormat);
 
     if(date.isValid()) {
-        clearBorder(dateLineEdit);
+        clearBorder(&dateLineEdit);
+        DEB << "Date is valid: " + date.toString();
         return;
     }
-
-    setRedBorder(dateLineEdit);
+    DEB << "Date is invalid: " + dateLineEdit.text();
+    setRedBorder(&dateLineEdit);
 }
 
-void FlightEntryEditDialog::onTimeEditingFinished()
+void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit* lineEdit)
 {
-    auto lineEdit = this->findChild<QLineEdit*>(sender()->objectName());
+    DEB << "Time Editing finished: " + lineEdit->text();
 
     if(verifyUserInput(lineEdit, TimeInput(lineEdit->text(), dateTimeFormat))) {
-        clearBorder(*lineEdit);
+        clearBorder(lineEdit);
         return;
     }
 
-    setRedBorder(*lineEdit);
+    setRedBorder(lineEdit);
 }
 
 void FlightEntryEditDialog::onNameEditingFinished()
@@ -273,7 +316,7 @@ void FlightEntryEditDialog::onNameEditingFinished()
     // - on negative match, offer to add new pilot entry
     auto lineEdit = this->findChild<QLineEdit*>(sender()->objectName());
 
-    setRedBorder(*lineEdit);
+    setRedBorder(lineEdit);
 }
 
 void FlightEntryEditDialog::onRegistrationEditingFinished()
@@ -283,7 +326,7 @@ void FlightEntryEditDialog::onRegistrationEditingFinished()
     // - on negative match, offer to add new aircraft entry
     auto lineEdit = this->findChild<QLineEdit*>(sender()->objectName());
 
-    setRedBorder(*lineEdit);
+    setRedBorder(lineEdit);
 }
 
 void FlightEntryEditDialog::onLocationEditingFinished()

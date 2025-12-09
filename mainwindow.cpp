@@ -29,8 +29,9 @@
 #include "src/database/databasecache.h"
 #include "src/classes/settings.h"
 
-// Quick and dirty Debug area
-#include "src/network/flightawarequery.h"
+// WIP area - pressing SHIFT + ENTER executes this function
+// this is to provide easy and quick access to a currently worked on functionality
+//#include "src/network/flightawarequery.h"
 void MainWindow::doDebugStuff()
 {
     // FlightAwareQuery query;
@@ -42,6 +43,7 @@ void MainWindow::doDebugStuff()
     // for(const auto &flight : result) {
     //     flight.print();
     // }
+
     FlightEntryEditDialog feed = new FlightEntryEditDialog(this);
     feed.exec();
 }
