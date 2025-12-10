@@ -51,9 +51,10 @@ private:
 
     QCheckBox pilotFlyingCheckBox = QCheckBox(this);
 
-    const QList<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
-    const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
-    const QList<QLineEdit *> mandatoryLineEdits = { &dateLineEdit, &timeOutLineEdit, &timeInLineEdit, &departureLineEdit,
+    const QVector<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
+    const QVector<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
+    const QVector<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
+    const QVector<QLineEdit *> mandatoryLineEdits = { &dateLineEdit, &timeOutLineEdit, &timeInLineEdit, &departureLineEdit,
                                                     &destinationLineEdit, &firstPilotLineEdit, &registrationLineEdit };
 
     QPushButton dateButton = QPushButton(tr("Date"), this);
@@ -90,6 +91,7 @@ private:
 
     void init();
     void setupUI();
+    void setupAutoCompletion();
     void setupSignalsAndSlots();
     void readSettings();
     bool verifyUserInput(QLineEdit *lineEdit, const UserInput &input);
@@ -110,9 +112,20 @@ private slots:
     // line edits
     void onDateEditingFinished();
     void onTimeEditingFinished(QLineEdit *lineEdit);
-    void onNameEditingFinished();
-    void onRegistrationEditingFinished();
-    void onLocationEditingFinished();
+    void onNameEditingFinished(QLineEdit *lineEdit);
+    void onRegistrationEditingFinished(QLineEdit *lineEdit);
+    void onLocationEditingFinished(QLineEdit *lineEdit);
+    /*!
+     * \brief adds a new Database Element
+     * \param caller - The Line Edit that called the function
+     * \param table - The OPL::DBTable where the entry is to be created
+     * \return true if a new entry was succesfully created
+     * \details This function queries the user if he wants to add a new Element to the
+     * Database. If so desired, a new dialog is launched to create the entry. If the
+     * return code indicates success, the caller text is set to the just now created
+     * new entry
+     */
+    bool addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table);
 };
 
 #endif // FLIGHTENTRYEDITDIALOG_H

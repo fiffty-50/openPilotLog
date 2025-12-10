@@ -1,5 +1,14 @@
 #include "flightentryeditdialog.h"
 #include "src/classes/date.h"
+#include "src/database/database.h"
+#include "src/database/databasecache.h"
+#include "src/gui/dialogues/newairportdialog.h"
+#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/verification/airportinput.h"
+#include "src/gui/verification/completerprovider.h"
+#include "src/gui/verification/pilotinput.h"
+#include "src/gui/verification/tailinput.h"
 #include "src/gui/verification/timeinput.h"
 #include <src/classes/settings.h>
 #include <QGridLayout>
@@ -35,15 +44,29 @@ bool FlightEntryEditDialog::deleteEntry(int rowID)
 void FlightEntryEditDialog::init()
 {
     setupUI();
-    // initialise QCompleters
-    // load ComboBoxes
-
+    setupAutoCompletion();
     // set up the pop-up date selection
     calendarWidget = new QCalendarWidget(this);
     calendarWidget->setVisible(false);
     calendarWidget->setWindowFlag(Qt::Dialog);
 
+    // set up combo and spin boxes
+    OPL::GLOBALS->loadApproachTypes(&approachTypeComboBox);
+    OPL::GLOBALS->loadPilotFunctios(&pilotFunctionComboBox);
+    OPL::GLOBALS->loadFlightRules(&flightRulesComboBox);
+    takeOffCountSpinBox.setRange(0, 99);
+    landingCountSpinBox.setRange(0, 99);
+
     setupSignalsAndSlots();
+    readSettings();
+
+    // use the dateDisplayLabel as a spacer
+    dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
+    // set the current date
+    OPL::Date today = OPL::Date::today(displayFormat);
+    dateLineEdit.setText(today.toString());
+    // set cursor to entry point
+    dateLineEdit.setFocus();
 }
 
 void FlightEntryEditDialog::setupUI()
@@ -53,7 +76,8 @@ void FlightEntryEditDialog::setupUI()
     timeOffLineEdit.hide();
     timeOnLabel.hide();
     timeOnLineEdit.hide();
-    // setup layout
+
+    // setup the basic layout
     // const int column0 = 0;
     // const int column1 = 1;
     // const int column2 = 2;
@@ -161,79 +185,87 @@ void FlightEntryEditDialog::setupUI()
         &acceptButtonBox
                 });
 
-    // initialise auto-completion
-    // finish up
-    OPL::GLOBALS->loadApproachTypes(&approachTypeComboBox);
-    OPL::GLOBALS->loadPilotFunctios(&pilotFunctionComboBox);
-    OPL::GLOBALS->loadFlightRules(&flightRulesComboBox);
-    takeOffCountSpinBox.setRange(0, 99);
-    landingCountSpinBox.setRange(0, 99);
+    // hide the total time label, will be shown once times are entered
     totalTimeDisplayLabel.setEnabled(false);
+}
 
-    readSettings();
-
-    // use the dateDisplayLabel as a spacer
-    dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
-    // set the current date
-    OPL::Date today = OPL::Date::today(displayFormat);
-    dateLineEdit.setText(today.toString());
-    //dateDisplayLabel.setText(today.toString());
-    dateLineEdit.setFocus();
-
+void FlightEntryEditDialog::setupAutoCompletion()
+{
+    // Time Line Edits
+    for (const auto& line_edit : timeLineEdits) {
+        const auto validator = new QRegularExpressionValidator(OPL::RegEx::RX_TIME_ENTRY, line_edit);
+        line_edit->setValidator(validator);
+    }
+    // Location Line Edits
+    for (const auto& line_edit : locationLineEdits) {
+        const auto validator = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
+        line_edit->setValidator(validator);
+        line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
+    }
+    // Name Line Edits
+    for (const auto& line_edit : pilotNameLineEdits) {
+        line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Pilots));
+    }
+    // Acft Line Edit
+    registrationLineEdit.setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Tails));
 }
 
 void FlightEntryEditDialog::setupSignalsAndSlots()
 {
-    // acceptButtonBox
+    // acceptButtonBox - standard discard, for accept redirect to run some checks first
     QObject::connect(&acceptButtonBox, &QDialogButtonBox::accepted,
                      this, &FlightEntryEditDialog::onDialogAccepted);
     QObject::connect(&acceptButtonBox, &QDialogButtonBox::rejected,
                      this, &FlightEntryEditDialog::reject);
-    // calendarWidget
+
+    // calendarWidget - enable single-click selection
     QObject::connect(&dateButton, &QPushButton::clicked,
                      this, &FlightEntryEditDialog::onCalendarRequested);
     QObject::connect(calendarWidget, &QCalendarWidget::selectionChanged,
                      this, &FlightEntryEditDialog::onCalendarDateSelected);
     QObject::connect(calendarWidget, &QCalendarWidget::clicked,
                      this, &FlightEntryEditDialog::onCalendarDateSelected);
-    // QLineEdits
-    // QObject::connect(&dateLineEdit, &QLineEdit::editingFinished,
-    //                  this, &FlightEntryEditDialog::onDateEditingFinished);
-    // QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished,
-
-    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
-    // QObject::connect(&timeOffLineEdit, &QLineEdit::editingFinished,
-    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
-    // QObject::connect(&timeOnLineEdit, &QLineEdit::editingFinished,
-    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
-    // QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished,
-    //                  this, &FlightEntryEditDialog::onTimeEditingFinished);
-
-
-    QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished, this, [this](){
-        onTimeEditingFinished(&timeOutLineEdit);
-    });
-    QObject::connect(&timeOffLineEdit, &QLineEdit::editingFinished, this, [this](){
-        onTimeEditingFinished(&timeOffLineEdit);
-    });
-    QObject::connect(&timeOnLineEdit, &QLineEdit::editingFinished, this, [this](){
-        onTimeEditingFinished(&timeOnLineEdit);
-    });
-    QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished, this, [this](){
-        onTimeEditingFinished(&timeInLineEdit);
-    });
-
-
-    QObject::connect(&firstPilotLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onNameEditingFinished);
-    QObject::connect(&secondPilotLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onNameEditingFinished);
-    QObject::connect(&thirdPilotLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onNameEditingFinished);
-
+    // Registration Line Edit
     QObject::connect(&registrationLineEdit, &QLineEdit::editingFinished,
-                     this, &FlightEntryEditDialog::onRegistrationEditingFinished);
+                     this, [this]() {
+        FlightEntryEditDialog::onRegistrationEditingFinished(&registrationLineEdit);
+    });
 
+    /* Slots that are called by multiple line edits forward the caller object */
+    // Time line edits
+    for(const auto& lineEdit : timeLineEdits) {
+        QObject::connect(lineEdit, &QLineEdit::editingFinished, this, [this, &lineEdit](){
+            onTimeEditingFinished(lineEdit);
+        });
+    }
+
+    // Location line edits
+    for(const auto& lineEdit : locationLineEdits) {
+        QObject::connect(lineEdit, &QLineEdit::editingFinished, this, [this, &lineEdit](){
+            onLocationEditingFinished(lineEdit);
+        });
+    }
+
+    // Pilot Name line edits
+    for(const auto& lineEdit : pilotNameLineEdits) {
+        QObject::connect(lineEdit, &QLineEdit::editingFinished, this, [this, &lineEdit](){
+            onNameEditingFinished(lineEdit);
+        });
+    }
+    // Change text to upper case for location and acft line edits
+    QObject::connect(&registrationLineEdit, &QLineEdit::textChanged,
+                     this, [this](){
+        const QSignalBlocker b(registrationLineEdit);
+        registrationLineEdit.setText(registrationLineEdit.text().toUpper());
+    });
+
+    for(const auto& lineEdit : locationLineEdits) {
+        QObject::connect(lineEdit, &QLineEdit::textChanged,
+                         this, [this, &lineEdit]() {
+            const QSignalBlocker b(lineEdit);
+            lineEdit->setText(lineEdit->text().toUpper());
+        });
+    }
 }
 
 void FlightEntryEditDialog::readSettings()
@@ -297,7 +329,7 @@ void FlightEntryEditDialog::onDateEditingFinished()
     setRedBorder(&dateLineEdit);
 }
 
-void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit* lineEdit)
+void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit *lineEdit)
 {
     DEB << "Time Editing finished: " + lineEdit->text();
 
@@ -309,46 +341,153 @@ void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit* lineEdit)
     setRedBorder(lineEdit);
 }
 
-void FlightEntryEditDialog::onNameEditingFinished()
+void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
 {
-    // TODO
-    // - match with map
+    // try to match user input with map
+    if(verifyUserInput(lineEdit, PilotInput(lineEdit->text()))) {
+        clearBorder(lineEdit);
+        return;
+    }
+
     // - on negative match, offer to add new pilot entry
-    auto lineEdit = this->findChild<QLineEdit*>(sender()->objectName());
+    const auto table = OPL::DbTable::Pilots;
+    if(addNewDatabaseElement(lineEdit, table)) {
+        emit lineEdit->editingFinished(); //re-trigger verification
+        return;
+    }
 
+    // entry was not recognized and no new entry has been added.
     setRedBorder(lineEdit);
 }
 
-void FlightEntryEditDialog::onRegistrationEditingFinished()
+void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
 {
-    // TODO
-    // - match with map
-    // - on negative match, offer to add new aircraft entry
-    auto lineEdit = this->findChild<QLineEdit*>(sender()->objectName());
+    // try to match user input with map
+    if(verifyUserInput(lineEdit, TailInput(lineEdit->text()))) {
+        DEB << "Good input received - " + lineEdit->text();
+        // The QCompleter contains both dashed as well as non-dashed registrations. Strip the second one
+        {
+            QSignalBlocker b(lineEdit);
+            lineEdit->setText(lineEdit->text().split(' ')[0]);
+        }
+        clearBorder(lineEdit);
+        return;
+    }
+    // if no match was found, offer to add new aircraft entry
+    const auto table = OPL::DbTable::Tails;
+    if(addNewDatabaseElement(lineEdit, table)) {
+        emit lineEdit->editingFinished();
+        return;
+    }
 
+    // entry was not recognized and no new entry has been added
     setRedBorder(lineEdit);
 }
 
-void FlightEntryEditDialog::onLocationEditingFinished()
+void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
 {
-    // determine which location line edit has been edited
-    const QString& lineEditName = sender()->objectName();
-    const auto lineEdit = this->findChild<QLineEdit*>(lineEditName);
-    QLabel *name_label;
-    if (lineEditName.contains(QLatin1String("departure")))
-        name_label = &departureDisplayLabel;
-    else
-        name_label = &destinationDisplayLabel;
+    QLabel *nameLabel;
+    if(lineEdit == locationLineEdits.first()) {
+        nameLabel = &departureDisplayLabel;
+    } else {
+        nameLabel = &destinationDisplayLabel;
+    }
 
-    // if(verifyUserInput(lineEdit, AirportInput(lineEdit->text())) ) {
-    //     // Match ICAO code with Airport Name and display on label
-    //     name_label->setText(DBCache->getAirportsMapNames().value(
-    //         DBCache->getAirportsMapICAO().key(
-    //             line_edit->text())));
-    // } else {
-    //     name_label->setText("Unknown Airport");
-    //     addNewDatabaseElement(line_edit, OPL::DbTable::Airports);
-    // }
+    if(verifyUserInput(lineEdit, AirportInput(lineEdit->text())) ) {
+        // Match ICAO code with Airport Name and display on label
+        nameLabel->setText(DBCache->getAirportsMapNames().value(
+            DBCache->getAirportsMapICAO().key(
+                lineEdit->text())));
+        clearBorder(lineEdit);
+        return;
+    } else {
+        nameLabel->setText("Unknown Airport");
+        if(addNewDatabaseElement(lineEdit, OPL::DbTable::Airports)) {
+            emit lineEdit->editingFinished(); //re-trigger verification
+            return;
+        }
+    }
 
+    // entry was not recognized and no new entry has been added
+    setRedBorder(lineEdit);
+}
+
+bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table)
+{
+    // Ask the user if they want to add a new DB Element
+    QMessageBox::StandardButton reply;
+    switch (table) {
+    case OPL::DbTable::Pilots:
+        reply = QMessageBox::question(this, tr("No Pilot found"),
+                                      tr("No pilot found.<br>Please enter the Name as"
+                                         "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+                                         "If this is the first time you log a flight with this pilot, "
+                                         "you have to add the pilot to the database first."
+                                         "<br><br>Would you like to add a new pilot to the database?"),
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    case OPL::DbTable::Tails:
+        reply = QMessageBox::question(this, tr("No Aircraft found"),
+                                      tr("No aircraft with this registration found.<br>"
+                                         "If this is the first time you log a flight with this aircraft, "
+                                         "you have to add the registration to the database first."
+                                         "<br><br>Would you like to add a new aircraft to the database?"),
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    case OPL::DbTable::Airports:
+        reply = QMessageBox::question(this, tr("No Airport found"),
+                                      tr("No Airport with this identifier found.<br>"
+                                         "If this is the first time you log a flight to this airport, "
+                                         "you have to add the airport to the database first."
+                                         "<br><br>Would you like to add a new airport to the database?"),
+                                      QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    default:
+        reply = QMessageBox::No;
+        break;
+    }
+
+    if(reply != QMessageBox::Yes) {
+        return false;
+    }
+
+    // Create a New Dialog to add the new Element
+    QDialog *newEntryDialog = nullptr;
+    switch (table) {
+    case OPL::DbTable::Pilots:
+        newEntryDialog = new NewPilotDialog(caller->text(), this);
+        break;
+    case OPL::DbTable::Tails:
+        newEntryDialog = new NewTailDialog(registrationLineEdit.text(), this);
+        break;
+    case OPL::DbTable::Airports:
+        newEntryDialog = new NewAirportDialog(this);
+        break;
+    default:
+        return false;
+        break;
+    }
+
+    bool success = newEntryDialog->exec() == QDialog::Accepted;
+    if(!success)
+        return false;
+
+    // set the line edit to the newly created entry
+    const int lastRowId = DB->getLastEntry(table);
+    switch(table) {
+    case OPL::DbTable::Pilots:
+        caller->setText(DBCache->getPilotNamesMap().value(lastRowId));
+        break;
+    case OPL::DbTable::Tails:
+        caller->setText(DBCache->getTailsMap().value(lastRowId));
+        break;
+    case OPL::DbTable::Airports:
+        caller->setText(DBCache->getAirportsMapICAO().value(lastRowId));
+        break;
+    default:
+        break;
+    }
+
+    return true;
 }
 
