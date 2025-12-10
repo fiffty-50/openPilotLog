@@ -17,6 +17,7 @@
  */
 #ifndef STYLE_H
 #define STYLE_H
+#include "src/opl.h"
 #include <QString>
 #include <QFileInfo>
 #include <QHash>
@@ -41,7 +42,10 @@ struct StyleSheet
 static inline QString read_stylesheet(const QString &stylesheet)
 {
     QFile file(stylesheet);
-    file.open(QFile::ReadOnly | QFile::Text);
+    if(!file.open(QFile::ReadOnly | QFile::Text)) {
+        DEB << "Unable to open stylesheet file: " + file.fileName();
+        return QString();
+    }
     QTextStream stream(&file);
     return stream.readAll();
 }

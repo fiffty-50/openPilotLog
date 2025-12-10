@@ -10,6 +10,9 @@
 #include <QDialogButtonBox>
 #include <QCalendarWidget>
 #include "entryeditdialog.h"
+#include "src/gui/verification/validationstate.h"
+#include "src/opl.h"
+#include "src/database/flightentry.h"
 #include "src/gui/verification/userinput.h"
 
 class FlightEntryEditDialog : public EntryEditDialog
@@ -54,8 +57,18 @@ private:
     const QVector<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
     const QVector<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
     const QVector<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
-    const QVector<QLineEdit *> mandatoryLineEdits = { &dateLineEdit, &timeOutLineEdit, &timeInLineEdit, &departureLineEdit,
-                                                    &destinationLineEdit, &firstPilotLineEdit, &registrationLineEdit };
+    const QHash<QLineEdit *,  ValidationState::ValidationItem> mandatoryLineEdits = {
+                                                                                           {&dateLineEdit, 		   ValidationState::doft},
+                                                                                           {&departureLineEdit,    ValidationState::dept},
+                                                                                           {&destinationLineEdit,  ValidationState::dest},
+                                                                                           {&timeOutLineEdit, 	   ValidationState::tofb },
+                                                                                           {&timeInLineEdit, 	   ValidationState::tonb },
+                                                                                           {&firstPilotLineEdit,   ValidationState::pic },
+                                                                                           {&registrationLineEdit, ValidationState::acft },
+        };
+    // const QVector<QLineEdit *> mandatoryLineEdits = { &dateLineEdit, &departureLineEdit,
+    //                                                   &destinationLineEdit, &timeOutLineEdit,
+    //                                                   &timeInLineEdit,  &firstPilotLineEdit, &registrationLineEdit };
 
     QPushButton dateButton = QPushButton(tr("Date"), this);
     QLabel dateDisplayLabel = QLabel(this);
@@ -88,6 +101,17 @@ private:
                                                         QDialogButtonBox::Cancel);
 
     OPL::DateTimeFormat displayFormat;
+    /*!
+     * \brief pilotFuncionsMap Maps the function times to its index in the pilotFunctionComboBox
+     */
+    static const inline QHash<int, QString> pilotFuncionsMap = {
+                                                                {0, OPL::FlightEntry::TPIC},
+                                                                {1, OPL::FlightEntry::TPICUS},
+                                                                {2, OPL::FlightEntry::TSIC},
+                                                                {3, OPL::FlightEntry::TDUAL},
+                                                                {4, OPL::FlightEntry::TFI},
+                                                                };
+    ValidationState validationState;
 
     void init();
     void setupUI();
@@ -95,12 +119,8 @@ private:
     void setupSignalsAndSlots();
     void readSettings();
     bool verifyUserInput(QLineEdit *lineEdit, const UserInput &input);
-    inline void setRedBorder(QLineEdit *lineEdit) {
-        lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-    }
-    inline void clearBorder(QLineEdit *lineEdit) {
-        lineEdit->setStyleSheet(QString());
-    }
+    void onBadInputReceived(QLineEdit *lineEdit);
+    void onGoodInputReceived(QLineEdit *lineEdit);
 
 
 private slots:
@@ -126,6 +146,27 @@ private slots:
      * new entry
      */
     bool addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table);
+
+protected:
+    /*!
+    * \brief invalidates mandatory line edits on focus in.
+    * \details Some of the QLineEdits have validators set that provide raw input validation. These validators have the side effect
+    * that if an input does not meet the raw input validation criteria, onEditingFinished() is not emitted when the line edit loses
+    * focus. This could lead to a line edit that previously had good input to be changed to bad input without the validation bit
+    * in validationState being unset, because the second step of input validation is only triggered when editingFinished() is emitted.
+    *
+    * This event filter invalidates the validation state on focus in events for a mandatory line edit
+    */
+    bool eventFilter(QObject *object, QEvent *event) override {
+        const auto lineEdit = qobject_cast<QLineEdit*>(object);
+        if (mandatoryLineEdits.contains(lineEdit) && event->type() == QEvent::FocusIn) {
+            // set verification bit to false when entering a mandatory line edit
+            validationState.invalidate(mandatoryLineEdits.value(lineEdit));
+            return false;
+        }
+
+        return QObject::eventFilter(object, event);
+        }
 };
 
 #endif // FLIGHTENTRYEDITDIALOG_H

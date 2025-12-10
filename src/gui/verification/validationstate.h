@@ -10,6 +10,10 @@
  */
 class ValidationState {
 public:
+
+    /*!
+     * \brief ValidationState - The default ValidationState object is initialised with all values false
+     */
     ValidationState() = default;
 
     /*!
@@ -33,8 +37,7 @@ public:
 
     // Debug
     void printValidationStatus() const {
-        QString deb_string("\033[mValidation State:\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n");
-        deb_string += "\t\t\t\t";
+        QString deb_string("\033[mValidation State:\n\t\tdoft\tdept\tdest\ttofb\ttonb\tpic\tacft\n\t");
         for (int i = 0; i < 7; i++) { //\033[32m
             if (validationArray[i])
                 deb_string += "\t\033[32m" + QString::number(validationArray[i]);

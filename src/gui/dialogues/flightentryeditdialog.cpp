@@ -1,5 +1,6 @@
 #include "flightentryeditdialog.h"
 #include "src/classes/date.h"
+#include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/gui/dialogues/newairportdialog.h"
@@ -28,17 +29,65 @@ FlightEntryEditDialog::FlightEntryEditDialog(int rowId, QWidget *parent)
 
 void FlightEntryEditDialog::loadEntry(int rowID)
 {
-
+    const OPL::FlightEntry entry = DB->getFlightEntry(rowID);
+    loadEntry(entry);
 }
 
 void FlightEntryEditDialog::loadEntry(OPL::Row entry)
 {
+    DEB << "Loading Flight Entry";
+    DEB << entry;
+    using namespace OPL;
+    const auto &entryData = entry.getData();
 
+    // Fill the entry data into the form
+    // Date of Flight
+    const QDate date = QDate::fromJulianDay(entryData.value(FlightEntry::DOFT).toInt());
+    calendarWidget->setSelectedDate(date);
+    dateLineEdit.setText(Date(date, displayFormat).toString());
+    // Location
+    departureLineEdit.setText(entryData.value(OPL::FlightEntry::DEPT).toString());
+    destinationLineEdit.setText(entryData.value(OPL::FlightEntry::DEST).toString());
+    // Times
+    timeOutLineEdit.setText(Time(entryData.value(OPL::FlightEntry::TOFB).toInt(), displayFormat).toString());
+    timeInLineEdit.setText(Time(entryData.value(OPL::FlightEntry::TONB).toInt(), displayFormat).toString());
+    // Registration
+    registrationLineEdit.setText(DBCache->getTailsMap().value(entryData.value(OPL::FlightEntry::ACFT).toInt()));
+    // Pilot Names
+    firstPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::PIC).toInt()));
+    secondPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::SECONDPILOT).toInt()));
+    thirdPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::THIRDPILOT).toInt()));
+
+    //Function
+    // TODO - this is not very pretty think of a better way to do this
+    for (int i = 0; i < 5; i++) { // QHash::iterator is not guarenteed to be in order
+        if(entryData.value(pilotFuncionsMap.value(i)).toInt() != 0)
+            pilotFunctionComboBox.setCurrentIndex(i);
+    }
+
+    // Approach
+    approachTypeComboBox.setCurrentText(entryData.value(FlightEntry::APPROACHTYPE).toString());
+
+    // Flight Rules - check if IFR time > 0
+    flightRulesComboBox.setCurrentIndex(entryData.value(FlightEntry::TIFR).toInt() > 0 ? 1 : 0);
+
+    // Take Off and Landing Count
+    int takeOffCount = entryData.value(OPL::FlightEntry::TODAY).toInt()
+                       + entryData.value(OPL::FlightEntry::TONIGHT).toInt();
+    int landingCount = entryData.value(OPL::FlightEntry::LDGDAY).toInt()
+                       + entryData.value(OPL::FlightEntry::LDGNIGHT).toInt();
+    takeOffCountSpinBox.setValue(takeOffCount);
+    landingCountSpinBox.setValue(landingCount);
+    // Pilot Flying or Pilot Monitoring
+    pilotFlyingCheckBox.setChecked(entryData.value(OPL::FlightEntry::PILOTFLYING).toBool());
+    // Remarks and Flight Number
+    remarksLineEdit.setText(entryData.value(OPL::FlightEntry::REMARKS).toString());
+    flightNumberLineEdit.setText(entryData.value(OPL::FlightEntry::FLIGHTNUMBER).toString());
 }
 
 bool FlightEntryEditDialog::deleteEntry(int rowID)
 {
-
+    return DB->remove(DB->getFlightEntry(rowID));
 }
 
 void FlightEntryEditDialog::init()
@@ -225,6 +274,9 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
                      this, &FlightEntryEditDialog::onCalendarDateSelected);
     QObject::connect(calendarWidget, &QCalendarWidget::clicked,
                      this, &FlightEntryEditDialog::onCalendarDateSelected);
+    // Date Line Edit
+    QObject::connect(&dateLineEdit, &QLineEdit::editingFinished,
+                     this, &FlightEntryEditDialog::onDateEditingFinished);
     // Registration Line Edit
     QObject::connect(&registrationLineEdit, &QLineEdit::editingFinished,
                      this, [this]() {
@@ -266,6 +318,11 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
             lineEdit->setText(lineEdit->text().toUpper());
         });
     }
+
+    // Install Event Filter for focus in events on mandatory line edits
+    for(auto it = mandatoryLineEdits.constBegin(); it != mandatoryLineEdits.constEnd(); ++it) {
+        it.key()->installEventFilter(this);
+    }
 }
 
 void FlightEntryEditDialog::readSettings()
@@ -276,6 +333,7 @@ void FlightEntryEditDialog::readSettings()
     approachTypeComboBox.setCurrentText(Settings::getApproachType());
     flightRulesComboBox.setCurrentIndex(Settings::getLogIfr());
     flightNumberLineEdit.setText(Settings::getFlightNumberPrefix());
+    displayFormat = Settings::getDisplayFormat();
 }
 
 bool FlightEntryEditDialog::verifyUserInput(QLineEdit *lineEdit, const UserInput &input)
@@ -297,6 +355,31 @@ bool FlightEntryEditDialog::verifyUserInput(QLineEdit *lineEdit, const UserInput
 /*
  * Slots
  */
+
+void FlightEntryEditDialog::onBadInputReceived(QLineEdit *lineEdit) {
+    LOG << "Bad Input Received: " + lineEdit->text();
+    lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    if(mandatoryLineEdits.contains(lineEdit)) {
+        validationState.invalidate(mandatoryLineEdits.value(lineEdit));
+    }
+}
+
+void FlightEntryEditDialog::onGoodInputReceived(QLineEdit *lineEdit) {
+    LOG << "Good Input Received: " + lineEdit->text();
+    lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    lineEdit->setStyleSheet(QString());
+    if(mandatoryLineEdits.contains(lineEdit)) {
+        validationState.validate(mandatoryLineEdits.value(lineEdit));
+    }
+    if (validationState.timesValid()) {
+        const OPL::Time tofb = OPL::Time::fromString(timeOutLineEdit.text(), displayFormat);
+        const OPL::Time tonb = OPL::Time::fromString(timeInLineEdit.text(), displayFormat);
+        const OPL::Time tblk = OPL::Time::blockTime(tofb, tonb);
+        totalTimeDisplayLabel.setText(tblk.toString());
+        LOG << "Block Time calculated: " + tblk.toString();
+    }
+    validationState.printValidationStatus();
+}
 
 void FlightEntryEditDialog::onDialogAccepted()
 {
@@ -321,12 +404,12 @@ void FlightEntryEditDialog::onDateEditingFinished()
     OPL::Date date(dateLineEdit.text(), dateTimeFormat);
 
     if(date.isValid()) {
-        clearBorder(&dateLineEdit);
+        onGoodInputReceived(&dateLineEdit);
         DEB << "Date is valid: " + date.toString();
         return;
     }
     DEB << "Date is invalid: " + dateLineEdit.text();
-    setRedBorder(&dateLineEdit);
+    onBadInputReceived(&dateLineEdit);
 }
 
 void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit *lineEdit)
@@ -334,18 +417,18 @@ void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit *lineEdit)
     DEB << "Time Editing finished: " + lineEdit->text();
 
     if(verifyUserInput(lineEdit, TimeInput(lineEdit->text(), dateTimeFormat))) {
-        clearBorder(lineEdit);
+        onGoodInputReceived(lineEdit);
         return;
     }
 
-    setRedBorder(lineEdit);
+    onBadInputReceived(lineEdit);
 }
 
 void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
 {
     // try to match user input with map
     if(verifyUserInput(lineEdit, PilotInput(lineEdit->text()))) {
-        clearBorder(lineEdit);
+        onGoodInputReceived(lineEdit);
         return;
     }
 
@@ -357,7 +440,7 @@ void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
     }
 
     // entry was not recognized and no new entry has been added.
-    setRedBorder(lineEdit);
+    onBadInputReceived(lineEdit);
 }
 
 void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
@@ -370,7 +453,7 @@ void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
             QSignalBlocker b(lineEdit);
             lineEdit->setText(lineEdit->text().split(' ')[0]);
         }
-        clearBorder(lineEdit);
+        onGoodInputReceived(lineEdit);
         return;
     }
     // if no match was found, offer to add new aircraft entry
@@ -381,7 +464,7 @@ void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
     }
 
     // entry was not recognized and no new entry has been added
-    setRedBorder(lineEdit);
+    onBadInputReceived(lineEdit);
 }
 
 void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
@@ -398,7 +481,7 @@ void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
         nameLabel->setText(DBCache->getAirportsMapNames().value(
             DBCache->getAirportsMapICAO().key(
                 lineEdit->text())));
-        clearBorder(lineEdit);
+        onGoodInputReceived(lineEdit);
         return;
     } else {
         nameLabel->setText("Unknown Airport");
@@ -409,7 +492,7 @@ void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
     }
 
     // entry was not recognized and no new entry has been added
-    setRedBorder(lineEdit);
+    onBadInputReceived(lineEdit);
 }
 
 bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table)
