@@ -3,7 +3,7 @@
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
-#include "src/gui/dialogues/newairportdialog.h"
+#include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newtaildialog.h"
 #include "src/gui/verification/airportinput.h"

@@ -1,6 +1,6 @@
 #include "airporttableeditwidget.h"
 #include "src/database/database.h"
-#include "src/gui/dialogues/newairportdialog.h"
+#include "src/gui/dialogues/airportentryeditdialog.h"
 
 AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
     : TableEditWidget(Vertical, parent)

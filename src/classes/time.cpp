@@ -90,6 +90,7 @@ Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
         return Time(qTime, format);
         break;
     }
+    return Time(-1, format);
 }
 
 Time Time::blockTime(const Time &offBlocks, const Time &onBlocks)

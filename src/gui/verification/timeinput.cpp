@@ -24,6 +24,7 @@ QString TimeInput::fixup() const
         return input; // custom formats cannot be fixed
         break;
     }
+    return QString();
 }
 
 const QString TimeInput::fixDefaultFormat() const

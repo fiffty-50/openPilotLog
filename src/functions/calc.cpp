@@ -355,13 +355,13 @@ void OPL::Calc::updateNightTimes()
     }
     DEB << "Updating " << flight_list.length() << " flights in the database.";
 
-    for (const auto& item : flight_list) {
+    for (const auto& item : std::as_const(flight_list)) {
 
         auto flt = DB->getFlightEntry(item.toInt());
         auto data = flt.getData();
         auto dateTime = QDateTime(QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
                                   QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60),
-                                  Qt::UTC);
+                                  QTimeZone::UTC);
         data.insert(OPL::FlightEntry::TNIGHT,
                     calculateNightTime(data.value(OPL::FlightEntry::DEPT).toString(),
                                        data.value(OPL::FlightEntry::DEST).toString(),

@@ -1,14 +1,13 @@
-#include "newairportdialog.h"
-#include "ui_newairportdialog.h"
+#include "airportentryeditdialog.h"
+#include "ui_airportentryeditdialog.h"
 #include <QValidator>
 #include <QTimeZone>
 
 #include "src/opl.h"
 #include "src/database/database.h"
-#include "src/database/row.h"
 
 NewAirportDialog::NewAirportDialog(QWidget *parent) :
-    EntryEditDialog(parent), ui(new Ui::NewAirportDialog)
+    EntryEditDialog(parent), ui(new Ui::AirportEntryEditDialog)
 {
     m_rowId = 0; // new entry
     ui->setupUi(this);
@@ -17,7 +16,7 @@ NewAirportDialog::NewAirportDialog(QWidget *parent) :
 }
 
 NewAirportDialog::NewAirportDialog(int row_id, QWidget *parent)
-    : EntryEditDialog(parent), ui(new Ui::NewAirportDialog), m_rowId(row_id)
+    : EntryEditDialog(parent), ui(new Ui::AirportEntryEditDialog), m_rowId(row_id)
 {
     ui->setupUi(this);
     setValidators();

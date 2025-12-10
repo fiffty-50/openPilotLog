@@ -1,10 +1,10 @@
-#ifndef NEWAIRPORTDIALOG_H
-#define NEWAIRPORTDIALOG_H
+#ifndef AIRPORTENTRYEDITDIALOG_H
+#define AIRPORTENTRYEDITDIALOG_H
 
 #include "src/gui/dialogues/entryeditdialog.h"
 
 namespace Ui {
-class NewAirportDialog;
+class AirportEntryEditDialog;
 }
 
 class NewAirportDialog : public EntryEditDialog
@@ -28,7 +28,7 @@ private slots:
     void on_buttonBox_rejected();
 
 private:
-    Ui::NewAirportDialog *ui;
+    Ui::AirportEntryEditDialog *ui;
     int m_rowId;
 
     void setValidators();
@@ -44,4 +44,4 @@ public:
     virtual bool deleteEntry(int rowId) override;
 };
 
-#endif // NEWAIRPORTDIALOG_H
+#endif // AIRPORTENTRYEDITDIALOG_H

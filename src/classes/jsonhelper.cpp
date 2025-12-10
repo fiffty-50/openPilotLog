@@ -55,7 +55,10 @@ void JsonHelper::importDatabase()
 QJsonDocument JsonHelper::readFileToDoc(const QString &file_path)
 {
     QFile file(file_path);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        DEB << "Unable to open file: " + file_path;
+        return QJsonDocument();
+    }
     QString raw = file.readAll();
     file.close();
 
@@ -66,7 +69,10 @@ QJsonDocument JsonHelper::readFileToDoc(const QString &file_path)
 void JsonHelper::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
 {
     QFile out(OPL::Paths::filePath(OPL::Paths::Export,file_name));
-    out.open(QFile::WriteOnly);
+    if(!out.open(QFile::WriteOnly)) {
+        DEB << "Unable to write to file: " + file_name;
+        return;
+    }
     out.write(doc.toJson());
     out.close();
 }
