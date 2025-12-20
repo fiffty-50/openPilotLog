@@ -26,6 +26,8 @@ public:
     inline void validate(int index)                       { validationArray[index] = true;};
     inline void invalidate(ValidationItem item)           { validationArray[item]  = false;}
     inline void invalidate(int index)                     { validationArray[index] = false;}
+    inline void validateAll()					   { validationArray.fill(true); }
+    inline void inValidateAll()					   { validationArray.fill(false); }
     inline bool allValid() const                   { return validationArray.count(true) == 7; }
     inline bool allButOneValid() const			   { return validationArray.count(false) < 2; }
     inline bool timesValid() const                 { return validationArray[ValidationItem::TOFB] && validationArray[ValidationItem::TONB];}

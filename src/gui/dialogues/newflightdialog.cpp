@@ -468,7 +468,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(OPL::FlightEntry::TIFR, QString());
     }
     // Function Times
-    QStringList function_times = {
+    QList<QString> function_times = {
         OPL::FlightEntry::TPIC,
         OPL::FlightEntry::TPICUS,
         OPL::FlightEntry::TSIC,
@@ -854,7 +854,7 @@ void NewFlightDialog::on_retreivePushButton_clicked()
 
     // Query the API
     FlightAwareQuery query;
-    auto result = query.getFlightData(ui->flightNumberLineEdit->text(), QDate::fromString(ui->doftLineEdit->text(), Qt::ISODate));
+    const auto result = query.getFlightData(ui->flightNumberLineEdit->text(), QDate::fromString(ui->doftLineEdit->text(), Qt::ISODate));
     LOG << "Querying API...";
     if(result.isEmpty()) {
         WARN("Flight not found.");
@@ -862,7 +862,7 @@ void NewFlightDialog::on_retreivePushButton_clicked()
     }
 
 
-    for(const auto &flight : result) {
+    for(const auto &flight : std::as_const(result)) {
         flight.print();
     }
 

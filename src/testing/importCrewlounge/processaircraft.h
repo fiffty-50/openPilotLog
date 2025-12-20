@@ -1,5 +1,6 @@
 #ifndef PROCESSAIRCRAFT_H
 #define PROCESSAIRCRAFT_H
+#include "src/opl.h"
 #include <QtCore>
 
 class ProcessAircraft
@@ -13,7 +14,7 @@ public:
         processParsedData();
     };
 
-    QHash<QString, QHash<QString, QVariant> > getProcessedTailMaps() const;
+    QHash<QString, OPL::RowData_T> getProcessedTailMaps() const;
     QHash<QString, int> getProcessedTailIds() const;
 
 private:
@@ -34,7 +35,7 @@ private:
      * mapping the data to ID's later on. The value is a QHash<QString, QVariant> and contains
      * the data processed as it will be represented in the OPL database later on.
      */
-    QHash<QString, QHash<QString, QVariant>> processedTailMaps;
+    QHash<QString, OPL::RowData_T> processedTailMaps;
 
     /*!
      * \brief processedTailIds Holds a map of the ids that have been given to the processed pilots

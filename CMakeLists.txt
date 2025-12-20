@@ -106,6 +106,9 @@ set(PROJECT_SOURCES
     src/gui/widgets/currencywidget.cpp
     src/gui/verification/entrybuilder.h
 
+    src/gui/verification/flightentryparser.h
+    src/gui/verification/flightentryparser.cpp
+
     # Classes
     src/classes/style.h
     src/classes/style.cpp

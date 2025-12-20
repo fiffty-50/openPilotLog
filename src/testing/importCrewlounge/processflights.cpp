@@ -19,7 +19,7 @@ void ProcessFlights::parseRawData()
 
 void ProcessFlights::processParsedData()
 {
-    QHash<QString, QVariant> new_flight_data;
+    OPL::RowData_T new_flight_data;
     int flight_id = 1;
 
     for (const auto &row : std::as_const(rawFlightData)) {
@@ -84,7 +84,7 @@ void ProcessFlights::processParsedData()
     }
 }
 
-QVector<QHash<QString, QVariant> > ProcessFlights::getProcessedFlights() const
+QVector<OPL::RowData_T> ProcessFlights::getProcessedFlights() const
 {
     return processedFlights;
 }

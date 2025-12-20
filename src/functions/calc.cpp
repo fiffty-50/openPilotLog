@@ -302,7 +302,7 @@ void OPL::Calc::updateAutoTimes(int acft_id)
 {
     //find all flights for aircraft
     const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
-    auto flight_list = DB->customQuery(statement, 1);
+    const auto flight_list = DB->customQuery(statement, 1);
     if (flight_list.isEmpty()) {
         DEB << "No flights for this tail found.";
         return;

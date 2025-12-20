@@ -16,7 +16,7 @@ public:
         processParsedData();
     };
 
-    QHash<QString, QHash<QString, QVariant> > getProcessedPilotMaps() const;
+    QHash<QString, OPL::RowData_T> getProcessedPilotMaps() const;
     QHash<QString, int> getProcessedPilotsIds() const;
 
 private:
@@ -35,7 +35,7 @@ private:
      * mapping the data to ID's later on. The value is a QHash<QString, QVariant> and contains
      * the data processed as it will be represented in the OPL database later on.
      */
-    QHash<QString, QHash<QString, QVariant>> processedPilotHashes;
+    QHash<QString, OPL::RowData_T> processedPilotHashes;
 
     /*!
      * \brief processedPilotsIds Holds a map of the ids that have been given to the processed pilots

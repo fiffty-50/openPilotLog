@@ -29,7 +29,7 @@ public:
 
 private:
     bool safeMode = false;
-    const static inline QStringList m_function_times = {
+    const static inline QList<QString> m_function_times = {
         OPL::FlightEntry::TPIC,
         OPL::FlightEntry::TPICUS,
         OPL::FlightEntry::TSIC,

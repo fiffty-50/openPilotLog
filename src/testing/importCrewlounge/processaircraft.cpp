@@ -22,7 +22,7 @@ void ProcessAircraft::processParsedData()
     // init counter
     int unique_tail_id = 1;
 
-    QHash<QString, QVariant> new_tail_data;
+    OPL::RowData_T new_tail_data;
     for (const auto &list : std::as_const(unique_tails)) {
         new_tail_data.insert(OPL::TailEntry::REGISTRATION, list[0]);
         new_tail_data.insert(OPL::TailEntry::COMPANY, list[1]);
@@ -64,7 +64,7 @@ QHash<QString, int> ProcessAircraft::getProcessedTailIds() const
     return processedTailIds;
 }
 
-QHash<QString, QHash<QString, QVariant> > ProcessAircraft::getProcessedTailMaps() const
+QHash<QString, OPL::RowData_T > ProcessAircraft::getProcessedTailMaps() const
 {
     return processedTailMaps;
 }

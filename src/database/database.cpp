@@ -331,8 +331,7 @@ bool Database::insert(const OPL::Row &new_row)
 {
     QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" (");
     const auto& data = new_row.getData();
-    QHash<QString, QVariant>::const_iterator i;
-    for (i = data.constBegin(); i != data.constEnd(); ++i) {
+    for(auto i = data.cbegin(); i != data.cend(); ++i) {
         statement.append(i.key() + QLatin1Char(','));
     }
     statement.chop(1);
@@ -347,7 +346,7 @@ bool Database::insert(const OPL::Row &new_row)
     QSqlQuery query;
     query.prepare(statement);
 
-    for (i = data.constBegin(); i != data.constEnd(); ++i) {
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
 //use QMetaType for binding null value in QT >= 6
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         if (i.value() == QVariant(QString())) {
@@ -710,7 +709,7 @@ bool Database::createSchema()
     // Create Tables
     QSqlQuery q;
     QVector<QSqlError> errors;
-    for (const auto &query_string : list) {
+    for (const auto &query_string : std::as_const(list)) {
         q.prepare(query_string);
         if (!q.exec()) {
             errors.append(q.lastError());
