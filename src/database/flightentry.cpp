@@ -85,7 +85,6 @@ bool FlightEntry::setDate(const QString &input, const DateTimeFormat &format)
     rowData.insert(OPL::FlightEntry::DOFT, date.toString());
     validationState.validate(ValidationState::DOFT);
     return true;
-
 }
 
 bool FlightEntry::setDeparture(const QString &input)

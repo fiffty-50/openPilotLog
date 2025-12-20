@@ -10,7 +10,6 @@
 #include <QDialogButtonBox>
 #include <QCalendarWidget>
 #include "entryeditdialog.h"
-#include "src/gui/verification/validationstate.h"
 #include "src/opl.h"
 #include "src/database/flightentry.h"
 #include "src/gui/verification/userinput.h"
@@ -119,6 +118,7 @@ private:
     bool verifyUserInput(QLineEdit *lineEdit, const UserInput &input);
     void onBadInputReceived(QLineEdit *lineEdit);
     void onGoodInputReceived(QLineEdit *lineEdit);
+    void updateAirportLabels();
 
     /*!
      * \brief Add the data from combo and spin boxes to the flight entry
@@ -130,6 +130,7 @@ private slots:
     void onDialogAccepted();
     void onCalendarRequested();
     void onCalendarDateSelected();
+    void onPilotFlyingCheckboxStateChanged(int index);
 
 
     // line edits
@@ -142,6 +143,8 @@ private slots:
 
     void onRemarksEditingFinished();
     void onFlightNumberEditingFinished();
+
+
 
     /*!
      * \brief adds a new Database Element

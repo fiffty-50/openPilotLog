@@ -77,43 +77,41 @@ OPL::Row::operator QString() const
     if (!isValid()) {
         return QStringLiteral("Invalid Row");
     }
-    QString out("\033[32m[Entry Data]:\t\033[m\n");
-    int item_count = 0;
-    QHash<QString, QVariant>::const_iterator i;
-    for (i = rowData.constBegin(); i!= rowData.constEnd(); ++i) {
-        QString spacer(":");
-        int spaces = (14 - i.key().length());
-        if (spaces > 0)
-            for (int i = 0; i < spaces ; i++)
-                spacer += QLatin1Char(' ');
-        if (i.value().toString().isEmpty()) {
-            out.append(QLatin1String("\t\033[m") + i.key()
-                       + spacer
-                       + QLatin1String("\033[35m----"));
-            spaces = (14 - i.value().toString().length());
-            spacer = QString();
-            if (spaces > 0)
-                for (int i = 0; i < spaces ; i++)
-                    spacer += QLatin1Char(' ');
-            out.append(spacer);
-        } else {
-            out.append(QLatin1String("\t\033[m") + i.key()
-                       + spacer
-                       + QLatin1String("\033[35m")
-                       + i.value().toString());
+    constexpr int ColumnWidth = 14;
+    constexpr int ItemsPerRow = 4;
 
-            spaces = (14 - i.value().toString().length());
-            spacer = QString();
-            if (spaces > 0)
-                for (int i = 0; i < spaces ; i++)
-                    spacer += QLatin1Char(' ');
-            out.append(spacer);
-        }
-        item_count ++;
-        if (item_count % 4 == 0)
-            out.append(QLatin1String("\n"));
+    const QString Reset  = "\033[m";
+    const QString Green  = "\033[32m";
+    const QString Purple = "\033[35m";
+
+    QString out;
+    out.reserve(1024);
+
+    out += Green + "[Entry Data]:\t" + Reset + "\n";
+
+    int itemCount = 0;
+
+    for (auto it = rowData.cbegin(); it != rowData.cend(); ++it) {
+        const QString key = it.key();
+        const QString value = it.value().toString();
+
+        QString paddedKey = key;
+        paddedKey += QLatin1Char(':');
+        paddedKey = paddedKey.leftJustified(ColumnWidth);
+
+        const QString displayVal = value.isEmpty() ? "-NULL-" : value;
+        const QString paddedValue = displayVal.leftJustified(ColumnWidth);
+
+        out += "\t" % Reset
+               % paddedKey
+               % Purple
+               % paddedValue;
+
+        if (++itemCount % ItemsPerRow == 0)
+            out += "\n";
     }
-    out.append(QLatin1String("\n"));
+
+    out += "\n";
     QTextStream(stdout) << out;
     return QString();
 }

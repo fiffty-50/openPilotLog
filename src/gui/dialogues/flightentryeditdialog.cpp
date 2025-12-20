@@ -323,6 +323,9 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
             lineEdit->setText(lineEdit->text().toUpper());
         });
     }
+    // Add Take Off and Landing when Pilot Flying
+    QObject::connect(&pilotFlyingCheckBox, &QCheckBox::checkStateChanged,
+                     this, &FlightEntryEditDialog::onPilotFlyingCheckboxStateChanged);
 }
 
 void FlightEntryEditDialog::readSettings()
@@ -368,6 +371,17 @@ void FlightEntryEditDialog::onGoodInputReceived(QLineEdit *lineEdit) {
     if(blockMinutes > 0) {
         totalTimeDisplayLabel.setText(OPL::Time(blockMinutes, m_displayFormat).toString());
     }
+}
+
+void FlightEntryEditDialog::updateAirportLabels()
+{
+    departureDisplayLabel.setText(DBCache->getAirportsMapNames().value(
+        DBCache->getAirportsMapICAO().key(
+            departureLineEdit.text())));
+
+    destinationDisplayLabel.setText(DBCache->getAirportsMapNames().value(
+        DBCache->getAirportsMapICAO().key(
+            destinationLineEdit.text())));
 }
 
 void FlightEntryEditDialog::collectSecondaryFlightData()
@@ -436,7 +450,8 @@ void FlightEntryEditDialog::onDialogAccepted()
         }
         QString missingItemsString;
         for(const auto &item : missingItems) {
-            missingItemsString.append(item) + QStringLiteral("<br>");
+            missingItemsString.append(item);
+            missingItemsString.append(QStringLiteral("<br>"));
         }
         INFO(tr("Not all mandatory entries are valid.<br>"
                 "The following item(s) are empty or invalid:"
@@ -446,7 +461,16 @@ void FlightEntryEditDialog::onDialogAccepted()
     }
 
     collectSecondaryFlightData();
-    accept();
+    DEB << m_flightEntry;
+    if (!DB->commit(m_flightEntry)) {
+        WARN(tr("The following error has ocurred:"
+                "<br><br>%1<br><br>"
+                "The entry has not been saved."
+                ).arg(DB->lastError.text()));
+        return;
+    } else {
+        QDialog::accept();
+    }
 }
 
 void FlightEntryEditDialog::onCalendarRequested()
@@ -460,10 +484,21 @@ void FlightEntryEditDialog::onCalendarDateSelected()
     dateLineEdit.setText(OPL::Date(calendarWidget->selectedDate(), m_displayFormat).toString());
 }
 
+void FlightEntryEditDialog::onPilotFlyingCheckboxStateChanged(int index)
+{
+    if (index == Qt::CheckState::Checked) {
+        takeOffCountSpinBox.setValue(1);
+        landingCountSpinBox.setValue(1);
+    } else {
+        takeOffCountSpinBox.setValue(0);
+        landingCountSpinBox.setValue(0);
+    }
+}
+
 void FlightEntryEditDialog::onDateEditingFinished()
 {
     LOG << "Date editing finished: " << dateLineEdit.text();
-    if(m_flightEntry.setDate(dateLineEdit.text(), m_displayFormat)) {
+    if(!m_flightEntry.setDate(dateLineEdit.text(), m_displayFormat)) {
         onBadInputReceived(&dateLineEdit);
     } else {
         onGoodInputReceived(&dateLineEdit);
@@ -492,7 +527,22 @@ void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
 {
     // try to match user input with map
     if(verifyUserInput(lineEdit, PilotInput(lineEdit->text()))) {
-        onGoodInputReceived(lineEdit);
+        bool success = false;
+        int index = pilotNameLineEdits.indexOf(lineEdit);
+        switch (index) {
+        case 0:
+            success = m_flightEntry.setFirstPilot(lineEdit->text());
+            break;
+        case 1:
+            success = m_flightEntry.setSecondPilot(lineEdit->text());
+            break;
+        case 2:
+            success = m_flightEntry.setThirdPilot(lineEdit->text());
+            break;
+        default:
+            break;
+        }
+        success ? onGoodInputReceived(lineEdit) : onBadInputReceived(lineEdit);
         return;
     }
 
@@ -515,7 +565,12 @@ void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
         // The QCompleter contains both dashed as well as non-dashed registrations. Strip the second one
         {
             QSignalBlocker b(lineEdit);
-            lineEdit->setText(lineEdit->text().split(' ')[0]);
+            const QString cleanRegistration = lineEdit->text().split(' ')[0];
+            lineEdit->setText(cleanRegistration);
+                if(!m_flightEntry.setRegistration(cleanRegistration)) {
+                onBadInputReceived(lineEdit);
+                return;
+            }
         }
         onGoodInputReceived(lineEdit);
         return;
@@ -533,22 +588,14 @@ void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)
 
 void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
 {
-    QLabel *nameLabel;
-    if(lineEdit == locationLineEdits.first()) {
-        nameLabel = &departureDisplayLabel;
-    } else {
-        nameLabel = &destinationDisplayLabel;
-    }
-
     if(verifyUserInput(lineEdit, AirportInput(lineEdit->text())) ) {
-        // Match ICAO code with Airport Name and display on label
-        nameLabel->setText(DBCache->getAirportsMapNames().value(
-            DBCache->getAirportsMapICAO().key(
-                lineEdit->text())));
+        updateAirportLabels();
+        lineEdit == locationLineEdits.first() ?
+            m_flightEntry.setDeparture(lineEdit->text()) :
+            m_flightEntry.setDestination(lineEdit->text());
         onGoodInputReceived(lineEdit);
         return;
     } else {
-        nameLabel->setText("Unknown Airport");
         if(addNewDatabaseElement(lineEdit, OPL::DbTable::Airports)) {
             emit lineEdit->editingFinished(); //re-trigger verification
             return;
