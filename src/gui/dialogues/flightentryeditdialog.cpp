@@ -26,12 +26,14 @@ FlightEntryEditDialog::FlightEntryEditDialog(int rowId, QWidget *parent)
     : EntryEditDialog(parent)
 {
     init();
+
+    FlightEntryEditDialog::loadEntry(rowId);
 }
 
 void FlightEntryEditDialog::loadEntry(int rowID)
 {
-    const OPL::FlightEntry entry = DB->getFlightEntry(rowID);
-    loadEntry(entry);
+    m_flightEntry = DB->getFlightEntry(rowID);
+    FlightEntryEditDialog::loadEntry(m_flightEntry);
 }
 
 void FlightEntryEditDialog::loadEntry(OPL::Row entry)
@@ -39,7 +41,12 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     DEB << "Loading Flight Entry";
     DEB << entry;
     using namespace OPL;
-    const auto &entryData = entry.getData();
+
+    // copy the entry data into the member Flight Entry
+    m_flightEntry.setData(entry.getData());
+    m_flightEntry.setRowId(entry.getRowId());
+    m_flightEntry.forceValid(); // since this value is read from the database, its fields are valid
+    const auto &entryData = m_flightEntry.getData();
 
     // Fill the entry data into the form
     // Date of Flight
@@ -52,6 +59,7 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     // Times
     timeOutLineEdit.setText(Time(entryData.value(FlightEntry::TOFB).toInt(), m_displayFormat).toString());
     timeInLineEdit.setText(Time(entryData.value(FlightEntry::TONB).toInt(), m_displayFormat).toString());
+    totalTimeDisplayLabel.setText(Time(m_flightEntry.getBlockTime(), m_displayFormat).toString());
     // Registration
     registrationLineEdit.setText(DBCache->getTailsMap().value(entryData.value(FlightEntry::ACFT).toInt()));
     // Pilot Names
@@ -672,6 +680,7 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
         break;
     }
 
+    // check if the user added a new entry or the dialog was canceled
     bool success = newEntryDialog->exec() == QDialog::Accepted;
     if(!success)
         return false;
