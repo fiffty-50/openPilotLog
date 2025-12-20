@@ -25,7 +25,8 @@ public:
     virtual bool deleteEntry(int rowID) override;
 
 private:
-    OPL::DateTimeFormat dateTimeFormat = OPL::DateTimeFormat();
+    OPL::DateTimeFormat m_displayFormat;
+    OPL::FlightEntry m_flightEntry;
 
     QLineEdit dateLineEdit = QLineEdit(this);
     QLineEdit timeOutLineEdit = QLineEdit(this);
@@ -54,18 +55,18 @@ private:
 
     QCheckBox pilotFlyingCheckBox = QCheckBox(this);
 
-    const QVector<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
-    const QVector<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
-    const QVector<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
-    const QHash<QLineEdit *,  ValidationState::ValidationItem> mandatoryLineEdits = {
-                                                                                           {&dateLineEdit, 		   ValidationState::doft},
-                                                                                           {&departureLineEdit,    ValidationState::dept},
-                                                                                           {&destinationLineEdit,  ValidationState::dest},
-                                                                                           {&timeOutLineEdit, 	   ValidationState::tofb },
-                                                                                           {&timeInLineEdit, 	   ValidationState::tonb },
-                                                                                           {&firstPilotLineEdit,   ValidationState::pic },
-                                                                                           {&registrationLineEdit, ValidationState::acft },
-        };
+    const QList<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
+    const QList<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
+    const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
+    // const QHash<QLineEdit *,  ValidationState::ValidationItem> mandatoryLineEdits = {
+    //                                                                                        {&dateLineEdit, 		   ValidationState::DOFT},
+    //                                                                                        {&departureLineEdit,    ValidationState::DEPT},
+    //                                                                                        {&destinationLineEdit,  ValidationState::DEST},
+    //                                                                                        {&timeOutLineEdit, 	   ValidationState::TOFB },
+    //                                                                                        {&timeInLineEdit, 	   ValidationState::TONB },
+    //                                                                                        {&firstPilotLineEdit,   ValidationState::PIC },
+    //                                                                                        {&registrationLineEdit, ValidationState::ACFT },
+    //     };
     // const QVector<QLineEdit *> mandatoryLineEdits = { &dateLineEdit, &departureLineEdit,
     //                                                   &destinationLineEdit, &timeOutLineEdit,
     //                                                   &timeInLineEdit,  &firstPilotLineEdit, &registrationLineEdit };
@@ -100,7 +101,6 @@ private:
     QDialogButtonBox acceptButtonBox = QDialogButtonBox(QDialogButtonBox::Ok |
                                                         QDialogButtonBox::Cancel);
 
-    OPL::DateTimeFormat displayFormat;
     /*!
      * \brief pilotFuncionsMap Maps the function times to its index in the pilotFunctionComboBox
      */
@@ -111,8 +111,6 @@ private:
                                                                 {3, OPL::FlightEntry::TDUAL},
                                                                 {4, OPL::FlightEntry::TFI},
                                                                 };
-    ValidationState validationState;
-
     void init();
     void setupUI();
     void setupAutoCompletion();
@@ -121,6 +119,11 @@ private:
     bool verifyUserInput(QLineEdit *lineEdit, const UserInput &input);
     void onBadInputReceived(QLineEdit *lineEdit);
     void onGoodInputReceived(QLineEdit *lineEdit);
+
+    /*!
+     * \brief Add the data from combo and spin boxes to the flight entry
+     */
+    void collectSecondaryFlightData();
 
 
 private slots:
@@ -131,10 +134,15 @@ private slots:
 
     // line edits
     void onDateEditingFinished();
-    void onTimeEditingFinished(QLineEdit *lineEdit);
+    void onTimeOutEditingFinished();
+    void onTimeInEditingFinished();
     void onNameEditingFinished(QLineEdit *lineEdit);
     void onRegistrationEditingFinished(QLineEdit *lineEdit);
     void onLocationEditingFinished(QLineEdit *lineEdit);
+
+    void onRemarksEditingFinished();
+    void onFlightNumberEditingFinished();
+
     /*!
      * \brief adds a new Database Element
      * \param caller - The Line Edit that called the function
@@ -157,16 +165,16 @@ protected:
     *
     * This event filter invalidates the validation state on focus in events for a mandatory line edit
     */
-    bool eventFilter(QObject *object, QEvent *event) override {
-        const auto lineEdit = qobject_cast<QLineEdit*>(object);
-        if (mandatoryLineEdits.contains(lineEdit) && event->type() == QEvent::FocusIn) {
-            // set verification bit to false when entering a mandatory line edit
-            validationState.invalidate(mandatoryLineEdits.value(lineEdit));
-            return false;
-        }
+    // bool eventFilter(QObject *object, QEvent *event) override {
+    //     const auto lineEdit = qobject_cast<QLineEdit*>(object);
+    //     if (mandatoryLineEdits.contains(lineEdit) && event->type() == QEvent::FocusIn) {
+    //         // set verification bit to false when entering a mandatory line edit
+    //         validationState.invalidate(mandatoryLineEdits.value(lineEdit));
+    //         return false;
+    //     }
 
-        return QObject::eventFilter(object, event);
-        }
+    //     return QObject::eventFilter(object, event);
+    //     }
 };
 
 #endif // FLIGHTENTRYEDITDIALOG_H

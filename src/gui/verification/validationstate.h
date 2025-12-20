@@ -20,20 +20,33 @@ public:
      * \brief The ValidationItem enum contains the items that are mandatory for logging a flight:
      * Date of Flight, Departure, Destination, Time Off Blocks, Time On Blocks, Pilot in Command, Aircraft Registration
      */
-    enum ValidationItem {doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6};
+    enum ValidationItem {DOFT = 0, DEPT = 1, DEST = 2, TOFB = 3, TONB = 4, PIC = 5, ACFT = 6};
 
-    void validate(ValidationItem item)             { validationArray[item]  = true;};
-    void validate(int index)                       { validationArray[index] = true;};
-    void invalidate(ValidationItem item)           { validationArray[item]  = false;}
-    void invalidate(int index)                     { validationArray[index] = false;}
+    inline void validate(ValidationItem item)             { validationArray[item]  = true;};
+    inline void validate(int index)                       { validationArray[index] = true;};
+    inline void invalidate(ValidationItem item)           { validationArray[item]  = false;}
+    inline void invalidate(int index)                     { validationArray[index] = false;}
     inline bool allValid() const                   { return validationArray.count(true) == 7; }
     inline bool allButOneValid() const			   { return validationArray.count(false) < 2; }
-    inline bool timesValid() const                 { return validationArray[ValidationItem::tofb] && validationArray[ValidationItem::tonb];}
-    inline bool locationsValid() const             { return validationArray[ValidationItem::dept] && validationArray[ValidationItem::dest];}
-    inline bool nightDataValid() const             { return timesValid() && locationsValid() && validationArray[ValidationItem::doft];}
-    inline bool acftValid() const                  { return validationArray[ValidationItem::acft];}
+    inline bool timesValid() const                 { return validationArray[ValidationItem::TOFB] && validationArray[ValidationItem::TONB];}
+    inline bool locationsValid() const             { return validationArray[ValidationItem::DEPT] && validationArray[ValidationItem::DEST];}
+    inline bool nightDataValid() const             { return timesValid() && locationsValid() && validationArray[ValidationItem::DOFT];}
+    inline bool acftValid() const                  { return validationArray[ValidationItem::ACFT];}
     inline bool validAt(int index) const           { return validationArray[index];}
     inline bool validAt(ValidationItem item) const { return validationArray[item];}
+    inline int validCount() const				   { return validationArray.count(true);}
+    inline int invalidCount() const				   { return validationArray.count(false);}
+    QStringList invalidItemDisplayNames() const {
+        QStringList ret;
+        for (auto it = validationItemsDisplayNames.constBegin(); it != validationItemsDisplayNames.constEnd(); ++it) {
+            if (!validAt(it.key())) {
+                ret.append(it.value());
+            }
+        }
+        return ret;
+    }
+
+
 
     // Debug
     void printValidationStatus() const {
@@ -49,5 +62,14 @@ public:
     }
 private:
     QBitArray validationArray = QBitArray(7);
+    static const inline QMap<ValidationState::ValidationItem, QString> validationItemsDisplayNames = {
+        {ValidationState::ValidationItem::DOFT, QObject::tr("Date of Flight")},
+        {ValidationState::ValidationItem::DEPT, QObject::tr("Departure Airport")},
+        {ValidationState::ValidationItem::DEST, QObject::tr("Destination Airport")},
+        {ValidationState::ValidationItem::TOFB, QObject::tr("Time Off Blocks")},
+        {ValidationState::ValidationItem::TONB, QObject::tr("Time On Blocks")},
+        {ValidationState::ValidationItem::PIC,  QObject::tr("PIC Name")},
+        {ValidationState::ValidationItem::ACFT, QObject::tr("Aircraft Registration")},
+        };
 };
 #endif // VALIDATIONSTATE_H

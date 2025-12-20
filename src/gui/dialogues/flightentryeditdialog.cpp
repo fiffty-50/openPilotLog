@@ -3,6 +3,7 @@
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
+#include "src/functions/calc.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
 #include "src/gui/dialogues/newtaildialog.h"
@@ -44,19 +45,19 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     // Date of Flight
     const QDate date = QDate::fromJulianDay(entryData.value(FlightEntry::DOFT).toInt());
     calendarWidget->setSelectedDate(date);
-    dateLineEdit.setText(Date(date, displayFormat).toString());
+    dateLineEdit.setText(Date(date, m_displayFormat).toString());
     // Location
-    departureLineEdit.setText(entryData.value(OPL::FlightEntry::DEPT).toString());
-    destinationLineEdit.setText(entryData.value(OPL::FlightEntry::DEST).toString());
+    departureLineEdit.setText(entryData.value(FlightEntry::DEPT).toString());
+    destinationLineEdit.setText(entryData.value(FlightEntry::DEST).toString());
     // Times
-    timeOutLineEdit.setText(Time(entryData.value(OPL::FlightEntry::TOFB).toInt(), displayFormat).toString());
-    timeInLineEdit.setText(Time(entryData.value(OPL::FlightEntry::TONB).toInt(), displayFormat).toString());
+    timeOutLineEdit.setText(Time(entryData.value(FlightEntry::TOFB).toInt(), m_displayFormat).toString());
+    timeInLineEdit.setText(Time(entryData.value(FlightEntry::TONB).toInt(), m_displayFormat).toString());
     // Registration
-    registrationLineEdit.setText(DBCache->getTailsMap().value(entryData.value(OPL::FlightEntry::ACFT).toInt()));
+    registrationLineEdit.setText(DBCache->getTailsMap().value(entryData.value(FlightEntry::ACFT).toInt()));
     // Pilot Names
-    firstPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::PIC).toInt()));
-    secondPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::SECONDPILOT).toInt()));
-    thirdPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(OPL::FlightEntry::THIRDPILOT).toInt()));
+    firstPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(FlightEntry::PIC).toInt()));
+    secondPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(FlightEntry::SECONDPILOT).toInt()));
+    thirdPilotLineEdit.setText(DBCache->getPilotNamesMap().value(entryData.value(FlightEntry::THIRDPILOT).toInt()));
 
     //Function
     // TODO - this is not very pretty think of a better way to do this
@@ -72,17 +73,17 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     flightRulesComboBox.setCurrentIndex(entryData.value(FlightEntry::TIFR).toInt() > 0 ? 1 : 0);
 
     // Take Off and Landing Count
-    int takeOffCount = entryData.value(OPL::FlightEntry::TODAY).toInt()
-                       + entryData.value(OPL::FlightEntry::TONIGHT).toInt();
-    int landingCount = entryData.value(OPL::FlightEntry::LDGDAY).toInt()
-                       + entryData.value(OPL::FlightEntry::LDGNIGHT).toInt();
+    int takeOffCount = entryData.value(FlightEntry::TODAY).toInt()
+                       + entryData.value(FlightEntry::TONIGHT).toInt();
+    int landingCount = entryData.value(FlightEntry::LDGDAY).toInt()
+                       + entryData.value(FlightEntry::LDGNIGHT).toInt();
     takeOffCountSpinBox.setValue(takeOffCount);
     landingCountSpinBox.setValue(landingCount);
     // Pilot Flying or Pilot Monitoring
-    pilotFlyingCheckBox.setChecked(entryData.value(OPL::FlightEntry::PILOTFLYING).toBool());
+    pilotFlyingCheckBox.setChecked(entryData.value(FlightEntry::PILOTFLYING).toBool());
     // Remarks and Flight Number
-    remarksLineEdit.setText(entryData.value(OPL::FlightEntry::REMARKS).toString());
-    flightNumberLineEdit.setText(entryData.value(OPL::FlightEntry::FLIGHTNUMBER).toString());
+    remarksLineEdit.setText(entryData.value(FlightEntry::REMARKS).toString());
+    flightNumberLineEdit.setText(entryData.value(FlightEntry::FLIGHTNUMBER).toString());
 }
 
 bool FlightEntryEditDialog::deleteEntry(int rowID)
@@ -112,7 +113,7 @@ void FlightEntryEditDialog::init()
     // use the dateDisplayLabel as a spacer
     dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
     // set the current date
-    OPL::Date today = OPL::Date::today(displayFormat);
+    OPL::Date today = OPL::Date::today(m_displayFormat);
     dateLineEdit.setText(today.toString());
     // set cursor to entry point
     dateLineEdit.setFocus();
@@ -282,15 +283,19 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
                      this, [this]() {
         FlightEntryEditDialog::onRegistrationEditingFinished(&registrationLineEdit);
     });
+    // Time Line Edits
+    QObject::connect(&timeOutLineEdit, &QLineEdit::editingFinished,
+                     this, &FlightEntryEditDialog::onTimeOutEditingFinished);
+    QObject::connect(&timeInLineEdit, &QLineEdit::editingFinished,
+                     this, &FlightEntryEditDialog::onTimeInEditingFinished);
+
+    // Secondary Line Edits
+    QObject::connect(&remarksLineEdit, &QLineEdit::editingFinished,
+                     this, &FlightEntryEditDialog::onRemarksEditingFinished);
+    QObject::connect(&flightNumberLineEdit, &QLineEdit::editingFinished,
+                     this, &FlightEntryEditDialog::onFlightNumberEditingFinished);
 
     /* Slots that are called by multiple line edits forward the caller object */
-    // Time line edits
-    for(const auto& lineEdit : timeLineEdits) {
-        QObject::connect(lineEdit, &QLineEdit::editingFinished, this, [this, &lineEdit](){
-            onTimeEditingFinished(lineEdit);
-        });
-    }
-
     // Location line edits
     for(const auto& lineEdit : locationLineEdits) {
         QObject::connect(lineEdit, &QLineEdit::editingFinished, this, [this, &lineEdit](){
@@ -318,22 +323,15 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
             lineEdit->setText(lineEdit->text().toUpper());
         });
     }
-
-    // Install Event Filter for focus in events on mandatory line edits
-    for(auto it = mandatoryLineEdits.constBegin(); it != mandatoryLineEdits.constEnd(); ++it) {
-        it.key()->installEventFilter(this);
-    }
 }
 
 void FlightEntryEditDialog::readSettings()
 {
-    displayFormat = Settings::getDisplayFormat();
-
+    m_displayFormat = Settings::getDisplayFormat();
     pilotFunctionComboBox.setCurrentIndex(static_cast<int>(Settings::getPilotFunction()));
     approachTypeComboBox.setCurrentText(Settings::getApproachType());
     flightRulesComboBox.setCurrentIndex(Settings::getLogIfr());
     flightNumberLineEdit.setText(Settings::getFlightNumberPrefix());
-    displayFormat = Settings::getDisplayFormat();
 }
 
 bool FlightEntryEditDialog::verifyUserInput(QLineEdit *lineEdit, const UserInput &input)
@@ -359,31 +357,95 @@ bool FlightEntryEditDialog::verifyUserInput(QLineEdit *lineEdit, const UserInput
 void FlightEntryEditDialog::onBadInputReceived(QLineEdit *lineEdit) {
     LOG << "Bad Input Received: " + lineEdit->text();
     lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-    if(mandatoryLineEdits.contains(lineEdit)) {
-        validationState.invalidate(mandatoryLineEdits.value(lineEdit));
-    }
 }
 
 void FlightEntryEditDialog::onGoodInputReceived(QLineEdit *lineEdit) {
     LOG << "Good Input Received: " + lineEdit->text();
-    lineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
     lineEdit->setStyleSheet(QString());
-    if(mandatoryLineEdits.contains(lineEdit)) {
-        validationState.validate(mandatoryLineEdits.value(lineEdit));
+
+    // update block time label
+    int blockMinutes = m_flightEntry.getBlockTime();
+    if(blockMinutes > 0) {
+        totalTimeDisplayLabel.setText(OPL::Time(blockMinutes, m_displayFormat).toString());
     }
-    if (validationState.timesValid()) {
-        const OPL::Time tofb = OPL::Time::fromString(timeOutLineEdit.text(), displayFormat);
-        const OPL::Time tonb = OPL::Time::fromString(timeInLineEdit.text(), displayFormat);
-        const OPL::Time tblk = OPL::Time::blockTime(tofb, tonb);
-        totalTimeDisplayLabel.setText(tblk.toString());
-        LOG << "Block Time calculated: " + tblk.toString();
+}
+
+void FlightEntryEditDialog::collectSecondaryFlightData()
+{
+    bool success = true;
+    // Calculate Night Time and Set Take Off and Landing Count
+    const int blockMinutes = m_flightEntry.getBlockTime();
+    if(Settings::getNightLoggingEnabled()) {
+        if(! m_flightEntry.getValidationState().nightDataValid()) {
+            LOG << "Night Data Invalid - skipping night time calculation";
+            success = false;
+        } else {
+            // determine departure date/time
+            const QStringView departureDate = m_flightEntry.getDate();
+            const int departureTime = m_flightEntry.getTimeOffBlocks();
+            const QStringView departureTimeHHMM = OPL::Time(departureTime, OPL::DateTimeFormat()).toString();
+            const QDateTime departureDateTime = QDateTime::fromString(departureDate, departureTimeHHMM);
+            // get departure and destination location
+            const QString dept = m_flightEntry.getDeparture();
+            const QString dest = m_flightEntry.getDestination();
+
+            // Calculate Night Time and save the result
+            const auto nightTimeData = OPL::Calc::NightTimeValues(dept, dest,departureDateTime, blockMinutes, Settings::getNightAngle());
+            m_flightEntry.setNightTime(nightTimeData.nightMinutes);
+            m_flightEntry.setTakeOffCount(takeOffCountSpinBox.value(), !nightTimeData.takeOffNight);
+            m_flightEntry.setLandingCount(landingCountSpinBox.value(), !nightTimeData.landingNight);
+        }
+    } else {
+        m_flightEntry.setTakeOffCount(takeOffCountSpinBox.value(), true);
+        m_flightEntry.setLandingCount(landingCountSpinBox.value(), true);
     }
-    validationState.printValidationStatus();
+
+    // SPSE/SPME/ME/MP
+    m_flightEntry.setAircraftCategoryTimes();
+
+    // IFR time
+    flightRulesComboBox.currentIndex() == 0 ? m_flightEntry.setIfrTime(0) : m_flightEntry.setIfrTime(blockMinutes);
+
+    // PilotFunction time
+    auto function = static_cast<OPL::FlightEntry::PilotFunction>(pilotFunctionComboBox.currentIndex());
+    success &= m_flightEntry.setFunctionTimes(function);
+
+    // Pilot Flying / Pilot Monitoring
+    m_flightEntry.setIsPilotFlying(pilotFlyingCheckBox.isChecked());
+
+    // Additional data
+    m_flightEntry.setFlightNumber(flightNumberLineEdit.text());
+    m_flightEntry.setRemarks(remarksLineEdit.text());
+    m_flightEntry.setApproachType(approachTypeComboBox.currentText());
+
+    if(!success)
+        LOG << "Error ocurred when collecting secondary data.";
 }
 
 void FlightEntryEditDialog::onDialogAccepted()
 {
     LOG << "Dialog accepted";
+    // check if mandatory inputs are correctly filled
+    if(!m_flightEntry.getValidationState().allValid()) {
+        DEB << "Mandatory entries missing";
+        // Collect information about missing items and inform user
+        const QStringList missingItems = m_flightEntry.getValidationState().invalidItemDisplayNames();
+        if(missingItems.isEmpty()) {
+            WARN(tr("Mandatory Entries invalid."));
+            return;
+        }
+        QString missingItemsString;
+        for(const auto &item : missingItems) {
+            missingItemsString.append(item) + QStringLiteral("<br>");
+        }
+        INFO(tr("Not all mandatory entries are valid.<br>"
+                "The following item(s) are empty or invalid:"
+                "<br><br><center><b>%1</b></center><br>"
+                "Please go back and fill in the required data."
+                ).arg(missingItemsString));
+    }
+
+    collectSecondaryFlightData();
     accept();
 }
 
@@ -395,33 +457,35 @@ void FlightEntryEditDialog::onCalendarRequested()
 void FlightEntryEditDialog::onCalendarDateSelected()
 {
     calendarWidget->setVisible(false);
-    dateLineEdit.setText(OPL::Date(calendarWidget->selectedDate(), dateTimeFormat).toString());
+    dateLineEdit.setText(OPL::Date(calendarWidget->selectedDate(), m_displayFormat).toString());
 }
 
 void FlightEntryEditDialog::onDateEditingFinished()
 {
-    DEB << "Date editing finished";
-    OPL::Date date(dateLineEdit.text(), dateTimeFormat);
-
-    if(date.isValid()) {
+    LOG << "Date editing finished: " << dateLineEdit.text();
+    if(m_flightEntry.setDate(dateLineEdit.text(), m_displayFormat)) {
+        onBadInputReceived(&dateLineEdit);
+    } else {
         onGoodInputReceived(&dateLineEdit);
-        DEB << "Date is valid: " + date.toString();
-        return;
     }
-    DEB << "Date is invalid: " + dateLineEdit.text();
-    onBadInputReceived(&dateLineEdit);
 }
 
-void FlightEntryEditDialog::onTimeEditingFinished(QLineEdit *lineEdit)
+void FlightEntryEditDialog::onTimeOutEditingFinished()
 {
-    DEB << "Time Editing finished: " + lineEdit->text();
+    verifyUserInput(&timeOutLineEdit, TimeInput(timeOutLineEdit.text(), m_displayFormat));
+    if(! m_flightEntry.setTimeOffBlocks(timeOutLineEdit.text(), m_displayFormat))
+        onBadInputReceived(&timeOutLineEdit);
+    else
+        onGoodInputReceived(&timeOutLineEdit);
+}
 
-    if(verifyUserInput(lineEdit, TimeInput(lineEdit->text(), dateTimeFormat))) {
-        onGoodInputReceived(lineEdit);
-        return;
-    }
-
-    onBadInputReceived(lineEdit);
+void FlightEntryEditDialog::onTimeInEditingFinished()
+{
+    verifyUserInput(&timeInLineEdit, TimeInput(timeInLineEdit.text(), m_displayFormat));
+    if(! m_flightEntry.setTimeOnBlocks(timeInLineEdit.text(), m_displayFormat))
+        onBadInputReceived(&timeInLineEdit);
+    else
+        onGoodInputReceived(&timeInLineEdit);
 }
 
 void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
@@ -493,6 +557,16 @@ void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
 
     // entry was not recognized and no new entry has been added
     onBadInputReceived(lineEdit);
+}
+
+void FlightEntryEditDialog::onRemarksEditingFinished()
+{
+    m_flightEntry.setRemarks(remarksLineEdit.text());
+}
+
+void FlightEntryEditDialog::onFlightNumberEditingFinished()
+{
+    m_flightEntry.setFlightNumber(flightNumberLineEdit.text());
 }
 
 bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table)

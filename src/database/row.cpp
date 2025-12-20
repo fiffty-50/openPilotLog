@@ -20,28 +20,16 @@
 namespace OPL {
 
 Row::Row(OPL::DbTable table_name, int row_id)
-    : table(table_name), rowId(row_id)
-{
-    hasData = false;
-}
+    : table(table_name), rowId(row_id) {}
 
 Row::Row(DbTable table_name)
     : table(table_name)
 {
-    hasData = false;
     rowId = 0; // new entry
 };
 
-Row::Row()
-{
-    valid = false;
-}
-
 Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
-    : table(table_name), rowId(row_id), rowData(row_data)
-{
-    hasData = true;
-};
+    : table(table_name), rowId(row_id), rowData(row_data) {}
 
 const RowData_T &Row::getData() const
 {
@@ -51,7 +39,6 @@ const RowData_T &Row::getData() const
 void Row::setData(const RowData_T &value)
 {
     rowData = value;
-    hasData = true;
 }
 
 int Row::getRowId() const
@@ -81,7 +68,7 @@ const QString Row::getTableName() const
 
 bool Row::isValid() const
 {
-    return hasData && valid;
+    return !rowData.isEmpty();
 }
 
 //Used for debugging

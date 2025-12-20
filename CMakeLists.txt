@@ -104,6 +104,7 @@ set(PROJECT_SOURCES
     src/gui/verification/tailinput.cpp
     src/gui/widgets/currencywidget.h
     src/gui/widgets/currencywidget.cpp
+    src/gui/verification/entrybuilder.h
 
     # Classes
     src/classes/style.h

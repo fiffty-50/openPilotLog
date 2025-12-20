@@ -20,10 +20,10 @@
 #include <QCryptographicHash>
 
 
-namespace
-{
+//namespace
+//{
 
-QString generateKeyHash(const QString &key, const QString &salt)
+const QString RunGuard::generateKeyHash(const QString &key, const QString &salt)
 {
     QByteArray data;
 
@@ -34,7 +34,7 @@ QString generateKeyHash(const QString &key, const QString &salt)
     return data;
 }
 
-}
+//}
 
 
 RunGuard::RunGuard(const QString &key )

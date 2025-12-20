@@ -203,7 +203,6 @@ void NewFlightDialog::fillWithEntryData()
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
     using namespace OPL;
-
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
@@ -848,7 +847,7 @@ void NewFlightDialog::on_retreivePushButton_clicked()
         return;
     }
 
-    if(ui->flightNumberLineEdit->text().length() < 3 || !validationState.validAt(ValidationState::doft)) {
+    if(ui->flightNumberLineEdit->text().length() < 3 || !validationState.validAt(ValidationState::DOFT)) {
         WARN(tr("Please enter a valid Flight Number and Date."));
         return;
     }
