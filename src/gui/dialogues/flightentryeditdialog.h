@@ -32,7 +32,6 @@ private:
     static constexpr int NEW_ENTRY = 0;
     int m_rowID = NEW_ENTRY;
     OPL::DateTimeFormat m_displayFormat;
-    //OPL::FlightEntry m_flightEntry;
 
     QLineEdit dateLineEdit = QLineEdit(this);
     QLineEdit timeOutLineEdit = QLineEdit(this);

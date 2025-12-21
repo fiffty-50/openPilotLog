@@ -25,10 +25,10 @@ namespace OPL {
 FlightEntry::FlightEntry()
     : Row(DbTable::Flights, NEW_ENTRY)
 {
-    for(const auto &item : allFields) {
+    for(const QString &item : allFields) {
         rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
     }
-    for(const auto &item : mandatoryFields) {
+    for(const QString &item : mandatoryFields) {
         rowData.insert(item, -1);
     }
 }
@@ -37,10 +37,10 @@ FlightEntry::FlightEntry()
 FlightEntry::FlightEntry(const RowData_T &row_data)
     : Row(DbTable::Flights, NEW_ENTRY, row_data)
 {
-    for(const auto &item : allFields) {
+    for(const QString &item : allFields) {
         rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
     }
-    for(const auto &item : mandatoryFields) {
+    for(const QString &item : mandatoryFields) {
         rowData.insert(item, -1);
     }
 

@@ -49,11 +49,6 @@ public:
     const static QList<QString> *getMandatoryFields() { return &mandatoryFields; }
 
     /*!
-     * \brief returns a reference to the ValidationState contained in the FlightEntry
-     */
-    const ValidationState& getValidationState() const;
-
-    /*!
      * \brief returns the name of the flights table in the database
      */
     const QString getTableName() const override;
@@ -142,10 +137,6 @@ private:
         FLIGHTNUMBER   ,
         REMARKS        ,
     };
-
-
-
-
 };
 } // namespace OPL
 #endif // FLIGHTENTRY_H
