@@ -39,6 +39,11 @@ public:
     FlightEntry(int row_id, const RowData_T &row_data);
 
     /*!
+     * \brief sets the validation status of this FlightEntry to all items valid
+     */
+    void forceValid() { validationState.validateAll(); }
+
+    /*!
      * \brief return a QStringList of invalid mandatory fields.
      *
      * \details The list is used in the GUI, so it contains user-facing translatable display names
