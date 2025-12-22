@@ -42,6 +42,15 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     OPL::FlightEntry flightEntry(entry.getRowId(), entry.getData());
     m_entryParser = OPL::FlightEntryParser(flightEntry);
     m_rowID = entry.getRowId();
+<<<<<<< HEAD
+=======
+
+    // copy the entry data into the member Flight Entry
+    m_flightEntry.setData(entry.getData());
+    m_flightEntry.setRowId(entry.getRowId());
+    m_flightEntry.forceValid(); // since this value is read from the database, its fields are valid
+    const auto &entryData = m_flightEntry.getData();
+>>>>>>> origin/develop-flightentry-edit
 
     // Fill the entry data into the form
     // Date of Flight
