@@ -18,7 +18,6 @@
 #ifndef FLIGHTENTRY_H
 #define FLIGHTENTRY_H
 #include "src/database/row.h"
-#include "src/gui/verification/validationstate.h"
 
 
 namespace OPL {
@@ -56,7 +55,7 @@ public:
     /*!
      * \brief returns a String representation of the key data of this flight
      */
-    const QString getFlightSummary() const;
+    QString getFlightSummary() const;
 
 
     const static inline QString ROWID          = QStringLiteral("flight_id");

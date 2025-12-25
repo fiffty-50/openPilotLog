@@ -42,9 +42,9 @@ public:
      * constraints in the database are valid.
      */
     bool isValid() const;
-    const OPL::FlightEntry getFlightEntry() const { return OPL::FlightEntry(m_rowId, m_entryData); }
-    const QStringList invalidFields() const;
-    const QString getFlightSummary() const;
+    OPL::FlightEntry getFlightEntry() const { return OPL::FlightEntry(m_rowId, m_entryData); }
+    QStringList invalidFields() const;
+    QString getFlightSummary() const;
 
 
     // Setters
@@ -95,85 +95,85 @@ public:
     /*!
      * \brief returns the Date of Flight in Qt::ISODATE format
      */
-    const QDate getDate() const;
+    QDate getDate() const;
     /*!
      * \brief returns the Departure Airport ICAO code
      */
-    const QString getDeparture() const;
+    QString getDeparture() const;
     /*!
      * \brief returns the Destination Airport ICAO code
      */
-    const QString getDestination() const;
+    QString getDestination() const;
     /*!
      * \brief returns the time off blocks
      */
-    const QTime getTimeOffBlocks() const;
+    QTime getTimeOffBlocks() const;
     /*!
      * \brief returns the time on blocks
      */
-    const QTime getTimeOnBlocks() const;
+    QTime getTimeOnBlocks() const;
     /*!
      * \brief returns the Block Time
      */
-    const QTime getBlockTime() const;
+    QTime getBlockTime() const;
     /*!
      * \brief returns the rowID of the first pilot (pilots table) of this flight
      */
-    const int getFirstPilotId() const;
+    int getFirstPilotId() const;
     /*!
      * \brief returns the rowID of the second pilot (pilots table) of this flight
      */
-    const int getSecondPilotId() const;
+    int getSecondPilotId() const;
     /*!
      * \brief returns the rowID of the third pilot (pilots table) of this flight
      */
-    const int getThirdPilotId() const;
+    int getThirdPilotId() const;
     /*!
      * \brief returns the rowID of the aircraft (tails table) used during this flight
      */
-    const int getRegistrationId() const;
+    int getRegistrationId() const;
     /*!
      * \brief returns the amount of minutes of night time during this flight
      */
-    const QTime getNightTime() const;
+    QTime getNightTime() const;
     /*!
      * \brief returns the amount of minutes of IFR time during this flight
      */
-    const QTime getIfrTime() const;
+    QTime getIfrTime() const;
     /*!
      * \brief returns the amount of time per pilot function of this flight
      */
-    const QMap<OPL::PilotFunction, int> getFunctionTimes() const;
+    QMap<OPL::PilotFunction, int> getFunctionTimes() const;
 
     /*!
      * \brief returns the OPL::PilotFunction recorded in the entry
      * \note The highest function is returned
      */
-    const OPL::PilotFunction getFunction() const;
+    OPL::PilotFunction getFunction() const;
     /*!
      * \brief true if the logbook owner was pilot flying on this flight
      */
-    const bool getIsPilotFlying() const;
+    bool getIsPilotFlying() const;
     /*!
      * \brief returns the number of take offs performed during this flight
      */
-    const int getTakeOffCount() const;
+    int getTakeOffCount() const;
     /*!
      * \brief returns the number of landings performed during this flight
      */
-    const int getLandingCount() const;
+    int getLandingCount() const;
     /*!
      * \brief returns the approach type
      */
-    const QString getApproachType() const;
+    QString getApproachType() const;
     /*!
      * \brief returns the remarks field for this flight
      */
-    const QString getRemarks() const;
+    QString getRemarks() const;
     /*!
      * \brief returns the flight number of this flight
      */
-    const QString getFlightNumber() const;
+    QString getFlightNumber() const;
 
 private:
     OPL::RowData_T m_entryData;

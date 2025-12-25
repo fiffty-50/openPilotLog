@@ -78,7 +78,7 @@ void NewPilotDialog::on_buttonBox_accepted()
 
 void NewPilotDialog::formFiller()
 {
-    auto line_edits = this->findChildren<QLineEdit *>();
+    const auto line_edits = this->findChildren<QLineEdit *>();
 
     for (const auto &le : line_edits) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));

@@ -343,6 +343,7 @@ bool FlightEntryEditDialog::verifyUserInput(QLineEdit *lineEdit, const UserInput
         if(fixed == QString()) {
             return false;
         } else {
+            DEB << "Setting corrected input: " << fixed;
             lineEdit->setText(fixed);
             return true;
         }
@@ -509,36 +510,48 @@ void FlightEntryEditDialog::onTimeInEditingFinished()
 
 void FlightEntryEditDialog::onNameEditingFinished(QLineEdit *lineEdit)
 {
-    // try to match user input with map
-    if(verifyUserInput(lineEdit, PilotInput(lineEdit->text()))) {
-        bool success = false;
-        int index = pilotNameLineEdits.indexOf(lineEdit);
+    // determine which line edit is used and make sure it is not empty
+    const int index = pilotNameLineEdits.indexOf(lineEdit);
+    const bool isEmpty = lineEdit->text().isEmpty();
+    const bool isMandatory = index == 0;
+
+    // use the correct setter for each line edit
+    auto setPilot = [&](int index, const QString &value) -> bool {
         switch (index) {
-        case 0:
-            success = m_entryParser.setFirstPilot(lineEdit->text());
-            break;
-        case 1:
-            success = m_entryParser.setSecondPilot(lineEdit->text());
-            break;
-        case 2:
-            success = m_entryParser.setThirdPilot(lineEdit->text());
-            break;
-        default:
-            break;
+        case 0: return m_entryParser.setFirstPilot(value);
+        case 1: return m_entryParser.setSecondPilot(value);
+        case 2: return m_entryParser.setThirdPilot(value);
+        default: return false;
         }
-        success ? onGoodInputReceived(lineEdit) : onBadInputReceived(lineEdit);
+    };
+
+    // prevent completer autofill, update entryParser if text is empty
+    if (isEmpty) {
+        lineEdit->completer()->setCompletionPrefix(QString());
+        setPilot(index, QString());
+        if(isMandatory) {
+            onBadInputReceived(lineEdit);
+        }
         return;
     }
 
-    // - on negative match, offer to add new pilot entry
-    const auto table = OPL::DbTable::Pilots;
-    if(addNewDatabaseElement(lineEdit, table)) {
-        emit lineEdit->editingFinished(); //re-trigger verification
-        return;
+    // validate input
+    bool success = false;
+    if (verifyUserInput(lineEdit, PilotInput(lineEdit->text()))) {
+        success = setPilot(index, lineEdit->text());
+        (!success & isMandatory) ? onBadInputReceived(lineEdit)
+                                 : onGoodInputReceived(lineEdit);
+    } else {
+        // Ask if user wants to add new entry
+        const auto table = OPL::DbTable::Pilots;
+        if(addNewDatabaseElement(lineEdit, table)) {
+            emit lineEdit->editingFinished(); //re-trigger verification
+        } else {
+            if(isMandatory) {
+                onBadInputReceived(lineEdit);
+            }
+        }
     }
-
-    // entry was not recognized and no new entry has been added.
-    onBadInputReceived(lineEdit);
 }
 
 void FlightEntryEditDialog::onRegistrationEditingFinished(QLineEdit *lineEdit)

@@ -42,7 +42,7 @@
 bool firstRun()
 {
     if(FirstRunDialog().exec() == QDialog::Rejected){
-        LOG << "Initial setup incomplete or unsuccessfull.";
+        LOG << "Initial setup incomplete or unsuccessful.";
         return false;
     }
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(openPilotLog LANGUAGES CXX)
 
@@ -11,16 +11,16 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(QT_MIN_VERSION "5.5.1")
+set(QT_MIN_VERSION "6.2")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_USE_QSTRINGBUILDER")
 MESSAGE ("Enabling QStringBuilder")
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Network REQUIRED)
+#find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Network REQUIRED)
 # find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools REQUIRED)
 # find_package(OpenSSL REQUIRED) # Pending testing
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
-
+# find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Sql Network REQUIRED)
 set(PROJECT_SOURCES
 
     main.cpp
@@ -245,7 +245,7 @@ endif()
 # set the win32 entry point to avoid terminal popping up
 if(WIN32)
     MESSAGE("Building for WIN32")
-    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    if(QT_VERSION_MAJOR GREATER_EQUAL 6)
         qt_add_executable(openPilotLog WIN32
             ${PROJECT_SOURCES}
             ${QM_FILES}
@@ -259,7 +259,7 @@ if(WIN32)
         )
     endif()
 else()
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
         qt_add_executable(openPilotLog
             ${PROJECT_SOURCES}
             ${QM_FILES}

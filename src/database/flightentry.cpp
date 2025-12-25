@@ -54,7 +54,7 @@ const QString FlightEntry::getTableName() const
     return TABLE_NAME;
 }
 
-const QString FlightEntry::getFlightSummary() const
+QString FlightEntry::getFlightSummary() const
 {
     using namespace OPL;
     if(!isValid())

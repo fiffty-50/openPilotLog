@@ -12,7 +12,7 @@ bool FlightEntryParser::isValid() const
     return invalidFields().isEmpty();
 }
 
-const QStringList FlightEntryParser::invalidFields() const
+QStringList FlightEntryParser::invalidFields() const
 {
     // verify mandatory fields, add invalid Items to a List
     QStringList invalidItems;
@@ -26,10 +26,9 @@ const QStringList FlightEntryParser::invalidFields() const
     return invalidItems;
 }
 
-const QString FlightEntryParser::getFlightSummary() const
+QString FlightEntryParser::getFlightSummary() const
 {
-    Q_UNIMPLEMENTED();
-    return QString();
+    return FlightEntry(m_entryData).getFlightSummary();
 }
 
 bool FlightEntryParser::setDate(const QDate &date)
@@ -88,6 +87,7 @@ bool FlightEntryParser::setFirstPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
     if(pilotId == 0) {
+        m_entryData.insert(FlightEntry::PIC, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
 
@@ -99,6 +99,7 @@ bool FlightEntryParser::setSecondPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
     if(pilotId == 0) {
+        m_entryData.insert(FlightEntry::SECONDPILOT, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
 
@@ -110,6 +111,7 @@ bool FlightEntryParser::setThirdPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
     if(pilotId == 0) {
+        m_entryData.insert(FlightEntry::THIRDPILOT, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
 
@@ -267,72 +269,81 @@ bool FlightEntryParser::setFunctionTimes(const PilotFunction function)
 }
 
 // Getters
-const QString FlightEntryParser::getDeparture() const
+QString FlightEntryParser::getDeparture() const
 {
     return m_entryData.value(FlightEntry::DEPT).toString();
 }
 
-const QString FlightEntryParser::getDestination() const
+QString FlightEntryParser::getDestination() const
 {
     return m_entryData.value(FlightEntry::DEST).toString();
 }
 
-const QDate FlightEntryParser::getDate() const
+QDate FlightEntryParser::getDate() const
 {
     return QDate::fromJulianDay(m_entryData.value(FlightEntry::DOFT).toInt());
 }
 
-const QTime FlightEntryParser::getTimeOffBlocks() const
+QTime FlightEntryParser::getTimeOffBlocks() const
 {
     const qint64 mSecs = m_entryData.value(FlightEntry::TOFB).toInt() * MILLISECONDS_PER_MINUTE;
     return QTime::fromMSecsSinceStartOfDay(mSecs);
 }
 
-const QTime FlightEntryParser::getTimeOnBlocks() const
+QTime FlightEntryParser::getTimeOnBlocks() const
 {
     const qint64 mSecs = m_entryData.value(FlightEntry::TONB).toInt() * MILLISECONDS_PER_MINUTE;
     return QTime::fromMSecsSinceStartOfDay(mSecs);
 }
 
-const QTime FlightEntryParser::getBlockTime() const
+QTime FlightEntryParser::getBlockTime() const
 {
     const qint64 mSecs = m_entryData.value(FlightEntry::TBLK).toInt() * MILLISECONDS_PER_MINUTE;
     return QTime::fromMSecsSinceStartOfDay(mSecs);
 }
 
-const int FlightEntryParser::getFirstPilotId() const
+int FlightEntryParser::getFirstPilotId() const
 {
     return m_entryData.value(FlightEntry::PIC).toInt();
 }
 
-const int FlightEntryParser::getSecondPilotId() const
+int FlightEntryParser::getSecondPilotId() const
 {
     return m_entryData.value(FlightEntry::SECONDPILOT).toInt();
 }
 
-const int FlightEntryParser::getThirdPilotId() const
+int FlightEntryParser::getThirdPilotId() const
 {
     return m_entryData.value(FlightEntry::THIRDPILOT).toInt();
 }
 
-const int FlightEntryParser::getRegistrationId() const
+int FlightEntryParser::getRegistrationId() const
 {
     return m_entryData.value(FlightEntry::ACFT).toInt();
 }
 
-const QTime FlightEntryParser::getNightTime() const
+QTime FlightEntryParser::getNightTime() const
 {
     const qint64 mSecs = m_entryData.value(FlightEntry::TNIGHT).toInt() * MILLISECONDS_PER_MINUTE;
     return QTime::fromMSecsSinceStartOfDay(mSecs);
 }
 
-const QTime FlightEntryParser::getIfrTime() const
+QTime FlightEntryParser::getIfrTime() const
 {
     const qint64 mSecs = m_entryData.value(FlightEntry::TIFR).toInt() * MILLISECONDS_PER_MINUTE;
     return QTime::fromMSecsSinceStartOfDay(mSecs);
 }
 
-const PilotFunction FlightEntryParser::getFunction() const
+QMap<PilotFunction, int> FlightEntryParser::getFunctionTimes() const
+{
+    QMap<PilotFunction, int> ret;
+    for(auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
+        ret.insert(it.key(), m_entryData.value(it.value()).toInt());
+    }
+    return ret;
+}
+
+PilotFunction FlightEntryParser::getFunction() const
 {
     PilotFunction function = PilotFunction::PIC;
 
@@ -344,32 +355,32 @@ const PilotFunction FlightEntryParser::getFunction() const
     return function;
 }
 
-const bool FlightEntryParser::getIsPilotFlying() const
+bool FlightEntryParser::getIsPilotFlying() const
 {
     return m_entryData.value(FlightEntry::PILOTFLYING).toBool();
 }
 
-const int FlightEntryParser::getTakeOffCount() const
+int FlightEntryParser::getTakeOffCount() const
 {
     return m_entryData.value(FlightEntry::TODAY).toInt() + m_entryData.value(FlightEntry::TONIGHT).toInt();
 }
 
-const int FlightEntryParser::getLandingCount() const
+int FlightEntryParser::getLandingCount() const
 {
     return m_entryData.value(FlightEntry::LDGDAY).toInt() + m_entryData.value(FlightEntry::LDGNIGHT).toInt();
 }
 
-const QString FlightEntryParser::getApproachType() const
+QString FlightEntryParser::getApproachType() const
 {
     return m_entryData.value(FlightEntry::APPROACHTYPE).toString();
 }
 
-const QString FlightEntryParser::getRemarks() const
+QString FlightEntryParser::getRemarks() const
 {
     return m_entryData.value(FlightEntry::REMARKS).toString();
 }
 
-const QString FlightEntryParser::getFlightNumber() const
+QString FlightEntryParser::getFlightNumber() const
 {
     return m_entryData.value(FlightEntry::FLIGHTNUMBER).toString();
 }
