@@ -21,7 +21,7 @@ class FlightEntryParser
 public:
     FlightEntryParser()
     {
-        m_entryData = OPL::RowData_T();
+        m_entryData = OPL::FlightEntry().getData();
         m_rowId = NEW_ENTRY;
     }
     explicit FlightEntryParser(OPL::FlightEntry entry)

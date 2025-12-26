@@ -109,7 +109,7 @@ private:
      */
     static const inline QList<QLineEdit*> *mandatoryLineEdits;
     // static const inline QLatin1String self = QLatin1String("self");
-    static const inline QHash<int, QStringView> pilotFuncionsMap = {
+    static const inline QHash<int, QString> pilotFuncionsMap = {
                                            {0, OPL::FlightEntry::TPIC},
                                            {1, OPL::FlightEntry::TPICUS},
                                            {2, OPL::FlightEntry::TSIC},

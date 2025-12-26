@@ -28,8 +28,9 @@ public:
      * \details This function can be used to edit an incomplete entry which may or may not exist in the
      * database yet.
      */
-    virtual void loadEntry(OPL::Row entry) {
+    virtual void loadEntry(const OPL::Row &entry) {
         TODO << "Implement in all subclasses";
+        Q_UNIMPLEMENTED();
         qApp->quit();
     }
 
@@ -41,7 +42,7 @@ public:
     virtual bool deleteEntry(int rowID) = 0;
 
 protected:
-    int rowID;
+    int m_rowId;
 };
 
 #endif // ENTRYEDITDIALOG_H

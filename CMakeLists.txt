@@ -38,9 +38,6 @@ set(PROJECT_SOURCES
     src/gui/dialogues/airportentryeditdialog.h
     src/gui/dialogues/airportentryeditdialog.cpp
     src/gui/dialogues/airportentryeditdialog.ui
-    src/gui/dialogues/newflightdialog.h
-    src/gui/dialogues/newflightdialog.cpp
-    src/gui/dialogues/newflightdialog.ui
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newpilot.ui

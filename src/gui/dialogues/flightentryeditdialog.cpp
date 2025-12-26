@@ -34,9 +34,9 @@ void FlightEntryEditDialog::loadEntry(int rowID)
     FlightEntryEditDialog::loadEntry(m_entryParser.getFlightEntry());
 }
 
-void FlightEntryEditDialog::loadEntry(OPL::Row entry)
+void FlightEntryEditDialog::loadEntry(const OPL::Row &entry)
 {
-    DEB << "Loading Flight Entry";
+    LOG << "Loading Flight Entry" << entry.getPosition();
     DEB << entry;
     // Load the entry data into the parser
     OPL::FlightEntry flightEntry(entry.getRowId(), entry.getData());
@@ -48,15 +48,19 @@ void FlightEntryEditDialog::loadEntry(OPL::Row entry)
     const QDate date = m_entryParser.getDate();
     calendarWidget->setSelectedDate(date);
     dateLineEdit.setText(OPL::Date(date, m_displayFormat).toString());
+
     // Location
     departureLineEdit.setText(m_entryParser.getDeparture());
     destinationLineEdit.setText(m_entryParser.getDestination());
+
     // Times
     timeOutLineEdit.setText(m_entryParser.getTimeOffBlocks().toString(m_displayFormat.timeFormatString()));
     timeInLineEdit.setText(m_entryParser.getTimeOnBlocks().toString(m_displayFormat.timeFormatString()));
     totalTimeDisplayLabel.setText(m_entryParser.getBlockTime().toString(m_displayFormat.timeFormatString()));
+
     // Registration
     registrationLineEdit.setText(DBCache->getTailsMap().value(m_entryParser.getRegistrationId()));
+
     // Pilot Names
     firstPilotLineEdit.setText(DBCache->getPilotNamesMap().value(m_entryParser.getFirstPilotId()));
     secondPilotLineEdit.setText(DBCache->getPilotNamesMap().value(m_entryParser.getSecondPilotId()));
@@ -112,6 +116,7 @@ void FlightEntryEditDialog::init()
     // set the current date
     OPL::Date today = OPL::Date::today(m_displayFormat);
     dateLineEdit.setText(today.toString());
+    emit dateLineEdit.editingFinished();
     // set cursor to entry point
     dateLineEdit.setFocus();
 }
@@ -124,12 +129,6 @@ void FlightEntryEditDialog::setupUI()
     timeOnLabel.hide();
     timeOnLineEdit.hide();
 
-    // setup the basic layout
-    // const int column0 = 0;
-    // const int column1 = 1;
-    // const int column2 = 2;
-    // const int column3 = 3;
-    // const int allColSpan = 4;
     QGridLayout *layout = new QGridLayout(this);
     const int lastCol = 4;
     int column = 0;
@@ -417,12 +416,51 @@ void FlightEntryEditDialog::collectSecondaryFlightData()
         LOG << "Error ocurred when collecting secondary data.";
 }
 
+bool FlightEntryEditDialog::runSanityChecks()
+{
+    // make sure the pilot function and pilot names make sense
+    int pic_id = m_entryParser.getFirstPilotId();
+    int sic_id = m_entryParser.getSecondPilotId();
+    int trd_id = m_entryParser.getThirdPilotId();
+    OPL::PilotFunction function = static_cast<OPL::PilotFunction>(pilotFunctionComboBox.currentIndex());
+
+    // if the logbook owner is entered as PIC, he must be the first pilot and vice versa
+    if (pic_id == 1) {
+        if (!(function == OPL::PilotFunction::PIC || function == OPL::PilotFunction::FI)) {
+            INFO(tr("The PIC is set to %1 but the Pilot Function is set to %2")
+                     .arg(firstPilotLineEdit.text(), pilotFunctionComboBox.currentText()));
+            return false;
+        }
+    } else {
+        if (function == OPL::PilotFunction::PIC || function == OPL::PilotFunction::FI) {
+            INFO(tr("The Pilot Function is set to %1, but the PIC is set to %2")
+                     .arg(pilotFunctionComboBox.currentText(), firstPilotLineEdit.text()));
+            return false;
+        }
+    }
+
+    // duplicate name entries exist
+    if (pic_id == sic_id) {
+        INFO(tr("PIC and SIC names are the same."));
+        return false;
+    }
+    if (pic_id == trd_id && pic_id > 0) {
+        INFO(tr("PIC and third Pilot names are the same."));
+        return false;
+    }
+    if (sic_id == trd_id && sic_id > 0) {
+        INFO(tr("SIC and third Pilot names are the same."));
+        return false;
+    }
+    return true;
+}
+
 void FlightEntryEditDialog::onDialogAccepted()
 {
-    LOG << "Dialog accepted";
+    LOG << "Form completed";
     // check if mandatory inputs are correctly filled
     if(! m_entryParser.isValid()) {
-        DEB << "Mandatory entries missing";
+        LOG << "Mandatory entries missing";
         // Collect information about missing items and inform user
         const QStringList missingItems = m_entryParser.invalidFields();
         if(missingItems.isEmpty()) {
@@ -434,14 +472,21 @@ void FlightEntryEditDialog::onDialogAccepted()
             missingItemsString.append(item);
             missingItemsString.append(QStringLiteral("<br>"));
         }
-        INFO(tr("Not all mandatory entries are valid.<br>"
+        INFO(tr("Not all mandatory data is valid.<br>"
                 "The following item(s) are empty or invalid:"
-                "<br><br><center><b>%1</b></center><br>"
+                "<br><br><left><b>%1</b></left><br>"
                 "Please go back and fill in the required data."
                 ).arg(missingItemsString));
+        return;
     }
 
+    LOG << "Collecting secondary flight data";
     collectSecondaryFlightData();
+
+    LOG << "Running sanity checks";
+    if(!runSanityChecks()) {
+        return;
+    }
     DEB << m_entryParser.getFlightEntry();
     DEB << m_entryParser.getFlightEntry().getPosition();
     if (!DB->commit(m_entryParser.getFlightEntry())) {
@@ -449,6 +494,7 @@ void FlightEntryEditDialog::onDialogAccepted()
                 "<br><br>%1<br><br>"
                 "The entry has not been saved."
                 ).arg(DB->lastError.text()));
+        LOG << "Entry submmitted";
         return;
     } else {
         QDialog::accept();
@@ -692,4 +738,3 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
 
     return true;
 }
-

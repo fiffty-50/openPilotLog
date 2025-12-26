@@ -42,6 +42,7 @@ private:
 public:
     virtual void loadEntry(int rowId) override;
     virtual bool deleteEntry(int rowId) override;
+    virtual void loadEntry(const OPL::Row &entry) override;
 };
 
 #endif // AIRPORTENTRYEDITDIALOG_H

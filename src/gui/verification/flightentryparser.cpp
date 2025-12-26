@@ -165,13 +165,13 @@ bool FlightEntryParser::setNightValues(const int nightAngle, const int toCount, 
     const auto nightData = OPL::Calc::NightTimeValues(dept, dest, deptDateTime, tblk, nightAngle);
 
     // Fill the calculated data
-    m_entryData.insert(FlightEntry::TNIGHT, nightData.nightMinutes > 0 ? nightData.nightMinutes : QVariant());
+    m_entryData.insert(FlightEntry::TNIGHT, nightData.nightMinutes > 0 ? nightData.nightMinutes : QVariant(QMetaType(QMetaType::Int)));
 
-    m_entryData.insert(FlightEntry::TODAY, nightData.takeOffNight ? QVariant() : toCount);
-    m_entryData.insert(FlightEntry::TONIGHT, nightData.takeOffNight ? toCount : QVariant());
+    m_entryData.insert(FlightEntry::TODAY, nightData.takeOffNight ? QVariant(QMetaType(QMetaType::Int)) : toCount);
+    m_entryData.insert(FlightEntry::TONIGHT, nightData.takeOffNight ? toCount : QVariant(QMetaType(QMetaType::Int)));
 
-    m_entryData.insert(FlightEntry::LDGDAY, nightData.landingNight ? QVariant() : ldgCount);
-    m_entryData.insert(FlightEntry::LDGNIGHT, nightData.landingNight ? ldgCount : QVariant());
+    m_entryData.insert(FlightEntry::LDGDAY, nightData.landingNight ? QVariant(QMetaType(QMetaType::Int)) : ldgCount);
+    m_entryData.insert(FlightEntry::LDGNIGHT, nightData.landingNight ? ldgCount : QVariant(QMetaType(QMetaType::Int)));
 
     return true;
 }
@@ -205,9 +205,9 @@ bool FlightEntryParser::setAircraftCategoryTimes()
     bool multi_engine = aircraft.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
 
     // only fill the required fields, empty out the other ones
-    m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) : QVariant());
-    m_entryData.insert(OPL::FlightEntry::TSPSE, (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant());
-    m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ? QVariant(blockTime) : QVariant());
+    m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    m_entryData.insert(OPL::FlightEntry::TSPSE, (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
 
     return true;
 }
@@ -216,6 +216,7 @@ const void FlightEntryParser::setBlockTime()
 {
     const int tofb = m_entryData.value(FlightEntry::TOFB).toInt();
     const int tonb = m_entryData.value(FlightEntry::TONB).toInt();
+    DEB << "Seting block time" << tofb << " to " << tonb;
 
     if (tofb < 0 || tonb < 0)
         return;
@@ -258,7 +259,7 @@ bool FlightEntryParser::setFunctionTimes(const PilotFunction function)
         return false;
 
     for(auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
-        m_entryData.insert(it.value(), it.key() == function ? minutes : QVariant());
+        m_entryData.insert(it.value(), it.key() == function ? minutes : QVariant(QMetaType(QMetaType::Int)));
     }
 
     // log TFI as PIC as well

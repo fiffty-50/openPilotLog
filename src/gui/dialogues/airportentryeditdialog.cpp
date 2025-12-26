@@ -147,6 +147,13 @@ void NewAirportDialog::loadEntry(int rowId)
     loadAirportData(rowId);
 }
 
+void NewAirportDialog::loadEntry(const OPL::Row &entry)
+{
+    m_rowId = entry.getRowId();
+    loadAirportData(m_rowId);
+}
+
+
 bool NewAirportDialog::deleteEntry(int rowId)
 {
     auto entry = DB->getAirportEntry(rowId);

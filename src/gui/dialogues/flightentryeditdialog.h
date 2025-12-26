@@ -19,8 +19,9 @@ class FlightEntryEditDialog : public EntryEditDialog
 public:
     FlightEntryEditDialog(QWidget *parent = nullptr);
     FlightEntryEditDialog(int rowId, QWidget *parent = nullptr);
+
     virtual void loadEntry(int rowID) override;
-    virtual void loadEntry(OPL::Row entry) override;
+    virtual void loadEntry(const OPL::Row &entry) override;
     virtual bool deleteEntry(int rowID) override;
 
 
@@ -60,10 +61,6 @@ private:
 
     QCheckBox pilotFlyingCheckBox = QCheckBox(this);
 
-    const QList<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
-    const QList<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
-    const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
-
     QPushButton dateButton = QPushButton(tr("Date"), this);
     QLabel dateDisplayLabel = QLabel(this);
     QLabel timeOutLabel = QLabel(tr("Off Blocks"), this);
@@ -94,16 +91,10 @@ private:
     QDialogButtonBox acceptButtonBox = QDialogButtonBox(QDialogButtonBox::Ok |
                                                         QDialogButtonBox::Cancel);
 
-    // /*!
-    //  * \brief pilotFuncionsMap Maps the function times to its index in the pilotFunctionComboBox
-    //  */
-    // static const inline QHash<int, QString> pilotFuncionsMap = {
-    //                                                             {0, OPL::FlightEntry::TPIC},
-    //                                                             {1, OPL::FlightEntry::TPICUS},
-    //                                                             {2, OPL::FlightEntry::TSIC},
-    //                                                             {3, OPL::FlightEntry::TDUAL},
-    //                                                             {4, OPL::FlightEntry::TFI},
-    //                                                             };
+    const QList<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
+    const QList<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
+    const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
+
     void init();
     void setupUI();
     void setupAutoCompletion();
@@ -118,6 +109,11 @@ private:
      * \brief Add the data from combo and spin boxes to the flight entry
      */
     void collectSecondaryFlightData();
+
+    /*!
+     * \brief run some checks on user data that are not covered by basic input validation
+     */
+    bool runSanityChecks();
 
 
 private slots:

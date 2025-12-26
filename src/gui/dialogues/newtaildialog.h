@@ -101,7 +101,7 @@ private slots:
     void on_ppTypeComboBox_currentIndexChanged(int index);
     void on_ppNumberComboBox_currentIndexChanged(int index);
     void on_weightComboBox_currentIndexChanged(int index);
-    void on_registrationLineEdit_textChanged(const QString &arg1);
+    void on_registrationLineEdit_editingFinished();
     void on_buttonBox_accepted();
     void onSearchCompleterActivated();
 

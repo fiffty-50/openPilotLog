@@ -697,7 +697,9 @@ bool Database::createSchema()
 {
     // Read Database layout from sql file
     QFile f(OPL::Assets::DATABASE_SCHEMA);
-    f.open(QIODevice::ReadOnly);
+    if(!f.open(QIODevice::ReadOnly)) {
+        LOG << "Unable to read database schema - " << f.errorString();
+    }
     QByteArray filedata = f.readAll();
     // create individual queries for each table/view
     auto list = filedata.split(';');

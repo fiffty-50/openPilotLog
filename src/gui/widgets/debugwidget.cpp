@@ -16,19 +16,11 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
-#include "src/classes/time.h"
-#include "src/gui/dialogues/newflightdialog.h"
 #include "src/gui/verification/completerprovider.h"
-#include "src/gui/verification/pilotinput.h"
-#include "src/network/flightawarequery.h"
 #include "src/opl.h"
-#include "src/testing/importCrewlounge/processaircraft.h"
-#include "src/testing/importCrewlounge/processflights.h"
-#include "src/testing/importCrewlounge/processpilots.h"
 #include "ui_debugwidget.h"
 #include <QtGlobal>
 #include "src/classes/downloadhelper.h"
-#include "src/functions/readcsv.h"
 #include "src/database/database.h"
 #include "src/testing/atimer.h"
 #include "src/classes/settings.h"

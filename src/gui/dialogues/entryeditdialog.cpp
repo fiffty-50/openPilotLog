@@ -3,11 +3,11 @@
 EntryEditDialog::EntryEditDialog(QWidget *parent)
     : QDialog{parent}
 {
-    rowID = 0;
+    m_rowId = 0;
 }
 
 EntryEditDialog::EntryEditDialog(int rowID, QWidget *parent)
-    : QDialog{parent}, rowID(rowID)
+    : QDialog{parent}, m_rowId(rowID)
 {
 
 }

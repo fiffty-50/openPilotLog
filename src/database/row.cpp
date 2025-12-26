@@ -77,17 +77,16 @@ OPL::Row::operator QString() const
     if (!isValid()) {
         return QStringLiteral("Invalid Row");
     }
-    constexpr int ColumnWidth = 14;
-    constexpr int ItemsPerRow = 4;
+    constexpr int columnWidth = 14;
+    constexpr int itemsPerRow = 3;
 
-    const QString Reset  = "\033[m";
-    const QString Green  = "\033[32m";
-    const QString Purple = "\033[35m";
+    const QString resetColor  = "\033[m";
+    const QString highlightColor = "\033[35m";
 
     QString out;
     out.reserve(1024);
 
-    out += Green + "[Entry Data]:\t" + Reset + "\n";
+    out += "[Entry Data]:\n";
 
     int itemCount = 0;
 
@@ -97,17 +96,17 @@ OPL::Row::operator QString() const
 
         QString paddedKey = key;
         paddedKey += QLatin1Char(':');
-        paddedKey = paddedKey.leftJustified(ColumnWidth);
+        paddedKey = paddedKey.leftJustified(columnWidth);
 
         const QString displayVal = value.isEmpty() ? "-NULL-" : value;
-        const QString paddedValue = displayVal.leftJustified(ColumnWidth);
+        const QString paddedValue = displayVal.leftJustified(columnWidth);
 
-        out += "\t" % Reset
+        out += "\t" % resetColor
                % paddedKey
-               % Purple
+               % highlightColor
                % paddedValue;
 
-        if (++itemCount % ItemsPerRow == 0)
+        if (++itemCount % itemsPerRow == 0)
             out += "\n";
     }
 

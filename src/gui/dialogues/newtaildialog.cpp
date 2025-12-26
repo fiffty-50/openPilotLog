@@ -79,6 +79,8 @@ void NewTailDialog::setupCompleter()
                      this, &NewTailDialog::onSearchCompleterActivated);
     QObject::connect(completer, static_cast<void(QCompleter::*)(const QString &)>(&QCompleter::highlighted),
                      this, &NewTailDialog::onSearchCompleterActivated);
+    QObject::connect(ui->registrationLineEdit, &QLineEdit::editingFinished,
+                     this, &NewTailDialog::on_registrationLineEdit_editingFinished);
 }
 
 void NewTailDialog::setupValidators()
@@ -305,7 +307,8 @@ void NewTailDialog::loadEntry(int rowId)
     fillForm(entry, false);
 }
 
-void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
+void NewTailDialog::on_registrationLineEdit_editingFinished()
 {
-    ui->registrationLineEdit->setText(arg1.toUpper());
+    DEB << "REG editing finished.";
+    ui->registrationLineEdit->setText(ui->registrationLineEdit->text().toUpper());
 }
