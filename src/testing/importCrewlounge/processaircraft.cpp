@@ -7,7 +7,7 @@ void ProcessAircraft::parseRawData()
     // relevant colums: {reg,company,make,model,variant,multipilot,multiengine,engineType,weightClass}
     int relevant_cols[9] = {79, 36, 76, 77, 78, 83, 84, 92, 96};
 
-    for (const auto &row : qAsConst(rawData)) {
+    for (const auto &row : std::as_const(rawData)) {
         for (const auto &col : relevant_cols) {
             tail_details.append(row[col]);
         }
@@ -22,8 +22,8 @@ void ProcessAircraft::processParsedData()
     // init counter
     int unique_tail_id = 1;
 
-    QHash<QString, QVariant> new_tail_data;
-    for (const auto &list : qAsConst(unique_tails)) {
+    OPL::RowData_T new_tail_data;
+    for (const auto &list : std::as_const(unique_tails)) {
         new_tail_data.insert(OPL::TailEntry::REGISTRATION, list[0]);
         new_tail_data.insert(OPL::TailEntry::COMPANY, list[1]);
         new_tail_data.insert(OPL::TailEntry::MAKE, list[2]);
@@ -64,7 +64,7 @@ QHash<QString, int> ProcessAircraft::getProcessedTailIds() const
     return processedTailIds;
 }
 
-QHash<QString, QHash<QString, QVariant> > ProcessAircraft::getProcessedTailMaps() const
+QHash<QString, OPL::RowData_T > ProcessAircraft::getProcessedTailMaps() const
 {
     return processedTailMaps;
 }

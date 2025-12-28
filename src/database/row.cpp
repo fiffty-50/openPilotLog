@@ -20,28 +20,16 @@
 namespace OPL {
 
 Row::Row(OPL::DbTable table_name, int row_id)
-    : table(table_name), rowId(row_id)
-{
-    hasData = false;
-}
+    : table(table_name), rowId(row_id) {}
 
 Row::Row(DbTable table_name)
     : table(table_name)
 {
-    hasData = false;
     rowId = 0; // new entry
 };
 
-Row::Row()
-{
-    valid = false;
-}
-
 Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
-    : table(table_name), rowId(row_id), rowData(row_data)
-{
-    hasData = true;
-};
+    : table(table_name), rowId(row_id), rowData(row_data) {}
 
 const RowData_T &Row::getData() const
 {
@@ -51,7 +39,6 @@ const RowData_T &Row::getData() const
 void Row::setData(const RowData_T &value)
 {
     rowData = value;
-    hasData = true;
 }
 
 int Row::getRowId() const
@@ -81,7 +68,7 @@ const QString Row::getTableName() const
 
 bool Row::isValid() const
 {
-    return hasData && valid;
+    return !rowData.isEmpty();
 }
 
 //Used for debugging
@@ -90,43 +77,40 @@ OPL::Row::operator QString() const
     if (!isValid()) {
         return QStringLiteral("Invalid Row");
     }
-    QString out("\033[32m[Entry Data]:\t\033[m\n");
-    int item_count = 0;
-    QHash<QString, QVariant>::const_iterator i;
-    for (i = rowData.constBegin(); i!= rowData.constEnd(); ++i) {
-        QString spacer(":");
-        int spaces = (14 - i.key().length());
-        if (spaces > 0)
-            for (int i = 0; i < spaces ; i++)
-                spacer += QLatin1Char(' ');
-        if (i.value().toString().isEmpty()) {
-            out.append(QLatin1String("\t\033[m") + i.key()
-                       + spacer
-                       + QLatin1String("\033[35m----"));
-            spaces = (14 - i.value().toString().length());
-            spacer = QString();
-            if (spaces > 0)
-                for (int i = 0; i < spaces ; i++)
-                    spacer += QLatin1Char(' ');
-            out.append(spacer);
-        } else {
-            out.append(QLatin1String("\t\033[m") + i.key()
-                       + spacer
-                       + QLatin1String("\033[35m")
-                       + i.value().toString());
+    constexpr int columnWidth = 14;
+    constexpr int itemsPerRow = 3;
 
-            spaces = (14 - i.value().toString().length());
-            spacer = QString();
-            if (spaces > 0)
-                for (int i = 0; i < spaces ; i++)
-                    spacer += QLatin1Char(' ');
-            out.append(spacer);
-        }
-        item_count ++;
-        if (item_count % 4 == 0)
-            out.append(QLatin1String("\n"));
+    const QString resetColor  = "\033[m";
+    const QString highlightColor = "\033[35m";
+
+    QString out;
+    out.reserve(1024);
+
+    out += "[Entry Data]:\n";
+
+    int itemCount = 0;
+
+    for (auto it = rowData.cbegin(); it != rowData.cend(); ++it) {
+        const QString key = it.key();
+        const QString value = it.value().toString();
+
+        QString paddedKey = key;
+        paddedKey += QLatin1Char(':');
+        paddedKey = paddedKey.leftJustified(columnWidth);
+
+        const QString displayVal = value.isEmpty() ? "-NULL-" : value;
+        const QString paddedValue = displayVal.leftJustified(columnWidth);
+
+        out += "\t" % resetColor
+               % paddedKey
+               % highlightColor
+               % paddedValue;
+
+        if (++itemCount % itemsPerRow == 0)
+            out += "\n";
     }
-    out.append(QLatin1String("\n"));
+
+    out += "\n";
     QTextStream(stdout) << out;
     return QString();
 }

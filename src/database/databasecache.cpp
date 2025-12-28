@@ -151,6 +151,7 @@ void DatabaseCache::updateAirports()
 void DatabaseCache::updateSimulators()
 {
     TODO << "Simulators map not yet cached";
+    Q_UNIMPLEMENTED();
 }
 
 void DatabaseCache::updatePilots()

@@ -6,7 +6,7 @@
 #include "src/classes/styledtypedelegate.h"
 #include "src/database/database.h"
 #include "src/database/views/logbookviewinfo.h"
-#include "src/gui/dialogues/newflightdialog.h"
+#include "src/gui/dialogues/flightentryeditdialog.h"
 #include "src/gui/dialogues/newsimdialog.h"
 
 LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent)
@@ -74,7 +74,7 @@ QString LogbookTableEditWidget::confirmDeleteString(int rowId)
 
 EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
-    return new NewFlightDialog(parent);
+    return new FlightEntryEditDialog(parent);
 }
 
 void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
@@ -86,10 +86,11 @@ void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex
     const auto idx = m_view->selectionModel()->currentIndex();
     const auto rowId = m_model->index(idx.row(), 0).data().toInt();
     if(rowId > 0) {
-        auto nfd = NewFlightDialog(rowId, this);
-        m_stackedWidget->addWidget(&nfd);
-        m_stackedWidget->setCurrentWidget(&nfd);
-        nfd.exec();
+        //auto nfd = NewFlightDialog(rowId, this);
+        auto dialog = FlightEntryEditDialog(rowId, this);
+        m_stackedWidget->addWidget(&dialog);
+        m_stackedWidget->setCurrentWidget(&dialog);
+        dialog.exec();
     } else {
         auto nsd = NewSimDialog(rowId * -1, this);
         m_stackedWidget->addWidget(&nsd);

@@ -20,12 +20,13 @@
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
-#include "src/gui/dialogues/newairportdialog.h"
+#include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/gui/verification/pilotinput.h"
 #include "src/gui/verification/tailinput.h"
 #include "src/gui/verification/timeinput.h"
+#include "src/network/flightawarequery.h"
 #include "ui_newflightdialog.h"
 #include "src/opl.h"
 #include "src/functions/datetime.h"
@@ -202,7 +203,6 @@ void NewFlightDialog::fillWithEntryData()
     DEB << "Restoring Flight: ";
     DEB << flightEntry;
     using namespace OPL;
-
     const auto &flight_data = flightEntry.getData();
 
     // Date of Flight
@@ -468,7 +468,7 @@ OPL::RowData_T NewFlightDialog::prepareFlightEntryData()
         new_data.insert(OPL::FlightEntry::TIFR, QString());
     }
     // Function Times
-    QStringList function_times = {
+    QList<QString> function_times = {
         OPL::FlightEntry::TPIC,
         OPL::FlightEntry::TPICUS,
         OPL::FlightEntry::TSIC,
@@ -836,5 +836,61 @@ bool NewFlightDialog::deleteEntry(int rowID)
 {
     const auto entry = DB->getFlightEntry(rowID);
     return DB->remove(entry);
+}
+
+
+void NewFlightDialog::on_retreivePushButton_clicked()
+{
+    // verify requisites are met
+    if(Settings::getFlightAwareApiKey().length() < 1) {
+        WARN(tr("Using this feature requires a FlightAware API key to be set."));
+        return;
+    }
+
+    if(ui->flightNumberLineEdit->text().length() < 3 || !validationState.validAt(ValidationState::DOFT)) {
+        WARN(tr("Please enter a valid Flight Number and Date."));
+        return;
+    }
+
+    // Query the API
+    FlightAwareQuery query;
+    const auto result = query.getFlightData(ui->flightNumberLineEdit->text(), QDate::fromString(ui->doftLineEdit->text(), Qt::ISODate));
+    LOG << "Querying API...";
+    if(result.isEmpty()) {
+        WARN("Flight not found.");
+        return;
+    }
+
+
+    for(const auto &flight : std::as_const(result)) {
+        flight.print();
+    }
+
+    // Fill the form with the result
+    const auto flight = result.first();
+    LOG << "Filling flight data:";
+    flight.print();
+
+    // validation needed because the data may be incomplete or erroneous
+    const QHash<QString, QLineEdit*> data = {
+        {flight.departure,              ui->deptLocationLineEdit},
+        {flight.destination,            ui->destLocationLineEdit},
+        {flight.out.toString("hh:mm"),  ui->tofbTimeLineEdit},
+        {flight.in.toString("hh:mm"),   ui->tonbTimeLineEdit},
+        {flight.registration,           ui->acftLineEdit},
+    };
+
+    QString info = tr("The following data has been retreived:<br>");
+
+    for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+        if(it.key().isEmpty()) {
+            continue;
+        }
+        it.value()->setText(it.key());
+        emit it.value()->editingFinished();
+        info.append(it.value()->objectName().first(4) + ": " + it.key() + "<br>");
+    }
+
+    INFO(info);
 }
 

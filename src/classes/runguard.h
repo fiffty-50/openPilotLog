@@ -41,6 +41,7 @@ private:
     const QString key;
     const QString memLockKey;
     const QString sharedmemKey;
+    const QString generateKeyHash(const QString &key, const QString &salt);
 
     QSharedMemory sharedMem;
     QSystemSemaphore memLock;

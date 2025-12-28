@@ -21,8 +21,6 @@
 
 namespace OPL {
 
-Database* Database::self = nullptr;
-
 bool Database::connect()
 {
     if (!QSqlDatabase::isDriverAvailable(SQLITE_DRIVER)) {
@@ -62,13 +60,6 @@ void Database::disconnect()
     LOG << "Database connection closed.";
 }
 
-const QString Database::version() const
-{
-    QSqlQuery query(QStringLiteral("SELECT COUNT(*) FROM changelog"));
-    query.next();
-    return QStringLiteral("OPL Database Revision: ") + QString::number(query.value(0).toInt());
-}
-
 const QList<OPL::DbTable> &Database::getTemplateTables() const
 {
     return TEMPLATE_TABLES;
@@ -95,7 +86,7 @@ void Database::updateLayout()
     tableNames = db.tables();
 
     tableColumns.clear();
-    for (const auto &table_name : qAsConst(tableNames)) {
+    for (const auto &table_name : std::as_const(tableNames)) {
         QStringList table_columns;
         QSqlRecord fields = db.record(table_name);
         for (int i = 0; i < fields.count(); i++) {
@@ -106,13 +97,6 @@ void Database::updateLayout()
     emit dataBaseUpdated(DbTable::Any);
 }
 
-Database* Database::instance()
-{
-    if(!self)
-        self = new Database();
-
-    return self;
-}
 
 const QString Database::sqliteVersion() const
 {
@@ -347,8 +331,7 @@ bool Database::insert(const OPL::Row &new_row)
 {
     QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" (");
     const auto& data = new_row.getData();
-    QHash<QString, QVariant>::const_iterator i;
-    for (i = data.constBegin(); i != data.constEnd(); ++i) {
+    for(auto i = data.cbegin(); i != data.cend(); ++i) {
         statement.append(i.key() + QLatin1Char(','));
     }
     statement.chop(1);
@@ -363,7 +346,7 @@ bool Database::insert(const OPL::Row &new_row)
     QSqlQuery query;
     query.prepare(statement);
 
-    for (i = data.constBegin(); i != data.constEnd(); ++i) {
+    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
 //use QMetaType for binding null value in QT >= 6
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         if (i.value() == QVariant(QString())) {
@@ -714,7 +697,9 @@ bool Database::createSchema()
 {
     // Read Database layout from sql file
     QFile f(OPL::Assets::DATABASE_SCHEMA);
-    f.open(QIODevice::ReadOnly);
+    if(!f.open(QIODevice::ReadOnly)) {
+        LOG << "Unable to read database schema - " << f.errorString();
+    }
     QByteArray filedata = f.readAll();
     // create individual queries for each table/view
     auto list = filedata.split(';');
@@ -726,7 +711,7 @@ bool Database::createSchema()
     // Create Tables
     QSqlQuery q;
     QVector<QSqlError> errors;
-    for (const auto &query_string : list) {
+    for (const auto &query_string : std::as_const(list)) {
         q.prepare(query_string);
         if (!q.exec()) {
             errors.append(q.lastError());
@@ -742,7 +727,7 @@ bool Database::createSchema()
         return true;
     } else {
         LOG << "Database creation has failed. The following error(s) have ocurred: ";
-        for (const auto &error : qAsConst(errors)) {
+        for (const auto &error : std::as_const(errors)) {
             LOG << error.type() << error.text();
         }
         return false;

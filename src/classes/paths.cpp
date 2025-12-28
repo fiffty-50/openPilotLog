@@ -5,7 +5,7 @@ namespace OPL {
 
 const bool Paths::setup() {
     LOG << "Setting up directories at: " << basePath;
-        for(const auto& str : qAsConst(directories)){
+        for(const auto& str : std::as_const(directories)){
         QDir dir(basePath + str);
         if(!dir.exists()) {
             if (!dir.mkpath(dir.absolutePath()))

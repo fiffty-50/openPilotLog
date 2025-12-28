@@ -27,7 +27,7 @@ void ProcessPilots::parseRawData()
     unique_pilot_id ++;
 
 
-    for (const auto &row : qAsConst(rawData)) {
+    for (const auto &row : std::as_const(rawData)) {
         for (const auto &col_array : pilot_cols) {
             for (const auto &col : col_array) {
                 pilot_data.append(row[col]);
@@ -45,9 +45,9 @@ void ProcessPilots::parseRawData()
 
 void ProcessPilots::processParsedData()
 {
-    for (const auto &pair : qAsConst(rawPilotsAndIds)) {
+    for (const auto &pair : std::as_const(rawPilotsAndIds)) {
         //DEB << "ID:" << pair.second << "Details:" << pair.first;
-        QHash<QString, QVariant> new_pilot_data;
+        OPL::RowData_T new_pilot_data;
 
         // process name [1]
         auto temp_list = pair.first[1].split(QLatin1Char(' '));
@@ -74,7 +74,7 @@ void ProcessPilots::processParsedData()
     }
 }
 
-QHash<QString, QHash<QString, QVariant>> ProcessPilots::getProcessedPilotMaps() const
+QHash<QString, OPL::RowData_T>ProcessPilots::getProcessedPilotMaps() const
 {
     return processedPilotHashes;
 }

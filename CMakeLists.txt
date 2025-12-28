@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.20)
 
 project(openPilotLog LANGUAGES CXX)
 
@@ -11,16 +11,16 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(QT_MIN_VERSION "5.5.1")
+set(QT_MIN_VERSION "6.2")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_USE_QSTRINGBUILDER")
 MESSAGE ("Enabling QStringBuilder")
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
+#find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Network REQUIRED)
 # find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network LinguistTools REQUIRED)
 # find_package(OpenSSL REQUIRED) # Pending testing
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
-
+# find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Sql Network REQUIRED)
 set(PROJECT_SOURCES
 
     main.cpp
@@ -35,12 +35,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/firstrundialog.h
     src/gui/dialogues/firstrundialog.cpp
     src/gui/dialogues/firstrundialog.ui
-    src/gui/dialogues/newairportdialog.h
-    src/gui/dialogues/newairportdialog.cpp
-    src/gui/dialogues/newairportdialog.ui
-    src/gui/dialogues/newflightdialog.h
-    src/gui/dialogues/newflightdialog.cpp
-    src/gui/dialogues/newflightdialog.ui
+    src/gui/dialogues/airportentryeditdialog.h
+    src/gui/dialogues/airportentryeditdialog.cpp
+    src/gui/dialogues/airportentryeditdialog.ui
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newpilot.ui
@@ -53,8 +50,11 @@ set(PROJECT_SOURCES
     src/gui/dialogues/exporttocsvdialog.h
     src/gui/dialogues/exporttocsvdialog.cpp
     src/gui/dialogues/exporttocsvdialog.ui
+
     src/gui/dialogues/entryeditdialog.h
     src/gui/dialogues/entryeditdialog.cpp
+    src/gui/dialogues/flightentryeditdialog.h
+    src/gui/dialogues/flightentryeditdialog.cpp
 
     # Widgets
     src/gui/widgets/homewidget.h
@@ -101,6 +101,10 @@ set(PROJECT_SOURCES
     src/gui/verification/tailinput.cpp
     src/gui/widgets/currencywidget.h
     src/gui/widgets/currencywidget.cpp
+    src/gui/verification/entrybuilder.h
+
+    src/gui/verification/flightentryparser.h
+    src/gui/verification/flightentryparser.cpp
 
     # Classes
     src/classes/style.h
@@ -184,6 +188,14 @@ set(PROJECT_SOURCES
     assets/themes/stylesheets/breeze/breeze.qrc
     assets/themes/stylesheets/qdarkstyle/qdarkstyle.qrc
 
+    # network
+    src/network/flightawareflightdata.h
+    src/network/flightawarequery.h
+    src/network/flightawarequery.cpp
+    src/network/flightawarejsonparser.h
+    src/network/flightawarejsonparser.cpp
+
+
     # Testing / Debug
     src/testing/importCrewlounge/importcrewlounge.h
     src/testing/importCrewlounge/importcrewlounge.cpp
@@ -230,7 +242,7 @@ endif()
 # set the win32 entry point to avoid terminal popping up
 if(WIN32)
     MESSAGE("Building for WIN32")
-    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    if(QT_VERSION_MAJOR GREATER_EQUAL 6)
         qt_add_executable(openPilotLog WIN32
             ${PROJECT_SOURCES}
             ${QM_FILES}
@@ -244,7 +256,7 @@ if(WIN32)
         )
     endif()
 else()
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
         qt_add_executable(openPilotLog
             ${PROJECT_SOURCES}
             ${QM_FILES}

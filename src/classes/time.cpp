@@ -54,8 +54,17 @@ Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
     switch(format.timeFormat()) {
     case DateTimeFormat::TimeFormat::Default:
     {
-        const auto qTime = QTime::fromString(timeString, QStringLiteral("hh:mm"));
-        return Time(qTime, format);
+        int seperatorIndex = timeString.indexOf(QLatin1Char(':'));
+        if(seperatorIndex < 0) {
+            LOG << "Invalid Time Input:" << timeString;
+            return Time(-1, format);
+        }
+
+        int hours = timeString.first(seperatorIndex).toInt();
+        int minutes = timeString.last(2).toInt();
+        int totalMinutes = hours * 60 + minutes;
+
+        return Time(totalMinutes, format);
         break;
     }
     case DateTimeFormat::TimeFormat::Decimal:
@@ -81,6 +90,7 @@ Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
         return Time(qTime, format);
         break;
     }
+    return Time(-1, format);
 }
 
 Time Time::blockTime(const Time &offBlocks, const Time &onBlocks)
@@ -90,17 +100,12 @@ Time Time::blockTime(const Time &offBlocks, const Time &onBlocks)
     if(!bothTimesAreValid)
         return {-1, offBlocks.m_format};
 
-    // calculate the block time
-    if(onBlocks.m_minutes > offBlocks.m_minutes) {
-        // take-off and landing on the same day
-        return Time(onBlocks.m_minutes - offBlocks.m_minutes, offBlocks.m_format);
-    } else {
-        if(offBlocks.m_minutes == onBlocks.m_minutes)
-            return Time(0, offBlocks.m_format);
-        // landing the day after take off
-        int minutesToMidnight = MINUTES_PER_DAY - offBlocks.m_minutes;
-        return Time(minutesToMidnight + onBlocks.m_minutes, offBlocks.m_format);
-    }
+    // calculate the block time - we assume no flight duration exceeds 24h
+    int blockMinutes = (onBlocks.m_minutes - offBlocks.m_minutes + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+    if(blockMinutes < 0 || blockMinutes > MINUTES_PER_DAY) // our assumption was incorrect or there was an input errer
+        return {-1, offBlocks.m_format};
+
+    return Time(blockMinutes, offBlocks.m_format);
 }
 
 int32_t Time::blockMinutes(const Time &offBlocks, const Time &onBlocks)

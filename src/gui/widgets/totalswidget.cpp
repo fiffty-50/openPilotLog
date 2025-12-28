@@ -96,7 +96,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
     }
 
     // fill the line edits with the data obtained
-    const OPL::RowData_T &const_time_data = qAsConst(time_data);
+    const OPL::RowData_T &const_time_data = std::as_const(time_data);
     for (const auto &field : const_time_data) {
         // match the db entries to the line edits using their object name
         const QString search_term = time_data.key(field) + QLatin1String("LineEdit");

@@ -75,11 +75,11 @@ constexpr static int STUB_ROW_ID = -1;
 /**
  * @brief Defines a four-letter code for a non-extistent (dummy) airport: "XXXX"
  */
-constexpr static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
+const static auto STUB_AIRPORT_CODE = QLatin1String("XXXX");
 /**
  * @brief Defines a registration for a non-existent (dummy) aircraft: "XX-XXX"
  */
-constexpr static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
+const static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
 
 /*!
  * \brief The decimal seperator used internally
@@ -215,7 +215,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, Changelog, PreviousExperience};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience};
 
 /*!
  * \brief Enumerates the currency names
@@ -236,6 +236,7 @@ public:
     void loadPilotFunctios(QComboBox *combo_box) const;
     void loadSimulatorTypes(QComboBox *combo_box) const;
     void loadApproachTypes(QComboBox *combo_box) const;
+    void loadFlightRules(QComboBox *combo_box) const;
 
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
@@ -288,7 +289,6 @@ private:
         {DbTable::Aircraft,     QStringLiteral("aircraft")},
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
-        {DbTable::Changelog,    QStringLiteral("changelog")},
         {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
     };
 
@@ -327,7 +327,6 @@ namespace Assets {
 const inline auto  DATABASE_SCHEMA               = QStringLiteral(":/database/database_schema.sql");
 const inline auto  DATABASE_TEMPLATE_AIRCRAFT    = QStringLiteral(":/database/templates/aircraft.json");
 const inline auto  DATABASE_TEMPLATE_AIRPORT     = QStringLiteral(":/database/templates/airports.json");
-const inline auto  DATABASE_TEMPLATE_CHANGELOG   = QStringLiteral(":/database/templates/changelog.json");
 
 const inline auto  LOGO                          = QStringLiteral(":/icons/opl-icons/logos/logo_text.png");
 const inline auto  ICON_MAIN                     = QStringLiteral(":/icons/opl-icons/app/icon_main.png");

@@ -79,6 +79,8 @@ void NewTailDialog::setupCompleter()
                      this, &NewTailDialog::onSearchCompleterActivated);
     QObject::connect(completer, static_cast<void(QCompleter::*)(const QString &)>(&QCompleter::highlighted),
                      this, &NewTailDialog::onSearchCompleterActivated);
+    QObject::connect(ui->registrationLineEdit, &QLineEdit::editingFinished,
+                     this, &NewTailDialog::on_registrationLineEdit_editingFinished);
 }
 
 void NewTailDialog::setupValidators()
@@ -117,7 +119,7 @@ void NewTailDialog::fillForm(OPL::Row entry, bool is_template)
 
     auto data = entry.getData();
 
-    for (const auto &le : qAsConst(line_edits)) {
+    for (const auto &le : std::as_const(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         le->setText(data.value(key).toString());
     }
@@ -142,7 +144,7 @@ bool NewTailDialog::verify()
     recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppNumberComboBox")));
     recommended_combo_boxes.append(this->findChild<QComboBox *>(QStringLiteral("ppTypeComboBox")));
 
-    for (const auto &le : qAsConst(recommended_line_edits)) {
+    for (const auto &le : std::as_const(recommended_line_edits)) {
         if (le->text() != "") {
             DEB << "Good: " << le;
             recommended_line_edits.removeOne(le);
@@ -152,7 +154,7 @@ bool NewTailDialog::verify()
             DEB << "Not Good: " << le;
         }
     }
-    for (const auto &cb : qAsConst(recommended_combo_boxes)) {
+    for (const auto &cb : std::as_const(recommended_combo_boxes)) {
         if (cb->currentIndex() != 0) {
 
             recommended_combo_boxes.removeOne(cb);
@@ -181,7 +183,7 @@ void NewTailDialog::submitForm()
     auto line_edits = this->findChildren<QLineEdit *>();
     line_edits.removeOne(this->findChild<QLineEdit *>(QStringLiteral("searchLineEdit")));
 
-    for (const auto &le : qAsConst(line_edits)) {
+    for (const auto &le : std::as_const(line_edits)) {
         auto key = le->objectName().remove(QStringLiteral("LineEdit"));
         new_data.insert(key, le->text());
     }
@@ -305,7 +307,8 @@ void NewTailDialog::loadEntry(int rowId)
     fillForm(entry, false);
 }
 
-void NewTailDialog::on_registrationLineEdit_textChanged(const QString &arg1)
+void NewTailDialog::on_registrationLineEdit_editingFinished()
 {
-    ui->registrationLineEdit->setText(arg1.toUpper());
+    DEB << "REG editing finished.";
+    ui->registrationLineEdit->setText(ui->registrationLineEdit->text().toUpper());
 }

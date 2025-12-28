@@ -50,7 +50,7 @@ public:
     /*!
      * \brief Create a new empty row entry
      */
-    Row();
+    Row() = default;
     /*!
      * \brief Create a row entry specifying its table, row id and row data.
      */
@@ -106,7 +106,7 @@ public:
     /*!
      * \brief A Row entry is valid if its table and row are specified and if it contains row data.
      */
-    bool isValid() const;
+    virtual bool isValid() const;
 
     /*!
      * \brief operator QString can be used for printing debug information to stdout
@@ -117,10 +117,8 @@ public:
 private:
     OPL::DbTable table;
     int rowId;
-    RowData_T rowData;
 protected:
-    bool hasData;
-    bool valid = true;
+    RowData_T rowData;
 };
 
 } // namespace OPL

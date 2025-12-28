@@ -117,13 +117,13 @@ private:
                                            {4, OPL::FlightEntry::TFI},
                                            };
     static const inline QHash<ValidationState::ValidationItem, QString> validationItemsDisplayNames = {
-        {ValidationState::ValidationItem::doft, QObject::tr("Date of Flight")},
-        {ValidationState::ValidationItem::dept, QObject::tr("Departure Airport")},
-        {ValidationState::ValidationItem::dest, QObject::tr("Destination Airport")},
-        {ValidationState::ValidationItem::tofb, QObject::tr("Time Off Blocks")},
-        {ValidationState::ValidationItem::tonb, QObject::tr("Time on Blocks")},
-        {ValidationState::ValidationItem::pic, QObject::tr("PIC Name")},
-        {ValidationState::ValidationItem::acft, QObject::tr("Aircraft Registration")},
+        {ValidationState::ValidationItem::DOFT, QObject::tr("Date of Flight")},
+        {ValidationState::ValidationItem::DEPT, QObject::tr("Departure Airport")},
+        {ValidationState::ValidationItem::DEST, QObject::tr("Destination Airport")},
+        {ValidationState::ValidationItem::TOFB, QObject::tr("Time Off Blocks")},
+        {ValidationState::ValidationItem::TONB, QObject::tr("Time on Blocks")},
+        {ValidationState::ValidationItem::PIC, QObject::tr("PIC Name")},
+        {ValidationState::ValidationItem::ACFT, QObject::tr("Aircraft Registration")},
     };
 
     /*!
@@ -197,7 +197,7 @@ private slots:
     void on_pilotFlyingCheckBox_stateChanged(int arg1);
     void on_approachComboBox_currentTextChanged(const QString &arg1);
     void on_functionComboBox_currentIndexChanged(int index);
-
+    void on_retreivePushButton_clicked();
     void on_calendarPushButton_clicked();
 
     void calendarDateSelected();

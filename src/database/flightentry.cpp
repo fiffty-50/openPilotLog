@@ -16,29 +16,45 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightentry.h"
+#include "src/opl.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
 
 namespace OPL {
 
 FlightEntry::FlightEntry()
-    : Row(DbTable::Flights, 0)
-{}
+    : Row(DbTable::Flights, NEW_ENTRY)
+{
+    for(const QString &item : allFields) {
+        rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
+    }
+    for(const QString &item : mandatoryFields) {
+        rowData.insert(item, -1);
+    }
+}
+
 
 FlightEntry::FlightEntry(const RowData_T &row_data)
-    : Row(DbTable::Flights, 0, row_data)
-{}
+    : Row(DbTable::Flights, NEW_ENTRY, row_data)
+{
+    for(const QString &item : allFields) {
+        rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
+    }
+    for(const QString &item : mandatoryFields) {
+        rowData.insert(item, -1);
+    }
+
+}
 
 FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Flights, row_id, row_data)
-{}
+    : Row(DbTable::Flights, row_id, row_data) {}
 
 const QString FlightEntry::getTableName() const
 {
     return TABLE_NAME;
 }
 
-const QString FlightEntry::getFlightSummary() const
+QString FlightEntry::getFlightSummary() const
 {
     using namespace OPL;
     if(!isValid())
@@ -46,8 +62,8 @@ const QString FlightEntry::getFlightSummary() const
 
     auto tableData = getData();
     QString flight_summary;
-    const auto space = QLatin1Char(' ');
-    flight_summary.append(Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
+    constexpr auto space = QLatin1Char(' ');
+    flight_summary.append(OPL::Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
     flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
     flight_summary.append(Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString()
                           + space);
@@ -57,7 +73,4 @@ const QString FlightEntry::getFlightSummary() const
 
     return flight_summary;
 }
-
-
-
 } // namespace OPL

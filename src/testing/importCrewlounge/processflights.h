@@ -17,7 +17,7 @@ public:
         parseRawData();
         processParsedData();
     };
-    QVector<QHash<QString, QVariant> > getProcessedFlights() const;
+    QVector<OPL::RowData_T> getProcessedFlights() const;
 
 private:
     void parseRawData();
@@ -25,7 +25,7 @@ private:
     QVector<QStringList> rawData;
     QVector<QStringList> rawFlightData;
 
-    QVector<QHash<QString, QVariant>> processedFlights;
+    QVector<OPL::RowData_T> processedFlights;
 
     QHash<QString, int> processedPilotsIds;
     QHash<QString, int> processedTailsIds;

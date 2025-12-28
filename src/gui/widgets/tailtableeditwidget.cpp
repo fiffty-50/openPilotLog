@@ -43,7 +43,7 @@ QString TailTableEditWidget::deleteErrorString(int rowId)
     QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId,
                                                                       OPL::DbTable::Tails);
     QList<OPL::FlightEntry> constrained_flights;
-    for (const auto &row_id : qAsConst(foreign_key_constraints)) {
+    for (const auto &row_id : std::as_const(foreign_key_constraints)) {
         constrained_flights.append(DB->getFlightEntry(row_id));
     }
 

@@ -186,6 +186,13 @@ public:
     static void setFlightNumberPrefix(const QString &value) { settingsInstance->setValue(LOG_PREFIX, value); }
 
     /*!
+     * \brief reads the FlightAware API key from the user settings
+     */
+    static QByteArray getFlightAwareApiKey() { return settingsInstance->value(FLIGHT_AWARE_APY_KEY).toByteArray(); }
+
+    static void setFlightAwareApiKey(const QString &apiKey) { settingsInstance->setValue(FLIGHT_AWARE_APY_KEY, apiKey); }
+
+    /*!
      * \brief sets how the logbook owner is shown in the view
      * \details
      * <ul>
@@ -242,6 +249,8 @@ private:
     const static inline QString FORMAT_DATE_STRING 	= QStringLiteral("format/dateFormatString");
     const static inline QString FORMAT_TIME_FORMAT	= QStringLiteral("format/timeFormat");
     const static inline QString FORMAT_TIME_STRING 	= QStringLiteral("format/timeFormatString");
+
+    const static inline QString FLIGHT_AWARE_APY_KEY = QStringLiteral("flightAware/apiKey");
 
 
 };

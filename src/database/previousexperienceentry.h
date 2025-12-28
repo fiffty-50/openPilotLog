@@ -35,22 +35,22 @@ public:
     const QString getTableName() const override;
 
     // these literals already exist in the FlightEntry class, so we can just copy them
-    const static inline QString TBLK           = OPL::FlightEntry::TBLK;
-    const static inline QString TSPSE          = OPL::FlightEntry::TSPSE;
-    const static inline QString TSPME          = OPL::FlightEntry::TSPME;
-    const static inline QString TMP            = OPL::FlightEntry::TMP;
-    const static inline QString TNIGHT         = OPL::FlightEntry::TNIGHT;
-    const static inline QString TIFR           = OPL::FlightEntry::TIFR;
-    const static inline QString TPIC           = OPL::FlightEntry::TPIC;
-    const static inline QString TPICUS         = OPL::FlightEntry::TPICUS;
-    const static inline QString TSIC           = OPL::FlightEntry::TSIC;
-    const static inline QString TDUAL          = OPL::FlightEntry::TDUAL;
-    const static inline QString TFI            = OPL::FlightEntry::TFI;
-    const static inline QString TSIM           = OPL::FlightEntry::TSIM;
-    const static inline QString TODAY          = OPL::FlightEntry::TODAY;
-    const static inline QString TONIGHT        = OPL::FlightEntry::TONIGHT;
-    const static inline QString LDGDAY         = OPL::FlightEntry::LDGDAY;
-    const static inline QString LDGNIGHT       = OPL::FlightEntry::LDGNIGHT;
+    static const inline auto TBLK           = OPL::FlightEntry::TBLK;
+    static const inline auto TSPSE          = OPL::FlightEntry::TSPSE;
+    static const inline auto TSPME          = OPL::FlightEntry::TSPME;
+    static const inline auto TMP            = OPL::FlightEntry::TMP;
+    static const inline auto TNIGHT         = OPL::FlightEntry::TNIGHT;
+    static const inline auto TIFR           = OPL::FlightEntry::TIFR;
+    static const inline auto TPIC           = OPL::FlightEntry::TPIC;
+    static const inline auto TPICUS         = OPL::FlightEntry::TPICUS;
+    static const inline auto TSIC           = OPL::FlightEntry::TSIC;
+    static const inline auto TDUAL          = OPL::FlightEntry::TDUAL;
+    static const inline auto TFI            = OPL::FlightEntry::TFI;
+    static const inline auto TSIM           = OPL::FlightEntry::TSIM;
+    static const inline auto TODAY          = OPL::FlightEntry::TODAY;
+    static const inline auto TONIGHT        = OPL::FlightEntry::TONIGHT;
+    static const inline auto LDGDAY         = OPL::FlightEntry::LDGDAY;
+    static const inline auto LDGNIGHT       = OPL::FlightEntry::LDGNIGHT;
 };
 
 } // namespace OPL
