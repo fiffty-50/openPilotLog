@@ -1,6 +1,6 @@
 #include "tailtableeditwidget.h"
 #include "src/database/database.h"
-#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/dialogues/tailentryeditdialog.h"
 
 TailTableEditWidget::TailTableEditWidget(QWidget *parent)
     : TableEditWidget(Horizontal, parent)
@@ -83,14 +83,14 @@ QString TailTableEditWidget::confirmDeleteString(int rowId)
               "%1 (%2)</b></tt><br><br>Are you sure?"
               ).arg(
               entry.getData().value(OPL::TailEntry::REGISTRATION).toString(),
-              entry.type()
+              entry.getTypeString()
               );
 }
 
 EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
     QString empty;
-    return new NewTailDialog(empty, parent);
+    return new TailEntryEditDialog(empty, parent);
 }
 
 void TailTableEditWidget::filterTextChanged(const QString &filterString)

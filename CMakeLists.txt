@@ -41,9 +41,8 @@ set(PROJECT_SOURCES
     src/gui/dialogues/newpilotdialog.h
     src/gui/dialogues/newpilotdialog.cpp
     src/gui/dialogues/newpilot.ui
-    src/gui/dialogues/newtaildialog.h
-    src/gui/dialogues/newtaildialog.cpp
-    src/gui/dialogues/newtail.ui
+    src/gui/dialogues/tailentryeditdialog.h
+    src/gui/dialogues/tailentryeditdialog.cpp
     src/gui/dialogues/newsimdialog.h
     src/gui/dialogues/newsimdialog.cpp
     src/gui/dialogues/newsimdialog.ui

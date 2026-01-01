@@ -23,18 +23,17 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QComboBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
 
 #include "src/database/row.h"
-#include "src/database/tailentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 
-namespace Ui {
-class NewTail;
-}
 /*!
- * \brief The NewTailDialog enables adding new Tail entries to the database or editing existing ones.
+ * \brief The TailEntryEditDialog enables adding new Tail entries to the database or editing existing ones.
  *
- * \details The NewTailDialog offers two constructors, one is used to create a new Tail Entry
+ * \details The TailEntryEditDialog offers two constructors, one is used to create a new Tail Entry
  * from scratch, while the other one is used to edit an existing entry. The existing entry
  * is identified by its ROW ID in the database and is then retreived, its data being used
  * to pre-fill the UI to enable editing the existing data.
@@ -56,55 +55,78 @@ class NewTail;
  *
  *
  */
-class NewTailDialog : public EntryEditDialog
+class TailEntryEditDialog : public EntryEditDialog
 {
     Q_OBJECT
 
 public:
     /*!
-     * \brief NewTailDialog - create a new ATailEntry and submit it to the database
+     * \brief TailEntryEditDialog - create a new ATailEntry and submit it to the database
      * \param new_registration - when called from the NewFlightDialog, pre-fills the registration already entered.
      */
-    explicit NewTailDialog(const QString &new_registration, QWidget *parent = nullptr);
+    explicit TailEntryEditDialog(const QString &new_registration, QWidget *parent = nullptr);
     /*!
-     * \brief NewTailDialog - edit an existing Tail Entry
+     * \brief TailEntryEditDialog - edit an existing Tail Entry
      * \param row_id - the ROW_ID of the entry to be edited in the database
      */
-    explicit NewTailDialog(int row_id, QWidget *parent = nullptr);
+    explicit TailEntryEditDialog(int row_id, QWidget *parent = nullptr);
 
-    ~NewTailDialog();
-
-
+    ~TailEntryEditDialog() = default;
 
 signals:
     void tailDataChanged();
+
 private:
 
-    Ui::NewTail *ui;
+    // Widgets
+    QGridLayout *gridLayout;
+    QLabel operationLabel;
+    QLabel variantLabel;
+    QLabel weightLabel;
+    QLabel registrationLabel;
+    QLabel modelLabel;
+    QLabel companyLabel;
+    QLabel searchLabel;
+    QLabel powerPlantLabel;
+    QLabel makeLabel;
+    QLineEdit registrationLineEdit;
+    QLineEdit makeLineEdit;
+    QLineEdit modelLineEdit;
+    QLineEdit companyLineEdit;
+    QLineEdit searchLineEdit;
+    QLineEdit variantLineEdit;
+    QComboBox ppNumberComboBox;
+    QComboBox weightComboBox;
+    QComboBox ppTypeComboBox;
+    QComboBox operationComboBox;
+    QFrame seperator;
+    QDialogButtonBox buttonBox;
 
-    //ATailEntry entry;
-    OPL::TailEntry entry;
-
-
-    QStringList aircraftList;
-
-    QHash<int, QString> idMap;
-
+    // Form Setup and Maintenance
+    void init();
+    void retranslateUi();
     void setupCompleter();
-    void setupValidators();
-    void fillForm(OPL::Row entry, bool is_template);
+    void setupSignalsAndSlots();
+    void fillForm(const OPL::Row &entry, bool is_template);
     bool verify();
     void submitForm();
+    inline void onGoodInputReceived(QWidget *widget) {
+        if(widget)
+            widget->setStyleSheet(QString());
+    }
+    inline void onBadInputReceived(QWidget *widget) {
+        if(widget)
+            widget->setStyleSheet(QStringLiteral("border: 1px solid red"));
+    }
+
+    // Member variables
+    int m_rowId;
 
 private slots:
-    void on_operationComboBox_currentIndexChanged(int index);
-    void on_ppTypeComboBox_currentIndexChanged(int index);
-    void on_ppNumberComboBox_currentIndexChanged(int index);
-    void on_weightComboBox_currentIndexChanged(int index);
+    void on_mandatoryComboBox_currentIndexChanged(QComboBox *comboBox);
     void on_registrationLineEdit_editingFinished();
     void on_buttonBox_accepted();
-    void onSearchCompleterActivated();
-
+    void on_searchCompleter_activated(const QModelIndex &index);
 
     // EntryEditDialog interface
 public:

@@ -91,8 +91,8 @@ private:
     QDialogButtonBox acceptButtonBox = QDialogButtonBox(QDialogButtonBox::Ok |
                                                         QDialogButtonBox::Cancel);
 
-    const QList<QLineEdit *> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
-    const QList<QLineEdit *> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
+    const std::array<QLineEdit *, 4> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
+    const std::array<QLineEdit *, 2> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
     const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
 
     void init();
