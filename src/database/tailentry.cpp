@@ -41,23 +41,27 @@ const QString TailEntry::registration() const
     return getData().value(REGISTRATION).toString();
 }
 
-const QString TailEntry::type() const {
+const QString TailEntry::getTypeString() const {
     const auto &data = getData();
 
-    if(data.value(VARIANT).toString().isEmpty()) {
-        if(data.value(MODEL).toString().isEmpty()) {
-            return data.value(MAKE).toString();
-        }
-        return data.value(MAKE).toString()
-               + QLatin1Char(' ')
-               + data.value(MODEL).toString();
-    }
+    const QString make = data.value(MAKE).toString().trimmed();
+    const QString model = data.value(MODEL).toString().trimmed();
+    const QString variant = data.value(VARIANT).toString().trimmed();
 
-    return data.value(MAKE).toString()
-           + QLatin1Char(' ')
-           + data.value(MODEL).toString()
-           + QLatin1Char('-')
-           + data.value(VARIANT).toString();
+    if (model.isEmpty())
+        return make;
+
+    if (variant.isEmpty())
+        return make + QLatin1Char(' ') + model;
+
+    return make + QLatin1Char(' ') + model + QLatin1Char('-') + variant;
+}
+
+void TailEntry::setTypeString()
+{
+    auto data = getData();
+    data.insert(TailEntry::TYPE_STRING, getTypeString());
+    setData(data);
 }
 
 } // namespace OPL

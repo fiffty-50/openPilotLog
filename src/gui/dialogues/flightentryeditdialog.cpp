@@ -4,7 +4,7 @@
 #include "src/database/databasecache.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/dialogues/newpilotdialog.h"
-#include "src/gui/dialogues/newtaildialog.h"
+#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/gui/verification/pilotinput.h"
@@ -633,7 +633,7 @@ void FlightEntryEditDialog::onLocationEditingFinished(QLineEdit *lineEdit)
 {
     if(verifyUserInput(lineEdit, AirportInput(lineEdit->text())) ) {
         updateAirportLabels();
-        lineEdit == locationLineEdits.first() ?
+        lineEdit == locationLineEdits[0] ?
             m_entryParser.setDeparture(lineEdit->text()) :
             m_entryParser.setDestination(lineEdit->text());
         onGoodInputReceived(lineEdit);
@@ -705,7 +705,7 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
         newEntryDialog = new NewPilotDialog(caller->text(), this);
         break;
     case OPL::DbTable::Tails:
-        newEntryDialog = new NewTailDialog(registrationLineEdit.text(), this);
+        newEntryDialog = new TailEntryEditDialog(registrationLineEdit.text(), this);
         break;
     case OPL::DbTable::Airports:
         newEntryDialog = new NewAirportDialog(this);

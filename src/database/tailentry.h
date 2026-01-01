@@ -44,9 +44,14 @@ public:
      */
     const QString registration() const;
     /*!
-     * \brief Return the aircraft type (Make and  - if available - Model and Variant)
+     * \brief Return the aircraft getTypeString (Make and  - if available - Model and Variant)
      */
-    const QString type() const;
+    const QString getTypeString() const;
+
+    /*!
+     * \brief setTypeString - Sets the TypeString (Make and - if avilable - Model and Variant) based on entry data
+     */
+    void setTypeString();
 
     /*!
      * \brief The entries row id in the database
