@@ -24,6 +24,7 @@ TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidge
     EntryEditDialog(parent)
 {
     LOG << "Editing New Tail Entry: " << new_registration;
+    gridLayout = new QGridLayout(this);
     init();
     setupCompleter();
 
@@ -38,6 +39,7 @@ TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidge
 TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent) :
     EntryEditDialog(parent), m_rowId(row_id)
 {
+    gridLayout = new QGridLayout(this);
     init();
 
     searchLabel.hide();
@@ -46,54 +48,69 @@ TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent) :
 
     // retreive the entry to be edited
     const auto entry = DB->getTailEntry(m_rowId);
-    fillForm(entry, false);
     LOG << "Editing Tail Entry: " << entry;
+    fillForm(entry, false);
 }
 
 void TailEntryEditDialog::init()
 {
-    DEB << "Setting up Grid Layout";
-    gridLayout = new QGridLayout(this);
+    // row and column span
+    int singleSpan = 1;
+    int doubleSpan = 2;
+    int row = 0;
+    int firstCol = 0;
+    int secondCol = 1;
 
-    gridLayout->addWidget(&searchLabel, 0, 0, 1, 1);
-    gridLayout->addWidget(&searchLineEdit, 0, 1, 1, 1);
+    // create the layout
+    gridLayout->addWidget(&searchLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&searchLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
     seperator.setFrameShape(QFrame::Shape::HLine);
     seperator.setFrameShadow(QFrame::Shadow::Sunken);
-    gridLayout->addWidget(&seperator, 1, 0, 1, 2);
+    gridLayout->addWidget(&seperator, row, firstCol, singleSpan, doubleSpan);
+    row++;
 
     registrationLabel.setMinimumWidth(160);
-    registrationLineEdit.setMaxLength(20);
-    gridLayout->addWidget(&registrationLabel, 2, 0, 1, 1);
-    gridLayout->addWidget(&registrationLineEdit, 2, 1, 1, 1);
+    gridLayout->addWidget(&registrationLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&registrationLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&companyLabel, 3, 0, 1, 1);
-    gridLayout->addWidget(&companyLineEdit, 3, 1, 1, 1);
+    gridLayout->addWidget(&companyLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&companyLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&makeLabel, 4, 0, 1, 1);
-    gridLayout->addWidget(&makeLineEdit, 4, 1, 1, 1);
+    gridLayout->addWidget(&makeLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&makeLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&modelLabel, 5, 0, 1, 1);
-    gridLayout->addWidget(&modelLineEdit, 5, 1, 1, 1);
+    gridLayout->addWidget(&modelLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&modelLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&variantLabel, 6, 0, 1, 1);
-    gridLayout->addWidget(&variantLineEdit, 6, 1, 1, 1);
+    gridLayout->addWidget(&variantLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&variantLineEdit, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&operationLabel, 7, 0, 1, 1);
-    gridLayout->addWidget(&operationComboBox, 7, 1, 1, 1);
+    gridLayout->addWidget(&operationLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&operationComboBox, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&powerPlantLabel, 8, 0, 1, 1);
-    gridLayout->addWidget(&ppTypeComboBox, 8, 1, 1, 1);
+    gridLayout->addWidget(&powerPlantLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&ppTypeComboBox, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&ppNumberComboBox, 9, 1, 1, 1);
+    gridLayout->addWidget(&ppNumberComboBox, row, secondCol, singleSpan, singleSpan);
+    row++;
 
-    gridLayout->addWidget(&weightLabel, 10, 0, 1, 1);
-    gridLayout->addWidget(&weightComboBox, 10, 1, 1, 1);
+    gridLayout->addWidget(&weightLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(&weightComboBox, row, secondCol, singleSpan, singleSpan);
+    row++;
 
 
     buttonBox.setOrientation(Qt::Horizontal);
     buttonBox.setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-    gridLayout->addWidget(&buttonBox, 11, 1, 1, 1);
+    gridLayout->addWidget(&buttonBox, row, secondCol, singleSpan, singleSpan);
 
     QWidget::setTabOrder({
                           &searchLineEdit, &registrationLineEdit,
@@ -168,7 +185,6 @@ void TailEntryEditDialog::retranslateUi()
                                              tr("Single Pilot"),
                                              tr("Multi Pilot")
                                          });
-
 }
 
 /*!
@@ -376,6 +392,8 @@ void TailEntryEditDialog::on_searchCompleter_activated(const QModelIndex &index)
         searchLineEdit.setStyleSheet(QStringLiteral("border: 1px solid orange"));
     }
 }
+
+// EntryEditDialog Interface Implementation
 
 bool TailEntryEditDialog::deleteEntry(int rowID)
 {

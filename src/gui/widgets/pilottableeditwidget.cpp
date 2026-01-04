@@ -1,7 +1,7 @@
 #include "pilottableeditwidget.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/entryeditdialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/opl.h"
 #include <QGridLayout>
 
@@ -45,7 +45,7 @@ void PilotTableEditWidget::setupUI()
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
-    return new NewPilotDialog(QString(), parent);
+    return new PilotEntryEditDialog(QString(), parent);
 }
 
 QString PilotTableEditWidget::deleteErrorString(int pilotId)

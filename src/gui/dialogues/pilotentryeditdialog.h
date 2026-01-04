@@ -23,15 +23,15 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QCompleter>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
 #include "src/database/pilotentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 
-namespace Ui {
-class NewPilot;
-}
 /*!
- * \brief The NewPilotDialog enables adding new entries to the pilot table in the database
- * \details The NewPilotDialog offers two constructors, one is used to create a new Pilot Entry
+ * \brief The PilotEntryEditDialog enables adding new entries to the pilot table in the database
+ * \details The PilotEntryEditDialog offers two constructors, one is used to create a new Pilot Entry
  * from scratch, while the other one is used to edit an existing entry. The existing entry
  * is identified by its ROW ID in the database and is then retreived, its data being used
  * to pre-fill the UI to enable editing the existing data.
@@ -42,13 +42,13 @@ class NewPilot;
  * come in all different forms and shapes around the world. In order to maintain a maximum
  * amount of flexibility, any unicode input is allowed.
  */
-class NewPilotDialog : public EntryEditDialog
+class PilotEntryEditDialog : public EntryEditDialog
 {
     Q_OBJECT
 public:
-    explicit NewPilotDialog(QString userInput = QString(), QWidget *parent = nullptr);
-    explicit NewPilotDialog(int rowId, QWidget *parent = nullptr);
-    ~NewPilotDialog();
+    explicit PilotEntryEditDialog(QString userInput = QString(), QWidget *parent = nullptr);
+    explicit PilotEntryEditDialog(int rowId, QWidget *parent = nullptr);
+    ~PilotEntryEditDialog() = default;
 
 
 
@@ -56,11 +56,31 @@ public:
 private slots:
     void on_buttonBox_accepted();
 private:
-    Ui::NewPilot *ui;
+    // UI Elements
+    QGridLayout *gridLayout;
+    QLabel *lastnameLabel;
+    QLineEdit *lastnameLineEdit;
+    QLabel *firstnameLabel;
+    QLineEdit *firstnameLineEdit;
+    QLabel *companyLabel;
+    QLineEdit *companyLineEdit;
+    QLabel *aliasLabel;
+    QLineEdit *aliasLineEdit;
+    QLabel *employeeidLabel;
+    QLineEdit *employeeidLineEdit;
+    QLabel *phoneLabel;
+    QLineEdit *phoneLineEdit;
+    QLabel *emailLabel;
+    QLineEdit *emailLineEdit;
+    QDialogButtonBox *buttonBox;
 
+    // Member Variables
     OPL::PilotEntry pilotEntry;
 
-    inline void setup();
+    // Member functions
+    void init();
+    void retranslateUi();
+    void setupSlots();
 
     /*!
      * \brief formFiller - fills the line edits with the data retreived from the database.

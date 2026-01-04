@@ -50,10 +50,6 @@
  * The Dialog contains 4 QComboBoxes that have to be filled out before an entry can be submitted, since this data
  * is being used to deduct certain types of hours that have to be logged depending on the number or type of engines.
  *
- * A set of QValidators provides raw input validation for the line edits.
- *
- *
- *
  */
 class TailEntryEditDialog : public EntryEditDialog
 {
