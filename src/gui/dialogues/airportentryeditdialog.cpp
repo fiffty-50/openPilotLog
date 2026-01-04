@@ -1,88 +1,175 @@
 #include "airportentryeditdialog.h"
-#include "ui_airportentryeditdialog.h"
 #include <QValidator>
 #include <QTimeZone>
 
 #include "src/opl.h"
 #include "src/database/database.h"
 
-NewAirportDialog::NewAirportDialog(QWidget *parent) :
-    EntryEditDialog(parent), ui(new Ui::AirportEntryEditDialog)
+AirportEntryEditDialog::AirportEntryEditDialog(QWidget *parent) :
+    EntryEditDialog(parent)
 {
+    init();
     m_rowId = 0; // new entry
-    ui->setupUi(this);
-    setValidators();
-    loadTimeZones();
 }
 
-NewAirportDialog::NewAirportDialog(int row_id, QWidget *parent)
-    : EntryEditDialog(parent), ui(new Ui::AirportEntryEditDialog), m_rowId(row_id)
+AirportEntryEditDialog::AirportEntryEditDialog(int row_id, QWidget *parent)
+    : EntryEditDialog(parent), m_rowId(row_id)
 {
-    ui->setupUi(this);
-    setValidators();
-    loadTimeZones();
+    init();
     loadAirportData(row_id);
 }
 
-NewAirportDialog::~NewAirportDialog()
+void AirportEntryEditDialog::init()
 {
-    delete ui;
+    // Main Layout
+    gridLayout = new QGridLayout(this);
+    int row = 0;
+    const int firstCol = 0;
+    const int secondCol = 1;
+    const int singleSpan = 1;
+    const int doubleSpan = 2;
+
+    // Add widgets to left and right side, advance to next row
+    auto addWidgets = [&](QWidget* left, QWidget* right) {
+        gridLayout->addWidget(left, row, firstCol, singleSpan, singleSpan);
+        gridLayout->addWidget(right, row, secondCol, singleSpan, singleSpan);
+        row++;
+    };
+
+    // Row 0
+    nameLabel = new QLabel(this);
+    nameLineEdit = new QLineEdit(this);
+    addWidgets(nameLabel, nameLineEdit);
+
+    // Row 1
+    iataLineEdit = new QLineEdit(this);
+    iataLineEdit->setMaxLength(3);
+    iataLabel = new QLabel(this);
+    addWidgets(iataLabel, iataLineEdit);
+
+    // Row 2
+    icaoLabel = new QLabel(this);
+    icaoLineEdit = new QLineEdit(this);
+    icaoLineEdit->setMaxLength(4);
+    addWidgets(icaoLabel, icaoLineEdit);
+
+    // Row 3
+    countryLabel = new QLabel(this);
+    countryLineEdit = new QLineEdit(this);
+    addWidgets(countryLabel, countryLineEdit);
+
+
+    // Row 4
+    latitudeLabel = new QLabel(this);
+    latDoubleSpinBox = new QDoubleSpinBox(this);
+    latDoubleSpinBox->setObjectName("latDoubleSpinBox");
+    latDoubleSpinBox->setDecimals(10);
+    latDoubleSpinBox->setMinimum(-90.000000000000000);
+    latDoubleSpinBox->setMaximum(90.000000000000000);
+    addWidgets(latitudeLabel, latDoubleSpinBox);
+
+    // Row 5
+    longitudeLabel = new QLabel(this);
+    lonDoubleSpinBox = new QDoubleSpinBox(this);
+    lonDoubleSpinBox->setDecimals(10);
+    lonDoubleSpinBox->setMinimum(-180.000000000000000);
+    lonDoubleSpinBox->setMaximum(180.000000000000000);
+    addWidgets(longitudeLabel, lonDoubleSpinBox);
+
+    // Row 6
+    timezoneLabel = new QLabel(this);
+    timeZoneComboBox = new QComboBox(this);
+    addWidgets(timezoneLabel, timeZoneComboBox);
+
+    // Row 7
+    buttonBox = new QDialogButtonBox(this);
+    buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
+    gridLayout->addWidget(buttonBox, row, firstCol, singleSpan, doubleSpan);
+
+    // finish setup
+    retranslateUi();
+    setupSlots();
+    setValidators();
+    loadTimeZones();
 }
 
-void NewAirportDialog::setValidators()
+void AirportEntryEditDialog::retranslateUi()
 {
-    ui->icaoLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{4}"), this)); // 4 letter code
-    ui->iataLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{3}"), this)); // 3 letter code
+    m_rowId == 0 ?
+        this->setWindowTitle(tr("Add New Airport")) :
+        this->setWindowTitle(tr("Edit Airport"));
+
+    countryLabel->setText(tr("Country"));
+    longitudeLabel->setText(tr("Longitude"));
+    latitudeLabel->setText(tr("Latitude"));
+    timezoneLabel->setText(tr("Timezone"));
+    icaoLabel->setText(tr("ICAO Code"));
+    iataLabel->setText(tr("IATA Code"));
+    nameLabel->setText(tr("Airport Name"));
 }
 
-void NewAirportDialog::loadTimeZones()
+void AirportEntryEditDialog::setupSlots()
+{
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &AirportEntryEditDialog::on_buttonBox_accepted);
+    QObject::connect(icaoLineEdit, &QLineEdit::textChanged, this, &AirportEntryEditDialog::on_icaoLineEdit_textChanged);
+    QObject::connect(iataLineEdit, &QLineEdit::textChanged, this, &AirportEntryEditDialog::on_iataLineEdit_textChanged);
+}
+
+void AirportEntryEditDialog::setValidators()
+{
+    icaoLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{4}"), this)); // 4 letter code
+    iataLineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\w{3}"), this)); // 3 letter code
+}
+
+void AirportEntryEditDialog::loadTimeZones()
 {
     QStringList tz_list;
     for (const auto &tz : QTimeZone::availableTimeZoneIds())
         tz_list.append(tz);
-    ui->timeZoneComboBox->addItems(tz_list);
+    timeZoneComboBox->addItems(tz_list);
 }
 
-void NewAirportDialog::loadAirportData(int row_id)
+void AirportEntryEditDialog::loadAirportData(int row_id)
 {
     this->setWindowTitle(tr("Edit Airport"));
     const auto airport_data = DB->getAirportEntry(row_id).getData();
     DEB << "Filling Airport Data: " << airport_data;
 
-    ui->nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
-    ui->icaoLineEdit->setText(airport_data.value(OPL::AirportEntry::ICAO).toString());
-    ui->iataLineEdit->setText(airport_data.value(OPL::AirportEntry::IATA).toString());
-    ui->latDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LAT).toDouble());
-    ui->lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LON).toDouble());
-    ui->countryLineEdit->setText(airport_data.value(OPL::AirportEntry::COUNTRY).toString());
+    nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
+    icaoLineEdit->setText(airport_data.value(OPL::AirportEntry::ICAO).toString());
+    iataLineEdit->setText(airport_data.value(OPL::AirportEntry::IATA).toString());
+    latDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LAT).toDouble());
+    lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LON).toDouble());
+    countryLineEdit->setText(airport_data.value(OPL::AirportEntry::COUNTRY).toString());
 
     const QString timezone = airport_data.value(OPL::AirportEntry::TZ_OLSON).toString();
     DEB << "Timezone: " << timezone;
     if (timezone.isNull())
         WARN(tr("Unable to read timezone data for this airport. Please verify."));
-    ui->timeZoneComboBox->setCurrentText(timezone);
+    timeZoneComboBox->setCurrentText(timezone);
 }
 
-bool NewAirportDialog::verifyInput()
+bool AirportEntryEditDialog::verifyInput()
 {
-    if (ui->nameLineEdit->text().isEmpty()) {
+    if (nameLineEdit->text().isEmpty()) {
         WARN(tr("Please enter the airport name."));
         return false;
     }
-    if (ui->icaoLineEdit->text().length() != 4) {
+    if (icaoLineEdit->text().length() != 4) {
         WARN(tr("Invalid ICAO Code."));
         return false;
     }
-    if (ui->latDoubleSpinBox->value() == 0 || ui->lonDoubleSpinBox->value() == 0) {
+    if (latDoubleSpinBox->value() == 0 || lonDoubleSpinBox->value() == 0) {
         WARN(tr("Please enter the latitude and longitude in decimal degrees.<br><br>"
                 "This data is required for calculation of sunrise and sunset times."));
         return false;
     }
 
-    if (ui->timeZoneComboBox->currentIndex() == 0) {
+    if (timeZoneComboBox->currentIndex() == 0) {
 
-        QString airport_name = ui->nameLineEdit->text();
-        QString timezone = ui->timeZoneComboBox->currentText();
+        QString airport_name = nameLineEdit->text();
+        QString timezone = timeZoneComboBox->currentText();
 
         QMessageBox confirm(this);
         confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -101,19 +188,19 @@ bool NewAirportDialog::verifyInput()
     return true;
 }
 
-void NewAirportDialog::on_buttonBox_accepted()
+void AirportEntryEditDialog::on_buttonBox_accepted()
 {
     if (!verifyInput())
         return;
     // create Entry object
     OPL::RowData_T airport_data = {
-        {OPL::AirportEntry::NAME,     ui->nameLineEdit->text()},
-        {OPL::AirportEntry::ICAO,     ui->icaoLineEdit->text()},
-        {OPL::AirportEntry::IATA,     ui->iataLineEdit->text()},
-        {OPL::AirportEntry::LAT,      ui->latDoubleSpinBox->value()},
-        {OPL::AirportEntry::LON,      ui->lonDoubleSpinBox->value()},
-        {OPL::AirportEntry::TZ_OLSON, ui->timeZoneComboBox->currentText()},
-        {OPL::AirportEntry::COUNTRY,  ui->countryLineEdit->text()},
+        {OPL::AirportEntry::NAME,     nameLineEdit->text()},
+        {OPL::AirportEntry::ICAO,     icaoLineEdit->text()},
+        {OPL::AirportEntry::IATA,     iataLineEdit->text()},
+        {OPL::AirportEntry::LAT,      latDoubleSpinBox->value()},
+        {OPL::AirportEntry::LON,      lonDoubleSpinBox->value()},
+        {OPL::AirportEntry::TZ_OLSON, timeZoneComboBox->currentText()},
+        {OPL::AirportEntry::COUNTRY,  countryLineEdit->text()},
     };
 
     OPL::AirportEntry entry(m_rowId, airport_data);
@@ -125,36 +212,31 @@ void NewAirportDialog::on_buttonBox_accepted()
     }
 }
 
-void NewAirportDialog::on_iataLineEdit_textChanged(const QString &arg1)
+void AirportEntryEditDialog::on_iataLineEdit_textChanged(const QString &arg1)
 {
-    ui->iataLineEdit->setText(arg1.toUpper());
+    iataLineEdit->setText(arg1.toUpper());
 }
 
-void NewAirportDialog::on_icaoLineEdit_textChanged(const QString &arg1)
+void AirportEntryEditDialog::on_icaoLineEdit_textChanged(const QString &arg1)
 {
-    ui->icaoLineEdit->setText(arg1.toUpper());
-}
-
-void NewAirportDialog::on_buttonBox_rejected()
-{
-    QDialog::reject();
+    icaoLineEdit->setText(arg1.toUpper());
 }
 
 // EntryEditDialog interface
-void NewAirportDialog::loadEntry(int rowId)
+void AirportEntryEditDialog::loadEntry(int rowId)
 {
     m_rowId = rowId;
     loadAirportData(rowId);
 }
 
-void NewAirportDialog::loadEntry(const OPL::Row &entry)
+void AirportEntryEditDialog::loadEntry(const OPL::Row &entry)
 {
     m_rowId = entry.getRowId();
     loadAirportData(m_rowId);
 }
 
 
-bool NewAirportDialog::deleteEntry(int rowId)
+bool AirportEntryEditDialog::deleteEntry(int rowId)
 {
     auto entry = DB->getAirportEntry(rowId);
     return DB->remove(entry);

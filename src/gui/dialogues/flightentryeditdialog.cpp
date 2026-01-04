@@ -708,7 +708,7 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
         newEntryDialog = new TailEntryEditDialog(registrationLineEdit.text(), this);
         break;
     case OPL::DbTable::Airports:
-        newEntryDialog = new NewAirportDialog(this);
+        newEntryDialog = new AirportEntryEditDialog(this);
         break;
     default:
         return false;
