@@ -54,16 +54,24 @@ bool DatabaseSetup::executeSqlFile(const QString& file_path)
         LOG << "Unable to read database sql file: " << file_path << " - " << f.errorString();
         return false;
     }
-    const QByteArray filedata = f.readAll();
+    const QByteArray filedata = f.readAll().trimmed();
 
     // create individual queries for each table/view
-    auto list = filedata.split(';');
-    // but make sure no empty lines are parsed
-    list.removeAll(QByteArray("\n"));
-    list.removeAll(QByteArray("\r\n"));
+    const auto statementList = filedata.split(';');
+    // sanitize the list
+    QList<QByteArray> sanitizedStatemets;
+    for (const QByteArray &stmt : statementList) {
+        QByteArray trimmed = stmt.trimmed();
+        if (!trimmed.isEmpty()) {
+            sanitizedStatemets.append(trimmed);
+        }
+    }
+
+    DEB << statementList;
+    DEB << "sanitized: " << sanitizedStatemets;
 
     // Create and execute Queries
-    for (const auto &query_string : std::as_const(list)) {
+    for (const auto &query_string : std::as_const(sanitizedStatemets)) {
         QSqlQuery q;
         q.prepare(query_string);
         if (!q.exec()) {
@@ -77,9 +85,9 @@ bool DatabaseSetup::executeSqlFile(const QString& file_path)
     return true;
 }
 
-bool DatabaseSetup::importTemplateData()
+bool DatabaseSetup::importTemplateData(bool useOnlineTemplateData)
 {
-    if (m_useOnlineTemplateData) {
+    if (useOnlineTemplateData) {
         return importOnlineTemplateData();
     } else {
         return importLocalTemplateData();

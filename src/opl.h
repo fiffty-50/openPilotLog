@@ -215,7 +215,10 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience, v2AircraftTypes, v2Airports, v2AirportCodes};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience,
+                    v2LogEvents, v2Flights, v2Simulators, v2Pilots, v2AircraftTypes,
+                    v2AircraftTails, v2Airports, v2FlightSegments, v2MovementEvents,
+                    v2ApproachEvents, v2AirportCodes, v2Currencies };
 
 /*!
  * \brief Enumerates the currency names
@@ -289,10 +292,19 @@ private:
         {DbTable::Aircraft,     QStringLiteral("aircraft")},
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
-        {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
-        {DbTable::v2AircraftTypes, QStringLiteral("aircraft_types")},
-        {DbTable::v2Airports, QStringLiteral("airports")},
-        {DbTable::v2AirportCodes, QStringLiteral("airport_codes")},
+        {DbTable::PreviousExperience, QStringLiteral("previousExperience")},
+        {DbTable::v2LogEvents,  	QStringLiteral("log_events")},
+        {DbTable::v2Flights,		QStringLiteral("flights")},
+        {DbTable::v2Simulators,		QStringLiteral("simulators")},
+        {DbTable::v2Pilots,			QStringLiteral("pilots")},
+        {DbTable::v2AircraftTypes,	QStringLiteral("aircraft_types")},
+        {DbTable::v2AircraftTails,	QStringLiteral("aircraft_tails")},
+        {DbTable::v2Airports,		QStringLiteral("airports")},
+        {DbTable::v2FlightSegments, QStringLiteral("flight_segments")},
+        {DbTable::v2MovementEvents, QStringLiteral("movement_events")},
+        {DbTable::v2ApproachEvents, QStringLiteral("approach_events")},
+        {DbTable::v2AirportCodes,	QStringLiteral("airport_codes")},
+        {DbTable::v2Currencies,		QStringLiteral("currencies")},
     };
 
     const static inline QStringList APPROACH_TYPES = {

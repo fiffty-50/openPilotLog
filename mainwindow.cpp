@@ -31,11 +31,11 @@
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-//#include "src/network/flightawarequery.h"
-void MainWindow::doDebugStuff()
+void MainWindow::debug()
 {
-    auto dbSetup = DatabaseSetup(false);
-    dbSetup.importTemplateData();
+    auto dbSetup = DatabaseSetup();
+    dbSetup.createTables();
+    //dbSetup.importTemplateData(false);
 }
 
 MainWindow::MainWindow(QWidget *parent)

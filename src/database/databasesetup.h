@@ -31,13 +31,8 @@ class DatabaseSetup
 public:
     /*!
      * \brief Helper class to create a new database from scratch
-    * \param useOnlineTemplateData If true, template data will be downloaded from the online repository
-    * \details A set of template data for aircraft and airports is provided within the application assets.
-    * However, this data may be outdated. If this flag is set to true, the latest template data will be downloaded
-    * from the online repository during the database setup.
-    */
-    DatabaseSetup(bool useOnlineTemplateData)
-        : m_useOnlineTemplateData(useOnlineTemplateData) {};
+     */
+    DatabaseSetup() = default;
 
     /*! \brief Create the database tables
      * \return true if the setup was successful, false otherwise.
@@ -49,14 +44,20 @@ public:
      */
     bool createViews();
     
-    /*! \brief Import template data into the database
+    /*!
+     * \brief Import template data into the database
+     * \param useOnlineTemplateData If true, template data will be downloaded from the online repository
+     * \details A set of template data for aircraft and airports is provided within the application assets.
+     * However, this data may be outdated. If this flag is set to true, the latest template data will be downloaded
+     * from the online repository during the database setup.
      * \return true if the import was successful, false otherwise.
      */
-    bool importTemplateData();
+    bool importTemplateData(bool useOnlineTemplateData = false);
     
 private:
 
-    /*! \brief Execute an SQL file
+    /*!
+     * \brief Execute a SQL file
      * \param file_path The path to the SQL file to be executed.
      * \return true if the execution was successful, false otherwise.
      */
@@ -65,22 +66,19 @@ private:
     bool importOnlineTemplateData();
     bool importLocalTemplateData();
 
-    bool m_useOnlineTemplateData;
-
     const QList<QString> m_tables = {
-        QStringLiteral(":/database/.sql"),
-        QStringLiteral(":/01_log_events.sql"),
-        QStringLiteral(":/02_flights.sql"),
-        QStringLiteral(":/03_simulators.sql"),
-        QStringLiteral(":/04_pilots.sql"),
-        QStringLiteral(":/05_aircraft_types.sql"),
-        QStringLiteral(":/06_aircraft_tails.sql"),
-        QStringLiteral(":/07_airports.sql"),
-        QStringLiteral(":/08_flight_segments.sql"),
-        QStringLiteral(":/09_movement_events.sql"),
-        QStringLiteral(":/10_approach_events.sql"),
-        QStringLiteral(":/11_airport_codes.sql"),
-        QStringLiteral(":/12_currencies.sql")
+        QStringLiteral(":/database/schema/01_log_events.sql"),
+        QStringLiteral(":/database/schema/02_flights.sql"),
+        QStringLiteral(":/database/schema/03_simulators.sql"),
+        QStringLiteral(":/database/schema/04_pilots.sql"),
+        QStringLiteral(":/database/schema/05_aircraft_types.sql"),
+        QStringLiteral(":/database/schema/06_aircraft_tails.sql"),
+        QStringLiteral(":/database/schema/07_airports.sql"),
+        QStringLiteral(":/database/schema/08_flight_segments.sql"),
+        QStringLiteral(":/database/schema/09_movement_events.sql"),
+        QStringLiteral(":/database/schema/10_approach_events.sql"),
+        QStringLiteral(":/database/schema/11_airport_codes.sql"),
+        QStringLiteral(":/database/schema/12_currencies.sql")
     };
 
     const QList<QString> m_views = {

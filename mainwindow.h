@@ -146,7 +146,7 @@ private:
     void onDatabaseInvalid();
 
     //
-    void doDebugStuff();
+    void debug();
 
 protected:
     /*!
@@ -159,7 +159,7 @@ protected:
             if(keyEvent->matches(QKeySequence::AddTab)) {
                 on_actionDebug_triggered();
             } else if (keyEvent->matches(QKeySequence::InsertLineSeparator)) {
-                doDebugStuff();
+                debug();
             }
         }
     }
