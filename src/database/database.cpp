@@ -28,7 +28,7 @@ bool Database::connect()
         return false;
     }
 
-    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER, QStringLiteral("openPilotLog-db"));
+    QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
     db.setDatabaseName(databaseFile.absoluteFilePath());
 
     if (!db.open()) {

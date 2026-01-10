@@ -215,7 +215,7 @@ enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
 /*!
  * \brief Enumerates the tables in the database
  */
-enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience};
+enum class DbTable {Any, Flights, Simulators, Pilots, Tails, Aircraft, Airports, Currencies, PreviousExperience, v2AircraftTypes, v2Airports, v2AirportCodes};
 
 /*!
  * \brief Enumerates the currency names
@@ -290,6 +290,9 @@ private:
         {DbTable::Airports,     QStringLiteral("airports")},
         {DbTable::Currencies,   QStringLiteral("currencies")},
         {DbTable::PreviousExperience,    QStringLiteral("previousExperience")},
+        {DbTable::v2AircraftTypes, QStringLiteral("aircraft_types")},
+        {DbTable::v2Airports, QStringLiteral("airports")},
+        {DbTable::v2AirportCodes, QStringLiteral("airport_codes")},
     };
 
     const static inline QStringList APPROACH_TYPES = {

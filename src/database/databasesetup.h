@@ -22,8 +22,6 @@
 #include <QtCore>
 #include <QJsonArray>
 #include "src/opl.h"
-#include "src/database/database.h"
-#include "src/classes/jsonhelper.h"
 
 /*! \brief Initial Database Setup
  * \details This class is responsible for setting up the database during the first run of the application.
@@ -32,6 +30,7 @@ class DatabaseSetup
 {
 public:
     /*!
+     * \brief Helper class to create a new database from scratch
     * \param useOnlineTemplateData If true, template data will be downloaded from the online repository
     * \details A set of template data for aircraft and airports is provided within the application assets.
     * However, this data may be outdated. If this flag is set to true, the latest template data will be downloaded
@@ -63,12 +62,12 @@ private:
      */
     bool executeSqlFile(const QString& file_path);
 
-    bool importLocalTemplateData();
     bool importOnlineTemplateData();
+    bool importLocalTemplateData();
 
     bool m_useOnlineTemplateData;
 
-    QList<QString> m_tables = {
+    const QList<QString> m_tables = {
         QStringLiteral(":/database/.sql"),
         QStringLiteral(":/01_log_events.sql"),
         QStringLiteral(":/02_flights.sql"),
@@ -84,13 +83,14 @@ private:
         QStringLiteral(":/12_currencies.sql")
     };
 
-    QList<QString> m_views = {
+    const QList<QString> m_views = {
         // TODO: add view sql files here
     };
 
-    QHash<OPL::DbTable, QString> m_templateData = {
-        { OPL::DbTable::Aircraft, QStringLiteral(":/database/templates/aircraft_types.json") },
-        { OPL::DbTable::Airports, QStringLiteral(":/database/templates/airports.json") }
+    const QMap<OPL::DbTable, QString> m_templateData = {
+        { OPL::DbTable::v2AircraftTypes, QStringLiteral(":/database/templates/aircraft_types.json") },
+        { OPL::DbTable::v2Airports, QStringLiteral(":/database/templates/airports.json") },
+        { OPL::DbTable::v2AirportCodes, QStringLiteral(":/database/templates/airport_codes.json")},
     };
 };
 

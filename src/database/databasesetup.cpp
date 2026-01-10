@@ -17,6 +17,10 @@
  *
  */
 #include "databasesetup.h"
+#include <QSqlQuery>
+#include <QJsonArray>
+#include "src/database/database.h"
+#include "src/classes/jsonhelper.h"
 
 bool DatabaseSetup::createTables()
 {
@@ -100,6 +104,7 @@ bool DatabaseSetup::importLocalTemplateData()
 
         // Prepare import data
         const QJsonArray dataToCommit = JsonHelper::readFileToDoc(file_path).array();
+        LOG << "Commiting " << dataToCommit.size() << " entries";
 
         // Commit data
         if(!DB->commit(dataToCommit, table)) {

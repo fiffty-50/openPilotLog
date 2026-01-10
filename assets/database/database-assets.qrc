@@ -14,5 +14,7 @@
         <file>schema/12_currencies.sql</file>
         <file>templates/aircraft.json</file>
         <file>templates/airports.json</file>
+        <file>templates/aircraft_types.json</file>
+        <file>templates/airport_codes.json</file>
     </qresource>
 </RCC>
