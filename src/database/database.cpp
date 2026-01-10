@@ -693,6 +693,7 @@ bool Database::restoreBackup(const QString& backup_file)
     return true;
 }
 
+QT_DEPRECATED
 bool Database::createSchema()
 {
     // Read Database layout from sql file
@@ -734,6 +735,7 @@ bool Database::createSchema()
     }
 }
 
+QT_DEPRECATED
 bool Database::importTemplateData(bool use_local_ressources)
 {
     for (const auto& table : DB->getTemplateTables()) {
