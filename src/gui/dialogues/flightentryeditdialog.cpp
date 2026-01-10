@@ -3,7 +3,7 @@
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
-#include "src/gui/dialogues/newpilotdialog.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/verification/airportinput.h"
 #include "src/gui/verification/completerprovider.h"
@@ -702,13 +702,13 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
     QDialog *newEntryDialog = nullptr;
     switch (table) {
     case OPL::DbTable::Pilots:
-        newEntryDialog = new NewPilotDialog(caller->text(), this);
+        newEntryDialog = new PilotEntryEditDialog(caller->text(), this);
         break;
     case OPL::DbTable::Tails:
         newEntryDialog = new TailEntryEditDialog(registrationLineEdit.text(), this);
         break;
     case OPL::DbTable::Airports:
-        newEntryDialog = new NewAirportDialog(this);
+        newEntryDialog = new AirportEntryEditDialog(this);
         break;
     default:
         return false;

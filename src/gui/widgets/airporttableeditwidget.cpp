@@ -58,7 +58,7 @@ QString AirportTableEditWidget::confirmDeleteString(int rowId)
 
 EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
-    return new NewAirportDialog(parent);
+    return new AirportEntryEditDialog(parent);
 }
 
 void AirportTableEditWidget::filterTextChanged(const QString &filterString)

@@ -7,7 +7,7 @@
 #include "src/database/database.h"
 #include "src/database/views/logbookviewinfo.h"
 #include "src/gui/dialogues/flightentryeditdialog.h"
-#include "src/gui/dialogues/newsimdialog.h"
+#include "src/gui/dialogues/simentryeditdialog.h"
 
 LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent)
     : TableEditWidget(Vertical, parent)
@@ -92,7 +92,7 @@ void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex
         m_stackedWidget->setCurrentWidget(&dialog);
         dialog.exec();
     } else {
-        auto nsd = NewSimDialog(rowId * -1, this);
+        auto nsd = SimEntryEditDialog(rowId * -1, this);
         m_stackedWidget->addWidget(&nsd);
         m_stackedWidget->setCurrentWidget(&nsd);
         nsd.exec();
@@ -139,7 +139,7 @@ void LogbookTableEditWidget::addSimulatorEntryRequested()
 {
         showEditWidget();
 
-        auto nsd = NewSimDialog(this);
+        auto nsd = SimEntryEditDialog(this);
         m_stackedWidget->addWidget(&nsd);
         m_stackedWidget->setCurrentWidget(&nsd);
         nsd.exec();

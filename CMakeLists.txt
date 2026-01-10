@@ -37,15 +37,12 @@ set(PROJECT_SOURCES
     src/gui/dialogues/firstrundialog.ui
     src/gui/dialogues/airportentryeditdialog.h
     src/gui/dialogues/airportentryeditdialog.cpp
-    src/gui/dialogues/airportentryeditdialog.ui
-    src/gui/dialogues/newpilotdialog.h
-    src/gui/dialogues/newpilotdialog.cpp
-    src/gui/dialogues/newpilot.ui
+    src/gui/dialogues/pilotentryeditdialog.h
+    src/gui/dialogues/pilotentryeditdialog.cpp
     src/gui/dialogues/tailentryeditdialog.h
     src/gui/dialogues/tailentryeditdialog.cpp
-    src/gui/dialogues/newsimdialog.h
-    src/gui/dialogues/newsimdialog.cpp
-    src/gui/dialogues/newsimdialog.ui
+    src/gui/dialogues/simentryeditdialog.h
+    src/gui/dialogues/simentryeditdialog.cpp
     src/gui/dialogues/exporttocsvdialog.h
     src/gui/dialogues/exporttocsvdialog.cpp
     src/gui/dialogues/exporttocsvdialog.ui
