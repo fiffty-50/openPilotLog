@@ -88,9 +88,9 @@ private:
         // TODO: add view sql files here
     };
 
-    QHash<QString, QString> m_templateData = {
-        { QStringLiteral("aircraft_types"), QStringLiteral(":/database/templates/aircraft_types.json") },
-        { QStringLiteral("airports"), QStringLiteral(":/database/templates/airports.json") }
+    QHash<OPL::DbTable, QString> m_templateData = {
+        { OPL::DbTable::Aircraft, QStringLiteral(":/database/templates/aircraft_types.json") },
+        { OPL::DbTable::Airports, QStringLiteral(":/database/templates/airports.json") }
     };
 };
 

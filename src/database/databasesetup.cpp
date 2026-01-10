@@ -85,23 +85,24 @@ bool DatabaseSetup::importTemplateData()
 bool DatabaseSetup::importLocalTemplateData()
 {
     for( auto it = m_templateData.cbegin(); it != m_templateData.cend(); ++it ) {
-        const QString table_name = it.key();
+        const OPL::DbTable table = it.key();
+        const QString table_name = OPL::GLOBALS->getDbTableName(table);
         const QString file_path = it.value();
-        LOG << "Importing local template data for table: " << table_name;
+        LOG << "Importing local template data from: " << file_path << " into table: " << table_name;
 
         // clear table to make sure it is empty before import
         QSqlQuery q;
-        q.prepare(QLatin1String("DELETE FROM ") + table_name);
+        q.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
         if (!q.exec()) {
             LOG << "Error clearing template data table: " << table_name << " - " << q.lastError().text();
             return false;
         }
 
         // Prepare import data
-        const QJSonArray dataToCommit = JsonHelper::readFileToDoc(file_path).array();
+        const QJsonArray dataToCommit = JsonHelper::readFileToDoc(file_path).array();
 
         // Commit data
-        if(!DB->commit(dataToCommit, table_name)) {
+        if(!DB->commit(dataToCommit, table)) {
             LOG << "Error importing template data into table: " << table_name << " - " << DB->lastError.text();
             return false;
         }
