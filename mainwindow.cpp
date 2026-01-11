@@ -34,8 +34,9 @@
 void MainWindow::debug()
 {
     auto dbSetup = DatabaseSetup();
-    dbSetup.createTables();
-    //dbSetup.importTemplateData(false);
+    //dbSetup.clearDatabase();
+    //dbSetup.createTables();
+    dbSetup.importTemplateData(false);
 }
 
 MainWindow::MainWindow(QWidget *parent)

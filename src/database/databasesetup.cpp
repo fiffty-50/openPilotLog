@@ -130,3 +130,42 @@ bool DatabaseSetup::importOnlineTemplateData()
     LOG << "Online template data import unimplemented.";
     return false;
 }
+
+bool DatabaseSetup::clearDatabase()
+{
+    QSqlQuery q;
+    q.prepare("SELECT name FROM sqlite_master WHERE type IN ('table', 'index');");
+    if (!q.exec()) {
+        LOG << "Error retrieving database schema: " << q.lastError().text();
+        return false;
+    }
+    
+    while (q.next()) {
+        const QString object_name = q.value(0).toString();
+        QSqlQuery drop_query;
+        drop_query.prepare(QLatin1String("DROP TABLE IF EXISTS ") + object_name + QLatin1String(";"));
+        if (!drop_query.exec()) {
+            LOG << "Error dropping database object: " << object_name << " - " << drop_query.lastError().text();
+            return false;
+        }
+    }
+    LOG << "Database cleared successfully.";
+    return true;
+}
+
+bool DatabaseSetup::clearUserData(bool useOnlineTemplateData)
+{
+    for (const auto &table_name : OPL::GLOBALS->getDbTableNames()) {
+
+        QSqlQuery q;
+        q.prepare(QLatin1String("DELETE FROM ") + table_name);
+        if (!q.exec()) {
+            LOG << "Error clearing user data from table: " << table_name << " - " << q.lastError().text();
+            return false;
+        }
+    }
+    LOG << "User data cleared successfully.";
+
+    LOG << "Restoring template data...";
+    return importTemplateData(useOnlineTemplateData);
+}

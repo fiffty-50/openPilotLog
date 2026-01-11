@@ -25,6 +25,10 @@
 
 /*! \brief Initial Database Setup
  * \details This class is responsible for setting up the database during the first run of the application.
+ * It creates the necessary tables and views, and imports template data into the database. It also provides
+ * functionality to reset the entire database or clear user data while keeping the structure intact. These
+ * functions are destructive and will result in loss of data. They should be used with caution and only
+ * after user confirmation as well as proper backups.
  */
 class DatabaseSetup
 {
@@ -34,12 +38,14 @@ public:
      */
     DatabaseSetup() = default;
 
-    /*! \brief Create the database tables
+    /*! 
+     * \brief Create the database tables
      * \return true if the setup was successful, false otherwise.
      */
     bool createTables();
 
-    /*! \brief Create the database views
+    /*! 
+     * \brief Create the database views
      * \return true if the setup was successful, false otherwise.
      */
     bool createViews();
@@ -53,6 +59,21 @@ public:
      * \return true if the import was successful, false otherwise.
      */
     bool importTemplateData(bool useOnlineTemplateData = false);
+    
+    /*! 
+     * \brief Clear the database by dropping all tables
+     * \return true if the database was cleared successfully, false otherwise.
+     */
+    bool clearDatabase();
+
+    /*! 
+     * \brief Clear all user data from the database tables, keeping the structure intact
+     * \return true if the user data was cleared successfully, false otherwise.
+     * \param useOnlineTemplateData If true, template data will be downloaded from the online repository
+     * \details This function clears all user data from the database tables, while keeping the table structure intact.
+     * After clearing the user data, it imports the template data back into the database. 
+     */
+    bool clearUserData(bool useOnlineTemplateData = false);
     
 private:
 
@@ -87,8 +108,8 @@ private:
 
     const QMap<OPL::DbTable, QString> m_templateData = {
         { OPL::DbTable::v2AircraftTypes, QStringLiteral(":/database/templates/aircraft_types.json") },
-        { OPL::DbTable::v2Airports, QStringLiteral(":/database/templates/airports.json") },
-        { OPL::DbTable::v2AirportCodes, QStringLiteral(":/database/templates/airport_codes.json")},
+        { OPL::DbTable::v2Airports,      QStringLiteral(":/database/templates/airports.json") },
+        { OPL::DbTable::v2AirportCodes,  QStringLiteral(":/database/templates/airport_codes.json")},
     };
 };
 

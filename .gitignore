@@ -33,6 +33,7 @@ Makefile*
 *build-*
 *.qm
 *.prl
+.qt/
 
 # Qt unit tests
 target_wrapper.*
@@ -56,6 +57,16 @@ compile_commands.json
 debug/
 
 release/
+
+build/
+
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+openPilotLog
+openPilotLog_autogen
+Makefile
+
 
 *.vcxproj
 

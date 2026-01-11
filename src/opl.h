@@ -245,6 +245,7 @@ public:
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
     inline const QString getViewIdentifier(LogbookView view_name) const {return DATABASE_VIEWS.value(view_name);}
     inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
+    inline const QStringList getDbTableNames() const { return DB_TABLES.values(); }
 
 private:
     Q_OBJECT
