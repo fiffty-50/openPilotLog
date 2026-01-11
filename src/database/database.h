@@ -39,6 +39,7 @@
 #include "src/database/pilotentry.h"
 #include "src/database/simulatorentry.h"
 #include "src/database/tailentry.h"
+#include "src/database/airportcodeentry.h"
 #include "src/opl.h"
 #include "src/database/row.h"
 
@@ -287,6 +288,13 @@ public:
         const auto data = getRowData(OPL::DbTable::Airports, row_id);
         return OPL::AirportEntry(row_id, data);
     }
+
+    /*!
+     * \brief Retreives all airport code entries for a given airport_id
+     * \param airport_id - the airport_id of an airport in the airports table
+     * \return
+     */
+    QList<OPL::AirportCodeEntry> getAirportCodeEntries(int airport_id);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective table.

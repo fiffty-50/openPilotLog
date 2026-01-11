@@ -34,16 +34,6 @@ public:
     const QString getTableName() const override;
 
     /*!
-     * \brief return the airports IATA code (3-letter)
-     */
-    const QString getIataCode() const;
-
-    /*!
-     * \brief return the airports ICAO code (4-letter)
-     */
-    const QString getIcaoCode() const;
-
-    /*!
      * \brief Returns the airport common given name
      */
     const QString getAirportName() const;
@@ -56,12 +46,12 @@ public:
     /*!
      * \brief The airports latitude. Stored as a double
      */
-    const static inline QString LAT            = QStringLiteral("latitude");
+    const static inline QString LATITUDE            = QStringLiteral("latitude");
 
     /*!
      * \brief The airports longitude. Stored as a double
      */
-    const static inline QString LON            = QStringLiteral("longitude");
+    const static inline QString LONGITUDE            = QStringLiteral("longitude");
 
     /*!
      * \brief The timezone (Olson classification) the airport is situated in

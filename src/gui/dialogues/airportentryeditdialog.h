@@ -20,8 +20,6 @@ public:
 
 private slots:
     void on_buttonBox_accepted();
-    void on_iataLineEdit_textChanged(const QString &arg1);
-    void on_icaoLineEdit_textChanged(const QString &arg1);
 
 private:
     // UI Elements
@@ -32,13 +30,13 @@ private:
     QLabel *latitudeLabel;
     QLabel *timezoneLabel;
     QLineEdit *countryLineEdit;
-    QLineEdit *iataLineEdit;
     QComboBox *timeZoneComboBox;
     QLabel *icaoLabel;
+    QLabel *icaoDisplayLabel;
     QLabel *iataLabel;
+    QLabel *iataDisplayLabel;
     QLineEdit *nameLineEdit;
     QLabel *nameLabel;
-    QLineEdit *icaoLineEdit;
     QDoubleSpinBox *lonDoubleSpinBox;
     QDoubleSpinBox *latDoubleSpinBox;
 
@@ -49,7 +47,6 @@ private:
     void init();
     void retranslateUi();
     void setupSlots();
-    void setValidators();
     void loadTimeZones();
     bool confirmTimezone();
     void loadAirportData(int row_id);

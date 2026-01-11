@@ -81,6 +81,9 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbooktableeditwidget.h
     src/gui/widgets/logbooktableeditwidget.cpp
 
+    src/gui/widgets/databaseeditwidget.h
+    src/gui/widgets/databaseeditwidget.cpp
+
     # Verification
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h
@@ -153,6 +156,8 @@ set(PROJECT_SOURCES
     src/database/currencyentry.cpp
     src/database/previousexperienceentry.h
     src/database/previousexperienceentry.cpp
+    src/database/airportcodeentry.h
+    src/database/airportcodeentry.cpp
 
     # Namespaces
     src/functions/calc.h

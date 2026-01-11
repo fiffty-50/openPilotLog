@@ -18,7 +18,7 @@
 #include <QToolBar>
 #include "mainwindow.h"
 #include "src/database/databasesetup.h"
-#include "src/gui/widgets/airporttableeditwidget.h"
+#include "src/gui/widgets/databaseeditwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
@@ -29,15 +29,6 @@
 #include "src/database/databasecache.h"
 #include "src/classes/settings.h"
 
-// WIP area - pressing SHIFT + ENTER executes this function
-// this is to provide easy and quick access to a currently worked on functionality
-void MainWindow::debug()
-{
-    auto dbSetup = DatabaseSetup();
-    //dbSetup.clearDatabase();
-    //dbSetup.createTables();
-    dbSetup.importTemplateData(false);
-}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -71,9 +62,9 @@ void MainWindow::setupToolbar()
     toolBar->addAction(ui->actionNewFlight);
     toolBar->addAction(ui->actionNewSim);
     toolBar->addAction(ui->actionLogbook);
-    toolBar->addAction(ui->actionAircraft);
+    toolBar->addAction(ui->actionNewAircraft);
     toolBar->addAction(ui->actionPilots);
-    toolBar->addAction(ui->actionAirports);
+    toolBar->addAction(ui->actionDatabase);
     toolBar->addAction(ui->actionSettings);
     toolBar->addAction(ui->actionQuit);
     toolBar->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -99,9 +90,8 @@ void MainWindow::initialiseWidgets()
     pilotsWidget->init();
     ui->stackedWidget->addWidget(pilotsWidget);
 
-    airportWidget = new AirportTableEditWidget(this);
-    airportWidget->init();
-    ui->stackedWidget->addWidget(airportWidget);
+    databaseWidget = new DatabaseEditWidget(this);
+    ui->stackedWidget->addWidget(databaseWidget);
 
     settingsWidget = new SettingsWidget(this);
     ui->stackedWidget->addWidget(settingsWidget);
@@ -134,9 +124,9 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
         ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
         ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
         ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionNewAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
         ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
         ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
@@ -146,9 +136,9 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
         ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
         ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
         ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
-        ui->actionAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionNewAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
         ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionAirports->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
         ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
         ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
@@ -256,9 +246,9 @@ void MainWindow::on_actionPilots_triggered()
     ui->stackedWidget->setCurrentWidget(pilotsWidget);
 }
 
-void MainWindow::on_actionAirports_triggered()
+void MainWindow::on_actionDatabase_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(airportWidget);
+    ui->stackedWidget->setCurrentWidget(databaseWidget);
 }
 
 void MainWindow::on_actionSettings_triggered()
@@ -277,4 +267,16 @@ void MainWindow::on_actionDebug_triggered()
     ui->stackedWidget->setCurrentWidget(debugWidget);
 }
 
+// WIP area - pressing SHIFT + ENTER executes this function
+// this is to provide easy and quick access to a currently worked on functionality
+void MainWindow::debug()
+{
+    auto dbSetup = DatabaseSetup();
+    //dbSetup.clearDatabase();
+    //dbSetup.createTables();
+    //dbSetup.importTemplateData(false);
+    auto widget = new DatabaseEditWidget(this);
+    ui->stackedWidget->addWidget(widget);
+    ui->stackedWidget->setCurrentWidget(widget);
+}
 

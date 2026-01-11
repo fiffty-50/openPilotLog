@@ -440,6 +440,53 @@ RowData_T Database::getRowData(const OPL::DbTable table, const int row_id)
     return entry_data;
 }
 
+QList<AirportCodeEntry> Database::getAirportCodeEntries(int airport_id)
+{
+    const QString statement = QStringLiteral("SELECT * FROM airport_codes WHERE airport_id = ?");
+
+    QSqlQuery q;
+    q.prepare(statement);
+    q.addBindValue(airport_id);
+    q.setForwardOnly(true);
+
+    if (!q.exec()) {
+        DEB << "SQL error: " << q.lastError().text();
+        DEB << "Statement: " << q.lastQuery();
+        lastError = q.lastError();
+        return {}; // return invalid Row
+    }
+
+    QList<RowData_T> rows;
+
+    while(q.next()) {
+        auto r = q.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            continue;
+
+        RowData_T entry_data;
+        for (int i = 0; i < r.count(); i++){ // iterate through fields to get key:value map
+            if(!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+
+        if(!entry_data.isEmpty()) {
+            rows.append(entry_data);
+            DEB << "Added Row: " << entry_data;
+        }
+    }
+
+    if(rows.isEmpty()) {
+        return {};
+    }
+
+    QList<AirportCodeEntry> result;
+    for(const auto &rowData : rows) {
+        result.append(AirportCodeEntry(airport_id, rowData));
+    }
+    return result;
+}
+
 int Database::getLastEntry(OPL::DbTable table)
 {
     QString statement = QLatin1String("SELECT MAX(ROWID) FROM ") + OPL::GLOBALS->getDbTableName(table);

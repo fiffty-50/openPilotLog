@@ -31,6 +31,7 @@
 
 #include <src/gui/widgets/logbooktableeditwidget.h>
 
+#include "src/gui/widgets/databaseeditwidget.h"
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/tableeditwidget.h"
@@ -103,7 +104,7 @@ private slots:
 
     void on_actionPilots_triggered();
 
-    void on_actionAirports_triggered();
+    void on_actionDatabase_triggered();
 
     void on_actionSettings_triggered();
 
@@ -124,7 +125,7 @@ private:
 
     TableEditWidget* pilotsWidget;
 
-    TableEditWidget* airportWidget;
+    DatabaseEditWidget* databaseWidget;
 
     SettingsWidget* settingsWidget;
 

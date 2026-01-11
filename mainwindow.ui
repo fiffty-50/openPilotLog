@@ -32,7 +32,7 @@
    <string>openPilotLog</string>
   </property>
   <property name="toolButtonStyle">
-   <enum>Qt::ToolButtonTextUnderIcon</enum>
+   <enum>Qt::ToolButtonStyle::ToolButtonTextUnderIcon</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -95,15 +95,15 @@
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="actionAircraft">
+  <action name="actionDatabase">
    <property name="text">
-    <string>Aircraft</string>
+    <string>Database</string>
    </property>
    <property name="toolTip">
-    <string>Show or edit your aircraft</string>
+    <string>Edit Database Tables</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionNewAircraft">
