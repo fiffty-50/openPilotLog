@@ -329,8 +329,8 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     OPL::RowData_T data;
-    data.insert(OPL::PilotEntry::LASTNAME,   ui->lastnameLineEdit->text());
-    data.insert(OPL::PilotEntry::FIRSTNAME,  ui->firstnameLineEdit->text());
+    data.insert(OPL::PilotEntry::NAME,   ui->lastnameLineEdit->text());
+    //data.insert(OPL::PilotEntry::FIRSTNAME,  ui->firstnameLineEdit->text());
     data.insert(OPL::PilotEntry::ALIAS,      QStringLiteral("self"));
     data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
     data.insert(OPL::PilotEntry::PHONE,      ui->phoneLineEdit->text());

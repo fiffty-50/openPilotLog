@@ -36,14 +36,9 @@ const QString PilotEntry::getTableName() const
     return TABLE_NAME;
 }
 
-const QString PilotEntry::getLastName() const
+const QString PilotEntry::getName() const
 {
-    return getData().value(LASTNAME).toString();
-}
-
-const QString PilotEntry::getFirstName() const
-{
-    return getData().value(FIRSTNAME).toString();
+    return getData().value(NAME).toString();
 }
 
 } // namespace OPL

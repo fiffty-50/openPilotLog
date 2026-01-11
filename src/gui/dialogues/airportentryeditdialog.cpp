@@ -136,12 +136,12 @@ void AirportEntryEditDialog::loadAirportData(int row_id)
     const auto airport_data = DB->getAirportEntry(row_id).getData();
     DEB << "Filling Airport Data: " << airport_data;
 
-    nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
-    icaoLineEdit->setText(airport_data.value(OPL::AirportEntry::ICAO).toString());
-    iataLineEdit->setText(airport_data.value(OPL::AirportEntry::IATA).toString());
+    // nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
+    // icaoLineEdit->setText(airport_data.value(OPL::AirportEntry::ICAO).toString());
+    // iataLineEdit->setText(airport_data.value(OPL::AirportEntry::IATA).toString());
     latDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LAT).toDouble());
     lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LON).toDouble());
-    countryLineEdit->setText(airport_data.value(OPL::AirportEntry::COUNTRY).toString());
+    //countryLineEdit->setText(airport_data.value(OPL::AirportEntry::COUNTRY).toString());
 
     const QString timezone = airport_data.value(OPL::AirportEntry::TZ_OLSON).toString();
     DEB << "Timezone: " << timezone;
@@ -195,12 +195,12 @@ void AirportEntryEditDialog::on_buttonBox_accepted()
     // create Entry object
     OPL::RowData_T airport_data = {
         {OPL::AirportEntry::NAME,     nameLineEdit->text()},
-        {OPL::AirportEntry::ICAO,     icaoLineEdit->text()},
-        {OPL::AirportEntry::IATA,     iataLineEdit->text()},
+        // {OPL::AirportEntry::ICAO,     icaoLineEdit->text()},
+        // {OPL::AirportEntry::IATA,     iataLineEdit->text()},
         {OPL::AirportEntry::LAT,      latDoubleSpinBox->value()},
         {OPL::AirportEntry::LON,      lonDoubleSpinBox->value()},
         {OPL::AirportEntry::TZ_OLSON, timeZoneComboBox->currentText()},
-        {OPL::AirportEntry::COUNTRY,  countryLineEdit->text()},
+        // {OPL::AirportEntry::COUNTRY,  countryLineEdit->text()},
     };
 
     OPL::AirportEntry entry(m_rowId, airport_data);

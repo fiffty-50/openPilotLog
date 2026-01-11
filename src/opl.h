@@ -208,6 +208,11 @@ enum class Translation {English, German, Spanish};
 enum class LogbookView {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnly};
 
 /*!
+ * \brief Enumerates the available SQL views in the database, except Logbook Views
+ */
+enum class DatabaseView {Airports};
+
+/*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
  */
 enum class SimulatorType {FNPTI = 0, FNPTII = 1, FSTD = 2};
@@ -243,7 +248,8 @@ public:
 
     inline const QStringList &getApproachTypes() const {return APPROACH_TYPES;}
     inline const QString getLanguageFilePath(Translation language) const {return L10N_FilePaths.value(language);}
-    inline const QString getViewIdentifier(LogbookView view_name) const {return DATABASE_VIEWS.value(view_name);}
+    inline const QString getLogbookViewName(LogbookView view_name) const {return LOGBOOK_VIEWS.value(view_name);}
+    inline const QString getDatabaseViewName(DatabaseView view_name) const {return DATABASE_VIEWS.value(view_name);}
     inline const QString getDbTableName(DbTable table_name) const {return DB_TABLES.value(table_name);}
     inline const QStringList getDbTableNames() const { return DB_TABLES.values(); }
 
@@ -259,12 +265,15 @@ private:
         {Translation::German,  QStringLiteral("Deutsch")},
         {Translation::Spanish, QStringLiteral("Español")},
     };
-    const static inline QMap<LogbookView, QString> DATABASE_VIEWS = {
+    const static inline QMap<LogbookView, QString> LOGBOOK_VIEWS = {
         {LogbookView::Default,        QStringLiteral("viewDefault")},
         {LogbookView::DefaultWithSim, QStringLiteral("viewDefaultSim")},
         {LogbookView::Easa,           QStringLiteral("viewEasa")},
         {LogbookView::EasaWithSim,    QStringLiteral("viewEasaSim")},
         {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")},
+    };
+    const static inline QMap<DatabaseView, QString> DATABASE_VIEWS = {
+        {DatabaseView::Airports,		QStringLiteral("AirportView")},
     };
     const QMap<LogbookView, QString> DATABASE_VIEW_DISPLAY_NAMES = {
         {LogbookView::Default,        tr("Default")},

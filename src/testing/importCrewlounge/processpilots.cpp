@@ -52,13 +52,13 @@ void ProcessPilots::processParsedData()
         // process name [1]
         auto temp_list = pair.first[1].split(QLatin1Char(' '));
         if (!temp_list.isEmpty()) {
-            new_pilot_data.insert(OPL::PilotEntry::LASTNAME, temp_list.first());
+            new_pilot_data.insert(OPL::PilotEntry::NAME, temp_list.first());
             temp_list.pop_front();
 
             if (!temp_list.isEmpty())
-                new_pilot_data.insert(OPL::PilotEntry::FIRSTNAME, temp_list.join(QLatin1Char(' ')));
+                new_pilot_data.insert(OPL::PilotEntry::NAME, temp_list.join(QLatin1Char(' ')));
         } else {
-            new_pilot_data.insert(OPL::PilotEntry::LASTNAME, QStringLiteral("UNKNOWN"));
+            new_pilot_data.insert(OPL::PilotEntry::NAME, QStringLiteral("UNKNOWN"));
         }
 
         // add additional data

@@ -3,17 +3,17 @@
 #include "src/gui/dialogues/airportentryeditdialog.h"
 
 AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
-    : TableEditWidget(Vertical, parent)
+    : TableEditWidget(Horizontal, parent)
 {}
 
 void AirportTableEditWidget::setupModelAndView()
 {
     m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Airports));
+    m_model->setTable(OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Airports));
     m_model->select();
 
-    for(int i = 0; i < HEADER_NAMES.size(); i++) {
-        m_model->setHeaderData(i + 1, Qt::Horizontal, HEADER_NAMES.at(i));
+    for(auto it = HEADER_NAMES.cbegin(); it != HEADER_NAMES.cend(); ++it) {
+        m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
     }
 
     m_view->setModel(m_model);
@@ -36,9 +36,9 @@ void AirportTableEditWidget::setupUI()
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Airport"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Airport"));
-    for(const int i : FILTER_COLUMNS) {
-        m_filterSelectionComboBox->addItem(HEADER_NAMES.at(i));
-    }
+    m_filterSelectionComboBox->addItems(HEADER_NAMES.values());
+    m_filterSelectionComboBox->addItem(tr("Any"));
+    m_filterSelectionComboBox->setCurrentIndex(m_filterSelectionComboBox->count() - 1);
 }
 
 QString AirportTableEditWidget::deleteErrorString(int rowId)
@@ -53,7 +53,7 @@ QString AirportTableEditWidget::confirmDeleteString(int rowId)
     return tr("The following airport will be deleted:<br><br><b><tt>"
               "%1<br></b></tt>"
               "Deleting airports is irreversible.<br>Do you want to proceed?"
-              ).arg(entry.getAirportDescriptor());
+              ).arg(entry.getAirportName());
 }
 
 EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
@@ -67,13 +67,32 @@ void AirportTableEditWidget::filterTextChanged(const QString &filterString)
         m_model->setFilter(QString());
         return;
     }
+    auto getFilterStatement = [](const QString &filterColumn, const QString &filterText) -> QString {
+        return QString(
+            QLatin1Char('\"')
+                + filterColumn
+                + QLatin1String("\" LIKE '%")
+                + filterText
+                + QLatin1String("%'")
+            );
+    };
 
-    int i = m_filterSelectionComboBox->currentIndex();
-    const QString filter =
-        QLatin1Char('\"')
-        + HEADER_NAMES.at(FILTER_COLUMNS[i])
-        + QLatin1String("\" LIKE '%")
-        + filterString
-        + QLatin1String("%'");
-    m_model->setFilter(filter);
+    const QString filterColumn = COLUMN_DATABASE_NAMES.value(m_filterSelectionComboBox->currentText());
+    if(filterColumn.isEmpty()) {
+        // search in all columns
+        QString filter;
+        const QString SQL_OR = QStringLiteral(" OR ");
+        for(const auto &column : COLUMN_DATABASE_NAMES.values()) {
+            // search is useless if timezone is included, so skip it
+            if (column == QStringLiteral("timezone")) { continue; }
+            filter.append(getFilterStatement(column, filterString));
+            filter.append(SQL_OR);
+        }
+        // remove last "or"
+        filter.chop(SQL_OR.size());
+        m_model->setFilter(filter);
+    } else {
+        // filter based on selected column
+        m_model->setFilter(getFilterStatement(filterColumn, filterString));
+    }
 }

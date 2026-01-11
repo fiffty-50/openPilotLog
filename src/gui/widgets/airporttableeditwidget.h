@@ -3,7 +3,6 @@
 
 #include "tableeditwidget.h"
 #include <QObject>
-#include "src/database/airportentry.h"
 
 class AirportTableEditWidget : public TableEditWidget
 {
@@ -19,30 +18,34 @@ public:
     virtual QString confirmDeleteString(int rowId) override;
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
 
+private:
     // table columns and header names
 
-    const int COL_ROWID = 0;
+    static constexpr int COL_ROWID = 0;
+    static constexpr int COL_ICAO = 1;
+    static constexpr int COL_IATA = 2;
+    static constexpr int COL_TIMEZONE = 3;
+    static constexpr int COL_AIRPORT_NAME = 4;
+
+    const QString COL_HEADER_ICAO = tr("ICAO");
+    const QString COL_HEADER_IATA = tr("IATA");
+    const QString COL_HEADER_TIMEZONE = tr("Timezone");
+    const QString COL_HEADER_NAME = tr("Name");
 
     // used to display the Header Views and Fill the FilterComboBox
-    const QStringList HEADER_NAMES = {
-                                      tr("ICAO"),
-                                      tr("IATA"),
-                                      tr("Name"),
-                                      tr("Latitude"),
-                                      tr("Longitude"),
-                                      tr("Country"),
-                                      tr("Time Zone"),
+    const QMap<int, QString> HEADER_NAMES = {
+                        { COL_ICAO, 		 COL_HEADER_ICAO },
+                        { COL_IATA, 		 COL_HEADER_IATA },
+                        { COL_TIMEZONE, 	 COL_HEADER_TIMEZONE },
+                        { COL_AIRPORT_NAME,  COL_HEADER_NAME },
     };
 
-    // These are indexes into HEADER_NAMES
-    const int FILTER_COLUMNS[4] = {0, 1, 2, 5};
-
-    // The sql column names corresponding to the entries of the FilterComboBox index
-    const static inline QStringList FILTER_COLUMN_NAMES = {
-        OPL::AirportEntry::ICAO,
-        OPL::AirportEntry::IATA,
-        OPL::AirportEntry::NAME,
-        OPL::AirportEntry::TZ_OLSON,
+    // used to map filter combo box values to column names
+    const QMap<QString, QString> COLUMN_DATABASE_NAMES = {
+        {COL_HEADER_ICAO, 	  QStringLiteral("icao_code") },
+        {COL_HEADER_IATA, 	  QStringLiteral("iata_code") },
+        {COL_HEADER_TIMEZONE, QStringLiteral("timezone")},
+        {COL_HEADER_NAME, 	  QStringLiteral("name")},
     };
 
 private slots:

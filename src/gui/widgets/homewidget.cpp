@@ -71,9 +71,9 @@ void HomeWidget::changeEvent(QEvent *event)
 const QString HomeWidget::getLogbookOwnerName() const
 {
     OPL::PilotEntry owner = DB->getLogbookOwner();
-    QString name = owner.getFirstName();
+    QString name = owner.getName();
     if(name.isEmpty()) {
-        name = owner.getLastName();
+        name = owner.getName();
     }
     return name;
 }

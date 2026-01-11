@@ -48,52 +48,25 @@ public:
      */
     const QString getAirportName() const;
 
-    /*!
-     * \brief return a string describing the airport
-     * \details The string consists of the Airport ICAO Code, and if available
-     * IATA Code and Airport Name
-     */
-    const QString getAirportDescriptor() const;
-
-    /*!
-     * \brief The ICAO code is a 4-letter alphanumeric identifier for airports
-     */
-    const static inline QString ICAO           = QStringLiteral("icao");
-    /*!
-     * \brief The IATA code is a 3-letter alphanumeric identifier for airports
-     */
-    const static inline QString IATA           = QStringLiteral("iata");
+    const static inline QString ROWID 		   = QStringLiteral("airport_id");
     /*!
      * \brief The airports common name
      */
-    const static inline QString NAME           = QStringLiteral("name");
+    const static inline QString NAME           = QStringLiteral("airport_name");
     /*!
      * \brief The airports latitude. Stored as a double
      */
-    const static inline QString LAT            = QStringLiteral("lat");
+    const static inline QString LAT            = QStringLiteral("latitude");
 
     /*!
      * \brief The airports longitude. Stored as a double
      */
-    const static inline QString LON            = QStringLiteral("long");
+    const static inline QString LON            = QStringLiteral("longitude");
 
-    /*!
-     * \brief The country the airport is located in
-     */
-    const static inline QString COUNTRY        = QStringLiteral("country");
-    /*!
-     * \brief The altitude aboe mea sea level the airport is located at.
-     */
-    const static inline QString ALTITIDUE      = QStringLiteral("alt");
-
-    /*!
-     * \brief The airports timezone Offset from UTC
-     */
-    const static inline QString UTC_OFFSET     = QStringLiteral("utcoffset");
     /*!
      * \brief The timezone (Olson classification) the airport is situated in
      */
-    const static inline QString TZ_OLSON       = QStringLiteral("tzolson");
+    const static inline QString TZ_OLSON       = QStringLiteral("timezone_olson");
 };
 
 } // namespace OPL

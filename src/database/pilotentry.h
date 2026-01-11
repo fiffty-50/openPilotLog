@@ -34,45 +34,44 @@ public:
     const QString getTableName() const override;
 
     /*!
-     * \brief Return the pilots last name
+     * \brief Return the pilots name
      */
-    const QString getLastName()  const;
-
-    /*!
-     * \brief Return the pilots first name
-     */
-    const QString getFirstName() const;
+    const QString getName()  const;
 
     const static inline QString ROWID           = QStringLiteral("pilot_id");
     /*!
-     * \brief The sql column name for the pilots last name
+     * \brief The sql column name for the pilots name
      */
-    const static inline QString LASTNAME        = QStringLiteral("lastname");
-    /*!
-     * \brief The sql column name for the pilots first name
-     */
-    const static inline QString FIRSTNAME       = QStringLiteral("firstname");
+    const static inline QString NAME        = QStringLiteral("pilot_name");
 
     /*!
      * \brief The sql column name for an alias for the pilot
      */
     const static inline QString ALIAS           = QStringLiteral("alias");
+
+    /*!
+     * \brief The sql column name for the pilots employee number
+     */
+    const static inline QString EMPLOYEEID      = QStringLiteral("employee_id");
+
     /*!
      * \brief The company the pilots works for
      */
     const static inline QString COMPANY         = QStringLiteral("company");
-    /*!
-     * \brief The sql column name for the pilots employee number
-     */
-    const static inline QString EMPLOYEEID      = QStringLiteral("employeeid");
+
     /*!
      * \brief The sql column name for a pilots phone number
      */
     const static inline QString PHONE           = QStringLiteral("phone");
     /*!
-     * \brief the sql column name for a pilots email address
+     * \brief The sql column name for a pilots email address
      */
     const static inline QString EMAIL           = QStringLiteral("email");
+
+    /*!
+     * \brief The sql column name for a pilots remarks
+     */
+    const static inline QString REMARKS 		= QStringLiteral("remarks");
 };
 
 } // namespace OPL

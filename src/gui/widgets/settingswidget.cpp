@@ -89,12 +89,11 @@ void SettingsWidget::readSettings()
 
     // Personal Data Tab
     const auto user_data = DB->getLogbookOwner().getData();
-    QString lastName = user_data.value(OPL::PilotEntry::LASTNAME).toString();
+    QString lastName = user_data.value(OPL::PilotEntry::NAME).toString();
     if(lastName.isEmpty()) {
         lastName = "Please enter your last name.";
     }
-    ui->lastnameLineEdit->setText(lastName);
-    ui->firstnameLineEdit->setText(user_data.value(OPL::PilotEntry::FIRSTNAME).toString());
+    ui->lastnameLineEdit->setText(user_data.value(OPL::PilotEntry::NAME).toString());
     ui->companyLineEdit->setText(user_data.value(OPL::PilotEntry::COMPANY).toString());
     ui->employeeidLineEdit->setText(user_data.value(OPL::PilotEntry::EMPLOYEEID).toString());
     ui->phoneLineEdit->setText(user_data.value(OPL::PilotEntry::PHONE).toString());
@@ -164,8 +163,7 @@ void SettingsWidget::updatePersonalDetails()
     default:
         break;
     }
-    user_data.insert(OPL::PilotEntry::LASTNAME, ui->lastnameLineEdit->text());
-    user_data.insert(OPL::PilotEntry::FIRSTNAME, ui->firstnameLineEdit->text());
+    user_data.insert(OPL::PilotEntry::NAME, ui->lastnameLineEdit->text());
     user_data.insert(OPL::PilotEntry::COMPANY, ui->companyLineEdit->text());
     user_data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
     user_data.insert(OPL::PilotEntry::PHONE, ui->phoneLineEdit->text());

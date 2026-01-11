@@ -225,7 +225,7 @@ public:
      */
     inline bool setLogbookOwner(RowData_T &ownerData)
     {
-        if(ownerData.value(OPL::PilotEntry::LASTNAME).isNull()) {
+        if(ownerData.value(OPL::PilotEntry::NAME).isNull()) {
             lastError = QSqlError("Logbook owners last name is mandatory.");
             return false;
         }

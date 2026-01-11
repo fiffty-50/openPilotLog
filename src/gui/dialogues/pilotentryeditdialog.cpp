@@ -29,9 +29,9 @@ PilotEntryEditDialog::PilotEntryEditDialog(QString userInput, QWidget* parent)
 {
     init();
     if(userInput != QString()) {
-        lastnameLineEdit->setText(userInput.replace(0, 1, userInput.first(1).toUpper()));
+        nameLineEdit->setText(userInput.replace(0, 1, userInput.first(1).toUpper()));
     }
-    lastnameLineEdit->setFocus();
+    nameLineEdit->setFocus();
 }
 
 /*!
@@ -46,7 +46,7 @@ PilotEntryEditDialog::PilotEntryEditDialog(int rowId, QWidget *parent) :
     pilotEntry = DB->getPilotEntry(rowId);
     DEB << "Editing Pilot: " << pilotEntry;
     formFiller();
-    lastnameLineEdit->setFocus();
+    nameLineEdit->setFocus();
 }
 
 void PilotEntryEditDialog::init()
@@ -67,19 +67,13 @@ void PilotEntryEditDialog::init()
     };
 
     // Row 0
-    lastnameLabel = new QLabel(this);
-    lastnameLineEdit = new QLineEdit(this);
-    lastnameLineEdit->setMinimumWidth(140);
-    lastnameLineEdit->setObjectName(QStringLiteral("lastnameLineEdit"));
-    addWidgets(lastnameLabel, lastnameLineEdit);
+    nameLabel = new QLabel(this);
+    nameLineEdit = new QLineEdit(this);
+    nameLineEdit->setMinimumWidth(140);
+    nameLineEdit->setObjectName(QStringLiteral("pilot_nameLineEdit"));
+    addWidgets(nameLabel, nameLineEdit);
 
     // Row 1
-    firstnameLabel = new QLabel(this);
-    firstnameLineEdit = new QLineEdit(this);
-    firstnameLineEdit->setObjectName(QStringLiteral("firstnameLineEdit"));
-    addWidgets(firstnameLabel, firstnameLineEdit);
-
-    // Row 2
     companyLabel = new QLabel(this);
     companyLineEdit = new QLineEdit(this);
     companyLineEdit->setObjectName(QStringLiteral("companyLineEdit"));
@@ -88,29 +82,35 @@ void PilotEntryEditDialog::init()
     companyLineEdit->setCompleter(completer);
     addWidgets(companyLabel, companyLineEdit);
 
-    // Row 3
+    // Row 2
     aliasLabel = new QLabel(this);
     aliasLineEdit = new QLineEdit(this);
     aliasLineEdit->setObjectName(QStringLiteral("aliasLineEdit"));
     addWidgets(aliasLabel, aliasLineEdit);
 
-    // Row 4
+    // Row 3
     employeeidLabel = new QLabel(this);
     employeeidLineEdit = new QLineEdit(this);
-    employeeidLineEdit->setObjectName(QStringLiteral("employeeidLineEdit"));
+    employeeidLineEdit->setObjectName(QStringLiteral("employee_idLineEdit"));
     addWidgets(employeeidLabel, employeeidLineEdit);
 
-    // Row 5
+    // Row 4
     phoneLabel = new QLabel(this);
     phoneLineEdit = new QLineEdit(this);
     phoneLineEdit->setObjectName(QStringLiteral("phoneLineEdit"));
     addWidgets(phoneLabel, phoneLineEdit);
 
-    // Row 6
+    // Row 5
     emailLabel = new QLabel(this);
     emailLineEdit = new QLineEdit(this);
     emailLineEdit->setObjectName(QStringLiteral("emailLineEdit"));
     addWidgets(emailLabel, emailLineEdit);
+
+    // Row 6
+    remarksLabel = new QLabel(this);
+    remarksLineEdit = new QLineEdit(this);
+    remarksLineEdit->setObjectName(QStringLiteral("remarksLineEdit"));
+    addWidgets(remarksLabel, remarksLineEdit);
 
     // Row 7
     buttonBox = new QDialogButtonBox(this);
@@ -119,12 +119,14 @@ void PilotEntryEditDialog::init()
 
     gridLayout->addWidget(buttonBox, row, firstCol, singleSpan, doubleSpan);
 
-    QWidget::setTabOrder({lastnameLineEdit,
-                          firstnameLineEdit,
+    QWidget::setTabOrder({nameLineEdit,
                           companyLineEdit,
                           aliasLineEdit,
                           employeeidLineEdit,
-                          phoneLineEdit});
+                          phoneLineEdit,
+                          emailLineEdit,
+                          remarksLineEdit,
+                          buttonBox});
 
     retranslateUi();
     setupSlots();
@@ -133,13 +135,13 @@ void PilotEntryEditDialog::init()
 void PilotEntryEditDialog::retranslateUi()
 {
     setWindowTitle(tr("Add New Pilot"));
-    lastnameLabel->setText(tr("Last Name"));
-    firstnameLabel->setText(tr("First Name"));
+    nameLabel->setText(tr("Name"));
     companyLabel->setText(tr("Company"));
     aliasLabel->setText(tr("Alias"));
     employeeidLabel->setText(tr("Employee ID"));
     phoneLabel->setText(tr("Phone"));
     emailLabel->setText(tr("eMail"));
+    remarksLabel->setText(tr("Remarks"));
 }
 
 void PilotEntryEditDialog::setupSlots()
@@ -152,9 +154,9 @@ void PilotEntryEditDialog::setupSlots()
 
 void PilotEntryEditDialog::on_buttonBox_accepted()
 {
-    if (lastnameLineEdit->text().isEmpty() || firstnameLineEdit->text().isEmpty()) {
+    if (nameLineEdit->text().isEmpty()) {
         QMessageBox message_box(this);
-        message_box.setText(tr("Last Name and First Name are required."));
+        message_box.setText(tr("Name is required."));
         message_box.exec();
     } else {
         submitForm();
@@ -209,5 +211,5 @@ void PilotEntryEditDialog::loadEntry(int rowId)
 {
     pilotEntry = DB->getPilotEntry(rowId);
     formFiller();
-    lastnameLineEdit->setFocus();
+    nameLineEdit->setFocus();
 }

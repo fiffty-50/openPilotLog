@@ -20,7 +20,7 @@ void LogbookTableEditWidget::setupModelAndView()
 {
     m_logbookView = Settings::getLogbookView();
     m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getViewIdentifier(m_logbookView));
+    m_model->setTable(OPL::GLOBALS->getLogbookViewName(m_logbookView));
     m_model->select();
 
     const auto headers = OPL::LogbookViewInfo::getTableHeaders(m_logbookView);

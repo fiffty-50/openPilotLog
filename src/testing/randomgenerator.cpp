@@ -99,7 +99,9 @@ const QDateTime RandomGenerator::randomDateTime()
 
 const QString RandomGenerator::randomAirport()
 {
-    return DB->getAirportEntry(QRandomGenerator::global()->bounded(1, m_numberOfAirports)).getIcaoCode();
+    Q_UNIMPLEMENTED();
+    return QString();
+    //return DB->getAirportEntry(QRandomGenerator::global()->bounded(1, m_numberOfAirports)).getIcaoCode();
 }
 
 const int RandomGenerator::randomPilot()

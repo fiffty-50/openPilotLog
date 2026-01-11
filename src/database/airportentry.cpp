@@ -36,37 +36,9 @@ const QString AirportEntry::getTableName() const
     return TABLE_NAME;
 }
 
-const QString AirportEntry::getIataCode() const
-{
-    return getData().value(IATA).toString();
-}
-
-const QString AirportEntry::getIcaoCode() const
-{
-    return getData().value(ICAO).toString();
-}
-
 const QString AirportEntry::getAirportName() const
 {
     return getData().value(NAME).toString();
-}
-
-const QString AirportEntry::getAirportDescriptor() const
-{
-    if(getIataCode().isEmpty()) {
-        if(getAirportName().isEmpty()) {
-            return getIcaoCode();
-        }
-        return getIcaoCode()
-               + QStringLiteral(" - ")
-               + getAirportName();
-    }
-    return getIcaoCode()
-           + QStringLiteral(" - ")
-           + getAirportName()
-           + QStringLiteral(" (")
-           + getIataCode()
-           + QLatin1Char(')');
 }
 
 } // namespace OPL

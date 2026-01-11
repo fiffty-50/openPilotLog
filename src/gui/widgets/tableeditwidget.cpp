@@ -40,15 +40,15 @@ void TableEditWidget::setupHorizontalUI()
     m_stackedWidget->hide();
 
     // create a 2-column grid layout and fill the cells
-    int colL = 0; // left column
-    int colR = 1; // right column
+    constexpr int colL = 0; // left column
+    constexpr int colR = 1; // right column
+    constexpr int allSpan = -1 ;
+    constexpr int singleSpan = 1;
     int row = 0;
-    int allRowSpan = 4; // adjust as needed for stackedWidget to span all rows
 
     auto gridLayout = new QGridLayout(this);
 
     gridLayout->addWidget(m_view, row, colL);
-    gridLayout->addWidget(m_stackedWidget, row, colR, allRowSpan, 1);
     row++;
 
     setupButtonWidget();
@@ -57,12 +57,15 @@ void TableEditWidget::setupHorizontalUI()
 
     setupFilterWidget();
     gridLayout->addWidget(m_filterWidget, row, colL);
+
+    // add here so that it spans all rows properly
+    gridLayout->addWidget(m_stackedWidget, 0, colR, allSpan, singleSpan);
 }
 
 void TableEditWidget::setupVerticalUI()
 {
     // create a single column grid layout and fill the cells
-    int col = 0;
+    constexpr int col = 0;
     int row = 0;
     auto gridLayout = new QGridLayout(this);
 
@@ -89,7 +92,7 @@ void TableEditWidget::setupFilterWidget()
     QGridLayout *layout = new QGridLayout(widget);
 
     // one row, three columns
-    layout->addWidget(new QLabel(tr("Filter"), this), 0, 0);
+    layout->addWidget(new QLabel(tr("Search"), this), 0, 0);
     layout->addWidget(m_filterLineEdit,               0, 1);
     layout->addWidget(m_filterSelectionComboBox,      0, 2);
 
@@ -124,6 +127,11 @@ void TableEditWidget::setupSignalsAndSlots()
     // filter the view
     QObject::connect(m_filterLineEdit,  		&QLineEdit::textChanged,
                      this,                     	&TableEditWidget::filterTextChanged);
+    // update filter when combo box is changed
+    QObject::connect(m_filterSelectionComboBox, &QComboBox::currentIndexChanged,
+                     this, [this](){
+        filterTextChanged(m_filterLineEdit->text());
+    });
     // sort the view by column
     QObject::connect(m_view->horizontalHeader(),&QHeaderView::sectionClicked,
                      this,                     	&TableEditWidget::sortColumnChanged);
@@ -213,14 +221,14 @@ void TableEditWidget::databaseContentChanged()
 
 void TableEditWidget::showEditWidget()
 {
-    m_buttonWidget->hide();
+    //m_buttonWidget->hide();
     m_stackedWidget->show();
 }
 
 void TableEditWidget::hideEditWidget()
 {
     m_stackedWidget->hide();
-    m_buttonWidget->show();
+    //m_buttonWidget->show();
 }
 
 void TableEditWidget::cleanUpOldEditDialog()

@@ -17,20 +17,30 @@ public:
 
 private:
     static constexpr int COL_ROWID = 0;
-    static constexpr int COL_LASTNAME = 1;
-    static constexpr int COL_FIRSTNAME = 2;
+    static constexpr int COL_NAME = 1;
+    static constexpr int COL_ALIAS = 2;
+    static constexpr int COL_EMPLOYEE_ID = 3;
     static constexpr int COL_COMPANY = 4;
-    static constexpr int COLS_TO_HIDE[5] = {0, 3, 5, 6, 7};
+    static constexpr std::array<int,4> COLUMNS_TO_HIDE = {0, 5, 6, 7 };
 
-    const QString COLUMN_1_NAME = tr("First Name");
-    const QString COLUMN_2_NAME = tr("Last Name");
-    const QString COLUMN_3_NAME = tr("Company");
+    const QString COL_HEADER_NAME	 		= tr("Name");
+    const QString COL_HEADER_ALIAS 			= tr("Alias");
+    const QString COL_HEADER_COMPANY 		= tr("Company");
+    const QString COL_HEADER_EMPLOYEE_ID 	= tr("Employee ID");
 
-    const QStringList FILTER_COLUMNS = { COLUMN_1_NAME, COLUMN_2_NAME, COLUMN_3_NAME };
-    const static inline QStringList FILTER_COLUMN_NAMES = {
-                                                            OPL::PilotEntry::FIRSTNAME,
-                                                            OPL::PilotEntry::LASTNAME,
-                                                            OPL::PilotEntry::COMPANY };
+    const QMap<int, QString> DISPLAY_COLUMNS = {
+        {COL_NAME, 			COL_HEADER_NAME },
+        {COL_ALIAS, 		COL_HEADER_ALIAS },
+        {COL_COMPANY, 		COL_HEADER_COMPANY },
+        {COL_EMPLOYEE_ID, 	COL_HEADER_EMPLOYEE_ID },
+    };
+
+    const QMap<QString, QString> COLUMN_DATABASE_NAMES = {
+        {COL_HEADER_NAME, 			OPL::PilotEntry::NAME},
+        {COL_HEADER_ALIAS, 			OPL::PilotEntry::ALIAS},
+        {COL_HEADER_COMPANY, 		OPL::PilotEntry::COMPANY},
+        {COL_HEADER_EMPLOYEE_ID, 	OPL::PilotEntry::EMPLOYEEID},
+    };
 
     /*!
     * \brief Informs the user that deleting a Pilot has been unsuccessful

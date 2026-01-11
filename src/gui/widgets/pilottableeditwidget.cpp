@@ -14,9 +14,10 @@ void PilotTableEditWidget::setupModelAndView()
     m_model = new QSqlTableModel(this, DB->database());
     m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots));
     m_model->select();
-    m_model->setHeaderData(COL_LASTNAME, Qt::Horizontal, tr("Last Name"));
-    m_model->setHeaderData(COL_FIRSTNAME, Qt::Horizontal, tr("First Name"));
-    m_model->setHeaderData(COL_COMPANY, Qt::Horizontal, tr("Company"));
+
+    for(auto it = DISPLAY_COLUMNS.cbegin(); it != DISPLAY_COLUMNS.cend(); ++it) {
+        m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
+    }
     m_model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
 
     m_view->setModel(m_model);
@@ -27,7 +28,7 @@ void PilotTableEditWidget::setupModelAndView()
     m_view->resizeColumnsToContents();
     m_view->verticalHeader()->hide();
     m_view->setAlternatingRowColors(true);
-    for(const int i : COLS_TO_HIDE)
+    for(const int i : COLUMNS_TO_HIDE)
         m_view->hideColumn(i);
 
 }
@@ -40,13 +41,16 @@ void PilotTableEditWidget::setupUI()
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Pilot"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
-    m_filterSelectionComboBox->addItems(FILTER_COLUMNS);
+    m_filterSelectionComboBox->addItems(DISPLAY_COLUMNS.values());
+    m_filterSelectionComboBox->addItem(tr("Any"));
+    m_filterSelectionComboBox->setCurrentIndex(m_filterSelectionComboBox->count() - 1);
 }
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
     return new PilotEntryEditDialog(QString(), parent);
 }
+
 
 QString PilotTableEditWidget::deleteErrorString(int pilotId)
 {
@@ -87,7 +91,7 @@ QString PilotTableEditWidget::confirmDeleteString(int rowId)
 {
     const auto entry = DB->getPilotEntry(rowId);
     return tr("You are deleting the following pilot:<br><br><b><tt>"
-              "%1, %2</b></tt><br><br>Are you sure?").arg(entry.getLastName(), entry.getFirstName());
+              "%1</b></tt><br><br>Are you sure?").arg(entry.getName());
 }
 
 void PilotTableEditWidget::filterTextChanged(const QString &filterText)
@@ -97,16 +101,33 @@ void PilotTableEditWidget::filterTextChanged(const QString &filterText)
         return;
     }
 
-    int i = m_filterSelectionComboBox->currentIndex();
-    const QString filter =
-        QLatin1Char('\"')
-        + FILTER_COLUMN_NAMES.at(i)
-        + QLatin1String("\" LIKE '%")
-        + filterText
-        + QLatin1String("%' AND ")
-        + OPL::PilotEntry::ROWID
-        + QLatin1String(" > 1");
-    m_model->setFilter(filter);
-}
+    auto getFilterStatement = [](const QString &filterColumn, const QString &filterText) -> QString {
+        return QString(
+            QLatin1Char('\"')
+            + filterColumn
+            + QLatin1String("\" LIKE '%")
+            + filterText
+            + QLatin1String("%' AND ")
+            + OPL::PilotEntry::ROWID
+            + QLatin1String(" > 1"));
+    };
 
+    // Try to map filter combo box value to column
+    const QString filterColumn = COLUMN_DATABASE_NAMES.value(m_filterSelectionComboBox->currentText());
+    if(filterColumn.isEmpty()) {
+        // search in all columns
+        QString filter;
+        const QString SQL_OR = QStringLiteral(" OR ");
+        for(const auto &column : COLUMN_DATABASE_NAMES.values()) {
+            filter.append(getFilterStatement(column, filterText));
+            filter.append(SQL_OR);
+        }
+        // remove last "or"
+        filter.chop(SQL_OR.size());
+        m_model->setFilter(filter);
+    } else {
+        // filter based on selected column
+        m_model->setFilter(getFilterStatement(filterColumn, filterText));
+    }
+}
 

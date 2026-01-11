@@ -58,20 +58,20 @@ private slots:
 private:
     // UI Elements
     QGridLayout *gridLayout;
-    QLabel *lastnameLabel;
-    QLineEdit *lastnameLineEdit;
-    QLabel *firstnameLabel;
-    QLineEdit *firstnameLineEdit;
-    QLabel *companyLabel;
-    QLineEdit *companyLineEdit;
-    QLabel *aliasLabel;
-    QLineEdit *aliasLineEdit;
-    QLabel *employeeidLabel;
-    QLineEdit *employeeidLineEdit;
-    QLabel *phoneLabel;
-    QLineEdit *phoneLineEdit;
-    QLabel *emailLabel;
-    QLineEdit *emailLineEdit;
+    QLabel 		*nameLabel;
+    QLineEdit 	*nameLineEdit;
+    QLabel 		*companyLabel;
+    QLineEdit 	*companyLineEdit;
+    QLabel 		*aliasLabel;
+    QLineEdit 	*aliasLineEdit;
+    QLabel 		*employeeidLabel;
+    QLineEdit 	*employeeidLineEdit;
+    QLabel 		*phoneLabel;
+    QLineEdit 	*phoneLineEdit;
+    QLabel 		*emailLabel;
+    QLineEdit 	*emailLineEdit;
+    QLabel 		*remarksLabel;
+    QLineEdit 	*remarksLineEdit;
     QDialogButtonBox *buttonBox;
 
     // Member Variables
