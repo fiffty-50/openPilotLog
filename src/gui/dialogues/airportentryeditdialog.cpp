@@ -19,27 +19,37 @@ AirportEntryEditDialog::AirportEntryEditDialog(int row_id, QWidget *parent)
     loadAirportData(row_id);
 }
 
+
 void AirportEntryEditDialog::init()
 {
     // Main Layout
     gridLayout = new QGridLayout(this);
     int row = 0;
-    const int firstCol = 0;
-    const int secondCol = 1;
-    const int singleSpan = 1;
-    const int doubleSpan = 2;
+    constexpr int firstCol = 0;
+    constexpr int secondCol = 1;
+    constexpr int thirdCol = 3;
+    constexpr int singleSpan = 1;
+    constexpr int spanRemaining = -1;
 
-    // Add widgets to left and right side, advance to next row
-    auto addWidgets = [&](QWidget* left, QWidget* right) {
+    // Add widgets to first and second column, advance to next row
+    auto addTwoWidgets = [&](QWidget* left, QWidget* right) {
         gridLayout->addWidget(left, row, firstCol, singleSpan, singleSpan);
-        gridLayout->addWidget(right, row, secondCol, singleSpan, singleSpan);
+        gridLayout->addWidget(right, row, secondCol, singleSpan, spanRemaining);
+        row++;
+    };
+
+    // Add widgets to first, second and third column, advance to next row
+    auto addThreeWidgets = [&](QWidget* left, QWidget* middle, QWidget* right) {
+        gridLayout->addWidget(left, row, firstCol, singleSpan, singleSpan);
+        gridLayout->addWidget(middle, row, secondCol, singleSpan, singleSpan);
+        gridLayout->addWidget(right, row, thirdCol, singleSpan, singleSpan);
         row++;
     };
 
     // Row 0
     nameLabel = new QLabel(this);
     nameLineEdit = new QLineEdit(this);
-    addWidgets(nameLabel, nameLineEdit);
+    addTwoWidgets(nameLabel, nameLineEdit);
 
     // Row 1
     latitudeLabel = new QLabel(this);
@@ -48,7 +58,7 @@ void AirportEntryEditDialog::init()
     latDoubleSpinBox->setDecimals(10);
     latDoubleSpinBox->setMinimum(-90.000000000000000);
     latDoubleSpinBox->setMaximum(90.000000000000000);
-    addWidgets(latitudeLabel, latDoubleSpinBox);
+    addTwoWidgets(latitudeLabel, latDoubleSpinBox);
 
     // Row 2
     longitudeLabel = new QLabel(this);
@@ -57,27 +67,35 @@ void AirportEntryEditDialog::init()
     lonDoubleSpinBox->setDecimals(10);
     lonDoubleSpinBox->setMinimum(-180.000000000000000);
     lonDoubleSpinBox->setMaximum(180.000000000000000);
-    addWidgets(longitudeLabel, lonDoubleSpinBox);
+    addTwoWidgets(longitudeLabel, lonDoubleSpinBox);
 
     // Row 3
     timezoneLabel = new QLabel(this);
     timeZoneComboBox = new QComboBox(this);
-    addWidgets(timezoneLabel, timeZoneComboBox);
+    addTwoWidgets(timezoneLabel, timeZoneComboBox);
 
     // ICAO Labels
     icaoLabel = new QLabel(this);
     icaoDisplayLabel = new QLabel(this);
-    addWidgets(icaoLabel, icaoDisplayLabel);
+    editIcaoCodePushButton = new QPushButton(this);
+    addThreeWidgets(icaoLabel, icaoDisplayLabel, editIcaoCodePushButton);
 
     // IATA Labels
     iataLabel = new QLabel(this);
     iataDisplayLabel = new QLabel(this);
-    addWidgets(iataLabel, iataDisplayLabel);
+    editIataCodePushButton = new QPushButton(this);
+    addThreeWidgets(iataLabel, iataDisplayLabel, editIataCodePushButton);
+
+    // Other Labels
+    otherCodeLabel = new QLabel(this);
+    otherCodeDisplayLabel = new QLabel(this);
+    editOtherCodePushButton = new QPushButton(this);
+    addThreeWidgets(otherCodeLabel, otherCodeDisplayLabel, editOtherCodePushButton);
 
     // Row 4
     buttonBox = new QDialogButtonBox(this);
     buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
-    gridLayout->addWidget(buttonBox, row, firstCol, singleSpan, doubleSpan);
+    gridLayout->addWidget(buttonBox, row, firstCol, singleSpan, spanRemaining);
 
     // finish setup
     retranslateUi();
@@ -97,12 +115,21 @@ void AirportEntryEditDialog::retranslateUi()
     nameLabel->setText(tr("Airport Name"));
     iataLabel->setText(tr("IATA Code"));
     icaoLabel->setText(tr("ICAO Code"));
+    otherCodeLabel->setText(tr("Other Code"));
+
+    const QString edit = tr("Edit");
+    editIcaoCodePushButton->setText(edit);
+    editIataCodePushButton->setText(edit);
+    editOtherCodePushButton->setText(edit);
 }
 
 void AirportEntryEditDialog::setupSlots()
 {
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &AirportEntryEditDialog::on_buttonBox_accepted);
+    QObject::connect(editIcaoCodePushButton, &QPushButton::clicked, this, &AirportEntryEditDialog::on_editIcaoCodePushButton_clicked);
+    QObject::connect(editIataCodePushButton, &QPushButton::clicked, this, &AirportEntryEditDialog::on_editIataCodePushButton_clicked);
+    QObject::connect(editOtherCodePushButton, &QPushButton::clicked, this, &AirportEntryEditDialog::on_editOtherCodePushButton_clicked);
 }
 
 void AirportEntryEditDialog::loadTimeZones()
@@ -124,10 +151,13 @@ void AirportEntryEditDialog::loadAirportData(int row_id)
     lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LONGITUDE).toDouble());
 
     const QString timezone = airport_data.value(OPL::AirportEntry::TZ_OLSON).toString();
-    DEB << "Timezone: " << timezone;
     if (timezone.isNull())
         WARN(tr("Unable to read timezone data for this airport. Please verify."));
     timeZoneComboBox->setCurrentText(timezone);
+
+    icaoDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::ICAO));
+    iataDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::IATA));
+    otherCodeDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::OTHER));
 }
 
 bool AirportEntryEditDialog::verifyInput()
@@ -163,6 +193,50 @@ bool AirportEntryEditDialog::verifyInput()
     }
     return true;
 }
+
+bool AirportEntryEditDialog::userWantsToEditCode()
+{
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Confirm"));
+
+    const QString text = tr(""
+        "Are you sure you want to Edit the Airport Code? "
+        "This is normally only necessary when an airport code changes over time "
+        "and requires adding a start date for when the new code will be current.<br><br>"
+        "<b>Take caution when editing this value as it may break functionality if done incorrectly.</b><br><br>"
+        "It is recommended to read the manual section about airport codes before proceeding.<br><br>"
+        "<p align='right'><b>Do you want to proceed?</b></p>");
+    confirm.setText(text);
+    return confirm.exec() == QMessageBox::Yes;
+}
+
+void AirportEntryEditDialog::on_editIcaoCodePushButton_clicked()
+{
+    if(userWantsToEditCode()) {
+        LOG << "ICAO Code Edit requested.";
+        WARN("This functionality is not yet implemented"); //TODO
+    }
+}
+
+void AirportEntryEditDialog::on_editIataCodePushButton_clicked()
+{
+    if(userWantsToEditCode()) {
+        LOG << "IATA Code Edit requested.";
+        WARN("This functionality is not yet implemented"); //TODO
+    }
+}
+
+void AirportEntryEditDialog::on_editOtherCodePushButton_clicked()
+{
+    if(userWantsToEditCode()) {
+        LOG << "Other Code Edit requested.";
+        WARN("This functionality is not yet implemented"); //TODO
+    }
+}
+
 
 void AirportEntryEditDialog::on_buttonBox_accepted()
 {

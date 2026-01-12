@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "airportcodeentry.h"
+#include <QSqlQuery>
 
 namespace OPL {
 
@@ -50,6 +51,54 @@ bool AirportCodeEntry::setAirportCode(CodeType type, const QDate &validFrom, con
 {
     Q_UNIMPLEMENTED();
     return false;
+}
+
+QString AirportCodeEntry::getCurrentCode(int airport_id, CodeType type)
+{
+    QString query = R"(
+    WITH CurrentCode AS (
+        SELECT
+            airport_id,
+            airport_code,
+            valid_from_jd,
+            valid_to_jd,
+            ROW_NUMBER() OVER (
+                PARTITION BY airport_id
+                ORDER BY valid_from_jd DESC
+            ) AS row_num
+        FROM airport_codes
+        WHERE airport_id = ?
+          AND code_type = ?
+          AND (valid_to_jd IS NULL OR valid_to_jd >= julianday('now'))
+          AND valid_from_jd <= julianday('now')
+    )
+    SELECT
+        airport_code
+    FROM CurrentCode
+    WHERE row_num = 1;
+    )";
+    QSqlQuery q(query);
+    q.addBindValue(airport_id);
+
+    switch (type) {
+    case CodeType::ICAO:
+        q.addBindValue(QStringLiteral("ICAO"));
+        break;
+    case CodeType::IATA:
+        q.addBindValue(QStringLiteral("IATA"));
+        break;
+    case CodeType::OTHER:
+        q.addBindValue(QStringLiteral("OTHER"));
+        break;
+    default:
+        break;
+    }
+
+    if( !q.exec() || ! q.next()) {
+        return {};
+    }
+
+    return q.value(0).toString();
 }
 
 

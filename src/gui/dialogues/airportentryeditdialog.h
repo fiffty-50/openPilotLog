@@ -6,6 +6,7 @@
 #include <QDoubleSpinBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPushButton>
 
 class AirportEntryEditDialog : public EntryEditDialog
 {
@@ -19,26 +20,32 @@ public:
 
 
 private slots:
+    void on_editIcaoCodePushButton_clicked();
+    void on_editIataCodePushButton_clicked();
+    void on_editOtherCodePushButton_clicked();
     void on_buttonBox_accepted();
 
 private:
     // UI Elements
     QGridLayout *gridLayout;
     QDialogButtonBox *buttonBox;
-    QLabel *countryLabel;
+    QLineEdit *nameLineEdit;
+    QLabel *nameLabel;
     QLabel *longitudeLabel;
     QLabel *latitudeLabel;
     QLabel *timezoneLabel;
-    QLineEdit *countryLineEdit;
-    QComboBox *timeZoneComboBox;
     QLabel *icaoLabel;
     QLabel *icaoDisplayLabel;
     QLabel *iataLabel;
     QLabel *iataDisplayLabel;
-    QLineEdit *nameLineEdit;
-    QLabel *nameLabel;
+    QLabel *otherCodeLabel;
+    QLabel *otherCodeDisplayLabel;
+    QPushButton *editIcaoCodePushButton;
+    QPushButton *editIataCodePushButton;
+    QPushButton *editOtherCodePushButton;
     QDoubleSpinBox *lonDoubleSpinBox;
     QDoubleSpinBox *latDoubleSpinBox;
+    QComboBox *timeZoneComboBox;
 
     // Member Variables
     int m_rowId;
@@ -51,6 +58,7 @@ private:
     bool confirmTimezone();
     void loadAirportData(int row_id);
     bool verifyInput();
+    bool userWantsToEditCode();
 
 
     // EntryEditDialog interface

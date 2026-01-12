@@ -48,6 +48,14 @@ public:
 
     bool setAirportCode(CodeType type, const QDate &validFrom, const QDate &validTo);
 
+    /*!
+     * \brief Get the specified code
+     * \param type - The Type of Code, see AirportCodeEntry::CodeType
+     * \param airport_id - The airport_id of the airport that is being queried.
+     * \return The Current Airport Code
+     */
+    static QString getCurrentCode(int airport_id, CodeType type);
+
 private:
     const static inline QString ROWID = QStringLiteral("airport_code_id");
     const static inline QString AIRPORTID = QStringLiteral("airport_id");
