@@ -1,5 +1,6 @@
 #include "tailtableeditwidget.h"
 #include "src/database/database.h"
+#include "src/database/databasecache.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 
 TailTableEditWidget::TailTableEditWidget(QWidget *parent)
@@ -78,13 +79,14 @@ QString TailTableEditWidget::deleteErrorString(int rowId)
 
 QString TailTableEditWidget::confirmDeleteString(int rowId)
 {
-    const auto entry = DB->getTailEntry(rowId);
+    const auto tailEntry = DB->getTailEntry(rowId);
+    const QString typeString = OPL::AircraftEntry::getTypeString(tailEntry.getRowId());
+
     return tr("You are deleting the following aircraft:<br><br><b><tt>"
               "%1 (%2)</b></tt><br><br>Are you sure?"
               ).arg(
-              entry.getData().value(OPL::TailEntry::REGISTRATION).toString(),
-              entry.getTypeString()
-              );
+              tailEntry.getRegistration(),
+              typeString);
 }
 
 EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)

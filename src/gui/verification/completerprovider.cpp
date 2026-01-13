@@ -5,11 +5,11 @@
 
 CompleterProvider::CompleterProvider()
 {
-    pilotCompleter    = new QCompleter(DBCache->getPilotNamesList());
-    tailsCompleter    = new QCompleter(DBCache->getTailsList());
-    airportCompleter  = new QCompleter(DBCache->getAirportList());
-    companyCompleter  = new QCompleter(DBCache->getCompaniesList());
-    aircraftCompleter = new QCompleter(DBCache->getAircraftList());
+    pilotCompleter    = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::PilotNames));
+    tailsCompleter    = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::Tails));
+    airportCompleter  = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::AirportCodes));
+    companyCompleter  = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::Companies));
+    aircraftCompleter = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes));
 
     QList<QCompleter*> completers = {
         pilotCompleter,
@@ -86,15 +86,15 @@ void CompleterProvider::updateModel(CompleterTarget target)
 
     switch(target) {
     case Airports:
-        newData = &DBCache->getAirportList();
+        newData = &DBCache->getList(OPL::DatabaseCache::ListType::AirportCodes);
         model = qobject_cast<QStringListModel*>(airportCompleter->model());
         break;
     case Pilots:
-        newData = &DBCache->getPilotNamesList();
+        newData = &DBCache->getList(OPL::DatabaseCache::ListType::PilotNames);
         model = qobject_cast<QStringListModel*>(pilotCompleter->model());
         break;
     case Tails: {
-        newData = &DBCache->getTailsList();
+        newData = &DBCache->getList(OPL::DatabaseCache::ListType::Tails);
         model = qobject_cast<QStringListModel*>(tailsCompleter->model());
         break;
     }

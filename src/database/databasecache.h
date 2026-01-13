@@ -23,6 +23,8 @@
 namespace OPL{
 
 using IdMap = QHash<int, QString>;
+using KeyMap = QHash<QString, int>;
+using KeyMultiMap = QMultiMap<QString, int>;
 #define DBCache OPL::DatabaseCache::instance()
 
 /*!
@@ -44,7 +46,7 @@ public:
     DatabaseCache(DatabaseCache const&) = delete;
     void operator=(DatabaseCache const&) = delete;
 
-    enum CompleterTarget {PilotNames, Tails, AircraftTypes, AirportsAny, AirportsICAO, AirportNames, AirportsIATA, Companies, Types};
+    enum CompleterTarget {PilotNames, Tails, AircraftTypeStrings, AirportCodesAnyType, AirportsICAO, AirportNames, AirportsIATA, Companies, Types};
 
     void init();
 
@@ -53,53 +55,90 @@ public:
     const IdMap &getPilotNamesMap() const;
     const IdMap &getTailsMap() const;
     const IdMap &getTypesMap() const;
-
-    const QStringList &getPilotNamesList() const;
-    const QStringList &getTailsList() const;
-    const QStringList &getAirportList() const;
-    const QStringList &getCompaniesList() const;
-
-
-    const QStringList &getAircraftList() const;
-
     const IdMap &getAircraftMap() const;
-
     const IdMap &getAirportsMapNames() const;
+
+    enum class MapType { AirportCodesIcao,
+                         AirportCodesIata,
+                         AirportNames,
+                         AircraftTypes,
+                         TailRegistrations,
+                         PilotNames,
+    };
+
+    enum class ListType { PilotNames,
+                          AircraftTypes,
+                          Tails,
+                          AirportCodes,
+                          Companies,
+    };
+
+    const QStringList &getList(ListType type);
+    const IdMap &getMap(MapType type);
+    const KeyMap &getKeyMap(MapType type);
+
 
 private:
     Q_OBJECT
     DatabaseCache() {};
 
     // Id Maps
-    IdMap airportsMapICAO;
-    IdMap airportsMapIATA;
-    IdMap airportsMapNames;
+
+    /*!
+     * \brief key: airport_id / value: icao_code
+     */
+    IdMap airportsIcaoMap;
+    /*!
+     * \brief key: airport_id / value: iata_code
+     */
+    IdMap airportsIataMap;
+    /*!
+     * \brief key: airport_id / value: airport_name
+     */
+    IdMap airportNamesMap;
+    /*!
+     * \brief key: pilot_id / value: pilot_name
+     */
     IdMap pilotNamesMap;
     /*!
      * \brief key: tail_id / value: registration
      */
-    IdMap tailsMap;
+    IdMap tailsRegistrationMap;
     /*!
-     * \brief key: tail_id value: type string ("Boeing 737-800")
+     * \brief key: aircraft_type_id / value :
      */
-    IdMap typesMap;
-    IdMap aircraftMap;
+    IdMap aircraftTypesMap;
+
+    void convertIdMapToKeyMap(IdMap &idMap, KeyMap& keyMap);
+
+
+    // Key Maps - Those are equivalent to the ID maps but key and value are reversed
+    KeyMap airportsIcaoKeyMap;
+    KeyMap airportsIataKeyMap;
+    KeyMap airportNamesKeyMap;
+    KeyMap pilotNamesKeyMap;
+    KeyMap tailsRegistrationKeyMap;
+    KeyMap aircraftTypesKeyMap;
+
+    // Key Multi Maps - used for reverse IdMaps where one key can have several values
+    // -- all airport codes to airport_id
+
+
     // Lists
     QStringList pilotNamesList;
-    QStringList tailsList;
-    QStringList aircraftList;
-    QStringList airportList;
+    QStringList aircraftTailsList;
+    QStringList aircraftTypesList;
+    QStringList airportCodesList;
     QStringList companiesList;
 
-    const IdMap fetchMap(CompleterTarget target);
-    const QStringList fetchList(CompleterTarget target);
-
+    // Query the database to update a map
+    const IdMap fetchMap(MapType target);
+    const QStringList fetchList(ListType target);
 
     void updateTails();
     void updateAirports();
-    void updateSimulators();
     void updatePilots();
-    void updateAircraft();
+    void updateAircraftTypes();
 
 public slots:
     void onDatabaseUpdated(const OPL::DbTable table);

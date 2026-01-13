@@ -9,5 +9,5 @@ StyledRegistrationDelegate::StyledRegistrationDelegate(QObject *parent)
 
 QString StyledRegistrationDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
-    return DBCache->getTailsMap().value(value.toInt());
+    return DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(value.toInt());
 }

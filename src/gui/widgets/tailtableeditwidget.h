@@ -37,9 +37,7 @@ private:
     };
 
     const static inline QStringList FILTER_COLUMN_NAMES = {
-        OPL::TailEntry::REGISTRATION,
-        OPL::TailEntry::TYPE_STRING,
-        OPL::TailEntry::COMPANY
+        "TODO",
     };
 
 private slots:

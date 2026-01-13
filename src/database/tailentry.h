@@ -24,14 +24,14 @@ namespace OPL {
 /*!
  * \brief A Row representing a Tail (Registration) entry.
  * \details
- * The tails table holds the various tails the user has added to his logbook.
+ * The aircraft_tails table holds the various tails the user has added to his logbook.
  * Within the program the term aircraft refers to an aircraft type and is stored
- * in the aircraft database and is used as a template. A tail is a specific instance
- * of an aircraft which is identified by its registration (tail).
+ * in the aircraft_types database. A tail is a specific instance
+ * of an aircraft which is identified by its alphanumeric registration (tail number).
  */
 class TailEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("tails");
+    const static inline QString TABLE_NAME = QStringLiteral("aircraft_tails");
 public:
     TailEntry();
     TailEntry(const RowData_T &row_data);
@@ -39,24 +39,40 @@ public:
     const QString getTableName() const override;
 
     /*!
-     * \brief Return the aircrafts registration
-     * \return
+     * \brief Check if the data contained in this entry complies with the database constraints
      */
-    const QString registration() const;
-    /*!
-     * \brief Return the aircraft getTypeString (Make and  - if available - Model and Variant)
-     */
-    const QString getTypeString() const;
+    bool isValid() const override;
 
     /*!
-     * \brief setTypeString - Sets the TypeString (Make and - if avilable - Model and Variant) based on entry data
+     * \brief initialise the rowData map with NULL for all values
      */
-    void setTypeString();
+    void clear();
 
+    // getters and setters
+    QString getRegistration() const { return rowData.value(REGISTRATION).toString(); }
+    QString getCompany() const { return rowData.value(COMPANY).toString(); }
+    QString getRemarks() const { return rowData.value(REMARKS).toString(); }
+    QDate getInServiceDate() const { return QDate::fromJulianDay(rowData.value(IN_SERVICE_DATE).toInt()); }
+    QDate getOutOfServiceDate() const { return QDate::fromJulianDay(rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
+    int getTypeId() const { return rowData.value(TYPE_ID).toInt(); }
+
+    bool setRegistration(const QString &registration);
+    void setCompany(const QString &company) { rowData.insert(COMPANY, company); }
+    void setRemarks(const QString &remarks) { rowData.insert(REMARKS, remarks); }
+    bool setInServiceDate(const QDate &date);
+    bool setOutOfServiceDate(const QDate &date);
+    bool setTypeId(int typeId);
+
+private:
     /*!
      * \brief The entries row id in the database
      */
     const static inline QString ROWID            = QStringLiteral("tail_id");
+
+    /*!
+     * \brief The entries associated aircraft type (Foreign Key to aircraft_types)
+     */
+    const static inline QString TYPE_ID 		 = QStringLiteral("aircraft_type_id");
     /*!
      * \brief The aircrafts registration ("LN-ENL", "D-ABCD")
      */
@@ -65,53 +81,27 @@ public:
      * \brief The company the aircraft is operated by
      */
     const static inline QString COMPANY          = QStringLiteral("company");
+
+    const static inline QString REMARKS			 = QStringLiteral("remarks");
     /*!
-     * \brief The aircrafts manufacturer
+     * \brief IN_SERVICE_DATE The start date of this aircraft registration
      */
-    const static inline QString MAKE             = QStringLiteral("make");
-    /*!
-     * \brief The aircraft model
-     */
-    const static inline QString MODEL            = QStringLiteral("model");
-    /*!
-     * \brief The aircraft model variant
-     */
-    const static inline QString VARIANT          = QStringLiteral("variant");
-    /*!
-     * \brief Wether the aircraft requires more than one pilot (stored in the database as boolean)
-     */
-    static const inline QString MULTI_PILOT = QStringLiteral("multipilot");
-    /*!
-     * \brief Wether the aircraft has more than one engine (stored in the database as a boolean)
-     */
-    static const inline QString MULTI_ENGINE = QStringLiteral("multiengine");
-    /*!
-     * \brief The aircrafts engine type. Stored in the database as an integer
-     * \details
-     * <ul>
-     * <li> 0 - Single Engine Piston <\li>
-     * <li> 1 - Multi Engine Piston <\li>
-     * <li> 2 - Turboprop <\li>
-     * <li> 3 - Jet <\li>
-     * <\ul>
-     */
-    static const inline QString ENGINE_TYPE = QStringLiteral("engineType");
-    /*!
-     * \brief The aircrafts weight class. Stored in the database as an integer
-     * \details
-     * <ul>
-     * <li> 0 - Light <\li>
-     * <li> 1 - Medium <\li>
-     * <li> 2 - Heavy <\li>
-     * <li> 3 - Super Heavy <\li>
-     * <\ul>
-     */
-    static const inline QString WEIGHT_CLASS = QStringLiteral("weightClass");
+    const static inline QString IN_SERVICE_DATE	 = QStringLiteral("in_service_jd");
 
     /*!
-     * \brief The aircraft type string ("Make Model-Variant")
+     * \brief OUT_OF_SERVICE_DATE The end date of this aircraft registration
      */
-    static const inline QString TYPE_STRING = QStringLiteral("typeString");
+    const static inline QString OUT_OF_SERVICE_DATE = QStringLiteral("out_of_service_jd");
+
+    const static inline QStringList fields = {
+        TYPE_ID,
+        REGISTRATION,
+        COMPANY,
+        REMARKS,
+        IN_SERVICE_DATE,
+        OUT_OF_SERVICE_DATE
+    };
+
 };
 
 } // namespace OPL

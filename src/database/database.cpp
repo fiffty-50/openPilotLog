@@ -286,94 +286,185 @@ bool Database::clear()
 
 bool Database::update(const OPL::Row &updated_row)
 {
-    QString statement = QLatin1String("UPDATE ") + OPL::GLOBALS->getDbTableName(updated_row.getTable()) + QLatin1String(" SET ");
-    const auto& data = updated_row.getData();
-    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-        statement.append(i.key() + "=?,");
+    //     QString statement = QLatin1String("UPDATE ") + OPL::GLOBALS->getDbTableName(updated_row.getTable()) + QLatin1String(" SET ");
+    //     const auto& data = updated_row.getData();
+    //     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+    //         statement.append(i.key() + "=?,");
+    //     }
+    //     statement.chop(1);
+    //     statement.append(QLatin1String(" WHERE ROWID=?"));
+    //     QSqlQuery query;
+    //     query.prepare(statement);
+    //     DEB << "Statement: " << statement;
+    //     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+    // //use QMetaType for binding null value in QT >= 6
+    // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    //         if (i.value() == QVariant(QString())) {
+    //             query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
+    // #else
+    //         if (i.value() == QVariant(QString())) {
+    //             query.addBindValue(QVariant(QVariant::String));
+    // #endif
+    //         } else {
+    //             query.addBindValue(i.value());
+    //         }
+
+    //     }
+    //     query.addBindValue(updated_row.getRowId());
+    //     DEB << "Bound values: " << query.boundValues();
+
+    //     if (query.exec())
+    //     {
+    //         LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
+    //         emit dataBaseUpdated(updated_row.getTable());
+    //         return true;
+    //     } else {
+    //         DEB << "Unable to commit.";
+    //         DEB << "Query: " << statement;
+    //         DEB << "Query Error: " << query.lastError().text();
+    //         lastError = query.lastError();
+    //         return false;
+    //     }
+    const auto &data = updated_row.getData();
+    const QString quote = QStringLiteral("\"");
+    const QString placeholder = QStringLiteral("\"=?");
+
+    QStringList columns;
+    for (const auto &key : data.keys()) {
+        columns << quote + key + placeholder;
     }
-    statement.chop(1);
-    statement.append(QLatin1String(" WHERE ROWID=?"));
+
+    QString statement = QString("UPDATE %1 SET %2 WHERE ROWID=?")
+                            .arg(updated_row.getTableName(), columns.join(','));
+
     QSqlQuery query;
     query.prepare(statement);
-    DEB << "Statement: " << statement;
-    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-//use QMetaType for binding null value in QT >= 6
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
-#else
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QVariant::String));
-#endif
-        } else {
-            query.addBindValue(i.value());
-        }
 
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        if(it.value().isNull() || it.value().toString() == QString()) {
+            query.addBindValue(QVariant(it.value().metaType()));
+        } else {
+            query.addBindValue(it.value());
+        }
     }
+
+    // for (const auto &value : data) {
+    //     // make sure to correctly bind NULL variants
+    //     if (value.isNull() || value.toString() == QString()) {
+    //         query.addBindValue(QVariant(value.metaType()));
+    //     } else {
+    //         query.addBindValue(value);
+    //     }
+    // }
     query.addBindValue(updated_row.getRowId());
+
+    DEB << "Statement: " << statement;
     DEB << "Bound values: " << query.boundValues();
 
-    if (query.exec())
-    {
-        LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
-        emit dataBaseUpdated(updated_row.getTable());
-        return true;
-    } else {
-        DEB << "Unable to commit.";
-        DEB << "Query: " << statement;
-        DEB << "Query Error: " << query.lastError().text();
+    if (!query.exec()) {
+        DEB << "Unable to commit." << query.lastError().text();
         lastError = query.lastError();
         return false;
     }
+
+    LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
+    emit dataBaseUpdated(updated_row.getTable());
+    return true;
 }
 
 bool Database::insert(const OPL::Row &new_row)
 {
-    QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" (");
-    const auto& data = new_row.getData();
-    for(auto i = data.cbegin(); i != data.cend(); ++i) {
-        statement.append(i.key() + QLatin1Char(','));
-    }
-    statement.chop(1);
-    statement += QLatin1String(") VALUES (");
+//     QString statement = QLatin1String("INSERT INTO ") + OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" (");
+//     const auto& data = new_row.getData();
+//     for(auto i = data.cbegin(); i != data.cend(); ++i) {
+//         statement.append(i.key() + QLatin1Char(','));
+//     }
+//     statement.chop(1);
+//     statement += QLatin1String(") VALUES (");
 
-    for (int i=0; i < new_row.getData().size(); ++i) {
-        statement += QLatin1String("?,");
+//     for (int i=0; i < new_row.getData().size(); ++i) {
+//         statement += QLatin1String("?,");
+//     }
+//     statement.chop(1);
+//     statement += QLatin1Char(')');
+
+//     QSqlQuery query;
+//     query.prepare(statement);
+
+//     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
+// //use QMetaType for binding null value in QT >= 6
+// #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+//         if (i.value().isNull()) {
+//             query.addBindValue(QVariant(QMetaType(i.value().metaType())));
+// #else
+//         if (i.value() == QVariant(QString())) {
+//             query.addBindValue(QVariant(QVariant::String));
+// #endif
+//         } else {
+//             query.addBindValue(i.value());
+//         }
+//     }
+
+//     //check result.
+//     if (query.exec())
+//     {
+//         LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
+//         emit dataBaseUpdated(new_row.getTable());
+//         return true;
+//     } else {
+//         DEB << "Unable to commit.";
+//         DEB << "Query: " << statement;
+//         DEB << "Bound Values: " << query.boundValues();
+//         DEB << "Query Error: " << query.lastError().text();
+//         lastError = query.lastError();
+//         return false;
+//     }
+
+
+    const auto &data = new_row.getData();
+    DEB << data;
+    const QString quote = QStringLiteral("\"");
+    const QString placeholder = QStringLiteral("?");
+    QStringList columns, placeholders;
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        columns << (quote + it.key() + quote);
+        placeholders << placeholder;
     }
-    statement.chop(1);
-    statement += QLatin1Char(')');
+
+    QString statement = QString("INSERT INTO %1 (%2) VALUES (%3)")
+                            .arg(new_row.getTableName(),
+                                 columns.join(','),
+                                 placeholders.join(','));
 
     QSqlQuery query;
     query.prepare(statement);
 
-    for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-//use QMetaType for binding null value in QT >= 6
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
-#else
-        if (i.value() == QVariant(QString())) {
-            query.addBindValue(QVariant(QVariant::String));
-#endif
+    // for (const auto &value : data) {
+    //     // make sure to correctly bind NULL variants
+    //     if (value.isNull() || value.toString() == QString()) {
+    //         query.addBindValue(QVariant(value.metaType()));
+    //     } else {
+    //         query.addBindValue(value);
+    //     }
+    // }
+
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        if(it.value().isNull() || it.value().toString() == QString()) {
+            query.addBindValue(QVariant(it.value().metaType()));
         } else {
-            query.addBindValue(i.value());
+            query.addBindValue(it.value());
         }
     }
 
-    //check result.
-    if (query.exec())
-    {
-        LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
-        emit dataBaseUpdated(new_row.getTable());
-        return true;
-    } else {
-        DEB << "Unable to commit.";
-        DEB << "Query: " << statement;
-        DEB << "Bound Values: " << query.boundValues();
-        DEB << "Query Error: " << query.lastError().text();
+    if (!query.exec()) {
+        DEB << "Unable to commit." << statement << query.boundValues() << query.lastError().text();
         lastError = query.lastError();
         return false;
     }
+
+    LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
+    emit dataBaseUpdated(new_row.getTable());
+    return true;
 }
 
 OPL::Row Database::getRow(const OPL::DbTable table, const int row_id)

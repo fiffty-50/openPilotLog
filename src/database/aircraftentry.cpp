@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aircraftentry.h"
+#include <QSqlQuery>
 
 namespace OPL {
 
@@ -34,6 +35,30 @@ AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
 const QString AircraftEntry::getTableName() const
 {
     return TABLE_NAME;
+}
+
+QString AircraftEntry::getTypeString(int aircraft_id)
+{
+    const QString statement = QStringLiteral("SELECT make||' '||model AS ident "
+                                        "FROM aircraft_types "
+                                        "WHERE model IS NOT NULL "
+                                        "AND variant IS NULL "
+                                        "AND aircraft_type_id = ? "
+                                        "UNION "
+                                        "SELECT make||' '||model||'-'||variant AS ident "
+                                        "FROM aircraft_types "
+                                        "WHERE variant IS NOT NULL "
+                                        "AND aircraft_type_id = ?");
+    QSqlQuery query;
+    query.prepare(statement);
+    query.setForwardOnly(true);
+    query.exec();
+
+    if(!query.next()) {
+        return QStringLiteral("Aircraft type not in database");
+    } else {
+        return query.value(0).toString();
+    }
 }
 
 } // namespace OPL

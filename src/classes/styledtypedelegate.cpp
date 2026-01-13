@@ -10,5 +10,5 @@ StyledTypeDelegate::StyledTypeDelegate(QObject *parent)
 QString StyledTypeDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
     Q_UNUSED(locale);
-    return DBCache->getTypesMap().value(value.toInt());
+    return DBCache->getMap(OPL::DatabaseCache::MapType::AircraftTypes).value(value.toInt());
 }

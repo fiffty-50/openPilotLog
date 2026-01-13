@@ -292,52 +292,6 @@ bool OPL::Calc::isNight(const QString &icao, const QDateTime &event_time, int ni
 }
 
 /*!
- * \brief OPL::Calc::updateAutoTimes When the details of an aircraft are changed,
- * this function recalculates deductable times for this aircraft and updates
- * the database accordingly.
- * \param acft An aircraft object.
- * \return
- */
-void OPL::Calc::updateAutoTimes(int acft_id)
-{
-    //find all flights for aircraft
-    const QString statement = QStringLiteral("SELECT flight_id FROM flights WHERE acft = ") + QString::number(acft_id);
-    const auto flight_list = DB->customQuery(statement, 1);
-    if (flight_list.isEmpty()) {
-        DEB << "No flights for this tail found.";
-        return;
-    }
-    DEB << "Updating " << flight_list.length() << " flights with this aircraft.";
-
-    auto acft = DB->getTailEntry(acft_id);
-    auto acft_data = acft.getData();
-    for (const auto& item : flight_list) {
-        auto flight = DB->getFlightEntry(item.toInt());
-        auto flight_data = flight.getData();
-
-        if(acft_data.value(OPL::TailEntry::MULTI_PILOT).toInt() == 0
-            && acft_data.value(OPL::TailEntry::MULTI_ENGINE) == 0) {
-            DEB << "SPSE";
-            flight_data.insert(OPL::FlightEntry::TSPSE, flight_data.value(OPL::FlightEntry::TBLK));
-            flight_data.insert(OPL::FlightEntry::TSPME, QString());
-            flight_data.insert(OPL::FlightEntry::TMP, QString());
-        } else if ((acft_data.value(OPL::TailEntry::MULTI_PILOT) == 0
-                    && acft.getData().value(OPL::TailEntry::MULTI_ENGINE) == 1)) {
-            DEB << "SPME";
-            flight_data.insert(OPL::FlightEntry::TSPME, flight_data.value(OPL::FlightEntry::TBLK));
-            flight_data.insert(OPL::FlightEntry::TSPSE, QString());
-            flight_data.insert(OPL::FlightEntry::TMP, QString());
-        } else if ((acft_data.value(OPL::TailEntry::MULTI_PILOT) == 1)) {
-            DEB << "MPME";
-            flight_data.insert(OPL::FlightEntry::TMP, flight_data.value(OPL::FlightEntry::TBLK));
-            flight_data.insert(OPL::FlightEntry::TSPSE, QString());
-            flight_data.insert(OPL::FlightEntry::TSPME, QString());
-        }
-        flight.setData(flight_data);
-        DB->commit(flight);
-    }
-}
-/*!
  * \brief OPL::Calc::updateNightTimes updates the night times in the database,
  * used when changing night angle setting for example
  */

@@ -103,7 +103,7 @@ void SimEntryEditDialog::init()
 
     OPL::GLOBALS->loadSimulatorTypes(simTypeComboBox);
 
-    const QStringList aircraft_list = DBCache->getAircraftList();
+    const QStringList aircraft_list = DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes);
     auto completer = new QCompleter(aircraft_list, acftTypeLineEdit);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);

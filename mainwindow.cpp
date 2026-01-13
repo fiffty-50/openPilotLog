@@ -269,14 +269,45 @@ void MainWindow::on_actionDebug_triggered()
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
+#include "src/gui/dialogues/tailentryeditdialog.h"
 void MainWindow::debug()
 {
     auto dbSetup = DatabaseSetup();
     //dbSetup.clearDatabase();
     //dbSetup.createTables();
     //dbSetup.importTemplateData(false);
-    auto widget = new DatabaseEditWidget(this);
-    ui->stackedWidget->addWidget(widget);
-    ui->stackedWidget->setCurrentWidget(widget);
+    //auto dialog = new TailEntryEditDialog(QString(), this);
+    //dialog->exec();
+
+    const int N = 1000000;
+    QHash<QString, QVariant> data;
+    for (int i = 0; i < N; ++i)
+        data.insert(QString::number(i), i);
+
+    QElapsedTimer timer;
+
+    // 1. STL-style iterators (constBegin / constEnd)
+    timer.start();
+    qint64 sum1 = 0;
+    for (auto it = data.constBegin(); it != data.constEnd(); ++it)
+        sum1 += it.value().toInt();
+    qDebug() << "STL-style iterator:" << timer.elapsed() << "ms, sum =" << sum1;
+
+    // 2. Qt iterator
+    timer.restart();
+    qint64 sum2 = 0;
+    QHashIterator<QString, QVariant> it2(data);
+    while (it2.hasNext()) {
+        it2.next();
+        sum2 += it2.value().toInt();
+    }
+    qDebug() << "QHashIterator:" << timer.elapsed() << "ms, sum =" << sum2;
+
+    // 3. Range-based for
+    timer.restart();
+    qint64 sum3 = 0;
+    for (const auto &key : data.keys())
+        sum3 += data.value(key).toInt();
+    qDebug() << "Range-based for:" << timer.elapsed() << "ms, sum =" << sum3;
 }
 

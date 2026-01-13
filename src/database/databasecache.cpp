@@ -29,8 +29,7 @@ void DatabaseCache::init()
     updateTails();
     updatePilots();
     updateAirports();
-    updateSimulators();
-    updateAircraft();
+    updateAircraftTypes();
 
     // Listen to database for updates, reload cache if needed
     QObject::connect(DB,   		   &OPL::Database::dataBaseUpdated,
@@ -38,36 +37,35 @@ void DatabaseCache::init()
 
 }
 
-const IdMap DatabaseCache::fetchMap(CompleterTarget target)
+const IdMap DatabaseCache::fetchMap(MapType target)
 {
     QString statement;
 
     switch (target) {
-    case AirportsICAO:
+    case MapType::AirportCodesIcao:
         statement.append(QStringLiteral("SELECT ROWID, icao FROM airports"));
         break;
-    case AirportsIATA:
+    case MapType::AirportCodesIata:
         statement.append(QStringLiteral("SELECT ROWID, iata FROM airports WHERE iata NOT NULL"));
         break;
-    case AirportNames:
+    case MapType::AirportNames:
         statement.append(QStringLiteral("SELECT ROWID, name FROM airports"));
         break;
-    case PilotNames:
+    case MapType::PilotNames:
         statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
-    case Tails:
+    case MapType::TailRegistrations:
         statement.append(QStringLiteral("SELECT ROWID, registration FROM tails"));
         break;
-    case Types:
-        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM tails WHERE model IS NOT NULL AND variant IS NULL "
-                                        " UNION "
-                                        " SELECT ROWID, make||' '||model||'-'||variant FROM tails WHERE variant IS NOT NULL"));
-        break;
-    case AircraftTypes:
-        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
-                         "UNION "
-                         "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
-        break;
+    case MapType::AircraftTypes:
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model AS ident "
+                                        "FROM aircraft_types "
+                                        "WHERE model IS NOT NULL AND variant IS NULL "
+                                        "UNION "
+                                        "SELECT ROWID, make||' '||model||'-'||variant "
+                                        "FROM aircraft_types "
+                                        "WHERE variant IS NOT NULL"));
+break;
     default:
         return {};
     }
@@ -83,30 +81,44 @@ const IdMap DatabaseCache::fetchMap(CompleterTarget target)
     return id_map;
 }
 
-const QStringList DatabaseCache::fetchList(CompleterTarget target)
+const QStringList DatabaseCache::fetchList(ListType target)
 {
     QString statement;
 
     switch (target) {
-    case PilotNames:
-        statement.append(QStringLiteral("SELECT lastname||', '||firstname FROM pilots"));
+    case ListType::PilotNames:
+        statement.append(QStringLiteral("SELECT pilot_name FROM pilots"));
         break;
-    case AircraftTypes:
-        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
-                         "UNION "
-                         "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
+    case ListType::AircraftTypes:
+        statement.append(QStringLiteral("SELECT make||' '||model AS ident "
+                                        "FROM aircraft_types "
+                                        "WHERE model IS NOT NULL AND variant IS NULL "
+                                        "UNION "
+                                        "SELECT make||' '||model||'-'||variant AS ident "
+                                        "FROM aircraft_types "
+                                        "WHERE variant IS NOT NULL"));
         break;
-    case AirportsAny:
-        statement.append(QStringLiteral("SELECT icao FROM airports UNION SELECT iata FROM airports"));
+    case ListType::AirportCodes:
+        statement.append(QStringLiteral("WITH CurrentCode AS ( "
+                                            "SELECT "
+                                            "airport_code, "
+                                            "valid_from_jd, "
+                                            "valid_to_jd "
+                                            "FROM airport_codes "
+                                            "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                                            "AND valid_from_jd <= julianday('now')) "
+                                        "SELECT "
+                                        "airport_code "
+                                        "FROM CurrentCode "));
         break;
-    case Tails:
-        statement.append(QStringLiteral("SELECT registration FROM tails"));
+    case ListType::Tails:
+        statement.append(QStringLiteral("SELECT registration FROM aircraft_tails"));
         break;
-    case Companies:
+    case ListType::Companies:
         statement.append(QStringLiteral("SELECT company FROM pilots"));
         break;
     default:
-        DEB << "Not a valid completer target for this function.";
+        Q_UNREACHABLE();
         return QStringList();
     }
 
@@ -128,43 +140,48 @@ const QStringList DatabaseCache::fetchList(CompleterTarget target)
 
 void DatabaseCache::updateTails()
 {
-    tailsMap = fetchMap(Tails);
-    tailsList = fetchList(Tails);
-    for (auto &reg : tailsList) {
+    tailsRegistrationMap = fetchMap(MapType::TailRegistrations);
+    convertIdMapToKeyMap(tailsRegistrationMap, tailsRegistrationKeyMap);
+
+    aircraftTailsList = fetchList(ListType::Tails);
+    for (auto &reg : aircraftTailsList) {
+        // For the QCompleter list we want to enable "AB-CDE" as well as "ABCDE"
+        // this solution is terrible. TODO -> create a QSortFilterProxyModel that ignores dashes
         if(reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
             QString copy = reg;
             reg.remove(QLatin1Char('-'));
             reg = copy + " (" + reg + QLatin1Char(')');
         }
     }
-    typesMap = fetchMap(Types);
 }
 
 void DatabaseCache::updateAirports()
 {
-    airportsMapIATA  = fetchMap(AirportsIATA);
-    airportsMapICAO  = fetchMap(AirportsICAO);
-    airportsMapNames = fetchMap(AirportNames);
-    airportList      = fetchList(AirportsAny);
-}
+    airportsIataMap  = fetchMap(MapType::AirportCodesIata);
+    convertIdMapToKeyMap(airportsIataMap, airportsIataKeyMap);
 
-void DatabaseCache::updateSimulators()
-{
-    TODO << "Simulators map not yet cached";
-    Q_UNIMPLEMENTED();
+    airportsIcaoMap  = fetchMap(MapType::AirportCodesIcao);
+    convertIdMapToKeyMap(airportsIcaoMap, airportsIcaoKeyMap);
+
+    airportNamesMap = fetchMap(MapType::AirportNames);
+    convertIdMapToKeyMap(airportNamesMap, airportNamesKeyMap);
+
+    airportCodesList = fetchList(ListType::AirportCodes);
 }
 
 void DatabaseCache::updatePilots()
 {
-    pilotNamesMap  = fetchMap(PilotNames);
-    pilotNamesList = fetchList(PilotNames);
-    companiesList  = fetchList(Companies);
+    pilotNamesMap  = fetchMap(MapType::PilotNames);
+    pilotNamesList = fetchList(ListType::PilotNames);
+    companiesList  = fetchList(ListType::Companies);
 }
 
-void DatabaseCache::updateAircraft()
+void DatabaseCache::updateAircraftTypes()
 {
-    aircraftList = fetchList(AircraftTypes);
-    aircraftMap = fetchMap(AircraftTypes);
+    aircraftTypesList = fetchList(ListType::AircraftTypes);
+    aircraftTypesMap = fetchMap(MapType::AircraftTypes);
+
+    convertIdMapToKeyMap(aircraftTypesMap, aircraftTypesKeyMap);
 }
 
 void DatabaseCache::onDatabaseUpdated(const OPL::DbTable table)
@@ -177,28 +194,26 @@ void DatabaseCache::onDatabaseUpdated(const OPL::DbTable table)
     case DbTable::Tails:
         updateTails();
         break;
-    case DbTable::Simulators:
-        updateSimulators();
-        break;
     case DbTable::Airports:
         updateAirports();
         break;
     case DbTable::Aircraft:
-        updateAircraft();
+        updateAircraftTypes();
         break;
     default:
         break;
     }
     emit databaseCacheUpdated(table);
 }
+
 const IdMap &DatabaseCache::getAirportsMapICAO() const
 {
-    return airportsMapICAO;
+    return airportsIcaoMap;
 }
 
 const IdMap &DatabaseCache::getAirportsMapIATA() const
 {
-    return airportsMapIATA;
+    return airportsIataMap;
 }
 
 const IdMap &DatabaseCache::getPilotNamesMap() const
@@ -206,51 +221,86 @@ const IdMap &DatabaseCache::getPilotNamesMap() const
     return pilotNamesMap;
 }
 
-const QStringList &DatabaseCache::getPilotNamesList() const
+const QStringList &DatabaseCache::getList(ListType type)
 {
-    return pilotNamesList;
+    switch(type) {
+    case ListType::PilotNames:
+        return pilotNamesList;
+        break;
+    case ListType::AircraftTypes:
+        return aircraftTypesList;
+        break;
+    case ListType::Tails:
+        return aircraftTailsList;
+        break;
+    case ListType::AirportCodes:
+        return airportCodesList;
+        break;
+    case ListType::Companies:
+        return companiesList;
+        break;
+    }
+    Q_UNREACHABLE();
 }
 
-const QStringList &DatabaseCache::getTailsList() const
+const IdMap &DatabaseCache::getMap(MapType type)
 {
-    return tailsList;
+    switch(type) {
+    case MapType::AirportCodesIcao:
+        return airportsIcaoMap;
+        break;
+    case MapType::AirportCodesIata:
+        return airportsIataMap;
+        break;
+    case MapType::AirportNames:
+        return aircraftTypesMap;
+        break;
+    case MapType::AircraftTypes:
+        return aircraftTypesMap;
+        break;
+    case MapType::TailRegistrations:
+        return tailsRegistrationMap;
+        break;
+    case MapType::PilotNames:
+        return pilotNamesMap;
+        break;
+    }
+    Q_UNREACHABLE();
 }
 
-const QStringList &DatabaseCache::getAirportList() const
+const KeyMap &DatabaseCache::getKeyMap(MapType type)
 {
-    return airportList;
+    switch(type) {
+    case MapType::AirportCodesIcao:
+        return airportsIcaoKeyMap;
+        break;
+    case MapType::AirportCodesIata:
+        return airportsIataKeyMap;
+        break;
+    case MapType::AirportNames:
+        return aircraftTypesKeyMap;
+        break;
+    case MapType::AircraftTypes:
+        return aircraftTypesKeyMap;
+        break;
+    case MapType::TailRegistrations:
+        return tailsRegistrationKeyMap;
+        break;
+    case MapType::PilotNames:
+        return pilotNamesKeyMap;
+        break;
+    }
+    Q_UNREACHABLE();
+
 }
 
-const QStringList &DatabaseCache::getCompaniesList() const
+void DatabaseCache::convertIdMapToKeyMap(IdMap &idMap, KeyMap &keyMap)
 {
-    return companiesList;
+    keyMap.clear();
+    keyMap.reserve(idMap.size());
+    for (auto it = idMap.constBegin(); it != idMap.constEnd(); ++it) {
+        keyMap.insert(it.value(), it.key());
+    }
 }
-
-const QStringList &DatabaseCache::getAircraftList() const
-{
-    return aircraftList;
-}
-
-const IdMap &DatabaseCache::getAircraftMap() const
-{
-    return aircraftMap;
-}
-
-const IdMap &DatabaseCache::getAirportsMapNames() const
-{
-    return airportsMapNames;
-}
-
-const IdMap &DatabaseCache::getTailsMap() const
-{
-    return tailsMap;
-}
-
-const IdMap &DatabaseCache::getTypesMap() const
-{
-    return typesMap;
-}
-
-
 
 } // namespace OPL

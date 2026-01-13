@@ -36,12 +36,17 @@ namespace OPL {
  */
 class AircraftEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("aircraft");
+    const static inline QString TABLE_NAME = QStringLiteral("aircraft_types");
 public:
     AircraftEntry();
     AircraftEntry(const RowData_T &row_data);
     AircraftEntry(int row_id, const RowData_T &row_data);
     const QString getTableName() const override;
+
+    /*!
+     * \brief returns "Make Model" or if available "Make Model-Variant" for a given aircraft_id
+     */
+    static QString getTypeString(int aircraft_id);
 
     /*!
      * \brief The aircrafts manufacturer (Airbus, Boeing,...)

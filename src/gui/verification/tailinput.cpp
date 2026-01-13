@@ -4,7 +4,7 @@
 
 bool TailInput::isValid() const
 {
-    return DBCache->getTailsMap().key(input) != 0;
+    return DBCache->getKeyMap(OPL::DatabaseCache::MapType::TailRegistrations).value(input) != 0;
 }
 
 QString TailInput::fixup() const

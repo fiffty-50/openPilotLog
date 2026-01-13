@@ -121,7 +121,7 @@ bool FlightEntryParser::setThirdPilot(const QString &input)
 
 bool FlightEntryParser::setRegistration(const QString &input)
 {
-    const int tailId = DBCache->getTailsMap().key(input);
+    const int tailId = DBCache->getKeyMap(DatabaseCache::MapType::TailRegistrations).value(input);
     if(tailId == 0) {
         return false;
     }
@@ -201,13 +201,13 @@ bool FlightEntryParser::setAircraftCategoryTimes()
 
     // Determine aircraft category
     const TailEntry aircraft = DB->getTailEntry(tailId);
-    bool multi_pilot = aircraft.getData().value(OPL::TailEntry::MULTI_PILOT).toBool();
-    bool multi_engine = aircraft.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
+    //bool multi_pilot = aircraft.getData().value(OPL::TailEntry::MULTI_PILOT).toBool();
+    //bool multi_engine = aircraft.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
 
     // only fill the required fields, empty out the other ones
-    m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
-    m_entryData.insert(OPL::FlightEntry::TSPSE, (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
-    m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    //m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    //m_entryData.insert(OPL::FlightEntry::TSPSE, (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    //m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
 
     return true;
 }

@@ -26,8 +26,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QDateEdit>
+#include <QCheckBox>
 
-#include "src/database/row.h"
+#include "src/database/tailentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 
 /*!
@@ -76,54 +78,40 @@ private:
 
     // Widgets
     QGridLayout *gridLayout;
-    QLabel operationLabel;
-    QLabel variantLabel;
-    QLabel weightLabel;
-    QLabel registrationLabel;
-    QLabel modelLabel;
-    QLabel companyLabel;
-    QLabel searchLabel;
-    QLabel powerPlantLabel;
-    QLabel makeLabel;
-    QLineEdit registrationLineEdit;
-    QLineEdit makeLineEdit;
-    QLineEdit modelLineEdit;
-    QLineEdit companyLineEdit;
-    QLineEdit searchLineEdit;
-    QLineEdit variantLineEdit;
-    QComboBox ppNumberComboBox;
-    QComboBox weightComboBox;
-    QComboBox ppTypeComboBox;
-    QComboBox operationComboBox;
-    QFrame seperator;
-    QDialogButtonBox buttonBox;
+    QComboBox *aircraftTypeComboBox;
+    QLabel *aircraftTypeLabel;
+    QFrame *seperator;
+    QLabel *registrationLabel;
+    QLabel *companyLabel;
+    QLabel *remarksLabel;
+    QLineEdit *registrationLineEdit;
+    QLineEdit *companyLineEdit;
+    QLineEdit *remarksLineEdit;
+    QFrame *seperator2;
+    QLabel *serviceDateExplainerLabel;
+    QCheckBox *editServiceDatesCheckBox;
+    QLabel *inServiceLabel;
+    QLabel *outOfServiceLabel;
+    QDateEdit *inServiceDateEdit;
+    QDateEdit *outOfServiceDateEdit;
+    QDialogButtonBox *buttonBox;
 
     // Form Setup and Maintenance
     void init();
     void retranslateUi();
-    void setupCompleter();
-    void setupSignalsAndSlots();
-    void fillForm(const OPL::Row &entry, bool is_template);
-    bool verify();
-    void submitForm();
-    inline void onGoodInputReceived(QWidget *widget) {
-        if(widget)
-            widget->setStyleSheet(QString());
-    }
-    inline void onBadInputReceived(QWidget *widget) {
-        if(widget)
-            widget->setStyleSheet(QStringLiteral("border: 1px solid red"));
-    }
+    void fillForm(const OPL::TailEntry &entry);
+    void showServiceDateEdits();
+    void hideServiceDateEdits();
 
     // Member variables
     int m_rowId;
 
 private slots:
-    void on_mandatoryComboBox_currentIndexChanged(QComboBox *comboBox);
     void on_registrationLineEdit_editingFinished();
     void on_buttonBox_accepted();
     void on_searchCompleter_activated(const QModelIndex &index);
-
+    void on_aircraftTypeLineEdit_editingFinished();
+    void on_dateEditCheckBox_changed(Qt::CheckState state);
     // EntryEditDialog interface
 public:
     virtual bool deleteEntry(int rowID) override;

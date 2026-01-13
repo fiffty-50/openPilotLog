@@ -14,6 +14,9 @@ namespace OPL {
  * as well as calculations like date ranges.
  *
  * Julian day is also used to store a date in the database.
+ *
+ * The default start date for entries in the application and database is the start of the
+ * 20th century (1900-01-01) and the highest possible date value is 9999-12-12.
  */
 class Date
 {
@@ -23,6 +26,26 @@ public:
     Date(int julianDay, const DateTimeFormat &format);
     Date(const QString &textDate, const DateTimeFormat &format);
     Date(const QDate &date, const DateTimeFormat &format);
+
+    /*!
+     * \brief returns the julian day of 1900-01-01
+     */
+    constexpr int getDefaultStartJulianDay() {return JULIAN_DAY_START; }
+
+    /*!
+     * \brief returns the QDate for 1900-01-01
+     */
+    const static inline QDate getDefaultStartDate() { return QDate::fromJulianDay(JULIAN_DAY_START); }
+
+    /*!
+     * \brief returns the julian day of 9999-12-12
+     */
+    constexpr int getHighestPossibleJulianDay() { return JULIAN_DAY_END; }
+
+    /*!
+     * \brief returns the QDate for 9999-12-12
+     */
+    const static inline QDate getHighestPossibleDate () { return QDate::fromJulianDay(JULIAN_DAY_END); }
 
     const QString toString() const;
     const bool isValid() const { return m_date.isValid(); }
@@ -36,6 +59,9 @@ public:
 private:
     QDate m_date;
     DateTimeFormat m_format;
+    static constexpr int JULIAN_DAY_START = 2415021; // 1900-01-01
+    static constexpr int JULIAN_DAY_END = 5373465; // 9999-12-12
+
 };
 
 

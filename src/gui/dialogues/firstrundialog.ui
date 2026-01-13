@@ -24,7 +24,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="personalDataPage">
       <layout class="QGridLayout" name="gridLayout_9">
@@ -74,7 +74,7 @@
          <item row="2" column="1">
           <widget class="QLineEdit" name="employeeidLineEdit">
            <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
+            <enum>Qt::FocusPolicy::StrongFocus</enum>
            </property>
            <property name="text">
             <string/>
@@ -136,7 +136,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:700;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Before getting started, we need to quickly run through this initial set-up process. Please note that none of the data you put in will be stored in any place other than your own personal computer and will only be used to fill out information in your logbook.&lt;/p&gt;&lt;p&gt;OpenPilotLog does not collect, sell or use your private data for any commercial purpose.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::RichText</enum>
+          <enum>Qt::TextFormat::RichText</enum>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -157,7 +157,7 @@
           <string>Already have a openPilotLog database?</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+          <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
          </property>
         </widget>
        </item>
@@ -168,7 +168,7 @@
        <item row="1" column="0" colspan="2">
         <widget class="Line" name="line">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
         </widget>
        </item>
@@ -178,7 +178,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to keep track of your license and/or medical expiration dates, you can enter them here. Your currencies are tracked and you will be warned about impending expiries. These warnings can be disabled in the Settings Menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::RichText</enum>
+          <enum>Qt::TextFormat::RichText</enum>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -196,7 +196,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -205,7 +205,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -241,7 +241,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -250,7 +250,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -270,7 +270,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -279,7 +279,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -351,7 +351,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -360,7 +360,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -380,7 +380,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -389,7 +389,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -409,7 +409,7 @@
             </size>
            </property>
            <property name="currentSection">
-            <enum>QDateTimeEdit::YearSection</enum>
+            <enum>QDateTimeEdit::Section::YearSection</enum>
            </property>
            <property name="displayFormat">
             <string>yyyy-MM-dd</string>
@@ -418,7 +418,7 @@
             <bool>true</bool>
            </property>
            <property name="timeSpec">
-            <enum>Qt::UTC</enum>
+            <enum>Qt::TimeSpec::UTC</enum>
            </property>
            <property name="date">
             <date>
@@ -454,7 +454,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can make selections about which parts of a new flight will be automatically preselected or completed by default. You can always change these settings for an individual flight or adjust them globally in the settings menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::RichText</enum>
+          <enum>Qt::TextFormat::RichText</enum>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -652,7 +652,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Welcome to openPilotLog!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;The Free and Open Source Logbook application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Here you can customize the appearance of your logbook, like how your name should be displayed in the logbook or the theme of the app. For the best cross-platform experience, we recommend the Fusion theme.&lt;/p&gt;&lt;p&gt;The logbook views determine how your logbook is displayed. The default view is a compact overview with all the essential information displayed, optimised for viewing on a comptuter screen. The EASA view is modelled after the EASA guidelines for logbooks and contains more fields. Please note that these only affects how your logbook is displayed. In both views, you have the possibility to log all the details of a specific flight. You can change the view at any time from the settings page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::RichText</enum>
+          <enum>Qt::TextFormat::RichText</enum>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -753,7 +753,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Finish&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Almost done! We are now going to create the database for the application.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;If you want to use the most up-to-date version of the database, an internet connection is required, otherwise you can use the version included in the download.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::RichText</enum>
+          <enum>Qt::TextFormat::RichText</enum>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -787,7 +787,7 @@
       <string/>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>

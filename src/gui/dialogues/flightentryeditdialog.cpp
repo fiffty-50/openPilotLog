@@ -36,7 +36,7 @@ void FlightEntryEditDialog::loadEntry(int rowID)
 
 void FlightEntryEditDialog::loadEntry(const OPL::Row &entry)
 {
-    LOG << "Loading Flight Entry" << entry.getPosition();
+    LOG << "Loading Flight Entry...";;
     DEB << entry;
     // Load the entry data into the parser
     OPL::FlightEntry flightEntry(entry.getRowId(), entry.getData());
@@ -59,7 +59,8 @@ void FlightEntryEditDialog::loadEntry(const OPL::Row &entry)
     totalTimeDisplayLabel.setText(m_entryParser.getBlockTime().toString(m_displayFormat.timeFormatString()));
 
     // Registration
-    registrationLineEdit.setText(DBCache->getTailsMap().value(m_entryParser.getRegistrationId()));
+    registrationLineEdit.setText(DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations)
+                                     .value(m_entryParser.getRegistrationId()));
 
     // Pilot Names
     firstPilotLineEdit.setText(DBCache->getPilotNamesMap().value(m_entryParser.getFirstPilotId()));
@@ -370,13 +371,13 @@ void FlightEntryEditDialog::onGoodInputReceived(QLineEdit *lineEdit) {
 
 void FlightEntryEditDialog::updateAirportLabels()
 {
-    departureDisplayLabel.setText(DBCache->getAirportsMapNames().value(
-        DBCache->getAirportsMapICAO().key(
-            departureLineEdit.text())));
+    // departureDisplayLabel.setText(DBCache->getAirportsMapNames().value(
+    //     DBCache->getAirportsMapICAO().key(
+    //         departureLineEdit.text())));
 
-    destinationDisplayLabel.setText(DBCache->getAirportsMapNames().value(
-        DBCache->getAirportsMapICAO().key(
-            destinationLineEdit.text())));
+    // destinationDisplayLabel.setText(DBCache->getAirportsMapNames().value(
+    //     DBCache->getAirportsMapICAO().key(
+    //         destinationLineEdit.text())));
 }
 
 void FlightEntryEditDialog::collectSecondaryFlightData()
@@ -488,7 +489,6 @@ void FlightEntryEditDialog::onDialogAccepted()
         return;
     }
     DEB << m_entryParser.getFlightEntry();
-    DEB << m_entryParser.getFlightEntry().getPosition();
     if (!DB->commit(m_entryParser.getFlightEntry())) {
         WARN(tr("The following error has ocurred:"
                 "<br><br>%1<br><br>"
@@ -721,20 +721,20 @@ bool FlightEntryEditDialog::addNewDatabaseElement(QLineEdit *caller, const OPL::
         return false;
 
     // set the line edit to the newly created entry
-    const int lastRowId = DB->getLastEntry(table);
-    switch(table) {
-    case OPL::DbTable::Pilots:
-        caller->setText(DBCache->getPilotNamesMap().value(lastRowId));
-        break;
-    case OPL::DbTable::Tails:
-        caller->setText(DBCache->getTailsMap().value(lastRowId));
-        break;
-    case OPL::DbTable::Airports:
-        caller->setText(DBCache->getAirportsMapICAO().value(lastRowId));
-        break;
-    default:
-        break;
-    }
+    // const int lastRowId = DB->getLastEntry(table);
+    // switch(table) {
+    // case OPL::DbTable::Pilots:
+    //     caller->setText(DBCache->getPilotNamesMap().value(lastRowId));
+    //     break;
+    // case OPL::DbTable::Tails:
+    //     caller->setText(DBCache->getTailsMap().value(lastRowId));
+    //     break;
+    // case OPL::DbTable::Airports:
+    //     caller->setText(DBCache->getAirportsMapICAO().value(lastRowId));
+    //     break;
+    // default:
+    //     break;
+    // }
 
     return true;
 }
