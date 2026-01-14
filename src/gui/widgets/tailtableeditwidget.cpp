@@ -10,7 +10,7 @@ TailTableEditWidget::TailTableEditWidget(QWidget *parent)
 void TailTableEditWidget::setupModelAndView()
 {
     m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Tails));
+    m_model->setTable(OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Tails));
     m_model->select();
     m_model->setHeaderData(COL_REGISTRATION, Qt::Horizontal, COLUMN_NAME_REGISTRATION);
     m_model->setHeaderData(COL_TYPE, Qt::Horizontal, COLUMN_NAME_TYPE);
@@ -24,8 +24,7 @@ void TailTableEditWidget::setupModelAndView()
     m_view->resizeColumnsToContents();
     m_view->verticalHeader()->hide();
     m_view->setAlternatingRowColors(true);
-    for(const int i : COLS_TO_HIDE)
-        m_view->hideColumn(i);
+    m_view->hideColumn(COL_ROWID);
 }
 
 void TailTableEditWidget::setupUI()
@@ -91,8 +90,7 @@ QString TailTableEditWidget::confirmDeleteString(int rowId)
 
 EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
-    QString empty;
-    return new TailEntryEditDialog(empty, parent);
+    return new TailEntryEditDialog(QString(), parent);
 }
 
 void TailTableEditWidget::filterTextChanged(const QString &filterString)

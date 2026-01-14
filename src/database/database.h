@@ -240,7 +240,7 @@ public:
      */
     inline OPL::TailEntry getTailEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::Tails, row_id);
+        const auto data = getRowData(OPL::DbTable::v2AircraftTails, row_id);
         return OPL::TailEntry(row_id, data);
     }
 
@@ -249,7 +249,7 @@ public:
      */
     inline OPL::AircraftEntry getAircraftEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::Aircraft, row_id);
+        const auto data = getRowData(OPL::DbTable::v2AircraftTypes, row_id);
         return OPL::AircraftEntry(row_id, data);
     }
 

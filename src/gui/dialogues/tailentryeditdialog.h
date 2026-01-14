@@ -88,7 +88,6 @@ private:
     QLineEdit *companyLineEdit;
     QLineEdit *remarksLineEdit;
     QFrame *seperator2;
-    QLabel *serviceDateExplainerLabel;
     QCheckBox *editServiceDatesCheckBox;
     QLabel *inServiceLabel;
     QLabel *outOfServiceLabel;

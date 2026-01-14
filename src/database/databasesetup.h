@@ -103,7 +103,8 @@ private:
     };
 
     const QList<QString> m_views = {
-        // TODO: add view sql files here
+        QStringLiteral(":/database/views/01_AirportView.sql"),
+        QStringLiteral(":/database/views/02_TailsView.sql"),
     };
 
     const QMap<OPL::DbTable, QString> m_templateData = {

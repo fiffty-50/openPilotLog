@@ -210,7 +210,7 @@ enum class LogbookView {Default, DefaultWithSim, Easa, EasaWithSim, SimulatorOnl
 /*!
  * \brief Enumerates the available SQL views in the database, except Logbook Views
  */
-enum class DatabaseView {Airports};
+enum class DatabaseView {Airports, Tails};
 
 /*!
  * \brief Enumerates the Simulator Types: Flight and Navigation Procedures Trainer 1/2, Flight Simulation Training Device
@@ -274,6 +274,7 @@ private:
     };
     const static inline QMap<DatabaseView, QString> DATABASE_VIEWS = {
         {DatabaseView::Airports,		QStringLiteral("AirportView")},
+        {DatabaseView::Tails,			QStringLiteral("TailsView")},
     };
     const QMap<LogbookView, QString> DATABASE_VIEW_DISPLAY_NAMES = {
         {LogbookView::Default,        tr("Default")},

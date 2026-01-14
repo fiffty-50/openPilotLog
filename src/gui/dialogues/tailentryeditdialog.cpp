@@ -56,7 +56,6 @@ void TailEntryEditDialog::init()
     int row = 0;
     constexpr int firstCol = 0;
     constexpr int secondCol = 1;
-    constexpr int thirdCol = 3;
     constexpr int singleSpan = 1;
     constexpr int spanRemaining = -1;
 
@@ -110,16 +109,14 @@ void TailEntryEditDialog::init()
     gridLayout->addWidget(seperator2, row, firstCol, singleSpan, spanRemaining);
     row++;
 
-    // Exlainer Label
-    serviceDateExplainerLabel = new QLabel(this);
-    serviceDateExplainerLabel->setWordWrap(true);
-    gridLayout->addWidget(serviceDateExplainerLabel, row, firstCol, singleSpan, spanRemaining);
-    row++;
-
     // In Service
     inServiceLabel = new QLabel(this);
+    const auto dateFormat = OPL::DateTimeFormat().dateFormatString();
     inServiceDateEdit = new QDateEdit(this);
-    inServiceDateEdit->setDate(OPL::Date::getDefaultStartDate());
+    inServiceDateEdit->setDisplayFormat(dateFormat);
+    inServiceDateEdit->setMinimumDate(OPL::Date::getMinumumDate());
+    inServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
+    inServiceDateEdit->setDate(OPL::Date::getMinumumDate());
     inServiceDateEdit->setEnabled(false);
     addTwoWidgets(inServiceLabel, inServiceDateEdit);
 
@@ -127,7 +124,10 @@ void TailEntryEditDialog::init()
     // Out of Service
     outOfServiceLabel = new QLabel(this);
     outOfServiceDateEdit = new QDateEdit(this);
-    outOfServiceDateEdit->setDate(OPL::Date::getHighestPossibleDate());
+    outOfServiceDateEdit->setDisplayFormat(dateFormat);
+    outOfServiceDateEdit->setMinimumDate(OPL::Date::getMinumumDate());
+    outOfServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
+    outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
     outOfServiceDateEdit->setEnabled(false);
     addTwoWidgets(outOfServiceLabel, outOfServiceDateEdit);
 
@@ -186,11 +186,6 @@ void TailEntryEditDialog::retranslateUi()
     remarksLabel->setText(tr("Remarks"));
     remarksLineEdit->setPlaceholderText(tr("optional"));
 
-    serviceDateExplainerLabel->setText(tr(
-        "If the same registration is re-used among several different aircraft "
-        "over time, you can set a manual interval for when a certain registration "
-        "is active on a given aircraft type"
-        ));
     editServiceDatesCheckBox->setText("Edit Service Interval");
     inServiceLabel->setText(tr("In service date"));
     outOfServiceLabel->setText(tr("Out of service date"));
@@ -203,12 +198,24 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
     registrationLineEdit->setText(entry.getRegistration());
     companyLineEdit->setText(entry.getCompany());
     remarksLineEdit->setText(entry.getRemarks());
+
+    const QDate inService = entry.getInServiceDate();
+    if(inService != OPL::Date::getMinumumDate()) {
+        inServiceDateEdit->setDate(inService);
+    }
+    const QDate outOfService = entry.getOutOfServiceDate();
+    if(outOfService != OPL::Date::getMaximumDate()) {
+        outOfServiceDateEdit->setDate(outOfService);
+    }
+
+    aircraftTypeComboBox->setCurrentText(
+        DBCache->getMap(OPL::DatabaseCache::MapType::AircraftTypes)
+            .value(entry.getTypeId()));
 }
 
 void TailEntryEditDialog::showServiceDateEdits()
 {
     seperator2->show();
-    serviceDateExplainerLabel->show();
     inServiceLabel->show();
     inServiceDateEdit->show();
     outOfServiceLabel->show();
@@ -221,7 +228,6 @@ void TailEntryEditDialog::showServiceDateEdits()
 void TailEntryEditDialog::hideServiceDateEdits()
 {
     seperator2->hide();
-    serviceDateExplainerLabel->hide();
     inServiceLabel->hide();
     inServiceDateEdit->hide();
     outOfServiceLabel->hide();
@@ -273,11 +279,9 @@ void TailEntryEditDialog::on_buttonBox_accepted()
     entry.setCompany(companyLineEdit->text());
     entry.setRemarks(remarksLineEdit->text());
     // set out of service date (only if not default)
-    if(outOfServiceDateEdit->date() == OPL::Date::getHighestPossibleDate()) {
-        DEB << "Default value";
+    if(outOfServiceDateEdit->date() == OPL::Date::getMaximumDate()) {
         entry.setOutOfServiceDate(QDate());
     } else {
-        DEB << "Manual entry: " << outOfServiceDateEdit->date();
         entry.setOutOfServiceDate(outOfServiceDateEdit->date());
     }
 
@@ -309,8 +313,24 @@ void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
 {
     switch (state) {
     case Qt::CheckState::Checked:
-        showServiceDateEdits();
+    {
+        QMessageBox question;
+        question.setIcon(QMessageBox::Question);
+        question.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        question.setDefaultButton(QMessageBox::No);
+        question.setText((tr(
+            "If the same registration is re-used among several different aircraft "
+            "over time, you can set a manual interval for when a certain registration "
+            "is active on a given aircraft type<br><br>This is not normally required "
+            "and should <b>only</b> be used if the same registration appears on different "
+            "aircraft types in your logbook.<br><br>Do you want to continue?"
+            )));
+        if (question.exec() == QMessageBox::Yes)
+            showServiceDateEdits();
+        else
+            editServiceDatesCheckBox->setChecked(false);
         break;
+    }
     case Qt::CheckState::Unchecked:
         hideServiceDateEdits();
         break;
@@ -318,7 +338,6 @@ void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
         Q_UNREACHABLE();
         break;
     }
-
 }
 
 // EntryEditDialog Interface Implementation
@@ -331,10 +350,7 @@ bool TailEntryEditDialog::deleteEntry(int rowID)
 
 void TailEntryEditDialog::loadEntry(int rowId)
 {
-    aircraftTypeComboBox->hide();
-    aircraftTypeLabel->hide();
-    seperator->hide();
-
+    m_rowId = rowId;
     const auto entry = DB->getTailEntry(rowId);
     fillForm(entry);
 }

@@ -21,10 +21,8 @@ public:
 private:
     const int COL_ROWID = 0;
     const int COL_REGISTRATION = 1;
-    const int COL_TYPE = 10;
-    const int COL_COMPANY = 2;
-
-    const int COLS_TO_HIDE[8] = {0, 3, 4, 5, 6, 7, 8, 9};
+    const int COL_TYPE = 2;
+    const int COL_COMPANY = 3;
 
     const QString COLUMN_NAME_REGISTRATION = tr("Registration");
     const QString COLUMN_NAME_TYPE = tr("Type");

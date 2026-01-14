@@ -21,17 +21,17 @@
 namespace OPL {
 
 TailEntry::TailEntry()
-    : Row(DbTable::Tails, 0)
+    : Row(DbTable::v2AircraftTails, 0)
 {
     clear();
 }
 
 TailEntry::TailEntry(const RowData_T &row_data)
-    : Row(DbTable::Tails, 0, row_data)
+    : Row(DbTable::v2AircraftTails, 0, row_data)
 {}
 
 TailEntry::TailEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Tails, row_id, row_data)
+    : Row(DbTable::v2AircraftTails, row_id, row_data)
 {}
 
 void TailEntry::clear()

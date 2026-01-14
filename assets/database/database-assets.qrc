@@ -15,5 +15,7 @@
         <file>templates/airports.json</file>
         <file>templates/aircraft_types.json</file>
         <file>templates/airport_codes.json</file>
+        <file>views/02_TailsView.sql</file>
+        <file>views/01_AirportView.sql</file>
     </qresource>
 </RCC>
