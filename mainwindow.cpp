@@ -268,7 +268,7 @@ void MainWindow::on_actionDebug_triggered()
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-#include "src/gui/dialogues/tailentryeditdialog.h"
+#include <QStyleFactory>
 void MainWindow::debug()
 {
     /*
@@ -279,9 +279,10 @@ void MainWindow::debug()
     auto dialog = new TailEntryEditDialog(QString(), this);
     dialog->exec();
 */
-    auto f = QFile(":/db/schema/01_log_events.sql");
-    LOG << "exsits?" << f.exists();
-    if(f.open(QIODeviceBase::ReadOnly))
-        LOG << f.readAll();
+    qDebug() << "Available styles on this platform:";
+    QStringList styles = QStyleFactory::keys();
+    for (const QString &styleName : styles) {
+        qDebug() << " -" << styleName;
+    }
 }
 

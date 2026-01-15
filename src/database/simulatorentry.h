@@ -26,13 +26,12 @@ namespace OPL {
  */
 class SimulatorEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("simulators");
 public:
     SimulatorEntry();
     SimulatorEntry(const RowData_T &row_data);
     SimulatorEntry(int row_id, const RowData_T &row_data);
 
-    const QString getTableName() const override;
+    bool isValid() const override { return false; }
 
     /*!
      * \brief The sql column name for the row id
@@ -62,6 +61,9 @@ public:
      * \brief The sql column name for remarks
      */
     const static inline QString  REMARKS     = QStringLiteral("remarks");
+
+private:
+    const static inline QStringList FIELDS = {};
 };
 
 } // namespace OPL

@@ -20,25 +20,76 @@
 namespace OPL {
 
 AirportEntry::AirportEntry()
-    : Row(DbTable::Airports, 0)
+    : Row(DbTable::Airports, FIELDS)
 {}
 
-AirportEntry::AirportEntry(const RowData_T &row_data)
-    : Row(DbTable::Airports, 0, row_data)
-{}
 
 AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Airports, row_id, row_data)
+    : Row(DbTable::Airports
+    , row_id
+    , row_data
+    , FIELDS)
 {}
 
-const QString AirportEntry::getTableName() const
+bool AirportEntry::isValid() const
 {
-    return TABLE_NAME;
+    // verify airport name is set
+    return !(m_rowData.value(NAME).toString().isEmpty());
 }
 
-const QString AirportEntry::getAirportName() const
+bool AirportEntry::setAirportName(const QString &input)
+{
+    if(input.isEmpty())
+        return false;
+    m_rowData.insert(NAME, input);
+    return true;
+}
+
+bool AirportEntry::setLatitude(double input)
+{
+    if( ! (input >= -90.0 && input <= 90.0))
+        return false;
+
+    m_rowData.insert(LATITUDE, input);
+    return true;
+}
+
+bool AirportEntry::setLongitude(double input)
+{
+    if( ! (input >= -180.0 && input <= 180.0))
+        return false;
+
+    m_rowData.insert(LONGITUDE, input);
+    return true;
+}
+
+bool AirportEntry::setTimezone(const QString &input)
+{
+    if (! QTimeZone::availableTimeZoneIds().contains(input))
+        return false;
+
+    m_rowData.insert(TZ_OLSON, input);
+    return true;
+}
+
+QString AirportEntry::getAirportName() const
 {
     return getData().value(NAME).toString();
+}
+
+QString AirportEntry::getTimezone() const
+{
+    return getData().value(TZ_OLSON).toString();
+}
+
+double AirportEntry::getLatitude() const
+{
+    return getData().value(LATITUDE).toDouble();
+}
+
+double AirportEntry::getLongitude() const
+{
+    return getData().value(LONGITUDE).toDouble();
 }
 
 } // namespace OPL

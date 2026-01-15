@@ -20,20 +20,11 @@
 namespace OPL {
 
 PreviousExperienceEntry::PreviousExperienceEntry()
-    : Row(DbTable::PreviousExperience, 0)
-{}
-
-PreviousExperienceEntry::PreviousExperienceEntry(const RowData_T &row_data)
-    : Row(DbTable::PreviousExperience, 0, row_data)
+    : Row(DbTable::PreviousExperience, FIELDS)
 {}
 
 PreviousExperienceEntry::PreviousExperienceEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::PreviousExperience, row_id, row_data)
+    : Row(DbTable::PreviousExperience, row_id, row_data, FIELDS)
 {}
-
-const QString PreviousExperienceEntry::getTableName() const
-{
-    return TABLE_NAME;
-}
 
 } // namespace OPL

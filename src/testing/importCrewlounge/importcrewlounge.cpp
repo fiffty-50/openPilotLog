@@ -52,7 +52,7 @@ void exec(const QString &csv_file_path)
 
 
     for (const auto &flight_data : flights) {
-        OPL::FlightEntry fe(flight_data);
+        OPL::FlightEntry fe(0, flight_data);
         DB->commit(fe);
     }
 

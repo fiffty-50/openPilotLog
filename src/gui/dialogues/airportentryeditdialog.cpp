@@ -143,14 +143,15 @@ void AirportEntryEditDialog::loadTimeZones()
 void AirportEntryEditDialog::loadAirportData(int row_id)
 {
     this->setWindowTitle(tr("Edit Airport"));
-    const auto airport_data = DB->getAirportEntry(row_id).getData();
-    DEB << "Filling Airport Data: " << airport_data;
 
-    nameLineEdit->setText(airport_data.value(OPL::AirportEntry::NAME).toString());
-    latDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LATITUDE).toDouble());
-    lonDoubleSpinBox->setValue(airport_data.value(OPL::AirportEntry::LONGITUDE).toDouble());
+    const auto entry = DB->getAirportEntry(row_id);
+    DEB << "Filling Airport Data: " << entry;
 
-    const QString timezone = airport_data.value(OPL::AirportEntry::TZ_OLSON).toString();
+    nameLineEdit->setText(entry.getAirportName());
+    latDoubleSpinBox->setValue(entry.getLatitude());
+    lonDoubleSpinBox->setValue(entry.getLongitude());
+
+    const QString timezone = entry.getTimezone();
     if (timezone.isNull())
         WARN(tr("Unable to read timezone data for this airport. Please verify."));
     timeZoneComboBox->setCurrentText(timezone);
@@ -158,40 +159,6 @@ void AirportEntryEditDialog::loadAirportData(int row_id)
     icaoDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::ICAO));
     iataDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::IATA));
     otherCodeDisplayLabel->setText(OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::OTHER));
-}
-
-bool AirportEntryEditDialog::verifyInput()
-{
-    if (nameLineEdit->text().isEmpty()) {
-        WARN(tr("Please enter the airport name."));
-        return false;
-    }
-    if (latDoubleSpinBox->value() == 0 || lonDoubleSpinBox->value() == 0) {
-        WARN(tr("Please enter the latitude and longitude in decimal degrees.<br><br>"
-                "This data is required for calculation of sunrise and sunset times."));
-        return false;
-    }
-
-    if (timeZoneComboBox->currentIndex() == 0) {
-
-        QString airport_name = nameLineEdit->text();
-        QString timezone = timeZoneComboBox->currentText();
-
-        QMessageBox confirm(this);
-        confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        confirm.setDefaultButton(QMessageBox::No);
-        confirm.setIcon(QMessageBox::Question);
-        confirm.setWindowTitle("Confirm Timezone");
-        confirm.setText(tr("Is the following Timezone correct for the airport %1?<br><br><b><tt>"
-                           "%2<br></b></tt>"
-                           "Correct Timezone data is paramount for correctly converting between UTC and Local Time."
-                           ).arg(airport_name, timezone));
-        if (confirm.exec() == QMessageBox::Yes)
-            return true;
-        else
-            return false;
-    }
-    return true;
 }
 
 bool AirportEntryEditDialog::userWantsToEditCode()
@@ -237,20 +204,27 @@ void AirportEntryEditDialog::on_editOtherCodePushButton_clicked()
     }
 }
 
-
 void AirportEntryEditDialog::on_buttonBox_accepted()
 {
-    if (!verifyInput())
+    auto entry = OPL::AirportEntry();
+    if(!entry.setAirportName(nameLineEdit->text())) {
+        WARN(tr("Invalid Airport Name"));
         return;
-    // create Entry object
-    OPL::RowData_T airport_data = {
-        {OPL::AirportEntry::NAME,     	 nameLineEdit->text()},
-        {OPL::AirportEntry::LATITUDE,    latDoubleSpinBox->value()},
-        {OPL::AirportEntry::LONGITUDE,   lonDoubleSpinBox->value()},
-        {OPL::AirportEntry::TZ_OLSON,	 timeZoneComboBox->currentText()},
-    };
+    }
+    if(!entry.setLatitude(latDoubleSpinBox->value())) {
+        WARN(tr("Invalid Latitude Value."));
+        return;
+    }
+    if(!entry.setLongitude(lonDoubleSpinBox->value())) {
+        WARN(tr("Invalid Longitude Value."));
+        return;
+    }
+    if(!entry.setTimezone(timeZoneComboBox->currentText())) {
+        WARN(tr("Invalid Timezone: %1").arg(timeZoneComboBox->currentText()));
+        return;
+    }
 
-    OPL::AirportEntry entry(m_rowId, airport_data);
+    entry.setRowId(m_rowId);
     if(DB->commit(entry))
         QDialog::accept();
     else {

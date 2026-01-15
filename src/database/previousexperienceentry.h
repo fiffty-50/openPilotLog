@@ -27,12 +27,12 @@ namespace OPL {
  */
 class PreviousExperienceEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("previousExperience");
 public:
     PreviousExperienceEntry();
     PreviousExperienceEntry(const RowData_T &row_data);
     PreviousExperienceEntry(int row_id, const RowData_T &row_data);
-    const QString getTableName() const override;
+
+    bool isValid() const override { return false; }
 
     // these literals already exist in the FlightEntry class, so we can just copy them
     static const inline auto TBLK           = OPL::FlightEntry::TBLK;
@@ -51,6 +51,9 @@ public:
     static const inline auto TONIGHT        = OPL::FlightEntry::TONIGHT;
     static const inline auto LDGDAY         = OPL::FlightEntry::LDGDAY;
     static const inline auto LDGNIGHT       = OPL::FlightEntry::LDGNIGHT;
+
+private:
+    static const inline QStringList FIELDS = {};
 };
 
 } // namespace OPL

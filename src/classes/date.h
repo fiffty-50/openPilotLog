@@ -30,17 +30,17 @@ public:
     /*!
      * \brief returns the julian day of 1900-01-01
      */
-    constexpr int getMinimumDateJuilanDay() {return JULIAN_DAY_START; }
+    constexpr static int getMinimumDateJulianDay() {return JULIAN_DAY_START; }
 
     /*!
      * \brief returns the QDate for 1900-01-01
      */
-    const static inline QDate getMinumumDate() { return QDate::fromJulianDay(JULIAN_DAY_START); }
+    const static inline QDate getMinimumDate() { return QDate::fromJulianDay(JULIAN_DAY_START); }
 
     /*!
      * \brief returns the julian day of 9999-12-12
      */
-    constexpr int getMaximumDateJulianDay() { return JULIAN_DAY_END; }
+    constexpr static int getMaximumDateJulianDay() { return JULIAN_DAY_END; }
 
     /*!
      * \brief returns the QDate for 9999-12-12

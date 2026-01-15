@@ -37,6 +37,8 @@ public:
     FlightEntry(const RowData_T &row_data);
     FlightEntry(int row_id, const RowData_T &row_data);
 
+    bool isValid() const override;
+
     /*!
      * \brief return a QStringList of invalid mandatory fields.
      *
@@ -46,11 +48,6 @@ public:
     QStringList invalidFields() const;
 
     const static QList<QString> *getMandatoryFields() { return &mandatoryFields; }
-
-    /*!
-     * \brief returns the name of the flights table in the database
-     */
-    const QString getTableName() const override;
 
     /*!
      * \brief returns a String representation of the key data of this flight
@@ -91,7 +88,6 @@ public:
     const static inline QString REMARKS        = QStringLiteral("remarks");
 
 private:
-    static constexpr int NEW_ENTRY = 0;
     static const inline QString TABLE_NAME = QStringLiteral("flights");
     static inline const QList<QString> mandatoryFields = {
         FlightEntry::DOFT,
@@ -103,7 +99,7 @@ private:
         FlightEntry::PIC,
         FlightEntry::ACFT
     };
-    static inline const QList<QString> allFields = {
+    static inline const QList<QString> FIELDS = {
         ROWID          ,
         DOFT           ,
         DEPT           ,

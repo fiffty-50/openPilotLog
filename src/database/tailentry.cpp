@@ -21,45 +21,27 @@
 namespace OPL {
 
 TailEntry::TailEntry()
-    : Row(DbTable::v2AircraftTails, 0)
-{
-    clear();
-}
-
-TailEntry::TailEntry(const RowData_T &row_data)
-    : Row(DbTable::v2AircraftTails, 0, row_data)
+    : Row(DbTable::v2AircraftTails, FIELDS)
 {}
 
 TailEntry::TailEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::v2AircraftTails, row_id, row_data)
+    : Row(DbTable::v2AircraftTails, row_id, row_data, FIELDS)
 {}
-
-void TailEntry::clear()
-{
-    for (const auto &field : fields) {
-        rowData.insert(field, QVariant(QMetaType(QMetaType::QString)));
-    }
-}
-
-const QString TailEntry::getTableName() const
-{
-    return TABLE_NAME;
-}
 
 bool TailEntry::isValid() const
 {
     bool valid = true;
 
     // a valid type ID must be set
-    valid &= (DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(rowData.value(TYPE_ID).toInt()) != QString());
+    valid &= (DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(m_rowData.value(TYPE_ID).toInt()) != QString());
 
     // registration must not be empty
-    valid &= (rowData.value(REGISTRATION).toString() != QString());
+    valid &= (m_rowData.value(REGISTRATION).toString() != QString());
 
     // in-service date must be a valid julian date
-    const int jd = rowData.value(IN_SERVICE_DATE).toInt();
+    const int jd = m_rowData.value(IN_SERVICE_DATE).toInt();
     valid &= (jd != 0);
-    valid &= QDate::fromJulianDay(rowData.value(IN_SERVICE_DATE).toInt()).isValid();
+    valid &= QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()).isValid();
 
     // the other fields are optional
     return valid;
@@ -70,7 +52,7 @@ bool TailEntry::setRegistration(const QString &registration)
     if (registration.isEmpty())
         return false;
 
-    rowData.insert(REGISTRATION, registration);
+    m_rowData.insert(REGISTRATION, registration);
     return true;
 }
 
@@ -79,7 +61,7 @@ bool TailEntry::setInServiceDate(const QDate &date)
     if(!date.isValid())
         return false;
 
-    rowData.insert(IN_SERVICE_DATE, date.toJulianDay());
+    m_rowData.insert(IN_SERVICE_DATE, date.toJulianDay());
     return true;
 }
 
@@ -90,7 +72,7 @@ bool TailEntry::setOutOfServiceDate(const QDate &date)
         return false;
     }
 
-    rowData.insert(OUT_OF_SERVICE_DATE, date.toJulianDay());
+    m_rowData.insert(OUT_OF_SERVICE_DATE, date.toJulianDay());
     return true;
 }
 
@@ -104,7 +86,7 @@ bool TailEntry::setTypeId(int typeId)
     if(!isValid)
         return false;
 
-    rowData.insert(TYPE_ID, typeId);
+    m_rowData.insert(TYPE_ID, typeId);
     return true;
 }
 

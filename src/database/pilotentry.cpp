@@ -20,25 +20,90 @@
 namespace OPL {
 
 PilotEntry::PilotEntry()
-    : Row(DbTable::Pilots, 0)
-{}
-
-PilotEntry::PilotEntry(const RowData_T &row_data)
-    : Row(DbTable::Pilots, 0, row_data)
+    : Row(DbTable::Pilots, FIELDS)
 {}
 
 PilotEntry::PilotEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Pilots, row_id, row_data)
+    : Row(DbTable::Pilots, row_id, row_data, FIELDS)
 {}
 
-const QString PilotEntry::getTableName() const
+bool PilotEntry::isValid() const
 {
-    return TABLE_NAME;
+    return ! m_rowData.value(NAME).toString().isEmpty();
+}
+
+bool PilotEntry::setName(const QString &input)
+{
+    if(input.isEmpty())
+        return false;
+
+    m_rowData.insert(NAME, input);
+    return true;
+}
+
+void PilotEntry::setAlias(const QString &input)
+{
+    m_rowData.insert(ALIAS, input);
+}
+
+void PilotEntry::setEmployeeId(const QString &input)
+{
+    m_rowData.insert(EMPLOYEEID, input);
+}
+
+void PilotEntry::setCompany(const QString &input)
+{
+    m_rowData.insert(COMPANY, input);
+}
+
+void PilotEntry::setPhone(const QString &input)
+{
+    m_rowData.insert(PHONE, input);
+}
+
+void PilotEntry::setEmail(const QString &input)
+{
+    m_rowData.insert(EMAIL, input);
+}
+
+void PilotEntry::setRemarks(const QString &input)
+{
+    m_rowData.insert(REMARKS, input);
 }
 
 const QString PilotEntry::getName() const
 {
-    return getData().value(NAME).toString();
+    return m_rowData.value(NAME).toString();
+}
+
+const QString PilotEntry::getAlias() const
+{
+    return m_rowData.value(ALIAS).toString();
+}
+
+const QString PilotEntry::getEmployeeId() const
+{
+    return m_rowData.value(EMPLOYEEID).toString();
+}
+
+const QString PilotEntry::getCompany() const
+{
+    return m_rowData.value(COMPANY).toString();
+}
+
+const QString PilotEntry::getPhone() const
+{
+    return m_rowData.value(PHONE).toString();
+}
+
+const QString PilotEntry::getEmail() const
+{
+    return m_rowData.value(EMAIL).toString();
+}
+
+const QString PilotEntry::getRemarks() const
+{
+    return m_rowData.value(REMARKS).toString();
 }
 
 } // namespace OPL

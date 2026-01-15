@@ -328,15 +328,12 @@ bool FirstRunDialog::setupDatabase()
 
 bool FirstRunDialog::createUserEntry()
 {
-    OPL::RowData_T data;
-    data.insert(OPL::PilotEntry::NAME,   ui->lastnameLineEdit->text());
-    //data.insert(OPL::PilotEntry::FIRSTNAME,  ui->firstnameLineEdit->text());
-    data.insert(OPL::PilotEntry::ALIAS,      QStringLiteral("self"));
-    data.insert(OPL::PilotEntry::EMPLOYEEID, ui->employeeidLineEdit->text());
-    data.insert(OPL::PilotEntry::PHONE,      ui->phoneLineEdit->text());
-    data.insert(OPL::PilotEntry::EMAIL,      ui->emailLineEdit->text());
+    auto owner = OPL::PilotEntry();
+    if(!owner.setName(ui->lastnameLineEdit->text())) {
+        WARN(tr("Invalid Name."));
+    }
 
-    return DB->setLogbookOwner(data);
+    return DB->commit(owner);
 }
 
 bool FirstRunDialog::setupPreviousExperienceEntry()

@@ -23,35 +23,23 @@
 namespace OPL {
 
 FlightEntry::FlightEntry()
-    : Row(DbTable::Flights, NEW_ENTRY)
+    : Row(DbTable::Flights, FIELDS)
 {
-    for(const QString &item : allFields) {
-        rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
-    }
     for(const QString &item : mandatoryFields) {
-        rowData.insert(item, -1);
+        m_rowData.insert(item, -1);
     }
-}
-
-
-FlightEntry::FlightEntry(const RowData_T &row_data)
-    : Row(DbTable::Flights, NEW_ENTRY, row_data)
-{
-    for(const QString &item : allFields) {
-        rowData.insert(item, QVariant(QMetaType(QMetaType::Int)));
-    }
-    for(const QString &item : mandatoryFields) {
-        rowData.insert(item, -1);
-    }
-
 }
 
 FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Flights, row_id, row_data) {}
+    : Row(DbTable::Flights, row_id, row_data, FIELDS) {}
 
-const QString FlightEntry::getTableName() const
+bool FlightEntry::isValid() const
 {
-    return TABLE_NAME;
+    for(const QString item : mandatoryFields) {
+        if(m_rowData.value(item).toInt() < 0)
+            return false;
+    }
+    return true;
 }
 
 QString FlightEntry::getFlightSummary() const

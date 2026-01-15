@@ -31,12 +31,20 @@ public:
     AirportEntry();
     AirportEntry(const RowData_T &row_data);
     AirportEntry(int row_id, const RowData_T &row_data);
-    const QString getTableName() const override;
 
-    /*!
-     * \brief Returns the airport common given name
-     */
-    const QString getAirportName() const;
+    bool isValid() const override;
+
+    bool setAirportName(const QString &input);
+    bool setTimezone(const QString &input);
+    bool setLatitude(double input);
+    bool setLongitude(double input);
+
+    QString getAirportName() const;
+    QString getTimezone() const;
+    double getLatitude() const;
+    double getLongitude() const;
+
+private:
 
     const static inline QString ROWID 		   = QStringLiteral("airport_id");
     /*!
@@ -57,6 +65,10 @@ public:
      * \brief The timezone (Olson classification) the airport is situated in
      */
     const static inline QString TZ_OLSON       = QStringLiteral("timezone_olson");
+
+    const static inline QList<QString> FIELDS = {
+        NAME, LATITUDE, LONGITUDE, TZ_OLSON
+    };
 };
 
 } // namespace OPL

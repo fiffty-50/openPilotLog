@@ -38,7 +38,7 @@ public:
     CurrencyEntry(const RowData_T &row_data) = delete;
     CurrencyEntry(int row_id, const RowData_T &row_data);
 
-    const QString getTableName() const override;
+    bool isValid() const override { return false; }
 
     void setName(const QString& displayName);
     const QString getName() const;
@@ -63,6 +63,8 @@ private:
     const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
 
     const static inline QString TABLE_NAME = QStringLiteral("currencies");
+
+    const static inline QList<QString> FIELDS = {};
 };
 
 } // namespace OPL

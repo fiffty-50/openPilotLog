@@ -45,26 +45,22 @@ namespace OPL {
  */
 class Row
 {
-public:
-
+protected:
     /*!
      * \brief Create a new empty row entry
      */
-    Row() = default;
+    Row() = delete;
     /*!
      * \brief Create a row entry specifying its table, row id and row data.
      */
-    Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data);
-    /*!
-     * \brief Create a row entry specifying its table and row id.
-     */
-    Row(OPL::DbTable table_name, int row_id);
-
+    explicit Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> &fields);
     /*!
      * \brief Create a row entry specifying its table name.
      * \param table_name
      */
-    Row(OPL::DbTable table_name);
+    explicit Row(OPL::DbTable table_name, const QList<QString> &fields);
+public:
+
 
     Row(const Row&) = default;
     Row& operator=(const Row&) = default;
@@ -96,29 +92,29 @@ public:
 
     /*!
      * \brief get the name of the table in the sql database.
-     * \details This method has to be overwritten in any subclass to return the table name, this should be
-     * a purely virtual function but in order to be able to use row class instances this function is implemented
-     * to return an empty strring in the base class.
      * \return The name of the table in the database containing a valid row, or an empty String
      */
-    virtual const QString getTableName() const;
+    QString getTableName() const { return OPL::GLOBALS->getDbTableName(m_table); }
 
     /*!
      * \brief A Row entry is valid if its table and row are specified and if it contains row data.
      */
-    virtual bool isValid() const;
+    virtual bool isValid() const = 0;
 
     /*!
      * \brief operator QString can be used for printing debug information to stdout
      */
     operator QString() const;
 
-
-private:
-    OPL::DbTable table;
-    int rowId;
 protected:
-    RowData_T rowData;
+    OPL::DbTable m_table;
+    int m_rowId;
+    RowData_T m_rowData;
+
+    /*!
+     * \brief m_fields contains a list of all fields in the given row, except the rowId
+     */
+    QStringList m_fields;
 };
 
 } // namespace OPL

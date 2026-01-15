@@ -99,18 +99,19 @@ private:
         QStringLiteral(":/db/schema/09_movement_events.sql"),
         QStringLiteral(":/db/schema/10_approach_events.sql"),
         QStringLiteral(":/db/schema/11_airport_codes.sql"),
-        QStringLiteral(":/db/schema/12_currencies.sql")
+        QStringLiteral(":/db/schema/12_currencies.sql"),
+        QStringLiteral(":/db/schema/99_indices.sql"),
     };
 
     const QList<QString> m_views = {
-        QStringLiteral(":/database/views/01_AirportView.sql"),
-        QStringLiteral(":/database/views/02_TailsView.sql"),
+        QStringLiteral(":/db/views/01_AirportView.sql"),
+        QStringLiteral(":/db/views/02_TailsView.sql"),
     };
 
     const QMap<OPL::DbTable, QString> m_templateData = {
-        { OPL::DbTable::v2AircraftTypes, QStringLiteral(":/database/templates/aircraft_types.json") },
-        { OPL::DbTable::v2Airports,      QStringLiteral(":/database/templates/airports.json") },
-        { OPL::DbTable::v2AirportCodes,  QStringLiteral(":/database/templates/airport_codes.json")},
+        { OPL::DbTable::v2AircraftTypes, QStringLiteral(":/db/data/aircraft_types.json") },
+        { OPL::DbTable::v2Airports,      QStringLiteral(":/db/data/airports.json") },
+        { OPL::DbTable::v2AirportCodes,  QStringLiteral(":/db/data/airport_codes.json")},
     };
 };
 

@@ -31,39 +31,30 @@ namespace OPL {
  */
 class TailEntry : public Row
 {
-    const static inline QString TABLE_NAME = QStringLiteral("aircraft_tails");
 public:
     TailEntry();
     TailEntry(const RowData_T &row_data);
     TailEntry(int row_id, const RowData_T &row_data);
-    const QString getTableName() const override;
 
-    /*!
-     * \brief Check if the data contained in this entry complies with the database constraints
-     */
     bool isValid() const override;
 
-    /*!
-     * \brief initialise the rowData map with NULL for all values
-     */
-    void clear();
-
     // getters and setters
-    QString getRegistration() const { return rowData.value(REGISTRATION).toString(); }
-    QString getCompany() const { return rowData.value(COMPANY).toString(); }
-    QString getRemarks() const { return rowData.value(REMARKS).toString(); }
-    QDate getInServiceDate() const { return QDate::fromJulianDay(rowData.value(IN_SERVICE_DATE).toInt()); }
-    QDate getOutOfServiceDate() const { return QDate::fromJulianDay(rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
-    int getTypeId() const { return rowData.value(TYPE_ID).toInt(); }
+    QString getRegistration() const { return m_rowData.value(REGISTRATION).toString(); }
+    QString getCompany() const { return m_rowData.value(COMPANY).toString(); }
+    QString getRemarks() const { return m_rowData.value(REMARKS).toString(); }
+    QDate getInServiceDate() const { return QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()); }
+    QDate getOutOfServiceDate() const { return QDate::fromJulianDay(m_rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
+    int getTypeId() const { return m_rowData.value(TYPE_ID).toInt(); }
 
     bool setRegistration(const QString &registration);
-    void setCompany(const QString &company) { rowData.insert(COMPANY, company); }
-    void setRemarks(const QString &remarks) { rowData.insert(REMARKS, remarks); }
+    void setCompany(const QString &company) { m_rowData.insert(COMPANY, company); }
+    void setRemarks(const QString &remarks) { m_rowData.insert(REMARKS, remarks); }
     bool setInServiceDate(const QDate &date);
     bool setOutOfServiceDate(const QDate &date);
     bool setTypeId(int typeId);
 
 private:
+    const static inline QString TABLE_NAME = QStringLiteral("aircraft_tails");
     /*!
      * \brief The entries row id in the database
      */
@@ -93,7 +84,7 @@ private:
      */
     const static inline QString OUT_OF_SERVICE_DATE = QStringLiteral("out_of_service_jd");
 
-    const static inline QStringList fields = {
+    const static inline QStringList FIELDS = {
         TYPE_ID,
         REGISTRATION,
         COMPANY,

@@ -20,20 +20,11 @@
 namespace OPL {
 
 SimulatorEntry::SimulatorEntry()
-    : Row(DbTable::Simulators, 0)
-{}
-
-SimulatorEntry::SimulatorEntry(const RowData_T &row_data)
-    : Row(DbTable::Simulators, 0, row_data)
+    : Row(DbTable::Simulators, FIELDS)
 {}
 
 SimulatorEntry::SimulatorEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Simulators, row_id, row_data)
+    : Row(DbTable::Simulators, row_id, row_data, FIELDS)
 {}
-
-const QString SimulatorEntry::getTableName() const
-{
-    return TABLE_NAME;
-}
 
 } // namespace OPL

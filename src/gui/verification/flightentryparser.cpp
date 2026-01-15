@@ -28,7 +28,7 @@ QStringList FlightEntryParser::invalidFields() const
 
 QString FlightEntryParser::getFlightSummary() const
 {
-    return FlightEntry(m_entryData).getFlightSummary();
+    return FlightEntry(m_rowId, m_entryData).getFlightSummary();
 }
 
 bool FlightEntryParser::setDate(const QDate &date)

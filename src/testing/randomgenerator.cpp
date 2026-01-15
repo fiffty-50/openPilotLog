@@ -68,7 +68,7 @@ const FlightEntry RandomGenerator::randomFlight()
         flt_data.insert(m_function_times[function], tblk);
     }
 
-    return OPL::FlightEntry(flt_data);
+    return OPL::FlightEntry(0, flt_data);
 }
 
 const QTime RandomGenerator::randomTime()
@@ -111,9 +111,9 @@ const int RandomGenerator::randomPilot()
 
     // verify entry exists before returning
     int pilot;
-    do {
-        pilot = QRandomGenerator::global()->bounded(1, m_numberOfPilots);
-    } while (!DB->exists(Row(OPL::DbTable::Pilots, pilot)));
+    // do {
+    //     pilot = QRandomGenerator::global()->bounded(1, m_numberOfPilots);
+    // } while (!DB->exists(OPL::PilotEntry(pilot)));
     return pilot;
 }
 
@@ -124,9 +124,9 @@ const int RandomGenerator::randomTail()
 
     // verify entry exists before returning
     int acft;
-    do {
-        acft = QRandomGenerator::global()->bounded(1, m_numberOfTails);
-    } while (!DB->exists(Row(DbTable::Tails, acft)));
+    // do {
+    //     acft = QRandomGenerator::global()->bounded(1, m_numberOfTails);
+    // } while (!DB->exists(Row(DbTable::Tails, acft)));
     return acft;
 }
 

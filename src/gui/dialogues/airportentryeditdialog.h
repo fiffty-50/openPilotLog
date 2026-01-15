@@ -57,7 +57,6 @@ private:
     void loadTimeZones();
     bool confirmTimezone();
     void loadAirportData(int row_id);
-    bool verifyInput();
     bool userWantsToEditCode();
 
 

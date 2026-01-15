@@ -467,38 +467,6 @@ bool Database::insert(const OPL::Row &new_row)
     return true;
 }
 
-OPL::Row Database::getRow(const OPL::DbTable table, const int row_id)
-{
-    QString statement = QLatin1String("SELECT * FROM ") + OPL::GLOBALS->getDbTableName(table)
-            + QLatin1String(" WHERE ROWID=?");
-    QSqlQuery q;
-    q.prepare(statement);
-    q.addBindValue(row_id);
-    q.setForwardOnly(true);
-
-    if (!q.exec()) {
-        DEB << "SQL error: " << q.lastError().text();
-        DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
-        return {}; // return invalid Row
-    }
-
-    RowData_T entry_data;
-    if(q.next()) {
-        auto r = q.record(); // retreive record
-        if (r.count() == 0)  // row is empty
-            return {};
-
-        for (int i = 0; i < r.count(); i++){ // iterate through fields to get key:value map
-            if(!r.value(i).isNull()) {
-                entry_data.insert(r.fieldName(i), r.value(i));
-            }
-        }
-    }
-
-    return OPL::Row(table, row_id, entry_data);
-}
-
 RowData_T Database::getRowData(const OPL::DbTable table, const int row_id)
 {
     QString statement = QLatin1String("SELECT * FROM ") + OPL::GLOBALS->getDbTableName(table)
@@ -591,6 +559,7 @@ int Database::getLastEntry(OPL::DbTable table)
     }
 }
 
+QT_DEPRECATED
 const RowData_T Database::getTotals(bool includePreviousExperience)
 {
     QString statement = "SELECT"
@@ -733,6 +702,7 @@ QVector<QVariant> Database::customQuery(QString statement, int return_values)
     QSqlQuery query(statement);
     if(!query.exec()) {
         lastError = query.lastError();
+        DEB << query.lastQuery();
         DEB << "Query Error: " << lastError.text();
         return {};
     }

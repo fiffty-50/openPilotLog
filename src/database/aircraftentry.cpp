@@ -21,20 +21,18 @@
 namespace OPL {
 
 AircraftEntry::AircraftEntry()
-    : Row(DbTable::Aircraft, 0)
-{}
-
-AircraftEntry::AircraftEntry(const RowData_T &row_data)
-    : Row(DbTable::Aircraft, 0, row_data)
+    : Row(DbTable::Aircraft, FIELDS)
 {}
 
 AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Aircraft, row_id, row_data)
+    : Row(DbTable::Aircraft, row_id, row_data, FIELDS)
 {}
 
-const QString AircraftEntry::getTableName() const
+bool AircraftEntry::isValid() const
 {
-    return TABLE_NAME;
+    Q_UNIMPLEMENTED();
+    LOG << "Unimplemented";
+    return false;
 }
 
 QString AircraftEntry::getTypeString(int aircraft_id)

@@ -114,9 +114,9 @@ void TailEntryEditDialog::init()
     const auto dateFormat = OPL::DateTimeFormat().dateFormatString();
     inServiceDateEdit = new QDateEdit(this);
     inServiceDateEdit->setDisplayFormat(dateFormat);
-    inServiceDateEdit->setMinimumDate(OPL::Date::getMinumumDate());
+    inServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
     inServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
-    inServiceDateEdit->setDate(OPL::Date::getMinumumDate());
+    inServiceDateEdit->setDate(OPL::Date::getMinimumDate());
     inServiceDateEdit->setEnabled(false);
     addTwoWidgets(inServiceLabel, inServiceDateEdit);
 
@@ -125,7 +125,7 @@ void TailEntryEditDialog::init()
     outOfServiceLabel = new QLabel(this);
     outOfServiceDateEdit = new QDateEdit(this);
     outOfServiceDateEdit->setDisplayFormat(dateFormat);
-    outOfServiceDateEdit->setMinimumDate(OPL::Date::getMinumumDate());
+    outOfServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
     outOfServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
     outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
     outOfServiceDateEdit->setEnabled(false);
@@ -200,7 +200,7 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
     remarksLineEdit->setText(entry.getRemarks());
 
     const QDate inService = entry.getInServiceDate();
-    if(inService != OPL::Date::getMinumumDate()) {
+    if(inService != OPL::Date::getMinimumDate()) {
         inServiceDateEdit->setDate(inService);
     }
     const QDate outOfService = entry.getOutOfServiceDate();
@@ -248,7 +248,6 @@ void TailEntryEditDialog::on_buttonBox_accepted()
 {
     // Create the entry Object
     auto entry = OPL::TailEntry();
-    entry.clear();
     entry.setRowId(m_rowId);
     DEB << entry.getData();
 

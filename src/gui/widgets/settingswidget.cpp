@@ -169,7 +169,7 @@ void SettingsWidget::updatePersonalDetails()
     user_data.insert(OPL::PilotEntry::PHONE, ui->phoneLineEdit->text());
     user_data.insert(OPL::PilotEntry::EMAIL, ui->emailLineEdit->text());
 
-    if(!DB->setLogbookOwner(user_data))
+    if(true)
         WARN(tr("Unable to update Database:<br>") + DB->lastError.text());
     else
         LOG << "User updated successfully.";

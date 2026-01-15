@@ -29,27 +29,19 @@ public:
     AirportCodeEntry(const RowData_T &rowData);
     AirportCodeEntry(int rowId, const RowData_T &row_data);
 
-    /*!
-     * \brief return the airports IATA code (3-letter)
-     */
-    const QString getIataCode() const;
-
-    /*!
-     * \brief return the airports ICAO code (4-letter)
-     */
-    const QString getIcaoCode() const;
-
-    /*!
-     * \brief return a custom airport code, if set
-     */
-    const QString getCustomCode() const;
+    QString getTableName() const { return OPL::GLOBALS->getDbTableName(m_table); }
+    bool isValid() const override;
 
     enum class CodeType { ICAO, IATA, OTHER };
 
     bool setAirportCode(CodeType type, const QDate &validFrom, const QDate &validTo);
+    std::tuple<CodeType, QDate, QDate> getAirportCode() const;
+    CodeType getCodeType() const;
+    QDate getValidFromDate() const;
+    QDate getValidToDate() const;
 
     /*!
-     * \brief Get the specified code
+     * \brief Get the specified code for a given rowId
      * \param type - The Type of Code, see AirportCodeEntry::CodeType
      * \param airport_id - The airport_id of the airport that is being queried.
      * \return The Current Airport Code
@@ -63,6 +55,15 @@ private:
     const static inline QString VALID_FROM = QStringLiteral("valid_from_jd");
     const static inline QString VALID_TO = QStringLiteral("valid_to_jd");
 
+    const static inline QList<QString> FIELDS = {
+        AIRPORTID, CODE_TYPE, VALID_FROM, VALID_TO
+    };
+
+    const static inline QHash<CodeType, QString> CODE_TYPES_MAP = {
+        {CodeType::ICAO, QStringLiteral("ICAO")},
+        {CodeType::IATA, QStringLiteral("IATA")},
+        {CodeType::OTHER, QStringLiteral("OTHER")},
+    };
 };
 
 } // namespace OPL

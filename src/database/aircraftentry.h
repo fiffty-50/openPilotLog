@@ -41,7 +41,8 @@ public:
     AircraftEntry();
     AircraftEntry(const RowData_T &row_data);
     AircraftEntry(int row_id, const RowData_T &row_data);
-    const QString getTableName() const override;
+
+    bool isValid() const override;
 
     /*!
      * \brief returns "Make Model" or if available "Make Model-Variant" for a given aircraft_id
@@ -102,6 +103,9 @@ public:
      * <\ul>
      */
     static const inline QString WEIGHT_CLASS = QStringLiteral("weightClass");
+
+private:
+    const static inline QList<QString> FIELDS = {};
 };
 
 } // namespace OPL

@@ -20,13 +20,9 @@
 namespace OPL {
 
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Currencies, row_id, row_data)
+    : Row(DbTable::Currencies, row_id, row_data, FIELDS)
 {}
 
-const QString CurrencyEntry::getTableName() const
-{
-    return TABLE_NAME;
-}
 
 void CurrencyEntry::setName(const QString &displayName)
 {

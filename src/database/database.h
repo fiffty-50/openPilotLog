@@ -193,11 +193,6 @@ public:
     bool removeMany(OPL::DbTable table, const QList<int> &row_id_list);
 
     /*!
-     * \brief retreive a Row from the database
-     */
-    OPL::Row getRow(const OPL::DbTable table, const int row_id);
-
-    /*!
      * \brief retreive a Map of <column name, column content> for a specific row in the database.
      */
     RowData_T getRowData(const OPL::DbTable table, const int row_id);
@@ -219,20 +214,6 @@ public:
         auto data = getRowData(OPL::DbTable::Pilots, 1);
         data.insert(OPL::PilotEntry::ROWID, 1);
         return OPL::PilotEntry(1, data);
-    }
-
-    /*!
-     * \brief Set the database entry for the logbook owner (self)
-     */
-    inline bool setLogbookOwner(RowData_T &ownerData)
-    {
-        if(ownerData.value(OPL::PilotEntry::NAME).isNull()) {
-            lastError = QSqlError("Logbook owners last name is mandatory.");
-            return false;
-        }
-
-        ownerData.insert(OPL::PilotEntry::ROWID, 1);
-        return commit(OPL::PilotEntry(1, ownerData));
     }
 
     /*!

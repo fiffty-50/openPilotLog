@@ -19,57 +19,64 @@
 
 namespace OPL {
 
-Row::Row(OPL::DbTable table_name, int row_id)
-    : table(table_name), rowId(row_id) {}
-
-Row::Row(DbTable table_name)
-    : table(table_name)
+Row::Row(DbTable table_name, const QList<QString> &fields)
+    : m_table(table_name)
+    , m_fields(fields)
+    , m_rowId(0)
 {
-    rowId = 0; // new entry
-};
+    // make sure all fields are correctly initialized to NULL
+    const QVariant null = QVariant(QMetaType(QMetaType::QString));
+    m_rowData.reserve(m_fields.size());
 
-Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data)
-    : table(table_name), rowId(row_id), rowData(row_data) {}
+    for (const auto &field : std::as_const(m_fields)) {
+        m_rowData.insert(field, null);
+    }
+};// Used for a new entry
+
+Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> &fields)
+    : m_table(table_name)
+    , m_rowId(row_id)
+    , m_rowData(row_data) {}
 
 const RowData_T &Row::getData() const
 {
-    return rowData;
+    return m_rowData;
 }
 
 void Row::setData(const RowData_T &value)
 {
-    rowData = value;
+    m_rowData = value;
 }
 
 int Row::getRowId() const
 {
-    return rowId;
+    return m_rowId;
 }
 
 void Row::setRowId(int value)
 {
-    rowId = value;
+    m_rowId = value;
 }
 
 OPL::DbTable Row::getTable() const
 {
-    return table;
+    return m_table;
 }
 
 const QString Row::getPosition() const
 {
-    return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(table), QString::number(rowId));
+    return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(m_table), QString::number(m_rowId));
 }
 
-const QString Row::getTableName() const
-{
-    return {};
-}
+// const QString Row::getTableName() const
+// {
+//     return {};
+// }
 
-bool Row::isValid() const
-{
-    return !rowData.isEmpty();
-}
+// bool Row::isValid() const
+// {
+//     return !m_rowData.isEmpty();
+// }
 
 //Used for debugging
 OPL::Row::operator QString() const
@@ -90,7 +97,7 @@ OPL::Row::operator QString() const
 
     int itemCount = 0;
 
-    for (auto it = rowData.cbegin(); it != rowData.cend(); ++it) {
+    for (auto it = m_rowData.cbegin(); it != m_rowData.cend(); ++it) {
         const QString key = it.key();
         const QString value = it.value().toString();
 

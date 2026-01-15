@@ -31,12 +31,27 @@ public:
     PilotEntry();
     PilotEntry(const RowData_T &row_data);
     PilotEntry(int row_id, const RowData_T &row_data);
-    const QString getTableName() const override;
 
-    /*!
-     * \brief Return the pilots name
-     */
-    const QString getName()  const;
+    bool isValid() const override;
+
+    bool setName(const QString &input);
+    void setAlias(const QString &input);
+    void setEmployeeId(const QString &input);
+    void setCompany(const QString &input);
+    void setPhone(const QString &input);
+    void setEmail(const QString &input);
+    void setRemarks(const QString &input);
+
+    const QString getName() const;
+    const QString getAlias() const;
+    const QString getEmployeeId() const;
+    const QString getCompany() const;
+    const QString getPhone() const;
+    const QString getEmail() const;
+    const QString getRemarks() const;
+
+    //todo - make this private:
+
 
     const static inline QString ROWID           = QStringLiteral("pilot_id");
     /*!
@@ -72,6 +87,11 @@ public:
      * \brief The sql column name for a pilots remarks
      */
     const static inline QString REMARKS 		= QStringLiteral("remarks");
+
+private:
+    const static inline QList<QString> FIELDS = {
+        NAME, ALIAS, EMPLOYEEID, COMPANY, PHONE, EMAIL, REMARKS
+    };
 };
 
 } // namespace OPL
