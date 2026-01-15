@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/db">
+
+        <!-- Schema -->
+        <file alias="schema/01_log_events.sql">openPilotLog-db/schema/01_log_events.sql</file>
+        <file alias="schema/02_flights.sql">openPilotLog-db/schema/02_flights.sql</file>
+        <file alias="schema/03_simulators.sql">openPilotLog-db/schema/03_simulators.sql</file>
+        <file alias="schema/04_pilots.sql">openPilotLog-db/schema/04_pilots.sql</file>
+        <file alias="schema/05_aircraft_types.sql">openPilotLog-db/schema/05_aircraft_types.sql</file>
+        <file alias="schema/06_aircraft_tails.sql">openPilotLog-db/schema/06_aircraft_tails.sql</file>
+        <file alias="schema/07_airports.sql">openPilotLog-db/schema/07_airports.sql</file>
+        <file alias="schema/08_flight_segments.sql">openPilotLog-db/schema/08_flight_segments.sql</file>
+        <file alias="schema/09_movement_events.sql">openPilotLog-db/schema/09_movement_events.sql</file>
+        <file alias="schema/10_approach_events.sql">openPilotLog-db/schema/10_approach_events.sql</file>
+        <file alias="schema/11_airport_codes.sql">openPilotLog-db/schema/11_airport_codes.sql</file>
+        <file alias="schema/12_currencies.sql">openPilotLog-db/schema/12_currencies.sql</file>
+        <file alias="schema/99_indices.sql">openPilotLog-db/schema/99_indices.sql</file>
+
+        <!-- Views -->
+        <file alias="views/01_AirportView.sql">openPilotLog-db/views/01_AirportView.sql</file>
+        <file alias="views/02_TailsView.sql">openPilotLog-db/views/02_TailsView.sql</file>
+
+        <!-- Data -->
+        <file alias="data/airport_codes.json">openPilotLog-db/data/airport_codes.json</file>
+        <file alias="data/airports.json">openPilotLog-db/data/airports.json</file>
+        <file alias="data/aircraft_types.json">openPilotLog-db/data/aircraft_types.json</file>
+
+    </qresource>
+</RCC>

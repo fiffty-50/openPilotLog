@@ -271,11 +271,17 @@ void MainWindow::on_actionDebug_triggered()
 #include "src/gui/dialogues/tailentryeditdialog.h"
 void MainWindow::debug()
 {
+    /*
     auto dbSetup = DatabaseSetup();
     //dbSetup.clearDatabase();
     //dbSetup.createTables();
     //dbSetup.importTemplateData(false);
     auto dialog = new TailEntryEditDialog(QString(), this);
     dialog->exec();
+*/
+    auto f = QFile(":/db/schema/01_log_events.sql");
+    LOG << "exsits?" << f.exists();
+    if(f.open(QIODeviceBase::ReadOnly))
+        LOG << f.readAll();
 }
 

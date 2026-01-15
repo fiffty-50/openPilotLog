@@ -88,18 +88,18 @@ private:
     bool importLocalTemplateData();
 
     const QList<QString> m_tables = {
-        QStringLiteral(":/database/schema/01_log_events.sql"),
-        QStringLiteral(":/database/schema/02_flights.sql"),
-        QStringLiteral(":/database/schema/03_simulators.sql"),
-        QStringLiteral(":/database/schema/04_pilots.sql"),
-        QStringLiteral(":/database/schema/05_aircraft_types.sql"),
-        QStringLiteral(":/database/schema/06_aircraft_tails.sql"),
-        QStringLiteral(":/database/schema/07_airports.sql"),
-        QStringLiteral(":/database/schema/08_flight_segments.sql"),
-        QStringLiteral(":/database/schema/09_movement_events.sql"),
-        QStringLiteral(":/database/schema/10_approach_events.sql"),
-        QStringLiteral(":/database/schema/11_airport_codes.sql"),
-        QStringLiteral(":/database/schema/12_currencies.sql")
+        QStringLiteral(":/db/schema/01_log_events.sql"),
+        QStringLiteral(":/db/schema/02_flights.sql"),
+        QStringLiteral(":/db/schema/03_simulators.sql"),
+        QStringLiteral(":/db/schema/04_pilots.sql"),
+        QStringLiteral(":/db/schema/05_aircraft_types.sql"),
+        QStringLiteral(":/db/schema/06_aircraft_tails.sql"),
+        QStringLiteral(":/db/schema/07_airports.sql"),
+        QStringLiteral(":/db/schema/08_flight_segments.sql"),
+        QStringLiteral(":/db/schema/09_movement_events.sql"),
+        QStringLiteral(":/db/schema/10_approach_events.sql"),
+        QStringLiteral(":/db/schema/11_airport_codes.sql"),
+        QStringLiteral(":/db/schema/12_currencies.sql")
     };
 
     const QList<QString> m_views = {
