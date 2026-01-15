@@ -1,0 +1,12 @@
+CREATE INDEX idx_log_events_event_date ON log_events(event_date_jd);
+CREATE INDEX idx_log_events_event_type ON log_events(event_type);
+CREATE INDEX idx_flights_event_id ON flights(event_id);
+CREATE INDEX idx_flights_pic ON flights(pic_pilot_id);
+CREATE INDEX idx_simulators_event_id ON simulators(event_id);
+CREATE INDEX idx_pilots_name ON pilots(pilot_name);
+CREATE INDEX idx_tails_registration ON aircraft_tails(registration);
+CREATE INDEX idx_tails_aircraft_type ON aircraft_tails(aircraft_type_id);
+CREATE INDEX idx_flight_segments_flight_id ON flight_segments(flight_id);
+CREATE INDEX idx_movement_events_event_id ON movement_events(event_id);
+CREATE INDEX idx_approach_events_event_id ON approach_events(event_id);
+CREATE INDEX idx_airport_code_types ON airport_codes(code_type, airport_code);
