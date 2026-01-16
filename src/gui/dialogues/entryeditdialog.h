@@ -18,7 +18,6 @@
 #ifndef ENTRYEDITDIALOG_H
 #define ENTRYEDITDIALOG_H
 
-#include "src/database/row.h"
 #include <QDialog>
 #include <QObject>
 
@@ -38,18 +37,6 @@ public:
      * \param rowID - The row ID of the entry
      */
     virtual void loadEntry(int rowID) = 0;
-
-    /*!
-     * \brief load an entry for editing
-     * \param entry - The (stub) entry.
-     * \details This function can be used to edit an incomplete entry which may or may not exist in the
-     * database yet.
-     */
-    virtual void loadEntry(const OPL::Row &entry) {
-        TODO << "Implement in all subclasses";
-        Q_UNIMPLEMENTED();
-        qApp->quit();
-    }
 
     /*!
      * \brief delete an entry from the database

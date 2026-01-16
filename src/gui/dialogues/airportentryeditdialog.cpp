@@ -6,14 +6,13 @@
 #include "src/database/database.h"
 
 AirportEntryEditDialog::AirportEntryEditDialog(QWidget *parent) :
-    EntryEditDialog(parent)
+    EntryEditDialog(0, parent)
 {
     init();
-    m_rowId = 0; // new entry
 }
 
 AirportEntryEditDialog::AirportEntryEditDialog(int row_id, QWidget *parent)
-    : EntryEditDialog(parent), m_rowId(row_id)
+    : EntryEditDialog(row_id, parent)
 {
     init();
     loadAirportData(row_id);
@@ -239,13 +238,6 @@ void AirportEntryEditDialog::loadEntry(int rowId)
     m_rowId = rowId;
     loadAirportData(rowId);
 }
-
-void AirportEntryEditDialog::loadEntry(const OPL::Row &entry)
-{
-    m_rowId = entry.getRowId();
-    loadAirportData(m_rowId);
-}
-
 
 bool AirportEntryEditDialog::deleteEntry(int rowId)
 {

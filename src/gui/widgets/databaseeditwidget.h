@@ -18,7 +18,7 @@ private:
     TableEditWidget *pilotTab;
     TableEditWidget *tailsTab;
     TableEditWidget *airportsTab;
-    //TableEditWidget *aircraftTab;
+    TableEditWidget *aircraftTab;
     // TableEditWidget *airportCodesTab;
     // TableEditWidget *approachTypesTab;
     // TableEditWidget *currenciesTab;

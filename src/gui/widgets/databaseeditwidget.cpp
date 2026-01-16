@@ -1,4 +1,5 @@
 #include "databaseeditwidget.h"
+#include "src/gui/widgets/aircrafttableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
 #include "src/gui/widgets/airporttableeditwidget.h"
@@ -26,6 +27,10 @@ void DatabaseEditWidget::setupUi()
     tailsTab->init();
     tabWidget->addTab(tailsTab, {});
 
+    aircraftTab = new AircraftTableEditWidget(this);
+    aircraftTab->init();
+    tabWidget->addTab(aircraftTab, {});
+
     airportsTab = new AirportTableEditWidget(this);
     airportsTab->init();
     tabWidget->addTab(airportsTab, {});
@@ -39,5 +44,6 @@ void DatabaseEditWidget::retranslateUi()
 {
     tabWidget->setTabText(tabWidget->indexOf(pilotTab), tr("Pilots"));
     tabWidget->setTabText(tabWidget->indexOf(tailsTab), tr("Tails"));
+    tabWidget->setTabText(tabWidget->indexOf(aircraftTab), tr("Aircraft"));
     tabWidget->setTabText(tabWidget->indexOf(airportsTab), tr("Airports"));
 }

@@ -20,9 +20,9 @@ public:
     FlightEntryEditDialog(QWidget *parent = nullptr);
     FlightEntryEditDialog(int rowId, QWidget *parent = nullptr);
 
-    virtual void loadEntry(int rowID) override;
-    virtual void loadEntry(const OPL::Row &entry) override;
-    virtual bool deleteEntry(int rowID) override;
+    void loadEntry(int rowID) override;
+    void loadEntry(const OPL::Row &entry);
+    bool deleteEntry(int rowID) override;
 
 
 private:

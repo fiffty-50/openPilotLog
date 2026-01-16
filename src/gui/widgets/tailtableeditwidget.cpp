@@ -1,6 +1,5 @@
 #include "tailtableeditwidget.h"
 #include "src/database/database.h"
-#include "src/database/databasecache.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 
 TailTableEditWidget::TailTableEditWidget(QWidget *parent)

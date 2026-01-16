@@ -12,11 +12,11 @@ public:
     explicit TailTableEditWidget(QWidget *parent = nullptr);
 
 
-    virtual void setupModelAndView() override;
-    virtual void setupUI() override;
-    virtual QString deleteErrorString(int rowId) override;
-    virtual QString confirmDeleteString(int rowId) override;
-    virtual EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
+    void setupModelAndView() override;
+    void setupUI() override;
+    QString deleteErrorString(int rowId) override;
+    QString confirmDeleteString(int rowId) override;
+    EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
 
 private:
     const int COL_ROWID = 0;
@@ -40,7 +40,7 @@ private:
 
 private slots:
 
-    virtual void filterTextChanged(const QString &filterString) override;
+    void filterTextChanged(const QString &filterString) override;
 };
 
 #endif // TAILTABLEEDITWIDGET_H

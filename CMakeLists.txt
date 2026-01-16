@@ -51,6 +51,8 @@ set(PROJECT_SOURCES
     src/gui/dialogues/entryeditdialog.cpp
     src/gui/dialogues/flightentryeditdialog.h
     src/gui/dialogues/flightentryeditdialog.cpp
+    src/gui/dialogues/aircraftentryeditdialog.h
+    src/gui/dialogues/aircraftentryeditdialog.cpp
 
     # Widgets
     src/gui/widgets/homewidget.h
@@ -80,6 +82,8 @@ set(PROJECT_SOURCES
     src/gui/widgets/airporttableeditwidget.cpp
     src/gui/widgets/logbooktableeditwidget.h
     src/gui/widgets/logbooktableeditwidget.cpp
+    src/gui/widgets/aircrafttableeditwidget.h
+    src/gui/widgets/aircrafttableeditwidget.cpp
 
     src/gui/widgets/databaseeditwidget.h
     src/gui/widgets/databaseeditwidget.cpp

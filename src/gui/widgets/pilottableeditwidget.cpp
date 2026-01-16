@@ -12,7 +12,7 @@ PilotTableEditWidget::PilotTableEditWidget(QWidget *parent)
 void PilotTableEditWidget::setupModelAndView()
 {
     m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots));
+    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::v2Pilots));
     m_model->select();
 
     for(auto it = DISPLAY_COLUMNS.cbegin(); it != DISPLAY_COLUMNS.cend(); ++it) {

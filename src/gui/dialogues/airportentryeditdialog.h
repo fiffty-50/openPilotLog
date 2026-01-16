@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QDialogButtonBox>
+#include <QComboBox>
 
 class AirportEntryEditDialog : public EntryEditDialog
 {
@@ -15,9 +17,6 @@ class AirportEntryEditDialog : public EntryEditDialog
 public:
     explicit AirportEntryEditDialog(QWidget *parent = nullptr);
     explicit AirportEntryEditDialog(int row_id, QWidget* parent = nullptr);
-    ~AirportEntryEditDialog() = default;
-
-
 
 private slots:
     void on_editIcaoCodePushButton_clicked();
@@ -62,9 +61,8 @@ private:
 
     // EntryEditDialog interface
 public:
-    virtual void loadEntry(int rowId) override;
-    virtual bool deleteEntry(int rowId) override;
-    virtual void loadEntry(const OPL::Row &entry) override;
+    void loadEntry(int rowId) override;
+    bool deleteEntry(int rowId) override;
 };
 
 #endif // AIRPORTENTRYEDITDIALOG_H
