@@ -21,11 +21,11 @@
 namespace OPL {
 
 AircraftEntry::AircraftEntry()
-    : Row(DbTable::Aircraft, FIELDS)
+    : Row(DbTable::Aircraft, &FIELDS)
 {}
 
 AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Aircraft, row_id, row_data, FIELDS)
+    : Row(DbTable::Aircraft, row_id, row_data, &FIELDS)
 {}
 
 bool AircraftEntry::isValid() const

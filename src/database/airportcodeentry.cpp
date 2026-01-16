@@ -23,14 +23,14 @@ namespace OPL {
 
 AirportCodeEntry::AirportCodeEntry()
     : Row(DbTable::v2AirportCodes
-    , FIELDS)
+    , &FIELDS)
 {}
 
 AirportCodeEntry::AirportCodeEntry(int rowId, const RowData_T &rowData)
     : Row(DbTable::v2AirportCodes
     , rowId
     , rowData
-    , FIELDS)
+    , &FIELDS)
 {}
 
 bool AirportCodeEntry::isValid() const

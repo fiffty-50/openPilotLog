@@ -23,7 +23,7 @@
 namespace OPL {
 
 FlightEntry::FlightEntry()
-    : Row(DbTable::Flights, FIELDS)
+    : Row(DbTable::Flights, &FIELDS)
 {
     for(const QString &item : mandatoryFields) {
         m_rowData.insert(item, -1);
@@ -31,11 +31,11 @@ FlightEntry::FlightEntry()
 }
 
 FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Flights, row_id, row_data, FIELDS) {}
+    : Row(DbTable::Flights, row_id, row_data, &FIELDS) {}
 
 bool FlightEntry::isValid() const
 {
-    for(const QString item : mandatoryFields) {
+    for(const QString &item : mandatoryFields) {
         if(m_rowData.value(item).toInt() < 0)
             return false;
     }

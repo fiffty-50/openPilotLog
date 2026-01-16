@@ -27,7 +27,7 @@ namespace OPL {
  * The aircraft_tails table holds the various tails the user has added to his logbook.
  * Within the program the term aircraft refers to an aircraft type and is stored
  * in the aircraft_types database. A tail is a specific instance
- * of an aircraft which is identified by its alphanumeric registration (tail number).
+ * of an aircraft type, and is identified by its alphanumeric registration (tail number).
  */
 class TailEntry : public Row
 {
@@ -36,52 +36,85 @@ public:
     TailEntry(const RowData_T &row_data);
     TailEntry(int row_id, const RowData_T &row_data);
 
+    /*!
+     * \brief A TailEntry is valid if it contains at least a registration and a valid type id.
+     */
     bool isValid() const override;
 
     // getters and setters
+    
+
+    /*!
+     * \brief Get the aircrafts registration (tail number)
+     */
     QString getRegistration() const { return m_rowData.value(REGISTRATION).toString(); }
+    
+    /*!
+     * \brief Get the company the aircraft is operated by
+     */
     QString getCompany() const { return m_rowData.value(COMPANY).toString(); }
+    
+    /*!
+     * \brief Get any remarks associated with the tail entry
+     */
     QString getRemarks() const { return m_rowData.value(REMARKS).toString(); }
+    
+    /*!
+     * \brief Get the aircrafts in-service date. This value must not be missing or invalid.
+     */
     QDate getInServiceDate() const { return QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()); }
+    
+    /*!
+     * \brief Get the aircrafts out-of-service date. This value may be invalid (null) for indefinite validity.
+     */
     QDate getOutOfServiceDate() const { return QDate::fromJulianDay(m_rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
+    
+
+    /*!
+     * \brief Get the associated aircraft type id (foreign key to aircraft_types)
+     */
     int getTypeId() const { return m_rowData.value(TYPE_ID).toInt(); }
 
+    /*!
+     * \brief Set the aircrafts registration (tail number)
+     */
     bool setRegistration(const QString &registration);
+
+    /*!
+     * \brief Set the company the aircraft is operated by
+     */
     void setCompany(const QString &company) { m_rowData.insert(COMPANY, company); }
+
+    /*!
+     * \brief Set any remarks associated with the tail entry
+     */
     void setRemarks(const QString &remarks) { m_rowData.insert(REMARKS, remarks); }
+
+    /*!
+     * \brief Set the aircrafts in-service date. This date must not be missing or invalid.
+     */
     bool setInServiceDate(const QDate &date);
+    
+    /*!
+     * \brief Set the aircrafts out-of-service date. This date may be invalid (null) for indefinite validity.
+     */
     bool setOutOfServiceDate(const QDate &date);
+
+    /*!
+     * \brief Set the associated aircraft type id (foreign key to aircraft_types)
+     * \details The type id must refer to a valid aircraft type in the database.
+     * if not, the function returns false and does not set the value.
+     */
     bool setTypeId(int typeId);
 
 private:
     const static inline QString TABLE_NAME = QStringLiteral("aircraft_tails");
-    /*!
-     * \brief The entries row id in the database
-     */
     const static inline QString ROWID            = QStringLiteral("tail_id");
-
-    /*!
-     * \brief The entries associated aircraft type (Foreign Key to aircraft_types)
-     */
     const static inline QString TYPE_ID 		 = QStringLiteral("aircraft_type_id");
-    /*!
-     * \brief The aircrafts registration ("LN-ENL", "D-ABCD")
-     */
     const static inline QString REGISTRATION     = QStringLiteral("registration");
-    /*!
-     * \brief The company the aircraft is operated by
-     */
     const static inline QString COMPANY          = QStringLiteral("company");
-
     const static inline QString REMARKS			 = QStringLiteral("remarks");
-    /*!
-     * \brief IN_SERVICE_DATE The start date of this aircraft registration
-     */
     const static inline QString IN_SERVICE_DATE	 = QStringLiteral("in_service_jd");
-
-    /*!
-     * \brief OUT_OF_SERVICE_DATE The end date of this aircraft registration
-     */
     const static inline QString OUT_OF_SERVICE_DATE = QStringLiteral("out_of_service_jd");
 
     const static inline QStringList FIELDS = {
@@ -92,7 +125,6 @@ private:
         IN_SERVICE_DATE,
         OUT_OF_SERVICE_DATE
     };
-
 };
 
 } // namespace OPL

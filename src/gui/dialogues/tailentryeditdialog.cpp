@@ -20,8 +20,9 @@
 #include "src/database/databasecache.h"
 #include "src/opl.h"
 
-TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent) :
-    EntryEditDialog(parent)
+TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
+    : EntryEditDialog(parent)
+    , m_rowId(0)
 {
     LOG << "Editing New Tail Entry: " << new_registration;
     init();
@@ -29,9 +30,6 @@ TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidge
     registrationLineEdit->setText(new_registration);
     aircraftTypeComboBox->lineEdit()->setFocus();
     aircraftTypeComboBox->lineEdit()->selectAll();
-
-    // Create a new Entry
-    m_rowId = 0;
 }
 
 TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent) :
@@ -204,7 +202,9 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
         inServiceDateEdit->setDate(inService);
     }
     const QDate outOfService = entry.getOutOfServiceDate();
-    if(outOfService != OPL::Date::getMaximumDate()) {
+    if(outOfService <= OPL::Date::getMinimumDate()) {
+        outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
+    } else {
         outOfServiceDateEdit->setDate(outOfService);
     }
 

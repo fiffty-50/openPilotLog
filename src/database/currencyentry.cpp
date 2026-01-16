@@ -20,7 +20,7 @@
 namespace OPL {
 
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Currencies, row_id, row_data, FIELDS)
+    : Row(DbTable::Currencies, row_id, row_data, &FIELDS)
 {}
 
 

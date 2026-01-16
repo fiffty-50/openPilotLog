@@ -25,52 +25,55 @@ namespace OPL {
 /*!
  * \brief The Row class provides an interface for retreiving and submitting entries from the database.
  *
- * \details The Row class is a base class and when instantiated, the appropriate subclass should be used.
+ * \details The Row class is an abstract class.
  *
  * The database holds all the data related to the logbook in different tables. Each of these tables is composed of
  * rows. Each row has different columns and each column contains the data. As such, an entry can be thought of
  * as a row in the database. The row class encapsulates the data contained in each row.
  *
- * A row is uniquely identified by its position in the database, consisting of the table name (QString) and the row id (int).
- * A new entry, which is not yet in the database has the row id 0. If a new row object is created, the hasData
- * bool is set to false. Before submitting the entry to the database, setData() has to be called to fill the row
- * with data and toggle the verification bit.
+ * A Row is uniquely identified by its position in the database, consisting of the table name (QString) and the row id (int).
+ * A new entry, which is not yet in the database has the row id 0. if a new row object is created setData() has to be called
+ * before submitting the entry to the database.
  *
  * The Row Object holds all the necessary information the Database class needs to commit (create or update) it.
- * The Identifying information can be accessed with getRowId and getTable() / getTableName().
+ * The Identifying information can be accessed with getRowId() and getTable() or getTableName().
  *
- * For convenience and readabilty, subclasses exist that have the table property pre-set. These rows are then
- * referred to as entries. See AircraftEntry, FlightEntry etc. These subclasses have public static members which
- * hold the column names used in the sql database. These can be used to access the data held in the row by column.
+ * Row is an abstract class. Derived classes exists for each table in the database that needs to be accessed from
+ * the application. These subclasses 
+ * <ul>
+ *      <li> Must provide a List<QString> with the names of the fields in the table </li>
+ *      <li> Implement the isValid() method to check if the row contains valid data for the table </li>
+ * </ul>
+ *
  */
 class Row
 {
 protected:
-    /*!
-     * \brief Create a new empty row entry
-     */
     Row() = delete;
     /*!
      * \brief Create a row entry specifying its table, row id and row data.
      */
-    explicit Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> &fields);
+    explicit Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> *fields);
     /*!
      * \brief Create a row entry specifying its table name.
-     * \param table_name
+     * \param table_name The name of the table in the database
+     * \param fields A list of all fields in the table, except the rowId
      */
-    explicit Row(OPL::DbTable table_name, const QList<QString> &fields);
+    explicit Row(OPL::DbTable table_name, const QList<QString> *fields);
 public:
-
 
     Row(const Row&) = default;
     Row& operator=(const Row&) = default;
 
     /*!
      * \brief get the Row Data contained in the Row
-     * \details The row data is a Map where the sql column name is the key and its value is the value.
+     * \details The row data is a QHash<QString, QVariant> where the sql column name is the key and its value is the value.
      */
     const RowData_T& getData() const;
 
+    /*!
+     * \brief set the Row Data contained in the Row
+    */
     void setData(const RowData_T &value);
 
     /*!
@@ -83,6 +86,9 @@ public:
      */
     void setRowId(int value);
 
+    /*!
+     * \brief Get the table in the database containing the row
+    */
     OPL::DbTable getTable() const;
 
     /*!
@@ -91,13 +97,12 @@ public:
     const QString getPosition() const;
 
     /*!
-     * \brief get the name of the table in the sql database.
-     * \return The name of the table in the database containing a valid row, or an empty String
+     * \brief get the name of the table in the sql database as a QString
      */
     QString getTableName() const { return OPL::GLOBALS->getDbTableName(m_table); }
 
     /*!
-     * \brief A Row entry is valid if its table and row are specified and if it contains row data.
+     * \brief A Row entry is valid if its table and row are specified and if it contains semantically correct data.
      */
     virtual bool isValid() const = 0;
 
@@ -110,11 +115,7 @@ protected:
     OPL::DbTable m_table;
     int m_rowId;
     RowData_T m_rowData;
-
-    /*!
-     * \brief m_fields contains a list of all fields in the given row, except the rowId
-     */
-    QStringList m_fields;
+    const QStringList *m_fields;
 };
 
 } // namespace OPL

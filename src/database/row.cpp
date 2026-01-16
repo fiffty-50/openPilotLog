@@ -19,21 +19,21 @@
 
 namespace OPL {
 
-Row::Row(DbTable table_name, const QList<QString> &fields)
+Row::Row(DbTable table_name, const QList<QString> *fields)
     : m_table(table_name)
     , m_fields(fields)
     , m_rowId(0)
 {
     // make sure all fields are correctly initialized to NULL
     const QVariant null = QVariant(QMetaType(QMetaType::QString));
-    m_rowData.reserve(m_fields.size());
+    m_rowData.reserve(m_fields->size());
 
-    for (const auto &field : std::as_const(m_fields)) {
+    for (const auto &field : *m_fields) {
         m_rowData.insert(field, null);
     }
 };// Used for a new entry
 
-Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> &fields)
+Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> *fields)
     : m_table(table_name)
     , m_rowId(row_id)
     , m_rowData(row_data) {}
@@ -67,16 +67,6 @@ const QString Row::getPosition() const
 {
     return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(m_table), QString::number(m_rowId));
 }
-
-// const QString Row::getTableName() const
-// {
-//     return {};
-// }
-
-// bool Row::isValid() const
-// {
-//     return !m_rowData.isEmpty();
-// }
 
 //Used for debugging
 OPL::Row::operator QString() const

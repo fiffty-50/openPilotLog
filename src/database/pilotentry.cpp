@@ -20,11 +20,11 @@
 namespace OPL {
 
 PilotEntry::PilotEntry()
-    : Row(DbTable::Pilots, FIELDS)
+    : Row(DbTable::Pilots, &FIELDS)
 {}
 
 PilotEntry::PilotEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Pilots, row_id, row_data, FIELDS)
+    : Row(DbTable::Pilots, row_id, row_data, &FIELDS)
 {}
 
 bool PilotEntry::isValid() const

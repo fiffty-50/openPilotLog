@@ -20,7 +20,7 @@
 namespace OPL {
 
 AirportEntry::AirportEntry()
-    : Row(DbTable::Airports, FIELDS)
+    : Row(DbTable::Airports, &FIELDS)
 {}
 
 
@@ -28,7 +28,7 @@ AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Airports
     , row_id
     , row_data
-    , FIELDS)
+    , &FIELDS)
 {}
 
 bool AirportEntry::isValid() const
