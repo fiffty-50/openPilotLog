@@ -68,7 +68,6 @@ public:
      * \brief Get the aircrafts out-of-service date. This value may be invalid (null) for indefinite validity.
      */
     QDate getOutOfServiceDate() const { return QDate::fromJulianDay(m_rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
-    
 
     /*!
      * \brief Get the associated aircraft type id (foreign key to aircraft_types)
@@ -108,7 +107,7 @@ public:
     bool setTypeId(int typeId);
 
 private:
-    const static inline QString TABLE_NAME = QStringLiteral("aircraft_tails");
+    const static inline QString TABLE_NAME       = QStringLiteral("aircraft_tails");
     const static inline QString ROWID            = QStringLiteral("tail_id");
     const static inline QString TYPE_ID 		 = QStringLiteral("aircraft_type_id");
     const static inline QString REGISTRATION     = QStringLiteral("registration");

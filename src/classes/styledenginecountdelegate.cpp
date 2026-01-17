@@ -15,14 +15,15 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "entryeditdialog.h"
+#include "styledenginecountdelegate.h"
 
-EntryEditDialog::EntryEditDialog(QWidget *parent)
-    : QDialog{parent}
-    , m_rowId(0)
+StyledEngineCountDelegate::StyledEngineCountDelegate(QObject *parent)
+    : QStyledItemDelegate{parent}
 {}
 
-EntryEditDialog::EntryEditDialog(int rowID, QWidget *parent)
-    : QDialog{parent}
-    , m_rowId(rowID)
-{}
+QString StyledEngineCountDelegate::displayText(const QVariant &value, const QLocale &locale) const
+{
+    Q_UNUSED(locale);
+    bool isMultiEngine = value.toBool();
+    return isMultiEngine ? QObject::tr("Multi Engine") : QObject::tr("Single Engine");
+}

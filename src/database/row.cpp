@@ -72,7 +72,7 @@ const QString Row::getPosition() const
 OPL::Row::operator QString() const
 {
     if (!isValid()) {
-        return QStringLiteral("Invalid Row");
+        return QStringLiteral("Invalid Row: ") + getPosition();
     }
     constexpr int columnWidth = 14;
     constexpr int itemsPerRow = 3;
@@ -83,7 +83,7 @@ OPL::Row::operator QString() const
     QString out;
     out.reserve(1024);
 
-    out += "[Entry Data]:\n";
+    out += "[Entry Data]: " + getPosition() + "\n";
 
     int itemCount = 0;
 

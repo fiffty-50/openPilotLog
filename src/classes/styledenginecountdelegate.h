@@ -15,14 +15,22 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "entryeditdialog.h"
+#ifndef STYLEDENGINECOUNTDELEGATE_H
+#define STYLEDENGINECOUNTDELEGATE_H
 
-EntryEditDialog::EntryEditDialog(QWidget *parent)
-    : QDialog{parent}
-    , m_rowId(0)
-{}
+#include <QStyledItemDelegate>
 
-EntryEditDialog::EntryEditDialog(int rowID, QWidget *parent)
-    : QDialog{parent}
-    , m_rowId(rowID)
-{}
+/*!
+ * \brief A styled delegate to convert a boolean engine count into a user-facing string.
+ * \details The database stores engine count as a boolean value: single-engine (0) or multi-engine (1).
+ * This delegate converts that boolean into a human-readable string for display.
+ */
+class StyledEngineCountDelegate : public QStyledItemDelegate
+{
+public:
+    explicit StyledEngineCountDelegate(QObject *parent = nullptr);
+
+    QString displayText(const QVariant &value, const QLocale &locale) const override;
+};
+
+#endif // STYLEDENGINECOUNTDELEGATE_H

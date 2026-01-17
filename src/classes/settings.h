@@ -127,6 +127,16 @@ public:
     static void setPilotFunction(OPL::PilotFunction function) { settingsInstance->setValue(LOG_FUNCTION, static_cast<int>(function)); }
 
     /*!
+     * Sets the default aircraft type for new tails
+     */
+    static void setDefaultAircraftType(const QString &typeString) { settingsInstance->setValue(TAILS_DEFAULT_TYPE, typeString); }
+
+    /*!
+     * Gets the default aircraft type for new tails
+     */
+    static QString getDefaultAircraftType() { return settingsInstance->value(TAILS_DEFAULT_TYPE).toString(); }
+    
+    /*!
      * \brief returns the default approach type for new flights
      */
     static const QString getApproachType() { return settingsInstance->value(LOG_APPROACH).toString(); }
@@ -237,6 +247,8 @@ private:
     const static inline QString LOG_IFR	 	 	= QStringLiteral("flightlogging/logIfr");
     const static inline QString LOG_AS_PF	 	= QStringLiteral("flightlogging/pilotFlying");
     const static inline QString LOG_PREFIX	 	= QStringLiteral("flightlogging/flightnumberPrefix");
+
+    const static inline QString TAILS_DEFAULT_TYPE = QStringLiteral("tails/defaultType");
 
     const static inline QString MAIN_SETUP_COMPLETE  	= QStringLiteral("main/setupComplete");
     const static inline QString MAIN_STYLE			 	= QStringLiteral("main/style");

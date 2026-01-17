@@ -271,18 +271,10 @@ void MainWindow::on_actionDebug_triggered()
 #include <QStyleFactory>
 void MainWindow::debug()
 {
-    /*
+
     auto dbSetup = DatabaseSetup();
-    //dbSetup.clearDatabase();
-    //dbSetup.createTables();
-    //dbSetup.importTemplateData(false);
-    auto dialog = new TailEntryEditDialog(QString(), this);
-    dialog->exec();
-*/
-    qDebug() << "Available styles on this platform:";
-    QStringList styles = QStyleFactory::keys();
-    for (const QString &styleName : styles) {
-        qDebug() << " -" << styleName;
-    }
+    dbSetup.clearDatabase();
+    dbSetup.createTables();
+    dbSetup.importTemplateData(false);
 }
 

@@ -142,6 +142,8 @@ set(PROJECT_SOURCES
     src/classes/styledregistrationdelegate.cpp
     src/classes/styledtypedelegate.h
     src/classes/styledtypedelegate.cpp
+    src/classes/styledenginecountdelegate.h
+    src/classes/styledenginecountdelegate.cpp
 
     # Database Entries
     src/database/flightentry.h

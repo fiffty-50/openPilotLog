@@ -22,6 +22,7 @@
 #include <QCompleter>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QPushButton>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
@@ -80,6 +81,7 @@ private:
     QGridLayout *gridLayout;
     QComboBox *aircraftTypeComboBox;
     QLabel *aircraftTypeLabel;
+    QPushButton *setDefaultPushButton;
     QFrame *seperator;
     QLabel *registrationLabel;
     QLabel *companyLabel;
@@ -111,6 +113,7 @@ private slots:
     void on_searchCompleter_activated(const QModelIndex &index);
     void on_aircraftTypeLineEdit_editingFinished();
     void on_dateEditCheckBox_changed(Qt::CheckState state);
+    void on_setDefaultPushButton_clicked();
     // EntryEditDialog interface
 public:
     virtual bool deleteEntry(int rowID) override;

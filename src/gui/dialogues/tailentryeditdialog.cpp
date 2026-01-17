@@ -19,6 +19,7 @@
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/opl.h"
+#include "src/classes/settings.h"
 
 TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
     : EntryEditDialog(parent)
@@ -54,6 +55,7 @@ void TailEntryEditDialog::init()
     int row = 0;
     constexpr int firstCol = 0;
     constexpr int secondCol = 1;
+    constexpr int thirdCol = 2;
     constexpr int singleSpan = 1;
     constexpr int spanRemaining = -1;
 
@@ -67,8 +69,12 @@ void TailEntryEditDialog::init()
     // Header Row
     aircraftTypeLabel = new QLabel(this);
     aircraftTypeComboBox = new QComboBox(this);
+    setDefaultPushButton = new QPushButton(this);
     aircraftTypeComboBox->addItems(DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes));
-    addTwoWidgets(aircraftTypeLabel, aircraftTypeComboBox);
+    gridLayout->addWidget(aircraftTypeLabel, row, firstCol, singleSpan, singleSpan);
+    gridLayout->addWidget(aircraftTypeComboBox, row, secondCol, singleSpan, singleSpan);
+    gridLayout->addWidget(setDefaultPushButton, row, thirdCol, singleSpan, singleSpan);
+    row++;
 
     seperator = new QFrame(this);
     seperator->setFrameShape(QFrame::Shape::HLine);
@@ -155,10 +161,16 @@ void TailEntryEditDialog::init()
     boxCompleter->setCompletionMode(QCompleter::PopupCompletion);
     boxCompleter->setFilterMode(Qt::MatchContains);
     aircraftTypeComboBox->setCompleter(boxCompleter);
+    // Read the default value from settings
+    const QString defaultType = Settings::getDefaultAircraftType();
+    if(!defaultType.isEmpty()) {
+        aircraftTypeComboBox->setCurrentText(defaultType);
+    }
 
     // Connect Slots
     QObject::connect(aircraftTypeComboBox->lineEdit(), &QLineEdit::editingFinished, this, &TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished);
     QObject::connect(registrationLineEdit, &QLineEdit::editingFinished, this, &TailEntryEditDialog::on_registrationLineEdit_editingFinished);
+    QObject::connect(setDefaultPushButton, &QPushButton::clicked, this, &TailEntryEditDialog::on_setDefaultPushButton_clicked);
 
     // auto fill on activation and highlighting in case tab is pressed during completion
     QObject::connect(boxCompleter, qOverload<const QModelIndex&>(&QCompleter::activated),   this, &TailEntryEditDialog::on_searchCompleter_activated);
@@ -177,6 +189,7 @@ void TailEntryEditDialog::retranslateUi()
     setWindowTitle(tr("Tail Editor"));
     registrationLineEdit->setPlaceholderText(tr("mandatory"));
     aircraftTypeLabel->setText(tr("<b>Select Aircraft Type<b>"));
+    setDefaultPushButton->setText(tr("Set as Default"));
 
     registrationLabel->setText(tr("Registration"));
     companyLabel->setText(tr("Company"));
@@ -337,6 +350,13 @@ void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
         Q_UNREACHABLE();
         break;
     }
+}
+
+void TailEntryEditDialog::on_setDefaultPushButton_clicked()
+{
+    const QString selectedType = aircraftTypeComboBox->currentText();
+    Settings::setDefaultAircraftType(selectedType);
+    INFO(tr("The default aircraft type for new aircraft has been set to<br><br><b>%1</b>").arg(selectedType));
 }
 
 // EntryEditDialog Interface Implementation

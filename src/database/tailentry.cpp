@@ -30,21 +30,35 @@ TailEntry::TailEntry(int row_id, const RowData_T &row_data)
 
 bool TailEntry::isValid() const
 {
-    bool valid = true;
-
     // a valid type ID must be set
-    valid &= (DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(m_rowData.value(TYPE_ID).toInt()) != QString());
+    if(! m_rowData.contains(TYPE_ID)) {
+        LOG << QStringLiteral("Type ID missing.");
+        return false;
+    }
+    if(! (DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(m_rowData.value(TYPE_ID).toInt()) != QString()))  {
+        LOG << QStringLiteral("Type ID invalid.");
+        return false;   
+    }
+    
+    // Registration must not be empty 
+    if(! m_rowData.contains(REGISTRATION)) {
+        LOG << QStringLiteral("Registration missing.");
+        return false;
+    }
+    
+    // In-service date must be valid
+    if(! m_rowData.contains(IN_SERVICE_DATE)) {
+        LOG << QStringLiteral("In-service date missing.");
+        return false;
+    }
+    if(! QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()).isValid()) {
+        LOG << QStringLiteral("In-service date invalid.");
+        return false;
+    }
 
-    // registration must not be empty
-    valid &= (m_rowData.value(REGISTRATION).toString() != QString());
-
-    // in-service date must be a valid julian date
-    const int jd = m_rowData.value(IN_SERVICE_DATE).toInt();
-    valid &= (jd != 0);
-    valid &= QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()).isValid();
-
-    // the other fields are optional
-    return valid;
+    
+    // The other fields are optional
+    return true;
 }
 
 bool TailEntry::setRegistration(const QString &registration)
