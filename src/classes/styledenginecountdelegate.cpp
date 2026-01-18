@@ -17,9 +17,9 @@
  */
 #include "styledenginecountdelegate.h"
 
-StyledEngineCountDelegate::StyledEngineCountDelegate(QObject *parent)
-    : QStyledItemDelegate{parent}
-{}
+StyledEngineCountDelegate::StyledEngineCountDelegate(QObject *parent) : QStyledItemDelegate{parent}
+{
+}
 
 QString StyledEngineCountDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {

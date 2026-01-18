@@ -1,13 +1,10 @@
 #include "databaseeditwidget.h"
 #include "src/gui/widgets/aircrafttableeditwidget.h"
+#include "src/gui/widgets/airporttableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
-#include "src/gui/widgets/airporttableeditwidget.h"
-#include "src/gui/widgets/tailtableeditwidget.h"
 
-
-DatabaseEditWidget::DatabaseEditWidget(QWidget *parent)
-    : QWidget{parent}
+DatabaseEditWidget::DatabaseEditWidget(QWidget *parent) : QWidget{parent}
 {
     setupUi();
     retranslateUi();
@@ -17,7 +14,7 @@ DatabaseEditWidget::DatabaseEditWidget(QWidget *parent)
 void DatabaseEditWidget::setupUi()
 {
     gridLayout = new QGridLayout(this);
-    tabWidget = new QTabWidget(this);
+    tabWidget  = new QTabWidget(this);
 
     pilotTab = new PilotTableEditWidget(this);
     pilotTab->init();
@@ -34,8 +31,6 @@ void DatabaseEditWidget::setupUi()
     airportsTab = new AirportTableEditWidget(this);
     airportsTab->init();
     tabWidget->addTab(airportsTab, {});
-
-
 
     gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
 }
@@ -55,7 +50,7 @@ void DatabaseEditWidget::addEntry(Table table)
         tabWidget->setCurrentWidget(pilotTab);
         pilotTab->addEntryRequested();
         break;
-    case Tails: 
+    case Tails:
         tabWidget->setCurrentWidget(tailsTab);
         tailsTab->addEntryRequested();
         break;

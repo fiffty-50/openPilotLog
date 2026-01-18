@@ -18,14 +18,15 @@
 #ifndef READCSV_H
 #define READCSV_H
 
-#include<QtCore>
+#include <QtCore>
 
 namespace CSV {
 
 /*!
  * \brief readCSV reads from a CSV file
  * \param filename - QString to csv file.
- * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input file
+ * \return QVector<QStringList> of the CSV data, where each QStringList is one column of the input
+ * file
  */
 static inline QVector<QStringList> readCSVasColumns(const QString &filename)
 {
@@ -35,18 +36,18 @@ static inline QVector<QStringList> readCSVasColumns(const QString &filename)
 
     QVector<QStringList> values;
 
-    //Read CSV headers and create QStringLists accordingly
+    // Read CSV headers and create QStringLists accordingly
     QString line = stream.readLine();
-    auto items = line.split(",");
+    auto items   = line.split(",");
     for (int i = 0; i < items.length(); i++) {
         QStringList list;
         list.append(items[i]);
         values.append(list);
     }
-    //Fill QStringLists with data
+    // Fill QStringLists with data
     while (!stream.atEnd()) {
         QString line = stream.readLine();
-        auto items = line.split(",");
+        auto items   = line.split(",");
         for (int i = 0; i < values.length(); i++) {
             values[i].append(items[i]);
         }
@@ -84,13 +85,12 @@ static inline QVector<QStringList> readCsvAsRows(const QString &file_name)
 static inline bool writeCsv(const QString &fileName, const QVector<QVector<QString>> &rows)
 {
     QFile csvFile(fileName);
-    if(!csvFile.open(QIODevice::ReadWrite | QFile::Text))
-        return false;
+    if (!csvFile.open(QIODevice::ReadWrite | QFile::Text)) return false;
     QTextStream stream(&csvFile);
 
     // write each line
-    for(const auto &line : rows) {
-        for(int i = 0; i < line.size() - 1; i++) {
+    for (const auto &line : rows) {
+        for (int i = 0; i < line.size() - 1; i++) {
             stream << line[i] + QLatin1Char(',');
         }
         stream << line.last() + QStringLiteral("\n");

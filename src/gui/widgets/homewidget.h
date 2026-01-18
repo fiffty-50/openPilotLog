@@ -19,11 +19,11 @@
 #define HOMEWIDGET_H
 
 #include "src/opl.h"
-#include <QWidget>
-#include <QStackedLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
+#include <QStackedLayout>
+#include <QWidget>
 
 namespace Ui {
 class HomeWidget;
@@ -33,39 +33,39 @@ class HomeWidget;
  * \brief The HomeWidget is the welcome screen of the application.
  * \details The HomeWidget shows total flight times and a user-configurable set of currencies
  * (expiry dates for licenses, ratings, medicals,...). Most data is provided by the AStat class
- * and the ACurrencyEntry class. Notifications are provided by means of pop-up warnings on application
- * start via QMessageBox and the INFO/WARN interfaces, as well as by colouring the labels according
- * to the warning level (orange/red).
+ * and the ACurrencyEntry class. Notifications are provided by means of pop-up warnings on
+ * application start via QMessageBox and the INFO/WARN interfaces, as well as by colouring the
+ * labels according to the warning level (orange/red).
  */
-class HomeWidget : public QWidget
-{
+class HomeWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit HomeWidget(QWidget *parent = nullptr);
     ~HomeWidget();
 
-private:
+  private:
     Ui::HomeWidget *ui;
 
-    QList<QLabel*> limitationDisplayLabels;
-    QDate          today;
+    QList<QLabel *> limitationDisplayLabels;
+    QDate today;
     /*!
-     * \brief currWarningThreshold - Retreived from Settings::UserData::CurrWarningThreshold, the number
-     * of days before expiry that the user gets notified about impending expiries.
+     * \brief currWarningThreshold - Retreived from Settings::UserData::CurrWarningThreshold, the
+     * number of days before expiry that the user gets notified about impending expiries.
      */
     int currWarningThreshold;
     /*!
-     * \brief ftlWarningThreshold - Retreived from Settings::UserData::FtlWarningThreshold, the percentage
-     * of how close the user has to be to reaching a Flight Time Limitation before getting notified.
+     * \brief ftlWarningThreshold - Retreived from Settings::UserData::FtlWarningThreshold, the
+     * percentage of how close the user has to be to reaching a Flight Time Limitation before
+     * getting notified.
      */
     double ftlWarningThreshold;
 
     void fillTotals();
     void fillCurrencies();
 
-    enum class Colour {Red, Orange, None};
-    inline void setLabelColour(QLabel* label, Colour colour)
+    enum class Colour { Red, Orange, None };
+    inline void setLabelColour(QLabel *label, Colour colour)
     {
         switch (colour) {
         case Colour::None:
@@ -83,7 +83,8 @@ private:
         }
     }
 
-    inline void hideLabels(QLabel* label1, QLabel* label2) {
+    inline void hideLabels(QLabel *label1, QLabel *label2)
+    {
         label1->hide();
         label2->hide();
     }
@@ -93,14 +94,14 @@ private:
      */
     const QString getLogbookOwnerName() const;
 
-public slots:
+  public slots:
     void onPilotsDatabaseChanged(const OPL::DbTable table);
 
-protected:
+  protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
      */
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // HOMEWIDGET_H

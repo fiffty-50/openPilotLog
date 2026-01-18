@@ -2,16 +2,15 @@
 #define ENTRYBUILDER_H
 #include "src/database/row.h"
 
-class EntryBuilder
-{
-public:
+class EntryBuilder {
+  public:
     virtual ~EntryBuilder() = default;
 
-    virtual OPL::Row getEntry() const = 0;
-    virtual bool isValid() const = 0;
+    virtual OPL::Row getEntry() const         = 0;
+    virtual bool isValid() const              = 0;
     virtual QStringList invalidFields() const = 0;
 
-protected:
+  protected:
     EntryBuilder() = default;
 };
 

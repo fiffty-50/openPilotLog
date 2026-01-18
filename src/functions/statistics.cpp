@@ -41,14 +41,14 @@ int OPL::Statistics::totalTime(TimeFrame time_frame)
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
     case TimeFrame::Rolling12Months:
-        start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
+        start      = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 365);
         start_date = QString::number(start.toJulianDay());
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
         statement = QLatin1String("SELECT SUM(tblk) FROM flights WHERE doft >= ") + start_date;
         break;
     case TimeFrame::Rolling28Days:
-        start = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 28);
+        start      = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - 28);
         start_date = QString::number(start.toJulianDay());
         start_date.append(QLatin1Char('\''));
         start_date.prepend(QLatin1Char('\''));
@@ -58,8 +58,7 @@ int OPL::Statistics::totalTime(TimeFrame time_frame)
 
     auto db_return = DB->customQuery(statement, 1);
 
-    if (!db_return.isEmpty())
-        return db_return.first().toInt();
+    if (!db_return.isEmpty()) return db_return.first().toInt();
 
     return 0;
 }
@@ -72,23 +71,25 @@ int OPL::Statistics::totalTime(TimeFrame time_frame)
  */
 QVector<QVariant> OPL::Statistics::countTakeOffLanding(int days)
 {
-    QString startDate = QString::number(QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days).toJulianDay());
+    QString startDate = QString::number(
+        QDate::fromJulianDay(QDate::currentDate().toJulianDay() - days).toJulianDay());
 
     // QString startdate = start.toString(Qt::ISODate);
     startDate.append(QLatin1Char('\''));
     startDate.prepend(QLatin1Char('\''));
 
-    QString statement = QLatin1String("SELECT "
-                                      " SUM(IFNULL(flights.toDay,0) + IFNULL(flights.toNight,0)) AS 'TO', "
-                                      " SUM(IFNULL(flights.ldgDay,0) + IFNULL(flights.ldgNight,0)) AS 'LDG' "
-                                      " FROM flights "
-                                      " WHERE doft >=") + startDate;
+    QString statement =
+        QLatin1String("SELECT "
+                      " SUM(IFNULL(flights.toDay,0) + IFNULL(flights.toNight,0)) AS 'TO', "
+                      " SUM(IFNULL(flights.ldgDay,0) + IFNULL(flights.ldgNight,0)) AS 'LDG' "
+                      " FROM flights "
+                      " WHERE doft >=") +
+        startDate;
 
     QVector<QVariant> result = DB->customQuery(statement, 2);
     // make sure a value is returned instead of NULL
     for (const auto &var : result) {
-        if (var.isNull())
-            result.replace(result.indexOf(var), 0);
+        if (var.isNull()) result.replace(result.indexOf(var), 0);
     }
 
     return result;
@@ -96,29 +97,42 @@ QVector<QVariant> OPL::Statistics::countTakeOffLanding(int days)
 
 QVector<QPair<QString, QString>> OPL::Statistics::totals()
 {
-    QString statement = QStringLiteral("SELECT "
-            "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) AS 'TOTAL', "
-            "printf('%02d',CAST(SUM(tSPSE) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPSE) AS INT)%60) AS 'SP SE', "
-            "printf('%02d',CAST(SUM(tSPME) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPME) AS INT)%60) AS 'SP ME', "
-            "printf('%02d',CAST(SUM(tNIGHT) AS INT)/60)||':'||printf('%02d',CAST(SUM(tNIGHT) AS INT)%60) AS 'NIGHT', "
-            "printf('%02d',CAST(SUM(tIFR) AS INT)/60)||':'||printf('%02d',CAST(SUM(tIFR) AS INT)%60) AS 'IFR', "
-            "printf('%02d',CAST(SUM(tPIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPIC) AS INT)%60) AS 'PIC', "
-            "printf('%02d',CAST(SUM(tPICUS) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPICUS) AS INT)%60) AS 'PICUS', "
-            "printf('%02d',CAST(SUM(tSIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIC) AS INT)%60) AS 'SIC', "
-            "printf('%02d',CAST(SUM(tDual) AS INT)/60)||':'||printf('%02d',CAST(SUM(tDual) AS INT)%60) AS 'DUAL', "
-            "printf('%02d',CAST(SUM(tFI) AS INT)/60)||':'||printf('%02d',CAST(SUM(tFI) AS INT)%60) AS 'INSTRUCTOR', "
-            "printf('%02d',CAST(SUM(tSIM) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIM) AS INT)%60) AS 'SIMULATOR', "
-            "printf('%02d',CAST(SUM(tMP) AS INT)/60)||':'||printf('%02d',CAST(SUM(tMP) AS INT)%60) AS 'MultPilot', "
-            "CAST(SUM(toDay) AS INT) AS 'TO Day', CAST(SUM(toNight) AS INT) AS 'TO Night', "
-            "CAST(SUM(ldgDay) AS INT) AS 'LDG Day', CAST(SUM(ldgNight) AS INT) AS 'LDG Night' "
-            "FROM flights");
-    QVector<QString> columns = {QLatin1String("total"), QLatin1String("spse"), QLatin1String("spme"),
-                                QLatin1String("night"), QLatin1String("ifr"),  QLatin1String("pic"),
-                                QLatin1String("picus"), QLatin1String("sic"),  QLatin1String("dual"),
-                                QLatin1String("fi"),    QLatin1String("sim"),  QLatin1String("multipilot"),
-                                QLatin1String("today"), QLatin1String("tonight"), QLatin1String("ldgday"),
-                                QLatin1String("ldgnight")
-                               };
+    QString statement = QStringLiteral(
+        "SELECT "
+        "printf('%02d',CAST(SUM(tblk) AS INT)/60)||':'||printf('%02d',CAST(SUM(tblk) AS INT)%60) "
+        "AS 'TOTAL', "
+        "printf('%02d',CAST(SUM(tSPSE) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPSE) AS INT)%60) "
+        "AS 'SP SE', "
+        "printf('%02d',CAST(SUM(tSPME) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSPME) AS INT)%60) "
+        "AS 'SP ME', "
+        "printf('%02d',CAST(SUM(tNIGHT) AS INT)/60)||':'||printf('%02d',CAST(SUM(tNIGHT) AS "
+        "INT)%60) AS 'NIGHT', "
+        "printf('%02d',CAST(SUM(tIFR) AS INT)/60)||':'||printf('%02d',CAST(SUM(tIFR) AS INT)%60) "
+        "AS 'IFR', "
+        "printf('%02d',CAST(SUM(tPIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPIC) AS INT)%60) "
+        "AS 'PIC', "
+        "printf('%02d',CAST(SUM(tPICUS) AS INT)/60)||':'||printf('%02d',CAST(SUM(tPICUS) AS "
+        "INT)%60) AS 'PICUS', "
+        "printf('%02d',CAST(SUM(tSIC) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIC) AS INT)%60) "
+        "AS 'SIC', "
+        "printf('%02d',CAST(SUM(tDual) AS INT)/60)||':'||printf('%02d',CAST(SUM(tDual) AS INT)%60) "
+        "AS 'DUAL', "
+        "printf('%02d',CAST(SUM(tFI) AS INT)/60)||':'||printf('%02d',CAST(SUM(tFI) AS INT)%60) AS "
+        "'INSTRUCTOR', "
+        "printf('%02d',CAST(SUM(tSIM) AS INT)/60)||':'||printf('%02d',CAST(SUM(tSIM) AS INT)%60) "
+        "AS 'SIMULATOR', "
+        "printf('%02d',CAST(SUM(tMP) AS INT)/60)||':'||printf('%02d',CAST(SUM(tMP) AS INT)%60) AS "
+        "'MultPilot', "
+        "CAST(SUM(toDay) AS INT) AS 'TO Day', CAST(SUM(toNight) AS INT) AS 'TO Night', "
+        "CAST(SUM(ldgDay) AS INT) AS 'LDG Day', CAST(SUM(ldgNight) AS INT) AS 'LDG Night' "
+        "FROM flights");
+    QVector<QString> columns = {
+        QLatin1String("total"),   QLatin1String("spse"),    QLatin1String("spme"),
+        QLatin1String("night"),   QLatin1String("ifr"),     QLatin1String("pic"),
+        QLatin1String("picus"),   QLatin1String("sic"),     QLatin1String("dual"),
+        QLatin1String("fi"),      QLatin1String("sim"),     QLatin1String("multipilot"),
+        QLatin1String("today"),   QLatin1String("tonight"), QLatin1String("ldgday"),
+        QLatin1String("ldgnight")};
     QSqlQuery query(statement);
     QVector<QPair<QString, QString>> output;
     QString value;
@@ -127,7 +141,8 @@ QVector<QPair<QString, QString>> OPL::Statistics::totals()
         value = query.value(columns.indexOf(column)).toString();
         if (!value.isEmpty()) {
             output.append(QPair<QString, QString>{column, value});
-        } else {
+        }
+        else {
             output.append(QPair<QString, QString>{column, QLatin1String("00:00")});
         }
     }
@@ -144,26 +159,28 @@ QDate OPL::Statistics::currencyTakeOffLandingExpiry(int expiration_days)
     int number_of_days = 0;
     QVector<QVariant> takeoff_landings;
 
-    // Check if enough take-offs and landings exist within the expiration period, if that's not the case
-    // we are out of currency and we can stop right there.
+    // Check if enough take-offs and landings exist within the expiration period, if that's not the
+    // case we are out of currency and we can stop right there.
     takeoff_landings = countTakeOffLanding(expiration_days);
     if (takeoff_landings[0].toInt() < 3 || takeoff_landings[1].toInt() < 3)
         return QDate::currentDate();
 
     // Go back in time to find a point at which number of Take-Offs and Landings >= 3
-    for (int i=0; i <= expiration_days; i++) {
+    for (int i = 0; i <= expiration_days; i++) {
         takeoff_landings = countTakeOffLanding(i);
-        //DEB << takeoff_landings;
+        // DEB << takeoff_landings;
         if (takeoff_landings[0].toInt() >= 3 && takeoff_landings[1].toInt() >= 3) {
             number_of_days = i;
-            //DEB << "Loop position i =" << i;
+            // DEB << "Loop position i =" << i;
             break;
         }
     }
-    // The expiration date of currency is now currentDate - number of days + expiration_days (default 90)
-    QDate expiration_date = QDate::fromJulianDay(QDate::currentDate().toJulianDay() - number_of_days);
-    //DEB << expiration_date.addDays(expiration_days);
+    // The expiration date of currency is now currentDate - number of days + expiration_days
+    // (default 90)
+    QDate expiration_date =
+        QDate::fromJulianDay(QDate::currentDate().toJulianDay() - number_of_days);
+    // DEB << expiration_date.addDays(expiration_days);
 
-    return expiration_date.addDays(expiration_days);;
+    return expiration_date.addDays(expiration_days);
+    ;
 }
-

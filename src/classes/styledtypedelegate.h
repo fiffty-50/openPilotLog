@@ -1,13 +1,12 @@
 #ifndef STYLEDTYPEDELEGATE_H
 #define STYLEDTYPEDELEGATE_H
 
-#include <QStyledItemDelegate>
 #include <QObject>
+#include <QStyledItemDelegate>
 
-class StyledTypeDelegate : public QStyledItemDelegate
-{
+class StyledTypeDelegate : public QStyledItemDelegate {
     Q_OBJECT
-public:
+  public:
     explicit StyledTypeDelegate(QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;

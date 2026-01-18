@@ -19,15 +19,14 @@
 #define JSONHELPER_H
 #include "src/opl.h"
 #include <QJsonDocument>
-#include <QJsonValue>
 #include <QJsonObject>
+#include <QJsonValue>
 
 /*!
  * \brief The JsonHelper class is responsible for parsing the database (sqlite) to and from JSON.
  */
-class JsonHelper
-{
-public:
+class JsonHelper {
+  public:
     JsonHelper();
     JsonHelper(QFileInfo database_file);
 
@@ -41,7 +40,8 @@ public:
     static void exportDatabase();
 
     /*!
-     * \brief importDatabase imports a dataset from JSON. Files need to be at AStanardPaths::JSON for now.
+     * \brief importDatabase imports a dataset from JSON. Files need to be at AStanardPaths::JSON
+     * for now.
      */
     static void importDatabase();
 
@@ -54,10 +54,9 @@ public:
     /*!
      * \brief writes a QJsonDocument to a file
      */
-    static void writeDocToFile(const QJsonDocument &doc, const QString& file_name);
+    static void writeDocToFile(const QJsonDocument &doc, const QString &file_name);
 
-private:
-
+  private:
     /*!
      * \brief holds the tables with userdata that need to be processed.
      */
@@ -67,7 +66,6 @@ private:
         OPL::DbTable::Currencies,
         OPL::DbTable::Flights,
     };
-
 };
 
 #endif // JSONHELPER_H

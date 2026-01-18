@@ -10,18 +10,17 @@ class ExportToCsvDialog;
 /*!
  * \brief The ExportToCsvDialog class enables the user to export the database to a CSV file
  */
-class ExportToCsvDialog : public QDialog
-{
+class ExportToCsvDialog : public QDialog {
     Q_OBJECT
 
-public:
+  public:
     explicit ExportToCsvDialog(QWidget *parent = nullptr);
     ~ExportToCsvDialog();
 
-private slots:
+  private slots:
     void on_exportPushButton_clicked();
 
-private:
+  private:
     Ui::ExportToCsvDialog *ui;
     QVector<QVector<QString>> selectedRows;
     const static inline QString exportView = "viewExport";

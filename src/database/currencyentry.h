@@ -17,8 +17,8 @@
  */
 #ifndef CURRENCYENTRY_H
 #define CURRENCYENTRY_H
-#include "src/database/row.h"
 #include "src/classes/date.h"
+#include "src/database/row.h"
 
 namespace OPL {
 
@@ -28,26 +28,31 @@ namespace OPL {
  * and is used to track those. Typical example would be medical licenses, type rating
  * validations or route certifications.
  */
-class CurrencyEntry : public Row
-{
-public:
+class CurrencyEntry : public Row {
+  public:
+    enum Currency {
+        Licence        = 1,
+        TypeRating     = 2,
+        LineCheck      = 3,
+        Medical        = 4,
+        Custom1        = 5,
+        Custom2        = 6,
+        TakeOffLanding = 7
+    };
 
-    enum Currency {Licence = 1, TypeRating = 2, LineCheck = 3, Medical = 4, Custom1 = 5, Custom2 = 6, TakeOffLanding = 7};
-
-    CurrencyEntry() = delete;
+    CurrencyEntry()                          = delete;
     CurrencyEntry(const RowData_T &row_data) = delete;
     CurrencyEntry(int row_id, const RowData_T &row_data);
 
     bool isValid() const override { return false; }
 
-    void setName(const QString& displayName);
+    void setName(const QString &displayName);
     const QString getName() const;
 
     void setExpiryDate(const OPL::Date &date);
     const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
 
-private:
-
+  private:
     /*!
      * \brief The sql column name for the row id
      */
@@ -58,9 +63,9 @@ private:
      */
     const static inline QString NAME = QStringLiteral("currencyName");
     /*!
-    * \brief The sql column name for the expiry date
-    */
-    const static inline QString EXPIRYDATE  = QStringLiteral("expiryDate");
+     * \brief The sql column name for the expiry date
+     */
+    const static inline QString EXPIRYDATE = QStringLiteral("expiryDate");
 
     const static inline QString TABLE_NAME = QStringLiteral("currencies");
 

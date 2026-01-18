@@ -24,10 +24,10 @@ namespace OPL {
 /*!
  * \brief A Row representing an Airport entry. See Row class for details.
  */
-class AirportEntry : public Row
-{
+class AirportEntry : public Row {
     const static inline QString TABLE_NAME = QStringLiteral("airports");
-public:
+
+  public:
     AirportEntry();
     AirportEntry(const RowData_T &row_data);
     AirportEntry(int row_id, const RowData_T &row_data);
@@ -44,31 +44,28 @@ public:
     double getLatitude() const;
     double getLongitude() const;
 
-private:
-
-    const static inline QString ROWID 		   = QStringLiteral("airport_id");
+  private:
+    const static inline QString ROWID = QStringLiteral("airport_id");
     /*!
      * \brief The airports common name
      */
-    const static inline QString NAME           = QStringLiteral("airport_name");
+    const static inline QString NAME = QStringLiteral("airport_name");
     /*!
      * \brief The airports latitude. Stored as a double
      */
-    const static inline QString LATITUDE            = QStringLiteral("latitude");
+    const static inline QString LATITUDE = QStringLiteral("latitude");
 
     /*!
      * \brief The airports longitude. Stored as a double
      */
-    const static inline QString LONGITUDE            = QStringLiteral("longitude");
+    const static inline QString LONGITUDE = QStringLiteral("longitude");
 
     /*!
      * \brief The timezone (Olson classification) the airport is situated in
      */
-    const static inline QString TZ_OLSON       = QStringLiteral("timezone_olson");
+    const static inline QString TZ_OLSON = QStringLiteral("timezone_olson");
 
-    const static inline QList<QString> FIELDS = {
-        NAME, LATITUDE, LONGITUDE, TZ_OLSON
-    };
+    const static inline QList<QString> FIELDS = {NAME, LATITUDE, LONGITUDE, TZ_OLSON};
 };
 
 } // namespace OPL

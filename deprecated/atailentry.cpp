@@ -18,17 +18,16 @@
 #include "atailentry.h"
 #include "src/opl.h"
 
-ATailEntry::ATailEntry()
-    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, 0))
-{}
+ATailEntry::ATailEntry() : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, 0)) {}
 
-ATailEntry::ATailEntry(RowId_T row_id)
-    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, row_id))
-{}
+ATailEntry::ATailEntry(RowId_T row_id) : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, row_id))
+{
+}
 
 ATailEntry::ATailEntry(RowData_T table_data)
     : AEntry::AEntry(DataPosition(OPL::Db::TABLE_TAILS, 0), table_data)
-{}
+{
+}
 
 const QString ATailEntry::registration()
 {

@@ -22,9 +22,8 @@
 
 namespace OPL {
 
-class AirportCodeEntry : public OPL::Row
-{
-public:
+class AirportCodeEntry : public OPL::Row {
+  public:
     AirportCodeEntry();
     AirportCodeEntry(const RowData_T &rowData);
     AirportCodeEntry(int rowId, const RowData_T &row_data);
@@ -48,20 +47,18 @@ public:
      */
     static QString getCurrentCode(int airport_id, CodeType type);
 
-private:
-    const static inline QString ROWID = QStringLiteral("airport_code_id");
-    const static inline QString AIRPORTID = QStringLiteral("airport_id");
-    const static inline QString CODE_TYPE = QStringLiteral("code_type");
+  private:
+    const static inline QString ROWID      = QStringLiteral("airport_code_id");
+    const static inline QString AIRPORTID  = QStringLiteral("airport_id");
+    const static inline QString CODE_TYPE  = QStringLiteral("code_type");
     const static inline QString VALID_FROM = QStringLiteral("valid_from_jd");
-    const static inline QString VALID_TO = QStringLiteral("valid_to_jd");
+    const static inline QString VALID_TO   = QStringLiteral("valid_to_jd");
 
-    const static inline QList<QString> FIELDS = {
-        AIRPORTID, CODE_TYPE, VALID_FROM, VALID_TO
-    };
+    const static inline QList<QString> FIELDS = {AIRPORTID, CODE_TYPE, VALID_FROM, VALID_TO};
 
     const static inline QHash<CodeType, QString> CODE_TYPES_MAP = {
-        {CodeType::ICAO, QStringLiteral("ICAO")},
-        {CodeType::IATA, QStringLiteral("IATA")},
+        {CodeType::ICAO,  QStringLiteral("ICAO") },
+        {CodeType::IATA,  QStringLiteral("IATA") },
         {CodeType::OTHER, QStringLiteral("OTHER")},
     };
 };

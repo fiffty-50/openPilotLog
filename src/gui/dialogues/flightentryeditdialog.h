@@ -18,22 +18,21 @@
 #ifndef FLIGHTENTRYEDITDIALOG_H
 #define FLIGHTENTRYEDITDIALOG_H
 
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QDialogButtonBox>
-#include <QCalendarWidget>
 #include "entryeditdialog.h"
-#include "src/opl.h"
-#include "src/gui/verification/userinput.h"
 #include "src/gui/verification/flightentryparser.h"
+#include "src/gui/verification/userinput.h"
+#include "src/opl.h"
+#include <QCalendarWidget>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
 
-class FlightEntryEditDialog : public EntryEditDialog
-{
-public:
+class FlightEntryEditDialog : public EntryEditDialog {
+  public:
     FlightEntryEditDialog(QWidget *parent = nullptr);
     FlightEntryEditDialog(int rowId, QWidget *parent = nullptr);
 
@@ -41,76 +40,77 @@ public:
     void loadEntry(const OPL::Row &entry);
     bool deleteEntry(int rowID) override;
 
-
-private:
+  private:
     /*!
      * \brief m_entryParser encapsulates a new FlightEntry or one loaded from the Database
      */
     OPL::FlightEntryParser m_entryParser;
     static constexpr int NEW_ENTRY = 0;
-    int m_rowID = NEW_ENTRY;
+    int m_rowID                    = NEW_ENTRY;
     OPL::DateTimeFormat m_displayFormat;
 
-    QLineEdit dateLineEdit = QLineEdit(this);
+    QLineEdit dateLineEdit    = QLineEdit(this);
     QLineEdit timeOutLineEdit = QLineEdit(this);
     QLineEdit timeOffLineEdit = QLineEdit(this);
-    QLineEdit timeOnLineEdit =  QLineEdit(this);
-    QLineEdit timeInLineEdit = QLineEdit(this);
+    QLineEdit timeOnLineEdit  = QLineEdit(this);
+    QLineEdit timeInLineEdit  = QLineEdit(this);
 
-    QLineEdit departureLineEdit = QLineEdit(this);
+    QLineEdit departureLineEdit   = QLineEdit(this);
     QLineEdit destinationLineEdit = QLineEdit(this);
 
-    QLineEdit firstPilotLineEdit =  QLineEdit(this);
+    QLineEdit firstPilotLineEdit  = QLineEdit(this);
     QLineEdit secondPilotLineEdit = QLineEdit(this);
-    QLineEdit thirdPilotLineEdit = QLineEdit(this);
+    QLineEdit thirdPilotLineEdit  = QLineEdit(this);
 
     QLineEdit registrationLineEdit = QLineEdit(this);
 
-    QLineEdit remarksLineEdit = QLineEdit(this);
+    QLineEdit remarksLineEdit      = QLineEdit(this);
     QLineEdit flightNumberLineEdit = QLineEdit(this);
 
     QComboBox pilotFunctionComboBox = QComboBox(this);
-    QComboBox flightRulesComboBox = QComboBox(this);
-    QComboBox approachTypeComboBox = QComboBox(this);
+    QComboBox flightRulesComboBox   = QComboBox(this);
+    QComboBox approachTypeComboBox  = QComboBox(this);
 
     QSpinBox takeOffCountSpinBox = QSpinBox(this);
     QSpinBox landingCountSpinBox = QSpinBox(this);
 
     QCheckBox pilotFlyingCheckBox = QCheckBox(this);
 
-    QPushButton dateButton = QPushButton(tr("Date"), this);
-    QLabel dateDisplayLabel = QLabel(this);
-    QLabel timeOutLabel = QLabel(tr("Off Blocks"), this);
-    QLabel timeOffLabel = QLabel(tr("Take Off"), this);
-    QLabel timeOnLabel = QLabel(tr("Landing"), this);
-    QLabel timeInLabel = QLabel(tr("On Blocks"), this);
-    QLabel departureLabel = QLabel(tr("Departure"), this);
-    QLabel departureDisplayLabel = QLabel(this);
-    QLabel destinationLabel = QLabel(tr("Destination"), this);
+    QPushButton dateButton         = QPushButton(tr("Date"), this);
+    QLabel dateDisplayLabel        = QLabel(this);
+    QLabel timeOutLabel            = QLabel(tr("Off Blocks"), this);
+    QLabel timeOffLabel            = QLabel(tr("Take Off"), this);
+    QLabel timeOnLabel             = QLabel(tr("Landing"), this);
+    QLabel timeInLabel             = QLabel(tr("On Blocks"), this);
+    QLabel departureLabel          = QLabel(tr("Departure"), this);
+    QLabel departureDisplayLabel   = QLabel(this);
+    QLabel destinationLabel        = QLabel(tr("Destination"), this);
     QLabel destinationDisplayLabel = QLabel(this);
-    QLabel firstPilotLabel = QLabel(tr("PIC"), this);
-    QLabel secondPilotLabel = QLabel(tr("SIC"), this);
-    QLabel thirdPilotLabel = QLabel(tr("Third Pilot"), this);
-    QLabel registrationLabel = QLabel(tr("Registration"), this);
-    QLabel remarksLabel = QLabel(tr("Remarks"), this);
-    QLabel flightNumberLabel = QLabel(tr("Flight Number"), this);
-    QLabel pilotFlyingLabel = QLabel(tr("Pilot Flying"), this);
-    QLabel takeOffCountLabel = QLabel(tr("Take Off"), this);
-    QLabel landingCountLabel = QLabel(tr("Landing"), this);
-    QLabel totalTimeLabel = QLabel(tr("Total Time"), this);
-    QLabel totalTimeDisplayLabel = QLabel("00:00", this);
-    QLabel pilotFunctionLabel = QLabel(tr("Function"), this);
-    QLabel approachTypeLabel = QLabel(tr("Approach"), this);
-    QLabel flightRulesLabel = QLabel(tr("Flight Rules"), this);
+    QLabel firstPilotLabel         = QLabel(tr("PIC"), this);
+    QLabel secondPilotLabel        = QLabel(tr("SIC"), this);
+    QLabel thirdPilotLabel         = QLabel(tr("Third Pilot"), this);
+    QLabel registrationLabel       = QLabel(tr("Registration"), this);
+    QLabel remarksLabel            = QLabel(tr("Remarks"), this);
+    QLabel flightNumberLabel       = QLabel(tr("Flight Number"), this);
+    QLabel pilotFlyingLabel        = QLabel(tr("Pilot Flying"), this);
+    QLabel takeOffCountLabel       = QLabel(tr("Take Off"), this);
+    QLabel landingCountLabel       = QLabel(tr("Landing"), this);
+    QLabel totalTimeLabel          = QLabel(tr("Total Time"), this);
+    QLabel totalTimeDisplayLabel   = QLabel("00:00", this);
+    QLabel pilotFunctionLabel      = QLabel(tr("Function"), this);
+    QLabel approachTypeLabel       = QLabel(tr("Approach"), this);
+    QLabel flightRulesLabel        = QLabel(tr("Flight Rules"), this);
 
     QCalendarWidget *calendarWidget;
 
-    QDialogButtonBox acceptButtonBox = QDialogButtonBox(QDialogButtonBox::Ok |
-                                                        QDialogButtonBox::Cancel);
+    QDialogButtonBox acceptButtonBox =
+        QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-    const std::array<QLineEdit *, 4> timeLineEdits = { &timeOutLineEdit, &timeOffLineEdit, &timeOnLineEdit, &timeInLineEdit };
-    const std::array<QLineEdit *, 2> locationLineEdits = { &departureLineEdit, &destinationLineEdit};
-    const QList<QLineEdit *> pilotNameLineEdits = { &firstPilotLineEdit, &secondPilotLineEdit, &thirdPilotLineEdit };
+    const std::array<QLineEdit *, 4> timeLineEdits     = {&timeOutLineEdit, &timeOffLineEdit,
+                                                          &timeOnLineEdit, &timeInLineEdit};
+    const std::array<QLineEdit *, 2> locationLineEdits = {&departureLineEdit, &destinationLineEdit};
+    const QList<QLineEdit *> pilotNameLineEdits        = {&firstPilotLineEdit, &secondPilotLineEdit,
+                                                          &thirdPilotLineEdit};
 
     void init();
     void setupUI();
@@ -132,13 +132,11 @@ private:
      */
     bool runSanityChecks();
 
-
-private slots:
+  private slots:
     void onDialogAccepted();
     void onCalendarRequested();
     void onCalendarDateSelected();
     void onPilotFlyingCheckboxStateChanged(int index);
-
 
     // line edits
     void onDateEditingFinished();
@@ -151,8 +149,6 @@ private slots:
     void onRemarksEditingFinished();
     void onFlightNumberEditingFinished();
 
-
-
     /*!
      * \brief adds a new Database Element
      * \param caller - The Line Edit that called the function
@@ -163,6 +159,7 @@ private slots:
      * return code indicates success, the caller text is set to the just now created
      * new entry
      */
-    bool addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table);};
+    bool addNewDatabaseElement(QLineEdit *caller, const OPL::DbTable table);
+};
 
 #endif // FLIGHTENTRYEDITDIALOG_H

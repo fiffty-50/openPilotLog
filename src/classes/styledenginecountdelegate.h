@@ -22,12 +22,11 @@
 
 /*!
  * \brief A styled delegate to convert a boolean engine count into a user-facing string.
- * \details The database stores engine count as a boolean value: single-engine (0) or multi-engine (1).
- * This delegate converts that boolean into a human-readable string for display.
+ * \details The database stores engine count as a boolean value: single-engine (0) or multi-engine
+ * (1). This delegate converts that boolean into a human-readable string for display.
  */
-class StyledEngineCountDelegate : public QStyledItemDelegate
-{
-public:
+class StyledEngineCountDelegate : public QStyledItemDelegate {
+  public:
     explicit StyledEngineCountDelegate(QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;

@@ -17,19 +17,19 @@
  */
 #ifndef MD5SUM_H
 #define MD5SUM_H
-#include <QtCore>
 #include <QByteArray>
 #include <QCryptographicHash>
+#include <QtCore>
 
 /*!
- * \brief The Md5Sum class is responsible for calculating cryptographic hashes of files (used to verify downloads)
+ * \brief The Md5Sum class is responsible for calculating cryptographic hashes of files (used to
+ * verify downloads)
  */
-class Md5Sum
-{
-public:
+class Md5Sum {
+  public:
     /*!
-     * \brief AHash - calculates the MD5-checksum for the input file specified in the constructor and
-     * saves the result in the checksum member variable
+     * \brief AHash - calculates the MD5-checksum for the input file specified in the constructor
+     * and saves the result in the checksum member variable
      */
     Md5Sum(QFileInfo &file_info);
     Md5Sum() = delete;
@@ -39,10 +39,7 @@ public:
     /*!
      * \brief hashString returns a hex representation of the hash
      */
-    inline const QString hashToHex() const
-    {
-            return QString(checksum.toHex());
-    };
+    inline const QString hashToHex() const { return QString(checksum.toHex()); };
 
     /*!
      * \brief compare reads the pre-calculated md5-sum from a checkfile and compares the hashes.

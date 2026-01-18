@@ -18,11 +18,11 @@
 #ifndef STYLE_H
 #define STYLE_H
 #include "src/opl.h"
-#include <QString>
+#include <QComboBox>
 #include <QFileInfo>
 #include <QHash>
+#include <QString>
 #include <QTextStream>
-#include <QComboBox>
 
 namespace OPL {
 
@@ -30,11 +30,11 @@ namespace OPL {
  * \brief The StyleSheet struct holds the Display Name and File Name (in the
  * resource system) for the available stylesheets.
  */
-struct StyleSheet
-{
+struct StyleSheet {
     StyleSheet(QLatin1String style_sheet_name, QLatin1String file_name)
         : styleSheetName(style_sheet_name), fileName(file_name)
-    {}
+    {
+    }
     QLatin1String styleSheetName;
     QLatin1String fileName;
 };
@@ -42,7 +42,7 @@ struct StyleSheet
 static inline QString read_stylesheet(const QString &stylesheet)
 {
     QFile file(stylesheet);
-    if(!file.open(QFile::ReadOnly | QFile::Text)) {
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
         DEB << "Unable to open stylesheet file: " + file.fileName();
         return QString();
     }
@@ -53,15 +53,14 @@ static inline QString read_stylesheet(const QString &stylesheet)
 /*!
  * \brief The AStyle class encapsulates style and stylesheet logic.
  */
-class Style
-{
-private:
+class Style {
+  private:
     static QString currentStyle;
     static QLatin1String DARK_PALETTE;
     static void resetStyle();
-public:
 
-    enum class StyleType {Light, Dark};
+  public:
+    enum class StyleType { Light, Dark };
 
     static const QStringList styles;
     static const inline QString defaultStyle = QStringLiteral("Fusion");
@@ -71,16 +70,17 @@ public:
     static void setStyle(const QString &style_key);
     static void setStyle(const StyleSheet &style_sheet);
     static void setStyle(const QPalette &palette);
-    static QString getCurrentStyle() {return currentStyle;}
+    static QString getCurrentStyle() { return currentStyle; }
     static StyleType getStyleType();
     static QPalette darkPalette();
-    static const QString& style();
+    static const QString &style();
 
-    static inline void loadStylesComboBox(QComboBox *combo_box){
+    static inline void loadStylesComboBox(QComboBox *combo_box)
+    {
         const QSignalBlocker blocker(combo_box);
         combo_box->addItems(Style::styles);
-        // TODO enable style sheets.. disabled for now because they are yanky, inconsistant and randomly break the layout
-        // for (const auto &style_sheet : Style::styleSheets) {
+        // TODO enable style sheets.. disabled for now because they are yanky, inconsistant and
+        // randomly break the layout for (const auto &style_sheet : Style::styleSheets) {
         //     combo_box->addItem(style_sheet.styleSheetName);
         // }
         combo_box->addItem(QStringLiteral("Dark-Palette"));

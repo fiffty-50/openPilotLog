@@ -19,29 +19,28 @@
 #define AIRPORTENTRYEDITDIALOG_H
 
 #include "src/gui/dialogues/entryeditdialog.h"
-#include <QGridLayout>
+#include <QComboBox>
+#include <QDialogButtonBox>
 #include <QDoubleSpinBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QDialogButtonBox>
-#include <QComboBox>
 
-class AirportEntryEditDialog : public EntryEditDialog
-{
+class AirportEntryEditDialog : public EntryEditDialog {
     Q_OBJECT
 
-public:
+  public:
     explicit AirportEntryEditDialog(QWidget *parent = nullptr);
-    explicit AirportEntryEditDialog(int row_id, QWidget* parent = nullptr);
+    explicit AirportEntryEditDialog(int row_id, QWidget *parent = nullptr);
 
-private slots:
+  private slots:
     void on_editIcaoCodePushButton_clicked();
     void on_editIataCodePushButton_clicked();
     void on_editOtherCodePushButton_clicked();
     void on_buttonBox_accepted();
 
-private:
+  private:
     // UI Elements
     QGridLayout *gridLayout;
     QDialogButtonBox *buttonBox;
@@ -75,9 +74,8 @@ private:
     void loadAirportData(int row_id);
     bool userWantsToEditCode();
 
-
     // EntryEditDialog interface
-public:
+  public:
     void loadEntry(int rowId) override;
     bool deleteEntry(int rowId) override;
 };

@@ -21,10 +21,10 @@
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
 #endif
-#include <cmath>
+#include "src/classes/time.h"
 #include <QDateTime>
 #include <QDebug>
-#include "src/classes/time.h"
+#include <cmath>
 /*!
  * \brief The ACalc namespace provides various functions for calculations that are performed
  * outside of the database. This includes tasks like converting different units and formats,
@@ -38,33 +38,25 @@ namespace OPL::Calc {
  * \param rad
  * \return degrees
  */
-inline double radToDeg(double rad)
-{
-    return rad * (180 / M_PI);
-}
+inline double radToDeg(double rad) { return rad * (180 / M_PI); }
 
 /*!
  * \brief degToRad Converts degrees to radians
  * \param deg
  * \return radians
  */
-inline double degToRad(double deg)
-{
-    return deg * (M_PI / 180);
-}
+inline double degToRad(double deg) { return deg * (M_PI / 180); }
 
 /*!
  * \brief radToNauticalMiles Convert Radians to nautical miles
  * \param rad
  * \return nautical miles
  */
-inline double radToNauticalMiles(double rad)
-{
-    return rad * 3440.06479482;
-}
+inline double radToNauticalMiles(double rad) { return rad * 3440.06479482; }
 
 /*!
- * \brief greatCircleDistance Calculates Great Circle distance between two coordinates, return in Radians.
+ * \brief greatCircleDistance Calculates Great Circle distance between two coordinates, return in
+ * Radians.
  * \param lat1 Location Latitude in degrees -90:90 ;S(-) N(+)
  * \param lon1 Location Longitude in degrees -180:180 W(-) E(+)
  * \param lat2 Location Latitude in degrees -90:90 ;S(-) N(+)
@@ -92,13 +84,11 @@ double greatCircleDistanceBetweenAirports(const QString &dept, const QString &de
  * \param tblk Total Blocktime in minutes
  * \return coordinates {lat,lon} along the Great Circle Track
  */
-QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1,
-                                                         double lon1,
-                                                         double lat2,
-                                                         double lon2,
-                                                         int tblk);
+QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1, double lon1, double lat2,
+                                                         double lon2, int tblk);
 /*!
- * \brief Calculates solar elevation angle for a given point in time and latitude/longitude coordinates
+ * \brief Calculates solar elevation angle for a given point in time and latitude/longitude
+ * coordinates
  *
  * It is based on the formulas found here: http://stjarnhimlen.se/comp/tutorial.html#5
  *
@@ -113,7 +103,7 @@ QVector<QVector<double>> intermediatePointsOnGreatCircle(double lat1,
  * \param lon - Location Longitude in degrees -180:180 W(-) E(+)
  * \return elevation - double of solar elevation in degrees.
  */
-double solarElevation(const QDateTime& utc_time_point, double lat, double lon);
+double solarElevation(const QDateTime &utc_time_point, double lat, double lon);
 
 /*!
  * \brief Calculates which portion of a flight was conducted in night conditions.
@@ -125,7 +115,8 @@ double solarElevation(const QDateTime& utc_time_point, double lat, double lon);
  * Default -6 (end of civil evening twilight)
  * \return Total number of minutes under night flying conditions
  */
-int calculateNightTime(const QString &dept, const QString &dest, const QDateTime& departureTime, int tblk, int nightAngle);
+int calculateNightTime(const QString &dept, const QString &dest, const QDateTime &departureTime,
+                       int tblk, int nightAngle);
 
 bool isNight(const QString &icao, const QDateTime &event_time, int night_angle);
 
@@ -136,11 +127,13 @@ void updateAutoTimes(int acft_id);
 void updateNightTimes();
 
 /*!
- * \brief The NightTimeValues struct encapsulates values relating to night time that are needed by the NewFlightDialog
+ * \brief The NightTimeValues struct encapsulates values relating to night time that are needed by
+ * the NewFlightDialog
  */
-struct NightTimeValues{
+struct NightTimeValues {
     NightTimeValues() = delete;
-    NightTimeValues(const QString& dept, const QString& dest, const QDateTime& departure_time, int block_minutes, int night_angle)
+    NightTimeValues(const QString &dept, const QString &dest, const QDateTime &departure_time,
+                    int block_minutes, int night_angle)
     {
         nightMinutes = calculateNightTime(dept, dest, departure_time, block_minutes, night_angle);
 
@@ -149,38 +142,39 @@ struct NightTimeValues{
 
         if (nightMinutes == 0) { // all day
             takeOffNight = false;
-            landingNight  = false;
+            landingNight = false;
         }
         else if (nightMinutes == block_minutes) { // all night
             takeOffNight = true;
-            landingNight  = true;
-        } else {
-            if(isNight(dept, departure_time,  night_angle))
+            landingNight = true;
+        }
+        else {
+            if (isNight(dept, departure_time, night_angle))
                 takeOffNight = true;
             else
                 takeOffNight = false;
-            if(isNight(dest, departure_time.addSecs(block_minutes * 60), night_angle))
+            if (isNight(dest, departure_time.addSecs(block_minutes * 60), night_angle))
                 landingNight = true;
             else
                 landingNight = false;
         }
-
     };
 
-//    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, OPL::Time night_time, OPL::Time total_time)
-//        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes), nightTime(night_time), totalTime(total_time){};
+    //    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, OPL::Time night_time,
+    //    OPL::Time total_time)
+    //        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes),
+    //        nightTime(night_time), totalTime(total_time){};
     bool takeOffNight;
     bool landingNight;
     int nightMinutes;
-//    OPL::Time nightTime;
-//    OPL::Time totalTime;
+    //    OPL::Time nightTime;
+    //    OPL::Time totalTime;
 
-    inline bool isAllDay()      {return (!takeOffNight  && !landingNight);}
-    inline bool isAllNight()    {return ( takeOffNight  &&  landingNight);}
-    inline bool isDayToNight()  {return (!takeOffNight  &&  landingNight);}
-    inline bool isNightToDay()  {return ( takeOffNight  && !landingNight);}
+    inline bool isAllDay() { return (!takeOffNight && !landingNight); }
+    inline bool isAllNight() { return (takeOffNight && landingNight); }
+    inline bool isDayToNight() { return (!takeOffNight && landingNight); }
+    inline bool isNightToDay() { return (takeOffNight && !landingNight); }
 };
-
 
 } // namespace OPL::Calc
 

@@ -17,9 +17,9 @@
  */
 #ifndef STAT_H
 #define STAT_H
-#include <QtCore>
-#include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlQuery>
+#include <QtCore>
 
 namespace OPL::Statistics {
 
@@ -29,18 +29,17 @@ namespace OPL::Statistics {
  * provided as either QString or QVector<QString>.
  */
 
+enum class TimeFrame { AllTime, CalendarYear, Rolling12Months, Rolling28Days };
 
-    enum class TimeFrame {AllTime, CalendarYear, Rolling12Months, Rolling28Days};
+enum class ToLdg { Takeoff, Landing };
 
-    enum class ToLdg {Takeoff, Landing};
+int totalTime(TimeFrame time_frame);
 
-    int totalTime(TimeFrame time_frame);
+QVector<QVariant> countTakeOffLanding(int days = 90);
 
-    QVector<QVariant> countTakeOffLanding(int days = 90);
+QDate currencyTakeOffLandingExpiry(int expiration_days = 90);
 
-    QDate currencyTakeOffLandingExpiry(int expiration_days = 90);
-
-    QVector<QPair<QString, QString>> totals();
+QVector<QPair<QString, QString>> totals();
 
 } // namespace OPL::Statistics
 

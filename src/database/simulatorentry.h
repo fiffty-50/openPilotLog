@@ -24,9 +24,8 @@ namespace OPL {
 /*!
  * \brief A Row representing a Simulator entry. See Row class for details.
  */
-class SimulatorEntry : public Row
-{
-public:
+class SimulatorEntry : public Row {
+  public:
     SimulatorEntry();
     SimulatorEntry(const RowData_T &row_data);
     SimulatorEntry(int row_id, const RowData_T &row_data);
@@ -36,33 +35,33 @@ public:
     /*!
      * \brief The sql column name for the row id
      */
-    const static inline QString  ROWID       = QStringLiteral("session_id");
+    const static inline QString ROWID = QStringLiteral("session_id");
     /*!
      * \brief The sql column name for the date
      */
-    const static inline QString  DATE        = QStringLiteral("date");
+    const static inline QString DATE = QStringLiteral("date");
     /*!
      * \brief The sql column name for the total time
      */
-    const static inline QString  TIME        = QStringLiteral("totalTime");
+    const static inline QString TIME = QStringLiteral("totalTime");
     /*!
      * \brief The sql column name for the simulator type (FNPT/FFS)
      */
-    const static inline QString  TYPE        = QStringLiteral("deviceType");
+    const static inline QString TYPE = QStringLiteral("deviceType");
     /*!
      * \brief The sql column name for the simulators aircraft type
      */
-    const static inline QString  ACFT        = QStringLiteral("aircraftType");
+    const static inline QString ACFT = QStringLiteral("aircraftType");
     /*!
      * \brief The sql column name for the simulators registration
      */
-    const static inline QString  REG         = QStringLiteral("registration");
+    const static inline QString REG = QStringLiteral("registration");
     /*!
      * \brief The sql column name for remarks
      */
-    const static inline QString  REMARKS     = QStringLiteral("remarks");
+    const static inline QString REMARKS = QStringLiteral("remarks");
 
-private:
+  private:
     const static inline QStringList FIELDS = {};
 };
 

@@ -18,46 +18,39 @@
 #ifndef DECLARATIONS_H
 #define DECLARATIONS_H
 
-#include <QtCore>
 #include "src/functions/alog.h"
+#include <QtCore>
 
 /// \todo Short descriptions
-using RowId_T = int;
-using PilotName_T = QString;
-using PilotRowId_T = RowId_T;
+using RowId_T            = int;
+using PilotName_T        = QString;
+using PilotRowId_T       = RowId_T;
 using TailRegistration_T = QString;
-using TailId_T = RowId_T;
-using AirportICAO_T = QString;
-using AirportIATA_T = QString;
-using AirportName_T = QString;
-using AirportId_T = RowId_T;
-using ColName_T = QString;
-using ColData_T = QVariant;
-using TableName_T = QString;
+using TailId_T           = RowId_T;
+using AirportICAO_T      = QString;
+using AirportIATA_T      = QString;
+using AirportName_T      = QString;
+using AirportId_T        = RowId_T;
+using ColName_T          = QString;
+using ColData_T          = QVariant;
+using TableName_T        = QString;
 
-using TableNames_T = QStringList;
-using RowData_T = QHash<ColName_T, ColData_T>;
-using ColumnData_T = QPair<ColName_T, ColData_T>;
-using ColumnNames_T = QStringList;
+using TableNames_T   = QStringList;
+using RowData_T      = QHash<ColName_T, ColData_T>;
+using ColumnData_T   = QPair<ColName_T, ColData_T>;
+using ColumnNames_T  = QStringList;
 using TableColumns_T = QHash<TableName_T, ColumnNames_T>;
 
 struct DataPosition {
     TableName_T tableName;
     RowId_T rowId;
-    DataPosition()
-        : tableName(TableName_T())
-    {};
-    DataPosition(TableName_T table_name, RowId_T row_id)
-        : tableName(table_name), rowId(row_id)
-    {};
+    DataPosition() : tableName(TableName_T()) {};
+    DataPosition(TableName_T table_name, RowId_T row_id) : tableName(table_name), rowId(row_id) {};
 
-    DataPosition(const DataPosition& other) = default;
-    DataPosition& operator=(const DataPosition& other) = default;
+    DataPosition(const DataPosition &other)            = default;
+    DataPosition &operator=(const DataPosition &other) = default;
 
-    REPR(DataPosition,
-         "tableName=" + object.tableName
-         + ", rowId=" + QString::number(object.rowId)
-         )
+    REPR(DataPosition, "tableName=" + object.tableName + ", rowId=" + QString::number(object.rowId))
 };
 
 #endif // DECLARATIONS_H

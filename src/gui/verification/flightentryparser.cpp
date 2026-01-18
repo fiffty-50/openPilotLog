@@ -7,18 +7,15 @@
 namespace OPL {
 using namespace OPL;
 
-bool FlightEntryParser::isValid() const
-{
-    return invalidFields().isEmpty();
-}
+bool FlightEntryParser::isValid() const { return invalidFields().isEmpty(); }
 
 QStringList FlightEntryParser::invalidFields() const
 {
     // verify mandatory fields, add invalid Items to a List
     QStringList invalidItems;
 
-    for(const auto &field : *FlightEntry::getMandatoryFields()) {
-        if(m_entryData.value(field).toInt() < 0) {
+    for (const auto &field : *FlightEntry::getMandatoryFields()) {
+        if (m_entryData.value(field).toInt() < 0) {
             invalidItems.append(validationItemsDisplayNames.value(field));
         }
     }
@@ -33,7 +30,7 @@ QString FlightEntryParser::getFlightSummary() const
 
 bool FlightEntryParser::setDate(const QDate &date)
 {
-    if(date.isValid()) {
+    if (date.isValid()) {
         m_entryData.insert(FlightEntry::DOFT, date.toJulianDay());
         return true;
     }
@@ -42,7 +39,7 @@ bool FlightEntryParser::setDate(const QDate &date)
 
 bool FlightEntryParser::setDeparture(const QString &input)
 {
-    if(DBCache->getAirportsMapICAO().key(input) != 0) {
+    if (DBCache->getAirportsMapICAO().key(input) != 0) {
         m_entryData.insert(FlightEntry::DEPT, input);
         return true;
     }
@@ -51,7 +48,7 @@ bool FlightEntryParser::setDeparture(const QString &input)
 
 bool FlightEntryParser::setDestination(const QString &input)
 {
-    if(DBCache->getAirportsMapICAO().key(input) != 0) {
+    if (DBCache->getAirportsMapICAO().key(input) != 0) {
         m_entryData.insert(FlightEntry::DEST, input);
         return true;
     }
@@ -61,7 +58,7 @@ bool FlightEntryParser::setDestination(const QString &input)
 bool FlightEntryParser::setTimeOffBlocks(const QString &input, const OPL::DateTimeFormat &format)
 {
     const Time time = Time::fromString(input, format);
-    if( time.isValidTimeOfDay()) {
+    if (time.isValidTimeOfDay()) {
         m_entryData.insert(FlightEntry::TOFB, time.toMinutes());
         setBlockTime();
         return true;
@@ -73,20 +70,19 @@ bool FlightEntryParser::setTimeOffBlocks(const QString &input, const OPL::DateTi
 bool FlightEntryParser::setTimeOnBlocks(const QString &input, const OPL::DateTimeFormat &format)
 {
     const Time time = Time::fromString(input, format);
-    if( time.isValidTimeOfDay()) {
+    if (time.isValidTimeOfDay()) {
         m_entryData.insert(FlightEntry::TONB, time.toMinutes());
         setBlockTime();
         return true;
     }
 
     return false;
-
 }
 
 bool FlightEntryParser::setFirstPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
-    if(pilotId == 0) {
+    if (pilotId == 0) {
         m_entryData.insert(FlightEntry::PIC, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
@@ -98,7 +94,7 @@ bool FlightEntryParser::setFirstPilot(const QString &input)
 bool FlightEntryParser::setSecondPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
-    if(pilotId == 0) {
+    if (pilotId == 0) {
         m_entryData.insert(FlightEntry::SECONDPILOT, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
@@ -110,7 +106,7 @@ bool FlightEntryParser::setSecondPilot(const QString &input)
 bool FlightEntryParser::setThirdPilot(const QString &input)
 {
     const int pilotId = DBCache->getPilotNamesMap().key(input);
-    if(pilotId == 0) {
+    if (pilotId == 0) {
         m_entryData.insert(FlightEntry::THIRDPILOT, QVariant(QMetaType(QMetaType::Int)));
         return false;
     }
@@ -122,7 +118,7 @@ bool FlightEntryParser::setThirdPilot(const QString &input)
 bool FlightEntryParser::setRegistration(const QString &input)
 {
     const int tailId = DBCache->getKeyMap(DatabaseCache::MapType::TailRegistrations).value(input);
-    if(tailId == 0) {
+    if (tailId == 0) {
         return false;
     }
 
@@ -155,8 +151,7 @@ bool FlightEntryParser::setNightValues(const int nightAngle, const int toCount, 
     const QDate doft = QDate::fromJulianDay(m_entryData.value(FlightEntry::DOFT).toInt());
     allValid &= doft.isValid();
 
-    if(!allValid)
-        return false;
+    if (!allValid) return false;
 
     // format and calculate
 
@@ -165,13 +160,19 @@ bool FlightEntryParser::setNightValues(const int nightAngle, const int toCount, 
     const auto nightData = OPL::Calc::NightTimeValues(dept, dest, deptDateTime, tblk, nightAngle);
 
     // Fill the calculated data
-    m_entryData.insert(FlightEntry::TNIGHT, nightData.nightMinutes > 0 ? nightData.nightMinutes : QVariant(QMetaType(QMetaType::Int)));
+    m_entryData.insert(FlightEntry::TNIGHT, nightData.nightMinutes > 0
+                                                ? nightData.nightMinutes
+                                                : QVariant(QMetaType(QMetaType::Int)));
 
-    m_entryData.insert(FlightEntry::TODAY, nightData.takeOffNight ? QVariant(QMetaType(QMetaType::Int)) : toCount);
-    m_entryData.insert(FlightEntry::TONIGHT, nightData.takeOffNight ? toCount : QVariant(QMetaType(QMetaType::Int)));
+    m_entryData.insert(FlightEntry::TODAY,
+                       nightData.takeOffNight ? QVariant(QMetaType(QMetaType::Int)) : toCount);
+    m_entryData.insert(FlightEntry::TONIGHT,
+                       nightData.takeOffNight ? toCount : QVariant(QMetaType(QMetaType::Int)));
 
-    m_entryData.insert(FlightEntry::LDGDAY, nightData.landingNight ? QVariant(QMetaType(QMetaType::Int)) : ldgCount);
-    m_entryData.insert(FlightEntry::LDGNIGHT, nightData.landingNight ? ldgCount : QVariant(QMetaType(QMetaType::Int)));
+    m_entryData.insert(FlightEntry::LDGDAY,
+                       nightData.landingNight ? QVariant(QMetaType(QMetaType::Int)) : ldgCount);
+    m_entryData.insert(FlightEntry::LDGNIGHT,
+                       nightData.landingNight ? ldgCount : QVariant(QMetaType(QMetaType::Int)));
 
     return true;
 }
@@ -194,20 +195,21 @@ void FlightEntryParser::setApproachType(const QString &approach)
 bool FlightEntryParser::setAircraftCategoryTimes()
 {
     // check if we can retreive acft data and block time
-    const int tailId = m_entryData.value(FlightEntry::ACFT).toInt();
+    const int tailId    = m_entryData.value(FlightEntry::ACFT).toInt();
     const int blockTime = m_entryData.value(FlightEntry::TBLK).toInt();
-    if (tailId == 0 || blockTime == 0)
-        return false;
+    if (tailId == 0 || blockTime == 0) return false;
 
     // Determine aircraft category
     const TailEntry aircraft = DB->getTailEntry(tailId);
-    //bool multi_pilot = aircraft.getData().value(OPL::TailEntry::MULTI_PILOT).toBool();
-    //bool multi_engine = aircraft.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
+    // bool multi_pilot = aircraft.getData().value(OPL::TailEntry::MULTI_PILOT).toBool();
+    // bool multi_engine = aircraft.getData().value(OPL::TailEntry::MULTI_ENGINE).toBool();
 
     // only fill the required fields, empty out the other ones
-    //m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
-    //m_entryData.insert(OPL::FlightEntry::TSPSE, (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
-    //m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    // m_entryData.insert(OPL::FlightEntry::TMP,   multi_pilot ? QVariant(blockTime) :
+    // QVariant(QMetaType(QMetaType::Int))); m_entryData.insert(OPL::FlightEntry::TSPSE,
+    // (!multi_pilot && !multi_engine) ? QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
+    // m_entryData.insert(OPL::FlightEntry::TSPME, (!multi_pilot &&  multi_engine) ?
+    // QVariant(blockTime) : QVariant(QMetaType(QMetaType::Int)));
 
     return true;
 }
@@ -218,8 +220,7 @@ const void FlightEntryParser::setBlockTime()
     const int tonb = m_entryData.value(FlightEntry::TONB).toInt();
     DEB << "Seting block time" << tofb << " to " << tonb;
 
-    if (tofb < 0 || tonb < 0)
-        return;
+    if (tofb < 0 || tonb < 0) return;
 
     // we assume no flight duration is longer than 24 hours
     int tblk = (tonb - tofb + MINUTES_PER_DAY) % MINUTES_PER_DAY;
@@ -244,27 +245,28 @@ void FlightEntryParser::setIfrTime(const int ifrMinutes)
 
 void FlightEntryParser::setTakeOffCount(const int count, const bool isDay)
 {
-    isDay ? m_entryData.insert(FlightEntry::TODAY, count) : m_entryData.insert(FlightEntry::TONIGHT, count);
+    isDay ? m_entryData.insert(FlightEntry::TODAY, count)
+          : m_entryData.insert(FlightEntry::TONIGHT, count);
 }
 
 void FlightEntryParser::setLandingCount(const int count, const bool isDay)
 {
-    isDay ? m_entryData.insert(FlightEntry::LDGDAY, count) : m_entryData.insert(FlightEntry::LDGNIGHT, count);
+    isDay ? m_entryData.insert(FlightEntry::LDGDAY, count)
+          : m_entryData.insert(FlightEntry::LDGNIGHT, count);
 }
 
 bool FlightEntryParser::setFunctionTimes(const PilotFunction function)
 {
     const int minutes = m_entryData.value(FlightEntry::TBLK).toInt();
-    if( minutes <= 0)
-        return false;
+    if (minutes <= 0) return false;
 
-    for(auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
-        m_entryData.insert(it.value(), it.key() == function ? minutes : QVariant(QMetaType(QMetaType::Int)));
+    for (auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
+        m_entryData.insert(it.value(),
+                           it.key() == function ? minutes : QVariant(QMetaType(QMetaType::Int)));
     }
 
     // log TFI as PIC as well
-    if(function == PilotFunction::FI)
-        m_entryData.insert(FlightEntry::TFI, minutes);
+    if (function == PilotFunction::FI) m_entryData.insert(FlightEntry::TFI, minutes);
 
     return true;
 }
@@ -338,7 +340,7 @@ QTime FlightEntryParser::getIfrTime() const
 QMap<PilotFunction, int> FlightEntryParser::getFunctionTimes() const
 {
     QMap<PilotFunction, int> ret;
-    for(auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
+    for (auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
         ret.insert(it.key(), m_entryData.value(it.value()).toInt());
     }
     return ret;
@@ -348,9 +350,8 @@ PilotFunction FlightEntryParser::getFunction() const
 {
     PilotFunction function = PilotFunction::PIC;
 
-    for(auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
-        if(m_entryData.value(it.value()).toInt() > 0)
-            function = it.key();
+    for (auto it = ALL_PILOT_FUNCTIONS.cbegin(); it != ALL_PILOT_FUNCTIONS.cend(); ++it) {
+        if (m_entryData.value(it.value()).toInt() > 0) function = it.key();
     }
 
     return function;
@@ -363,12 +364,14 @@ bool FlightEntryParser::getIsPilotFlying() const
 
 int FlightEntryParser::getTakeOffCount() const
 {
-    return m_entryData.value(FlightEntry::TODAY).toInt() + m_entryData.value(FlightEntry::TONIGHT).toInt();
+    return m_entryData.value(FlightEntry::TODAY).toInt() +
+           m_entryData.value(FlightEntry::TONIGHT).toInt();
 }
 
 int FlightEntryParser::getLandingCount() const
 {
-    return m_entryData.value(FlightEntry::LDGDAY).toInt() + m_entryData.value(FlightEntry::LDGNIGHT).toInt();
+    return m_entryData.value(FlightEntry::LDGDAY).toInt() +
+           m_entryData.value(FlightEntry::LDGNIGHT).toInt();
 }
 
 QString FlightEntryParser::getApproachType() const

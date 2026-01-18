@@ -16,12 +16,12 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "jsonhelper.h"
-#include "src/database/database.h"
 #include "src/classes/paths.h"
+#include "src/database/database.h"
 
 void JsonHelper::exportDatabase()
 {
-    for (const auto &table : TABLES){
+    for (const auto &table : TABLES) {
         QJsonArray array;
         const auto rows = DB->getTable(table);
 
@@ -42,12 +42,12 @@ void JsonHelper::importDatabase()
     // make sure flights is cleared first due to foreign key contstraints
     q.prepare(QStringLiteral("DELETE FROM FLIGHTS"));
     q.exec();
-    for (const auto & table : TABLES) {
+    for (const auto &table : TABLES) {
         const QString table_name = OPL::GLOBALS->getDbTableName(table);
         q.prepare(QLatin1String("DELETE FROM ") + table_name);
         q.exec();
-        const auto doc = readFileToDoc(OPL::Paths::filePath(OPL::Paths::Templates,
-                                                               table_name + QLatin1String(".json")));
+        const auto doc = readFileToDoc(
+            OPL::Paths::filePath(OPL::Paths::Templates, table_name + QLatin1String(".json")));
         DB->commit(doc.array(), table);
     }
 }
@@ -55,7 +55,7 @@ void JsonHelper::importDatabase()
 QJsonDocument JsonHelper::readFileToDoc(const QString &file_path)
 {
     QFile file(file_path);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         DEB << "Unable to open file: " + file_path;
         return QJsonDocument();
     }
@@ -68,8 +68,8 @@ QJsonDocument JsonHelper::readFileToDoc(const QString &file_path)
 
 void JsonHelper::writeDocToFile(const QJsonDocument &doc, const QString &file_name)
 {
-    QFile out(OPL::Paths::filePath(OPL::Paths::Export,file_name));
-    if(!out.open(QFile::WriteOnly)) {
+    QFile out(OPL::Paths::filePath(OPL::Paths::Export, file_name));
+    if (!out.open(QFile::WriteOnly)) {
         DEB << "Unable to write to file: " + file_name;
         return;
     }

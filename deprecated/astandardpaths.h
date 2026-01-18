@@ -18,25 +18,20 @@
 #ifndef ASTANDARDPATHS_H
 #define ASTANDARDPATHS_H
 
+#include <QDir>
+#include <QHash>
 #include <QStandardPaths>
 #include <QString>
-#include <QHash>
-#include <QDir>
 
 /*!
  * \brief The AStandardAppPaths class encapsulates a static QHash holding
  * the standard paths of the application.
  */
-class AStandardPaths{
-public:
-    enum Directories {
-        Database,
-        Templates,
-        Backup,
-        Log,
-        JSON
-    };
-private:
+class AStandardPaths {
+  public:
+    enum Directories { Database, Templates, Backup, Log, JSON };
+
+  private:
     static QHash<Directories, QDir> directories;
 
     /*!
@@ -45,7 +40,7 @@ private:
      */
     static bool scan_directories();
 
-public:
+  public:
     /*!
      * \brief Creates and verifies a static map of the standard paths used in the app.
      */
@@ -60,13 +55,12 @@ public:
     /*!
      * \brief Returns a string of the absolute path to directory location concatenated with filename
      */
-    static const QString asChildOfDir(Directories location, const QString& filename);
+    static const QString asChildOfDir(Directories location, const QString &filename);
     /*!
      * \brief returns the static map of all standard directories
      * \return static const QHash<Directories, QDir>
      */
     static const QHash<Directories, QDir> &allDirectories();
 };
-
 
 #endif // ASTANDARDPATHS_H

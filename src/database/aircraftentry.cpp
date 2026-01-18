@@ -20,45 +20,48 @@
 
 namespace OPL {
 
-AircraftEntry::AircraftEntry()
-    : Row(DbTable::v2AircraftTypes, &FIELDS)
-{}
+AircraftEntry::AircraftEntry() : Row(DbTable::v2AircraftTypes, &FIELDS) {}
 
 AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::v2AircraftTypes, row_id, row_data, &FIELDS)
-{}
+{
+}
 
 bool AircraftEntry::isValid() const
 {
-    if(!m_rowData.contains(MAKE) || m_rowData.value(MAKE).toString().isEmpty()) {
+    if (!m_rowData.contains(MAKE) || m_rowData.value(MAKE).toString().isEmpty()) {
         LOG << QStringLiteral("Invalid aircraft entry: Make is missing");
         return false;
     }
-    if(!m_rowData.contains(MODEL) || m_rowData.value(MODEL).toString().isEmpty()) {
+    if (!m_rowData.contains(MODEL) || m_rowData.value(MODEL).toString().isEmpty()) {
         LOG << QStringLiteral("Invalid aircraft entry: Model is missing");
         return false;
     }
-    if(!m_rowData.contains(ENGINE_TYPE) || !ENGINE_TYPES.contains(m_rowData.value(ENGINE_TYPE).toString())) {
+    if (!m_rowData.contains(ENGINE_TYPE) ||
+        !ENGINE_TYPES.contains(m_rowData.value(ENGINE_TYPE).toString())) {
         LOG << QStringLiteral("Invalid aircraft entry: Engine type is missing or invalid");
         return false;
     }
-    if(!m_rowData.contains(CLASS) || !AIRCRAFT_CLASSES.contains(m_rowData.value(CLASS).toString())) {
+    if (!m_rowData.contains(CLASS) ||
+        !AIRCRAFT_CLASSES.contains(m_rowData.value(CLASS).toString())) {
         LOG << QStringLiteral("Invalid aircraft entry: Aircraft class is missing or invalid");
         return false;
     }
-    if(!m_rowData.contains(SUB_CLASS) || !AIRCRAFT_SUBCLASSES.contains(m_rowData.value(SUB_CLASS).toString())) {
+    if (!m_rowData.contains(SUB_CLASS) ||
+        !AIRCRAFT_SUBCLASSES.contains(m_rowData.value(SUB_CLASS).toString())) {
         LOG << QStringLiteral("Invalid aircraft entry: Aircraft sub-class is missing or invalid");
         return false;
     }
-    if(!m_rowData.contains(WAKE_CATEGORY) || !WAKE_CATEGORIES.contains(m_rowData.value(WAKE_CATEGORY).toString())) {
+    if (!m_rowData.contains(WAKE_CATEGORY) ||
+        !WAKE_CATEGORIES.contains(m_rowData.value(WAKE_CATEGORY).toString())) {
         LOG << QStringLiteral("Invalid aircraft entry: Wake category is missing or invalid");
         return false;
     }
-    if(!m_rowData.contains(IS_MULTI_ENGINE)) {
+    if (!m_rowData.contains(IS_MULTI_ENGINE)) {
         LOG << QStringLiteral("Invalid aircraft entry: Is multi-engine flag is missing");
         return false;
     }
-    if(!m_rowData.contains(IS_MULTI_PILOT)) {
+    if (!m_rowData.contains(IS_MULTI_PILOT)) {
         LOG << QStringLiteral("Invalid aircraft entry: Is multi-pilot flag is missing");
         return false;
     }
@@ -68,15 +71,15 @@ bool AircraftEntry::isValid() const
 QString AircraftEntry::getTypeString(int aircraft_id)
 {
     const QString statement = QStringLiteral("SELECT make||' '||model AS ident "
-                                        "FROM aircraft_types "
-                                        "WHERE model IS NOT NULL "
-                                        "AND variant IS NULL "
-                                        "AND aircraft_type_id = ? "
-                                        "UNION "
-                                        "SELECT make||' '||model||'-'||variant AS ident "
-                                        "FROM aircraft_types "
-                                        "WHERE variant IS NOT NULL "
-                                        "AND aircraft_type_id = ?");
+                                             "FROM aircraft_types "
+                                             "WHERE model IS NOT NULL "
+                                             "AND variant IS NULL "
+                                             "AND aircraft_type_id = ? "
+                                             "UNION "
+                                             "SELECT make||' '||model||'-'||variant AS ident "
+                                             "FROM aircraft_types "
+                                             "WHERE variant IS NOT NULL "
+                                             "AND aircraft_type_id = ?");
     QSqlQuery query;
     query.prepare(statement);
     query.addBindValue(aircraft_id);
@@ -84,9 +87,10 @@ QString AircraftEntry::getTypeString(int aircraft_id)
     query.setForwardOnly(true);
     query.exec();
 
-    if(!query.next()) {
+    if (!query.next()) {
         return QStringLiteral("Aircraft type not in database");
-    } else {
+    }
+    else {
         return query.value(0).toString();
     }
 }
@@ -94,7 +98,7 @@ QString AircraftEntry::getTypeString(int aircraft_id)
 // Setters
 bool AircraftEntry::setMake(const QString &input)
 {
-    if(input.isEmpty()) {
+    if (input.isEmpty()) {
         return false;
     }
 
@@ -104,7 +108,7 @@ bool AircraftEntry::setMake(const QString &input)
 
 bool AircraftEntry::setModel(const QString &input)
 {
-    if(input.isEmpty()) {
+    if (input.isEmpty()) {
         return false;
     }
 
@@ -172,18 +176,9 @@ bool AircraftEntry::setRemarks(const QString &input)
     return true;
 }
 // Getters
-QString AircraftEntry::getMake() const
-{
-    return m_rowData.value(MAKE).toString();
-}
-QString AircraftEntry::getModel() const
-{
-    return m_rowData.value(MODEL).toString();
-}
-QString AircraftEntry::getVariant() const
-{
-    return m_rowData.value(VARIANT).toString();
-}
+QString AircraftEntry::getMake() const { return m_rowData.value(MAKE).toString(); }
+QString AircraftEntry::getModel() const { return m_rowData.value(MODEL).toString(); }
+QString AircraftEntry::getVariant() const { return m_rowData.value(VARIANT).toString(); }
 QString AircraftEntry::getIcaoDesignator() const
 {
     return m_rowData.value(ICAO_DESIGNATOR).toString();
@@ -193,10 +188,7 @@ AircraftEntry::EngineType AircraftEntry::getEngineType() const
     QString value = m_rowData.value(ENGINE_TYPE).toString();
     return static_cast<EngineType>(ENGINE_TYPES.indexOf(value));
 }
-bool AircraftEntry::getIsMultiEngine() const
-{
-    return m_rowData.value(IS_MULTI_ENGINE).toBool();
-}
+bool AircraftEntry::getIsMultiEngine() const { return m_rowData.value(IS_MULTI_ENGINE).toBool(); }
 AircraftEntry::AircraftClass AircraftEntry::getClass() const
 {
     QString value = m_rowData.value(CLASS).toString();
@@ -207,28 +199,20 @@ AircraftEntry::AircraftSubClass AircraftEntry::getSubClass() const
     QString value = m_rowData.value(SUB_CLASS).toString();
     return static_cast<AircraftSubClass>(AIRCRAFT_SUBCLASSES.indexOf(value));
 }
-bool AircraftEntry::getIsMultiPilot() const
-{
-    return m_rowData.value(IS_MULTI_PILOT).toBool();
-}
+bool AircraftEntry::getIsMultiPilot() const { return m_rowData.value(IS_MULTI_PILOT).toBool(); }
 AircraftEntry::WakeCategory AircraftEntry::getWakeCategory() const
 {
     QString value = m_rowData.value(WAKE_CATEGORY).toString();
     return static_cast<WakeCategory>(WAKE_CATEGORIES.indexOf(value));
 }
-QString AircraftEntry::getTypeRating() const
-{
-    return m_rowData.value(TYPE_RATING).toString();
-}
-QString AircraftEntry::getRemarks() const
-{
-    return m_rowData.value(REMARKS).toString();
-}
+QString AircraftEntry::getTypeRating() const { return m_rowData.value(TYPE_RATING).toString(); }
+QString AircraftEntry::getRemarks() const { return m_rowData.value(REMARKS).toString(); }
 
-// Combo Boxes for use in the GUI - these map the database values to translatable strings for display
+// Combo Boxes for use in the GUI - these map the database values to translatable strings for
+// display
 void AircraftEntry::setupEngineTypeComboBox(QComboBox *comboBox)
 {
-    if(!comboBox) {
+    if (!comboBox) {
         return;
     }
     comboBox->clear();
@@ -242,7 +226,7 @@ void AircraftEntry::setupEngineTypeComboBox(QComboBox *comboBox)
 
 void AircraftEntry::setupAircraftClassComboBox(QComboBox *comboBox)
 {
-    if(!comboBox) {
+    if (!comboBox) {
         return;
     }
     comboBox->clear();
@@ -256,17 +240,17 @@ void AircraftEntry::setupAircraftClassComboBox(QComboBox *comboBox)
 
 void AircraftEntry::setupAircraftSubClassComboBox(QComboBox *comboBox)
 {
-    if(!comboBox) {
+    if (!comboBox) {
         return;
     }
     comboBox->clear();
     comboBox->addItem(QObject::tr("Land"), static_cast<int>(AircraftSubClass::LAND));
-    comboBox->addItem(QObject::tr("Sea"), static_cast<int>(AircraftSubClass::SEA)); 
+    comboBox->addItem(QObject::tr("Sea"), static_cast<int>(AircraftSubClass::SEA));
 }
 
 void AircraftEntry::setupWakeCategoryComboBox(QComboBox *comboBox)
 {
-    if(!comboBox) {
+    if (!comboBox) {
         return;
     }
     comboBox->clear();
@@ -286,9 +270,6 @@ void AircraftEntry::setupIsMultiPilotComboBox(QComboBox *comboBox)
 {
     comboBox->addItem(QObject::tr("Single Pilot"), 0);
     comboBox->addItem(QObject::tr("Multi Pilot"), 1);
-}   
-
-
-
+}
 
 } // namespace OPL

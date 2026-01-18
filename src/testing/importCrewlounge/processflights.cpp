@@ -4,8 +4,10 @@
 
 void ProcessFlights::parseRawData()
 {
-    // doft, flightNumber, dept, dest, tofb, tonb, tblk, tPIC, tSIC, tDUAL, tPICUS, tFI, tNight, pic, secondPilot, thirdPilot   toDN,ldDN   pilotFlying, appType, remarks,  acftReg
-    int relevant_cols[24] = {0,3,5,7,9,11,17,19,20,21,22,23,25,38,42,46,53,54,55,56,58,60,64,79};
+    // doft, flightNumber, dept, dest, tofb, tonb, tblk, tPIC, tSIC, tDUAL, tPICUS, tFI, tNight,
+    // pic, secondPilot, thirdPilot   toDN,ldDN   pilotFlying, appType, remarks,  acftReg
+    int relevant_cols[24] = {0,  3,  5,  7,  9,  11, 17, 19, 20, 21, 22, 23,
+                             25, 38, 42, 46, 53, 54, 55, 56, 58, 60, 64, 79};
     QStringList row_data;
     for (const auto &row : std::as_const(rawData)) {
         for (const auto &col : relevant_cols) {
@@ -48,18 +50,16 @@ void ProcessFlights::processParsedData()
             new_flight_data.insert(OPL::FlightEntry::PILOTFLYING, 0);
 
         // Convert Date and Time
-        const QDate doft = QDate::fromString(row[0],QStringLiteral("dd/MM/yyyy"));
+        const QDate doft = QDate::fromString(row[0], QStringLiteral("dd/MM/yyyy"));
         new_flight_data.insert(OPL::FlightEntry::DOFT, doft.toString(Qt::ISODate));
 
         auto time_off = QTime::fromString(row[4], QStringLiteral("hh:mm"));
-        if (!time_off.isValid())
-            time_off = QTime::fromString(row[4], QStringLiteral("h:mm"));
+        if (!time_off.isValid()) time_off = QTime::fromString(row[4], QStringLiteral("h:mm"));
         int tofb = OPL::Time::fromString(time_off.toString(), OPL::DateTimeFormat()).toMinutes();
         new_flight_data.insert(OPL::FlightEntry::TOFB, tofb);
 
         auto time_on = QTime::fromString(row[5], QStringLiteral("hh:mm"));
-        if (!time_on.isValid())
-            time_on = QTime::fromString(row[5], QStringLiteral("h:mm"));
+        if (!time_on.isValid()) time_on = QTime::fromString(row[5], QStringLiteral("h:mm"));
 
         int tonb = OPL::Time::fromString(time_on.toString(), OPL::DateTimeFormat()).toMinutes();
         new_flight_data.insert(OPL::FlightEntry::TONB, tonb);
@@ -80,11 +80,8 @@ void ProcessFlights::processParsedData()
         new_flight_data.insert(QStringLiteral("flight_id"), flight_id);
         processedFlights.append(new_flight_data);
         new_flight_data.clear();
-        flight_id ++;
+        flight_id++;
     }
 }
 
-QVector<OPL::RowData_T> ProcessFlights::getProcessedFlights() const
-{
-    return processedFlights;
-}
+QVector<OPL::RowData_T> ProcessFlights::getProcessedFlights() const { return processedFlights; }

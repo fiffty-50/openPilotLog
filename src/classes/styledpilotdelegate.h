@@ -9,9 +9,8 @@
  * of pilots. This delegate uses the Database cache to map this ID to a name and displays the name
  * in the view.
  */
-class StyledPilotDelegate : public QStyledItemDelegate
-{
-public:
+class StyledPilotDelegate : public QStyledItemDelegate {
+  public:
     explicit StyledPilotDelegate(QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;

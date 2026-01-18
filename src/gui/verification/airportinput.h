@@ -9,17 +9,17 @@
  * matched against ICAO codes, which are more widespread and used exclusively in the database
  * because there are airports which don't have an IATA code, mainly smaller non-commercial ones.
  *
- * The AirportInput class compares an input string against a Hash Map of Airport Codes and their respective
- * row id's, which are cached from the database.
+ * The AirportInput class compares an input string against a Hash Map of Airport Codes and their
+ * respective row id's, which are cached from the database.
  */
-class AirportInput : public UserInput
-{
-public:
+class AirportInput : public UserInput {
+  public:
     AirportInput() = delete;
     AirportInput(const QString &input) : UserInput(input) {}
 
     /*!
-     * \brief An input is considered valid if it can be matched to an ICAO code present in the database
+     * \brief An input is considered valid if it can be matched to an ICAO code present in the
+     * database
      */
     bool isValid() const override;
 
@@ -30,7 +30,6 @@ public:
      * cache is returned, otherwise an empty QString.
      */
     QString fixup() const override;
-
 };
 
 #endif // AIRPORTINPUT_H

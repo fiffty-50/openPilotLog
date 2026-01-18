@@ -22,13 +22,13 @@
 #include "src/database/databasetypes.h"
 
 struct AAircraftEntry : public AEntry {
-public:
+  public:
     AAircraftEntry();
     AAircraftEntry(RowId_T row_id);
     AAircraftEntry(OPL::RowData_T table_data);
 
-    AAircraftEntry(const AAircraftEntry& te) = default;
-    AAircraftEntry& operator=(const AAircraftEntry& te) = default;
+    AAircraftEntry(const AAircraftEntry &te)            = default;
+    AAircraftEntry &operator=(const AAircraftEntry &te) = default;
 };
 
 #endif // AAIRCRAFTENTRY_H

@@ -18,27 +18,26 @@
 #ifndef DEBUGWIDGET_H
 #define DEBUGWIDGET_H
 
-#include <QWidget>
 #include <QDir>
-#include <QStandardPaths>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
+#include <QStandardPaths>
+#include <QWidget>
 
 namespace Ui {
 class DebugWidget;
 }
 
-class DebugWidget : public QWidget
-{
+class DebugWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit DebugWidget(QWidget *parent = nullptr);
     ~DebugWidget();
 
-private slots:
+  private slots:
     void on_resetUserTablesPushButton_clicked();
 
     void on_resetDatabasePushButton_clicked();
@@ -59,13 +58,13 @@ private slots:
 
     void on_pushButton_clicked();
 
-private:
+  private:
     Ui::DebugWidget *ui;
 
     bool downloadComplete = false;
 
-protected:
-    void changeEvent(QEvent* event) override;
+  protected:
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // DEBUGWIDGET_H

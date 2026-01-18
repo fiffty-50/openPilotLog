@@ -2,8 +2,7 @@
 #define IMPORTCREWLOUNGE_H
 #include <QtCore>
 
-namespace ImportCrewlounge
-{
+namespace ImportCrewlounge {
 void exec(const QString &csv_file_path);
 };
 

@@ -19,8 +19,7 @@
 
 #include <QCryptographicHash>
 
-
-//namespace
+// namespace
 //{
 
 const QString RunGuard::generateKeyHash(const QString &key, const QString &salt)
@@ -36,36 +35,28 @@ const QString RunGuard::generateKeyHash(const QString &key, const QString &salt)
 
 //}
 
-
-RunGuard::RunGuard(const QString &key )
-    : key(key )
-    , memLockKey(generateKeyHash(key, "_memLockKey" ))
-    , sharedmemKey(generateKeyHash(key, "_sharedmemKey" ))
-    , sharedMem(sharedmemKey )
-    , memLock(memLockKey, 1 )
+RunGuard::RunGuard(const QString &key)
+    : key(key), memLockKey(generateKeyHash(key, "_memLockKey")),
+      sharedmemKey(generateKeyHash(key, "_sharedmemKey")), sharedMem(sharedmemKey),
+      memLock(memLockKey, 1)
 {
     memLock.acquire();
     {
-        QSharedMemory fix(sharedmemKey );    // Fix for *nix: http://habrahabr.ru/post/173281/
+        QSharedMemory fix(sharedmemKey); // Fix for *nix: http://habrahabr.ru/post/173281/
         fix.attach();
     }
     memLock.release();
 }
 
-RunGuard::~RunGuard()
-{
-    release();
-}
+RunGuard::~RunGuard() { release(); }
 
 bool RunGuard::isAnotherRunning()
 {
-    if (sharedMem.isAttached())
-        return false;
+    if (sharedMem.isAttached()) return false;
 
     memLock.acquire();
     const bool isRunning = sharedMem.attach();
-    if (isRunning )
-        sharedMem.detach();
+    if (isRunning) sharedMem.detach();
     memLock.release();
 
     return isRunning;
@@ -73,14 +64,13 @@ bool RunGuard::isAnotherRunning()
 
 bool RunGuard::tryToRun()
 {
-    if (isAnotherRunning())  // Extra check
+    if (isAnotherRunning()) // Extra check
         return false;
 
     memLock.acquire();
-    const bool result = sharedMem.create(sizeof(quint64 ));
+    const bool result = sharedMem.create(sizeof(quint64));
     memLock.release();
-    if (!result )
-    {
+    if (!result) {
         release();
         return false;
     }
@@ -91,7 +81,6 @@ bool RunGuard::tryToRun()
 void RunGuard::release()
 {
     memLock.acquire();
-    if (sharedMem.isAttached())
-        sharedMem.detach();
+    if (sharedMem.isAttached()) sharedMem.detach();
     memLock.release();
 }

@@ -18,24 +18,24 @@
 #include "apilotentry.h"
 #include "src/opl.h"
 
-APilotEntry::APilotEntry()
-    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_PILOTS, 0))
-{}
+APilotEntry::APilotEntry() : AEntry::AEntry(DataPosition(OPL::Db::TABLE_PILOTS, 0)) {}
 
 APilotEntry::APilotEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(OPL::Db::TABLE_PILOTS, row_id))
-{}
+{
+}
 
 APilotEntry::APilotEntry(RowData_T table_data)
     : AEntry::AEntry(DataPosition(OPL::Db::TABLE_PILOTS, 0), table_data)
-{}
+{
+}
 
 const QString APilotEntry::name()
 {
-    if (tableData.isEmpty())
-        return QString();
+    if (tableData.isEmpty()) return QString();
 
-    return tableData.value(OPL::Db::PILOTS_LASTNAME).toString() + ", "
+    return tableData.value(OPL::Db::PILOTS_LASTNAME).toString() +
+           ", "
            //+tableData.value(OPL::Db::PILOTS_FIRSTNAME).toString().left(1) + '.';
-           +tableData.value(OPL::Db::PILOTS_FIRSTNAME).toString();
+           + tableData.value(OPL::Db::PILOTS_FIRSTNAME).toString();
 }

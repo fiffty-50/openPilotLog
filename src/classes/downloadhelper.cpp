@@ -20,45 +20,34 @@
 
 DownloadHelper::DownloadHelper() : QObject(nullptr)
 {
-    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(downloadFinished(QNetworkReply*)));
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply *)), this,
+                     SLOT(downloadFinished(QNetworkReply *)));
 }
 
-DownloadHelper::~DownloadHelper()
-{
+DownloadHelper::~DownloadHelper() {}
 
-}
+void DownloadHelper::setTarget(const QUrl &value) { this->target = value; }
 
-void DownloadHelper::setTarget(const QUrl &value)
-{
-    this->target = value;
-}
-
-void DownloadHelper::setFileName(const QString &value)
-{
-    this->fileName = value;
-}
+void DownloadHelper::setFileName(const QString &value) { this->fileName = value; }
 
 void DownloadHelper::download()
 {
     QNetworkRequest request(target);
     DEB << "Downloading from: " << target.toString();
 
-    QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    QObject::connect(manager.get(request), SIGNAL(downloadProgress(qint64, qint64)), this,
+                     SLOT(downloadProgress(qint64, qint64)));
 }
-
 
 void DownloadHelper::downloadProgress(qint64 received, qint64 total)
 {
-    //DEB << "Received " << received << " bytes of " << total;
+    // DEB << "Received " << received << " bytes of " << total;
 }
-
-
 
 void DownloadHelper::downloadFinished(QNetworkReply *data)
 {
     QFile localFile(fileName);
-    if (!localFile.open(QIODevice::WriteOnly))
-        return;
+    if (!localFile.open(QIODevice::WriteOnly)) return;
     const QByteArray sdata = data->readAll();
     localFile.write(sdata);
     localFile.close();
@@ -69,7 +58,8 @@ void DownloadHelper::downloadFinished(QNetworkReply *data)
 
 /* usage:
  *
- *  auto dl = new Download(); // QNetworkAccessManager is asynchronous, so it needs an event loop to do any downloading
+ *  auto dl = new Download(); // QNetworkAccessManager is asynchronous, so it needs an event loop to
+ * do any downloading
  *  dl->setTarget(QUrl("https://raw.githubusercontent.com/fiffty-50/openpilotlog/master/README.md"));
  *  dl->setFileName("out.md");
  *  dl->download();

@@ -20,7 +20,8 @@
 
 StyledTimeDelegate::StyledTimeDelegate(const OPL::DateTimeFormat &format, QObject *parent)
     : QStyledItemDelegate{parent}, m_format(format)
-{}
+{
+}
 
 QString StyledTimeDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {

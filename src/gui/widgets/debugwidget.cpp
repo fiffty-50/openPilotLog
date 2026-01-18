@@ -16,14 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "debugwidget.h"
+#include "src/classes/downloadhelper.h"
+#include "src/classes/settings.h"
+#include "src/database/database.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/opl.h"
+#include "src/testing/atimer.h"
 #include "ui_debugwidget.h"
 #include <QtGlobal>
-#include "src/classes/downloadhelper.h"
-#include "src/database/database.h"
-#include "src/testing/atimer.h"
-#include "src/classes/settings.h"
 
 void DebugWidget::on_debugPushButton_clicked()
 {
@@ -53,13 +53,11 @@ void DebugWidget::on_debugPushButton_clicked()
     // NewFlightDialog nfd(flight_data, this);
 }
 
-DebugWidget::DebugWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DebugWidget)
+DebugWidget::DebugWidget(QWidget *parent) : QWidget(parent), ui(new Ui::DebugWidget)
 {
     ui->setupUi(this);
-    for (const auto& table : DB->getTableNames()) {
-        if( table != "sqlite_sequence") {
+    for (const auto &table : DB->getTableNames()) {
+        if (table != "sqlite_sequence") {
             ui->tableComboBox->addItem(table);
         }
     }
@@ -67,19 +65,17 @@ DebugWidget::DebugWidget(QWidget *parent) :
     ui->debug2LineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
 }
 
-DebugWidget::~DebugWidget()
-{
-    delete ui;
-}
+DebugWidget::~DebugWidget() { delete ui; }
 
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
     ATimer timer(this);
-    if (DB->resetUserData()){
+    if (DB->resetUserData()) {
         LOG << "Database successfully reset";
         emit DB->dataBaseUpdated(OPL::DbTable::Any);
-    } else
-        LOG <<"Errors have occurred. Check console for Debug output. ";
+    }
+    else
+        LOG << "Errors have occurred. Check console for Debug output. ";
     Settings::resetToDefaults();
 }
 
@@ -93,12 +89,12 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         return;
     }
 
-
     // Download templates
     QString branch_name = ui->branchLineEdit->text();
 
     // Create url string
-    auto template_url_string = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    auto template_url_string =
+        QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
@@ -107,10 +103,10 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     // Download json files
-    for (const auto& table_name : template_table_names) {
+    for (const auto &table_name : template_table_names) {
         QEventLoop loop;
-        DownloadHelper* dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
+        DownloadHelper *dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -119,14 +115,13 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
         QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
-        if (downloaded_file.size() == 0)
-            LOG << "ssl/network error";
+        if (downloaded_file.size() == 0) LOG << "ssl/network error";
     }
     // Download checksum files
-    for (const auto& table : template_table_names) {
+    for (const auto &table : template_table_names) {
         QEventLoop loop;
-        DownloadHelper* dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
+        DownloadHelper *dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
         dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
 
@@ -137,8 +132,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
         loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
         QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
-        if (downloaded_file.size() == 0)
-            LOG << "ssl/network error";
+        if (downloaded_file.size() == 0) LOG << "ssl/network error";
     }
     // Create Database
     if (!DB->createSchema()) {
@@ -148,20 +142,16 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
 
     // Load ressources
     bool use_ressource_data = false; // do not use local data, download from github
-    if(!DB->importTemplateData(use_ressource_data)) {
+    if (!DB->importTemplateData(use_ressource_data)) {
         WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-             .arg(DB->lastError.text()));
-        return ;
+                 .arg(DB->lastError.text()));
+        return;
     }
 
     DB->connect();
-
 }
 
-void DebugWidget::downloadFinished()
-{
-
-}
+void DebugWidget::downloadFinished() {}
 
 void DebugWidget::on_fillUserDataPushButton_clicked()
 {
@@ -209,10 +199,9 @@ void DebugWidget::on_fillUserDataPushButton_clicked()
 
 void DebugWidget::on_selectCsvPushButton_clicked()
 {
-    auto fileName = QFileDialog::getOpenFileName(this,
-                                                 tr("Open CSV File for import"),
-                                                 OPL::Paths::directory(OPL::Paths::Templates).absolutePath(),
-                                                 tr("CSV files (*.csv)"));
+    auto fileName = QFileDialog::getOpenFileName(
+        this, tr("Open CSV File for import"),
+        OPL::Paths::directory(OPL::Paths::Templates).absolutePath(), tr("CSV files (*.csv)"));
     ui->importCsvLineEdit->setText(fileName);
 }
 
@@ -222,16 +211,14 @@ void DebugWidget::on_importCsvPushButton_clicked()
     /*
     ATimer timer(this);
     auto file = QFileInfo(ui->importCsvLineEdit->text());
-    DEB << "File exists/is file:" << file.exists() << file.isFile() << " Path:" << file.absoluteFilePath();
+    DEB << "File exists/is file:" << file.exists() << file.isFile() << " Path:" <<
+    file.absoluteFilePath();
 
     if (file.exists() && file.isFile()) {
 
-        if (DataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()), ui->tableComboBox->currentText())) {
-            QMessageBox message_box(this);
-            message_box.setText("Data inserted successfully.");
-            message_box.exec();
-        } else {
-            QMessageBox message_box(this);
+        if (DataBaseSetup::commitData(aReadCsv(file.absoluteFilePath()),
+    ui->tableComboBox->currentText())) { QMessageBox message_box(this); message_box.setText("Data
+    inserted successfully."); message_box.exec(); } else { QMessageBox message_box(this);
             message_box.setText("Errors have ocurred. Check console for details.");
             message_box.exec();
         }
@@ -246,8 +233,7 @@ void DebugWidget::on_importCsvPushButton_clicked()
 void DebugWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
-        if(event->type() == QEvent::LanguageChange)
-            ui->retranslateUi(this);
+        if (event->type() == QEvent::LanguageChange) ui->retranslateUi(this);
 }
 
 /* //Comparing two functions template
@@ -271,8 +257,9 @@ void DebugWidget::changeEvent(QEvent *event)
         time2 = timer.timeNow();
     }
 
-    DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << " milliseconds.");
-    DEB << "Second block executed " << number_of_runs << " times for a total of " << time2 << " milliseconds.");
+    DEB << "First block executed " << number_of_runs << " times for a total of " << time1 << "
+   milliseconds."); DEB << "Second block executed " << number_of_runs << " times for a total of " <<
+   time2 << " milliseconds.");
 */
 
 /*
@@ -282,7 +269,6 @@ void DebugWidget::changeEvent(QEvent *event)
  *   DEB << QT_VERSION_MAJOR << QT_VERSION_MINOR << "Less than 5.12";
  * #endif
  */
-
 
 void DebugWidget::on_debugLineEdit_editingFinished()
 {
@@ -295,16 +281,10 @@ void DebugWidget::on_debugLineEdit_editingFinished()
     // }
 }
 
-
-void DebugWidget::on_debug2LineEdit_editingFinished()
-{
-
-}
-
+void DebugWidget::on_debug2LineEdit_editingFinished() {}
 
 void DebugWidget::on_pushButton_clicked()
 {
     Settings::resetToDefaults();
     Settings::setSetupCompleted(false);
 }
-

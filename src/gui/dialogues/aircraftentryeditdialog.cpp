@@ -18,8 +18,7 @@
 #include "aircraftentryeditdialog.h"
 #include "src/database/database.h"
 
-AircraftEntryEditDialog::AircraftEntryEditDialog(QWidget *parent)
-    : EntryEditDialog(0, parent)
+AircraftEntryEditDialog::AircraftEntryEditDialog(QWidget *parent) : EntryEditDialog(0, parent)
 {
     init();
 }
@@ -34,85 +33,85 @@ AircraftEntryEditDialog::AircraftEntryEditDialog(int row_id, QWidget *parent)
 void AircraftEntryEditDialog::init()
 {
     // Main Layout
-    gridLayout = new QGridLayout(this);
-    int row = 0;
-    constexpr int firstCol = 0;
-    constexpr int secondCol = 1;
-    constexpr int singleSpan = 1;
+    gridLayout                  = new QGridLayout(this);
+    int row                     = 0;
+    constexpr int firstCol      = 0;
+    constexpr int secondCol     = 1;
+    constexpr int singleSpan    = 1;
     constexpr int spanRemaining = -1;
 
     // Add widgets to first and second column, advance to next row
-    auto addTwoWidgets = [&](QWidget* left, QWidget* right) {
+    auto addTwoWidgets = [&](QWidget *left, QWidget *right) {
         gridLayout->addWidget(left, row, firstCol, singleSpan, singleSpan);
         gridLayout->addWidget(right, row, secondCol, singleSpan, spanRemaining);
         row++;
     };
 
-    // Row 
-    makeLabel = new QLabel(this);
+    // Row
+    makeLabel    = new QLabel(this);
     makeLineEdit = new QLineEdit(this);
     addTwoWidgets(makeLabel, makeLineEdit);
 
-    // Row 
-    modelLabel = new QLabel(this);
+    // Row
+    modelLabel    = new QLabel(this);
     modelLineEdit = new QLineEdit(this);
     addTwoWidgets(modelLabel, modelLineEdit);
 
-    // Row 
-    variantLabel = new QLabel(this);
+    // Row
+    variantLabel    = new QLabel(this);
     variantLineEdit = new QLineEdit(this);
     addTwoWidgets(variantLabel, variantLineEdit);
 
-    // Row 
-    icaoDesignatorLabel = new QLabel(this);
+    // Row
+    icaoDesignatorLabel    = new QLabel(this);
     icaoDesignatorLineEdit = new QLineEdit(this);
     addTwoWidgets(icaoDesignatorLabel, icaoDesignatorLineEdit);
 
-    // Row 
-    engineTypeLabel = new QLabel(this);
+    // Row
+    engineTypeLabel    = new QLabel(this);
     engineTypeComboBox = new QComboBox(this);
     addTwoWidgets(engineTypeLabel, engineTypeComboBox);
 
-    // Row 
-    multiEngineLabel = new QLabel(this);
+    // Row
+    multiEngineLabel    = new QLabel(this);
     multiEngineComboBox = new QComboBox(this);
     addTwoWidgets(multiEngineLabel, multiEngineComboBox);
 
     // Row
-    multiPilotLabel = new QLabel(this);
+    multiPilotLabel    = new QLabel(this);
     multiPilotComboBox = new QComboBox(this);
     addTwoWidgets(multiPilotLabel, multiPilotComboBox);
-     
-    // Row 
-    classLabel = new QLabel(this);
+
+    // Row
+    classLabel    = new QLabel(this);
     classComboBox = new QComboBox(this);
     addTwoWidgets(classLabel, classComboBox);
 
-    // Row 
-    subClassLabel = new QLabel(this);
+    // Row
+    subClassLabel    = new QLabel(this);
     subClassComboBox = new QComboBox(this);
     addTwoWidgets(subClassLabel, subClassComboBox);
 
-    // Row 
-    wakeCategoryLabel = new QLabel(this);
+    // Row
+    wakeCategoryLabel    = new QLabel(this);
     wakeCategoryComboBox = new QComboBox(this);
     addTwoWidgets(wakeCategoryLabel, wakeCategoryComboBox);
 
-    // Row 
-    typeRatingLabel = new QLabel(this);
+    // Row
+    typeRatingLabel    = new QLabel(this);
     typeRatingLineEdit = new QLineEdit(this);
     addTwoWidgets(typeRatingLabel, typeRatingLineEdit);
 
-    // Row 
-    remarksLabel = new QLabel(this);
+    // Row
+    remarksLabel    = new QLabel(this);
     remarksTextEdit = new QPlainTextEdit(this);
     addTwoWidgets(remarksLabel, remarksTextEdit);
 
-    // Row 
+    // Row
     buttonBox = new QDialogButtonBox(this);
-    buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
+    buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel |
+                                  QDialogButtonBox::StandardButton::Ok);
     gridLayout->addWidget(buttonBox, row, firstCol, singleSpan, spanRemaining);
-
 
     retranslateUi();
     setupSlots();
@@ -121,10 +120,9 @@ void AircraftEntryEditDialog::init()
 void AircraftEntryEditDialog::retranslateUi()
 {
 
-    m_rowId == 0 ?
-        this->setWindowTitle(tr("Add New Aircraft")) :
-        this->setWindowTitle(tr("Edit Aircraft"));
-    
+    m_rowId == 0 ? this->setWindowTitle(tr("Add New Aircraft"))
+                 : this->setWindowTitle(tr("Edit Aircraft"));
+
     makeLabel->setText(tr("Make"));
     modelLabel->setText(tr("Model"));
     variantLabel->setText(tr("Variant"));
@@ -136,7 +134,6 @@ void AircraftEntryEditDialog::retranslateUi()
     typeRatingLabel->setText(tr("Type Rating"));
     remarksLabel->setText(tr("Remarks"));
 
-
     OPL::AircraftEntry::setupEngineTypeComboBox(engineTypeComboBox);
     OPL::AircraftEntry::setupAircraftClassComboBox(classComboBox);
     OPL::AircraftEntry::setupAircraftSubClassComboBox(subClassComboBox);
@@ -147,9 +144,9 @@ void AircraftEntryEditDialog::retranslateUi()
 
 void AircraftEntryEditDialog::setupSlots()
 {
-    QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &AircraftEntryEditDialog::on_accepted);
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, this,
+                     &AircraftEntryEditDialog::on_accepted);
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
 }
 
 void AircraftEntryEditDialog::loadAircraftData(int rowId)
@@ -157,7 +154,7 @@ void AircraftEntryEditDialog::loadAircraftData(int rowId)
     const auto entry = DB->getAircraftEntry(rowId);
     DEB << "Loading aircraft entry data for row ID:" << rowId;
     DEB << entry;
-    
+
     makeLineEdit->setText(entry.getMake());
     modelLineEdit->setText(entry.getModel());
     variantLineEdit->setText(entry.getVariant());
@@ -168,20 +165,20 @@ void AircraftEntryEditDialog::loadAircraftData(int rowId)
     DEB << "Setting is multi-engine to:" << entry.getIsMultiEngine();
     multiEngineComboBox->setCurrentIndex(entry.getIsMultiEngine() ? 1 : 0);
     multiPilotComboBox->setCurrentIndex(entry.getIsMultiPilot() ? 1 : 0);
-    
+
     OPL::AircraftEntry::EngineType engineType = entry.getEngineType();
     {
         int engineTypeIndex = engineTypeComboBox->findData(static_cast<int>(engineType));
-        if( engineTypeIndex == -1 ) {
+        if (engineTypeIndex == -1) {
             LOG << QStringLiteral("Engine type not found in combo box.");
         }
         engineTypeComboBox->setCurrentIndex(engineTypeIndex);
     }
-    
+
     OPL::AircraftEntry::AircraftClass aircraftClass = entry.getClass();
     {
         int classIndex = classComboBox->findData(static_cast<int>(aircraftClass));
-        if( classIndex == -1 ) {
+        if (classIndex == -1) {
             LOG << QStringLiteral("Aircraft class not found in combo box.");
         }
         classComboBox->setCurrentIndex(classIndex);
@@ -190,7 +187,7 @@ void AircraftEntryEditDialog::loadAircraftData(int rowId)
     OPL::AircraftEntry::AircraftSubClass aircraftSubClass = entry.getSubClass();
     {
         int subClassIndex = subClassComboBox->findData(static_cast<int>(aircraftSubClass));
-        if( subClassIndex == -1 ) {
+        if (subClassIndex == -1) {
             LOG << QStringLiteral("Aircraft subclass not found in combo box.");
         }
         subClassComboBox->setCurrentIndex(subClassIndex);
@@ -199,8 +196,8 @@ void AircraftEntryEditDialog::loadAircraftData(int rowId)
     OPL::AircraftEntry::WakeCategory wakeCategory = entry.getWakeCategory();
     {
         int wakeCategoryIndex = wakeCategoryComboBox->findData(static_cast<int>(wakeCategory));
-        if( wakeCategoryIndex == -1 ) {
-            LOG << QStringLiteral("Wake category not found in combo box."); 
+        if (wakeCategoryIndex == -1) {
+            LOG << QStringLiteral("Wake category not found in combo box.");
         }
         wakeCategoryComboBox->setCurrentIndex(wakeCategoryIndex);
     }
@@ -211,13 +208,15 @@ void AircraftEntryEditDialog::on_accepted()
     auto entry = OPL::AircraftEntry();
     entry.setRowId(m_rowId);
 
-    if(!entry.setMake(makeLineEdit->text())) {
-        WARN(tr("Unable to set aircraft make (manufacturer)<br><br>The following error has occurred:<br>%1")
-             .arg(DB->lastError.text()));
+    if (!entry.setMake(makeLineEdit->text())) {
+        WARN(tr("Unable to set aircraft make (manufacturer)<br><br>The following error has "
+                "occurred:<br>%1")
+                 .arg(DB->lastError.text()));
     }
-    if(!entry.setModel(modelLineEdit->text())) {
-        WARN(tr("Unable to set aircraft model (required)<br><br>The following error has occurred:<br>%1")
-             .arg(DB->lastError.text()));
+    if (!entry.setModel(modelLineEdit->text())) {
+        WARN(tr("Unable to set aircraft model (required)<br><br>The following error has "
+                "occurred:<br>%1")
+                 .arg(DB->lastError.text()));
     }
     entry.setVariant(variantLineEdit->text());
     entry.setIcaoDesignator(icaoDesignatorLineEdit->text());
@@ -228,38 +227,31 @@ void AircraftEntryEditDialog::on_accepted()
     entry.setIsMultiPilot(multiPilotComboBox->currentIndex() == 1);
 
     OPL::AircraftEntry::EngineType engineType =
-        static_cast<OPL::AircraftEntry::EngineType>(
-            engineTypeComboBox->currentData().toInt()
-        );
+        static_cast<OPL::AircraftEntry::EngineType>(engineTypeComboBox->currentData().toInt());
     entry.setEngineType(engineType);
 
     OPL::AircraftEntry::AircraftClass aircraftClass =
-        static_cast<OPL::AircraftEntry::AircraftClass>(
-            classComboBox->currentData().toInt()
-        );
+        static_cast<OPL::AircraftEntry::AircraftClass>(classComboBox->currentData().toInt());
     entry.setClass(aircraftClass);
 
     OPL::AircraftEntry::AircraftSubClass aircraftSubClass =
-        static_cast<OPL::AircraftEntry::AircraftSubClass>(
-            subClassComboBox->currentData().toInt()
-        );
+        static_cast<OPL::AircraftEntry::AircraftSubClass>(subClassComboBox->currentData().toInt());
     entry.setSubClass(aircraftSubClass);
 
     OPL::AircraftEntry::WakeCategory wakeCategory =
-        static_cast<OPL::AircraftEntry::WakeCategory>(
-            wakeCategoryComboBox->currentData().toInt()
-        );
+        static_cast<OPL::AircraftEntry::WakeCategory>(wakeCategoryComboBox->currentData().toInt());
     entry.setWakeCategory(wakeCategory);
-    
 
     DEB << "Saving aircraft entry:" << entry.getPosition();
     DEB << entry;
 
-    if(!DB->commit(entry)) {
-        WARN(tr("Unable to save aircraft entry to database<br><br>The following error has occurred:<br>%1")
-             .arg(DB->lastError.text()));
+    if (!DB->commit(entry)) {
+        WARN(tr("Unable to save aircraft entry to database<br><br>The following error has "
+                "occurred:<br>%1")
+                 .arg(DB->lastError.text()));
         return;
-    } else {
+    }
+    else {
         QDialog::accept();
     }
 }

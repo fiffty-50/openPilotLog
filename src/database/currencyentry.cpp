@@ -21,8 +21,8 @@ namespace OPL {
 
 CurrencyEntry::CurrencyEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Currencies, row_id, row_data, &FIELDS)
-{}
-
+{
+}
 
 void CurrencyEntry::setName(const QString &displayName)
 {
@@ -31,10 +31,7 @@ void CurrencyEntry::setName(const QString &displayName)
     setData(data);
 }
 
-const QString CurrencyEntry::getName() const
-{
-    return getData().value(NAME).toString();
-}
+const QString CurrencyEntry::getName() const { return getData().value(NAME).toString(); }
 
 void CurrencyEntry::setExpiryDate(const Date &date)
 {

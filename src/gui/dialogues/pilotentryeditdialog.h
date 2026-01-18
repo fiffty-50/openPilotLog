@@ -18,23 +18,23 @@
 #ifndef NEWPILOT_H
 #define NEWPILOT_H
 
-#include <QDialog>
-#include <QMessageBox>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
+#include "src/database/pilotentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
 #include <QCompleter>
+#include <QDialog>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include "src/database/pilotentry.h"
-#include "src/gui/dialogues/entryeditdialog.h"
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 /*!
  * \brief The PilotEntryEditDialog enables adding new entries to the pilot table in the database
- * \details The PilotEntryEditDialog offers two constructors, one is used to create a new Pilot Entry
- * from scratch, while the other one is used to edit an existing entry. The existing entry
- * is identified by its ROW ID in the database and is then retreived, its data being used
- * to pre-fill the UI to enable editing the existing data.
+ * \details The PilotEntryEditDialog offers two constructors, one is used to create a new Pilot
+ * Entry from scratch, while the other one is used to edit an existing entry. The existing entry is
+ * identified by its ROW ID in the database and is then retreived, its data being used to pre-fill
+ * the UI to enable editing the existing data.
  *
  * A QCompleter provides in-line completion for the company field.
  *
@@ -42,36 +42,33 @@
  * come in all different forms and shapes around the world. In order to maintain a maximum
  * amount of flexibility, any unicode input is allowed.
  */
-class PilotEntryEditDialog : public EntryEditDialog
-{
+class PilotEntryEditDialog : public EntryEditDialog {
     Q_OBJECT
-public:
+  public:
     explicit PilotEntryEditDialog(QString userInput = QString(), QWidget *parent = nullptr);
     explicit PilotEntryEditDialog(int rowId, QWidget *parent = nullptr);
     ~PilotEntryEditDialog() = default;
 
-
-
-
-private slots:
+  private slots:
     void on_buttonBox_accepted();
-private:
+
+  private:
     // UI Elements
     QGridLayout *gridLayout;
-    QLabel 		*nameLabel;
-    QLineEdit 	*nameLineEdit;
-    QLabel 		*companyLabel;
-    QLineEdit 	*companyLineEdit;
-    QLabel 		*aliasLabel;
-    QLineEdit 	*aliasLineEdit;
-    QLabel 		*employeeidLabel;
-    QLineEdit 	*employeeidLineEdit;
-    QLabel 		*phoneLabel;
-    QLineEdit 	*phoneLineEdit;
-    QLabel 		*emailLabel;
-    QLineEdit 	*emailLineEdit;
-    QLabel 		*remarksLabel;
-    QLineEdit 	*remarksLineEdit;
+    QLabel *nameLabel;
+    QLineEdit *nameLineEdit;
+    QLabel *companyLabel;
+    QLineEdit *companyLineEdit;
+    QLabel *aliasLabel;
+    QLineEdit *aliasLineEdit;
+    QLabel *employeeidLabel;
+    QLineEdit *employeeidLineEdit;
+    QLabel *phoneLabel;
+    QLineEdit *phoneLineEdit;
+    QLabel *emailLabel;
+    QLineEdit *emailLineEdit;
+    QLabel *remarksLabel;
+    QLineEdit *remarksLineEdit;
     QDialogButtonBox *buttonBox;
 
     // Member Variables
@@ -93,11 +90,9 @@ private:
     void submitForm();
 
     // EntryEditDialog interface
-public:
+  public:
     virtual bool deleteEntry(int rowId) override;
     virtual void loadEntry(int rowId) override;
-
 };
-
 
 #endif // NEWPILOT_H

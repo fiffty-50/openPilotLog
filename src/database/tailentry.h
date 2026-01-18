@@ -29,9 +29,8 @@ namespace OPL {
  * in the aircraft_types database. A tail is a specific instance
  * of an aircraft type, and is identified by its alphanumeric registration (tail number).
  */
-class TailEntry : public Row
-{
-public:
+class TailEntry : public Row {
+  public:
     TailEntry();
     TailEntry(const RowData_T &row_data);
     TailEntry(int row_id, const RowData_T &row_data);
@@ -42,32 +41,38 @@ public:
     bool isValid() const override;
 
     // getters and setters
-    
 
     /*!
      * \brief Get the aircrafts registration (tail number)
      */
     QString getRegistration() const { return m_rowData.value(REGISTRATION).toString(); }
-    
+
     /*!
      * \brief Get the company the aircraft is operated by
      */
     QString getCompany() const { return m_rowData.value(COMPANY).toString(); }
-    
+
     /*!
      * \brief Get any remarks associated with the tail entry
      */
     QString getRemarks() const { return m_rowData.value(REMARKS).toString(); }
-    
+
     /*!
      * \brief Get the aircrafts in-service date. This value must not be missing or invalid.
      */
-    QDate getInServiceDate() const { return QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()); }
-    
+    QDate getInServiceDate() const
+    {
+        return QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt());
+    }
+
     /*!
-     * \brief Get the aircrafts out-of-service date. This value may be invalid (null) for indefinite validity.
+     * \brief Get the aircrafts out-of-service date. This value may be invalid (null) for indefinite
+     * validity.
      */
-    QDate getOutOfServiceDate() const { return QDate::fromJulianDay(m_rowData.value(OUT_OF_SERVICE_DATE).toInt()); }
+    QDate getOutOfServiceDate() const
+    {
+        return QDate::fromJulianDay(m_rowData.value(OUT_OF_SERVICE_DATE).toInt());
+    }
 
     /*!
      * \brief Get the associated aircraft type id (foreign key to aircraft_types)
@@ -93,9 +98,10 @@ public:
      * \brief Set the aircrafts in-service date. This date must not be missing or invalid.
      */
     bool setInServiceDate(const QDate &date);
-    
+
     /*!
-     * \brief Set the aircrafts out-of-service date. This date may be invalid (null) for indefinite validity.
+     * \brief Set the aircrafts out-of-service date. This date may be invalid (null) for indefinite
+     * validity.
      */
     bool setOutOfServiceDate(const QDate &date);
 
@@ -106,24 +112,18 @@ public:
      */
     bool setTypeId(int typeId);
 
-private:
-    const static inline QString TABLE_NAME       = QStringLiteral("aircraft_tails");
-    const static inline QString ROWID            = QStringLiteral("tail_id");
-    const static inline QString TYPE_ID 		 = QStringLiteral("aircraft_type_id");
-    const static inline QString REGISTRATION     = QStringLiteral("registration");
-    const static inline QString COMPANY          = QStringLiteral("company");
-    const static inline QString REMARKS			 = QStringLiteral("remarks");
-    const static inline QString IN_SERVICE_DATE	 = QStringLiteral("in_service_jd");
+  private:
+    const static inline QString TABLE_NAME          = QStringLiteral("aircraft_tails");
+    const static inline QString ROWID               = QStringLiteral("tail_id");
+    const static inline QString TYPE_ID             = QStringLiteral("aircraft_type_id");
+    const static inline QString REGISTRATION        = QStringLiteral("registration");
+    const static inline QString COMPANY             = QStringLiteral("company");
+    const static inline QString REMARKS             = QStringLiteral("remarks");
+    const static inline QString IN_SERVICE_DATE     = QStringLiteral("in_service_jd");
     const static inline QString OUT_OF_SERVICE_DATE = QStringLiteral("out_of_service_jd");
 
-    const static inline QStringList FIELDS = {
-        TYPE_ID,
-        REGISTRATION,
-        COMPANY,
-        REMARKS,
-        IN_SERVICE_DATE,
-        OUT_OF_SERVICE_DATE
-    };
+    const static inline QStringList FIELDS = {TYPE_ID, REGISTRATION,    COMPANY,
+                                              REMARKS, IN_SERVICE_DATE, OUT_OF_SERVICE_DATE};
 };
 
 } // namespace OPL

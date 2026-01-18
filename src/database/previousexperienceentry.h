@@ -25,9 +25,8 @@ namespace OPL {
 /*!
  * \brief A Row representing an Airport entry. See Row class for details.
  */
-class PreviousExperienceEntry : public Row
-{
-public:
+class PreviousExperienceEntry : public Row {
+  public:
     PreviousExperienceEntry();
     PreviousExperienceEntry(const RowData_T &row_data);
     PreviousExperienceEntry(int row_id, const RowData_T &row_data);
@@ -35,24 +34,24 @@ public:
     bool isValid() const override { return false; }
 
     // these literals already exist in the FlightEntry class, so we can just copy them
-    static const inline auto TBLK           = OPL::FlightEntry::TBLK;
-    static const inline auto TSPSE          = OPL::FlightEntry::TSPSE;
-    static const inline auto TSPME          = OPL::FlightEntry::TSPME;
-    static const inline auto TMP            = OPL::FlightEntry::TMP;
-    static const inline auto TNIGHT         = OPL::FlightEntry::TNIGHT;
-    static const inline auto TIFR           = OPL::FlightEntry::TIFR;
-    static const inline auto TPIC           = OPL::FlightEntry::TPIC;
-    static const inline auto TPICUS         = OPL::FlightEntry::TPICUS;
-    static const inline auto TSIC           = OPL::FlightEntry::TSIC;
-    static const inline auto TDUAL          = OPL::FlightEntry::TDUAL;
-    static const inline auto TFI            = OPL::FlightEntry::TFI;
-    static const inline auto TSIM           = OPL::FlightEntry::TSIM;
-    static const inline auto TODAY          = OPL::FlightEntry::TODAY;
-    static const inline auto TONIGHT        = OPL::FlightEntry::TONIGHT;
-    static const inline auto LDGDAY         = OPL::FlightEntry::LDGDAY;
-    static const inline auto LDGNIGHT       = OPL::FlightEntry::LDGNIGHT;
+    static const inline auto TBLK     = OPL::FlightEntry::TBLK;
+    static const inline auto TSPSE    = OPL::FlightEntry::TSPSE;
+    static const inline auto TSPME    = OPL::FlightEntry::TSPME;
+    static const inline auto TMP      = OPL::FlightEntry::TMP;
+    static const inline auto TNIGHT   = OPL::FlightEntry::TNIGHT;
+    static const inline auto TIFR     = OPL::FlightEntry::TIFR;
+    static const inline auto TPIC     = OPL::FlightEntry::TPIC;
+    static const inline auto TPICUS   = OPL::FlightEntry::TPICUS;
+    static const inline auto TSIC     = OPL::FlightEntry::TSIC;
+    static const inline auto TDUAL    = OPL::FlightEntry::TDUAL;
+    static const inline auto TFI      = OPL::FlightEntry::TFI;
+    static const inline auto TSIM     = OPL::FlightEntry::TSIM;
+    static const inline auto TODAY    = OPL::FlightEntry::TODAY;
+    static const inline auto TONIGHT  = OPL::FlightEntry::TONIGHT;
+    static const inline auto LDGDAY   = OPL::FlightEntry::LDGDAY;
+    static const inline auto LDGNIGHT = OPL::FlightEntry::LDGNIGHT;
 
-private:
+  private:
     static const inline QStringList FIELDS = {};
 };
 

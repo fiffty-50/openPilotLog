@@ -20,7 +20,7 @@
 #include "src/opl.h"
 #include <QSqlQuery>
 
-namespace OPL{
+namespace OPL {
 
 void DatabaseCache::init()
 {
@@ -32,9 +32,8 @@ void DatabaseCache::init()
     updateAircraftTypes();
 
     // Listen to database for updates, reload cache if needed
-    QObject::connect(DB,   		   &OPL::Database::dataBaseUpdated,
-                     this,         &OPL::DatabaseCache::onDatabaseUpdated);
-
+    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
+                     &OPL::DatabaseCache::onDatabaseUpdated);
 }
 
 const IdMap DatabaseCache::fetchMap(MapType target)
@@ -65,7 +64,7 @@ const IdMap DatabaseCache::fetchMap(MapType target)
                                         "SELECT ROWID, make||' '||model||'-'||variant "
                                         "FROM aircraft_types "
                                         "WHERE variant IS NOT NULL"));
-break;
+        break;
     default:
         return {};
     }
@@ -99,17 +98,18 @@ const QStringList DatabaseCache::fetchList(ListType target)
                                         "WHERE variant IS NOT NULL"));
         break;
     case ListType::AirportCodes:
-        statement.append(QStringLiteral("WITH CurrentCode AS ( "
-                                            "SELECT "
-                                            "airport_code, "
-                                            "valid_from_jd, "
-                                            "valid_to_jd "
-                                            "FROM airport_codes "
-                                            "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
-                                            "AND valid_from_jd <= julianday('now')) "
-                                        "SELECT "
-                                        "airport_code "
-                                        "FROM CurrentCode "));
+        statement.append(
+            QStringLiteral("WITH CurrentCode AS ( "
+                           "SELECT "
+                           "airport_code, "
+                           "valid_from_jd, "
+                           "valid_to_jd "
+                           "FROM airport_codes "
+                           "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                           "AND valid_from_jd <= julianday('now')) "
+                           "SELECT "
+                           "airport_code "
+                           "FROM CurrentCode "));
         break;
     case ListType::Tails:
         statement.append(QStringLiteral("SELECT registration FROM aircraft_tails"));
@@ -147,7 +147,7 @@ void DatabaseCache::updateTails()
     for (auto &reg : aircraftTailsList) {
         // For the QCompleter list we want to enable "AB-CDE" as well as "ABCDE"
         // this solution is terrible. TODO -> create a QSortFilterProxyModel that ignores dashes
-        if(reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
+        if (reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
             QString copy = reg;
             reg.remove(QLatin1Char('-'));
             reg = copy + " (" + reg + QLatin1Char(')');
@@ -157,10 +157,10 @@ void DatabaseCache::updateTails()
 
 void DatabaseCache::updateAirports()
 {
-    airportsIataMap  = fetchMap(MapType::AirportCodesIata);
+    airportsIataMap = fetchMap(MapType::AirportCodesIata);
     convertIdMapToKeyMap(airportsIataMap, airportsIataKeyMap);
 
-    airportsIcaoMap  = fetchMap(MapType::AirportCodesIcao);
+    airportsIcaoMap = fetchMap(MapType::AirportCodesIcao);
     convertIdMapToKeyMap(airportsIcaoMap, airportsIcaoKeyMap);
 
     airportNamesMap = fetchMap(MapType::AirportNames);
@@ -179,7 +179,7 @@ void DatabaseCache::updatePilots()
 void DatabaseCache::updateAircraftTypes()
 {
     aircraftTypesList = fetchList(ListType::AircraftTypes);
-    aircraftTypesMap = fetchMap(MapType::AircraftTypes);
+    aircraftTypesMap  = fetchMap(MapType::AircraftTypes);
 
     convertIdMapToKeyMap(aircraftTypesMap, aircraftTypesKeyMap);
 }
@@ -209,24 +209,15 @@ void DatabaseCache::onDatabaseUpdated(const OPL::DbTable table)
     emit databaseCacheUpdated(table);
 }
 
-const IdMap &DatabaseCache::getAirportsMapICAO() const
-{
-    return airportsIcaoMap;
-}
+const IdMap &DatabaseCache::getAirportsMapICAO() const { return airportsIcaoMap; }
 
-const IdMap &DatabaseCache::getAirportsMapIATA() const
-{
-    return airportsIataMap;
-}
+const IdMap &DatabaseCache::getAirportsMapIATA() const { return airportsIataMap; }
 
-const IdMap &DatabaseCache::getPilotNamesMap() const
-{
-    return pilotNamesMap;
-}
+const IdMap &DatabaseCache::getPilotNamesMap() const { return pilotNamesMap; }
 
 const QStringList &DatabaseCache::getList(ListType type)
 {
-    switch(type) {
+    switch (type) {
     case ListType::PilotNames:
         return pilotNamesList;
         break;
@@ -248,7 +239,7 @@ const QStringList &DatabaseCache::getList(ListType type)
 
 const IdMap &DatabaseCache::getMap(MapType type)
 {
-    switch(type) {
+    switch (type) {
     case MapType::AirportCodesIcao:
         return airportsIcaoMap;
         break;
@@ -273,7 +264,7 @@ const IdMap &DatabaseCache::getMap(MapType type)
 
 const KeyMap &DatabaseCache::getKeyMap(MapType type)
 {
-    switch(type) {
+    switch (type) {
     case MapType::AirportCodesIcao:
         return airportsIcaoKeyMap;
         break;
@@ -294,7 +285,6 @@ const KeyMap &DatabaseCache::getKeyMap(MapType type)
         break;
     }
     Q_UNREACHABLE();
-
 }
 
 void DatabaseCache::convertIdMapToKeyMap(IdMap &idMap, KeyMap &keyMap)

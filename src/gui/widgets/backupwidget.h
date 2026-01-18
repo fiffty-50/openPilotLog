@@ -18,12 +18,11 @@
 #ifndef BACKUPWIDGET_H
 #define BACKUPWIDGET_H
 
-
-#include <QWidget>
-#include <QStandardItemModel>
 #include <QFileSystemModel>
 #include <QFileSystemWatcher>
+#include <QStandardItemModel>
 #include <QTableView>
+#include <QWidget>
 
 namespace Ui {
 class BackupWidget;
@@ -32,16 +31,17 @@ class BackupWidget;
 /*!
  * \brief The BackupWidget is the interface for the user to create and restore backups of the
  * database.
- * \details OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local backups
- * are automatically stored in a folder determined by OPL::Paths and automatically presented to the user in a List.
- * <b>Create Local backup</b> and <b>Restore Local Backup</b>. are convenient shortcuts.<br>
- * When using <b>Create External Backup</b>, the user will be asked where to save the backup file. This can be a pen drive, a cloud location or any other location of his choice.
- * This functionality can also be used to sync the database across devices. External backup files con be restored with <b>Restore external backup</b>.
+ * \details OpenPilotLog offers two kinds of backups: Local and External Backups.<br><br>Local
+ * backups are automatically stored in a folder determined by OPL::Paths and automatically presented
+ * to the user in a List. <b>Create Local backup</b> and <b>Restore Local Backup</b>. are convenient
+ * shortcuts.<br> When using <b>Create External Backup</b>, the user will be asked where to save the
+ * backup file. This can be a pen drive, a cloud location or any other location of his choice. This
+ * functionality can also be used to sync the database across devices. External backup files con be
+ * restored with <b>Restore external backup</b>.
  */
-class BackupWidget : public QWidget
-{
+class BackupWidget : public QWidget {
     Q_OBJECT
-public:
+  public:
     explicit BackupWidget(QWidget *parent = nullptr);
     ~BackupWidget();
 
@@ -55,7 +55,7 @@ public:
      */
     static const QString absoluteBackupPath();
 
-private slots:
+  private slots:
     void on_tableView_clicked(const QModelIndex &index);
 
     /*!
@@ -69,7 +69,8 @@ private slots:
     void on_restoreLocalPushButton_clicked();
 
     /*!
-     * \brief Deletes the selected backup from the local backup directory based on the user selection in the QTableView
+     * \brief Deletes the selected backup from the local backup directory based on the user
+     * selection in the QTableView
      */
     void on_deleteSelectedPushButton_clicked();
 
@@ -84,11 +85,12 @@ private slots:
     void on_restoreExternalPushButton_clicked();
 
     /*!
-     * \brief Opens a QMessageBox that outlines the different functions of the Backupwidget to the user.
+     * \brief Opens a QMessageBox that outlines the different functions of the Backupwidget to the
+     * user.
      */
     void on_createNewLogbookPushButton_clicked();
 
-private:
+  private:
     Ui::BackupWidget *ui;
 
     QStandardItemModel *model;
@@ -98,11 +100,11 @@ private:
 
     static constexpr int DATE_COLUMN = 4;
 
-protected:
+  protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
      */
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // BACKUPWIDGET_H

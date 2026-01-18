@@ -3,22 +3,19 @@
 
 namespace OPL {
 
-const bool Paths::setup() {
+const bool Paths::setup()
+{
     LOG << "Setting up directories at: " << basePath;
-        for(const auto& str : std::as_const(directories)){
+    for (const auto &str : std::as_const(directories)) {
         QDir dir(basePath + str);
-        if(!dir.exists()) {
-            if (!dir.mkpath(dir.absolutePath()))
-                return false;
+        if (!dir.exists()) {
+            if (!dir.mkpath(dir.absolutePath())) return false;
         }
     }
     return true;
 }
 
-const QDir Paths::directory(Directories location)
-{
-    return QDir(basePath + directories[location]);
-}
+const QDir Paths::directory(Directories location) { return QDir(basePath + directories[location]); }
 
 const QString Paths::path(Directories location)
 {

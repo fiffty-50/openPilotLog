@@ -20,9 +20,7 @@
 namespace OPL {
 
 Row::Row(DbTable table_name, const QList<QString> *fields)
-    : m_table(table_name)
-    , m_fields(fields)
-    , m_rowId(0)
+    : m_table(table_name), m_fields(fields), m_rowId(0)
 {
     // make sure all fields are correctly initialized to NULL
     const QVariant null = QVariant(QMetaType(QMetaType::QString));
@@ -31,44 +29,31 @@ Row::Row(DbTable table_name, const QList<QString> *fields)
     for (const auto &field : *m_fields) {
         m_rowData.insert(field, null);
     }
-};// Used for a new entry
+}; // Used for a new entry
 
-Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data, const QList<QString> *fields)
-    : m_table(table_name)
-    , m_rowId(row_id)
-    , m_rowData(row_data) {}
-
-const RowData_T &Row::getData() const
+Row::Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data,
+         const QList<QString> *fields)
+    : m_table(table_name), m_rowId(row_id), m_rowData(row_data)
 {
-    return m_rowData;
 }
 
-void Row::setData(const RowData_T &value)
-{
-    m_rowData = value;
-}
+const RowData_T &Row::getData() const { return m_rowData; }
 
-int Row::getRowId() const
-{
-    return m_rowId;
-}
+void Row::setData(const RowData_T &value) { m_rowData = value; }
 
-void Row::setRowId(int value)
-{
-    m_rowId = value;
-}
+int Row::getRowId() const { return m_rowId; }
 
-OPL::DbTable Row::getTable() const
-{
-    return m_table;
-}
+void Row::setRowId(int value) { m_rowId = value; }
+
+OPL::DbTable Row::getTable() const { return m_table; }
 
 const QString Row::getPosition() const
 {
-    return QString("Table: %1 / RowID: %2").arg(OPL::GLOBALS->getDbTableName(m_table), QString::number(m_rowId));
+    return QString("Table: %1 / RowID: %2")
+        .arg(OPL::GLOBALS->getDbTableName(m_table), QString::number(m_rowId));
 }
 
-//Used for debugging
+// Used for debugging
 OPL::Row::operator QString() const
 {
     if (!isValid()) {
@@ -77,7 +62,7 @@ OPL::Row::operator QString() const
     constexpr int columnWidth = 14;
     constexpr int itemsPerRow = 3;
 
-    const QString resetColor  = "\033[m";
+    const QString resetColor     = "\033[m";
     const QString highlightColor = "\033[35m";
 
     QString out;
@@ -88,23 +73,19 @@ OPL::Row::operator QString() const
     int itemCount = 0;
 
     for (auto it = m_rowData.cbegin(); it != m_rowData.cend(); ++it) {
-        const QString key = it.key();
+        const QString key   = it.key();
         const QString value = it.value().toString();
 
         QString paddedKey = key;
         paddedKey += QLatin1Char(':');
         paddedKey = paddedKey.leftJustified(columnWidth);
 
-        const QString displayVal = value.isEmpty() ? "-NULL-" : value;
+        const QString displayVal  = value.isEmpty() ? "-NULL-" : value;
         const QString paddedValue = displayVal.leftJustified(columnWidth);
 
-        out += "\t" % resetColor
-               % paddedKey
-               % highlightColor
-               % paddedValue;
+        out += "\t" % resetColor % paddedKey % highlightColor % paddedValue;
 
-        if (++itemCount % itemsPerRow == 0)
-            out += "\n";
+        if (++itemCount % itemsPerRow == 0) out += "\n";
     }
 
     out += "\n";
@@ -113,4 +94,3 @@ OPL::Row::operator QString() const
 }
 
 } // namespace OPL
-

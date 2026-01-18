@@ -3,12 +3,12 @@
 
 #include "userinput.h"
 
-class TailInput : public UserInput
-{
-public:
+class TailInput : public UserInput {
+  public:
     TailInput() = delete;
     TailInput(const QString &input) : UserInput(input) {}
-public:
+
+  public:
     bool isValid() const override;
     QString fixup() const override;
 };

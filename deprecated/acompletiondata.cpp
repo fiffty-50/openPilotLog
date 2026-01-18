@@ -11,13 +11,13 @@ void ACompletionData::init()
     // For tails, also provide completion for registration stripped of the '-' character
     QStringList tails_list = aDB->getCompletionList(DatabaseTarget::Registrations);
     for (auto &reg : tails_list) {
-        if(reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
+        if (reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
             QString copy = reg;
             reg.remove(QLatin1Char('-'));
             reg = copy + " (" + reg + QLatin1Char(')');
         }
     }
-    tailsList   = tails_list;
+    tailsList = tails_list;
 
     // retreive default data
     airportIcaoIdMap = aDB->getIdMap(DatabaseTarget::AirportIdentifierICAO);
@@ -43,12 +43,12 @@ void ACompletionData::update()
 
 void ACompletionData::updateTails()
 {
-    tailsIdMap  = aDB->getIdMap(DatabaseTarget::Registrations);
-    tailsList   = aDB->getCompletionList(DatabaseTarget::Registrations);
+    tailsIdMap = aDB->getIdMap(DatabaseTarget::Registrations);
+    tailsList  = aDB->getCompletionList(DatabaseTarget::Registrations);
 }
 
 void ACompletionData::updatePilots()
 {
-    pilotsIdMap  = aDB->getIdMap(DatabaseTarget::PilotNames);
-    pilotList    = aDB->getCompletionList(DatabaseTarget::PilotNames);
+    pilotsIdMap = aDB->getIdMap(DatabaseTarget::PilotNames);
+    pilotList   = aDB->getCompletionList(DatabaseTarget::PilotNames);
 }

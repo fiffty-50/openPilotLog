@@ -3,17 +3,16 @@
 #include "QtWidgets/qheaderview.h"
 #include "qgridlayout.h"
 #include "src/classes/easaftl.h"
+#include "src/classes/settings.h"
 #include "src/classes/styleddatedelegate.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/functions/statistics.h"
-#include "src/classes/settings.h"
 #include <QCalendarWidget>
 #include <QInputDialog>
 #include <QLabel>
 
-CurrencyWidget::CurrencyWidget(QWidget *parent)
-    : QWidget{parent}
+CurrencyWidget::CurrencyWidget(QWidget *parent) : QWidget{parent}
 {
     m_format = Settings::getDisplayFormat();
     setupModelAndView();
@@ -51,13 +50,13 @@ void CurrencyWidget::setupModelAndView()
 void CurrencyWidget::setupUI()
 {
     // create a 3-column grid layout
-    int colL = 0; // left column
-    int colM = 1; // middle column
-    int colR = 2; // right column
-    int allColSpan = 3; // span all columns
+    int colL          = 0; // left column
+    int colM          = 1; // middle column
+    int colR          = 2; // right column
+    int allColSpan    = 3; // span all columns
     int singleRowSpan = 1; // span only a single row
-    int row = 0;
-    auto gridLayout = new QGridLayout(this);
+    int row           = 0;
+    auto gridLayout   = new QGridLayout(this);
 
     // Take-off and Landing Currency
     gridLayout->addWidget(takeOffLandingHeaderLabel, row, colM, Qt::AlignCenter);
@@ -110,30 +109,23 @@ void CurrencyWidget::setupUI()
     calendar->setVisible(false);
     calendar->setWindowFlags(Qt::Dialog); // pop-up calendar
 
-
     // connect signals
-    QObject::connect(view,	&QTableView::activated,
-                     this, &CurrencyWidget::editRequested);
-    QObject::connect(calendar, &QCalendarWidget::selectionChanged,
-                     this, &CurrencyWidget::newExpiryDateSelected);
+    QObject::connect(view, &QTableView::activated, this, &CurrencyWidget::editRequested);
+    QObject::connect(calendar, &QCalendarWidget::selectionChanged, this,
+                     &CurrencyWidget::newExpiryDateSelected);
 }
 
 void CurrencyWidget::fillTakeOffAndLandingCurrencies()
 {
     const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
     LOG << "Currencies: " << takeoff_landings;
-    if(takeoff_landings.isEmpty() || takeoff_landings.size() != 2)
-        return;
+    if (takeoff_landings.isEmpty() || takeoff_landings.size() != 2) return;
 
-    QList<QLabel*> displayLabels = {
-        takeOffCountDisplayLabel,
-        landingCountDisplayLabel
-    };
+    QList<QLabel *> displayLabels = {takeOffCountDisplayLabel, landingCountDisplayLabel};
 
-    for(int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++) {
         int count = takeoff_landings[i].toInt();
-        if(count < 3)
-            setLabelColour(displayLabels[i], Colour::Red);
+        if (count < 3) setLabelColour(displayLabels[i], Colour::Red);
         displayLabels[i]->setText(displayLabels[i]->text().arg(count));
     }
     QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
@@ -144,19 +136,17 @@ void CurrencyWidget::fillTakeOffAndLandingCurrencies()
 
 void CurrencyWidget::fillFlightTimeLimitations()
 {
-    const QList<QPair<QLabel *, OPL::Statistics::TimeFrame>> limits =
-        {
-        { flightTime28DaysDisplayLabel, 		 OPL::Statistics::TimeFrame::Rolling28Days },
-        { flightTime365DaysDisplayLabel, 	 	 OPL::Statistics::TimeFrame::Rolling12Months },
-        { flightTimeCalendarYearDisplayLabel,    OPL::Statistics::TimeFrame::CalendarYear },
-        };
+    const QList<QPair<QLabel *, OPL::Statistics::TimeFrame>> limits = {
+        {flightTime28DaysDisplayLabel,       OPL::Statistics::TimeFrame::Rolling28Days  },
+        {flightTime365DaysDisplayLabel,      OPL::Statistics::TimeFrame::Rolling12Months},
+        {flightTimeCalendarYearDisplayLabel, OPL::Statistics::TimeFrame::CalendarYear   },
+    };
 
     double ftlWarningThreshold = Settings::getFtlWarningThreshold();
     for (const auto &pair : limits) {
         int accruedMinutes = OPL::Statistics::totalTime(pair.second);
-        int limitMinutes = EasaFTL::getLimit(pair.second);
+        int limitMinutes   = EasaFTL::getLimit(pair.second);
         pair.first->setText(OPL::Time(accruedMinutes, m_format).toString());
-
 
         if (accruedMinutes >= limitMinutes)
             setLabelColour(pair.first, Colour::Red);
@@ -167,16 +157,14 @@ void CurrencyWidget::fillFlightTimeLimitations()
 
 void CurrencyWidget::editRequested(const QModelIndex &index)
 {
-    if(index.column() == EXPIRY_DATE_COLUMN) {
+    if (index.column() == EXPIRY_DATE_COLUMN) {
         expiryDateEditRequested(index);
     }
 
-    if(index.column() == CURRENCY_NAME_COLUMN) {
+    if (index.column() == CURRENCY_NAME_COLUMN) {
         displayNameEditRequested(index);
     }
 }
-
-
 
 void CurrencyWidget::refresh()
 {
@@ -192,15 +180,11 @@ void CurrencyWidget::displayNameEditRequested(const QModelIndex &index)
 {
     QString oldData = index.data().toString();
     bool textEdited;
-    const QString text = QInputDialog::getText(
-        this,
-        tr("Edit Currency Name"),
-        tr("Please enter a name for this currency"),
-        QLineEdit::Normal,
-        oldData,
-        &textEdited);
+    const QString text = QInputDialog::getText(this, tr("Edit Currency Name"),
+                                               tr("Please enter a name for this currency"),
+                                               QLineEdit::Normal, oldData, &textEdited);
 
-    if(textEdited) {
+    if (textEdited) {
         model->setData(index, text);
         model->submitAll();
     }
@@ -210,11 +194,12 @@ void CurrencyWidget::expiryDateEditRequested(const QModelIndex &index)
 {
     const int selectedDate = index.data().toInt();
 
-    if(selectedDate > 0) {
+    if (selectedDate > 0) {
         const QSignalBlocker blocker(calendar);
         calendar->setSelectedDate(QDate::fromJulianDay(selectedDate));
         calendar->show();
-    } else {
+    }
+    else {
         calendar->show();
     }
     // calendars date selected signal is connected to newExpiryDateSelected()
@@ -231,26 +216,28 @@ void CurrencyWidget::newExpiryDateSelected()
 void CurrencyWidget::warnAboutExpiries()
 {
     int warningThreshold = Settings::getCurrencyWarningThreshold();
-    if(warningThreshold < 1) {
+    if (warningThreshold < 1) {
         return;
     }
 
     const QDate today = QDate::currentDate();
 
-    for(int i = 0; i < model->rowCount(); i++) {
+    for (int i = 0; i < model->rowCount(); i++) {
         const QModelIndex dateIndex = model->index(i, EXPIRY_DATE_COLUMN);
-        if(dateIndex.data().toInt() == 0) {
+        if (dateIndex.data().toInt() == 0) {
             continue;
         }
-        const auto expiryDate = QDate::fromJulianDay(dateIndex.data().toInt());
+        const auto expiryDate  = QDate::fromJulianDay(dateIndex.data().toInt());
         const auto warningDate = QDate::fromJulianDay(expiryDate.toJulianDay() - warningThreshold);
 
-        if(today >= warningDate) {
+        if (today >= warningDate) {
             const QString dateString = expiryDate.toString(Qt::ISODate);
             const QString nameString = model->index(i, CURRENCY_NAME_COLUMN).data().toString();
-            const QString daysLeft = QString::number(expiryDate.toJulianDay() - today.toJulianDay());
+            const QString daysLeft =
+                QString::number(expiryDate.toJulianDay() - today.toJulianDay());
 
-            QString msg = tr("Your %1 expires in %2 days: <br><br><tt>%3</tt>").arg(nameString, daysLeft, dateString);
+            QString msg = tr("Your %1 expires in %2 days: <br><br><tt>%3</tt>")
+                              .arg(nameString, daysLeft, dateString);
             WARN(msg);
         }
     }
@@ -258,7 +245,7 @@ void CurrencyWidget::warnAboutExpiries()
 
 QFrame *CurrencyWidget::getHorizontalLine()
 {
-    QFrame* newFrame = new QFrame(this);
+    QFrame *newFrame = new QFrame(this);
     newFrame->setFrameShape(QFrame::HLine);
     return newFrame;
 }

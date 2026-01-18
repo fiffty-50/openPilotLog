@@ -16,25 +16,23 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "firstrundialog.h"
-#include "src/database/previousexperienceentry.h"
-#include "ui_firstrundialog.h"
-#include "src/opl.h"
+#include "src/classes/downloadhelper.h"
+#include "src/classes/md5sum.h"
+#include "src/classes/settings.h"
+#include "src/classes/style.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
-#include "src/gui/widgets/backupwidget.h"
+#include "src/database/previousexperienceentry.h"
 #include "src/database/row.h"
-#include "src/classes/downloadhelper.h"
-#include "src/classes/settings.h"
 #include "src/functions/datetime.h"
-#include "src/classes/style.h"
-#include "src/classes/md5sum.h"
+#include "src/gui/widgets/backupwidget.h"
+#include "src/opl.h"
+#include "ui_firstrundialog.h"
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QKeyEvent>
 
-FirstRunDialog::FirstRunDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::FirstRunDialog)
+FirstRunDialog::FirstRunDialog(QWidget *parent) : QDialog(parent), ui(new Ui::FirstRunDialog)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -47,7 +45,6 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
     OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
     OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
 
-
     // Style combo box
     const QSignalBlocker style_blocker(ui->styleComboBox);
     OPL::Style::loadStylesComboBox(ui->styleComboBox);
@@ -59,14 +56,12 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) :
         date_edit->setDisplayFormat(OPL::DateTime::getFormatString(OPL::DateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
-    // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates are pulled
+    // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates
+    // are pulled
     ui->branchLineEdit->setVisible(false);
 }
 
-FirstRunDialog::~FirstRunDialog()
-{
-    delete ui;
-}
+FirstRunDialog::~FirstRunDialog() { delete ui; }
 
 void FirstRunDialog::on_previousPushButton_clicked()
 {
@@ -82,7 +77,6 @@ void FirstRunDialog::on_previousPushButton_clicked()
         break;
     }
     ui->stackedWidget->setCurrentIndex(current_index - 1);
-
 }
 
 void FirstRunDialog::on_nextPushButton_clicked()
@@ -90,12 +84,10 @@ void FirstRunDialog::on_nextPushButton_clicked()
     const int current_index = ui->stackedWidget->currentIndex();
     switch (current_index) {
     case 0:
-        if(ui->firstnameLineEdit->text().isEmpty()
-           || ui->lastnameLineEdit->text().isEmpty())
-        {
+        if (ui->firstnameLineEdit->text().isEmpty() || ui->lastnameLineEdit->text().isEmpty()) {
             QMessageBox(QMessageBox::Information, tr("No name entered"),
-                        tr("Please enter first and last name")
-                        ).exec();
+                        tr("Please enter first and last name"))
+                .exec();
             return;
         }
         ui->previousPushButton->setEnabled(true);
@@ -105,7 +97,7 @@ void FirstRunDialog::on_nextPushButton_clicked()
         break;
     case 4:
         ui->nextPushButton->setDisabled(true);
-        if(!finishSetup())
+        if (!finishSetup())
             QDialog::reject();
         else
             QDialog::accept();
@@ -121,27 +113,29 @@ bool FirstRunDialog::finishSetup()
 
     if (database_file.exists() && database_file.size() != 0) {
 
-        QMessageBox message_box(QMessageBox::Question, tr("Existing Database found"),
-                                   tr("An existing database file has been detected on your system.<br>"
-                                   "Would you like to create a backup of the existing database?<br><br>"
-                                   "Note: if you select no, the existing database will be overwritten. This "
-                                   "action is irreversible."),
-                                   QMessageBox::Yes | QMessageBox::No, this);
+        QMessageBox message_box(
+            QMessageBox::Question, tr("Existing Database found"),
+            tr("An existing database file has been detected on your system.<br>"
+               "Would you like to create a backup of the existing database?<br><br>"
+               "Note: if you select no, the existing database will be overwritten. This "
+               "action is irreversible."),
+            QMessageBox::Yes | QMessageBox::No, this);
         message_box.setDefaultButton(QMessageBox::Yes);
 
-        if(message_box.exec() == QMessageBox::Yes) {
+        if (message_box.exec() == QMessageBox::Yes) {
             // Create Backup
             const QString backup_name = BackupWidget::absoluteBackupPath();
             QFile old_db_file(database_file.absoluteFilePath());
             if (!old_db_file.copy(backup_name)) {
                 WARN(tr("Unable to backup old database:<br>%1").arg(old_db_file.errorString()));
                 return false;
-            } else {
+            }
+            else {
                 INFO(tr("Backup successfully created."));
             }
         }
 
-        //delete existing DB file
+        // delete existing DB file
         QFile db_file(database_file.absoluteFilePath());
         if (!db_file.remove()) {
             WARN(tr("Unable to delete existing database file."));
@@ -150,21 +144,23 @@ bool FirstRunDialog::finishSetup()
     } // if database file exists
 
     if (!DB->connect()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (connect)"),
-                                tr("Errors have ocurred creating the database."
-                                   "Without a working database The application will not be usable.<br>"
-                                   "The following error has ocurred:<br>"
-                                   "Database: Unable to connect"));
+        QMessageBox message_box(
+            QMessageBox::Critical, tr("Database setup failed (connect)"),
+            tr("Errors have ocurred creating the database."
+               "Without a working database The application will not be usable.<br>"
+               "The following error has ocurred:<br>"
+               "Database: Unable to connect"));
         message_box.exec();
         return false;
     }
 
     if (!setupDatabase()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (create schema)"),
-                                tr("Errors have ocurred creating the database."
-                                   "Without a working database The application will not be usable.<br>"
-                                   "The following error has ocurred:<br>%1"
-                                   ).arg(DB->lastError.text()));
+        QMessageBox message_box(
+            QMessageBox::Critical, tr("Database setup failed (create schema)"),
+            tr("Errors have ocurred creating the database."
+               "Without a working database The application will not be usable.<br>"
+               "The following error has ocurred:<br>%1")
+                .arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
@@ -172,24 +168,24 @@ bool FirstRunDialog::finishSetup()
     if (!createUserEntry()) {
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (user entry)"),
                                 tr("Unable to execute database query<br>"
-                                   "The following error has occured:<br>%1"
-                                   ).arg(DB->lastError.text()));
+                                   "The following error has occured:<br>%1")
+                                    .arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
 
     if (!setupPreviousExperienceEntry()) {
-        QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (previous Experience)"),
+        QMessageBox message_box(QMessageBox::Critical,
+                                tr("Database setup failed (previous Experience)"),
                                 tr("Unable to execute database query<br>"
-                                   "The following error has occured:<br>%1"
-                                   ).arg(DB->lastError.text()));
+                                   "The following error has occured:<br>%1")
+                                    .arg(DB->lastError.text()));
         message_box.exec();
         return false;
     }
 
     // non-critical error
-    if(!writeCurrencies())
-        LOG << "Error writing currencies during initial setup.";
+    if (!writeCurrencies()) LOG << "Error writing currencies during initial setup.";
 
     DB->disconnect(); // Connection will be re-established by MainWindow
     return true;
@@ -198,7 +194,8 @@ bool FirstRunDialog::finishSetup()
 bool FirstRunDialog::downloadTemplates(QString branch_name)
 {
     // Create url string
-    auto template_url_string = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    auto template_url_string =
+        QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
     template_url_string.append(branch_name);
     template_url_string.append(QLatin1String("/assets/database/templates/"));
 
@@ -209,10 +206,10 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
 
     // Download json files
-    for (const auto& table_name : template_table_names) {
+    for (const auto &table_name : template_table_names) {
         QEventLoop loop;
-        DownloadHelper* dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
+        DownloadHelper *dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
         DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
@@ -227,10 +224,10 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
         }
     }
     // Download checksum files
-    for (const auto& table_name : template_table_names) {
+    for (const auto &table_name : template_table_names) {
         QEventLoop loop;
-        DownloadHelper* dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit );
+        DownloadHelper *dl = new DownloadHelper;
+        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
         dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
         dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
@@ -251,7 +248,8 @@ bool FirstRunDialog::downloadTemplates(QString branch_name)
 }
 
 bool FirstRunDialog::verifyTemplates()
-{QStringList template_table_names;
+{
+    QStringList template_table_names;
     for (const auto table : DB->getTemplateTables())
         template_table_names.append(OPL::GLOBALS->getDbTableName(table));
     for (const auto &table_name : template_table_names) {
@@ -261,8 +259,7 @@ bool FirstRunDialog::verifyTemplates()
         Md5Sum hash(check_file);
 
         QFileInfo md5_file(path + QLatin1String(".md5"));
-        if (!hash.compare(md5_file))
-            return false;
+        if (!hash.compare(md5_file)) return false;
     }
     return true;
 }
@@ -294,33 +291,37 @@ void FirstRunDialog::writeSettings()
 bool FirstRunDialog::setupDatabase()
 {
     QMessageBox confirm(QMessageBox::Question, tr("Create Database"),
-                               tr("We are now going to create the database.<br>"
-                                              "Would you like to download the latest database information?"
-                                              "<br>(Recommended, Internet connection required)"),
-                               QMessageBox::Yes | QMessageBox::No, this);
+                        tr("We are now going to create the database.<br>"
+                           "Would you like to download the latest database information?"
+                           "<br>(Recommended, Internet connection required)"),
+                        QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::Yes);
 
     if (confirm.exec() == QMessageBox::Yes) {
         useRessourceData = false;
         if (!downloadTemplates(ui->branchLineEdit->text())) {
             QMessageBox message_box(this);
-            message_box.setText(tr("Downloading or verifying latest data has failed.<br><br>Using local data instead."));
+            message_box.setText(tr("Downloading or verifying latest data has failed.<br><br>Using "
+                                   "local data instead."));
             message_box.exec();
             useRessourceData = true; // fall back
         }
-    } else {
+    }
+    else {
         useRessourceData = true;
     }
 
-    if(!DB->createSchema()) {
-        WARN(tr("Database creation has been unsuccessful. The following error has ocurred:<br><br>%1<br><br>%2")
-             .arg(FUNC_IDENT, DB->lastError.text()));
+    if (!DB->createSchema()) {
+        WARN(tr("Database creation has been unsuccessful. The following error has "
+                "ocurred:<br><br>%1<br><br>%2")
+                 .arg(FUNC_IDENT, DB->lastError.text()));
         return false;
     }
 
-    if(!DB->importTemplateData(useRessourceData)) {
-        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1<br><br>%2")
-             .arg(FUNC_IDENT, DB->lastError.text()));
+    if (!DB->importTemplateData(useRessourceData)) {
+        WARN(tr("Database creation has been unsuccessful. Unable to fill template "
+                "data.<br><br>%1<br><br>%2")
+                 .arg(FUNC_IDENT, DB->lastError.text()));
         return false;
     }
     return true;
@@ -329,7 +330,7 @@ bool FirstRunDialog::setupDatabase()
 bool FirstRunDialog::createUserEntry()
 {
     auto owner = OPL::PilotEntry();
-    if(!owner.setName(ui->lastnameLineEdit->text())) {
+    if (!owner.setName(ui->lastnameLineEdit->text())) {
         WARN(tr("Invalid Name."));
     }
 
@@ -346,44 +347,43 @@ bool FirstRunDialog::setupPreviousExperienceEntry()
 
 bool FirstRunDialog::writeCurrencies()
 {
-    const QList<QPair<QString, QDateEdit*>> currencies = {
-        { ui->currLicLabel->text(), 		ui->currLicDateEdit },
-        { ui->currTrLabel->text(), 			ui->currTrDateEdit },
-        { ui->currLckLabel->text(), 		ui->currLckDateEdit },
-        { ui->currMedLabel->text(), 		ui->currMedDateEdit },
-        { ui->currCustom1LineEdit->text(), 	ui->currCustom1DateEdit },
-        { ui->currCustom2LineEdit->text(), 	ui->currCustom2DateEdit },
+    const QList<QPair<QString, QDateEdit *>> currencies = {
+        {ui->currLicLabel->text(),        ui->currLicDateEdit    },
+        {ui->currTrLabel->text(),         ui->currTrDateEdit     },
+        {ui->currLckLabel->text(),        ui->currLckDateEdit    },
+        {ui->currMedLabel->text(),        ui->currMedDateEdit    },
+        {ui->currCustom1LineEdit->text(), ui->currCustom1DateEdit},
+        {ui->currCustom2LineEdit->text(), ui->currCustom2DateEdit},
     };
 
     const QDate today = QDate::currentDate();
 
-    for(const auto &pair : currencies) {
+    for (const auto &pair : currencies) {
         // list 0-indexed, db row indexes start at 1
-        OPL::CurrencyEntry currencyEntry = OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
+        OPL::CurrencyEntry currencyEntry =
+            OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
 
         currencyEntry.setName(pair.first);
 
         // only set expiry date if user has modified it
         const QDate date = pair.second->date();
-        if(date != today) {
+        if (date != today) {
             int julianDay = date.toJulianDay();
             currencyEntry.setExpiryDate(OPL::Date(julianDay, m_format));
         }
 
-        if(!DB->commit(currencyEntry))
-            return false;
+        if (!DB->commit(currencyEntry)) return false;
     }
     return true;
 }
 
 void FirstRunDialog::reject()
 {
-    QMessageBox confirm(QMessageBox::Critical,
-                               tr("Setup incomplete"),
-                               tr("Without completing the initial setup "
-                                  "you cannot use the application.<br><br>"
-                                  "Quit anyway?"),
-                               QMessageBox::Yes | QMessageBox::No, this);
+    QMessageBox confirm(QMessageBox::Critical, tr("Setup incomplete"),
+                        tr("Without completing the initial setup "
+                           "you cannot use the application.<br><br>"
+                           "Quit anyway?"),
+                        QMessageBox::Yes | QMessageBox::No, this);
     confirm.setDefaultButton(QMessageBox::No);
 
     if (confirm.exec() == QMessageBox::Yes) {
@@ -393,8 +393,8 @@ void FirstRunDialog::reject()
 
 void FirstRunDialog::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if(keyEvent->type() == QKeyEvent::KeyPress) {
-        if(keyEvent->matches(QKeySequence::AddTab)) {
+    if (keyEvent->type() == QKeyEvent::KeyPress) {
+        if (keyEvent->matches(QKeySequence::AddTab)) {
             ui->branchLineEdit->setVisible(true);
             ui->branchLineEdit->setEnabled(true);
         }
@@ -423,13 +423,10 @@ void FirstRunDialog::on_styleComboBox_currentTextChanged(const QString &new_styl
 
 void FirstRunDialog::on_importPushButton_clicked()
 {
-    QString filename = QDir::toNativeSeparators(QFileDialog::getOpenFileName(
-                this,
-                tr("Choose backup file"),
-                QDir::homePath(),
-                "*.db"));
+    QString filename = QDir::toNativeSeparators(
+        QFileDialog::getOpenFileName(this, tr("Choose backup file"), QDir::homePath(), "*.db"));
 
-    if(filename.isEmpty()) { // QFileDialog has been cancelled
+    if (filename.isEmpty()) { // QFileDialog has been cancelled
         WARN(tr("No Database has been selected."));
         return;
     }
@@ -441,16 +438,17 @@ void FirstRunDialog::on_importPushButton_clicked()
     confirm.setWindowTitle(tr("Import Database"));
     confirm.setText(tr("The following database will be imported:<br><br><b><tt>"
                        "%1<br></b></tt>"
-                       "<br>Is this correct?"
-                       ).arg(OPL::DbSummary::summaryString(filename)));
+                       "<br>Is this correct?")
+                        .arg(OPL::DbSummary::summaryString(filename)));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(!DB->restoreBackup(QDir::toNativeSeparators(filename))) {
+        if (!DB->restoreBackup(QDir::toNativeSeparators(filename))) {
             WARN(tr("Unable to import database file:").arg(filename));
             return;
         }
         INFO(tr("Database successfully imported."));
         QDialog::accept(); // quit the dialog as if a database was successfully created
-    } else {
+    }
+    else {
         return;
     }
 }

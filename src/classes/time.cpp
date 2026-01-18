@@ -20,37 +20,25 @@
 
 namespace OPL {
 
-Time::Time(const DateTimeFormat &format)
-    : m_format(format),
-    m_minutes(-1)
-{}
+Time::Time(const DateTimeFormat &format) : m_format(format), m_minutes(-1) {}
 
 Time::Time(const QTime &qTime, const DateTimeFormat &format)
 {
     m_minutes = qTime.isValid() ? qTime.minute() + qTime.hour() * 60 : -1;
 }
 
-Time::Time(int32_t minutes, const DateTimeFormat &format)
-    : m_minutes(minutes), m_format(format)
-{}
+Time::Time(int32_t minutes, const DateTimeFormat &format) : m_minutes(minutes), m_format(format) {}
 
-bool Time::isValidTimeOfDay() const
-{
-    return isValid() && m_minutes <= MINUTES_PER_DAY;
-}
+bool Time::isValidTimeOfDay() const { return isValid() && m_minutes <= MINUTES_PER_DAY; }
 
-bool Time::isValid() const
-{
-    return m_minutes >= 0;
-}
+bool Time::isValid() const { return m_minutes >= 0; }
 
 const QString Time::toString() const
 {
-    switch(m_format.timeFormat()) {
+    switch (m_format.timeFormat()) {
     case DateTimeFormat::TimeFormat::Default:
-        return QString::number(m_minutes / 60).rightJustified(2, '0')
-               + ':'
-               + QString::number(m_minutes % 60).rightJustified(2, '0');
+        return QString::number(m_minutes / 60).rightJustified(2, '0') + ':' +
+               QString::number(m_minutes % 60).rightJustified(2, '0');
     case DateTimeFormat::TimeFormat::Decimal:
         return QString::number(m_minutes / 60.0, 'f', 2);
         break;
@@ -61,36 +49,31 @@ const QString Time::toString() const
     }
 }
 
-int32_t Time::toMinutes() const
-{
-    return m_minutes;
-}
+int32_t Time::toMinutes() const { return m_minutes; }
 
 Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
 {
-    switch(format.timeFormat()) {
-    case DateTimeFormat::TimeFormat::Default:
-    {
+    switch (format.timeFormat()) {
+    case DateTimeFormat::TimeFormat::Default: {
         int seperatorIndex = timeString.indexOf(QLatin1Char(':'));
-        if(seperatorIndex < 0) {
+        if (seperatorIndex < 0) {
             LOG << "Invalid Time Input:" << timeString;
             return Time(-1, format);
         }
 
-        int hours = timeString.first(seperatorIndex).toInt();
-        int minutes = timeString.last(2).toInt();
+        int hours        = timeString.first(seperatorIndex).toInt();
+        int minutes      = timeString.last(2).toInt();
         int totalMinutes = hours * 60 + minutes;
 
         return Time(totalMinutes, format);
         break;
     }
-    case DateTimeFormat::TimeFormat::Decimal:
-    {
+    case DateTimeFormat::TimeFormat::Decimal: {
         // try to convert string to double
-        bool ok = false;
+        bool ok                = false;
         const double timeValue = timeString.toDouble(&ok);
 
-        if(!ok) {
+        if (!ok) {
             return {-1, format};
         }
 
@@ -99,7 +82,7 @@ Time Time::fromString(const QString &timeString, const DateTimeFormat &format)
         hours = modf(timeValue, &minutes);
 
         // create the Time Object
-        return(Time(hours * 60 + minutes, format));
+        return (Time(hours * 60 + minutes, format));
         break;
     }
     case DateTimeFormat::TimeFormat::Custom:
@@ -114,12 +97,13 @@ Time Time::blockTime(const Time &offBlocks, const Time &onBlocks)
 {
     // make sure both times are in 24h range
     bool bothTimesAreValid = offBlocks.isValidTimeOfDay() && onBlocks.isValidTimeOfDay();
-    if(!bothTimesAreValid)
-        return {-1, offBlocks.m_format};
+    if (!bothTimesAreValid) return {-1, offBlocks.m_format};
 
     // calculate the block time - we assume no flight duration exceeds 24h
-    int blockMinutes = (onBlocks.m_minutes - offBlocks.m_minutes + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-    if(blockMinutes < 0 || blockMinutes > MINUTES_PER_DAY) // our assumption was incorrect or there was an input errer
+    int blockMinutes =
+        (onBlocks.m_minutes - offBlocks.m_minutes + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+    if (blockMinutes < 0 ||
+        blockMinutes > MINUTES_PER_DAY) // our assumption was incorrect or there was an input errer
         return {-1, offBlocks.m_format};
 
     return Time(blockMinutes, offBlocks.m_format);

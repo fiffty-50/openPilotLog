@@ -18,18 +18,17 @@
 #ifndef DOWNLOADHELPER_H
 #define DOWNLOADHELPER_H
 
-#include <QObject>
+#include <QDebug>
+#include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QObject>
 #include <QUrl>
-#include <QFile>
-#include <QDebug>
-
 
 class DownloadHelper : public QObject {
     Q_OBJECT
-public:
+  public:
     explicit DownloadHelper();
 
     ~DownloadHelper();
@@ -40,17 +39,16 @@ public:
 
     void download();
 
-private:
-
+  private:
     QNetworkAccessManager manager;
     QUrl target;
     QString fileName;
 
-signals:
+  signals:
     void done();
 
-public slots:
-    void downloadFinished(QNetworkReply* data);
+  public slots:
+    void downloadFinished(QNetworkReply *data);
     void downloadProgress(qint64 received, qint64 total);
 };
 

@@ -15,9 +15,13 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <QToolBar>
 #include "mainwindow.h"
+#include "src/classes/settings.h"
+#include "src/classes/style.h"
+#include "src/database/database.h"
+#include "src/database/databasecache.h"
 #include "src/database/databasesetup.h"
+#include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/flightentryeditdialog.h"
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
@@ -27,25 +31,15 @@
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
 #include "ui_mainwindow.h"
-#include "src/database/database.h"
-#include "src/classes/style.h"
-#include "src/gui/dialogues/firstrundialog.h"
-#include "src/database/databasecache.h"
-#include "src/classes/settings.h"
+#include <QToolBar>
 
-
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     init();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::init()
 {
@@ -107,12 +101,12 @@ void MainWindow::initialiseWidgets()
 void MainWindow::connectDatabase()
 {
     // connect to the Database
-    if (OPL::Paths::databaseFileInfo().size() == 0)
-        onDatabaseInvalid();
+    if (OPL::Paths::databaseFileInfo().size() == 0) onDatabaseInvalid();
 
-    if(!DB->connect()){
-        WARN(tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
-             .arg(DB->lastError.text()));
+    if (!DB->connect()) {
+        WARN(
+            tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
+                .arg(DB->lastError.text()));
     }
 
     // Load Cache
@@ -121,37 +115,39 @@ void MainWindow::connectDatabase()
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
 {
-    switch (style){
+    switch (style) {
     case OPL::Style::StyleType::Light:
         LOG << "Setting Light Icon theme";
-        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
-        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
-        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
-        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-        ui->actionNewTail->setIcon(     QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
-        ui->actionNewPilot->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
-        ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
-        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
-        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
+        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME));
+        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
+        ui->actionNewSim->setIcon(
+            QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
+        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
+        ui->actionNewTail->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionNewPilot->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
+        ui->actionDatabase->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
+        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
+        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
         break;
     case OPL::Style::StyleType::Dark:
         LOG << "Setting Dark Icon theme";
-        ui->actionHome->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
-        ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
-        ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
-        ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
-        ui->actionNewTail->setIcon(     QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
-        ui->actionNewPilot->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
-        ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
-        ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
-        ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
+        ui->actionHome->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_HOME_DARK));
+        ui->actionNewFlight->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
+        ui->actionNewSim->setIcon(
+            QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
+        ui->actionLogbook->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
+        ui->actionNewTail->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionNewPilot->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
+        ui->actionDatabase->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
+        ui->actionSettings->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
+        ui->actionQuit->setIcon(QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
         break;
     }
 }
 
 void MainWindow::nope()
 {
-    QMessageBox message_box(this); //error box
+    QMessageBox message_box(this); // error box
     message_box.setText(tr("This feature is not yet available!"));
     message_box.exec();
 }
@@ -163,14 +159,14 @@ void MainWindow::nope()
  */
 void MainWindow::connectWidgets()
 {
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     logbookWidget,  &LogbookTableEditWidget::viewSelectionChanged);
-    QObject::connect(this,			 &MainWindow::addFlightEntryRequested,
-                     logbookWidget,  &LogbookTableEditWidget::addEntryRequested);
-    QObject::connect(this,			 &MainWindow::addSimulatorEntryRequested,
-                     logbookWidget,  &LogbookTableEditWidget::addSimulatorEntryRequested);
-    QObject::connect(settingsWidget, &SettingsWidget::settingChanged,
-                     this,           &MainWindow::onStyleChanged);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged, logbookWidget,
+                     &LogbookTableEditWidget::viewSelectionChanged);
+    QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
+                     &LogbookTableEditWidget::addEntryRequested);
+    QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
+                     &LogbookTableEditWidget::addSimulatorEntryRequested);
+    QObject::connect(settingsWidget, &SettingsWidget::settingChanged, this,
+                     &MainWindow::onStyleChanged);
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -188,22 +184,22 @@ void MainWindow::onDatabaseInvalid()
     if (ret == QMessageBox::DestructiveRole) {
         DEB << "No valid database found. Exiting.";
         on_actionQuit_triggered();
-    } else if (ret == QMessageBox::ButtonRole::AcceptRole) {
+    }
+    else if (ret == QMessageBox::ButtonRole::AcceptRole) {
         DEB << "Yes(Import Backup)";
-        QString db_path = QDir::toNativeSeparators(
-                          (QFileDialog::getOpenFileName(this,
-                                                        tr("Select Database"),
-                                                        OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
-                                                        tr("Database file (*.db)"))));
+        QString db_path = QDir::toNativeSeparators((QFileDialog::getOpenFileName(
+            this, tr("Select Database"), OPL::Paths::directory(OPL::Paths::Backup).canonicalPath(),
+            tr("Database file (*.db)"))));
         if (!db_path.isEmpty()) {
-            if(!DB->restoreBackup(db_path)) {
+            if (!DB->restoreBackup(db_path)) {
                 WARN(tr("Unable to restore backup file:<br><br>%1").arg(db_path));
                 on_actionQuit_triggered();
             }
         }
-    } else if (ret == QMessageBox::ButtonRole::RejectRole){
+    }
+    else if (ret == QMessageBox::ButtonRole::RejectRole) {
         DEB << "No(Create New)";
-        if(FirstRunDialog().exec() == QDialog::Rejected){
+        if (FirstRunDialog().exec() == QDialog::Rejected) {
             LOG << "Initial setup incomplete or unsuccessfull.";
             on_actionQuit_triggered();
         }
@@ -216,10 +212,7 @@ void MainWindow::onDatabaseInvalid()
  * Slots
  */
 
-void MainWindow::on_actionHome_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(homeWidget);
-}
+void MainWindow::on_actionHome_triggered() { ui->stackedWidget->setCurrentWidget(homeWidget); }
 
 void MainWindow::on_actionNewFlight_triggered()
 {
@@ -260,15 +253,9 @@ void MainWindow::on_actionSettings_triggered()
     ui->stackedWidget->setCurrentWidget(settingsWidget);
 }
 
-void MainWindow::on_actionQuit_triggered()
-{
-    QApplication::quit();
-}
+void MainWindow::on_actionQuit_triggered() { QApplication::quit(); }
 
-void MainWindow::on_actionDebug_triggered()
-{
-    ui->stackedWidget->setCurrentWidget(debugWidget);
-}
+void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidget(debugWidget); }
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
@@ -285,4 +272,3 @@ void MainWindow::debug()
     auto entry = DB->getAircraftEntry(2);
     DEB << entry;
 }
-

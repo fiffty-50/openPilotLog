@@ -17,8 +17,8 @@
  */
 #ifndef ADATETIME_H
 #define ADATETIME_H
-#include <QtCore>
 #include "src/opl.h"
+#include <QtCore>
 
 namespace ADateTime {
 
@@ -26,7 +26,8 @@ namespace ADateTime {
  * \brief toString formats a QDateTime object into a string in a uniform way.
  * \return
  */
-inline const QString toString (const QDateTime& date_time, OPL::DateTimeFormat format) {
+inline const QString toString(const QDateTime &date_time, OPL::DateTimeFormat format)
+{
     switch (format) {
     case OPL::DateTimeFormat::Default:
         return date_time.toString(Qt::ISODate);
@@ -37,13 +38,13 @@ inline const QString toString (const QDateTime& date_time, OPL::DateTimeFormat f
     }
 }
 
-inline QDateTime fromString(const QString& date_time_string)
+inline QDateTime fromString(const QString &date_time_string)
 {
     auto date_time = QDateTime::fromString(date_time_string, QStringLiteral("yyyy-MM-ddhh:mm"));
     date_time.setTimeZone(QTimeZone::utc());
     return date_time;
 }
 
-}
+} // namespace ADateTime
 
 #endif // ADATETIME_H

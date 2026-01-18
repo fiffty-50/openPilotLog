@@ -4,15 +4,15 @@
 void ProcessAircraft::parseRawData()
 {
     QStringList tail_details;
-    // relevant colums: {reg,company,make,model,variant,multipilot,multiengine,engineType,weightClass}
+    // relevant colums:
+    // {reg,company,make,model,variant,multipilot,multiengine,engineType,weightClass}
     int relevant_cols[9] = {79, 36, 76, 77, 78, 83, 84, 92, 96};
 
     for (const auto &row : std::as_const(rawData)) {
         for (const auto &col : relevant_cols) {
             tail_details.append(row[col]);
         }
-        if (!(unique_tails.contains(tail_details)))
-            unique_tails.append(tail_details);
+        if (!(unique_tails.contains(tail_details))) unique_tails.append(tail_details);
         tail_details.clear();
     }
 }
@@ -45,7 +45,8 @@ void ProcessAircraft::processParsedData()
     //     else if (list[7] == "Turbine (jet-fan)")
     //         new_tail_data.insert(OPL::TailEntry::ENGINE_TYPE, 3);
 
-    //     if (list[8] == "TRUE") // this is a above 7.5t switch in MCC, so default to medium for now
+    //     if (list[8] == "TRUE") // this is a above 7.5t switch in MCC, so default to medium for
+    //     now
     //         new_tail_data.insert(OPL::TailEntry::WEIGHT_CLASS, 1);
     //     else
     //         new_tail_data.insert(OPL::TailEntry::WEIGHT_CLASS, 0);
@@ -59,12 +60,9 @@ void ProcessAircraft::processParsedData()
     //}
 }
 
-QHash<QString, int> ProcessAircraft::getProcessedTailIds() const
-{
-    return processedTailIds;
-}
+QHash<QString, int> ProcessAircraft::getProcessedTailIds() const { return processedTailIds; }
 
-QHash<QString, OPL::RowData_T > ProcessAircraft::getProcessedTailMaps() const
+QHash<QString, OPL::RowData_T> ProcessAircraft::getProcessedTailMaps() const
 {
     return processedTailMaps;
 }

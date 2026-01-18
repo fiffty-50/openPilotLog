@@ -4,12 +4,13 @@
 #include "src/opl.h"
 #include "userinput.h"
 
-class TimeInput : public UserInput
-{
-public:
+class TimeInput : public UserInput {
+  public:
     TimeInput() = delete;
     TimeInput(const QString &input, const OPL::DateTimeFormat &format)
-        : UserInput(input), m_format(format) {}
+        : UserInput(input), m_format(format)
+    {
+    }
 
     /*!
      * \brief Checks if a user entered String is a valid time input
@@ -26,7 +27,8 @@ public:
      * the ISO-8601 representation "hh:mm" is returned, otherwise an empty QString.
      */
     QString fixup() const override;
-private:
+
+  private:
     const OPL::DateTimeFormat &m_format;
 
     const QString fixDefaultFormat() const;

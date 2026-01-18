@@ -2,19 +2,22 @@
 #include "flightawarejsonparser.h"
 #include <QNetworkReply>
 
-FlightAwareQuery::FlightAwareQuery(QObject *parent)
-    : QObject{parent}
+FlightAwareQuery::FlightAwareQuery(QObject *parent) : QObject{parent}
 {
     m_networkManager = new QNetworkAccessManager(this);
 }
 
-QList<FlightAwareFlightData> FlightAwareQuery::getFlightData(const QString &flightId, const QDate &date)
+QList<FlightAwareFlightData> FlightAwareQuery::getFlightData(const QString &flightId,
+                                                             const QDate &date)
 {
     LOG << "Preparing query data";
     // prepare the query data
     const QDateTime startDateTime = QDateTime(date, QTime(0, 0));
-    const QDateTime endDateTime = QDateTime(date, QTime(23, 59));
-    const QString queryUrl = QUERY_BASE_URL + flightId + QString("?start=%1&end=%2").arg(startDateTime.toString(Qt::ISODate), endDateTime.toString(Qt::ISODate));
+    const QDateTime endDateTime   = QDateTime(date, QTime(23, 59));
+    const QString queryUrl =
+        QUERY_BASE_URL + flightId +
+        QString("?start=%1&end=%2")
+            .arg(startDateTime.toString(Qt::ISODate), endDateTime.toString(Qt::ISODate));
 
     // construct the network request
     const QByteArray apiKey = Settings::getFlightAwareApiKey();
@@ -33,13 +36,12 @@ QList<FlightAwareFlightData> FlightAwareQuery::getFlightData(const QString &flig
     // QObject::connect(m_networkReply, &QNetworkReply::finished,
     //                  this,           &FlightAwareQuery::replyFinished);
 
-
     // Wait for finishing the network request or a timeout
     LOG << "Setting timer and staring event loop";
     QTimer timer;
     timer.setSingleShot(true);
     QObject::connect(&timer, &QTimer::timeout, this, &FlightAwareQuery::timeOut);
-    timer.start(5000); //5s
+    timer.start(5000); // 5s
 
     QEventLoop loop;
     QObject::connect(m_networkReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -47,7 +49,7 @@ QList<FlightAwareFlightData> FlightAwareQuery::getFlightData(const QString &flig
 
     LOG << "Reading reply...";
     // check the reply
-    if(m_networkReply->error() != QNetworkReply::NoError) {
+    if (m_networkReply->error() != QNetworkReply::NoError) {
         LOG << m_networkReply->error();
         LOG << m_networkReply->errorString();
         return {};
@@ -76,4 +78,3 @@ void FlightAwareQuery::timeOut()
 {
     m_networkReply->abort(); // triggers replyFinished() with an error code
 }
-

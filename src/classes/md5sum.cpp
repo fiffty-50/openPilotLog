@@ -25,12 +25,14 @@ Md5Sum::Md5Sum(QFileInfo &file_info)
         QCryptographicHash hash(QCryptographicHash::Md5);
         if (hash.addData(&f)) {
             checksum = hash.result();
-            //DEB << "File: " << f.fileName();
-            //DEB << "Hash: " << hash.result().toHex();
-        } else {
+            // DEB << "File: " << f.fileName();
+            // DEB << "Hash: " << hash.result().toHex();
+        }
+        else {
             checksum = QByteArray();
         }
-    } else {
+    }
+    else {
         checksum = QByteArray();
     }
     f.close();
@@ -46,17 +48,17 @@ bool Md5Sum::compare(QFileInfo &md5_file) const
 
         // Verify checksum is not empty and compare to md5 read from file
         if (checksum == QByteArray()) {
-            LOG << QString("Unable to read checksum from file: %1").arg(md5_file.absoluteFilePath());
+            LOG << QString("Unable to read checksum from file: %1")
+                       .arg(md5_file.absoluteFilePath());
             return false;
-        } else
-            if (checksum.toHex() == hash_string)
-                return true;
-            else {
-                LOG << QString("Checksum for %1 invalid. Calculated: %2 - Hash: %3").arg(f.fileName(),
-                                                                                         QString(checksum.toHex()),
-                                                                                         hash_string);
-                return false;
-            }
+        }
+        else if (checksum.toHex() == hash_string)
+            return true;
+        else {
+            LOG << QString("Checksum for %1 invalid. Calculated: %2 - Hash: %3")
+                       .arg(f.fileName(), QString(checksum.toHex()), hash_string);
+            return false;
+        }
     }
     return false;
 }

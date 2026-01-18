@@ -20,33 +20,45 @@
 #include "src/opl.h"
 #include <QtCore>
 
-namespace OPL{
+namespace OPL {
 
-using IdMap = QHash<int, QString>;
-using KeyMap = QHash<QString, int>;
+using IdMap       = QHash<int, QString>;
+using KeyMap      = QHash<QString, int>;
 using KeyMultiMap = QMultiMap<QString, int>;
 #define DBCache OPL::DatabaseCache::instance()
 
 /*!
  * \brief Caches certain often accessed database content in memory
- * \details Access to the database is rather slow and memory these days is cheap enough to cache some contents for ease
- * and speed of access. This class provides lists of database entries that are used as inputs for QCompleter instances
- * as well as maps which contain database entries and their associated row ids, which are used for user input verification.
+ * \details Access to the database is rather slow and memory these days is cheap enough to cache
+ * some contents for ease and speed of access. This class provides lists of database entries that
+ * are used as inputs for QCompleter instances as well as maps which contain database entries and
+ * their associated row ids, which are used for user input verification.
  *
- * The Cache can be accessed by using the DBCACHE macro and needs to be updated whenever the database contents are modified.
+ * The Cache can be accessed by using the DBCACHE macro and needs to be updated whenever the
+ * database contents are modified.
  */
-class DatabaseCache : public QObject
-{
-public:
-    static DatabaseCache* instance() {
+class DatabaseCache : public QObject {
+  public:
+    static DatabaseCache *instance()
+    {
         static DatabaseCache instance;
         return &instance;
     }
 
-    DatabaseCache(DatabaseCache const&) = delete;
-    void operator=(DatabaseCache const&) = delete;
+    DatabaseCache(DatabaseCache const &)  = delete;
+    void operator=(DatabaseCache const &) = delete;
 
-    enum CompleterTarget {PilotNames, Tails, AircraftTypeStrings, AirportCodesAnyType, AirportsICAO, AirportNames, AirportsIATA, Companies, Types};
+    enum CompleterTarget {
+        PilotNames,
+        Tails,
+        AircraftTypeStrings,
+        AirportCodesAnyType,
+        AirportsICAO,
+        AirportNames,
+        AirportsIATA,
+        Companies,
+        Types
+    };
 
     void init();
 
@@ -58,27 +70,28 @@ public:
     const IdMap &getAircraftMap() const;
     const IdMap &getAirportsMapNames() const;
 
-    enum class MapType { AirportCodesIcao,
-                         AirportCodesIata,
-                         AirportNames,
-                         AircraftTypes,
-                         TailRegistrations,
-                         PilotNames,
+    enum class MapType {
+        AirportCodesIcao,
+        AirportCodesIata,
+        AirportNames,
+        AircraftTypes,
+        TailRegistrations,
+        PilotNames,
     };
 
-    enum class ListType { PilotNames,
-                          AircraftTypes,
-                          Tails,
-                          AirportCodes,
-                          Companies,
+    enum class ListType {
+        PilotNames,
+        AircraftTypes,
+        Tails,
+        AirportCodes,
+        Companies,
     };
 
     const QStringList &getList(ListType type);
     const IdMap &getMap(MapType type);
     const KeyMap &getKeyMap(MapType type);
 
-
-private:
+  private:
     Q_OBJECT
     DatabaseCache() {};
 
@@ -109,8 +122,7 @@ private:
      */
     IdMap aircraftTypesMap;
 
-    void convertIdMapToKeyMap(IdMap &idMap, KeyMap& keyMap);
-
+    void convertIdMapToKeyMap(IdMap &idMap, KeyMap &keyMap);
 
     // Key Maps - Those are equivalent to the ID maps but key and value are reversed
     KeyMap airportsIcaoKeyMap;
@@ -122,7 +134,6 @@ private:
 
     // Key Multi Maps - used for reverse IdMaps where one key can have several values
     // -- all airport codes to airport_id
-
 
     // Lists
     QStringList pilotNamesList;
@@ -140,12 +151,11 @@ private:
     void updatePilots();
     void updateAircraftTypes();
 
-public slots:
+  public slots:
     void onDatabaseUpdated(const OPL::DbTable table);
-signals:
+  signals:
     void databaseCacheUpdated(const OPL::DbTable table);
-
 };
 
-}// namespace OPL
+} // namespace OPL
 #endif // DATABASECACHE_H

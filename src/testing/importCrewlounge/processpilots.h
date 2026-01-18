@@ -1,17 +1,16 @@
 #ifndef PROCESSPILOTS_H
 #define PROCESSPILOTS_H
-#include <QtCore>
-#include <src/opl.h>
 #include <QHash>
 #include <QVector>
+#include <QtCore>
+#include <src/opl.h>
 
-class ProcessPilots
-{
-public:
-    ProcessPilots(const QVector<QStringList> &raw_csv_data)
-        : rawData(raw_csv_data){};
+class ProcessPilots {
+  public:
+    ProcessPilots(const QVector<QStringList> &raw_csv_data) : rawData(raw_csv_data) {};
 
-    void init(){
+    void init()
+    {
         parseRawData();
         processParsedData();
     };
@@ -19,8 +18,7 @@ public:
     QHash<QString, OPL::RowData_T> getProcessedPilotMaps() const;
     QHash<QString, int> getProcessedPilotsIds() const;
 
-private:
-
+  private:
     void parseRawData();
     void processParsedData();
 
@@ -40,8 +38,9 @@ private:
     /*!
      * \brief processedPilotsIds Holds a map of the ids that have been given to the processed pilots
      *
-     * \details The pilot data, once processed is held in processedPilotMaps. With processePilotsIds it
-     * is possible to map the original String to the PilotID that has been assigned during the parsing process.
+     * \details The pilot data, once processed is held in processedPilotMaps. With processePilotsIds
+     * it is possible to map the original String to the PilotID that has been assigned during the
+     * parsing process.
      */
     QHash<QString, int> processedPilotsIds;
 };

@@ -22,10 +22,10 @@
 #include "src/database/databasetypes.h"
 
 struct ATailEntry : public AEntry {
-public:
+  public:
     ATailEntry();
-    ATailEntry(const ATailEntry& te) = default;
-    ATailEntry& operator=(const ATailEntry& te) = default;
+    ATailEntry(const ATailEntry &te)            = default;
+    ATailEntry &operator=(const ATailEntry &te) = default;
     ATailEntry(RowId_T row_id);
     ATailEntry(RowData_T table_data);
 
@@ -33,6 +33,5 @@ public:
 
     const QString type();
 };
-
 
 #endif // ATAILENTRY_H

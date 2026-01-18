@@ -18,12 +18,12 @@
 #ifndef SETTINGSWIDGET_H
 #define SETTINGSWIDGET_H
 
-#include <QWidget>
 #include <QButtonGroup>
-#include <QValidator>
-#include <QProcess>
 #include <QDebug>
 #include <QFontDialog>
+#include <QProcess>
+#include <QValidator>
+#include <QWidget>
 
 namespace Ui {
 class SettingsWidget;
@@ -37,20 +37,19 @@ class SettingsWidget;
  * tab, the user can edit his personal details, which are then written to the Database
  * (The Logbook owner is registered in the Pilots Database with `pilot_id = 1`).
  */
-class SettingsWidget : public QWidget
-{
+class SettingsWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit SettingsWidget(QWidget *parent = nullptr);
     ~SettingsWidget();
 
     /*!
      * \brief enumerates Widgets that need to receive a signal when a setting is updated.
      */
-    enum SettingSignal {LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget, MainWindow};
+    enum SettingSignal { LogbookWidget, HomeWidget, AircraftWidget, PilotsWidget, MainWindow };
 
-private slots:
+  private slots:
 
     void on_aboutPushButton_clicked();
     void on_aboutBackupsPushButton_clicked();
@@ -69,7 +68,7 @@ private slots:
     void on_pilotSortComboBox_currentIndexChanged(int index);
     void on_logbookViewComboBox_currentIndexChanged(int index);
     void on_companyLineEdit_editingFinished();
-    void on_styleComboBox_currentTextChanged(const QString& new_style_setting);
+    void on_styleComboBox_currentTextChanged(const QString &new_style_setting);
     void on_fontComboBox_currentFontChanged(const QFont &f);
     void on_fontSpinBox_valueChanged(int arg1);
     void on_fontCheckBox_stateChanged(int arg1);
@@ -81,7 +80,7 @@ private slots:
 
     void on_apiKeyLineEdit_editingFinished();
 
-private:
+  private:
     Ui::SettingsWidget *ui;
 
     void readSettings();
@@ -100,7 +99,7 @@ private:
 
     const static int SELF_ROW_ID = 1;
 
-signals:
+  signals:
 
     /*!
      * \brief settingChanged is emitted when a setting change occurs that needs to trigger
@@ -108,11 +107,11 @@ signals:
      */
     void settingChanged(SettingsWidget::SettingSignal widget);
 
-protected:
+  protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
      */
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // SETTINGSWIDGET_H

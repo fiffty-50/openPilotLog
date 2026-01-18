@@ -16,24 +16,20 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
-#include "src/opl.h"
-#include "src/functions/log.h"
-#include "src/gui/dialogues/firstrundialog.h"
+#include "src/classes/paths.h"
 #include "src/classes/runguard.h"
-#include "src/classes/settings.h"
 #include "src/classes/settings.h"
 #include "src/classes/style.h"
 #include "src/functions/log.h"
-#include "src/classes/paths.h"
+#include "src/gui/dialogues/firstrundialog.h"
+#include "src/opl.h"
 #include <QApplication>
+#include <QDebug>
+#include <QFileInfo>
 #include <QProcess>
 #include <QSettings>
-#include <QFileInfo>
 #include <QStandardPaths>
-#include <QDebug>
 #include <QTranslator>
-
-
 
 /*!
  * \brief firstRun - is run if the application is run for the first time and launches
@@ -41,7 +37,7 @@
  */
 bool firstRun()
 {
-    if(FirstRunDialog().exec() == QDialog::Rejected){
+    if (FirstRunDialog().exec() == QDialog::Rejected) {
         LOG << "Initial setup incomplete or unsuccessful.";
         return false;
     }
@@ -49,11 +45,11 @@ bool firstRun()
     Settings::setSetupCompleted(true);
     LOG << "Initial Setup Completed successfully";
     QMessageBox mb;
-    mb.setText("Initial set-up has been completed successfully.<br><br>Please re-start the application.");
+    mb.setText(
+        "Initial set-up has been completed successfully.<br><br>Please re-start the application.");
     mb.exec();
     return true;
 }
-
 
 /*!
  * \brief init - Sets up the logging facilities, loads the user settings and sets
@@ -64,23 +60,25 @@ bool init()
     // Check if another instance of the application is already running, we don't want
     // different processes writing to the same database
     RunGuard guard(QStringLiteral("opl_single_key"));
-    if ( !guard.tryToRun() ){
+    if (!guard.tryToRun()) {
         LOG << "Another Instance of openPilotLog is already running. Exiting.";
         return false;
     }
 
     LOG << "Setting up / verifying Application Directories...";
-    if(OPL::Paths::setup()) {
+    if (OPL::Paths::setup()) {
         LOG << "Application Directories... verified";
-    } else {
+    }
+    else {
         return false;
         LOG << "Unable to create directories.";
     }
 
     LOG << "Setting up logging facilities...";
-    if(OPL::Log::init(true)) {
+    if (OPL::Log::init(true)) {
         LOG << "Logging enabled.";
-    } else {
+    }
+    else {
         LOG << "Unable to initalise logging.";
     }
 
@@ -89,12 +87,11 @@ bool init()
     LOG << "Setting up application style...";
     OPL::Style::setup();
     // Translations to be done at a later stage
-    //LOG << "Installing translator...";
-    //ATranslator::installTranslator(OPL::Translations::English);
+    // LOG << "Installing translator...";
+    // ATranslator::installTranslator(OPL::Translations::English);
 
     // Check for First Run and launch Setup Wizard
-    if(!Settings::getSetupCompleted())
-        return firstRun();
+    if (!Settings::getSetupCompleted()) return firstRun();
 
     return true;
 }
@@ -107,8 +104,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
 
     // Set Up the Application
-    if(!init())
-        return 1;
+    if (!init()) return 1;
 
     // Create Main Window and set Window Icon acc. to Platform
     MainWindow w;
@@ -117,19 +113,19 @@ int main(int argc, char *argv[])
 #elif defined(_WIN32) || defined(_WIN64)
     w.setWindowIcon(QIcon(OPL::Assets::ICON_APPICON_WIN));
 #elif __APPLE__
-    #include <TargetConditionals.h>
-    #if TARGET_IPHONE_SIMULATOR
-         // iOS Simulator
-    #elif TARGET_OS_IPHONE
-        // iOS device
-    #elif TARGET_OS_MAC
+#include <TargetConditionals.h>
+#if TARGET_IPHONE_SIMULATOR
+    // iOS Simulator
+#elif TARGET_OS_IPHONE
+    // iOS device
+#elif TARGET_OS_MAC
     w.setWindowIcon(QIcon(OPL::Assets::ICON_APPICON_IOS));
-    #else
-    #   error "Unknown Apple platform"
-    #endif
+#else
+#error "Unknown Apple platform"
+#endif
 #endif
 
-    //w.showMaximized();
+    // w.showMaximized();
     w.show();
     return openPilotLog.exec();
 }

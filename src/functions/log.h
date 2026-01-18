@@ -18,23 +18,22 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <QTime>
-#include <QFile>
-#include <QFileInfo>
 #include <QDebug>
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QFileInfoList>
+#include <QTime>
 #include <iostream>
-#include <QDebug>
 
 /*!
- * \brief The OPL::Log namespace encapsulates constants and functions used to provide logging to files
- * and logging to console (stdout)
+ * \brief The OPL::Log namespace encapsulates constants and functions used to provide logging to
+ * files and logging to console (stdout)
  *
  * \details
  *
- * The console output is color coded - green, amber, magenta for info, warn and crit messages, whereas
- * the log files are just plain text.
+ * The console output is color coded - green, amber, magenta for info, warn and crit messages,
+ * whereas the log files are just plain text.
  *
  * There is a maximum of <numberOfLogs> log files with a maximum size of <sizeOfLogs>,
  * at the moment, up to 10 logs of up to 100kB in size are kept, older logs are
@@ -44,42 +43,42 @@
  *
  * In order to start logging, the ALog::init() function has to be called
  *
- * Credits to [Andy Dunkel](https://andydunkel.net/) for his excellent blog post on Qt Log File Rotation!
+ * Credits to [Andy Dunkel](https://andydunkel.net/) for his excellent blog post on Qt Log File
+ * Rotation!
  */
-namespace OPL::Log
-{
-    static QDir logFolder;
-    static QString logFileName;
-    const static int numberOfLogs = 10; // max number of log files to keep
-    const static int sizeOfLogs = 1024 * 100; // max log size in bytes, = 100kB
+namespace OPL::Log {
+static QDir logFolder;
+static QString logFileName;
+const static int numberOfLogs = 10;         // max number of log files to keep
+const static int sizeOfLogs   = 1024 * 100; // max log size in bytes, = 100kB
 
-    const static auto DEB_HEADER  = QLatin1String(" [DEBG]:\t");
-    const static auto INFO_HEADER = QLatin1String(" [INFO]:\t");
-    const static auto WARN_HEADER = QLatin1String(" [WARN]:\t");
-    const static auto CRIT_HEADER = QLatin1String(" [CRIT]:\t");
-    const static auto DEB_HEADER_CONSOLE  = QLatin1String("\u001b[38;5;75m[DEBG]:\t");
-    const static auto INFO_HEADER_CONSOLE = QLatin1String("\033[32m[INFO]:\t\033[m");
-    const static auto WARN_HEADER_CONSOLE = QLatin1String("\033[33m[WARN]:\t\033[m");
-    const static auto CRIT_HEADER_CONSOLE = QLatin1String("\033[35m[CRIT]:\t\033[m");
-    const static auto SPACER = QLatin1String("\t\t");
-    const static auto D_SPACER = QLatin1String("\t\t\t\t");
+const static auto DEB_HEADER          = QLatin1String(" [DEBG]:\t");
+const static auto INFO_HEADER         = QLatin1String(" [INFO]:\t");
+const static auto WARN_HEADER         = QLatin1String(" [WARN]:\t");
+const static auto CRIT_HEADER         = QLatin1String(" [CRIT]:\t");
+const static auto DEB_HEADER_CONSOLE  = QLatin1String("\u001b[38;5;75m[DEBG]:\t");
+const static auto INFO_HEADER_CONSOLE = QLatin1String("\033[32m[INFO]:\t\033[m");
+const static auto WARN_HEADER_CONSOLE = QLatin1String("\033[33m[WARN]:\t\033[m");
+const static auto CRIT_HEADER_CONSOLE = QLatin1String("\033[35m[CRIT]:\t\033[m");
+const static auto SPACER              = QLatin1String("\t\t");
+const static auto D_SPACER            = QLatin1String("\t\t\t\t");
 
-    bool init(bool log_debug = false);
-    void setLogFileName();
-    void deleteOldLogs();
-    void aMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg);
-    inline static const QString timeNow(){return QTime::currentTime().toString(Qt::ISODate);}
+bool init(bool log_debug = false);
+void setLogFileName();
+void deleteOldLogs();
+void aMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+inline static const QString timeNow() { return QTime::currentTime().toString(Qt::ISODate); }
 
-    /*!
-     * \brief info - Informs the user of an important program milestone
-     * \param msg - the message to be displayed. Shall be a translatable string (tr)
-     * \abstract This function is used to inform the user about an important step the
-     * program has (successfully) completed. This is achieved by displaying a QMessageBox.
-     *
-     * This function also creates a qInfo message, which will be written to the logfile and
-     * to stdout
-     */
-} // namespace ALog
+/*!
+ * \brief info - Informs the user of an important program milestone
+ * \param msg - the message to be displayed. Shall be a translatable string (tr)
+ * \abstract This function is used to inform the user about an important step the
+ * program has (successfully) completed. This is achieved by displaying a QMessageBox.
+ *
+ * This function also creates a qInfo message, which will be written to the logfile and
+ * to stdout
+ */
+} // namespace OPL::Log
 
 /*!
  * Representation macro for custom classes.
@@ -100,12 +99,11 @@ namespace OPL::Log
  * output:
  * MyClass(member1=3000, something2="A320")
  */
-#define REPR(cls, str) \
-friend \
-QDebug operator<<(QDebug qdb, const cls& object) \
-{ \
-    qdb << QString(#cls) + '(' + str + ')'; \
-    return qdb; \
-}
+#define REPR(cls, str)                                                                             \
+    friend QDebug operator<<(QDebug qdb, const cls &object)                                        \
+    {                                                                                              \
+        qdb << QString(#cls) + '(' + str + ')';                                                    \
+        return qdb;                                                                                \
+    }
 
 #endif // LOG_H

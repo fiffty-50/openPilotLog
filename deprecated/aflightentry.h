@@ -21,7 +21,7 @@
 #include "src/classes/aentry.h"
 
 class AFlightEntry : public AEntry {
-public:
+  public:
     AFlightEntry();
     AFlightEntry(RowId_T row_id);
     AFlightEntry(RowData_T table_data);
@@ -31,7 +31,6 @@ public:
      * \return "doft, dept, tofb, dest, tonb"
      */
     const QString summary();
-
 };
 
 #endif // AFLIGHTENTRY_H

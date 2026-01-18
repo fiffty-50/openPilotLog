@@ -6,7 +6,8 @@
 
 TableEditWidget::TableEditWidget(Orientation orientation, QWidget *parent)
     : QWidget{parent}, m_orientation(orientation)
-{}
+{
+}
 
 void TableEditWidget::init()
 {
@@ -39,11 +40,11 @@ void TableEditWidget::setupHorizontalUI()
     m_stackedWidget->hide();
 
     // create a 2-column grid layout and fill the cells
-    constexpr int colL = 0; // left column
-    constexpr int colR = 1; // right column
-    constexpr int allSpan = -1;
+    constexpr int colL       = 0; // left column
+    constexpr int colR       = 1; // right column
+    constexpr int allSpan    = -1;
     constexpr int singleSpan = 1;
-    int row = 0;
+    int row                  = 0;
 
     auto gridLayout = new QGridLayout(this);
 
@@ -65,8 +66,8 @@ void TableEditWidget::setupVerticalUI()
 {
     // create a single column grid layout and fill the cells
     constexpr int col = 0;
-    int row = 0;
-    auto gridLayout = new QGridLayout(this);
+    int row           = 0;
+    auto gridLayout   = new QGridLayout(this);
 
     gridLayout->addWidget(m_view, row, col);
     row++;
@@ -87,7 +88,7 @@ void TableEditWidget::setupVerticalUI()
 void TableEditWidget::setupFilterWidget()
 {
     // place the filter items in a grid layout so they occupy one cell in parent layout
-    QWidget *widget = new QWidget(this);
+    QWidget *widget     = new QWidget(this);
     QGridLayout *layout = new QGridLayout(widget);
 
     // one row, three columns
@@ -100,14 +101,14 @@ void TableEditWidget::setupFilterWidget()
     // Set Up the Filtering Box
     m_filterSelectionComboBox->clear();
     m_filterSelectionComboBox->addItem("All Columns", 0);
-    for(auto it = getColumnHeaderMap()->cbegin(); it != getColumnHeaderMap()->cend(); ++it) {
+    for (auto it = getColumnHeaderMap()->cbegin(); it != getColumnHeaderMap()->cend(); ++it) {
         m_filterSelectionComboBox->addItem(it.value(), it.key());
     }
 }
 
 void TableEditWidget::setupButtonWidget()
 {
-    auto buttonWidget = new QWidget(this);
+    auto buttonWidget     = new QWidget(this);
     auto buttonGridLayout = new QGridLayout(buttonWidget);
 
     switch (m_orientation) {
@@ -128,27 +129,25 @@ void TableEditWidget::setupButtonWidget()
 void TableEditWidget::setupSignalsAndSlots()
 {
     // refresh the view when the database is updated
-    QObject::connect(DB, &OPL::Database::dataBaseUpdated,
-                     this, &TableEditWidget::databaseContentChanged);
+    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
+                     &TableEditWidget::databaseContentChanged);
     // filter the view
-    QObject::connect(m_filterLineEdit, &QLineEdit::textChanged,
-                     this, &TableEditWidget::filterTextChanged);
+    QObject::connect(m_filterLineEdit, &QLineEdit::textChanged, this,
+                     &TableEditWidget::filterTextChanged);
     // update filter when combo box is changed
-    QObject::connect(m_filterSelectionComboBox, &QComboBox::currentIndexChanged,
-                     this, [this]()
-                     { filterTextChanged(m_filterLineEdit->text()); });
+    QObject::connect(m_filterSelectionComboBox, &QComboBox::currentIndexChanged, this,
+                     [this]() { filterTextChanged(m_filterLineEdit->text()); });
     // sort the view by column
-    QObject::connect(m_view->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this, &TableEditWidget::sortColumnChanged);
+    QObject::connect(m_view->horizontalHeader(), &QHeaderView::sectionClicked, this,
+                     &TableEditWidget::sortColumnChanged);
     // Edit an entry
-    QObject::connect(m_view, &QTableView::clicked,
-                     this, &TableEditWidget::editEntryRequested);
+    QObject::connect(m_view, &QTableView::clicked, this, &TableEditWidget::editEntryRequested);
     // Add a new entry
-    QObject::connect(m_addNewEntryPushButton, &QPushButton::clicked,
-                     this, &TableEditWidget::addEntryRequested);
+    QObject::connect(m_addNewEntryPushButton, &QPushButton::clicked, this,
+                     &TableEditWidget::addEntryRequested);
     // Delete a selected entry
-    QObject::connect(m_deleteEntryPushButton, &QPushButton::clicked,
-                     this, &TableEditWidget::deleteEntryRequested);
+    QObject::connect(m_deleteEntryPushButton, &QPushButton::clicked, this,
+                     &TableEditWidget::deleteEntryRequested);
 }
 
 void TableEditWidget::addEntryRequested()
@@ -202,8 +201,7 @@ void TableEditWidget::deleteEntryRequested()
     confirm.setText(confirmDeleteString(rowId));
     if (confirm.exec() == QMessageBox::Yes) {
         auto editDialog = getEntryEditDialog(this);
-        if (!editDialog->deleteEntry(rowId))
-            WARN(deleteErrorString(rowId));
+        if (!editDialog->deleteEntry(rowId)) WARN(deleteErrorString(rowId));
     }
 
     // re-set stackedWidget for Vertical Layout
@@ -238,8 +236,8 @@ void TableEditWidget::hideEditWidget()
 
 QString TableEditWidget::getFilterStatement(const QString &column, const QString &filterText)
 {
-    return QString(
-        QLatin1Char('\"') + column + QLatin1String("\" LIKE '%") + filterText + QLatin1String("%'"));
+    return QString(QLatin1Char('\"') + column + QLatin1String("\" LIKE '%") + filterText +
+                   QLatin1String("%'"));
 }
 
 void TableEditWidget::cleanUpOldEditDialog()
@@ -249,9 +247,9 @@ void TableEditWidget::cleanUpOldEditDialog()
     }
 }
 
-void TableEditWidget::filterTextChanged(const QString &filterText) 
+void TableEditWidget::filterTextChanged(const QString &filterText)
 {
-        // Retreive selected column for filtering
+    // Retreive selected column for filtering
     int column = m_filterSelectionComboBox->currentData().toInt();
 
     if (column == 0) {

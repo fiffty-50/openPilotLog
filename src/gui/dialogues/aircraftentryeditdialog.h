@@ -19,17 +19,16 @@
 #define AIRCRAFTENTRYEDITDIALOG_H
 
 #include "entryeditdialog.h"
+#include <QComboBox>
+#include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QDialogButtonBox>
 #include <QPlainTextEdit>
+#include <QSpinBox>
 
-class AircraftEntryEditDialog : public EntryEditDialog
-{
-public:
+class AircraftEntryEditDialog : public EntryEditDialog {
+  public:
     explicit AircraftEntryEditDialog(QWidget *parent = nullptr);
     explicit AircraftEntryEditDialog(int row_id, QWidget *parent = nullptr);
 
@@ -37,7 +36,7 @@ public:
     void loadEntry(int rowID) override;
     bool deleteEntry(int rowID) override;
 
-private:
+  private:
     void init();
     void retranslateUi();
     void setupSlots();
@@ -70,7 +69,7 @@ private:
     QPlainTextEdit *remarksTextEdit;
     QDialogButtonBox *buttonBox;
 
-private slots:
+  private slots:
     void on_accepted();
 };
 

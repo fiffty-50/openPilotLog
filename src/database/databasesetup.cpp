@@ -17,10 +17,10 @@
  *
  */
 #include "databasesetup.h"
-#include <QSqlQuery>
-#include <QJsonArray>
-#include "src/database/database.h"
 #include "src/classes/jsonhelper.h"
+#include "src/database/database.h"
+#include <QJsonArray>
+#include <QSqlQuery>
 
 bool DatabaseSetup::createTables()
 {
@@ -43,14 +43,14 @@ bool DatabaseSetup::createViews()
         }
     }
     LOG << "View creation unimplemented";
-    //LOG << "Database views created successfully.";
+    // LOG << "Database views created successfully.";
     return true;
 }
 
-bool DatabaseSetup::executeSqlFile(const QString& file_path)
+bool DatabaseSetup::executeSqlFile(const QString &file_path)
 {
     QFile f(file_path);
-    if(!f.open(QIODevice::ReadOnly)) {
+    if (!f.open(QIODevice::ReadOnly)) {
         LOG << "Unable to read database sql file: " << file_path << " - " << f.errorString();
         return false;
     }
@@ -89,24 +89,26 @@ bool DatabaseSetup::importTemplateData(bool useOnlineTemplateData)
 {
     if (useOnlineTemplateData) {
         return importOnlineTemplateData();
-    } else {
+    }
+    else {
         return importLocalTemplateData();
     }
 }
 
 bool DatabaseSetup::importLocalTemplateData()
 {
-    for( auto it = m_templateData.cbegin(); it != m_templateData.cend(); ++it ) {
+    for (auto it = m_templateData.cbegin(); it != m_templateData.cend(); ++it) {
         const OPL::DbTable table = it.key();
         const QString table_name = OPL::GLOBALS->getDbTableName(table);
-        const QString file_path = it.value();
+        const QString file_path  = it.value();
         LOG << "Importing local template data from: " << file_path << " into table: " << table_name;
 
         // clear table to make sure it is empty before import
         QSqlQuery q;
         q.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
         if (!q.exec()) {
-            LOG << "Error clearing template data table: " << table_name << " - " << q.lastError().text();
+            LOG << "Error clearing template data table: " << table_name << " - "
+                << q.lastError().text();
             return false;
         }
 
@@ -115,8 +117,9 @@ bool DatabaseSetup::importLocalTemplateData()
         LOG << "Commiting " << dataToCommit.size() << " entries";
 
         // Commit data
-        if(!DB->commit(dataToCommit, table)) {
-            LOG << "Error importing template data into table: " << table_name << " - " << DB->lastError.text();
+        if (!DB->commit(dataToCommit, table)) {
+            LOG << "Error importing template data into table: " << table_name << " - "
+                << DB->lastError.text();
             return false;
         }
     }
@@ -139,13 +142,15 @@ bool DatabaseSetup::clearDatabase()
         LOG << "Error retrieving database schema: " << q.lastError().text();
         return false;
     }
-    
+
     while (q.next()) {
         const QString object_name = q.value(0).toString();
         QSqlQuery drop_query;
-        drop_query.prepare(QLatin1String("DROP TABLE IF EXISTS ") + object_name + QLatin1String(";"));
+        drop_query.prepare(QLatin1String("DROP TABLE IF EXISTS ") + object_name +
+                           QLatin1String(";"));
         if (!drop_query.exec()) {
-            LOG << "Error dropping database object: " << object_name << " - " << drop_query.lastError().text();
+            LOG << "Error dropping database object: " << object_name << " - "
+                << drop_query.lastError().text();
             return false;
         }
     }
@@ -160,7 +165,8 @@ bool DatabaseSetup::clearUserData(bool useOnlineTemplateData)
         QSqlQuery q;
         q.prepare(QLatin1String("DELETE FROM ") + table_name);
         if (!q.exec()) {
-            LOG << "Error clearing user data from table: " << table_name << " - " << q.lastError().text();
+            LOG << "Error clearing user data from table: " << table_name << " - "
+                << q.lastError().text();
             return false;
         }
     }

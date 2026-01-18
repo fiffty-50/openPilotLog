@@ -19,10 +19,9 @@
 #include "src/classes/date.h"
 
 StyledDateDelegate::StyledDateDelegate(const OPL::DateTimeFormat &dateFormat, QObject *parent)
-    :
-    QStyledItemDelegate(parent),
-    m_format(dateFormat)
-{}
+    : QStyledItemDelegate(parent), m_format(dateFormat)
+{
+}
 
 QString StyledDateDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {

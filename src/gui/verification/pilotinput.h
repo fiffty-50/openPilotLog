@@ -3,11 +3,10 @@
 
 #include "userinput.h"
 
-class PilotInput : public UserInput
-{
-public:
+class PilotInput : public UserInput {
+  public:
     PilotInput() = delete;
-    PilotInput(const QString& userInput) : UserInput(userInput) {}
+    PilotInput(const QString &userInput) : UserInput(userInput) {}
 
     /*!
      * \brief Checks if a user-given Pilot Name is present in the database
@@ -21,7 +20,8 @@ public:
      * and the closest match returned, or an empty string if none found.
      */
     QString fixup() const override;
-private:
+
+  private:
     const static inline QLatin1String self{"self"};
 };
 

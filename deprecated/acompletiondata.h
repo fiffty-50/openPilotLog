@@ -8,9 +8,8 @@
  * and mapping data from the database and caches it for fast access without the
  * need to query the database.
  */
-class ACompletionData
-{
-public:  
+class ACompletionData {
+  public:
     /*!
      * \brief init Retrieves Data and populates Lists and Maps
      */
@@ -22,7 +21,6 @@ public:
     void update();
     void updateTails();
     void updatePilots();
-
 
     // Maps for input mapping DB key - user input
     QHash<int, QString> pilotsIdMap;

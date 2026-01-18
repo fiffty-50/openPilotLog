@@ -19,12 +19,11 @@
 
 namespace OPL {
 
-SimulatorEntry::SimulatorEntry()
-    : Row(DbTable::Simulators, &FIELDS)
-{}
+SimulatorEntry::SimulatorEntry() : Row(DbTable::Simulators, &FIELDS) {}
 
 SimulatorEntry::SimulatorEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::Simulators, row_id, row_data, &FIELDS)
-{}
+{
+}
 
 } // namespace OPL

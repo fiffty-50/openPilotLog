@@ -16,28 +16,28 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightentry.h"
-#include "src/opl.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
+#include "src/opl.h"
 
 namespace OPL {
 
-FlightEntry::FlightEntry()
-    : Row(DbTable::Flights, &FIELDS)
+FlightEntry::FlightEntry() : Row(DbTable::Flights, &FIELDS)
 {
-    for(const QString &item : mandatoryFields) {
+    for (const QString &item : mandatoryFields) {
         m_rowData.insert(item, -1);
     }
 }
 
 FlightEntry::FlightEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Flights, row_id, row_data, &FIELDS) {}
+    : Row(DbTable::Flights, row_id, row_data, &FIELDS)
+{
+}
 
 bool FlightEntry::isValid() const
 {
-    for(const QString &item : mandatoryFields) {
-        if(m_rowData.value(item).toInt() < 0)
-            return false;
+    for (const QString &item : mandatoryFields) {
+        if (m_rowData.value(item).toInt() < 0) return false;
     }
     return true;
 }
@@ -45,18 +45,18 @@ bool FlightEntry::isValid() const
 QString FlightEntry::getFlightSummary() const
 {
     using namespace OPL;
-    if(!isValid())
-        return QString();
+    if (!isValid()) return QString();
 
     auto tableData = getData();
     QString flight_summary;
     constexpr auto space = QLatin1Char(' ');
-    flight_summary.append(OPL::Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
+    flight_summary.append(
+        OPL::Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
     flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
-    flight_summary.append(Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString()
-                          + space);
-    flight_summary.append(Time(tableData.value(FlightEntry::TONB).toInt(), DateTimeFormat()).toString()
-                          + space);
+    flight_summary.append(
+        Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString() + space);
+    flight_summary.append(
+        Time(tableData.value(FlightEntry::TONB).toInt(), DateTimeFormat()).toString() + space);
     flight_summary.append(tableData.value(FlightEntry::DEST).toString());
 
     return flight_summary;

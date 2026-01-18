@@ -24,10 +24,10 @@ namespace OPL {
 /*!
  * \brief A Row representing a Pilot entry. See Row class for details.
  */
-class PilotEntry : public Row
-{
+class PilotEntry : public Row {
     const static inline QString TABLE_NAME = QStringLiteral("pilots");
-public:
+
+  public:
     PilotEntry();
     PilotEntry(const RowData_T &row_data);
     PilotEntry(int row_id, const RowData_T &row_data);
@@ -50,48 +50,46 @@ public:
     const QString getEmail() const;
     const QString getRemarks() const;
 
-    //todo - make this private:
+    // todo - make this private:
 
-
-    const static inline QString ROWID           = QStringLiteral("pilot_id");
+    const static inline QString ROWID = QStringLiteral("pilot_id");
     /*!
      * \brief The sql column name for the pilots name
      */
-    const static inline QString NAME        = QStringLiteral("pilot_name");
+    const static inline QString NAME = QStringLiteral("pilot_name");
 
     /*!
      * \brief The sql column name for an alias for the pilot
      */
-    const static inline QString ALIAS           = QStringLiteral("alias");
+    const static inline QString ALIAS = QStringLiteral("alias");
 
     /*!
      * \brief The sql column name for the pilots employee number
      */
-    const static inline QString EMPLOYEEID      = QStringLiteral("employee_id");
+    const static inline QString EMPLOYEEID = QStringLiteral("employee_id");
 
     /*!
      * \brief The company the pilots works for
      */
-    const static inline QString COMPANY         = QStringLiteral("company");
+    const static inline QString COMPANY = QStringLiteral("company");
 
     /*!
      * \brief The sql column name for a pilots phone number
      */
-    const static inline QString PHONE           = QStringLiteral("phone");
+    const static inline QString PHONE = QStringLiteral("phone");
     /*!
      * \brief The sql column name for a pilots email address
      */
-    const static inline QString EMAIL           = QStringLiteral("email");
+    const static inline QString EMAIL = QStringLiteral("email");
 
     /*!
      * \brief The sql column name for a pilots remarks
      */
-    const static inline QString REMARKS 		= QStringLiteral("remarks");
+    const static inline QString REMARKS = QStringLiteral("remarks");
 
-private:
-    const static inline QList<QString> FIELDS = {
-        NAME, ALIAS, EMPLOYEEID, COMPANY, PHONE, EMAIL, REMARKS
-    };
+  private:
+    const static inline QList<QString> FIELDS = {NAME,  ALIAS, EMPLOYEEID, COMPANY,
+                                                 PHONE, EMAIL, REMARKS};
 };
 
 } // namespace OPL

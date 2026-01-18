@@ -15,9 +15,8 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "src/database/database.h"
 #include "dbcompletiondata.h"
-
+#include "src/database/database.h"
 
 namespace OPL {
 
@@ -34,13 +33,13 @@ void DbCompletionData::init()
     // For tails, also provide completion for registration stripped of the '-' character
     QStringList tails_list = getCompletionList(CompleterTarget::Registrations);
     for (auto &reg : tails_list) {
-        if(reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
+        if (reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
             QString copy = reg;
             reg.remove(QLatin1Char('-'));
             reg = copy + " (" + reg + QLatin1Char(')');
         }
     }
-    tailsList   = tails_list;
+    tailsList = tails_list;
 
     // retreive default data
     airportIcaoIdMap = getIdMap(CompleterTarget::AirportIdentifierICAO);
@@ -56,25 +55,25 @@ void DbCompletionData::init()
 QT_DEPRECATED
 void DbCompletionData::update()
 {
-        updatePilots();
-        updateTails();
-        updateAirports();
+    updatePilots();
+    updateTails();
+    updateAirports();
 };
 
 QT_DEPRECATED
 void DbCompletionData::updateTails()
 {
     DEB << "Updating Tails...";
-    tailsIdMap  = getIdMap(CompleterTarget::Registrations);
-    tailsList   = getCompletionList(CompleterTarget::Registrations);
+    tailsIdMap = getIdMap(CompleterTarget::Registrations);
+    tailsList  = getCompletionList(CompleterTarget::Registrations);
 }
 
 QT_DEPRECATED
 void DbCompletionData::updatePilots()
 {
     DEB << "Updating Pilots...";
-    pilotsIdMap  = getIdMap(CompleterTarget::PilotNames);
-    pilotList    = getCompletionList(CompleterTarget::PilotNames);
+    pilotsIdMap = getIdMap(CompleterTarget::PilotNames);
+    pilotList   = getCompletionList(CompleterTarget::PilotNames);
 }
 
 QT_DEPRECATED
@@ -97,12 +96,14 @@ const QStringList DbCompletionData::getCompletionList(CompleterTarget target)
         statement.append(QStringLiteral("SELECT lastname||', '||firstname FROM pilots"));
         break;
     case CompleterTarget::AircraftTypes:
-        statement.append(QStringLiteral("SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
-                         "UNION "
-                         "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
+        statement.append(QStringLiteral(
+            "SELECT make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
+            "UNION "
+            "SELECT make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
         break;
     case CompleterTarget::AirportIdentifier:
-        statement.append(QStringLiteral("SELECT icao FROM airports UNION SELECT iata FROM airports"));
+        statement.append(
+            QStringLiteral("SELECT icao FROM airports UNION SELECT iata FROM airports"));
         break;
     case CompleterTarget::Registrations:
         statement.append(QStringLiteral("SELECT registration FROM tails"));
@@ -141,9 +142,11 @@ const QHash<int, QString> DbCompletionData::getIdMap(CompleterTarget target)
         statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
         break;
     case CompleterTarget::AircraftTypes:
-        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model IS NOT NULL AND variant IS NULL "
-                         "UNION "
-                         "SELECT ROWID, make||' '||model||'-'||variant FROM aircraft WHERE variant IS NOT NULL"));
+        statement.append(QStringLiteral("SELECT ROWID, make||' '||model FROM aircraft WHERE model "
+                                        "IS NOT NULL AND variant IS NULL "
+                                        "UNION "
+                                        "SELECT ROWID, make||' '||model||'-'||variant FROM "
+                                        "aircraft WHERE variant IS NOT NULL"));
         break;
     case CompleterTarget::AirportIdentifierICAO:
         statement.append(QStringLiteral("SELECT ROWID, icao FROM airports"));
@@ -173,14 +176,8 @@ const QHash<int, QString> DbCompletionData::getIdMap(CompleterTarget target)
 }
 
 QT_DEPRECATED
-const QHash<int, QString> &DbCompletionData::getAirportsMapICAO() const
-{
-    return airportsMapICAO;
-}
+const QHash<int, QString> &DbCompletionData::getAirportsMapICAO() const { return airportsMapICAO; }
 
 QT_DEPRECATED
-const QHash<int, QString> &DbCompletionData::getAirportsMapIATA() const
-{
-    return airportsMapIATA;
-}
+const QHash<int, QString> &DbCompletionData::getAirportsMapIATA() const { return airportsMapIATA; }
 } // namespace OPL

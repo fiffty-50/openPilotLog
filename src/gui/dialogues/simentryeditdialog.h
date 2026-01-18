@@ -18,35 +18,35 @@
 #ifndef SIMENTRYEDITDIALOG_H
 #define SIMENTRYEDITDIALOG_H
 
+#include "src/database/simulatorentry.h"
+#include "src/gui/dialogues/entryeditdialog.h"
+#include <QCalendarWidget>
+#include <QComboBox>
 #include <QDialog>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QComboBox>
 #include <QPushButton>
-#include <QCalendarWidget>
-#include "src/database/simulatorentry.h"
-#include "src/gui/dialogues/entryeditdialog.h"
 
 /*!
- * \brief The SimEntryEditDialog class enables adding a new Simulator Session to the database or editing an existing one.
- * \details The SimEntryEditDialog offers two constructors, one is used to create a new Simulator Entry
- * from scratch, while the other one is used to edit an existing entry. The existing entry
- * is identified by its ROW ID in the database and is then retreived, its data being used
- * to pre-fill the UI to enable editing the existing data.
+ * \brief The SimEntryEditDialog class enables adding a new Simulator Session to the database or
+ * editing an existing one.
+ * \details The SimEntryEditDialog offers two constructors, one is used to create a new Simulator
+ * Entry from scratch, while the other one is used to edit an existing entry. The existing entry is
+ * identified by its ROW ID in the database and is then retreived, its data being used to pre-fill
+ * the UI to enable editing the existing data.
  *
  * A QCompleter provides in-line completion for the aircraft type field.
  */
-class SimEntryEditDialog : public EntryEditDialog
-{
+class SimEntryEditDialog : public EntryEditDialog {
     Q_OBJECT
 
-public:
+  public:
     explicit SimEntryEditDialog(QWidget *parent = nullptr);
     explicit SimEntryEditDialog(int row_id, QWidget *parent = nullptr);
     ~SimEntryEditDialog() = default;
 
-private slots:
+  private slots:
     void on_buttonBox_accepted();
     void on_dateLineEdit_editingFinished();
     void on_timeLineEdit_editingFinished();
@@ -55,7 +55,7 @@ private slots:
     void on_datePushButton_clicked();
     void on_calendarDateSelected();
 
-private:
+  private:
     // UI Elements
     QGridLayout *gridLayout;
     QLabel *simTypeLabel;
@@ -79,13 +79,10 @@ private:
     void retranslateUi();
     void setupSlots();
 
-    //TODO load from settings
-    OPL::DateTimeFormat m_format = OPL::DateTimeFormat(
-        OPL::DateTimeFormat::DateFormat::Default,
-        QStringLiteral("yyyy-MM-dd"),
-        OPL::DateTimeFormat::TimeFormat::Default,
-        QStringLiteral("hh:mm")
-        );
+    // TODO load from settings
+    OPL::DateTimeFormat m_format =
+        OPL::DateTimeFormat(OPL::DateTimeFormat::DateFormat::Default, QStringLiteral("yyyy-MM-dd"),
+                            OPL::DateTimeFormat::TimeFormat::Default, QStringLiteral("hh:mm"));
 
     void fillEntryData();
     bool verifyInput(QString &error_msg);
@@ -93,7 +90,7 @@ private:
     OPL::SimulatorEntry entry;
 
     // EntryEditDialog interface
-public:
+  public:
     virtual void loadEntry(int rowID) override;
     virtual bool deleteEntry(int rowID) override;
 };

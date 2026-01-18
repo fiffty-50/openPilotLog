@@ -9,22 +9,21 @@
 #include "src/gui/dialogues/flightentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
 
-LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent)
-    : TableEditWidget(Vertical, parent)
-{}
-
+LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent) : TableEditWidget(Vertical, parent)
+{
+}
 
 // TableEditWidget implementation
 
 void LogbookTableEditWidget::setupModelAndView()
 {
     m_logbookView = Settings::getLogbookView();
-    m_model = new QSqlTableModel(this, DB->database());
+    m_model       = new QSqlTableModel(this, DB->database());
     m_model->setTable(OPL::GLOBALS->getLogbookViewName(m_logbookView));
     m_model->select();
 
     const auto headers = OPL::LogbookViewInfo::getTableHeaders(m_logbookView);
-    for(int i = 0; i < headers.size(); i++) {
+    for (int i = 0; i < headers.size(); i++) {
         m_model->setHeaderData(i, Qt::Horizontal, headers[i]);
     }
 
@@ -54,19 +53,18 @@ void LogbookTableEditWidget::setupUI()
 
 QString LogbookTableEditWidget::deleteErrorString(int rowId)
 {
-    return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-              ).arg(DB->lastError.text());
+    return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1")
+        .arg(DB->lastError.text());
 }
 
 QString LogbookTableEditWidget::confirmDeleteString(int rowId)
 {
-    if(rowId > 0) {
-    const auto selectedEntry = DB->getFlightEntry(rowId);
-    return tr("The following flight will be deleted:<br><br><b><tt>"
-               "%1<br></b></tt><br><br>"
-               "Deleting flights is irreversible.<br>Do you want to proceed?"
-              ).arg(selectedEntry.getFlightSummary());
-
+    if (rowId > 0) {
+        const auto selectedEntry = DB->getFlightEntry(rowId);
+        return tr("The following flight will be deleted:<br><br><b><tt>"
+                  "%1<br></b></tt><br><br>"
+                  "Deleting flights is irreversible.<br>Do you want to proceed?")
+            .arg(selectedEntry.getFlightSummary());
     }
 
     return tr("Deleting entries is irreversible.<br>Do you want to proceed?");
@@ -77,21 +75,21 @@ EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
     return new FlightEntryEditDialog(parent);
 }
 
-void LogbookTableEditWidget::filterTextChanged(const QString &filterString)
-{}
+void LogbookTableEditWidget::filterTextChanged(const QString &filterString) {}
 
 void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 {
     showEditWidget();
-    const auto idx = m_view->selectionModel()->currentIndex();
+    const auto idx   = m_view->selectionModel()->currentIndex();
     const auto rowId = m_model->index(idx.row(), 0).data().toInt();
-    if(rowId > 0) {
-        //auto nfd = NewFlightDialog(rowId, this);
+    if (rowId > 0) {
+        // auto nfd = NewFlightDialog(rowId, this);
         auto dialog = FlightEntryEditDialog(rowId, this);
         m_stackedWidget->addWidget(&dialog);
         m_stackedWidget->setCurrentWidget(&dialog);
         dialog.exec();
-    } else {
+    }
+    else {
         auto nsd = SimEntryEditDialog(rowId * -1, this);
         m_stackedWidget->addWidget(&nsd);
         m_stackedWidget->setCurrentWidget(&nsd);
@@ -103,7 +101,7 @@ void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex
 void LogbookTableEditWidget::deleteEntryRequested()
 {
     const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
-    if(!selectedIndex.isValid()) {
+    if (!selectedIndex.isValid()) {
         WARN(tr("No entry selected."));
         return;
     }
@@ -121,14 +119,13 @@ void LogbookTableEditWidget::deleteEntryRequested()
 
     confirm.setText(confirmDeleteString(rowId));
     if (confirm.exec() == QMessageBox::Yes) {
-        if(rowId > 0) {
+        if (rowId > 0) {
             const auto selectedEntry = DB->getFlightEntry(rowId);
-            if(!DB->remove(selectedEntry))
-                WARN(deleteErrorString(rowId));
-        } else {
-            const auto selectedEntry = DB->getSimEntry(rowId * - 1);
-            if(!DB->remove(selectedEntry))
-                WARN(deleteErrorString(rowId));
+            if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
+        }
+        else {
+            const auto selectedEntry = DB->getSimEntry(rowId * -1);
+            if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
         }
     }
 }
@@ -137,52 +134,51 @@ void LogbookTableEditWidget::deleteEntryRequested()
 
 void LogbookTableEditWidget::addSimulatorEntryRequested()
 {
-        showEditWidget();
+    showEditWidget();
 
-        auto nsd = SimEntryEditDialog(this);
-        m_stackedWidget->addWidget(&nsd);
-        m_stackedWidget->setCurrentWidget(&nsd);
-        nsd.exec();
+    auto nsd = SimEntryEditDialog(this);
+    m_stackedWidget->addWidget(&nsd);
+    m_stackedWidget->setCurrentWidget(&nsd);
+    nsd.exec();
 
-        hideEditWidget();
+    hideEditWidget();
 }
 
 void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
 {
-    for(auto i = m_defaultDelegates.constBegin(); i != m_defaultDelegates.constEnd(); i++) {
+    for (auto i = m_defaultDelegates.constBegin(); i != m_defaultDelegates.constEnd(); i++) {
         m_view->setItemDelegateForColumn(i.key(), i.value());
         // should probably delete the old custom delegate, Qt docs say the
         // view does not take ownership of the delegates so they might be leaking
         // https://doc.qt.io/qt-6/qabstractitemdelegate.html
     }
 
-    if(widget == SettingsWidget::SettingSignal::LogbookWidget)
-        setupModelAndView();
+    if (widget == SettingsWidget::SettingSignal::LogbookWidget) setupModelAndView();
 }
 
 void LogbookTableEditWidget::setupDelegates()
 {
     // minutes to hh:mm
     const auto timeDelegate = new StyledTimeDelegate(m_format, m_model);
-    for(const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
+    for (const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
         m_defaultDelegates.insert(col, m_view->itemDelegateForColumn(col));
         m_view->setItemDelegateForColumn(col, timeDelegate);
     }
 
     // julian day to Date Format
-    const int dateCol = OPL::LogbookViewInfo::getDateColumn(m_logbookView);
+    const int dateCol       = OPL::LogbookViewInfo::getDateColumn(m_logbookView);
     const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), m_model);
     m_defaultDelegates.insert(dateCol, m_view->itemDelegateForColumn(dateCol));
     m_view->setItemDelegateForColumn(dateCol, dateDelegate);
 
     // pilot_id to names
-    const int pilCol = OPL::LogbookViewInfo::getPicColumn(m_logbookView);
+    const int pilCol         = OPL::LogbookViewInfo::getPicColumn(m_logbookView);
     const auto pilotDelegate = new StyledPilotDelegate(m_model);
     m_defaultDelegates.insert(pilCol, m_view->itemDelegateForColumn(pilCol));
     m_view->setItemDelegateForColumn(pilCol, pilotDelegate);
 
     // tail_id to aircraft type and registration
-    const int typeCol = OPL::LogbookViewInfo::getTypeColumn(m_logbookView);
+    const int typeCol       = OPL::LogbookViewInfo::getTypeColumn(m_logbookView);
     const auto typeDelegate = new StyledTypeDelegate(m_model);
     m_defaultDelegates.insert(typeCol, m_view->itemDelegateForColumn(typeCol));
     m_view->setItemDelegateForColumn(typeCol, typeDelegate);

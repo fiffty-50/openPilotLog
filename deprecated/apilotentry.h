@@ -22,13 +22,13 @@
 #include "src/database/databasetypes.h"
 
 struct APilotEntry : public AEntry {
-public:
+  public:
     APilotEntry();
     APilotEntry(RowId_T row_id);
     APilotEntry(RowData_T table_data);
 
-    APilotEntry(const APilotEntry& pe) = default;
-    APilotEntry& operator=(const APilotEntry& pe) = default;
+    APilotEntry(const APilotEntry &pe)            = default;
+    APilotEntry &operator=(const APilotEntry &pe) = default;
 
     const QString name();
 };

@@ -16,30 +16,24 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "tailswidget.h"
-#include "src/classes/time.h"
-#include "ui_aircraftwidget.h"
-#include "src/opl.h"
 #include "src/classes/settings.h"
+#include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/newtaildialog.h"
+#include "src/opl.h"
+#include "ui_aircraftwidget.h"
 
-
-TailsWidget::TailsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::AircraftWidget)
+TailsWidget::TailsWidget(QWidget *parent) : QWidget(parent), ui(new Ui::AircraftWidget)
 {
     ui->setupUi(this);
 
-    ui->tableView->setMinimumWidth(this->width()/2);
-    ui->stackedWidget->setMinimumWidth(this->width()/2);
+    ui->tableView->setMinimumWidth(this->width() / 2);
+    ui->stackedWidget->setMinimumWidth(this->width() / 2);
 
     setupModelAndView();
 }
 
-TailsWidget::~TailsWidget()
-{
-    delete ui;
-}
+TailsWidget::~TailsWidget() { delete ui; }
 
 void TailsWidget::setupModelAndView()
 {
@@ -51,7 +45,8 @@ void TailsWidget::setupModelAndView()
     view->setModel(model);
 
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->setSelectionMode(QAbstractItemView::SingleSelection); // For now, editing multiple entries is not supported.
+    view->setSelectionMode(
+        QAbstractItemView::SingleSelection); // For now, editing multiple entries is not supported.
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
     view->hideColumn(0);
@@ -71,10 +66,10 @@ void TailsWidget::setupModelAndView()
 
 void TailsWidget::connectSignalsAndSlots()
 {
-    QObject::connect(ui->tableView->selectionModel(),   &QItemSelectionModel::selectionChanged,
-                     this,                              &TailsWidget::tableView_selectionChanged);
-    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked,
-                     this,                              &TailsWidget::tableView_headerClicked);
+    QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this,
+                     &TailsWidget::tableView_selectionChanged);
+    QObject::connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionClicked, this,
+                     &TailsWidget::tableView_headerClicked);
 }
 
 /*
@@ -83,22 +78,17 @@ void TailsWidget::connectSignalsAndSlots()
 
 void TailsWidget::onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal)
 {
-    if (signal != SettingsWidget::AircraftWidget)
-        return;
+    if (signal != SettingsWidget::AircraftWidget) return;
 
     setupModelAndView();
 }
 
-void TailsWidget::onAircraftWidget_dataBaseUpdated()
-{
-    refreshView();
-}
+void TailsWidget::onAircraftWidget_dataBaseUpdated() { refreshView(); }
 
 void TailsWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
-        if(event->type() == QEvent::LanguageChange)
-            ui->retranslateUi(this);
+        if (event->type() == QEvent::LanguageChange) ui->retranslateUi(this);
 }
 
 void TailsWidget::on_newAircraftButton_clicked()
@@ -115,17 +105,16 @@ void TailsWidget::on_newAircraftButton_clicked()
  */
 void TailsWidget::tableView_selectionChanged()
 {
-    if (this->findChild<NewTailDialog*>() != nullptr)
-        delete this->findChild<NewTailDialog*>();
+    if (this->findChild<NewTailDialog *>() != nullptr) delete this->findChild<NewTailDialog *>();
 
     selectedTails.clear();
     const auto selected_rows = selection->selectedRows();
-    for (const auto& row : selected_rows) {
+    for (const auto &row : selected_rows) {
         selectedTails << row.data().toInt();
         DEB << "Selected Tails(s) with ID: " << selectedTails;
     }
 
-    if(selectedTails.length() == 1) {
+    if (selectedTails.length() == 1) {
         NewTailDialog nt(selectedTails.first(), this);
         nt.setWindowFlag(Qt::Widget);
         ui->stackedWidget->addWidget(&nt);
@@ -143,25 +132,21 @@ void TailsWidget::tableView_selectionChanged()
  */
 void TailsWidget::on_aircraftSearchLineEdit_textChanged(const QString &arg1)
 {
-    if(ui->aircraftSearchComboBox->currentIndex() == 0){
+    if (ui->aircraftSearchComboBox->currentIndex() == 0) {
         ui->aircraftSearchLineEdit->setText(arg1.toUpper());
     }
-    model->setFilter(ui->aircraftSearchComboBox->currentText()
-                     + QLatin1String(" LIKE \"%")
-                     + arg1 + QLatin1String("%\""));
+    model->setFilter(ui->aircraftSearchComboBox->currentText() + QLatin1String(" LIKE \"%") + arg1 +
+                     QLatin1String("%\""));
 }
 
-void TailsWidget::tableView_headerClicked(int column)
-{
-    Settings::setTailSortColumn(column);
-}
+void TailsWidget::tableView_headerClicked(int column) { Settings::setTailSortColumn(column); }
 
 void TailsWidget::on_deleteAircraftButton_clicked()
 {
     if (selectedTails.length() == 0) {
         INFO(tr("No Aircraft selected."));
-
-    } else if (selectedTails.length() > 1) {
+    }
+    else if (selectedTails.length() > 1) {
         WARN(tr("Deleting multiple entries is currently not supported"));
         /// [F] to do: for (const auto& row_id : selectedPilots) { do batchDelete }
         /// I am not sure if enabling this functionality for this widget is a good idea.
@@ -170,9 +155,10 @@ void TailsWidget::on_deleteAircraftButton_clicked()
         /// colleagues polluting his logbook anymore.
         /// On the other hand we could run into issues with foreign key constraints on the
         /// flights table (see on_delete_unsuccessful) below.
-        /// I think batch-editing should be implemented at some point, but batch-deleting should not.
-
-    } else if (selectedTails.length() == 1) {
+        /// I think batch-editing should be implemented at some point, but batch-deleting should
+        /// not.
+    }
+    else if (selectedTails.length() == 1) {
         auto entry = DB->getTailEntry(selectedTails.first());
         QMessageBox message_box(this);
         message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -180,13 +166,12 @@ void TailsWidget::on_deleteAircraftButton_clicked()
         message_box.setIcon(QMessageBox::Question);
         message_box.setWindowTitle(tr("Delete Aircraft"));
         message_box.setText(tr("You are deleting the following aircraft:<br><br><b><tt>"
-                               "%1 - (%2)</b></tt><br><br>Are you sure?"
-                               ).arg(entry.getData().value(OPL::TailEntry::REGISTRATION).toString(),
+                               "%1 - (%2)</b></tt><br><br>Are you sure?")
+                                .arg(entry.getData().value(OPL::TailEntry::REGISTRATION).toString(),
                                      getAircraftTypeString(entry)));
 
         if (message_box.exec() == QMessageBox::Yes) {
-            if(!DB->remove(entry))
-                onDeleteUnsuccessful();
+            if (!DB->remove(entry)) onDeleteUnsuccessful();
         }
     }
     refreshView();
@@ -205,8 +190,8 @@ void TailsWidget::on_deleteAircraftButton_clicked()
  */
 void TailsWidget::onDeleteUnsuccessful()
 {
-    QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(selectedTails.first(),
-                                                                       OPL::DbTable::Tails);
+    QList<int> foreign_key_constraints =
+        DB->getForeignKeyConstraints(selectedTails.first(), OPL::DbTable::Tails);
     QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : qAsConst(foreign_key_constraints)) {
         constrained_flights.append(DB->getFlightEntry(row_id));
@@ -214,27 +199,30 @@ void TailsWidget::onDeleteUnsuccessful()
 
     QMessageBox message_box(this);
     if (constrained_flights.isEmpty()) {
-        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-                               ).arg(DB->lastError.text()));
+        message_box.setText(tr("<br>Unable to delete.<br><br>The following error has ocurred: %1")
+                                .arg(DB->lastError.text()));
         message_box.exec();
         return;
-    } else {
+    }
+    else {
         QString constrained_flights_string;
-        for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) + QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-            if (i>10) {
+        for (int i = 0; i < constrained_flights.length(); i++) {
+            constrained_flights_string.append(getFlightSummary(constrained_flights[i]) +
+                                              QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            if (i > 10) {
                 constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
                 break;
             }
         }
-        message_box.setText(tr("Unable to delete.<br><br>"
-                               "This is most likely the case because a flight exists with the aircraft "
-                               "you are trying to delete.<br><br>"
-                               "%1 flight(s) with this aircraft have been found:<br><br><br><b><tt>"
-                               "%2"
-                               "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
-                               "before removing this aircraft from the database.<br><br>"
-                               ).arg(QString::number(constrained_flights.length()), constrained_flights_string));
+        message_box.setText(
+            tr("Unable to delete.<br><br>"
+               "This is most likely the case because a flight exists with the aircraft "
+               "you are trying to delete.<br><br>"
+               "%1 flight(s) with this aircraft have been found:<br><br><br><b><tt>"
+               "%2"
+               "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
+               "before removing this aircraft from the database.<br><br>")
+                .arg(QString::number(constrained_flights.length()), constrained_flights_string));
         message_box.setIcon(QMessageBox::Critical);
         message_box.exec();
     }
@@ -268,25 +256,25 @@ const QString TailsWidget::getAircraftTypeString(const OPL::Row &row) const
     if (!row.getData().value(OPL::TailEntry::MODEL).toString().isEmpty())
         type_string.append(row.getData().value(OPL::TailEntry::MODEL).toString());
     if (!row.getData().value(OPL::TailEntry::VARIANT).toString().isEmpty())
-        type_string.append(QLatin1Char('-') + row.getData().value(OPL::TailEntry::VARIANT).toString());
+        type_string.append(QLatin1Char('-') +
+                           row.getData().value(OPL::TailEntry::VARIANT).toString());
 
     return type_string;
 }
 
 const QString TailsWidget::getFlightSummary(const OPL::FlightEntry &flight) const
 {
-    if(!flight.isValid())
-        return QString();
+    if (!flight.isValid()) return QString();
 
     auto tableData = flight.getData();
     QString flight_summary;
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::FlightEntry::DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::FlightEntry::DEPT).toString() + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString()
-                          + space);
-    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString()
-                          + space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TOFB).toInt()).toString() +
+                          space);
+    flight_summary.append(OPL::Time(tableData.value(OPL::FlightEntry::TONB).toInt()).toString() +
+                          space);
     flight_summary.append(tableData.value(OPL::FlightEntry::DEST).toString());
 
     return flight_summary;

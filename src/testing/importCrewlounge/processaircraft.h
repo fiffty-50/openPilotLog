@@ -3,13 +3,12 @@
 #include "src/opl.h"
 #include <QtCore>
 
-class ProcessAircraft
-{
-public:
-    ProcessAircraft(const QVector<QStringList> &raw_csv_data)
-        : rawData(raw_csv_data){};
+class ProcessAircraft {
+  public:
+    ProcessAircraft(const QVector<QStringList> &raw_csv_data) : rawData(raw_csv_data) {};
 
-    void init(){
+    void init()
+    {
         parseRawData();
         processParsedData();
     };
@@ -17,7 +16,7 @@ public:
     QHash<QString, OPL::RowData_T> getProcessedTailMaps() const;
     QHash<QString, int> getProcessedTailIds() const;
 
-private:
+  private:
     void parseRawData();
     void processParsedData();
     QVector<QStringList> rawData;
@@ -41,7 +40,8 @@ private:
      * \brief processedTailIds Holds a map of the ids that have been given to the processed pilots
      *
      * \details The tail data, once processed is held in processedTailMaps. With processedTailIds it
-     * is possible to map the original String to the tail_id that has been assigned during the parsing process.
+     * is possible to map the original String to the tail_id that has been assigned during the
+     * parsing process.
      */
     QHash<QString, int> processedTailIds;
 };

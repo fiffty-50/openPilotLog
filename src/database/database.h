@@ -18,32 +18,29 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <QPair>
-#include <QHash>
-#include <QString>
 #include <QDir>
+#include <QHash>
+#include <QPair>
 #include <QSqlDatabase>
 #include <QSqlDriver>
-#include <QSqlQuery>
 #include <QSqlError>
-#include <QSqlTableModel>
+#include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QSqlField>
+#include <QSqlTableModel>
+#include <QString>
 
 #include "src/classes/paths.h"
 #include "src/database/aircraftentry.h"
+#include "src/database/airportcodeentry.h"
 #include "src/database/airportentry.h"
 #include "src/database/currencyentry.h"
 #include "src/database/flightentry.h"
 #include "src/database/pilotentry.h"
+#include "src/database/row.h"
 #include "src/database/simulatorentry.h"
 #include "src/database/tailentry.h"
-#include "src/database/airportcodeentry.h"
 #include "src/opl.h"
-#include "src/database/row.h"
-
-
 
 namespace OPL {
 
@@ -62,16 +59,14 @@ namespace OPL {
  */
 class Database : public QObject {
 
-private:
+  private:
     Q_OBJECT
-    Database()
-        : databaseFile(OPL::Paths::databaseFileInfo())
-    {}
+    Database() : databaseFile(OPL::Paths::databaseFileInfo()) {}
     const QFileInfo databaseFile;
     QStringList tableNames;
     QHash<QString, QStringList> tableColumns;
 
-    inline const static QString SQLITE_DRIVER  = QStringLiteral("QSQLITE");
+    inline const static QString SQLITE_DRIVER           = QStringLiteral("QSQLITE");
     inline const static QList<OPL::DbTable> USER_TABLES = {
         OPL::DbTable::Flights,
         OPL::DbTable::Pilots,
@@ -83,11 +78,11 @@ private:
         OPL::DbTable::Airports,
     };
 
-
-public:
-    Database(const Database&) = delete;
-    void operator=(const Database&) = delete;
-    static Database* instance() {
+  public:
+    Database(const Database &)       = delete;
+    void operator=(const Database &) = delete;
+    static Database *instance()
+    {
         static Database instance;
         return &instance;
     }
@@ -95,8 +90,8 @@ public:
     /*!
      * \brief Holds information about the last error that ocurred during
      * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
-     * from the database (entry not found,...), otherwise the error is related to SQL execution. In this
-     * case error.type() provides further information.
+     * from the database (entry not found,...), otherwise the error is related to SQL execution. In
+     * this case error.type() provides further information.
      *
      * If the error type is QSqlError::NoError, the last executed database query was successful.
      */
@@ -113,8 +108,9 @@ public:
     void disconnect();
 
     /*!
-     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout information
-     * if the database has been altered. This function is normally only required during database setup or maintenance.
+     * \brief Updates the member variables tableNames and tableColumns with up-to-date layout
+     * information if the database has been altered. This function is normally only required during
+     * database setup or maintenance.
      */
     void updateLayout();
 
@@ -166,8 +162,9 @@ public:
 
     /*!
      * \brief commits data imported from JSON
-     * \details This function is used to import values to the databases which are held in JSON documents.
-     * These entries are pre-filled data used for providing completion data, such as Airport or Aircraft Type Data.
+     * \details This function is used to import values to the databases which are held in JSON
+     * documents. These entries are pre-filled data used for providing completion data, such as
+     * Airport or Aircraft Type Data.
      */
     bool commit(const QJsonArray &json_arr, const OPL::DbTable table);
 
@@ -315,8 +312,8 @@ public:
 
     /*!
      * \brief Create or restore the database to its ready-to-use but empty state
-     * \details The SQL code for the database creation is stored in a .sql file which is available as a ressource.
-     * This file gets read, and the querys executed. If errors occur, returns false.
+     * \details The SQL code for the database creation is stored in a .sql file which is available
+     * as a ressource. This file gets read, and the querys executed. If errors occur, returns false.
      */
     bool createSchema();
     /*!
@@ -335,18 +332,20 @@ public:
     bool resetUserData();
 
     /*!
-     * \brief Database::createBackup copies the currently used database to an external backup location provided by the user
-     * \param dest_file This is the full path and filename of where the backup will be created, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+     * \brief Database::createBackup copies the currently used database to an external backup
+     * location provided by the user
+     * \param dest_file This is the full path and filename of where the backup will be created, e.g.
+     * 'home/Sully/myBackups/backupFromOpl.db'
      */
-    bool createBackup(const QString& dest_file);
+    bool createBackup(const QString &dest_file);
 
     /*!
-     * \brief Database::restoreBackup restores the database from a given backup file and replaces the currently active database.
-     * \param backup_file This is the full path and filename of the backup, e.g. 'home/Sully/myBackups/backupFromOpl.db'
+     * \brief Database::restoreBackup restores the database from a given backup file and replaces
+     * the currently active database.
+     * \param backup_file This is the full path and filename of the backup, e.g.
+     * 'home/Sully/myBackups/backupFromOpl.db'
      */
-    bool restoreBackup(const QString& backup_file);
-
-
+    bool restoreBackup(const QString &backup_file);
 
     /*!
      * @brief Retreive the total time of all flight entries in the databas
@@ -355,7 +354,7 @@ public:
      * @return The sum of all entries in the flights table
      */
     const RowData_T getTotals(bool includePreviousExperience);
-signals:
+  signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.
      * This can be either a commit, update or remove. This signal should be used to

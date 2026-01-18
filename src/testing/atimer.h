@@ -18,9 +18,9 @@
 #ifndef ATIMER_H
 #define ATIMER_H
 
+#include <QDebug>
 #include <QObject>
 #include <chrono>
-#include <QDebug>
 
 /*!
  * \brief The ATimer class provides an easy to use performance timer.
@@ -31,19 +31,18 @@
  * It can be given a QObject as a parent to time its lifetime or can be used without
  * parent in any context.
  */
-class ATimer : public QObject
-{
+class ATimer : public QObject {
     Q_OBJECT
-public:
-    ATimer(QObject* parent = nullptr);
+  public:
+    ATimer(QObject *parent = nullptr);
     ~ATimer();
 
     /*!
      * \brief timeNow takes an intermediate timing and returns miliseconds elapsed.
      */
     long timeNow();
-private:
 
+  private:
     std::chrono::high_resolution_clock::time_point start;
 
     std::chrono::high_resolution_clock::time_point intermediate_point;
@@ -51,8 +50,6 @@ private:
     std::chrono::high_resolution_clock::time_point stop;
 
     double duration;
-
 };
-
 
 #endif // ATIMER_H

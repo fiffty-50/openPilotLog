@@ -18,25 +18,25 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QTime>
-#include <QSqlTableModel>
-#include <QTableView>
-#include <chrono>
-#include <QMessageBox>
 #include <QDir>
 #include <QFile>
 #include <QKeyEvent>
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QSqlTableModel>
+#include <QTableView>
+#include <QTime>
 #include <QToolBar>
+#include <chrono>
 
 #include <src/gui/widgets/logbooktableeditwidget.h>
 
+#include "src/classes/style.h"
 #include "src/gui/widgets/databaseeditwidget.h"
+#include "src/gui/widgets/debugwidget.h"
 #include "src/gui/widgets/homewidget.h"
 #include "src/gui/widgets/settingswidget.h"
 #include "src/gui/widgets/tableeditwidget.h"
-#include "src/gui/widgets/debugwidget.h"
-#include "src/classes/style.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -46,13 +46,14 @@ QT_END_NAMESPACE
 
 /*!
  * \brief The MainWindow contains a QStackedWidget and a QToolBar as the main User Interface.
- * \details The Tool bar contains shortcuts to the different widgets, which are on selection set active on the stacked main widget.
- * For a detailed description of what each widget does, please refer to the documentation for each widget. This is only a short synopsis:
+ * \details The Tool bar contains shortcuts to the different widgets, which are on selection set
+ * active on the stacked main widget. For a detailed description of what each widget does, please
+ * refer to the documentation for each widget. This is only a short synopsis:
  *
  * ## HomeWidget
  *
- * The home widget displays the total amount of hours for all logged flights, seperated into different categories. It also enables keeping track
- * of currencies and license expiries
+ * The home widget displays the total amount of hours for all logged flights, seperated into
+ * different categories. It also enables keeping track of currencies and license expiries
  *
  * ## New Flight
  *
@@ -60,15 +61,18 @@ QT_END_NAMESPACE
  *
  * ## Logboook
  *
- * Shows a view of the logbook table in a QTableView and enables editing the entries by spawning a child NewFlightDialog with the details for a selected flight.
+ * Shows a view of the logbook table in a QTableView and enables editing the entries by spawning a
+ * child NewFlightDialog with the details for a selected flight.
  *
  * ## Aircraft
  *
- * Shows a view of the tails table in a QTableView and enables editing the entries by spawning a child NewTailDialog with the details for a selected tail.
+ * Shows a view of the tails table in a QTableView and enables editing the entries by spawning a
+ * child NewTailDialog with the details for a selected tail.
  *
  * ## Pilots
  *
- * Shows a view of the pilots table in a QTableView and enables editing the entries by spawning a child NewPilotDialog with the details for a selected pilot.
+ * Shows a view of the pilots table in a QTableView and enables editing the entries by spawning a
+ * child NewPilotDialog with the details for a selected pilot.
  *
  * ## Airports
  *
@@ -77,22 +81,21 @@ QT_END_NAMESPACE
  * ## Settings
  *
  * Enables changing application settings
-*/
-class MainWindow : public QMainWindow
-{
+ */
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+  public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-public slots:
-    void onStyleChanged(SettingsWidget::SettingSignal signal){
-        if (signal == SettingsWidget::MainWindow)
-            setActionIcons(OPL::Style::getStyleType());
+  public slots:
+    void onStyleChanged(SettingsWidget::SettingSignal signal)
+    {
+        if (signal == SettingsWidget::MainWindow) setActionIcons(OPL::Style::getStyleType());
     }
 
-private slots:
+  private slots:
 
     void on_actionHome_triggered();
 
@@ -114,22 +117,22 @@ private slots:
 
     void on_actionNewSim_triggered();
 
-private:
+  private:
     Ui::MainWindow *ui;
 
-    HomeWidget* homeWidget;
+    HomeWidget *homeWidget;
 
-    LogbookTableEditWidget* logbookWidget; // This widget has a slot not present in TableEditWidget
-    
-    TableEditWidget* tailsWidget;
+    LogbookTableEditWidget *logbookWidget; // This widget has a slot not present in TableEditWidget
 
-    TableEditWidget* pilotsWidget;
+    TableEditWidget *tailsWidget;
 
-    DatabaseEditWidget* databaseWidget;
+    TableEditWidget *pilotsWidget;
 
-    SettingsWidget* settingsWidget;
+    DatabaseEditWidget *databaseWidget;
 
-    DebugWidget* debugWidget;
+    SettingsWidget *settingsWidget;
+
+    DebugWidget *debugWidget;
 
     bool airportDbIsDirty = false;
 
@@ -149,17 +152,18 @@ private:
     //
     void debug();
 
-protected:
+  protected:
     /*!
      * \brief Shows the debug widget by pressing <ctrl + t>
      * <Shift+Enter for a quick and dirty debug>
      */
-    void keyPressEvent(QKeyEvent* keyEvent) override
+    void keyPressEvent(QKeyEvent *keyEvent) override
     {
-        if(keyEvent->type() == QKeyEvent::KeyPress) {
-            if(keyEvent->matches(QKeySequence::AddTab)) {
+        if (keyEvent->type() == QKeyEvent::KeyPress) {
+            if (keyEvent->matches(QKeySequence::AddTab)) {
                 on_actionDebug_triggered();
-            } else if (keyEvent->matches(QKeySequence::InsertLineSeparator)) {
+            }
+            else if (keyEvent->matches(QKeySequence::InsertLineSeparator)) {
                 debug();
             }
         }
@@ -171,14 +175,14 @@ protected:
     void resizeEvent(QResizeEvent *event) override
     {
         const auto icon_size = this->height() / 16;
-        const auto toolBar = this->findChild<QToolBar*>();
+        const auto toolBar   = this->findChild<QToolBar *>();
         toolBar->setIconSize(QSize(icon_size, icon_size));
         event->accept();
     }
 
-signals:
+  signals:
     void addFlightEntryRequested();
     void addSimulatorEntryRequested();
-    //void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
+    // void closeEvent(QCloseEvent *event) override; //TODO check and prompt for creation of backup?
 };
 #endif // MAINWINDOW_H

@@ -20,51 +20,49 @@
 
 namespace OPL {
 
-TailEntry::TailEntry()
-    : Row(DbTable::v2AircraftTails, &FIELDS)
-{}
+TailEntry::TailEntry() : Row(DbTable::v2AircraftTails, &FIELDS) {}
 
 TailEntry::TailEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::v2AircraftTails, row_id, row_data, &FIELDS)
-{}
+{
+}
 
 bool TailEntry::isValid() const
 {
     // a valid type ID must be set
-    if(! m_rowData.contains(TYPE_ID)) {
+    if (!m_rowData.contains(TYPE_ID)) {
         LOG << QStringLiteral("Type ID missing.");
         return false;
     }
-    if(! (DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(m_rowData.value(TYPE_ID).toInt()) != QString()))  {
+    if (!(DBCache->getMap(DatabaseCache::MapType::AircraftTypes)
+              .value(m_rowData.value(TYPE_ID).toInt()) != QString())) {
         LOG << QStringLiteral("Type ID invalid.");
-        return false;   
+        return false;
     }
-    
-    // Registration must not be empty 
-    if(! m_rowData.contains(REGISTRATION)) {
+
+    // Registration must not be empty
+    if (!m_rowData.contains(REGISTRATION)) {
         LOG << QStringLiteral("Registration missing.");
         return false;
     }
-    
+
     // In-service date must be valid
-    if(! m_rowData.contains(IN_SERVICE_DATE)) {
+    if (!m_rowData.contains(IN_SERVICE_DATE)) {
         LOG << QStringLiteral("In-service date missing.");
         return false;
     }
-    if(! QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()).isValid()) {
+    if (!QDate::fromJulianDay(m_rowData.value(IN_SERVICE_DATE).toInt()).isValid()) {
         LOG << QStringLiteral("In-service date invalid.");
         return false;
     }
 
-    
     // The other fields are optional
     return true;
 }
 
 bool TailEntry::setRegistration(const QString &registration)
 {
-    if (registration.isEmpty())
-        return false;
+    if (registration.isEmpty()) return false;
 
     m_rowData.insert(REGISTRATION, registration);
     return true;
@@ -72,8 +70,7 @@ bool TailEntry::setRegistration(const QString &registration)
 
 bool TailEntry::setInServiceDate(const QDate &date)
 {
-    if(!date.isValid())
-        return false;
+    if (!date.isValid()) return false;
 
     m_rowData.insert(IN_SERVICE_DATE, date.toJulianDay());
     return true;
@@ -81,7 +78,7 @@ bool TailEntry::setInServiceDate(const QDate &date)
 
 bool TailEntry::setOutOfServiceDate(const QDate &date)
 {
-    if(!date.isValid()) {
+    if (!date.isValid()) {
         DEB << "Invalid Date.";
         return false;
     }
@@ -94,15 +91,12 @@ bool TailEntry::setTypeId(int typeId)
 {
     bool isValid = typeId != 0;
 
-    isValid &= DBCache->getMap(DatabaseCache::MapType::AircraftTypes)
-                   .value(typeId) != QString();
+    isValid &= DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(typeId) != QString();
 
-    if(!isValid)
-        return false;
+    if (!isValid) return false;
 
     m_rowData.insert(TYPE_ID, typeId);
     return true;
 }
-
 
 } // namespace OPL

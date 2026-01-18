@@ -6,7 +6,6 @@
 
 namespace OPL {
 
-
 /*!
  * \brief The LogbookViewInfo class is a base class for classes that encapsulate information
  * about a LogbookView
@@ -14,13 +13,13 @@ namespace OPL {
  * some cases data is aggregated from different tables. Using views avoid
  */
 class LogbookViewInfo : public QObject {
-    Q_OBJECT // enable tr()
-public:
-    
-    /*!
-     * \brief Return the column in the view which contains the date of flight
-     */
-    static constexpr int getDateColumn(LogbookView view)
+  Q_OBJECT // enable tr()
+      public :
+
+      /*!
+       * \brief Return the column in the view which contains the date of flight
+       */
+      static constexpr int getDateColumn(LogbookView view)
     {
         return DATE_COLUMNS.at(static_cast<int>(view));
     }
@@ -32,7 +31,7 @@ public:
     {
         return TYPE_COLUMNS.at(static_cast<int>(view));
     }
-    
+
     /*!
      * \brief Return the column(s) in the view which contain pilot names
      */
@@ -40,7 +39,7 @@ public:
     {
         return PIC_COLUMNS.at(static_cast<int>(view));
     }
-    
+
     /*!
      * \brief Return the column(s) in the view which contain Time entries
      */
@@ -48,16 +47,16 @@ public:
     {
         switch (view) {
         case LogbookView::Default:
-            return { 3, 5, 6 };
+            return {3, 5, 6};
         case LogbookView::DefaultWithSim:
-            return { 3, 5, 6, 11 };
+            return {3, 5, 6, 11};
         case LogbookView::Easa:
-            return { 3, 5, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20 };
+            return {3, 5, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20};
         case LogbookView::EasaWithSim:
-            return { 3, 5, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 22 };
+            return {3, 5, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 22};
         default:
             assert(((void)"View is not implemented", false));
-            return { 0 };
+            return {0};
         }
     }
 
@@ -154,9 +153,8 @@ public:
         }
     }
 
-private:
-
-    static constexpr std::array DATE_COLUMNS {
+  private:
+    static constexpr std::array DATE_COLUMNS{
         1, // Default
         1, // Default With Sim
         1, // Easa
@@ -164,7 +162,7 @@ private:
         1, // Simulator Only
     };
 
-    static constexpr std::array TYPE_COLUMNS {
+    static constexpr std::array TYPE_COLUMNS{
         8, // Default
         8, // Default With Sim
         6, // Easa
@@ -172,14 +170,13 @@ private:
         1, // Simulator Only
     };
 
-    static constexpr std::array PIC_COLUMNS {
-        7, // Default
-        7, // Default With Sim
+    static constexpr std::array PIC_COLUMNS{
+        7,  // Default
+        7,  // Default With Sim
         12, // Easa
         12, // Easa With Sim
         -1, // Simulator Only
     };
-
 };
 
 } // namespace OPL

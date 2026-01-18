@@ -4,7 +4,8 @@
 
 AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
     : TableEditWidget(Horizontal, parent)
-{}
+{
+}
 
 void AirportTableEditWidget::setupModelAndView()
 {
@@ -12,7 +13,7 @@ void AirportTableEditWidget::setupModelAndView()
     m_model->setTable(OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Airports));
     m_model->select();
 
-    for(auto it = HEADER_NAMES.cbegin(); it != HEADER_NAMES.cend(); ++it) {
+    for (auto it = HEADER_NAMES.cbegin(); it != HEADER_NAMES.cend(); ++it) {
         m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
     }
 
@@ -25,7 +26,6 @@ void AirportTableEditWidget::setupModelAndView()
     m_view->verticalHeader()->hide();
     m_view->setAlternatingRowColors(true);
     m_view->hideColumn(COL_ROWID);
-
 }
 
 void AirportTableEditWidget::setupUI()
@@ -40,8 +40,8 @@ void AirportTableEditWidget::setupUI()
 
 QString AirportTableEditWidget::deleteErrorString(int rowId)
 {
-    return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-              ).arg(DB->lastError.text());
+    return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1")
+        .arg(DB->lastError.text());
 }
 
 QString AirportTableEditWidget::confirmDeleteString(int rowId)
@@ -49,8 +49,8 @@ QString AirportTableEditWidget::confirmDeleteString(int rowId)
     const auto entry = DB->getAirportEntry(rowId);
     return tr("The following airport will be deleted:<br><br><b><tt>"
               "%1<br></b></tt>"
-              "Deleting airports is irreversible.<br>Do you want to proceed?"
-              ).arg(entry.getAirportName());
+              "Deleting airports is irreversible.<br>Do you want to proceed?")
+        .arg(entry.getAirportName());
 }
 
 EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)

@@ -29,9 +29,9 @@ static bool logDebug = false; // Debug doesn't log to file by default
  */
 void setLogFileName()
 {
-    logFileName = QString(logFolder.absolutePath() + QLatin1String("/Log_%1_%2.txt")
-                          ).arg(QDate::currentDate().toString(QStringLiteral("yyyy_MM_dd")),
-                                QTime::currentTime().toString(QStringLiteral("hh_mm_ss")));
+    logFileName = QString(logFolder.absolutePath() + QLatin1String("/Log_%1_%2.txt"))
+                      .arg(QDate::currentDate().toString(QStringLiteral("yyyy_MM_dd")),
+                           QTime::currentTime().toString(QStringLiteral("hh_mm_ss")));
 }
 
 /*!
@@ -39,13 +39,14 @@ void setLogFileName()
  *
  */
 void deleteOldLogs()
-{  
+{
     logFolder.setSorting(QDir::Time | QDir::Reversed);
 
     QFileInfoList logs_list = logFolder.entryInfoList();
     if (logs_list.size() <= numberOfLogs) {
         return;
-    } else {
+    }
+    else {
         for (int i = 0; i < (logs_list.size() - numberOfLogs); i++) {
             const QString path = logs_list.at(i).absoluteFilePath();
             QFile file(path);
@@ -60,16 +61,17 @@ void deleteOldLogs()
  */
 bool init(bool log_debug)
 {
-    logDebug = log_debug;
+    logDebug  = log_debug;
     logFolder = OPL::Paths::directory(OPL::Paths::Log);
     deleteOldLogs();
     setLogFileName();
 
     QFile log_file((logFileName));
-    if(log_file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+    if (log_file.open(QIODevice::WriteOnly | QIODevice::Append)) {
         qInstallMessageHandler(aMessageHandler);
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -91,11 +93,10 @@ bool init(bool log_debug)
  * not written to the log file.
  *
  */
-void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
-                      const QString& msg)
+void aMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     const char *function = context.function ? context.function : "";
-    //check file size and if needed create new log!
+    // check file size and if needed create new log!
     {
         QFile outFileCheck(logFileName);
         if (outFileCheck.size() > sizeOfLogs) {
@@ -109,28 +110,29 @@ void aMessageHandler(QtMsgType type, const QMessageLogContext &context,
     QTextStream log_stream(&log_file);
 
     switch (type) {
-        case QtDebugMsg:
-            QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << end_line << D_SPACER << function << "\033[m" << end_line;
-            if(logDebug)
-                log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << end_line;
-            break;
-        case QtInfoMsg:
-            log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << end_line;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
-            break;
-        case QtWarningMsg:
-            log_stream << timeNow() << WARN_HEADER << msg << SPACER << end_line;
-            QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << end_line;
-            break;
-        case QtCriticalMsg:
-            log_stream << timeNow() << CRIT_HEADER << msg << SPACER << end_line;
-            QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << end_line;
-            break;
+    case QtDebugMsg:
+        QTextStream(stdout) << DEB_HEADER_CONSOLE << msg << end_line << D_SPACER << function
+                            << "\033[m" << end_line;
+        if (logDebug)
+            log_stream << timeNow() << DEB_HEADER << msg << D_SPACER << function << end_line;
+        break;
+    case QtInfoMsg:
+        log_stream << timeNow() << INFO_HEADER << msg << SPACER << function << end_line;
+        QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
+        break;
+    case QtWarningMsg:
+        log_stream << timeNow() << WARN_HEADER << msg << SPACER << end_line;
+        QTextStream(stdout) << WARN_HEADER_CONSOLE << msg << end_line;
+        break;
+    case QtCriticalMsg:
+        log_stream << timeNow() << CRIT_HEADER << msg << SPACER << end_line;
+        QTextStream(stdout) << CRIT_HEADER_CONSOLE << msg << end_line;
+        break;
     default:
-            log_stream << timeNow() << INFO_HEADER << msg << function << end_line;
-            QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
-            break;
+        log_stream << timeNow() << INFO_HEADER << msg << function << end_line;
+        QTextStream(stdout) << INFO_HEADER_CONSOLE << msg << end_line;
+        break;
     }
 }
 
-} // namespace ALog
+} // namespace OPL::Log

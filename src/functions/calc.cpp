@@ -16,8 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "calc.h"
-#include "src/database/database.h"
 #include "src/classes/settings.h"
+#include "src/database/database.h"
 #include "src/opl.h"
 
 /*!
@@ -30,22 +30,27 @@
 QT_DEPRECATED
 QString OPL::Calc::formatTimeInput(QString user_input)
 {
-    QString output; //
-    QTime temp_time; //empty time object is invalid by default
+    QString output;  //
+    QTime temp_time; // empty time object is invalid by default
 
     bool contains_seperator = user_input.contains(':');
     if (user_input.length() == 4 && !contains_seperator) {
         temp_time = QTime::fromString(user_input, QStringLiteral("hhmm"));
-    } else if (user_input.length() == 3 && !contains_seperator) {
-        if (user_input.toInt() < 240) { //Qtime is invalid if time is between 000 and 240 for this case
+    }
+    else if (user_input.length() == 3 && !contains_seperator) {
+        if (user_input.toInt() <
+            240) { // Qtime is invalid if time is between 000 and 240 for this case
             QString tempstring = user_input.prepend(QStringLiteral("0"));
-            temp_time = QTime::fromString(tempstring, QStringLiteral("hhmm"));
-        } else {
+            temp_time          = QTime::fromString(tempstring, QStringLiteral("hhmm"));
+        }
+        else {
             temp_time = QTime::fromString(user_input, QStringLiteral("Hmm"));
         }
-    } else if (user_input.length() == 4 && contains_seperator) {
+    }
+    else if (user_input.length() == 4 && contains_seperator) {
         temp_time = QTime::fromString(user_input, QStringLiteral("h:mm"));
-    } else if (user_input.length() == 5 && contains_seperator) {
+    }
+    else if (user_input.length() == 5 && contains_seperator) {
         temp_time = QTime::fromString(user_input, QStringLiteral("hh:mm"));
     }
 
@@ -60,9 +65,9 @@ QString OPL::Calc::formatTimeInput(QString user_input)
  * The purpose of the following functions is to provide functionality enabling the Calculation of
  * night flying time. EASA defines night as follows:
  *
- * ‘Night’  means  the  period  between  the  end  of  evening  civil  twilight  and  the  beginning  of
- * morning  civil  twilight  or  such  other  period  between  sunset  and  sunrise  as  may  be  prescribed
- * by  the  appropriate  authority,  as  defined  by  the  Member State.
+ * ‘Night’  means  the  period  between  the  end  of  evening  civil  twilight  and  the  beginning
+ * of morning  civil  twilight  or  such  other  period  between  sunset  and  sunrise  as  may  be
+ * prescribed by  the  appropriate  authority,  as  defined  by  the  Member State.
  *
  *
  *
@@ -80,7 +85,6 @@ QString OPL::Calc::formatTimeInput(QString user_input)
  * Radians.
  */
 
-
 double OPL::Calc::greatCircleDistance(double lat1, double lon1, double lat2, double lon2)
 {
     // Converting Latitude and Longitude to Radians
@@ -93,20 +97,15 @@ double OPL::Calc::greatCircleDistance(double lat1, double lon1, double lat2, dou
     double delta_lon = lon2 - lon1;
     double delta_lat = lat2 - lat1;
 
-    double result = pow(sin(delta_lat / 2), 2) +
-                    cos(lat1) * cos(lat2) * pow(sin(delta_lon / 2), 2);
-    result = 2 * asin(sqrt(result));
+    double result = pow(sin(delta_lat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(delta_lon / 2), 2);
+    result        = 2 * asin(sqrt(result));
     return result;
 }
 
-
 double OPL::Calc::greatCircleDistanceBetweenAirports(const QString &dept, const QString &dest)
 {
-    QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
-            + dept
-            + QLatin1String("' OR icao = '")
-            + dest
-            + QLatin1String("'");
+    QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '") + dept +
+                        QLatin1String("' OR icao = '") + dest + QLatin1String("'");
     auto lat_lon = DB->customQuery(statement, 2);
 
     if (lat_lon.length() != 4) {
@@ -123,19 +122,19 @@ double OPL::Calc::greatCircleDistanceBetweenAirports(const QString &dept, const 
     double delta_lon = dest_lon - dept_lon;
     double delta_lat = dest_lat - dept_lat;
 
-    double result = pow(sin(delta_lat / 2), 2) +
-                    cos(dept_lat) * cos(dest_lat) * pow(sin(delta_lon / 2), 2);
+    double result =
+        pow(sin(delta_lat / 2), 2) + cos(dept_lat) * cos(dest_lat) * pow(sin(delta_lon / 2), 2);
     result = 2 * asin(sqrt(result));
     return radToNauticalMiles(result);
 }
 
-
 QVector<QVector<double>> OPL::Calc::intermediatePointsOnGreatCircle(double lat1, double lon1,
-                                                               double lat2, double lon2, int tblk)
+                                                                    double lat2, double lon2,
+                                                                    int tblk)
 {
-    double d = greatCircleDistance(lat1, lon1, lat2, lon2); //Calculate distance (Haversine)
+    double d = greatCircleDistance(lat1, lon1, lat2, lon2); // Calculate distance (Haversine)
     // where d is the great circle distance in radians, to get KM take * 6371 (radius of earth).
-    //DEB << "Distance (nm): " << (d*6371.0088) * 0.5399568; // km->nm = *0.54
+    // DEB << "Distance (nm): " << (d*6371.0088) * 0.5399568; // km->nm = *0.54
 
     // Converting Latitude and Longitude to Radians
     lat1 = degToRad(lat1);
@@ -143,18 +142,18 @@ QVector<QVector<double>> OPL::Calc::intermediatePointsOnGreatCircle(double lat1,
     lat2 = degToRad(lat2);
     lon2 = degToRad(lon2);
 
-    //loop for creating one minute steps along the Great Circle
-    // 0 is departure point, 1 is end point
+    // loop for creating one minute steps along the Great Circle
+    //  0 is departure point, 1 is end point
     QVector<QVector<double>> coordinates;
     double fraction = 1.0 / tblk;
     for (int i = 0; i <= tblk; i++) {
         // Calculating intermediate point for fraction of distance
-        double A = sin((1 - fraction * i) * d) / sin(d);
-        double B = sin(fraction * i * d) / sin(d);
-        double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
-        double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
-        double z = A * sin(lat1) + B * sin(lat2);
-        double lat = atan2(z, sqrt( pow(x, 2) + pow(y, 2) ));
+        double A   = sin((1 - fraction * i) * d) / sin(d);
+        double B   = sin(fraction * i * d) / sin(d);
+        double x   = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
+        double y   = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
+        double z   = A * sin(lat1) + B * sin(lat2);
+        double lat = atan2(z, sqrt(pow(x, 2) + pow(y, 2)));
         double lon = atan2(y, x);
 
         QVector<double> coordinate = {radToDeg(lat), radToDeg(lon)};
@@ -163,23 +162,23 @@ QVector<QVector<double>> OPL::Calc::intermediatePointsOnGreatCircle(double lat1,
     return coordinates;
 }
 
-
 double OPL::Calc::solarElevation(const QDateTime &utc_time_point, double lat, double lon)
 {
-    double Alt = 11; // Assuming 11 kilometers as an average cruising height for a commercial passenger airplane.
+    double Alt = 11; // Assuming 11 kilometers as an average cruising height for a commercial
+                     // passenger airplane.
     // convert current DateTime Object to a J2000 value used in the Calculation
     double d = utc_time_point.date().toJulianDay() - 2451544 + utc_time_point.time().hour() / 24.0 +
                utc_time_point.time().minute() / 1440.0;
 
     // Orbital Elements (in degress)
-    double w = 282.9404 + 4.70935e-5 * d; // (longitude of perihelion)
-    double e = 0.016709 - 1.151e-9 * d; // (eccentricity)
-    double M = fmod(356.0470 + 0.9856002585 * d,
-                    360.0); // (mean anomaly, needs to be between 0 and 360 degrees)
+    double w      = 282.9404 + 4.70935e-5 * d; // (longitude of perihelion)
+    double e      = 0.016709 - 1.151e-9 * d;   // (eccentricity)
+    double M      = fmod(356.0470 + 0.9856002585 * d,
+                         360.0);            // (mean anomaly, needs to be between 0 and 360 degrees)
     double oblecl = 23.4393 - 3.563e-7 * d; // (Sun's obliquity of the ecliptic)
-    double L = w + M; // (Sun's mean longitude)
+    double L      = w + M;                  // (Sun's mean longitude)
     // auxiliary angle
-    double  E = M + (180 / M_PI) * e * sin(M * (M_PI / 180)) * (1 + e * cos(M * (M_PI / 180)));
+    double E = M + (180 / M_PI) * e * sin(M * (M_PI / 180)) * (1 + e * cos(M * (M_PI / 180)));
     // The Sun's rectangular coordinates in the plane of the ecliptic
     double x = cos(E * (M_PI / 180)) - e;
     double y = sin(E * (M_PI / 180)) * sqrt(1 - pow(e, 2));
@@ -192,27 +191,29 @@ double OPL::Calc::solarElevation(const QDateTime &utc_time_point, double lat, do
     double x_eclip = r * cos(solar_longitude * (M_PI / 180));
     double y_eclip = r * sin(solar_longitude * (M_PI / 180));
     double z_eclip = 0.0;
-    //rotate these coordinates to equitorial rectangular coordinates
+    // rotate these coordinates to equitorial rectangular coordinates
     double x_equat = x_eclip;
     double y_equat = y_eclip * cos(oblecl * (M_PI / 180)) + z_eclip * sin(oblecl * (M_PI / 180));
     double z_equat = y_eclip * sin(23.4406 * (M_PI / 180)) + z_eclip * cos(oblecl * (M_PI / 180));
     // convert equatorial rectangular coordinates to RA and Decl:
-    r = sqrt(pow(x_equat, 2) + pow(y_equat, 2) + pow(z_equat,
-                                                   2)) - (Alt / 149598000); //roll up the altitude correction
-    double RA = atan2(y_equat, x_equat) * (180 / M_PI);
+    r = sqrt(pow(x_equat, 2) + pow(y_equat, 2) +
+             pow(z_equat,
+                 2)) -
+        (Alt / 149598000); // roll up the altitude correction
+    double RA    = atan2(y_equat, x_equat) * (180 / M_PI);
     double delta = asin(z_equat / r) * (180 / M_PI);
 
     // GET UT in hours time
     double uth = utc_time_point.time().hour() + utc_time_point.time().minute() / 60.0 +
                  utc_time_point.time().second() / 3600.0;
     // Calculate local siderial time
-    double gmst0 = fmod(L + 180, 360.0) / 15;
+    double gmst0    = fmod(L + 180, 360.0) / 15;
     double sid_time = gmst0 + uth + lon / 15;
     // Replace RA with hour angle HA
     double HA = (sid_time * 15 - RA);
     // convert to rectangular coordinate system
     x = cos(HA * (M_PI / 180)) * cos(delta * (M_PI / 180));
-    //y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180)); //value of y not needed
+    // y = sin(HA * (M_PI / 180)) * cos(delta * (M_PI / 180)); //value of y not needed
     double z = sin(delta * (M_PI / 180));
     // rotate this along an axis going east - west.
     double zhor = x * sin((90 - lat) * (M_PI / 180)) + z * cos((90 - lat) * (M_PI / 180));
@@ -222,14 +223,12 @@ double OPL::Calc::solarElevation(const QDateTime &utc_time_point, double lat, do
     return elevation;
 }
 
-
-int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, const QDateTime &departureTime, int tblk, int night_angle)
+int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest,
+                                  const QDateTime &departureTime, int tblk, int night_angle)
 {
 
-    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
-            + dept
-            + QLatin1String("' OR icao = '") + dest
-            + QLatin1String("'");
+    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '") +
+                              dept + QLatin1String("' OR icao = '") + dest + QLatin1String("'");
     auto lat_lon = DB->customQuery(statement, 2);
 
     double dept_lat;
@@ -243,7 +242,8 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, cons
         dept_lon = lat_lon[1].toDouble();
         dest_lat = lat_lon[2].toDouble();
         dest_lon = lat_lon[3].toDouble();
-    } else if (lat_lon.length() == 2 ) { // Dept == Dest, i.e. local flight
+    }
+    else if (lat_lon.length() == 2) { // Dept == Dest, i.e. local flight
         for (int i = 0; i < tblk; i++) {
             dept_lat = lat_lon[0].toDouble();
             dept_lon = lat_lon[1].toDouble();
@@ -252,18 +252,17 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, cons
                 night_time++;
         }
         return night_time;
-    } else {
+    }
+    else {
         DEB << "Invalid input. Aborting.";
         return 0;
     }
 
-    QVector<QVector<double>> route = intermediatePointsOnGreatCircle(dept_lat, dept_lon,
-                                                                     dest_lat, dest_lon,
-                                                                     tblk);
-    for (int i = 0; i < tblk ; i++) {
-        if (solarElevation(departureTime.addSecs(60 * i), route[i][0],
-                           route[i][1]) < night_angle) {
-            night_time ++;
+    QVector<QVector<double>> route =
+        intermediatePointsOnGreatCircle(dept_lat, dept_lon, dest_lat, dest_lon, tblk);
+    for (int i = 0; i < tblk; i++) {
+        if (solarElevation(departureTime.addSecs(60 * i), route[i][0], route[i][1]) < night_angle) {
+            night_time++;
         }
     }
     return night_time;
@@ -271,9 +270,8 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest, cons
 
 bool OPL::Calc::isNight(const QString &icao, const QDateTime &event_time, int night_angle)
 {
-    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '")
-            + icao
-            + QLatin1String("'");
+    const QString statement =
+        QLatin1String("SELECT lat, long FROM airports WHERE icao = '") + icao + QLatin1String("'");
     auto lat_lon = DB->customQuery(statement, 2);
 
     if (lat_lon.length() != 2) {
@@ -284,9 +282,10 @@ bool OPL::Calc::isNight(const QString &icao, const QDateTime &event_time, int ni
     double lat = lat_lon[0].toDouble();
     double lon = lat_lon[1].toDouble();
 
-    if(solarElevation(event_time, lat, lon) < night_angle){
+    if (solarElevation(event_time, lat, lon) < night_angle) {
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -299,8 +298,8 @@ void OPL::Calc::updateNightTimes()
 {
     int night_angle = Settings::getNightAngle();
 
-    //find all flights for aircraft
-    auto statement = QStringLiteral("SELECT ROWID FROM flights");
+    // find all flights for aircraft
+    auto statement   = QStringLiteral("SELECT ROWID FROM flights");
     auto flight_list = DB->customQuery(statement, 1);
 
     if (flight_list.isEmpty()) {
@@ -309,19 +308,17 @@ void OPL::Calc::updateNightTimes()
     }
     DEB << "Updating " << flight_list.length() << " flights in the database.";
 
-    for (const auto& item : std::as_const(flight_list)) {
+    for (const auto &item : std::as_const(flight_list)) {
 
-        auto flt = DB->getFlightEntry(item.toInt());
-        auto data = flt.getData();
-        auto dateTime = QDateTime(QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
-                                  QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60),
-                                  QTimeZone::UTC);
+        auto flt      = DB->getFlightEntry(item.toInt());
+        auto data     = flt.getData();
+        auto dateTime = QDateTime(
+            QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
+            QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60), QTimeZone::UTC);
         data.insert(OPL::FlightEntry::TNIGHT,
                     calculateNightTime(data.value(OPL::FlightEntry::DEPT).toString(),
-                                       data.value(OPL::FlightEntry::DEST).toString(),
-                                       dateTime,
-                                       data.value(OPL::FlightEntry::TBLK).toInt(),
-                                       night_angle));
+                                       data.value(OPL::FlightEntry::DEST).toString(), dateTime,
+                                       data.value(OPL::FlightEntry::TBLK).toInt(), night_angle));
         flt.setData(data);
         DB->commit(flt);
     }

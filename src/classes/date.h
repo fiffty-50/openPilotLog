@@ -1,7 +1,7 @@
 #ifndef DATE_H
 #define DATE_H
-#include <QDate>
 #include "src/opl.h"
+#include <QDate>
 namespace OPL {
 
 /*!
@@ -18,10 +18,8 @@ namespace OPL {
  * The default start date for entries in the application and database is the start of the
  * 20th century (1900-01-01) and the highest possible date value is 9999-12-12.
  */
-class Date
-{
-public:
-
+class Date {
+  public:
     Date() = delete;
     Date(int julianDay, const DateTimeFormat &format);
     Date(const QString &textDate, const DateTimeFormat &format);
@@ -30,7 +28,7 @@ public:
     /*!
      * \brief returns the julian day of 1900-01-01
      */
-    constexpr static int getMinimumDateJulianDay() {return JULIAN_DAY_START; }
+    constexpr static int getMinimumDateJulianDay() { return JULIAN_DAY_START; }
 
     /*!
      * \brief returns the QDate for 1900-01-01
@@ -45,26 +43,26 @@ public:
     /*!
      * \brief returns the QDate for 9999-12-12
      */
-    const static inline QDate getMaximumDate () { return QDate::fromJulianDay(JULIAN_DAY_END); }
+    const static inline QDate getMaximumDate() { return QDate::fromJulianDay(JULIAN_DAY_END); }
 
     const QString toString() const;
     const bool isValid() const { return m_date.isValid(); }
 
     const inline int toJulianDay() const { return m_date.toJulianDay(); }
-    const static inline Date today(const DateTimeFormat &format) { return Date(QDate::currentDate().toJulianDay(), format); }
+    const static inline Date today(const DateTimeFormat &format)
+    {
+        return Date(QDate::currentDate().toJulianDay(), format);
+    }
 
-//    void setDateFormat(const DateFormat_ &format) {m_format = format}
+    //    void setDateFormat(const DateFormat_ &format) {m_format = format}
     // todo copy constructor
 
-private:
+  private:
     QDate m_date;
     DateTimeFormat m_format;
     static constexpr int JULIAN_DAY_START = 2415021; // 1900-01-01
-    static constexpr int JULIAN_DAY_END = 5373465; // 9999-12-12
-
+    static constexpr int JULIAN_DAY_END   = 5373465; // 9999-12-12
 };
-
-
 
 } // namespace OPL
 

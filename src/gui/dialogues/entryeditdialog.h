@@ -22,12 +22,12 @@
 #include <QObject>
 
 /*!
- * \brief The EntryEditDialog class is a base class for Dialogs that enable editing of individual database entries
+ * \brief The EntryEditDialog class is a base class for Dialogs that enable editing of individual
+ * database entries
  */
-class  EntryEditDialog : public QDialog
-{
+class EntryEditDialog : public QDialog {
     Q_OBJECT
-public:
+  public:
     EntryEditDialog() = delete;
     EntryEditDialog(QWidget *parent = nullptr);
     EntryEditDialog(int rowID, QWidget *parent = nullptr);
@@ -45,7 +45,7 @@ public:
      */
     virtual bool deleteEntry(int rowID) = 0;
 
-protected:
+  protected:
     int m_rowId;
 };
 

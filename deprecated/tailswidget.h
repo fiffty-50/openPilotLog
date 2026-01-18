@@ -18,12 +18,12 @@
 #ifndef TAILSWIDGET_H
 #define TAILSWIDGET_H
 
-#include <QWidget>
+#include "src/database/flightentry.h"
+#include "src/gui/widgets/settingswidget.h"
 #include <QItemSelection>
 #include <QSqlTableModel>
 #include <QTableView>
-#include "src/database/flightentry.h"
-#include "src/gui/widgets/settingswidget.h"
+#include <QWidget>
 
 namespace Ui {
 class AircraftWidget;
@@ -31,33 +31,36 @@ class AircraftWidget;
 /*!
  * \class AircraftWidget
  * \brief The AircraftWidget is used to view, edit, delete or add new tails.
- * \details The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ * \details The widget consists of two main parts, a *QTableView* on the left side and a
+ * *QStackedWidget* on the right side.
  *
- * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a tails' Registration, Type and
- * Company.
+ * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a
+ * tails' Registration, Type and Company.
  *
- * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as a search box and a QCombobox
- * holding the possible columns that can be used to filter what is displayed. The text of the QLineEdit is used as a filter for the
- * QSqlTableModel, so the view is updated in real time.
+ * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as
+ * a search box and a QCombobox holding the possible columns that can be used to filter what is
+ * displayed. The text of the QLineEdit is used as a filter for the QSqlTableModel, so the view is
+ * updated in real time.
  *
- * The *NewTailDialog* is used for creating a new entry as well as for editing an existing entry. If the user selects a row
- * in the QTableView, the NewTailDilog is displayed on the right side of the Widget, inside the QStackedWidget.
- * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
- * The NewTailDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ * The *NewTailDialog* is used for creating a new entry as well as for editing an existing entry. If
+ * the user selects a row in the QTableView, the NewTailDilog is displayed on the right side of the
+ * Widget, inside the QStackedWidget. In order to avoid leaks from any previously made selections,
+ * existing Dialogs are deleted before a new one is created. The NewTailDialog's `accepted` and
+ * `rejected` signals are connected to refresh the view as required.
  *
- * Note: The ATailEntry class is used to operate on individual aircraft, whereas the AAircraftEntry class is used to retreive
- * templates of aircraft types. For example, 'D-ABCD' and 'N-XYZ' are different tails (Registrations), but they might be the same type of aircraft,
- * for example 'Boeing 737-800'.
+ * Note: The ATailEntry class is used to operate on individual aircraft, whereas the AAircraftEntry
+ * class is used to retreive templates of aircraft types. For example, 'D-ABCD' and 'N-XYZ' are
+ * different tails (Registrations), but they might be the same type of aircraft, for example 'Boeing
+ * 737-800'.
  */
-class TailsWidget : public QWidget
-{
+class TailsWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit TailsWidget(QWidget *parent = nullptr);
     ~TailsWidget();
 
-private slots:
+  private slots:
     void tableView_selectionChanged();
 
     void tableView_headerClicked(int column);
@@ -68,9 +71,10 @@ private slots:
 
     void on_aircraftSearchLineEdit_textChanged(const QString &arg1);
 
-public slots:
+  public slots:
     /*!
-     * \brief invokes setupModelAndView() to account for changes the user has made in the SettingsWidget
+     * \brief invokes setupModelAndView() to account for changes the user has made in the
+     * SettingsWidget
      */
     void onAircraftWidget_settingChanged(SettingsWidget::SettingSignal signal);
     /*!
@@ -79,18 +83,19 @@ public slots:
     void onAircraftWidget_dataBaseUpdated();
 
     /*!
-     * \brief AircraftWidget::repopulateModel (public slot) - re-populates the model to cater for a change
-     * to the database connection (for example, when a backup is created)
+     * \brief AircraftWidget::repopulateModel (public slot) - re-populates the model to cater for a
+     * change to the database connection (for example, when a backup is created)
      */
     void repopulateModel();
-private:
+
+  private:
     Ui::AircraftWidget *ui;
 
     QSqlTableModel *model;
 
     QTableView *view;
 
-    QItemSelectionModel* selection;
+    QItemSelectionModel *selection;
 
     qint32 sortColumn;
 
@@ -111,13 +116,13 @@ private:
 
     void setUiEnabled(bool enabled);
 
-    inline void refreshView(){model->select();}
+    inline void refreshView() { model->select(); }
 
-protected:
+  protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
      */
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // TAILSWIDGET_H

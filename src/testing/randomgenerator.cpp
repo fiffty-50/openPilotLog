@@ -5,12 +5,11 @@
 
 namespace OPL {
 
-RandomGenerator::RandomGenerator(bool safe_mode) :
-    safeMode(safe_mode)
+RandomGenerator::RandomGenerator(bool safe_mode) : safeMode(safe_mode)
 {
     m_numberOfAirports = DB->getLastEntry(OPL::DbTable::Airports);
-    m_numberOfTails = DB->getLastEntry(OPL::DbTable::Tails);
-    m_numberOfPilots = DB->getLastEntry(OPL::DbTable::Pilots);
+    m_numberOfTails    = DB->getLastEntry(OPL::DbTable::Tails);
+    m_numberOfPilots   = DB->getLastEntry(OPL::DbTable::Pilots);
 }
 
 const FlightEntry RandomGenerator::randomFlight()
@@ -19,16 +18,18 @@ const FlightEntry RandomGenerator::randomFlight()
     const QDateTime dest_dt = dept_dt.addSecs(QRandomGenerator::global()->bounded(900, 50000));
 
     const QString doft = dept_dt.date().toString(Qt::ISODate);
-    OPL::Time tofb = OPL::Time::fromString(dept_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
-    OPL::Time tonb = OPL::Time::fromString(dest_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
+    OPL::Time tofb =
+        OPL::Time::fromString(dept_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
+    OPL::Time tonb =
+        OPL::Time::fromString(dest_dt.time().toString(Qt::ISODate), OPL::DateTimeFormat());
 
-    int pic = randomPilot();
+    int pic  = randomPilot();
     int acft = randomTail();
 
     const QString dept = randomAirport();
     const QString dest = randomAirport();
 
-    int tblk = OPL::Time::blockMinutes(tofb, tonb);
+    int tblk   = OPL::Time::blockMinutes(tofb, tonb);
     int tNight = OPL::Calc::calculateNightTime(dept, dest, dept_dt, tblk, 6);
 
     auto flt_data = OPL::RowData_T();
@@ -62,8 +63,9 @@ const FlightEntry RandomGenerator::randomFlight()
     if (pic == 1) {
         flt_data.insert(OPL::FlightEntry::TPIC, tblk);
         flt_data.insert(OPL::FlightEntry::SECONDPILOT, randomPilot());
-    } else {
-        function = QRandomGenerator::global()->bounded(1,4);
+    }
+    else {
+        function = QRandomGenerator::global()->bounded(1, 4);
         flt_data.insert(OPL::FlightEntry::SECONDPILOT, 1);
         flt_data.insert(m_function_times[function], tblk);
     }
@@ -75,24 +77,24 @@ const QTime RandomGenerator::randomTime()
 {
     int h = QRandomGenerator::global()->bounded(0, 23);
     int m = QRandomGenerator::global()->bounded(0, 59);
-    return QTime(h,m);
+    return QTime(h, m);
 }
 
 const QDate RandomGenerator::randomDate()
 {
-    int year = QRandomGenerator::global()->bounded(2000, 2021);
-    int month = QRandomGenerator::global()->bounded(1,12);
-    int day = QRandomGenerator::global()->bounded(1, 28);
+    int year  = QRandomGenerator::global()->bounded(2000, 2021);
+    int month = QRandomGenerator::global()->bounded(1, 12);
+    int day   = QRandomGenerator::global()->bounded(1, 28);
     return QDate(year, month, day);
 }
 
 const QDateTime RandomGenerator::randomDateTime()
 {
-    int year = QRandomGenerator::global()->bounded(2000, 2021);
-    int month = QRandomGenerator::global()->bounded(1,12);
-    int day = QRandomGenerator::global()->bounded(1, 28);
-    int hour = QRandomGenerator::global()->bounded(0, 23);
-    int minute = QRandomGenerator::global()->bounded(0,59);
+    int year   = QRandomGenerator::global()->bounded(2000, 2021);
+    int month  = QRandomGenerator::global()->bounded(1, 12);
+    int day    = QRandomGenerator::global()->bounded(1, 28);
+    int hour   = QRandomGenerator::global()->bounded(0, 23);
+    int minute = QRandomGenerator::global()->bounded(0, 59);
 
     return QDateTime(QDate(year, month, day), QTime(hour, minute));
 }
@@ -101,13 +103,13 @@ const QString RandomGenerator::randomAirport()
 {
     Q_UNIMPLEMENTED();
     return QString();
-    //return DB->getAirportEntry(QRandomGenerator::global()->bounded(1, m_numberOfAirports)).getIcaoCode();
+    // return DB->getAirportEntry(QRandomGenerator::global()->bounded(1,
+    // m_numberOfAirports)).getIcaoCode();
 }
 
 const int RandomGenerator::randomPilot()
 {
-    if (!safeMode)
-        return QRandomGenerator::global()->bounded(1, m_numberOfPilots);
+    if (!safeMode) return QRandomGenerator::global()->bounded(1, m_numberOfPilots);
 
     // verify entry exists before returning
     int pilot;
@@ -119,8 +121,7 @@ const int RandomGenerator::randomPilot()
 
 const int RandomGenerator::randomTail()
 {
-    if (!safeMode)
-        return QRandomGenerator::global()->bounded(1, m_numberOfTails);
+    if (!safeMode) return QRandomGenerator::global()->bounded(1, m_numberOfTails);
 
     // verify entry exists before returning
     int acft;
@@ -135,7 +136,7 @@ const bool RandomGenerator::randomBool()
 #if HAVE_ARC4RANDOM
     return arc4random() > (RAND_MAX / 2);
 #else
-    auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
+    auto gen = std::bind(std::uniform_int_distribution<>(0, 1), std::default_random_engine());
     return gen();
 #endif
 }

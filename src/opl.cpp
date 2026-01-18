@@ -19,7 +19,7 @@ void OplGlobals::fillViewNamesComboBox(QComboBox *combo_box) const
 void OplGlobals::loadPilotFunctios(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (const auto& pilot_function : PILOT_FUNCTIONS)
+    for (const auto &pilot_function : PILOT_FUNCTIONS)
         combo_box->addItem(pilot_function);
 }
 
@@ -44,4 +44,4 @@ void OplGlobals::loadFlightRules(QComboBox *combo_box) const
     combo_box->addItem(QStringLiteral("IFR"));
 }
 
-} // namespace Opl
+} // namespace OPL

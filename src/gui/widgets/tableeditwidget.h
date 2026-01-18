@@ -2,15 +2,15 @@
 #define TABLEEDITWIDGET_H
 
 #include "src/gui/dialogues/entryeditdialog.h"
-#include <QWidget>
-#include <QSqlTableModel>
+#include <QComboBox>
 #include <QHeaderView>
-#include <QTableView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSqlTableModel>
 #include <QStackedWidget>
-#include <QComboBox>
-#include <QLabel>
+#include <QTableView>
+#include <QWidget>
 
 /*!
  * \brief The TableEditWidget class is a base class for widgets which enable
@@ -31,10 +31,9 @@
  * Base Class implementation of setupUI before performing any specialisations. Before the
  * TableEditWidget is shown, the init method must be run.
  */
-class TableEditWidget : public QWidget
-{
+class TableEditWidget : public QWidget {
     Q_OBJECT
-public:
+  public:
     /*!
      * \brief Determines how the layout is created
      * \details <ul>
@@ -42,7 +41,7 @@ public:
      * <li> Vertical: The edit widget is shown below the table </li>
      * </ul>
      */
-    enum Orientation {Horizontal, Vertical};
+    enum Orientation { Horizontal, Vertical };
 
     /*!
      * \brief Create a new TableEditWidget
@@ -94,49 +93,49 @@ public:
      */
     virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
 
-protected:
+  protected:
     Orientation m_orientation;
-    QSqlTableModel *m_model = nullptr;
-    QTableView *m_view = new QTableView(this);
-    QWidget *m_filterWidget = nullptr;
-    QWidget *m_buttonWidget = nullptr;
-    EntryEditDialog* m_entryEditDialog = nullptr;
+    QSqlTableModel *m_model            = nullptr;
+    QTableView *m_view                 = new QTableView(this);
+    QWidget *m_filterWidget            = nullptr;
+    QWidget *m_buttonWidget            = nullptr;
+    EntryEditDialog *m_entryEditDialog = nullptr;
 
     QPushButton *m_addNewEntryPushButton = new QPushButton(this);
     QPushButton *m_deleteEntryPushButton = new QPushButton(this);
 
-    QStackedWidget *m_stackedWidget = new QStackedWidget(this);
-    QLineEdit *m_filterLineEdit = new QLineEdit(this);
+    QStackedWidget *m_stackedWidget      = new QStackedWidget(this);
+    QLineEdit *m_filterLineEdit          = new QLineEdit(this);
     QComboBox *m_filterSelectionComboBox = new QComboBox(this);
 
     /*!
      * \brief Return an array of column numbers of the model that are visible in the UI
      */
-    virtual const QList<int>* getVisibleColumns() const = 0;
+    virtual const QList<int> *getVisibleColumns() const = 0;
     /*!
      * \brief Return an array of column numbers of the model that are hidden in the UI
      */
-    virtual const QList<int>* getHiddenColumns() const = 0;
-    
+    virtual const QList<int> *getHiddenColumns() const = 0;
+
     /*!
      * \brief Return a map of <Column Number, Column Header> of the model
-    */
-    virtual const QMap<int, QString>* getColumnHeaderMap() const = 0;
+     */
+    virtual const QMap<int, QString> *getColumnHeaderMap() const = 0;
 
     virtual void showEditWidget();
     virtual void hideEditWidget();
     /*!
-     * \brief makes sure heap allocated widgets are destroyed when a user requests another add or edit before completing
-     * a proviously opened one.
+     * \brief makes sure heap allocated widgets are destroyed when a user requests another add or
+     * edit before completing a proviously opened one.
      */
     void cleanUpOldEditDialog();
 
     /*!
-    * \brief return a SQL filter statement for a given column name and filter text
-    */
+     * \brief return a SQL filter statement for a given column name and filter text
+     */
     QString getFilterStatement(const QString &column, const QString &filterText);
 
-private:
+  private:
     void setupHorizontalUI();
     void setupVerticalUI();
     void setupSignalsAndSlots();
@@ -147,11 +146,12 @@ private:
     void setupFilterWidget();
 
     /*!
-     * \brief Place the new and edit buttons in a widget to facilitate easier placement in parent layout
+     * \brief Place the new and edit buttons in a widget to facilitate easier placement in parent
+     * layout
      */
     void setupButtonWidget();
 
-public slots:
+  public slots:
     virtual void addEntryRequested();
     virtual void editEntryRequested(const QModelIndex &selectedIndex);
     virtual void deleteEntryRequested();
@@ -162,12 +162,11 @@ public slots:
      */
     virtual void filterTextChanged(const QString &filterString);
 
-public slots:
+  public slots:
     /*!
      * \brief refresh the view after a Database change
      */
     void databaseContentChanged();
-
 };
 
 #endif // TABLEEDITWIDGET_H

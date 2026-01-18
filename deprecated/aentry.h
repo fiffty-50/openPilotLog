@@ -18,10 +18,10 @@
 #ifndef AENTRY_H
 #define AENTRY_H
 
-#include <QString>
-#include <QStringList>
 #include <QHash>
 #include <QPair>
+#include <QString>
+#include <QStringList>
 #include <QVariant>
 
 #include "src/database/databasetypes.h"
@@ -31,14 +31,16 @@
  *  and data for new and existing entries in the database to operate on.
  */
 class AEntry {
-protected:
+  protected:
     DataPosition position;
-public:
+
+  public:
     RowData_T tableData;
-public:
-    AEntry() = delete;
-    AEntry(const AEntry&) = default;
-    AEntry& operator=(const AEntry&) = default;
+
+  public:
+    AEntry()                          = delete;
+    AEntry(const AEntry &)            = default;
+    AEntry &operator=(const AEntry &) = default;
     AEntry(DataPosition position_);
     AEntry(RowData_T table_data);
     AEntry(DataPosition position_, RowData_T table_data);
@@ -46,17 +48,16 @@ public:
     void setData(RowData_T table_data);
     void setPosition(DataPosition position_);
 
-    const DataPosition& getPosition() const;
+    const DataPosition &getPosition() const;
     const TableName_T &getTableName() const { return position.tableName; }
     const RowId_T &getRowId() const { return position.rowId; }
-    const RowData_T& getData() const;
+    const RowData_T &getData() const;
 
     /*!
      * \brief operator QString provides compatibilty with QDebug() - prints
      * the tableData in a readable formatting to stdout
      */
     operator QString() const;
-
 };
 
 #endif // AENTRY_H

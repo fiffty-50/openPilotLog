@@ -1,15 +1,14 @@
 #ifndef FLIGHTAWAREFLIGHTDATA_H
 #define FLIGHTAWAREFLIGHTDATA_H
 
-#include <QDateTime>
 #include "src/opl.h"
+#include <QDateTime>
 
 /*!
  * \brief A struct for storing data retreived from the FlightAware API
  */
-class FlightAwareFlightData
-{
-public:
+class FlightAwareFlightData {
+  public:
     FlightAwareFlightData() = default;
 
     QString departure;
@@ -19,11 +18,13 @@ public:
     QString iataFlightNumber;
     QDateTime out, off, on, in;
 
-    void print() const {
+    void print() const
+    {
         DEB << "Flight Aware Data:";
         DEB << "Departure: " << departure << "Destination" << destination;
         DEB << "Out:" << out << "Off:" << off << "On:" << on << "in:" << in;
-        DEB << "Icao #" << icaoFlightNumber << "Iata #" << iataFlightNumber << "Registration" << registration;
+        DEB << "Icao #" << icaoFlightNumber << "Iata #" << iataFlightNumber << "Registration"
+            << registration;
     }
 };
 

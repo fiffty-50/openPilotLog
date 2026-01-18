@@ -21,8 +21,8 @@
 #include "QtWidgets/qlineedit.h"
 #include "src/gui/verification/timeinput.h"
 #include "src/opl.h"
-#include <QWidget>
 #include <QRegularExpressionValidator>
+#include <QWidget>
 
 namespace Ui {
 class TotalsWidget;
@@ -40,18 +40,15 @@ class TotalsWidget;
  * for previous experience, its fields are editable.
  *
  */
-class TotalsWidget : public QWidget
-{
+class TotalsWidget : public QWidget {
     Q_OBJECT
 
-public:
-    enum WidgetType {TotalTimeWidget, PreviousExperienceWidget};
+  public:
+    enum WidgetType { TotalTimeWidget, PreviousExperienceWidget };
     explicit TotalsWidget(WidgetType widgetType, QWidget *parent = nullptr);
     ~TotalsWidget();
 
-
-
-private:
+  private:
     Ui::TotalsWidget *ui;
     /*!
      * \brief m_rowData holds the data displayed in the line edits
@@ -67,10 +64,10 @@ private:
     void setup(const WidgetType widgetType);
     void connectSignalsAndSlots();
     bool verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input);
-    bool updateTimeEntry(const QLineEdit* line_edit);
-    bool updateMovementEntry(const QLineEdit* line_edit);
+    bool updateTimeEntry(const QLineEdit *line_edit);
+    bool updateMovementEntry(const QLineEdit *line_edit);
 
-private slots:
+  private slots:
     void timeLineEditEditingFinished();
     void movementLineEditEditingFinished();
 };

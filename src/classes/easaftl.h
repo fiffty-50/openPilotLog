@@ -2,10 +2,8 @@
 #define EASAFTL_H
 #include "src/functions/statistics.h"
 
-
-class EasaFTL
-{
-public:
+class EasaFTL {
+  public:
     EasaFTL() = delete;
 
     static int getLimit(OPL::Statistics::TimeFrame timeFrame);

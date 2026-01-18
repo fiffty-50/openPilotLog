@@ -18,26 +18,26 @@
 #ifndef NEWFLIGHT_H
 #define NEWFLIGHT_H
 
-#include <QDialog>
-#include <QRegularExpression>
-#include <QMessageBox>
-#include <QDebug>
-#include <QCompleter>
-#include <QStringList>
-#include <QButtonGroup>
+#include "src/functions/atime.h"
 #include <QBitArray>
-#include <QLineEdit>
+#include <QButtonGroup>
 #include <QCalendarWidget>
 #include <QComboBox>
-#include <QTabWidget>
+#include <QCompleter>
+#include <QDebug>
+#include <QDialog>
 #include <QKeyEvent>
-#include "src/functions/atime.h"
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QStringList>
+#include <QTabWidget>
 
+#include "src/classes/acompletiondata.h"
 #include "src/classes/aflightentry.h"
 #include "src/classes/apilotentry.h"
 #include "src/classes/atailentry.h"
 #include "src/database/database.h"
-#include "src/classes/acompletiondata.h"
 
 namespace Ui {
 
@@ -59,10 +59,9 @@ class NewFlight;
  * are valid.
  * - Comitting an entry to the database is only allowed if all mandatory inputs are valid.
  */
-class NewFlightDialog : public QDialog
-{
+class NewFlightDialog : public QDialog {
     Q_OBJECT
-public:
+  public:
     /*!
      * \brief NewFlightDialog create a new flight and add it to the logbook.
      */
@@ -70,32 +69,33 @@ public:
     /*!
      * \brief NewFlightDialog Edit an existing logbook entry.
      */
-    explicit NewFlightDialog(ACompletionData &completion_data, int row_id, QWidget *parent = nullptr);
+    explicit NewFlightDialog(ACompletionData &completion_data, int row_id,
+                             QWidget *parent = nullptr);
     ~NewFlightDialog();
 
     /*!
      * \brief The ValidationSetupData struct encapsulates the items required to initialise
      * the line edits with QValidators and QCompleters
      */
-    struct ValidationSetupData
-    {
-        ValidationSetupData(QStringList* completion_data, const QRegularExpression* validation_RegEx)
-            : completionData(completion_data), validationRegEx(validation_RegEx){};
+    struct ValidationSetupData {
+        ValidationSetupData(QStringList *completion_data,
+                            const QRegularExpression *validation_RegEx)
+            : completionData(completion_data), validationRegEx(validation_RegEx) {};
 
-        ValidationSetupData(const QRegularExpression* validation_RegEx)
-            : completionData(nullptr), validationRegEx(validation_RegEx){};
+        ValidationSetupData(const QRegularExpression *validation_RegEx)
+            : completionData(nullptr), validationRegEx(validation_RegEx) {};
 
-        const QStringList* completionData;
-        const QRegularExpression* validationRegEx;
+        const QStringList *completionData;
+        const QRegularExpression *validationRegEx;
     };
 
-private slots:
+  private slots:
 
-    void onToUpperTriggered_textChanged(const QString&);
+    void onToUpperTriggered_textChanged(const QString &);
     void onPilotNameLineEdit_editingFinished();
-    void onLocationEditingFinished(QLineEdit*, QLabel*);
+    void onLocationEditingFinished(QLineEdit *, QLabel *);
     void onTimeLineEdit_editingFinished();
-    void onCompleter_highlighted(const QString&);
+    void onCompleter_highlighted(const QString &);
     void onCompleter_activated(const QString &);
     void onCalendarWidget_clicked(const QDate &date);
     void on_doftLineEdit_editingFinished();
@@ -116,7 +116,7 @@ private slots:
 
     void on_calendarPushButton_clicked();
 
-private:
+  private:
     Ui::NewFlight *ui;
 
     /*!
@@ -126,40 +126,43 @@ private:
      */
     AFlightEntry flightEntry;
 
-    QVector<QLineEdit*> mandatoryLineEdits;
-    QVector<QLineEdit*> primaryTimeLineEdits;
-    QVector<QLineEdit*> pilotsLineEdits;
+    QVector<QLineEdit *> mandatoryLineEdits;
+    QVector<QLineEdit *> primaryTimeLineEdits;
+    QVector<QLineEdit *> pilotsLineEdits;
 
     /*!
      * \brief mandatoryLineEditsValid holds the minimum required information to create a
      * valid database entries.
      */
     QBitArray mandatoryLineEditsValid;
-    enum mandatoryLineEdit {
-        doft = 0,
-        dept = 1,
-        dest = 2,
-        tofb = 3,
-        tonb = 4,
-        pic  = 5,
-        acft = 6
-    };
-    void validateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, true);}
-    void invalidateMandatoryLineEdit(mandatoryLineEdit line_edit){mandatoryLineEditsValid.setBit(line_edit, false);}
-    bool timeLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::tofb]
-                                  && mandatoryLineEditsValid[mandatoryLineEdit::tonb];}
-    bool acftLineEditValid(){return mandatoryLineEditsValid[mandatoryLineEdit::acft];}
-    bool locLineEditsValid(){return mandatoryLineEditsValid[mandatoryLineEdit::dept]
-                                 && mandatoryLineEditsValid[mandatoryLineEdit::dest];}
-    bool allMandatoryLineEditsValid(){return mandatoryLineEditsValid.count(true) == 7;}
+    enum mandatoryLineEdit { doft = 0, dept = 1, dest = 2, tofb = 3, tonb = 4, pic = 5, acft = 6 };
+    void validateMandatoryLineEdit(mandatoryLineEdit line_edit)
+    {
+        mandatoryLineEditsValid.setBit(line_edit, true);
+    }
+    void invalidateMandatoryLineEdit(mandatoryLineEdit line_edit)
+    {
+        mandatoryLineEditsValid.setBit(line_edit, false);
+    }
+    bool timeLineEditsValid()
+    {
+        return mandatoryLineEditsValid[mandatoryLineEdit::tofb] &&
+               mandatoryLineEditsValid[mandatoryLineEdit::tonb];
+    }
+    bool acftLineEditValid() { return mandatoryLineEditsValid[mandatoryLineEdit::acft]; }
+    bool locLineEditsValid()
+    {
+        return mandatoryLineEditsValid[mandatoryLineEdit::dept] &&
+               mandatoryLineEditsValid[mandatoryLineEdit::dest];
+    }
+    bool allMandatoryLineEditsValid() { return mandatoryLineEditsValid.count(true) == 7; }
 
-    //debug
+    // debug
     void validationStatus();
     /*!
      * Contains completion data for QCompleters and mapping user input
      */
     ACompletionData completionData;
-
 
     Opl::Time::FlightTimeFormat flightTimeFormat;
 
@@ -180,12 +183,12 @@ private:
     void fillDeductibleData();
 
     void onMandatoryLineEditsFilled();
-    void onGoodInputReceived(QLineEdit*);
+    void onGoodInputReceived(QLineEdit *);
     void onBadInputReceived(QLineEdit *);
     bool eventFilter(QObject *object, QEvent *event);
     bool isLessOrEqualThanBlockTime(const QString time_string);
 
-    void addNewTail(QLineEdit*);
+    void addNewTail(QLineEdit *);
     void addNewPilot(QLineEdit *);
 
     /*!

@@ -26,10 +26,9 @@
  * \brief The RunGuard class ensures only a single instance of the application
  * is running simultaneously.
  */
-class RunGuard
-{
+class RunGuard {
 
-public:
+  public:
     RunGuard(const QString &key);
     ~RunGuard();
 
@@ -37,7 +36,7 @@ public:
     bool tryToRun();
     void release();
 
-private:
+  private:
     const QString key;
     const QString memLockKey;
     const QString sharedmemKey;
@@ -48,6 +47,5 @@ private:
 
     Q_DISABLE_COPY(RunGuard)
 };
-
 
 #endif // RUNGUARD_H

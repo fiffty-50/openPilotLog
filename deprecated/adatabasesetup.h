@@ -19,13 +19,13 @@
 #define DBSETUP_H
 
 #include <QCoreApplication>
-#include <QStringBuilder>
 #include <QEventLoop>
+#include <QStringBuilder>
 
 #define DATABASE_REVISION 17
 
-const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
-
+const auto TEMPLATE_URL = QStringLiteral(
+    "https://raw.githubusercontent.com/fiffty-50/openpilotlog/develop/assets/database/templates/");
 
 /*!
  * \brief The DataBaseSetup class is responsible for the inital setup of the database when
@@ -33,9 +33,8 @@ const auto TEMPLATE_URL = QStringLiteral("https://raw.githubusercontent.com/fiff
  * location and creates all required tables and views. It can also be used to reset the
  * database currently used
  */
-class DataBaseSetup
-{
-public:
+class DataBaseSetup {
+  public:
     static void debug();
 
     static bool createDatabase();
@@ -59,11 +58,8 @@ public:
      */
     static bool commitDataJson(const QJsonArray &json_arr, const QString &table_name);
 
-private:
-
+  private:
     static bool createSchemata(const QStringList &statements);
-
-
 };
 
 #endif // DBSETUP_H

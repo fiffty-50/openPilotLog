@@ -19,17 +19,12 @@
 
 namespace OPL {
 
-AirportEntry::AirportEntry()
-    : Row(DbTable::Airports, &FIELDS)
-{}
-
+AirportEntry::AirportEntry() : Row(DbTable::Airports, &FIELDS) {}
 
 AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Airports
-    , row_id
-    , row_data
-    , &FIELDS)
-{}
+    : Row(DbTable::Airports, row_id, row_data, &FIELDS)
+{
+}
 
 bool AirportEntry::isValid() const
 {
@@ -39,16 +34,14 @@ bool AirportEntry::isValid() const
 
 bool AirportEntry::setAirportName(const QString &input)
 {
-    if(input.isEmpty())
-        return false;
+    if (input.isEmpty()) return false;
     m_rowData.insert(NAME, input);
     return true;
 }
 
 bool AirportEntry::setLatitude(double input)
 {
-    if( ! (input >= -90.0 && input <= 90.0))
-        return false;
+    if (!(input >= -90.0 && input <= 90.0)) return false;
 
     m_rowData.insert(LATITUDE, input);
     return true;
@@ -56,8 +49,7 @@ bool AirportEntry::setLatitude(double input)
 
 bool AirportEntry::setLongitude(double input)
 {
-    if( ! (input >= -180.0 && input <= 180.0))
-        return false;
+    if (!(input >= -180.0 && input <= 180.0)) return false;
 
     m_rowData.insert(LONGITUDE, input);
     return true;
@@ -65,31 +57,18 @@ bool AirportEntry::setLongitude(double input)
 
 bool AirportEntry::setTimezone(const QString &input)
 {
-    if (! QTimeZone::availableTimeZoneIds().contains(input))
-        return false;
+    if (!QTimeZone::availableTimeZoneIds().contains(input)) return false;
 
     m_rowData.insert(TZ_OLSON, input);
     return true;
 }
 
-QString AirportEntry::getAirportName() const
-{
-    return getData().value(NAME).toString();
-}
+QString AirportEntry::getAirportName() const { return getData().value(NAME).toString(); }
 
-QString AirportEntry::getTimezone() const
-{
-    return getData().value(TZ_OLSON).toString();
-}
+QString AirportEntry::getTimezone() const { return getData().value(TZ_OLSON).toString(); }
 
-double AirportEntry::getLatitude() const
-{
-    return getData().value(LATITUDE).toDouble();
-}
+double AirportEntry::getLatitude() const { return getData().value(LATITUDE).toDouble(); }
 
-double AirportEntry::getLongitude() const
-{
-    return getData().value(LONGITUDE).toDouble();
-}
+double AirportEntry::getLongitude() const { return getData().value(LONGITUDE).toDouble(); }
 
 } // namespace OPL

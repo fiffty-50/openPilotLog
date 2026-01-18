@@ -16,14 +16,12 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "homewidget.h"
+#include "src/database/database.h"
 #include "src/gui/widgets/currencywidget.h"
 #include "src/gui/widgets/totalswidget.h"
 #include "ui_homewidget.h"
-#include "src/database/database.h"
 
-HomeWidget::HomeWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::HomeWidget)
+HomeWidget::HomeWidget(QWidget *parent) : QWidget(parent), ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
 
@@ -34,14 +32,11 @@ HomeWidget::HomeWidget(QWidget *parent) :
     fillTotals();
     fillCurrencies();
 
-    QObject::connect(DB,    &OPL::Database::dataBaseUpdated,
-                     this,  &HomeWidget::onPilotsDatabaseChanged);
+    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
+                     &HomeWidget::onPilotsDatabaseChanged);
 }
 
-HomeWidget::~HomeWidget()
-{
-    delete ui;
-}
+HomeWidget::~HomeWidget() { delete ui; }
 
 void HomeWidget::fillTotals()
 {
@@ -64,15 +59,14 @@ void HomeWidget::onPilotsDatabaseChanged(const OPL::DbTable table)
 void HomeWidget::changeEvent(QEvent *event)
 {
     if (event != nullptr)
-        if(event->type() == QEvent::LanguageChange)
-            ui->retranslateUi(this);
+        if (event->type() == QEvent::LanguageChange) ui->retranslateUi(this);
 }
 
 const QString HomeWidget::getLogbookOwnerName() const
 {
     OPL::PilotEntry owner = DB->getLogbookOwner();
-    QString name = owner.getName();
-    if(name.isEmpty()) {
+    QString name          = owner.getName();
+    if (name.isEmpty()) {
         name = owner.getName();
     }
     return name;

@@ -20,8 +20,7 @@
 
 #include "tableeditwidget.h"
 
-class AircraftTableEditWidget : public TableEditWidget
-{
+class AircraftTableEditWidget : public TableEditWidget {
     Q_OBJECT
   public:
     AircraftTableEditWidget() = delete;
@@ -79,20 +78,16 @@ class AircraftTableEditWidget : public TableEditWidget
         {COL_REMARKS,         COL_HEADER_REMARKS        },
     };
 
-    const QList<int> HIDDEN_COLUMNS = {COL_ROWID,
-                                                          COL_IS_MULTI_PILOT};
+    const QList<int> HIDDEN_COLUMNS = {COL_ROWID, COL_IS_MULTI_PILOT};
 
     const QList<int> VISIBLE_COLUMNS = {
-        COL_MAKE,          COL_MODEL,
-        COL_VARIANT,       COL_ICAO_DESIGNATOR,
-        COL_ENGINE_TYPE,   COL_IS_MULTI_ENGINE,
-        COL_CLASS,         COL_SUB_CLASS,
-        COL_WAKE_CATEGORY, COL_TYPE_RATING,
-        COL_REMARKS};
+        COL_MAKE,          COL_MODEL,           COL_VARIANT, COL_ICAO_DESIGNATOR,
+        COL_ENGINE_TYPE,   COL_IS_MULTI_ENGINE, COL_CLASS,   COL_SUB_CLASS,
+        COL_WAKE_CATEGORY, COL_TYPE_RATING,     COL_REMARKS};
 
-    const QMap<int, QString>* getColumnHeaderMap() const override { return &COLUMN_HEADERS_MAP; }
-    const QList<int>* getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
-    const QList<int>* getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
+    const QMap<int, QString> *getColumnHeaderMap() const override { return &COLUMN_HEADERS_MAP; }
+    const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
+    const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
 };
 
 #endif // AIRCRAFTTABLEEDITWIDGET_H

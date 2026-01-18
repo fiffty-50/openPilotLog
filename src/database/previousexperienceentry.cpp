@@ -19,12 +19,11 @@
 
 namespace OPL {
 
-PreviousExperienceEntry::PreviousExperienceEntry()
-    : Row(DbTable::PreviousExperience, &FIELDS)
-{}
+PreviousExperienceEntry::PreviousExperienceEntry() : Row(DbTable::PreviousExperience, &FIELDS) {}
 
 PreviousExperienceEntry::PreviousExperienceEntry(int row_id, const RowData_T &row_data)
     : Row(DbTable::PreviousExperience, row_id, row_data, &FIELDS)
-{}
+{
+}
 
 } // namespace OPL

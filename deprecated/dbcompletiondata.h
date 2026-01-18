@@ -25,8 +25,7 @@ namespace OPL {
  * \brief The DatabaseTarget enum lists database items that are
  * used by completers, for content matching or need to be accessed programatically.
  */
-enum class CompleterTarget
-{
+enum class CompleterTarget {
     AirportIdentifierICAO,
     AirportIdentifierIATA,
     AirportIdentifier,
@@ -43,11 +42,11 @@ enum class CompleterTarget
  * \details QCompleters and QHashes are used for mapping user input to database keys.
  * The required data is retreived from the database and cached for fast access without the
  * need to query the database. The DbCompletionData class holds the last state of the database
- * (state of user-modifiable data) in order to intelligently refresh the completion data when needed.
+ * (state of user-modifiable data) in order to intelligently refresh the completion data when
+ * needed.
  */
-class DbCompletionData
-{
-public:
+class DbCompletionData {
+  public:
     /*!
      * \brief init Retrieves Data and populates Lists and Maps
      */
@@ -87,10 +86,9 @@ public:
     const QHash<int, QString> &getAirportsMapICAO() const;
     const QHash<int, QString> &getAirportsMapIATA() const;
 
-private:
+  private:
     QHash<int, QString> airportsMapICAO;
     QHash<int, QString> airportsMapIATA;
-
 };
 } // namespace OPL
 

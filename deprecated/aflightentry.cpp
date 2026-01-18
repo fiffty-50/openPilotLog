@@ -16,36 +16,33 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aflightentry.h"
-#include "src/database/adatabase.h"
-#include "src/opl.h"
-#include "src/functions/atime.h"
 #include "src/classes/asettings.h"
+#include "src/database/adatabase.h"
+#include "src/functions/atime.h"
+#include "src/opl.h"
 
-AFlightEntry::AFlightEntry()
-    : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, 0))
-{}
+AFlightEntry::AFlightEntry() : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, 0)) {}
 
 AFlightEntry::AFlightEntry(RowId_T row_id)
     : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, row_id))
-{}
+{
+}
 
 AFlightEntry::AFlightEntry(RowData_T table_data)
     : AEntry::AEntry(DataPosition(OPL::Db::TABLE_FLIGHTS, 0), table_data)
-{}
+{
+}
 
 const QString AFlightEntry::summary()
 {
-    if(tableData.isEmpty())
-        return QString();
+    if (tableData.isEmpty()) return QString();
 
     QString flight_summary;
     auto space = QLatin1Char(' ');
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DOFT).toString() + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEPT).toString() + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt())
-                          + space);
-    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt())
-                          + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TOFB).toInt()) + space);
+    flight_summary.append(ATime::toString(tableData.value(OPL::Db::FLIGHTS_TONB).toInt()) + space);
     flight_summary.append(tableData.value(OPL::Db::FLIGHTS_DEST).toString());
 
     return flight_summary;

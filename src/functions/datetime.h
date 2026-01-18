@@ -1,39 +1,36 @@
 #ifndef DATETIME_H
 #define DATETIME_H
-#include "src/opl.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
+#include "src/opl.h"
 
 namespace OPL {
 
 class DateTime {
 
-public:
-//    DateTime(const OPL::Date date, const OPL::Time &time);
+  public:
+    //    DateTime(const OPL::Date date, const OPL::Time &time);
 
-
-public:
+  public:
     const inline static QString ISO_FORMAT_STRING = QStringLiteral("yyyy-MM-dd");
-    const inline static QString DE_FORMAT_STRING = QStringLiteral("dd.MM.yyyy");
-    const inline static QString EN_FORMAT_STRING = QStringLiteral("MM/dd/yyyy");
+    const inline static QString DE_FORMAT_STRING  = QStringLiteral("dd.MM.yyyy");
+    const inline static QString EN_FORMAT_STRING  = QStringLiteral("MM/dd/yyyy");
 
     const static inline QMap<OPL::DateFormat, QString> DATEFORMATSMAP = {
         {OPL::DateFormat::ISODate, ISO_FORMAT_STRING},
         {OPL::DateFormat::DE,      DE_FORMAT_STRING },
         {OPL::DateFormat::EN,      EN_FORMAT_STRING },
-
     };
 
-    const static inline QStringList DISPLAY_NAMES = {
-        QStringLiteral("ISO 8601: yyyy-MM-dd"),
-        QStringLiteral("DE: dd.MM.yyyy"),
-        QStringLiteral("EN: MM/dd/yyyy")
-    };
+    const static inline QStringList DISPLAY_NAMES = {QStringLiteral("ISO 8601: yyyy-MM-dd"),
+                                                     QStringLiteral("DE: dd.MM.yyyy"),
+                                                     QStringLiteral("EN: MM/dd/yyyy")};
 
     /*!
      * \brief Reimplements QDate::toString to accept OPL::Date::DateFormat enums
      */
-    inline static QString dateToString(const QDate &date, OPL::DateFormat format = OPL::DateFormat::ISODate)
+    inline static QString dateToString(const QDate &date,
+                                       OPL::DateFormat format = OPL::DateFormat::ISODate)
     {
         return date.toString(DATEFORMATSMAP.value(format));
     };
@@ -60,9 +57,7 @@ public:
 
     static bool containsSeperator(const QString &user_input);
 
-
-
-    static const QStringList& getDisplayNames();
+    static const QStringList &getDisplayNames();
 
     static const QString getFormatString(OPL::DateFormat format);
 
@@ -76,7 +71,9 @@ public:
      * \brief dateTimeToString formats a QDateTime object into a string in a uniform way.
      * \return
      */
-    static inline const QString dateTimeToString (const QDateTime& date_time, OPL::DateTimeFormat_deprecated format) {
+    static inline const QString dateTimeToString(const QDateTime &date_time,
+                                                 OPL::DateTimeFormat_deprecated format)
+    {
         switch (format) {
         case OPL::DateTimeFormat_deprecated::Default:
             return date_time.toString(Qt::ISODate);
@@ -87,13 +84,12 @@ public:
         }
     }
 
-    static inline QDateTime fromString(const QString& date_time_string)
+    static inline QDateTime fromString(const QString &date_time_string)
     {
         auto date_time = QDateTime::fromString(date_time_string, QStringLiteral("yyyy-MM-ddhh:mm"));
         date_time.setTimeZone(QTimeZone::utc());
         return date_time;
     }
-
 };
 
 } // namespace OPL

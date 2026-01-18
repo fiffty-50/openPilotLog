@@ -16,14 +16,13 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "tailentryeditdialog.h"
+#include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/opl.h"
-#include "src/classes/settings.h"
 
 TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
-    : EntryEditDialog(parent)
-    , m_rowId(0)
+    : EntryEditDialog(parent), m_rowId(0)
 {
     LOG << "Editing New Tail Entry: " << new_registration;
     init();
@@ -33,8 +32,8 @@ TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidge
     aircraftTypeComboBox->lineEdit()->selectAll();
 }
 
-TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent) :
-    EntryEditDialog(parent), m_rowId(row_id)
+TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent)
+    : EntryEditDialog(parent), m_rowId(row_id)
 {
     init();
 
@@ -51,23 +50,23 @@ TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent) :
 void TailEntryEditDialog::init()
 {
     // Main Layout
-    gridLayout = new QGridLayout(this);
-    int row = 0;
-    constexpr int firstCol = 0;
-    constexpr int secondCol = 1;
-    constexpr int thirdCol = 2;
-    constexpr int singleSpan = 1;
+    gridLayout                  = new QGridLayout(this);
+    int row                     = 0;
+    constexpr int firstCol      = 0;
+    constexpr int secondCol     = 1;
+    constexpr int thirdCol      = 2;
+    constexpr int singleSpan    = 1;
     constexpr int spanRemaining = -1;
 
     // Add widgets to first and second column, advance to next row
-    auto addTwoWidgets = [&](QWidget* left, QWidget* right) {
+    auto addTwoWidgets = [&](QWidget *left, QWidget *right) {
         gridLayout->addWidget(left, row, firstCol, singleSpan, singleSpan);
         gridLayout->addWidget(right, row, secondCol, singleSpan, spanRemaining);
         row++;
     };
 
     // Header Row
-    aircraftTypeLabel = new QLabel(this);
+    aircraftTypeLabel    = new QLabel(this);
     aircraftTypeComboBox = new QComboBox(this);
     setDefaultPushButton = new QPushButton(this);
     aircraftTypeComboBox->addItems(DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes));
@@ -85,20 +84,19 @@ void TailEntryEditDialog::init()
     // Registration
 
     registrationLabel = new QLabel(this);
-    //registrationLabel->setMinimumWidth(160);
+    // registrationLabel->setMinimumWidth(160);
     registrationLineEdit = new QLineEdit(this);
     addTwoWidgets(registrationLabel, registrationLineEdit);
 
     // Company
-    companyLabel = new QLabel(this);
+    companyLabel    = new QLabel(this);
     companyLineEdit = new QLineEdit(this);
     addTwoWidgets(companyLabel, companyLineEdit);
 
     // Remarks
-    remarksLabel = new QLabel(this);
+    remarksLabel    = new QLabel(this);
     remarksLineEdit = new QLineEdit(this);
     addTwoWidgets(remarksLabel, remarksLineEdit);
-
 
     // Check Box
     editServiceDatesCheckBox = new QCheckBox(this);
@@ -114,9 +112,9 @@ void TailEntryEditDialog::init()
     row++;
 
     // In Service
-    inServiceLabel = new QLabel(this);
+    inServiceLabel        = new QLabel(this);
     const auto dateFormat = OPL::DateTimeFormat().dateFormatString();
-    inServiceDateEdit = new QDateEdit(this);
+    inServiceDateEdit     = new QDateEdit(this);
     inServiceDateEdit->setDisplayFormat(dateFormat);
     inServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
     inServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
@@ -124,9 +122,8 @@ void TailEntryEditDialog::init()
     inServiceDateEdit->setEnabled(false);
     addTwoWidgets(inServiceLabel, inServiceDateEdit);
 
-
     // Out of Service
-    outOfServiceLabel = new QLabel(this);
+    outOfServiceLabel    = new QLabel(this);
     outOfServiceDateEdit = new QDateEdit(this);
     outOfServiceDateEdit->setDisplayFormat(dateFormat);
     outOfServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
@@ -138,49 +135,49 @@ void TailEntryEditDialog::init()
     // Button Box
     buttonBox = new QDialogButtonBox(this);
     buttonBox->setOrientation(Qt::Horizontal);
-    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, secondCol, singleSpan, singleSpan);
 
-    QWidget::setTabOrder({
-                          aircraftTypeComboBox,
-                          registrationLineEdit,
-                          companyLineEdit,
-                          remarksLineEdit,
-                          buttonBox});
+    QWidget::setTabOrder(
+        {aircraftTypeComboBox, registrationLineEdit, companyLineEdit, remarksLineEdit, buttonBox});
 
     retranslateUi();
     hideServiceDateEdits();
 
-
     // Set the type Combo box up to be editable
     aircraftTypeComboBox->setEditable(true);
     QCompleter *boxCompleter = new QCompleter(
-        DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes),
-        aircraftTypeComboBox);
+        DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes), aircraftTypeComboBox);
     boxCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     boxCompleter->setCompletionMode(QCompleter::PopupCompletion);
     boxCompleter->setFilterMode(Qt::MatchContains);
     aircraftTypeComboBox->setCompleter(boxCompleter);
     // Read the default value from settings
     const QString defaultType = Settings::getDefaultAircraftType();
-    if(!defaultType.isEmpty()) {
+    if (!defaultType.isEmpty()) {
         aircraftTypeComboBox->setCurrentText(defaultType);
     }
 
     // Connect Slots
-    QObject::connect(aircraftTypeComboBox->lineEdit(), &QLineEdit::editingFinished, this, &TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished);
-    QObject::connect(registrationLineEdit, &QLineEdit::editingFinished, this, &TailEntryEditDialog::on_registrationLineEdit_editingFinished);
-    QObject::connect(setDefaultPushButton, &QPushButton::clicked, this, &TailEntryEditDialog::on_setDefaultPushButton_clicked);
+    QObject::connect(aircraftTypeComboBox->lineEdit(), &QLineEdit::editingFinished, this,
+                     &TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished);
+    QObject::connect(registrationLineEdit, &QLineEdit::editingFinished, this,
+                     &TailEntryEditDialog::on_registrationLineEdit_editingFinished);
+    QObject::connect(setDefaultPushButton, &QPushButton::clicked, this,
+                     &TailEntryEditDialog::on_setDefaultPushButton_clicked);
 
     // auto fill on activation and highlighting in case tab is pressed during completion
-    QObject::connect(boxCompleter, qOverload<const QModelIndex&>(&QCompleter::activated),   this, &TailEntryEditDialog::on_searchCompleter_activated);
-    QObject::connect(boxCompleter, qOverload<const QModelIndex&>(&QCompleter::highlighted), this, &TailEntryEditDialog::on_searchCompleter_activated);
+    QObject::connect(boxCompleter, qOverload<const QModelIndex &>(&QCompleter::activated), this,
+                     &TailEntryEditDialog::on_searchCompleter_activated);
+    QObject::connect(boxCompleter, qOverload<const QModelIndex &>(&QCompleter::highlighted), this,
+                     &TailEntryEditDialog::on_searchCompleter_activated);
 
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &TailEntryEditDialog::on_buttonBox_accepted);
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, this,
+                     &TailEntryEditDialog::on_buttonBox_accepted);
 
-    QObject::connect(editServiceDatesCheckBox, &QCheckBox::checkStateChanged, this, &TailEntryEditDialog::on_dateEditCheckBox_changed);
-
+    QObject::connect(editServiceDatesCheckBox, &QCheckBox::checkStateChanged, this,
+                     &TailEntryEditDialog::on_dateEditCheckBox_changed);
 }
 
 void TailEntryEditDialog::retranslateUi()
@@ -211,19 +208,19 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
     remarksLineEdit->setText(entry.getRemarks());
 
     const QDate inService = entry.getInServiceDate();
-    if(inService != OPL::Date::getMinimumDate()) {
+    if (inService != OPL::Date::getMinimumDate()) {
         inServiceDateEdit->setDate(inService);
     }
     const QDate outOfService = entry.getOutOfServiceDate();
-    if(outOfService <= OPL::Date::getMinimumDate()) {
+    if (outOfService <= OPL::Date::getMinimumDate()) {
         outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
-    } else {
+    }
+    else {
         outOfServiceDateEdit->setDate(outOfService);
     }
 
     aircraftTypeComboBox->setCurrentText(
-        DBCache->getMap(OPL::DatabaseCache::MapType::AircraftTypes)
-            .value(entry.getTypeId()));
+        DBCache->getMap(OPL::DatabaseCache::MapType::AircraftTypes).value(entry.getTypeId()));
 }
 
 void TailEntryEditDialog::showServiceDateEdits()
@@ -265,35 +262,35 @@ void TailEntryEditDialog::on_buttonBox_accepted()
     DEB << entry.getData();
 
     // Add mandatory data
-    if(!entry.setRegistration(registrationLineEdit->text())) {
+    if (!entry.setRegistration(registrationLineEdit->text())) {
         WARN(tr("The registration is invalid."));
         return;
     }
-    const int typeId = DBCache->getKeyMap(
-        OPL::DatabaseCache::MapType::AircraftTypes).value(
-        aircraftTypeComboBox->currentText());
+    const int typeId = DBCache->getKeyMap(OPL::DatabaseCache::MapType::AircraftTypes)
+                           .value(aircraftTypeComboBox->currentText());
     DEB << "Type ID: " << typeId;
 
-    if(!entry.setTypeId(typeId)) {
+    if (!entry.setTypeId(typeId)) {
         WARN(tr("Unknown aircraft type: <b>%1</b><br>"
                 "If this is the first time you are adding a tail with this "
                 "aircraft type and it is not yet present in the database, you must "
-                "first add it").arg(aircraftTypeComboBox->currentText()));
+                "first add it")
+                 .arg(aircraftTypeComboBox->currentText()));
         return;
     }
-    if(!entry.setInServiceDate(inServiceDateEdit->date())) {
+    if (!entry.setInServiceDate(inServiceDateEdit->date())) {
         WARN(tr("Invalid in service date."));
         return;
     }
-
 
     // Optional Data
     entry.setCompany(companyLineEdit->text());
     entry.setRemarks(remarksLineEdit->text());
     // set out of service date (only if not default)
-    if(outOfServiceDateEdit->date() == OPL::Date::getMaximumDate()) {
+    if (outOfServiceDateEdit->date() == OPL::Date::getMaximumDate()) {
         entry.setOutOfServiceDate(QDate());
-    } else {
+    }
+    else {
         entry.setOutOfServiceDate(outOfServiceDateEdit->date());
     }
 
@@ -302,10 +299,11 @@ void TailEntryEditDialog::on_buttonBox_accepted()
     if (!DB->commit(entry)) {
         WARN(tr("The following error has ocurred:"
                 "<br><br>%1<br><br>"
-                "The entry has not been saved."
-                ).arg(DB->lastError.text()));
+                "The entry has not been saved.")
+                 .arg(DB->lastError.text()));
         return;
-    } else {
+    }
+    else {
         emit tailDataChanged();
         QDialog::accept();
     }
@@ -324,19 +322,17 @@ void TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished()
 void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
 {
     switch (state) {
-    case Qt::CheckState::Checked:
-    {
+    case Qt::CheckState::Checked: {
         QMessageBox question;
         question.setIcon(QMessageBox::Question);
         question.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         question.setDefaultButton(QMessageBox::No);
-        question.setText((tr(
-            "If the same registration is re-used among several different aircraft "
-            "over time, you can set a manual interval for when a certain registration "
-            "is active on a given aircraft type<br><br>This is not normally required "
-            "and should <b>only</b> be used if the same registration appears on different "
-            "aircraft types in your logbook.<br><br>Do you want to continue?"
-            )));
+        question.setText(
+            (tr("If the same registration is re-used among several different aircraft "
+                "over time, you can set a manual interval for when a certain registration "
+                "is active on a given aircraft type<br><br>This is not normally required "
+                "and should <b>only</b> be used if the same registration appears on different "
+                "aircraft types in your logbook.<br><br>Do you want to continue?")));
         if (question.exec() == QMessageBox::Yes)
             showServiceDateEdits();
         else
@@ -356,7 +352,8 @@ void TailEntryEditDialog::on_setDefaultPushButton_clicked()
 {
     const QString selectedType = aircraftTypeComboBox->currentText();
     Settings::setDefaultAircraftType(selectedType);
-    INFO(tr("The default aircraft type for new aircraft has been set to<br><br><b>%1</b>").arg(selectedType));
+    INFO(tr("The default aircraft type for new aircraft has been set to<br><br><b>%1</b>")
+             .arg(selectedType));
 }
 
 // EntryEditDialog Interface Implementation
@@ -369,7 +366,7 @@ bool TailEntryEditDialog::deleteEntry(int rowID)
 
 void TailEntryEditDialog::loadEntry(int rowId)
 {
-    m_rowId = rowId;
+    m_rowId          = rowId;
     const auto entry = DB->getTailEntry(rowId);
     fillForm(entry);
 }

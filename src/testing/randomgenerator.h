@@ -8,12 +8,11 @@ namespace OPL {
  * \brief The RandomGenerator class generates random data for testing and debugging purposes.
  * \details Using the randomFlight() method it is possible to generate a random flight with
  * pilot and tail details already present in the database. For this to work, there cannot be any
- * gaps in the database, i.e. the row_id must be rising uninterruptedly. If this cannot be guaranteed,
- * use pass safe_mode = true as an argument when creating instantiating the generator.
+ * gaps in the database, i.e. the row_id must be rising uninterruptedly. If this cannot be
+ * guaranteed, use pass safe_mode = true as an argument when creating instantiating the generator.
  */
-class RandomGenerator
-{
-public:
+class RandomGenerator {
+  public:
     RandomGenerator(bool safe_mode = false);
 
     const FlightEntry randomFlight();
@@ -26,15 +25,11 @@ public:
     const int randomTail();
     const bool randomBool();
 
-
-private:
-    bool safeMode = false;
+  private:
+    bool safeMode                                       = false;
     const static inline QList<QString> m_function_times = {
-        OPL::FlightEntry::TPIC,
-        OPL::FlightEntry::TPICUS,
-        OPL::FlightEntry::TSIC,
-        OPL::FlightEntry::TDUAL,
-        OPL::FlightEntry::TFI,
+        OPL::FlightEntry::TPIC,  OPL::FlightEntry::TPICUS, OPL::FlightEntry::TSIC,
+        OPL::FlightEntry::TDUAL, OPL::FlightEntry::TFI,
     };
 
     int m_numberOfPilots;

@@ -16,24 +16,23 @@ namespace OPL {
  * As such, this class is mostly a wrapper with setters and getters for the raw
  * OPL::FlightEntry data.
  */
-class FlightEntryParser
-{
-public:
+class FlightEntryParser {
+  public:
     FlightEntryParser()
     {
         m_entryData = OPL::FlightEntry().getData();
-        m_rowId = NEW_ENTRY;
+        m_rowId     = NEW_ENTRY;
     }
     explicit FlightEntryParser(OPL::FlightEntry entry)
     {
         m_entryData = entry.getData();
-        m_rowId = entry.getRowId();
+        m_rowId     = entry.getRowId();
     }
     static int timeToMinutes(const QTime &time) { return time.hour() * 60 + time.minute(); }
-    static QTime minutesToTime(const int minutes) {
-        return QTime::fromMSecsSinceStartOfDay(minutes * MILLISECONDS_PER_MINUTE); }
-
-
+    static QTime minutesToTime(const int minutes)
+    {
+        return QTime::fromMSecsSinceStartOfDay(minutes * MILLISECONDS_PER_MINUTE);
+    }
 
     /*!
      * \brief true if the entry can be submitted to the database
@@ -45,7 +44,6 @@ public:
     OPL::FlightEntry getFlightEntry() const { return OPL::FlightEntry(m_rowId, m_entryData); }
     QStringList invalidFields() const;
     QString getFlightSummary() const;
-
 
     // Setters
     bool setDate(const QDate &date);
@@ -89,7 +87,6 @@ public:
      * setNightMinutes.
      */
     bool setNightValues(const int nightAngle, const int toCount, const int ldgCount);
-
 
     // getters
     /*!
@@ -175,47 +172,46 @@ public:
      */
     QString getFlightNumber() const;
 
-private:
+  private:
     OPL::RowData_T m_entryData;
     int m_rowId;
 
     const bool nightDataValid() const;
     const void setBlockTime();
     static const inline QMap<QStringView, QString> validationItemsDisplayNames = {
-        {OPL::FlightEntry::DOFT, QObject::tr("Date of Flight")},
-        {OPL::FlightEntry::DEPT, QObject::tr("Departure Airport")},
-        {OPL::FlightEntry::DEST, QObject::tr("Destination Airport")},
-        {OPL::FlightEntry::TOFB, QObject::tr("Time Off Blocks")},
-        {OPL::FlightEntry::TONB, QObject::tr("Time On Blocks")},
-        {OPL::FlightEntry::TBLK, QObject::tr("Block Time")},
-        {OPL::FlightEntry::PIC,  QObject::tr("PIC Name")},
+        {OPL::FlightEntry::DOFT, QObject::tr("Date of Flight")       },
+        {OPL::FlightEntry::DEPT, QObject::tr("Departure Airport")    },
+        {OPL::FlightEntry::DEST, QObject::tr("Destination Airport")  },
+        {OPL::FlightEntry::TOFB, QObject::tr("Time Off Blocks")      },
+        {OPL::FlightEntry::TONB, QObject::tr("Time On Blocks")       },
+        {OPL::FlightEntry::TBLK, QObject::tr("Block Time")           },
+        {OPL::FlightEntry::PIC,  QObject::tr("PIC Name")             },
         {OPL::FlightEntry::ACFT, QObject::tr("Aircraft Registration")},
-        };
+    };
 
     // Map flight function to loggable DB fields
     static inline const QHash<OPL::PilotFunction, QSet<QStringView>> pilotFunctionMap = {
-        { OPL::PilotFunction::PIC,   { OPL::FlightEntry::TPIC   } },
-        { OPL::PilotFunction::PICUS, { OPL::FlightEntry::TPICUS } },
-        { OPL::PilotFunction::SIC,   { OPL::FlightEntry::TSIC   } },
-        { OPL::PilotFunction::DUAL,  { OPL::FlightEntry::TDUAL  } },
-        { OPL::PilotFunction::FI,    { OPL::FlightEntry::TFI,
-                                       OPL::FlightEntry::TPIC  } } // FI logs PIC too
+        {OPL::PilotFunction::PIC,   {OPL::FlightEntry::TPIC}                       },
+        {OPL::PilotFunction::PICUS, {OPL::FlightEntry::TPICUS}                     },
+        {OPL::PilotFunction::SIC,   {OPL::FlightEntry::TSIC}                       },
+        {OPL::PilotFunction::DUAL,  {OPL::FlightEntry::TDUAL}                      },
+        {OPL::PilotFunction::FI,    {OPL::FlightEntry::TFI, OPL::FlightEntry::TPIC}}  // FI logs PIC too
     };
 
     /*!
      * \brief ALL_PILOT_FUNCTIONS contains all values of OPL::PilotFunction
      */
-    static inline const QMap<PilotFunction, QString > ALL_PILOT_FUNCTIONS = {
-        { PilotFunction::PIC, 	QString(FlightEntry::TPIC) },
-        { PilotFunction::PICUS, QString(FlightEntry::TPICUS) },
-        { PilotFunction::SIC, 	QString(FlightEntry::TSIC)  },
-        { PilotFunction::DUAL, 	QString(FlightEntry::TDUAL) },
-        { PilotFunction::FI, 	QString(FlightEntry::TFI)},
-        };
+    static inline const QMap<PilotFunction, QString> ALL_PILOT_FUNCTIONS = {
+        {PilotFunction::PIC,   QString(FlightEntry::TPIC)  },
+        {PilotFunction::PICUS, QString(FlightEntry::TPICUS)},
+        {PilotFunction::SIC,   QString(FlightEntry::TSIC)  },
+        {PilotFunction::DUAL,  QString(FlightEntry::TDUAL) },
+        {PilotFunction::FI,    QString(FlightEntry::TFI)   },
+    };
 
-    static constexpr int MINUTES_PER_DAY = 60 * 24;
+    static constexpr int MINUTES_PER_DAY         = 60 * 24;
     static constexpr int MILLISECONDS_PER_MINUTE = 60 * 1000;
-    static constexpr int NEW_ENTRY = 0;
+    static constexpr int NEW_ENTRY               = 0;
 };
 
 #endif // FLIGHTENTRYPARSER_H

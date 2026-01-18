@@ -3,16 +3,14 @@
 
 namespace OPL {
 
-Date::Date(int julianDay, const DateTimeFormat &format)
-    : m_format(format)
+Date::Date(int julianDay, const DateTimeFormat &format) : m_format(format)
 {
     m_date = QDate::fromJulianDay(julianDay);
 }
 
-Date::Date(const QString &textDate, const DateTimeFormat &format)
-    : m_format(format)
+Date::Date(const QString &textDate, const DateTimeFormat &format) : m_format(format)
 {
-    switch(format.dateFormat()) {
+    switch (format.dateFormat()) {
     case DateTimeFormat::DateFormat::Default:
         m_date = QDate::fromString(textDate, Qt::ISODate);
         break;
@@ -27,9 +25,7 @@ Date::Date(const QString &textDate, const DateTimeFormat &format)
     }
 }
 
-Date::Date(const QDate &date, const DateTimeFormat &format)
-    : m_format(format), m_date(date)
-{}
+Date::Date(const QDate &date, const DateTimeFormat &format) : m_format(format), m_date(date) {}
 
 const QString Date::toString() const
 {
@@ -44,6 +40,5 @@ const QString Date::toString() const
         return QString();
     }
 }
-
 
 } // namespace OPL

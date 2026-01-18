@@ -1,26 +1,25 @@
 #ifndef AIRPORTWIDGET_H
 #define AIRPORTWIDGET_H
 
-#include <QWidget>
 #include <QSqlTableModel>
 #include <QTableView>
+#include <QWidget>
 
 namespace Ui {
 class AirportWidget;
 }
 
-class AirportWidget : public QWidget
-{
+class AirportWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit AirportWidget(QWidget *parent = nullptr);
     ~AirportWidget();
 
-signals:
+  signals:
     void airportDatabaseUpdated();
 
-private slots:
+  private slots:
     void on_searchLineEdit_textChanged(const QString &arg1);
 
     void on_searchComboBox_currentIndexChanged(int index);
@@ -35,7 +34,7 @@ private slots:
 
     void refresh();
 
-private:
+  private:
     Ui::AirportWidget *ui;
     QSqlTableModel *model;
     QTableView *view;
@@ -44,17 +43,17 @@ private:
     void setupModelAndeView();
     void setupSearch();
 
-    inline const static QString TABLE_NAME = QStringLiteral("airports");
+    inline const static QString TABLE_NAME            = QStringLiteral("airports");
     inline const static QMap<int, QString> FILTER_MAP = {
-        {0, QStringLiteral("icao LIKE \"%")},
-        {1, QStringLiteral("iata LIKE \"%")},
-        {2, QStringLiteral("name LIKE \"%")},
+        {0, QStringLiteral("icao LIKE \"%")   },
+        {1, QStringLiteral("iata LIKE \"%")   },
+        {2, QStringLiteral("name LIKE \"%")   },
         {3, QStringLiteral("country LIKE \"%")},
     };
     inline const static QMap<int, QString> HEADER_MAP = {
-        {0, QStringLiteral("ICAO")},
-        {1, QStringLiteral("IATA")},
-        {2, QStringLiteral("Name")},
+        {0, QStringLiteral("ICAO")   },
+        {1, QStringLiteral("IATA")   },
+        {2, QStringLiteral("Name")   },
         {3, QStringLiteral("Country")},
     };
 };

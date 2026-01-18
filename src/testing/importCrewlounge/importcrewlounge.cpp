@@ -1,13 +1,12 @@
 #include "importcrewlounge.h"
 #include "src/database/database.h"
+#include "src/functions/readcsv.h"
 #include "src/opl.h"
-#include "src/testing/importCrewlounge/processpilots.h"
 #include "src/testing/importCrewlounge/processaircraft.h"
 #include "src/testing/importCrewlounge/processflights.h"
-#include "src/functions/readcsv.h"
+#include "src/testing/importCrewlounge/processpilots.h"
 
-namespace ImportCrewlounge
-{
+namespace ImportCrewlounge {
 
 void exec(const QString &csv_file_path)
 {
@@ -28,7 +27,7 @@ void exec(const QString &csv_file_path)
     proc_pilots.init();
     const auto p_maps = proc_pilots.getProcessedPilotMaps();
 
-    for (const auto & pilot_data : p_maps) {
+    for (const auto &pilot_data : p_maps) {
         OPL::PilotEntry pe(pilot_data.value(OPL::PilotEntry::ROWID).toInt(), pilot_data);
         DB->commit(pe);
     }
@@ -38,18 +37,15 @@ void exec(const QString &csv_file_path)
     proc_tails.init();
     const auto t_maps = proc_tails.getProcessedTailMaps();
 
-    for (const auto& tail_data : t_maps) {
+    for (const auto &tail_data : t_maps) {
         OPL::TailEntry te(tail_data.value(OPL::PilotEntry::ROWID).toInt(), tail_data);
         DB->commit(te);
     }
 
-    auto proc_flights = ProcessFlights(raw_csv_data,
-                                       proc_pilots.getProcessedPilotsIds(),
+    auto proc_flights = ProcessFlights(raw_csv_data, proc_pilots.getProcessedPilotsIds(),
                                        proc_tails.getProcessedTailIds());
     proc_flights.init();
     const auto flights = proc_flights.getProcessedFlights();
-
-
 
     for (const auto &flight_data : flights) {
         OPL::FlightEntry fe(0, flight_data);
@@ -64,4 +60,4 @@ void exec(const QString &csv_file_path)
     blocker.unblock();
     emit DB->dataBaseUpdated(OPL::DbTable::Any);
 }
-}// namespace ImportCrewLongue
+} // namespace ImportCrewlounge

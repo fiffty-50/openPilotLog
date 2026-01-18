@@ -2,20 +2,19 @@
 #define DATABASEEDITWIDGET_H
 
 #include "src/gui/widgets/tableeditwidget.h"
-#include <QWidget>
-#include <QTabWidget>
 #include <QGridLayout>
+#include <QTabWidget>
+#include <QWidget>
 
-class DatabaseEditWidget : public QWidget
-{
+class DatabaseEditWidget : public QWidget {
     Q_OBJECT
-public:
+  public:
     explicit DatabaseEditWidget(QWidget *parent = nullptr);
 
-    enum Table{ Pilots, Tails, Airports, Aircraft, AirportCodes, ApproachTypes, Currencies };
+    enum Table { Pilots, Tails, Airports, Aircraft, AirportCodes, ApproachTypes, Currencies };
     void addEntry(Table table);
 
-private:
+  private:
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;
     TableEditWidget *pilotTab;
@@ -29,7 +28,7 @@ private:
     void setupUi();
     void retranslateUi();
 
-signals:
+  signals:
 };
 
 #endif // DATABASEEDITWIDGET_H

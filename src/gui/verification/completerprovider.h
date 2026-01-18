@@ -16,24 +16,25 @@
  * input from the database, so whenever the database content is modified,
  * the completion model is updated via the databaseCacheUpdated Signal.
  */
-class CompleterProvider : public QObject
-{
+class CompleterProvider : public QObject {
     Q_OBJECT
     CompleterProvider();
 
-    QCompleter* pilotCompleter;
-    QCompleter* airportCompleter;
-    QCompleter* tailsCompleter;
-    QCompleter* companyCompleter;
-    QCompleter* aircraftCompleter;
-public:
-    static CompleterProvider& getInstance() {
+    QCompleter *pilotCompleter;
+    QCompleter *airportCompleter;
+    QCompleter *tailsCompleter;
+    QCompleter *companyCompleter;
+    QCompleter *aircraftCompleter;
+
+  public:
+    static CompleterProvider &getInstance()
+    {
         static CompleterProvider instance;
         return instance;
     }
 
-    CompleterProvider(CompleterProvider const&) = delete;
-    void operator=(CompleterProvider const&) = delete;
+    CompleterProvider(CompleterProvider const &) = delete;
+    void operator=(CompleterProvider const &)    = delete;
     ~CompleterProvider();
 
     enum CompleterTarget { Pilots, Tails, Aircraft, Airports, Companies };
@@ -47,7 +48,7 @@ public:
      * \brief return a pointer to the completer instance
      */
     QCompleter *getCompleter(CompleterTarget target) const;
-public slots:
+  public slots:
     void onDatabaseCacheUpdated(const OPL::DbTable table);
 };
 

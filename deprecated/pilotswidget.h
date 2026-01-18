@@ -18,13 +18,13 @@
 #ifndef PILOTSWIDGET_H
 #define PILOTSWIDGET_H
 
-#include <QWidget>
-#include <QItemSelection>
-#include <QSqlTableModel>
-#include <QTableView>
 #include "src/database/flightentry.h"
 #include "src/database/pilotentry.h"
 #include "src/gui/widgets/settingswidget.h"
+#include <QItemSelection>
+#include <QSqlTableModel>
+#include <QTableView>
+#include <QWidget>
 
 namespace Ui {
 class PilotsWidget;
@@ -32,33 +32,35 @@ class PilotsWidget;
 /*!
  * \class PilotsWidget
  * \brief The PilotsWidget is used to view, edit, delete or add new pilots.
- * \details The widget consists of two main parts, a *QTableView* on the left side and a *QStackedWidget* on the right side.
+ * \details The widget consists of two main parts, a *QTableView* on the left side and a
+ * *QStackedWidget* on the right side.
  *
- * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a Pilots' Last Name,
- * First name and Company.
+ * In the QTableView, a QSqlTableModel is used to access a view from the database, which holds a
+ * Pilots' Last Name, First name and Company.
  *
- * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as a search box and a QCombobox
- * holding the possible columns that can be used to filter what is displayed. The text of the QLineEdit is used as a filter for the
- * QSqlTableModel, so the view is updated in real time.
+ * The welcome page shown on the QStackedWidget on the right side has a QLineEdit that functions as
+ * a search box and a QCombobox holding the possible columns that can be used to filter what is
+ * displayed. The text of the QLineEdit is used as a filter for the QSqlTableModel, so the view is
+ * updated in real time.
  *
- * The *NewPilotDialog* is used for creating a new entry as well as for editing an existing entry. If the user selects a row
- * in the QTableView, the NewPilotDialog is displayed on the right side of the Widget, inside the QStackedWidget.
- * In order to avoid leaks from any previously made selections, existing Dialogs are deleted before a new one is created.
- * The NewPilotDialog's `accepted` and `rejected` signals are connected to refresh the view as required.
+ * The *NewPilotDialog* is used for creating a new entry as well as for editing an existing entry.
+ * If the user selects a row in the QTableView, the NewPilotDialog is displayed on the right side of
+ * the Widget, inside the QStackedWidget. In order to avoid leaks from any previously made
+ * selections, existing Dialogs are deleted before a new one is created. The NewPilotDialog's
+ * `accepted` and `rejected` signals are connected to refresh the view as required.
  *
- * The logbook owner is not shown in the QTableView as an editable Pilot since `self` is a special reserved alias for the
- * pilot with ROWID #1 as a way to identify and adequately display the logbook owner in the logbook. Editing personal details
- * is done via the *SettingsWidget*
+ * The logbook owner is not shown in the QTableView as an editable Pilot since `self` is a special
+ * reserved alias for the pilot with ROWID #1 as a way to identify and adequately display the
+ * logbook owner in the logbook. Editing personal details is done via the *SettingsWidget*
  */
-class PilotsWidget : public QWidget
-{
+class PilotsWidget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     explicit PilotsWidget(QWidget *parent = nullptr);
     ~PilotsWidget();
 
-private slots:
+  private slots:
     /*!
      * \brief Creates a dialog to add a new Pilot to the database
      */
@@ -88,9 +90,10 @@ private slots:
      */
     void newSortColumnSelected(int newSortColumn);
 
-public slots:
+  public slots:
     /*!
-     * \brief invokes setupModelAndView() to account for changes the user has made in the SettingsWidget
+     * \brief invokes setupModelAndView() to account for changes the user has made in the
+     * SettingsWidget
      */
     void onPilotsWidget_settingChanged(SettingsWidget::SettingSignal signal);
     /*!
@@ -99,18 +102,19 @@ public slots:
     void onPilotsWidget_databaseUpdated();
 
     /*!
-     * \brief PilotsWidget::repopulateModel (public slot) - re-populates the model to cater for a change
-     * to the database connection (for example, when a backup is created)
+     * \brief PilotsWidget::repopulateModel (public slot) - re-populates the model to cater for a
+     * change to the database connection (for example, when a backup is created)
      */
     void repopulateModel();
-private:
+
+  private:
     Ui::PilotsWidget *ui;
 
     QSqlTableModel *model;
 
     QTableView *view;
 
-    QItemSelectionModel* selectionModel;
+    QItemSelectionModel *selectionModel;
 
     qint32 sortColumn;
 
@@ -124,13 +128,13 @@ private:
 
     void setUiEnabled(bool enabled);
 
-    inline void refreshView(){model->select();}
+    inline void refreshView() { model->select(); }
 
-protected:
+  protected:
     /*!
      * \brief Handles change events, like updating the UI to new localisation
      */
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };
 
 #endif // PILOTSWIDGET_H

@@ -18,43 +18,47 @@
 #include "atimer.h"
 #include "src/opl.h"
 
-
 ATimer::ATimer(QObject *parent) : QObject(parent)
 {
-     start = std::chrono::high_resolution_clock::now();
-     if(parent == nullptr) {
-         DEB << "Starting Timer... ";
-     } else {
-         DEB << "Starting Timer for: " << parent->objectName();
-     }
-
+    start = std::chrono::high_resolution_clock::now();
+    if (parent == nullptr) {
+        DEB << "Starting Timer... ";
+    }
+    else {
+        DEB << "Starting Timer for: " << parent->objectName();
+    }
 }
 
 ATimer::~ATimer()
 {
     stop = std::chrono::high_resolution_clock::now();
-    if(parent() == nullptr) {
+    if (parent() == nullptr) {
         DEB << "Execution time: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
-                 << "milliseconds.";
-    } else {
+            << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
+            << "milliseconds.";
+    }
+    else {
         DEB << "Execution time for: " << parent()->objectName() << ": "
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
-                 << "milliseconds.";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
+            << "milliseconds.";
     }
 }
 
 long ATimer::timeNow()
 {
     intermediate_point = std::chrono::high_resolution_clock::now();
-    if(parent() == nullptr) {
+    if (parent() == nullptr) {
         DEB << "Intermediate time: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count()
-                 << "milliseconds.";
-    } else {
-        DEB << "Intermediate time for: " << parent()->objectName() << ": "
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count()
-                 << "milliseconds.";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start)
+                   .count()
+            << "milliseconds.";
     }
-    return std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start).count();
+    else {
+        DEB << "Intermediate time for: " << parent()->objectName() << ": "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start)
+                   .count()
+            << "milliseconds.";
+    }
+    return std::chrono::duration_cast<std::chrono::milliseconds>(intermediate_point - start)
+        .count();
 }

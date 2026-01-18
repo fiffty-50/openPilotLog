@@ -23,45 +23,37 @@ QHash<AStandardPaths::Directories, QDir> AStandardPaths::directories;
 bool AStandardPaths::setup()
 {
     auto data_location = QStandardPaths::AppDataLocation;
-    directories = {
-        {Database, QDir(QStandardPaths::writableLocation(data_location))},
-        {Templates, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/templates"))},
-        {Backup, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/backup"))},
-        {Log, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/log"))},
-        {JSON, QDir(QStandardPaths::writableLocation(data_location)
-         + QLatin1String("/json"))}
+    directories        = {
+        {Database,  QDir(QStandardPaths::writableLocation(data_location))                           },
+        {Templates,
+         QDir(QStandardPaths::writableLocation(data_location) + QLatin1String("/templates"))        },
+        {Backup,    QDir(QStandardPaths::writableLocation(data_location) + QLatin1String("/backup"))},
+        {Log,       QDir(QStandardPaths::writableLocation(data_location) + QLatin1String("/log"))   },
+        {JSON,      QDir(QStandardPaths::writableLocation(data_location) + QLatin1String("/json"))  }
     };
-    if (scan_directories())
-        return true;
+    if (scan_directories()) return true;
 
     return false;
 }
 
-const QDir& AStandardPaths::directory(Directories location)
-{
-    return directories[location];
-}
+const QDir &AStandardPaths::directory(Directories location) { return directories[location]; }
 
 const QString AStandardPaths::asChildOfDir(Directories location, const QString &filename)
 {
     return directories[location].absoluteFilePath(filename);
 }
 
-const QHash<AStandardPaths::Directories, QDir>& AStandardPaths::allDirectories()
+const QHash<AStandardPaths::Directories, QDir> &AStandardPaths::allDirectories()
 {
     return directories;
 }
 
 bool AStandardPaths::scan_directories()
 {
-    for(const auto& dir : qAsConst(directories)){
-        if(!dir.exists()) {
+    for (const auto &dir : qAsConst(directories)) {
+        if (!dir.exists()) {
             LOG << dir << "Does not exist. Creating:" << dir.absolutePath();
-            if (!dir.mkpath(dir.absolutePath()))
-                return false;
+            if (!dir.mkpath(dir.absolutePath())) return false;
         }
     }
     return true;

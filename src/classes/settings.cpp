@@ -16,14 +16,15 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "settings.h"
-#include <QSettings>
 #include "src/classes/paths.h"
+#include <QSettings>
 
 void Settings::init()
 {
     LOG << "Initialising application settings...";
     QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, OPL::Paths::path(OPL::Paths::Settings));
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                       OPL::Paths::path(OPL::Paths::Settings));
     Settings::settingsInstance = new QSettings();
 }
 
@@ -54,14 +55,15 @@ OPL::DateTimeFormat Settings::getDisplayFormat()
     // date format
     const DateTimeFormat::DateFormat dateFormat = static_cast<DateTimeFormat::DateFormat>(
         settingsInstance->value(FORMAT_DATE_FORMAT, 0).toInt());
-    const QString dateFormatString = settingsInstance->value(FORMAT_DATE_STRING, QStringLiteral("yyyy-MM-dd")).toString();
+    const QString dateFormatString =
+        settingsInstance->value(FORMAT_DATE_STRING, QStringLiteral("yyyy-MM-dd")).toString();
     // time format
     const DateTimeFormat::TimeFormat timeFormat = static_cast<DateTimeFormat::TimeFormat>(
         settingsInstance->value(FORMAT_TIME_FORMAT, 0).toInt());
-    const QString timeFormatString = settingsInstance->value(FORMAT_TIME_STRING, QStringLiteral("hh:mm")).toString();
+    const QString timeFormatString =
+        settingsInstance->value(FORMAT_TIME_STRING, QStringLiteral("hh:mm")).toString();
 
     return DateTimeFormat(dateFormat, dateFormatString, timeFormat, timeFormatString);
-
 }
 
 void Settings::setDisplayFormat(const OPL::DateTimeFormat &format)
@@ -71,4 +73,3 @@ void Settings::setDisplayFormat(const OPL::DateTimeFormat &format)
     settingsInstance->setValue(FORMAT_TIME_FORMAT, static_cast<int>(format.timeFormat()));
     settingsInstance->setValue(FORMAT_TIME_STRING, format.timeFormatString());
 }
-
