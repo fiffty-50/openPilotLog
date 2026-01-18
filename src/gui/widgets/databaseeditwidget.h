@@ -12,6 +12,9 @@ class DatabaseEditWidget : public QWidget
 public:
     explicit DatabaseEditWidget(QWidget *parent = nullptr);
 
+    enum Table{ Pilots, Tails, Airports, Aircraft, AirportCodes, ApproachTypes, Currencies };
+    void addEntry(Table table);
+
 private:
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;

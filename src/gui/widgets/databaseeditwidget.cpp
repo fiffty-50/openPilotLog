@@ -47,3 +47,34 @@ void DatabaseEditWidget::retranslateUi()
     tabWidget->setTabText(tabWidget->indexOf(aircraftTab), tr("Aircraft"));
     tabWidget->setTabText(tabWidget->indexOf(airportsTab), tr("Airports"));
 }
+
+void DatabaseEditWidget::addEntry(Table table)
+{
+    switch (table) {
+    case Pilots:
+        tabWidget->setCurrentWidget(pilotTab);
+        pilotTab->addEntryRequested();
+        break;
+    case Tails: 
+        tabWidget->setCurrentWidget(tailsTab);
+        tailsTab->addEntryRequested();
+        break;
+    case Airports:
+        tabWidget->setCurrentWidget(airportsTab);
+        airportsTab->addEntryRequested();
+        break;
+    case Aircraft:
+        tabWidget->setCurrentWidget(aircraftTab);
+        aircraftTab->addEntryRequested();
+        break;
+    case AirportCodes:
+        // airportCodesTab->on_addNewEntryPushButton_clicked();
+        break;
+    case ApproachTypes:
+        // approachTypesTab->on_addNewEntryPushButton_clicked();
+        break;
+    case Currencies:
+        // currenciesTab->on_addNewEntryPushButton_clicked();
+        break;
+    }
+}

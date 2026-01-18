@@ -18,6 +18,10 @@
 #include <QToolBar>
 #include "mainwindow.h"
 #include "src/database/databasesetup.h"
+#include "src/gui/dialogues/flightentryeditdialog.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
+#include "src/gui/dialogues/simentryeditdialog.h"
+#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
@@ -61,9 +65,9 @@ void MainWindow::setupToolbar()
     toolBar->addAction(ui->actionHome);
     toolBar->addAction(ui->actionNewFlight);
     toolBar->addAction(ui->actionNewSim);
+    toolBar->addAction(ui->actionNewTail);
+    toolBar->addAction(ui->actionNewPilot);
     toolBar->addAction(ui->actionLogbook);
-    toolBar->addAction(ui->actionNewAircraft);
-    toolBar->addAction(ui->actionPilots);
     toolBar->addAction(ui->actionDatabase);
     toolBar->addAction(ui->actionSettings);
     toolBar->addAction(ui->actionQuit);
@@ -124,8 +128,8 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
         ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT));
         ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT)); // TODO seperate icon
         ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK));
-        ui->actionNewAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
-        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
+        ui->actionNewTail->setIcon(     QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT));
+        ui->actionNewPilot->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_PILOT));
         ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP));
         ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS));
         ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT));
@@ -136,8 +140,8 @@ void MainWindow::setActionIcons(OPL::Style::StyleType style)
         ui->actionNewFlight->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK));
         ui->actionNewSim->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_NEW_FLIGHT_DARK)); // pending separate icon
         ui->actionLogbook->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_LOGBOOK_DARK));
-        ui->actionNewAircraft->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
-        ui->actionPilots->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
+        ui->actionNewTail->setIcon(     QIcon(OPL::Assets::ICON_TOOLBAR_AIRCRAFT_DARK));
+        ui->actionNewPilot->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_PILOT_DARK));
         ui->actionDatabase->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_BACKUP_DARK));
         ui->actionSettings->setIcon(	QIcon(OPL::Assets::ICON_TOOLBAR_SETTINGS_DARK));
         ui->actionQuit->setIcon(		QIcon(OPL::Assets::ICON_TOOLBAR_QUIT_DARK));
@@ -219,16 +223,14 @@ void MainWindow::on_actionHome_triggered()
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(logbookWidget);
-    emit addFlightEntryRequested();
+    auto newFlightDialog = new FlightEntryEditDialog(0, this);
+    newFlightDialog->exec();
 }
 
 void MainWindow::on_actionNewSim_triggered()
 {
-    // auto nsd = NewSimDialog(this);
-    // nsd.exec();
-    ui->stackedWidget->setCurrentWidget(logbookWidget);
-    emit addSimulatorEntryRequested();
+    auto newSimDialog = new SimEntryEditDialog(0, this);
+    newSimDialog->exec();
 }
 
 void MainWindow::on_actionLogbook_triggered()
@@ -236,14 +238,16 @@ void MainWindow::on_actionLogbook_triggered()
     ui->stackedWidget->setCurrentWidget(logbookWidget);
 }
 
-void MainWindow::on_actionAircraft_triggered()
+void MainWindow::on_actionNewTail_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(tailsWidget);
+    ui->stackedWidget->setCurrentWidget(databaseWidget);
+    databaseWidget->addEntry(DatabaseEditWidget::Tails);
 }
 
-void MainWindow::on_actionPilots_triggered()
+void MainWindow::on_actionNewPilot_triggered()
 {
-    ui->stackedWidget->setCurrentWidget(pilotsWidget);
+    ui->stackedWidget->setCurrentWidget(databaseWidget);
+    databaseWidget->addEntry(DatabaseEditWidget::Pilots);
 }
 
 void MainWindow::on_actionDatabase_triggered()
@@ -272,9 +276,13 @@ void MainWindow::on_actionDebug_triggered()
 void MainWindow::debug()
 {
 
-    auto dbSetup = DatabaseSetup();
-    dbSetup.clearDatabase();
-    dbSetup.createTables();
-    dbSetup.importTemplateData(false);
+    // auto dbSetup = DatabaseSetup();
+    // dbSetup.clearDatabase();
+    // dbSetup.createTables();
+    // dbSetup.importTemplateData(false);
+    int id = 2;
+    DEB << "Type String; " << OPL::AircraftEntry::getTypeString(2);
+    auto entry = DB->getAircraftEntry(2);
+    DEB << entry;
 }
 

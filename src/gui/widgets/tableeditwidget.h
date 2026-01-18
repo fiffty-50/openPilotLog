@@ -109,6 +109,20 @@ protected:
     QLineEdit *m_filterLineEdit = new QLineEdit(this);
     QComboBox *m_filterSelectionComboBox = new QComboBox(this);
 
+    /*!
+     * \brief Return an array of column numbers of the model that are visible in the UI
+     */
+    virtual const QList<int>* getVisibleColumns() const = 0;
+    /*!
+     * \brief Return an array of column numbers of the model that are hidden in the UI
+     */
+    virtual const QList<int>* getHiddenColumns() const = 0;
+    
+    /*!
+     * \brief Return a map of <Column Number, Column Header> of the model
+    */
+    virtual const QMap<int, QString>* getColumnHeaderMap() const = 0;
+
     virtual void showEditWidget();
     virtual void hideEditWidget();
     /*!
@@ -116,6 +130,11 @@ protected:
      * a proviously opened one.
      */
     void cleanUpOldEditDialog();
+
+    /*!
+    * \brief return a SQL filter statement for a given column name and filter text
+    */
+    QString getFilterStatement(const QString &column, const QString &filterText);
 
 private:
     void setupHorizontalUI();
@@ -141,7 +160,7 @@ public slots:
     /*!
      * \brief Set a filter on the model
      */
-    virtual void filterTextChanged(const QString &filterString) = 0;
+    virtual void filterTextChanged(const QString &filterString);
 
 public slots:
     /*!

@@ -36,9 +36,6 @@ void AirportTableEditWidget::setupUI()
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Airport"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Airport"));
-    m_filterSelectionComboBox->addItems(HEADER_NAMES.values());
-    m_filterSelectionComboBox->addItem(tr("Any"));
-    m_filterSelectionComboBox->setCurrentIndex(m_filterSelectionComboBox->count() - 1);
 }
 
 QString AirportTableEditWidget::deleteErrorString(int rowId)
@@ -59,40 +56,4 @@ QString AirportTableEditWidget::confirmDeleteString(int rowId)
 EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
     return new AirportEntryEditDialog(parent);
-}
-
-void AirportTableEditWidget::filterTextChanged(const QString &filterString)
-{
-    if(filterString.isEmpty()) {
-        m_model->setFilter(QString());
-        return;
-    }
-    auto getFilterStatement = [](const QString &filterColumn, const QString &filterText) -> QString {
-        return QString(
-            QLatin1Char('\"')
-                + filterColumn
-                + QLatin1String("\" LIKE '%")
-                + filterText
-                + QLatin1String("%'")
-            );
-    };
-
-    const QString filterColumn = COLUMN_DATABASE_NAMES.value(m_filterSelectionComboBox->currentText());
-    if(filterColumn.isEmpty()) {
-        // search in all columns
-        QString filter;
-        const QString SQL_OR = QStringLiteral(" OR ");
-        for(const auto &column : COLUMN_DATABASE_NAMES.values()) {
-            // search is useless if timezone is included, so skip it
-            if (column == QStringLiteral("timezone")) { continue; }
-            filter.append(getFilterStatement(column, filterString));
-            filter.append(SQL_OR);
-        }
-        // remove last "or"
-        filter.chop(SQL_OR.size());
-        m_model->setFilter(filter);
-    } else {
-        // filter based on selected column
-        m_model->setFilter(getFilterStatement(filterColumn, filterString));
-    }
 }

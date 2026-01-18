@@ -100,9 +100,9 @@ private slots:
 
     void on_actionLogbook_triggered();
 
-    void on_actionAircraft_triggered();
+    void on_actionNewTail_triggered();
 
-    void on_actionPilots_triggered();
+    void on_actionNewPilot_triggered();
 
     void on_actionDatabase_triggered();
 

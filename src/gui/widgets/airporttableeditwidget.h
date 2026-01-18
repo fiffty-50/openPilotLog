@@ -22,10 +22,13 @@ private:
     // table columns and header names
 
     static constexpr int COL_ROWID = 0;
-    static constexpr int COL_ICAO = 1;
-    static constexpr int COL_IATA = 2;
+    static constexpr int COL_IATA = 1;
+    static constexpr int COL_ICAO = 2;
     static constexpr int COL_TIMEZONE = 3;
     static constexpr int COL_AIRPORT_NAME = 4;
+    
+    const QList<int> HIDDEN_COLUMNS = {0};
+    const QList<int> VISIBLE_COLUMNS = {1, 2, 3, 4};
 
     const QString COL_HEADER_ICAO = tr("ICAO");
     const QString COL_HEADER_IATA = tr("IATA");
@@ -48,8 +51,9 @@ private:
         {COL_HEADER_NAME, 	  QStringLiteral("name")},
     };
 
-private slots:
-    virtual void filterTextChanged(const QString &filterString) override;
+    const QList<int>* getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
+    const QList<int>* getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
+    const QMap<int, QString>* getColumnHeaderMap() const override { return &HEADER_NAMES; }
 };
 
 #endif // AIRPORTTABLEEDITWIDGET_H

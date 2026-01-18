@@ -21,7 +21,8 @@ private:
     static constexpr int COL_ALIAS = 2;
     static constexpr int COL_EMPLOYEE_ID = 3;
     static constexpr int COL_COMPANY = 4;
-    static constexpr std::array<int,4> COLUMNS_TO_HIDE = {0, 5, 6, 7 };
+    const QList<int> HIDDEN_COLUMNS = {0, 5, 6, 7 };
+    const QList<int> VISIBLE_COLUMNS = {1, 2, 3, 4 };
 
     const QString COL_HEADER_NAME	 		= tr("Name");
     const QString COL_HEADER_ALIAS 			= tr("Alias");
@@ -41,6 +42,10 @@ private:
         {COL_HEADER_COMPANY, 		OPL::PilotEntry::COMPANY},
         {COL_HEADER_EMPLOYEE_ID, 	OPL::PilotEntry::EMPLOYEEID},
     };
+
+    const QMap<int, QString>* getColumnHeaderMap() const override { return &DISPLAY_COLUMNS; }
+    const QList<int>* getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
+    const QList<int>* getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
 
     /*!
     * \brief Informs the user that deleting a Pilot has been unsuccessful

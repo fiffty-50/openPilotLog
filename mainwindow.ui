@@ -106,28 +106,17 @@
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionNewAircraft">
+  <action name="actionNewTail">
    <property name="text">
-    <string>NewAircraft</string>
+    <string>New Tail</string>
    </property>
    <property name="toolTip">
     <string>Add a new aircraft to the database</string>
    </property>
   </action>
-  <action name="actionPilots">
-   <property name="text">
-    <string>Pilots</string>
-   </property>
-   <property name="toolTip">
-    <string>Show or edit Pilots</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+P</string>
-   </property>
-  </action>
   <action name="actionNewPilot">
    <property name="text">
-    <string>NewPilot</string>
+    <string>New Pilot</string>
    </property>
    <property name="toolTip">
     <string>Add a new Pilot to the database</string>
@@ -139,17 +128,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
-   </property>
-  </action>
-  <action name="actionAirports">
-   <property name="text">
-    <string>Airports</string>
-   </property>
-   <property name="toolTip">
-    <string>Add a new or edit an existing airport</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="actionNewSim">

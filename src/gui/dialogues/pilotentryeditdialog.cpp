@@ -202,9 +202,7 @@ void PilotEntryEditDialog::submitForm()
 
 bool PilotEntryEditDialog::deleteEntry(int rowId)
 {
-    auto entry = DB->getPilotEntry(rowId);
-    return DB->remove(entry);
-
+    return DB->remove(OPL::DbTable::v2Pilots, rowId);
 }
 
 void PilotEntryEditDialog::loadEntry(int rowId)

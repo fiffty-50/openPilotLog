@@ -188,17 +188,20 @@ void DatabaseCache::onDatabaseUpdated(const OPL::DbTable table)
 {
     LOG << "Updating Database Cache...";
     switch (table) {
-    case DbTable::Pilots:
+    case DbTable::v2Pilots:
         updatePilots();
         break;
-    case DbTable::Tails:
+    case DbTable::v2AircraftTails:
         updateTails();
         break;
-    case DbTable::Airports:
+    case DbTable::v2AircraftTypes:
+        updateAircraftTypes();
+        break;
+    case DbTable::v2Airports:
         updateAirports();
         break;
-    case DbTable::Aircraft:
-        updateAircraftTypes();
+    case DbTable::v2AirportCodes:
+        updateAirports();
         break;
     default:
         break;

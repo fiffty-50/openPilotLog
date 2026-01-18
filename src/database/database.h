@@ -187,6 +187,11 @@ public:
     bool remove(const OPL::Row &row);
 
     /*!
+     * \brief deletes an entry from the database
+     */
+    bool remove(OPL::DbTable table, int row_id);
+
+    /*!
      * \brief deletes a batch of entries from the database. Optimised for speed when
      * deleting many entries. The entries are identified using their row id
      */

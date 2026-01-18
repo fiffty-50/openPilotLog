@@ -35,6 +35,12 @@ private:
     void setupDelegates();
 
     static constexpr int COL_ROWID = 0;
+    const QList<int> HIDDEN_COLUMNS = {0};
+    const QList<int> VISIBLE_COLUMNS = {}; // TODO
+    const QMap<int, QString> COLUMN_HEADER_MAP = {};
+    const QList<int>* getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
+    const QList<int>* getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
+    const QMap<int, QString> *getColumnHeaderMap() const override { return &COLUMN_HEADER_MAP; }
 
     // keep track of default and custom delegates set on certain columns
     QHash<int, QAbstractItemDelegate*> m_defaultDelegates;

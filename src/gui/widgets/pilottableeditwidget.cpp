@@ -28,7 +28,7 @@ void PilotTableEditWidget::setupModelAndView()
     m_view->resizeColumnsToContents();
     m_view->verticalHeader()->hide();
     m_view->setAlternatingRowColors(true);
-    for(const int i : COLUMNS_TO_HIDE)
+    for(const auto &i : HIDDEN_COLUMNS)
         m_view->hideColumn(i);
 
 }
@@ -41,9 +41,6 @@ void PilotTableEditWidget::setupUI()
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Pilot"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
-    m_filterSelectionComboBox->addItems(DISPLAY_COLUMNS.values());
-    m_filterSelectionComboBox->addItem(tr("Any"));
-    m_filterSelectionComboBox->setCurrentIndex(m_filterSelectionComboBox->count() - 1);
 }
 
 EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
@@ -96,20 +93,17 @@ QString PilotTableEditWidget::confirmDeleteString(int rowId)
 
 void PilotTableEditWidget::filterTextChanged(const QString &filterText)
 {
+    // overriding the base class method because the first entry (rowid == 1) is hidden in this Widget
     if(filterText.isEmpty()) {
         m_model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
         return;
     }
 
-    auto getFilterStatement = [](const QString &filterColumn, const QString &filterText) -> QString {
-        return QString(
-            QLatin1Char('\"')
-            + filterColumn
-            + QLatin1String("\" LIKE '%")
-            + filterText
-            + QLatin1String("%' AND ")
+    auto getPilotFilterStatement = [&](const QString &filterColumn, const QString &filterText) -> QString {
+        return getFilterStatement(filterColumn, filterText)
+            + QLatin1String(" AND ")
             + OPL::PilotEntry::ROWID
-            + QLatin1String(" > 1"));
+            + QLatin1String(" > 1");
     };
 
     // Try to map filter combo box value to column
@@ -119,7 +113,7 @@ void PilotTableEditWidget::filterTextChanged(const QString &filterText)
         QString filter;
         const QString SQL_OR = QStringLiteral(" OR ");
         for(const auto &column : COLUMN_DATABASE_NAMES.values()) {
-            filter.append(getFilterStatement(column, filterText));
+            filter.append(getPilotFilterStatement(column, filterText));
             filter.append(SQL_OR);
         }
         // remove last "or"
@@ -127,7 +121,7 @@ void PilotTableEditWidget::filterTextChanged(const QString &filterText)
         m_model->setFilter(filter);
     } else {
         // filter based on selected column
-        m_model->setFilter(getFilterStatement(filterColumn, filterText));
+        m_model->setFilter(getPilotFilterStatement(filterColumn, filterText));
     }
 }
 

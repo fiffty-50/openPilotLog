@@ -79,6 +79,8 @@ QString AircraftEntry::getTypeString(int aircraft_id)
                                         "AND aircraft_type_id = ?");
     QSqlQuery query;
     query.prepare(statement);
+    query.addBindValue(aircraft_id);
+    query.addBindValue(aircraft_id);
     query.setForwardOnly(true);
     query.exec();
 

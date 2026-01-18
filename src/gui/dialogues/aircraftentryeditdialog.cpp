@@ -31,17 +31,6 @@ AircraftEntryEditDialog::AircraftEntryEditDialog(int row_id, QWidget *parent)
     loadAircraftData(row_id);
 }
 
-void AircraftEntryEditDialog::loadEntry(int rowID)
-{
-    loadAircraftData(rowID);
-    m_rowId = rowID;
-}
-
-bool AircraftEntryEditDialog::deleteEntry(int rowID)
-{
-    return false;
-}
-
 void AircraftEntryEditDialog::init()
 {
     // Main Layout
@@ -273,7 +262,16 @@ void AircraftEntryEditDialog::on_accepted()
     } else {
         QDialog::accept();
     }
+}
 
-    
+// EntryEdit interface
+void AircraftEntryEditDialog::loadEntry(int rowID)
+{
+    loadAircraftData(rowID);
+    m_rowId = rowID;
+}
 
+bool AircraftEntryEditDialog::deleteEntry(int rowID)
+{
+    return DB->remove(OPL::DbTable::v2AircraftTypes, rowID);
 }

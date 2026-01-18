@@ -1,10 +1,9 @@
 #include "tailtableeditwidget.h"
+
 #include "src/database/database.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 
-TailTableEditWidget::TailTableEditWidget(QWidget *parent)
-    : TableEditWidget(Horizontal, parent)
-{}
+TailTableEditWidget::TailTableEditWidget(QWidget *parent) : TableEditWidget(Horizontal, parent) {}
 
 void TailTableEditWidget::setupModelAndView()
 {
@@ -34,13 +33,11 @@ void TailTableEditWidget::setupUI()
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Tail"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Tail"));
-    m_filterSelectionComboBox->addItems(FILTER_COLUMNS);
 }
 
 QString TailTableEditWidget::deleteErrorString(int rowId)
 {
-    QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId,
-                                                                      OPL::DbTable::Tails);
+    QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId, OPL::DbTable::Tails);
     QList<OPL::FlightEntry> constrained_flights;
     for (const auto &row_id : std::as_const(foreign_key_constraints)) {
         constrained_flights.append(DB->getFlightEntry(row_id));
@@ -49,62 +46,47 @@ QString TailTableEditWidget::deleteErrorString(int rowId)
     QMessageBox message_box(this);
     if (constrained_flights.isEmpty()) {
         // error is a database error
-        return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1"
-                  ).arg(DB->lastError.text());
-    } else {
+        return tr("<br>Unable to delete.<br><br>The following error has "
+                  "ocurred: "
+                  "%1")
+            .arg(DB->lastError.text());
+    }
+    else {
         QString constrained_flights_string;
-        for (int i=0; i<constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].getFlightSummary()
-                                              + QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-            if (i>10) {
+        for (int i = 0; i < constrained_flights.length(); i++) {
+            constrained_flights_string.append(constrained_flights[i].getFlightSummary() +
+                                              QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+            if (i > 10) {
                 constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
                 break;
             }
         }
-        return (tr("Unable to delete.<br><br>"
-                   "This is most likely the case because a flight exists with the aircraft "
-                   "you are trying to delete.<br><br>"
-                   "%1 flight(s) with this aircraft have been found:<br><br><br><b><tt>"
-                   "%2"
-                   "</b></tt><br><br>You have to change or remove the conflicting flight(s) "
-                   "before removing this aircraft from the database.<br><br>"
-                   ).arg(
-                        QString::number(constrained_flights.length()),
-                        constrained_flights_string)
-                );
+        return (
+            tr("Unable to delete.<br><br>"
+               "This is most likely the case because a flight exists with the "
+               "aircraft "
+               "you are trying to delete.<br><br>"
+               "%1 flight(s) with this aircraft have been "
+               "found:<br><br><br><b><tt>"
+               "%2"
+               "</b></tt><br><br>You have to change or remove the conflicting "
+               "flight(s) "
+               "before removing this aircraft from the database.<br><br>")
+                .arg(QString::number(constrained_flights.length()), constrained_flights_string));
     }
 }
 
 QString TailTableEditWidget::confirmDeleteString(int rowId)
 {
-    const auto tailEntry = DB->getTailEntry(rowId);
+    const auto tailEntry     = DB->getTailEntry(rowId);
     const QString typeString = OPL::AircraftEntry::getTypeString(tailEntry.getRowId());
 
     return tr("You are deleting the following aircraft:<br><br><b><tt>"
-              "%1 (%2)</b></tt><br><br>Are you sure?"
-              ).arg(
-              tailEntry.getRegistration(),
-              typeString);
+              "%1 (%2)</b></tt><br><br>Are you sure?")
+        .arg(tailEntry.getRegistration(), typeString);
 }
 
 EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)
 {
     return new TailEntryEditDialog(QString(), parent);
-}
-
-void TailTableEditWidget::filterTextChanged(const QString &filterString)
-{
-    if(filterString.isEmpty()) {
-        m_model->setFilter(QString());
-        return;
-    }
-
-    int i = m_filterSelectionComboBox->currentIndex();
-    const QString filter =
-        QLatin1Char('\"')
-        + FILTER_COLUMN_NAMES.at(i)
-        + QLatin1String("\" LIKE '%")
-        + filterString
-        + QLatin1String("%'");
-    m_model->setFilter(filter);
 }

@@ -23,7 +23,7 @@
 class AircraftTableEditWidget : public TableEditWidget
 {
     Q_OBJECT
-public:
+  public:
     AircraftTableEditWidget() = delete;
     explicit AircraftTableEditWidget(QWidget *parent = nullptr);
 
@@ -34,37 +34,65 @@ public:
     QString confirmDeleteString(int rowId) override;
     EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
 
-private:
+  private:
     void retranslateUi();
-    QStringList FILTER_COLUMNS = {};
-    static constexpr int COL_ROWID = 0;
-    static constexpr int COL_MAKE = 1;
-    static constexpr int COL_MODEL = 2;
-    static constexpr int COL_VARIANT = 3;
-    static constexpr int COL_ICAO_DESIGNATOR = 4;
-    static constexpr int COL_ENGINE_TYPE = 5;
-    static constexpr int COL_ENGINE_COUNT = 6;
-    static constexpr int COL_CLASS = 7;
-    static constexpr int COL_SUB_CLASS = 8;
-    static constexpr int COL_TYPE_RATING = 9;
-    static constexpr int COL_REMARKS = 10;
+    void setupFilterComboBox();
 
-    const QHash<int, QString> COLUMN_HEADERS_MAP = {
-        {COL_MAKE, 				tr("Make")},
-        {COL_MODEL, 			tr("Model")},
-        {COL_VARIANT, 			tr("Variant")},
-        {COL_ICAO_DESIGNATOR, 	tr("ICAO Designator")},
-        {COL_ENGINE_TYPE, 		tr("Engine Type")},
-        {COL_ENGINE_COUNT, 		tr("Engine Count")},
-        {COL_CLASS, 			tr("Class")},
-        {COL_SUB_CLASS, 		tr("Sub Class")},
-        {COL_TYPE_RATING, 		tr("Type Rating")},
-        {COL_REMARKS, 			tr("Remarks")},
+    static constexpr int COL_ROWID           = 0;
+    static constexpr int COL_MAKE            = 1;
+    static constexpr int COL_MODEL           = 2;
+    static constexpr int COL_VARIANT         = 3;
+    static constexpr int COL_ICAO_DESIGNATOR = 4;
+    static constexpr int COL_ENGINE_TYPE     = 5;
+    static constexpr int COL_IS_MULTI_ENGINE = 6;
+    static constexpr int COL_CLASS           = 7;
+    static constexpr int COL_SUB_CLASS       = 8;
+    static constexpr int COL_IS_MULTI_PILOT  = 9;
+    static constexpr int COL_WAKE_CATEGORY   = 10;
+    static constexpr int COL_TYPE_RATING     = 11;
+    static constexpr int COL_REMARKS         = 12;
+
+    const QString COL_HEADER_MAKE            = tr("Make");
+    const QString COL_HEADER_MODEL           = tr("Model");
+    const QString COL_HEADER_VARIANT         = tr("Variant");
+    const QString COL_HEADER_ICAO_DESIGNATOR = tr("ICAO Designator");
+    const QString COL_HEADER_ENGINE_TYPE     = tr("Engine Type");
+    const QString COL_HEADER_IS_MULTI_ENGINE = tr("Engine Count");
+    const QString COL_HEADER_CLASS           = tr("Class");
+    const QString COL_HEADER_SUB_CLASS       = tr("Sub Class");
+    const QString COL_HEADER_IS_MULTI_PILOT  = tr("Multi-Pilot");
+    const QString COL_HEADER_WAKE_CATEGORY   = tr("Wake Category");
+    const QString COL_HEADER_TYPE_RATING     = tr("Type Rating");
+    const QString COL_HEADER_REMARKS         = tr("Remarks");
+
+    const QMap<int, QString> COLUMN_HEADERS_MAP = {
+        {COL_MAKE,            COL_HEADER_MAKE           },
+        {COL_MODEL,           COL_HEADER_MODEL          },
+        {COL_VARIANT,         COL_HEADER_VARIANT        },
+        {COL_ICAO_DESIGNATOR, COL_HEADER_ICAO_DESIGNATOR},
+        {COL_ENGINE_TYPE,     COL_HEADER_ENGINE_TYPE    },
+        {COL_IS_MULTI_ENGINE, COL_HEADER_IS_MULTI_ENGINE},
+        {COL_CLASS,           COL_HEADER_CLASS          },
+        {COL_SUB_CLASS,       COL_HEADER_SUB_CLASS      },
+        {COL_WAKE_CATEGORY,   COL_HEADER_WAKE_CATEGORY  },
+        {COL_TYPE_RATING,     COL_HEADER_TYPE_RATING    },
+        {COL_REMARKS,         COL_HEADER_REMARKS        },
     };
 
-private slots:
-    // TableEditWidget interface
-    void filterTextChanged(const QString &filterString) override;
+    const QList<int> HIDDEN_COLUMNS = {COL_ROWID,
+                                                          COL_IS_MULTI_PILOT};
+
+    const QList<int> VISIBLE_COLUMNS = {
+        COL_MAKE,          COL_MODEL,
+        COL_VARIANT,       COL_ICAO_DESIGNATOR,
+        COL_ENGINE_TYPE,   COL_IS_MULTI_ENGINE,
+        COL_CLASS,         COL_SUB_CLASS,
+        COL_WAKE_CATEGORY, COL_TYPE_RATING,
+        COL_REMARKS};
+
+    const QMap<int, QString>* getColumnHeaderMap() const override { return &COLUMN_HEADERS_MAP; }
+    const QList<int>* getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
+    const QList<int>* getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
 };
 
 #endif // AIRCRAFTTABLEEDITWIDGET_H

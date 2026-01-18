@@ -198,6 +198,33 @@ bool Database::remove(const OPL::Row &row)
     }
 }
 
+bool Database::remove(OPL::DbTable table, int row_id)
+{
+    const QString table_name = OPL::GLOBALS->getDbTableName(table);
+
+    QString statement = QLatin1String("DELETE FROM ") + table_name
+            + QLatin1String(" WHERE ROWID=?");
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row_id);
+
+    if (query.exec())
+    {
+        DEB << statement;
+        DEB << query.lastQuery();
+        LOG << "Entry removed: Table " << table_name << ", ROWID " << row_id;
+        emit dataBaseUpdated(table);
+        return true;
+    } else {
+        DEB << "Unable to delete.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
+        lastError = query.lastError();
+        return false;
+    }
+}
+
 bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
 {
     const QString table_name = OPL::GLOBALS->getDbTableName(table);
@@ -662,14 +689,17 @@ const RowData_T Database::getTotals(bool includePreviousExperience)
 
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)
 {
-    QString statement = QLatin1String("SELECT ROWID FROM flights WHERE ");
+    QString statement;
 
     switch (table) {
-    case OPL::DbTable::Pilots:
-        statement.append(QLatin1String("pic=?"));
+    case OPL::DbTable::v2Pilots:
+        statement = QStringLiteral("SELECT ROWID FROM flights WHERE pic=?");
         break;
-    case OPL::DbTable::Tails:
-        statement.append(QLatin1String("acft=?"));
+    case OPL::DbTable::v2AircraftTails:
+        statement = QStringLiteral("SELECT ROWID FROM flights WHERE tail_id=?");
+        break;
+    case OPL::DbTable::v2AircraftTypes:
+        statement = QStringLiteral("SELECT ROWID FROM aircraft_tails WHERE aircraft_type_id=?");
         break;
     default:
         DEB << "Not a valid target for this function.";
