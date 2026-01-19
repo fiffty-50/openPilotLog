@@ -48,19 +48,19 @@ void DatabaseEditWidget::addEntry(Table table)
     switch (table) {
     case Pilots:
         tabWidget->setCurrentWidget(pilotTab);
-        pilotTab->addEntryRequested();
+        pilotTab->openEntryEdit(std::nullopt);
         break;
     case Tails:
         tabWidget->setCurrentWidget(tailsTab);
-        tailsTab->addEntryRequested();
+        tailsTab->openEntryEdit(std::nullopt);
         break;
     case Airports:
         tabWidget->setCurrentWidget(airportsTab);
-        airportsTab->addEntryRequested();
+        airportsTab->openEntryEdit(std::nullopt);
         break;
     case Aircraft:
         tabWidget->setCurrentWidget(aircraftTab);
-        aircraftTab->addEntryRequested();
+        aircraftTab->openEntryEdit(std::nullopt);
         break;
     case AirportCodes:
         // airportCodesTab->on_addNewEntryPushButton_clicked();

@@ -161,10 +161,10 @@ void MainWindow::connectWidgets()
 {
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, logbookWidget,
                      &LogbookTableEditWidget::viewSelectionChanged);
-    QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
-                     &LogbookTableEditWidget::addEntryRequested);
-    QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
-                     &LogbookTableEditWidget::addSimulatorEntryRequested);
+    //QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
+    //                 &LogbookTableEditWidget::openEntryEdit);
+    //QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
+    //                 &LogbookTableEditWidget::addSimulatorEntryRequested);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, this,
                      &MainWindow::onStyleChanged);
 }

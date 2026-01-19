@@ -58,7 +58,7 @@ class TableEditWidget : public QWidget {
      * \brief Set up the model and view of the widget
      * \details Implement this function to initialise the protected members of this class.
      * This includes setting the QSqlTableModel and QTableView      */
-    virtual void setupModelAndView() = 0;
+    virtual void setupModelAndView();
 
     /*!
      * \brief Set up the UI of the widget
@@ -68,6 +68,11 @@ class TableEditWidget : public QWidget {
      * implementation first when overriding this method.
      */
     virtual void setupUI();
+
+    /*!
+     * \brief Set the user facing Strings in the UI
+     */
+    virtual void retranslateUi() = 0;
 
     /*!
      * \brief create an error String when deleting a database entry has been unsuccessful
@@ -90,8 +95,9 @@ class TableEditWidget : public QWidget {
      * \details The Edit Dialogs for different tables differ in the data they display
      * and how they verify the user inputs. This method returns an apropriate
      * EntryEditDialog for the selected table.
+     * \return An instance of EntryEditDialog. The caller owns the returned dialog.
      */
-    virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) = 0;
+    virtual EntryEditDialog *createEntryEditDialog() = 0;
 
   protected:
     Orientation m_orientation;
@@ -112,6 +118,7 @@ class TableEditWidget : public QWidget {
      * \brief Return an array of column numbers of the model that are visible in the UI
      */
     virtual const QList<int> *getVisibleColumns() const = 0;
+
     /*!
      * \brief Return an array of column numbers of the model that are hidden in the UI
      */
@@ -122,8 +129,11 @@ class TableEditWidget : public QWidget {
      */
     virtual const QMap<int, QString> *getColumnHeaderMap() const = 0;
 
+    virtual const QString tableName() const = 0;
+
     virtual void showEditWidget();
     virtual void hideEditWidget();
+
     /*!
      * \brief makes sure heap allocated widgets are destroyed when a user requests another add or
      * edit before completing a proviously opened one.
@@ -152,8 +162,7 @@ class TableEditWidget : public QWidget {
     void setupButtonWidget();
 
   public slots:
-    virtual void addEntryRequested();
-    virtual void editEntryRequested(const QModelIndex &selectedIndex);
+    virtual void openEntryEdit(std::optional<int> rowId);
     virtual void deleteEntryRequested();
     virtual void sortColumnChanged(int newSortColumn);
 

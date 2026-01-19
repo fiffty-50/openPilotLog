@@ -1,6 +1,24 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef AIRPORTTABLEEDITWIDGET_H
 #define AIRPORTTABLEEDITWIDGET_H
 
+#include "src/opl.h"
 #include "tableeditwidget.h"
 #include <QObject>
 
@@ -11,11 +29,10 @@ class AirportTableEditWidget : public TableEditWidget {
     AirportTableEditWidget(QWidget *parent = nullptr);
 
     // TableEditWidget interface
-    virtual void setupModelAndView() override;
-    virtual void setupUI() override;
+    virtual void retranslateUi() override;
     virtual QString deleteErrorString(int rowId) override;
     virtual QString confirmDeleteString(int rowId) override;
-    virtual EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
+    virtual EntryEditDialog *createEntryEditDialog() override;
 
   private:
     // table columns and header names
@@ -53,6 +70,10 @@ class AirportTableEditWidget : public TableEditWidget {
     const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
     const QMap<int, QString> *getColumnHeaderMap() const override { return &HEADER_NAMES; }
+    const QString tableName() const override
+    {
+        return OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Airports);
+    }
 };
 
 #endif // AIRPORTTABLEEDITWIDGET_H

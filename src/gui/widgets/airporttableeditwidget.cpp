@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "airporttableeditwidget.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
@@ -7,33 +24,8 @@ AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
 {
 }
 
-void AirportTableEditWidget::setupModelAndView()
+void AirportTableEditWidget::retranslateUi()
 {
-    m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Airports));
-    m_model->select();
-
-    for (auto it = HEADER_NAMES.cbegin(); it != HEADER_NAMES.cend(); ++it) {
-        m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
-    }
-
-    m_view->setModel(m_model);
-    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    m_view->resizeColumnsToContents();
-    m_view->verticalHeader()->hide();
-    m_view->setAlternatingRowColors(true);
-    m_view->hideColumn(COL_ROWID);
-}
-
-void AirportTableEditWidget::setupUI()
-{
-    // the base class does most of the setup
-    TableEditWidget::setupUI();
-
-    // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Airport"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Airport"));
 }
@@ -53,7 +45,7 @@ QString AirportTableEditWidget::confirmDeleteString(int rowId)
         .arg(entry.getAirportName());
 }
 
-EntryEditDialog *AirportTableEditWidget::getEntryEditDialog(QWidget *parent)
+EntryEditDialog *AirportTableEditWidget::createEntryEditDialog()
 {
-    return new AirportEntryEditDialog(parent);
+    return new AirportEntryEditDialog(this);
 }

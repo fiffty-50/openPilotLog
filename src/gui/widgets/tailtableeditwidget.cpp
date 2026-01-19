@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "tailtableeditwidget.h"
 
 #include "src/database/database.h"
@@ -5,32 +22,8 @@
 
 TailTableEditWidget::TailTableEditWidget(QWidget *parent) : TableEditWidget(Horizontal, parent) {}
 
-void TailTableEditWidget::setupModelAndView()
+void TailTableEditWidget::retranslateUi()
 {
-    m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDatabaseViewName(OPL::DatabaseView::Tails));
-    m_model->select();
-    m_model->setHeaderData(COL_REGISTRATION, Qt::Horizontal, COLUMN_NAME_REGISTRATION);
-    m_model->setHeaderData(COL_TYPE, Qt::Horizontal, COLUMN_NAME_TYPE);
-    m_model->setHeaderData(COL_COMPANY, Qt::Horizontal, COLUMN_NAME_COMPANY);
-
-    m_view->setModel(m_model);
-    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    m_view->resizeColumnsToContents();
-    m_view->verticalHeader()->hide();
-    m_view->setAlternatingRowColors(true);
-    m_view->hideColumn(COL_ROWID);
-}
-
-void TailTableEditWidget::setupUI()
-{
-    // the base class does most of the setup
-    TableEditWidget::setupUI();
-
-    // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Tail"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Tail"));
 }
@@ -86,7 +79,7 @@ QString TailTableEditWidget::confirmDeleteString(int rowId)
         .arg(tailEntry.getRegistration(), typeString);
 }
 
-EntryEditDialog *TailTableEditWidget::getEntryEditDialog(QWidget *parent)
+EntryEditDialog *TailTableEditWidget::createEntryEditDialog()
 {
-    return new TailEntryEditDialog(QString(), parent);
+    return new TailEntryEditDialog(QString(), this);
 }

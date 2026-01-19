@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "pilottableeditwidget.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/entryeditdialog.h"
@@ -9,40 +26,22 @@ PilotTableEditWidget::PilotTableEditWidget(QWidget *parent) : TableEditWidget(Ho
 
 void PilotTableEditWidget::setupModelAndView()
 {
-    m_model = new QSqlTableModel(this, DB->database());
-    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::v2Pilots));
-    m_model->select();
+    TableEditWidget::setupModelAndView();
 
-    for (auto it = DISPLAY_COLUMNS.cbegin(); it != DISPLAY_COLUMNS.cend(); ++it) {
-        m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
-    }
+    // Hide the first entry (logbook owner)
     m_model->setFilter(QStringLiteral("%1 > 1").arg(OPL::PilotEntry::ROWID)); // hide self
-
-    m_view->setModel(m_model);
-    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    m_view->resizeColumnsToContents();
-    m_view->verticalHeader()->hide();
-    m_view->setAlternatingRowColors(true);
-    for (const auto &i : HIDDEN_COLUMNS)
-        m_view->hideColumn(i);
 }
 
-void PilotTableEditWidget::setupUI()
+void PilotTableEditWidget::retranslateUi()
 {
-    // the base class does most of the setup
-    TableEditWidget::setupUI();
-
     // only need to set the table specific labels and combo box items
     m_addNewEntryPushButton->setText(tr("Add New Pilot"));
     m_deleteEntryPushButton->setText(tr("Delete Selected Pilot"));
 }
 
-EntryEditDialog *PilotTableEditWidget::getEntryEditDialog(QWidget *parent)
+EntryEditDialog *PilotTableEditWidget::createEntryEditDialog()
 {
-    return new PilotEntryEditDialog(QString(), parent);
+    return new PilotEntryEditDialog(QString(), this);
 }
 
 QString PilotTableEditWidget::deleteErrorString(int pilotId)

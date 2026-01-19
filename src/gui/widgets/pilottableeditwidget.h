@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef PILOTTABLEEDITWIDGET_H
 #define PILOTTABLEEDITWIDGET_H
 
@@ -10,8 +27,8 @@ class PilotTableEditWidget : public TableEditWidget {
     PilotTableEditWidget(QWidget *parent = nullptr);
 
     virtual void setupModelAndView() override;
-    virtual void setupUI() override;
-    virtual EntryEditDialog *getEntryEditDialog(QWidget *parent = nullptr) override;
+    virtual void retranslateUi() override;
+    virtual EntryEditDialog *createEntryEditDialog() override;
 
   private:
     static constexpr int COL_ROWID       = 0;
@@ -44,6 +61,10 @@ class PilotTableEditWidget : public TableEditWidget {
     const QMap<int, QString> *getColumnHeaderMap() const override { return &DISPLAY_COLUMNS; }
     const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
+    const QString tableName() const override
+    {
+        return OPL::GLOBALS->getDbTableName(OPL::DbTable::v2Pilots);
+    }
 
     /*!
      * \brief Informs the user that deleting a Pilot has been unsuccessful

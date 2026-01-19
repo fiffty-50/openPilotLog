@@ -43,6 +43,8 @@ class LogbookTableEditWidget : public TableEditWidget {
     const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
     const QMap<int, QString> *getColumnHeaderMap() const override { return &COLUMN_HEADER_MAP; }
+    const QString tableName() const override { return QString(); }
+    void retranslateUi() override {}
 
     // keep track of default and custom delegates set on certain columns
     QHash<int, QAbstractItemDelegate *> m_defaultDelegates;
@@ -53,7 +55,7 @@ class LogbookTableEditWidget : public TableEditWidget {
     virtual void setupUI() override;
     virtual QString deleteErrorString(int rowId) override;
     virtual QString confirmDeleteString(int rowId) override;
-    virtual EntryEditDialog *getEntryEditDialog(QWidget *parent) override;
+    virtual EntryEditDialog *createEntryEditDialog() override;
 
   public slots:
     void viewSelectionChanged(SettingsWidget::SettingSignal widget);
@@ -61,7 +63,7 @@ class LogbookTableEditWidget : public TableEditWidget {
   public slots:
     virtual void filterTextChanged(const QString &filterString) override;
 
-    virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
+    //virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
     virtual void deleteEntryRequested() override;
 
     /*!

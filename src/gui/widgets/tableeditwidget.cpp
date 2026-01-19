@@ -1,3 +1,20 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "tableeditwidget.h"
 #include "src/database/database.h"
 #include "src/opl.h"
@@ -17,9 +34,8 @@ void TableEditWidget::init()
 
 void TableEditWidget::setupUI()
 {
-    // Setting up the model and view is done in the derived class
     setupModelAndView();
-    m_entryEditDialog = getEntryEditDialog(this);
+    m_entryEditDialog = createEntryEditDialog();
     m_stackedWidget->addWidget(m_entryEditDialog);
 
     // set up the UI
@@ -32,6 +48,7 @@ void TableEditWidget::setupUI()
     default:
         break;
     }
+    retranslateUi();
 }
 
 void TableEditWidget::setupHorizontalUI()
@@ -126,51 +143,80 @@ void TableEditWidget::setupButtonWidget()
     m_buttonWidget = buttonWidget;
 }
 
+void TableEditWidget::setupModelAndView()
+{
+    m_model = new QSqlTableModel(this, DB->database());
+    m_model->setTable(tableName());
+    m_model->select();
+
+    for (auto it = getColumnHeaderMap()->cbegin(); it != getColumnHeaderMap()->cend(); ++it) {
+        m_model->setHeaderData(it.key(), Qt::Horizontal, it.value());
+    }
+
+    for (auto it = getHiddenColumns()->cbegin(); it != getHiddenColumns()->cend(); ++it) {
+        m_view->hideColumn(*it);
+    }
+
+    m_view->setModel(m_model);
+    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
+    m_view->resizeColumnsToContents();
+    m_view->verticalHeader()->hide();
+    m_view->setAlternatingRowColors(true);
+    m_view->hideColumn(0); // hide Row ID
+}
+
 void TableEditWidget::setupSignalsAndSlots()
 {
     // refresh the view when the database is updated
     QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
                      &TableEditWidget::databaseContentChanged);
+
     // filter the view
     QObject::connect(m_filterLineEdit, &QLineEdit::textChanged, this,
                      &TableEditWidget::filterTextChanged);
+
     // update filter when combo box is changed
     QObject::connect(m_filterSelectionComboBox, &QComboBox::currentIndexChanged, this,
                      [this]() { filterTextChanged(m_filterLineEdit->text()); });
+
     // sort the view by column
     QObject::connect(m_view->horizontalHeader(), &QHeaderView::sectionClicked, this,
                      &TableEditWidget::sortColumnChanged);
-    // Edit an entry
-    QObject::connect(m_view, &QTableView::clicked, this, &TableEditWidget::editEntryRequested);
-    // Add a new entry
+
+    // Force the view to update the selected row when a column is selected
+    connect(m_view->selectionModel(), &QItemSelectionModel::currentChanged, this,
+            [this](const QModelIndex &current, const QModelIndex &) {
+                if (current.isValid()) m_view->selectRow(current.row());
+            });
+
+    // Edit an entry when selected with arrow keys
+    QObject::connect(m_view->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
+                     [this](const QModelIndex &current, const QModelIndex &previous) {
+                         Q_UNUSED(previous);
+                         const int rowId = current.sibling(current.row(), 0).data().toInt();
+                         openEntryEdit(rowId);
+                     });
+
+    // Add a new Entry
     QObject::connect(m_addNewEntryPushButton, &QPushButton::clicked, this,
-                     &TableEditWidget::addEntryRequested);
+                     [this]() { openEntryEdit(std::nullopt); });
+
     // Delete a selected entry
     QObject::connect(m_deleteEntryPushButton, &QPushButton::clicked, this,
                      &TableEditWidget::deleteEntryRequested);
 }
 
-void TableEditWidget::addEntryRequested()
+void TableEditWidget::openEntryEdit(std::optional<int> rowId)
 {
     cleanUpOldEditDialog();
 
-    m_entryEditDialog = getEntryEditDialog(this);
-    m_stackedWidget->addWidget(m_entryEditDialog);
-    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+    m_entryEditDialog = createEntryEditDialog();
 
-    showEditWidget();
-    m_entryEditDialog->exec();
-    hideEditWidget();
-}
+    if (rowId) m_entryEditDialog->loadEntry(*rowId);
 
-void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
-{
-    int rowIdToEdit = m_model->index(selectedIndex.row(), 0).data().toInt();
-
-    cleanUpOldEditDialog();
-
-    m_entryEditDialog = getEntryEditDialog(this);
-    m_entryEditDialog->loadEntry(rowIdToEdit);
     m_stackedWidget->addWidget(m_entryEditDialog);
     m_stackedWidget->setCurrentWidget(m_entryEditDialog);
 
@@ -181,30 +227,30 @@ void TableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
 
 void TableEditWidget::deleteEntryRequested()
 {
-    const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
-    if (!selectedIndex.isValid()) {
+    // get the row Id
+    const QModelIndex index = m_view->selectionModel()->currentIndex();
+
+    if (!index.isValid()) {
         WARN(tr("No entry selected."));
         return;
     }
+
+    const int rowId = m_model->index(index.row(), 0).data().toInt();
+
+    m_view->selectionModel()->reset();
     m_stackedWidget->hide();
 
-    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
-    m_view->selectionModel()->reset();
-
     // get user confirmation
-    QMessageBox confirm(this);
-    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle(tr("Confirm Deletion"));
+    const auto answer =
+        QMessageBox::question(this, tr("Confirm Deletion"), confirmDeleteString(rowId),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
-    confirm.setText(confirmDeleteString(rowId));
-    if (confirm.exec() == QMessageBox::Yes) {
-        auto editDialog = getEntryEditDialog(this);
-        if (!editDialog->deleteEntry(rowId)) WARN(deleteErrorString(rowId));
+    if (answer == QMessageBox::Yes) {
+        auto dialog = createEntryEditDialog();
+        if (!dialog->deleteEntry(rowId)) WARN(deleteErrorString(rowId));
     }
 
-    // re-set stackedWidget for Vertical Layout
+    // re-set for vertical layout
     if (m_orientation == Vertical) {
         m_stackedWidget->setCurrentWidget(m_filterWidget);
         m_stackedWidget->show();
@@ -242,9 +288,11 @@ QString TableEditWidget::getFilterStatement(const QString &column, const QString
 
 void TableEditWidget::cleanUpOldEditDialog()
 {
-    if (m_stackedWidget->indexOf(m_entryEditDialog) != -1) {
-        delete m_entryEditDialog;
-    }
+    if (!m_entryEditDialog) return;
+
+    m_stackedWidget->removeWidget(m_entryEditDialog);
+    m_entryEditDialog->deleteLater();
+    m_entryEditDialog = nullptr;
 }
 
 void TableEditWidget::filterTextChanged(const QString &filterText)

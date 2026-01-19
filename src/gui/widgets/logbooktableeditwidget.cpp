@@ -70,33 +70,12 @@ QString LogbookTableEditWidget::confirmDeleteString(int rowId)
     return tr("Deleting entries is irreversible.<br>Do you want to proceed?");
 }
 
-EntryEditDialog *LogbookTableEditWidget::getEntryEditDialog(QWidget *parent)
+EntryEditDialog *LogbookTableEditWidget::createEntryEditDialog()
 {
-    return new FlightEntryEditDialog(parent);
+    return new FlightEntryEditDialog(this);
 }
 
 void LogbookTableEditWidget::filterTextChanged(const QString &filterString) {}
-
-void LogbookTableEditWidget::editEntryRequested(const QModelIndex &selectedIndex)
-{
-    showEditWidget();
-    const auto idx   = m_view->selectionModel()->currentIndex();
-    const auto rowId = m_model->index(idx.row(), 0).data().toInt();
-    if (rowId > 0) {
-        // auto nfd = NewFlightDialog(rowId, this);
-        auto dialog = FlightEntryEditDialog(rowId, this);
-        m_stackedWidget->addWidget(&dialog);
-        m_stackedWidget->setCurrentWidget(&dialog);
-        dialog.exec();
-    }
-    else {
-        auto nsd = SimEntryEditDialog(rowId * -1, this);
-        m_stackedWidget->addWidget(&nsd);
-        m_stackedWidget->setCurrentWidget(&nsd);
-        nsd.exec();
-    }
-    hideEditWidget();
-}
 
 void LogbookTableEditWidget::deleteEntryRequested()
 {
