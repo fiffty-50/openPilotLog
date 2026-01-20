@@ -16,15 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "styledtimedelegate.h"
-#include "src/classes/time.h"
+#include <QTime>
 
-StyledTimeDelegate::StyledTimeDelegate(const OPL::DateTimeFormat &format, QObject *parent)
+StyledTimeDelegate::StyledTimeDelegate(const QString &format, QObject *parent)
     : QStyledItemDelegate{parent}, m_format(format)
 {
 }
 
 QString StyledTimeDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
-    const OPL::Time time(value.toInt(), m_format);
-    return time.toString();
+    return QTime::fromMSecsSinceStartOfDay(value.toInt()).toString(m_format);
 }

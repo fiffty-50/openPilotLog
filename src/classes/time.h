@@ -18,108 +18,79 @@
 #ifndef TIME_H
 #define TIME_H
 
-#include "src/opl.h"
 #include <QtCore>
 namespace OPL {
 
-/**
- * \brief The Time class handles conversions between user input / user-facing time data display and
- * database format.
- * \details Time data in the database is stored as an integer value of minutes, whereas the
- * user-facing time data is normally displayed in accordance with the selected DateTimeFormat, by
- * default "hh:mm".
+namespace Time {
+static constexpr int MINUTES_PER_DAY = 24 * 60;
+static constexpr int MSECS_PER_DAY =
+    std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(24)).count();
+
+/*!
+ * \brief Determines whether a given amount of time in milliseconds since midnight is a valid
+ * time of day.
  */
-class Time {
-  public:
-    Time() = delete;
-    Time(const DateTimeFormat &format);
-    Time(const QTime &qTime, const DateTimeFormat &format);
-    Time(int32_t minutes, const DateTimeFormat &format);
-
-    enum TimeFrame { Day, Week, Year };
-
-    /**
-     * @brief isValidTimeOfDay - determines whether the instance can be converted to a time hh:mm
-     * @return true if the total amount of minutes does not exceed one day.
-     */
-    bool isValidTimeOfDay() const;
-
-    /*!
-     * \brief a time is considered valid if it has a time value of >= 0
-     */
-    bool isValid() const;
-
-    /**
-     * @brief toString returns the time in the specified format
-     */
-    const QString toString() const;
-
-    /**
-     * @brief toMinutes - returns the number of minutes in the time Object
-     */
-    int32_t toMinutes() const;
-
-    /**
-     * @brief fromString create a Time Object from a String formatted as hh:mm
-     * @param timeString the input string
-     * @return the Time Object corresponding to the string, equivalent to 0 minutes if conversion
-     * fails.
-     */
-    static Time fromString(const QString &timeString, const DateTimeFormat &format);
-
-    /*!
-     * \brief Calculate the elapsed time between two events
-     * \param offBlocks - The start tmie
-     * \param onBlocks - the end time
-     * \return The elapsed time
-     */
-    static Time blockTime(const Time &offBlocks, const Time &onBlocks);
-
-    /*!
-     * \brief Calculate elapsed time between two events
-     * \param offBlocks - The start time
-     * \param onBlocks - The end time
-     * \return the elapsed time in minutes
-     */
-    static int32_t blockMinutes(const Time &offBlocks, const Time &onBlocks);
-
-    /*!
-     * \brief toMinutes returns the number of minutes in the given time frame
-     * \param count - The number of time frames (e.g. '7' days)
-     * \return
-     */
-    static constexpr int timeFrameToMinutes(TimeFrame timeFrame, int count)
-    {
-        switch (timeFrame) {
-        case Day:
-            return count * MINUTES_PER_DAY;
-        case Week:
-            return count * 7 * MINUTES_PER_DAY;
-        case Year:
-            return count * 7 * 52 * MINUTES_PER_DAY;
-        default:
-            return 0;
-        }
-    }
-
-    /*!
-     * |brief Determines whether a given amount of time in milliseconds since midnight is a valid
-     * time of day.
-     */
-    static constexpr bool isValidTimeOfDay(int milliseconds)
-    {
-        return milliseconds >= 0 && milliseconds < MSECS_PER_DAY;
-    };
-
-  private:
-    static constexpr int MINUTES_PER_DAY = 24 * 60;
-    static constexpr int MSECS_PER_DAY =
-        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(24)).count();
-
-    const DateTimeFormat m_format;
-    int32_t m_minutes;
+static constexpr bool isValidTimeOfDay(int milliseconds)
+{
+    return milliseconds >= 0 && milliseconds < MSECS_PER_DAY;
 };
 
+/*!
+ * \brief A valid block time must be 0 < time < 24 hours
+ */
+static constexpr bool isValidBlockTime(int milliseconds)
+{
+    return milliseconds > 0 && milliseconds < MSECS_PER_DAY;
+}
+
+/*!
+ * \brief Calculate the block time in milliseconds from start to end
+ * \return The block time or -1 for an invalid result
+ */
+static constexpr int blockTimeMs(int start_ms, int end_ms)
+{
+    // make sure both times are in 24h range
+    if (!isValidTimeOfDay(start_ms) && isValidTimeOfDay(end_ms)) {
+        return -1;
+    }
+
+    // calculate the block time - we assume no flight duration exceeds 24h
+    int block_time_ms = ((start_ms - end_ms + MSECS_PER_DAY) % MSECS_PER_DAY);
+
+    // Check the result is valid
+    if (block_time_ms < 0 || block_time_ms > MSECS_PER_DAY) {
+        return -1;
+    }
+
+    return block_time_ms;
+}
+
+/*!
+ * \brief Calculate the block time in milliseconds from start to end
+ * \return The block time or -1 for an invalid result
+ */
+static const inline int blockTimeMs(const QTime &start, const QTime &end)
+{
+    // make sure both times are in 24h range
+    if (!isValidTimeOfDay(start.msecsSinceStartOfDay()) &&
+        isValidTimeOfDay(end.msecsSinceStartOfDay())) {
+        return -1;
+    }
+
+    // calculate the block time - we assume no flight duration exceeds 24h
+    int block_time_ms =
+        ((start.msecsSinceStartOfDay() - end.msecsSinceStartOfDay()) + MSECS_PER_DAY) %
+        MSECS_PER_DAY;
+
+    // Check the result is valid
+    if (block_time_ms < 0 || block_time_ms > MSECS_PER_DAY) {
+        return -1;
+    }
+
+    return block_time_ms;
+}
+
+} // namespace Time
 } // namespace OPL
 
 #endif // TIME_H

@@ -42,7 +42,7 @@ BackupWidget::BackupWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Backup
     view = ui->tableView;
 
     // julian day to Date Format
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), model);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormatString(), model);
     view->setItemDelegateForColumn(DATE_COLUMN, dateDelegate);
 
     refresh();

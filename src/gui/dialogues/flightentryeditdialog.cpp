@@ -60,7 +60,7 @@ void FlightEntryEditDialog::loadEntry(const OPL::Row &entry)
     // Date of Flight
     const QDate date = m_entryParser.getDate();
     calendarWidget->setSelectedDate(date);
-    dateLineEdit.setText(OPL::Date(date, m_displayFormat).toString());
+    dateLineEdit.setText(date.toString(Settings::getDateFormatString()));
 
     // Location
     departureLineEdit.setText(m_entryParser.getDeparture());
@@ -128,8 +128,8 @@ void FlightEntryEditDialog::init()
     // use the dateDisplayLabel as a spacer
     dateDisplayLabel.setMinimumWidth(200); // TODO make dynamic
     // set the current date
-    OPL::Date today = OPL::Date::today(m_displayFormat);
-    dateLineEdit.setText(today.toString());
+    QDate today = QDate::currentDate();
+    dateLineEdit.setText(today.toString(Settings::getDateFormatString()));
     emit dateLineEdit.editingFinished();
     // set cursor to entry point
     dateLineEdit.setFocus();
@@ -319,7 +319,7 @@ void FlightEntryEditDialog::setupSignalsAndSlots()
 
 void FlightEntryEditDialog::readSettings()
 {
-    m_displayFormat = Settings::getDisplayFormat();
+    m_displayFormat = OPL::DateTimeFormat();
     pilotFunctionComboBox.setCurrentIndex(static_cast<int>(Settings::getPilotFunction()));
     approachTypeComboBox.setCurrentText(Settings::getApproachType());
     flightRulesComboBox.setCurrentIndex(Settings::getLogIfr());
@@ -506,7 +506,7 @@ void FlightEntryEditDialog::onCalendarRequested() { calendarWidget->setVisible(t
 void FlightEntryEditDialog::onCalendarDateSelected()
 {
     calendarWidget->setVisible(false);
-    dateLineEdit.setText(OPL::Date(calendarWidget->selectedDate(), m_displayFormat).toString());
+    dateLineEdit.setText(calendarWidget->selectedDate().toString(Settings::getDateFormatString()));
 }
 
 void FlightEntryEditDialog::onPilotFlyingCheckboxStateChanged(int index)

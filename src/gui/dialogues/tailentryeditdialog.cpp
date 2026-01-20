@@ -116,9 +116,9 @@ void TailEntryEditDialog::init()
     const auto dateFormat = OPL::DateTimeFormat().dateFormatString();
     inServiceDateEdit     = new QDateEdit(this);
     inServiceDateEdit->setDisplayFormat(dateFormat);
-    inServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
-    inServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
-    inServiceDateEdit->setDate(OPL::Date::getMinimumDate());
+    inServiceDateEdit->setMinimumDate(OPL::Date::minimumDate());
+    inServiceDateEdit->setMaximumDate(OPL::Date::maximumDate());
+    inServiceDateEdit->setDate(OPL::Date::minimumDate());
     inServiceDateEdit->setEnabled(false);
     addTwoWidgets(inServiceLabel, inServiceDateEdit);
 
@@ -126,9 +126,9 @@ void TailEntryEditDialog::init()
     outOfServiceLabel    = new QLabel(this);
     outOfServiceDateEdit = new QDateEdit(this);
     outOfServiceDateEdit->setDisplayFormat(dateFormat);
-    outOfServiceDateEdit->setMinimumDate(OPL::Date::getMinimumDate());
-    outOfServiceDateEdit->setMaximumDate(OPL::Date::getMaximumDate());
-    outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
+    outOfServiceDateEdit->setMinimumDate(OPL::Date::minimumDate());
+    outOfServiceDateEdit->setMaximumDate(OPL::Date::maximumDate());
+    outOfServiceDateEdit->setDate(OPL::Date::maximumDate());
     outOfServiceDateEdit->setEnabled(false);
     addTwoWidgets(outOfServiceLabel, outOfServiceDateEdit);
 
@@ -208,12 +208,12 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
     remarksLineEdit->setText(entry.getRemarks());
 
     const QDate inService = entry.getInServiceDate();
-    if (inService != OPL::Date::getMinimumDate()) {
+    if (inService != OPL::Date::minimumDate()) {
         inServiceDateEdit->setDate(inService);
     }
     const QDate outOfService = entry.getOutOfServiceDate();
-    if (outOfService <= OPL::Date::getMinimumDate()) {
-        outOfServiceDateEdit->setDate(OPL::Date::getMaximumDate());
+    if (outOfService <= OPL::Date::minimumDate()) {
+        outOfServiceDateEdit->setDate(OPL::Date::maximumDate());
     }
     else {
         outOfServiceDateEdit->setDate(outOfService);
@@ -287,7 +287,7 @@ void TailEntryEditDialog::on_buttonBox_accepted()
     entry.setCompany(companyLineEdit->text());
     entry.setRemarks(remarksLineEdit->text());
     // set out of service date (only if not default)
-    if (outOfServiceDateEdit->date() == OPL::Date::getMaximumDate()) {
+    if (outOfServiceDateEdit->date() == OPL::Date::maximumDate()) {
         entry.setOutOfServiceDate(QDate());
     }
     else {

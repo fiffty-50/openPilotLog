@@ -29,7 +29,7 @@
 SimEntryEditDialog::SimEntryEditDialog(QWidget *parent) : EntryEditDialog(parent)
 {
     init();
-    dateLineEdit->setText(OPL::Date::today(m_format).toString());
+    dateLineEdit->setText(QDate::currentDate().toString(Settings::getDateFormatString()));
 }
 /*!
  * \brief create a SimEntryEditDialog to edit an existing Simulator Entry
@@ -118,7 +118,7 @@ void SimEntryEditDialog::init()
     completer->setFilterMode(Qt::MatchContains);
     acftTypeLineEdit->setCompleter(completer);
 
-    m_format = Settings::getDisplayFormat();
+    m_format = OPL::DateTimeFormat();
 
     retranslateUi();
     setupSlots();
@@ -168,9 +168,9 @@ void SimEntryEditDialog::fillEntryData()
 {
     const auto &data = entry.getData();
     dateLineEdit->setText(
-        OPL::Date(data.value(OPL::SimulatorEntry::DATE).toInt(), m_format).toString());
+        QDate::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt()).toString(Settings::getDateFormatString()));
     timeLineEdit->setText(
-        OPL::Time(data.value(OPL::SimulatorEntry::TIME).toInt(), m_format).toString());
+        QTime::fromMSecsSinceStartOfDay(data.value(OPL::SimulatorEntry::TIME).toInt()).toString(Settings::getTimeFormatString()));
     simTypeComboBox->setCurrentText(data.value(OPL::SimulatorEntry::TYPE).toString());
     acftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
     registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
@@ -179,16 +179,16 @@ void SimEntryEditDialog::fillEntryData()
 
 void SimEntryEditDialog::on_dateLineEdit_editingFinished()
 {
-    const auto date = OPL::Date(dateLineEdit->text(), m_format);
-    if (date.isValid()) {
-        dateLineEdit->setText(date.toString());
-        dateLineEdit->setStyleSheet(QString());
-        return;
-    }
-    else {
-        dateLineEdit->setText(QString());
-        dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-    }
+    // const auto date = OPL::Date(dateLineEdit->text(), m_format);
+    // if (date.isValid()) {
+    //     dateLineEdit->setText(date.toString());
+    //     dateLineEdit->setStyleSheet(QString());
+    //     return;
+    // }
+    // else {
+    //     dateLineEdit->setText(QString());
+    //     dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    // }
 }
 
 void SimEntryEditDialog::on_timeLineEdit_editingFinished()
@@ -218,7 +218,7 @@ void SimEntryEditDialog::on_datePushButton_clicked() { calendar->setVisible(true
 void SimEntryEditDialog::on_calendarDateSelected()
 {
     calendar->setVisible(false);
-    dateLineEdit->setText(OPL::Date(calendar->selectedDate(), m_format).toString());
+    dateLineEdit->setText(calendar->selectedDate().toString(Settings::getDateFormatString()));
 }
 
 void SimEntryEditDialog::on_helpPushButton_clicked()
@@ -236,22 +236,22 @@ void SimEntryEditDialog::on_helpPushButton_clicked()
 bool SimEntryEditDialog::verifyInput(QString &error_msg)
 {
     // Date
-    const auto date = OPL::Date(dateLineEdit->text(), m_format);
+    // const auto date = OPL::Date(dateLineEdit->text(), m_format);
 
-    if (!date.isValid()) {
-        dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-        dateLineEdit->setText(QString());
-        error_msg = tr("Invalid Date");
-        return false;
-    }
-    // Time
-    const OPL::Time time = OPL::Time::fromString(timeLineEdit->text(), m_format);
-    if (!time.isValidTimeOfDay()) {
-        timeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-        timeLineEdit->setText(QString());
-        error_msg = tr("Invalid time");
-        return false;
-    }
+    // if (!date.isValid()) {
+    //     dateLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    //     dateLineEdit->setText(QString());
+    //     error_msg = tr("Invalid Date");
+    //     return false;
+    // }
+    // // Time
+    // const OPL::Time time = OPL::Time::fromString(timeLineEdit->text(), m_format);
+    // if (!time.isValidTimeOfDay()) {
+    //     timeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    //     timeLineEdit->setText(QString());
+    //     error_msg = tr("Invalid time");
+    //     return false;
+    // }
 
     // Device Type - for FSTD, aircraft info is required
     if (simTypeComboBox->currentIndex() == static_cast<int>(OPL::SimulatorType::FSTD) &&
@@ -267,11 +267,11 @@ OPL::RowData_T SimEntryEditDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    const auto date = OPL::Date(dateLineEdit->text(), m_format);
+    const auto date = QDate::fromString(dateLineEdit->text(), Settings::getDateFormatString());
     new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
     // Time
     new_entry.insert(OPL::SimulatorEntry::TIME,
-                     OPL::Time::fromString(timeLineEdit->text(), m_format).toMinutes());
+                     QTime::fromString(timeLineEdit->text(), Settings::getTimeFormatString()).msecsSinceStartOfDay());
     // Device Type
     new_entry.insert(OPL::SimulatorEntry::TYPE, simTypeComboBox->currentText());
     // Aircraft Type

@@ -144,16 +144,6 @@ class Settings {
     }
 
     /*!
-     * \brief returns the Display Format used in the application
-     */
-    static OPL::DateTimeFormat getDisplayFormat();
-
-    /*!
-     * \brief sets the Display Format used in the application
-     */
-    static void setDisplayFormat(const OPL::DateTimeFormat &format);
-
-    /*!
      * \brief returns the default pilot function for new flights
      */
     static OPL::PilotFunction getPilotFunction()
@@ -309,6 +299,17 @@ class Settings {
     {
         settingsInstance->setValue(CURR_WARNING_THR, days);
     }
+
+    static QString getDateFormatString()
+    {
+        return settingsInstance->value(FORMAT_DATE_STRING, QStringLiteral("yyyy-MM-dd")).toString();
+    }
+    // static void setDateFormatString(const QString &date_format) {}
+    static QString getTimeFormatString()
+    {
+        return settingsInstance->value(FORMAT_TIME_STRING, QStringLiteral("hh:mm")).toString();
+    }
+    // static void setTimeFormatString(const QString &time_format);
 
   private:
     // keep an instance to avoid having to create a new QSettings object every time

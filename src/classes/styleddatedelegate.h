@@ -18,7 +18,6 @@
 #ifndef STYLEDDATEDELEGATE_H
 #define STYLEDDATEDELEGATE_H
 
-#include "src/opl.h"
 #include <QStyledItemDelegate>
 
 /*!
@@ -29,12 +28,11 @@
  */
 class StyledDateDelegate : public QStyledItemDelegate {
   public:
-    StyledDateDelegate(const OPL::DateTimeFormat &dateFormat, QObject *parent = nullptr);
+    StyledDateDelegate(const QString &date_format, QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;
-
   private:
-    OPL::DateTimeFormat m_format;
+    const QString m_format;
 };
 
 #endif // STYLEDDATEDELEGATE_H

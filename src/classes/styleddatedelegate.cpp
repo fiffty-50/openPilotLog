@@ -16,14 +16,15 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "styleddatedelegate.h"
-#include "src/classes/date.h"
+#include <qdatetime.h>
 
-StyledDateDelegate::StyledDateDelegate(const OPL::DateTimeFormat &dateFormat, QObject *parent)
-    : QStyledItemDelegate(parent), m_format(dateFormat)
+StyledDateDelegate::StyledDateDelegate(const QString &date_format, QObject *parent)
+    : QStyledItemDelegate(parent), m_format(date_format)
 {
 }
 
 QString StyledDateDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
-    return OPL::Date(value.toInt(), m_format).toString();
+    Q_UNUSED(locale);
+    return QDate::fromJulianDay(value.toInt()).toString(m_format);
 }

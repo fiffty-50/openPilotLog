@@ -1,5 +1,6 @@
 #include "flightentryparser.h"
 #include "src/classes/time.h"
+#include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/functions/calc.h"
@@ -57,9 +58,9 @@ bool FlightEntryParser::setDestination(const QString &input)
 
 bool FlightEntryParser::setTimeOffBlocks(const QString &input, const OPL::DateTimeFormat &format)
 {
-    const Time time = Time::fromString(input, format);
-    if (time.isValidTimeOfDay()) {
-        m_entryData.insert(FlightEntry::TOFB, time.toMinutes());
+    const QTime time = QTime::fromString(input, Settings::getTimeFormatString());
+    if (true) {
+        m_entryData.insert(FlightEntry::TOFB, time.msecsSinceStartOfDay());
         setBlockTime();
         return true;
     }
@@ -69,9 +70,9 @@ bool FlightEntryParser::setTimeOffBlocks(const QString &input, const OPL::DateTi
 
 bool FlightEntryParser::setTimeOnBlocks(const QString &input, const OPL::DateTimeFormat &format)
 {
-    const Time time = Time::fromString(input, format);
-    if (time.isValidTimeOfDay()) {
-        m_entryData.insert(FlightEntry::TONB, time.toMinutes());
+    const QTime time = QTime::fromString(input, Settings::getTimeFormatString());
+    if (true) {
+        m_entryData.insert(FlightEntry::TONB, time.msecsSinceStartOfDay());
         setBlockTime();
         return true;
     }

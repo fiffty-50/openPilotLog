@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightentry.h"
-#include "src/classes/date.h"
+#include "src/classes/settings.h"
 #include "src/classes/time.h"
 #include "src/opl.h"
 
@@ -51,12 +51,12 @@ QString FlightEntry::getFlightSummary() const
     QString flight_summary;
     constexpr auto space = QLatin1Char(' ');
     flight_summary.append(
-        OPL::Date(tableData.value(FlightEntry::DOFT).toInt(), DateTimeFormat()).toString() + space);
+        QDate::fromJulianDay(tableData.value(FlightEntry::DOFT).toInt()).toString(Settings::getDateFormatString()));
     flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
     flight_summary.append(
-        Time(tableData.value(FlightEntry::TOFB).toInt(), DateTimeFormat()).toString() + space);
+        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TOFB).toInt()).toString(Settings::getTimeFormatString()) + space);
     flight_summary.append(
-        Time(tableData.value(FlightEntry::TONB).toInt(), DateTimeFormat()).toString() + space);
+        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TONB).toInt()).toString(Settings::getTimeFormatString()) + space);
     flight_summary.append(tableData.value(FlightEntry::DEST).toString());
 
     return flight_summary;

@@ -14,7 +14,7 @@
 
 CurrencyWidget::CurrencyWidget(QWidget *parent) : QWidget{parent}
 {
-    m_format = Settings::getDisplayFormat();
+    m_format = OPL::DateTimeFormat();
     setupModelAndView();
     setupUI();
 
@@ -43,7 +43,7 @@ void CurrencyWidget::setupModelAndView()
     view->setAlternatingRowColors(true);
     view->hideColumn(ROWID_COLUMN);
 
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), this);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormatString(), this);
     view->setItemDelegateForColumn(EXPIRY_DATE_COLUMN, dateDelegate);
 }
 
@@ -146,7 +146,7 @@ void CurrencyWidget::fillFlightTimeLimitations()
     for (const auto &pair : limits) {
         int accruedMinutes = OPL::Statistics::totalTime(pair.second);
         int limitMinutes   = EasaFTL::getLimit(pair.second);
-        pair.first->setText(OPL::Time(accruedMinutes, m_format).toString());
+        pair.first->setText(QTime::fromMSecsSinceStartOfDay(accruedMinutes * 60000).toString(Settings::getTimeFormatString()));
 
         if (accruedMinutes >= limitMinutes)
             setLabelColour(pair.first, Colour::Red);

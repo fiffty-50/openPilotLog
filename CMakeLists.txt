@@ -127,11 +127,9 @@ set(PROJECT_SOURCES
     src/classes/md5sum.h
     src/classes/md5sum.cpp
     src/classes/time.h
-    src/classes/time.cpp
     src/classes/easaftl.h
     src/classes/easaftl.cpp
     src/classes/date.h
-    src/classes/date.cpp
     src/classes/styleddatedelegate.h
     src/classes/styleddatedelegate.cpp
     src/classes/styledtimedelegate.h

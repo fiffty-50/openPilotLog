@@ -48,7 +48,7 @@ void LogbookTableEditWidget::setupUI()
     m_filterWidget->hide();
     m_stackedWidget->hide();
 
-    m_format = Settings::getDisplayFormat();
+    m_format = OPL::DateTimeFormat();
 }
 
 QString LogbookTableEditWidget::deleteErrorString(int rowId)
@@ -138,7 +138,7 @@ void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal 
 void LogbookTableEditWidget::setupDelegates()
 {
     // minutes to hh:mm
-    const auto timeDelegate = new StyledTimeDelegate(m_format, m_model);
+    const auto timeDelegate = new StyledTimeDelegate(Settings::getTimeFormatString(), m_model);
     for (const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
         m_defaultDelegates.insert(col, m_view->itemDelegateForColumn(col));
         m_view->setItemDelegateForColumn(col, timeDelegate);
@@ -146,7 +146,7 @@ void LogbookTableEditWidget::setupDelegates()
 
     // julian day to Date Format
     const int dateCol       = OPL::LogbookViewInfo::getDateColumn(m_logbookView);
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDisplayFormat(), m_model);
+    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormatString(), m_model);
     m_defaultDelegates.insert(dateCol, m_view->itemDelegateForColumn(dateCol));
     m_view->setItemDelegateForColumn(dateCol, dateDelegate);
 

@@ -33,16 +33,14 @@ void CurrencyEntry::setName(const QString &displayName)
 
 const QString CurrencyEntry::getName() const { return getData().value(NAME).toString(); }
 
-void CurrencyEntry::setExpiryDate(const Date &date)
+void CurrencyEntry::setExpiryDate(int date_jd)
 {
-    auto data = getData();
-    data.insert(EXPIRYDATE, date.toJulianDay());
-    setData(data);
+    m_rowData.insert(EXPIRYDATE, date_jd);
 }
 
-const Date CurrencyEntry::getExpiryDate(const OPL::DateTimeFormat &format) const
-{
-    return OPL::Date(getData().value(EXPIRYDATE).toInt(), format);
-}
+// const Date CurrencyEntry::getExpiryDate(const OPL::DateTimeFormat &format) const
+// {
+//     return OPL::Date(getData().value(EXPIRYDATE).toInt(), format);
+// }
 
 } // namespace OPL

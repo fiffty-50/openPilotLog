@@ -34,21 +34,21 @@ bool AirportCodeEntry::isValid() const
     isValid &= CODE_TYPES_MAP.values().contains(m_rowData.value(CODE_TYPE));
 
     int validFrom = m_rowData.value(VALID_FROM).toInt();
-    isValid &= validFrom < OPL::Date::getMinimumDateJulianDay();
-    isValid &= validFrom > OPL::Date::getMaximumDateJulianDay();
+    isValid &= validFrom < OPL::Date::minimumDateJd();
+    isValid &= validFrom > OPL::Date::maximumDateJd();
 
     return isValid;
 }
 
 bool AirportCodeEntry::setAirportCode(CodeType type, const QDate &validFrom, const QDate &validTo)
 {
-    if (validFrom < OPL::Date::getMinimumDate() || validFrom > OPL::Date::getMaximumDate())
+    if (validFrom < OPL::Date::minimumDate() || validFrom > OPL::Date::maximumDate())
         return false;
 
-    if (validTo > OPL::Date::getMaximumDate()) return false;
+    if (validTo > OPL::Date::maximumDate()) return false;
     // QDate comparison operator is defined such that an invalid QDate is less than any
     // valid date for invalid QDate, set valid to date to NULL
-    if (validTo < OPL::Date::getMinimumDate() || validTo == OPL::Date::getMaximumDate()) {
+    if (validTo < OPL::Date::minimumDate() || validTo == OPL::Date::maximumDate()) {
         m_rowData.insert(VALID_TO, QVariant(QMetaType(QMetaType::QString)));
     }
     else {
@@ -63,8 +63,8 @@ bool AirportCodeEntry::setAirportCode(CodeType type, const QDate &validFrom, con
 QDate AirportCodeEntry::getValidFromDate() const
 {
     int validFromJd = m_rowData.value(VALID_FROM).toInt();
-    if (validFromJd < OPL::Date::getMinimumDateJulianDay() ||
-        validFromJd > OPL::Date::getMaximumDateJulianDay()) {
+    if (validFromJd < OPL::Date::minimumDateJd() ||
+        validFromJd > OPL::Date::maximumDateJd()) {
         return QDate();
     }
     return QDate::fromJulianDay(validFromJd);
@@ -73,8 +73,8 @@ QDate AirportCodeEntry::getValidFromDate() const
 QDate AirportCodeEntry::getValidToDate() const
 {
     int validToJd = m_rowData.value(VALID_FROM).toInt();
-    if (validToJd < OPL::Date::getMinimumDateJulianDay() ||
-        validToJd > OPL::Date::getMaximumDateJulianDay()) {
+    if (validToJd < OPL::Date::minimumDateJd() ||
+        validToJd > OPL::Date::maximumDateJd()) {
         return QDate();
     }
     return QDate::fromJulianDay(validToJd);

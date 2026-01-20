@@ -1,9 +1,10 @@
 #include "timeinput.h"
 #include "src/classes/time.h"
+#include "src/classes/settings.h"
 #include "src/opl.h"
 #include <QTime>
 
-bool TimeInput::isValid() const { return OPL::Time::fromString(input, m_format).isValid(); }
+bool TimeInput::isValid() const { return QTime::fromString(input, Settings::getTimeFormatString()).isValid(); }
 
 /*!
  * \brief Tries to format user input to hh:mm.
@@ -17,7 +18,7 @@ QString TimeInput::fixup() const
     case OPL::DateTimeFormat::TimeFormat::Default:
         return fixDefaultFormat();
     case OPL::DateTimeFormat::TimeFormat::Decimal:
-        return fixDecimalFormat();
+        return input;
     case OPL::DateTimeFormat::TimeFormat::Custom:
         return input; // custom formats cannot be fixed
         break;
@@ -43,19 +44,11 @@ const QString TimeInput::fixDefaultFormat() const
         }
     }
 
-    OPL::Time fixedTime = OPL::Time::fromString(fixed, m_format);
+    QTime fixedTime = QTime::fromString(fixed, Settings::getTimeFormatString());
     if (fixedTime.isValid()) {
-        return OPL::Time::fromString(fixed, m_format).toString();
+        return fixedTime.toString(Settings::getTimeFormatString());
     }
     else {
         return QString();
     }
-}
-
-const QString TimeInput::fixDecimalFormat() const
-{
-    // try to replace an erroneus decimal seperator
-    QString fixed = input;
-    return OPL::Time::fromString(fixed.replace(QLatin1Char(','), OPL::DECIMAL_SEPERATOR), m_format)
-        .toString();
 }
