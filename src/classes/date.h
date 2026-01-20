@@ -45,10 +45,19 @@ class Date {
      */
     const static inline QDate getMaximumDate() { return QDate::fromJulianDay(JULIAN_DAY_END); }
 
+    /*!
+     * \brief Determine whether an integer is a valid julian Day within the accepted range
+     */
+    constexpr static bool julianDayIsValid(int jd)
+    {
+        return jd <= JULIAN_DAY_END && jd >= JULIAN_DAY_START;
+    }
+
     const QString toString() const;
     const bool isValid() const { return m_date.isValid(); }
 
     const inline int toJulianDay() const { return m_date.toJulianDay(); }
+
     const static inline Date today(const DateTimeFormat &format)
     {
         return Date(QDate::currentDate().toJulianDay(), format);

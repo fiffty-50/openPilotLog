@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2023 Felix Turowsky
+ *Copyright (C) 2020-2026 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class Row {
     explicit Row(OPL::DbTable table_name, int row_id, const RowData_T &row_data,
                  const QList<QString> *fields);
     /*!
-     * \brief Create a row entry specifying its table name.
+     * \brief Create an empty row entry specifying only its table name.
      * \param table_name The name of the table in the database
      * \param fields A list of all fields in the table, except the rowId
      */

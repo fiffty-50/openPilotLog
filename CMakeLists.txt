@@ -164,6 +164,12 @@ set(PROJECT_SOURCES
     src/database/previousexperienceentry.cpp
     src/database/airportcodeentry.h
     src/database/airportcodeentry.cpp
+    src/database/logentry.h
+    src/database/logentry.cpp
+    src/database/flightlogentry.h
+    src/database/flightlogentry.cpp
+    src/database/simlogentry.h
+    src/database/simlogentry.cpp
 
     # Namespaces
     src/functions/calc.h

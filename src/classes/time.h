@@ -35,7 +35,6 @@ class Time {
     Time(const DateTimeFormat &format);
     Time(const QTime &qTime, const DateTimeFormat &format);
     Time(int32_t minutes, const DateTimeFormat &format);
-    ;
 
     enum TimeFrame { Day, Week, Year };
 
@@ -103,8 +102,19 @@ class Time {
         }
     }
 
+    /*!
+     * |brief Determines whether a given amount of time in milliseconds since midnight is a valid
+     * time of day.
+     */
+    static constexpr bool isValidTimeOfDay(int milliseconds)
+    {
+        return milliseconds >= 0 && milliseconds < MSECS_PER_DAY;
+    };
+
   private:
     static constexpr int MINUTES_PER_DAY = 24 * 60;
+    static constexpr int MSECS_PER_DAY =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(24)).count();
 
     const DateTimeFormat m_format;
     int32_t m_minutes;
