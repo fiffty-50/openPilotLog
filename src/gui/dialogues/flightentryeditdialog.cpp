@@ -117,7 +117,7 @@ void FlightEntryEditDialog::init()
 
     // set up combo and spin boxes
     OPL::GLOBALS->loadApproachTypes(&approachTypeComboBox);
-    OPL::GLOBALS->loadPilotFunctios(&pilotFunctionComboBox);
+    OPL::GLOBALS->loadPilotFunctions(&pilotFunctionComboBox);
     OPL::GLOBALS->loadFlightRules(&flightRulesComboBox);
     takeOffCountSpinBox.setRange(0, 99);
     landingCountSpinBox.setRange(0, 99);

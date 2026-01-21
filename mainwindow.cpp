@@ -259,7 +259,7 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-#include <QStyleFactory>
+#include "src/gui/dialogues/flightlogentryeditdialog.h"
 void MainWindow::debug()
 {
 
@@ -267,8 +267,7 @@ void MainWindow::debug()
     // dbSetup.clearDatabase();
     // dbSetup.createTables();
     // dbSetup.importTemplateData(false);
-    int id = 2;
-    DEB << "Type String; " << OPL::AircraftEntry::getTypeString(2);
-    auto entry = DB->getAircraftEntry(2);
-    DEB << entry;
+
+    auto dialog = new FlightLogEntryEditDialog(this);
+    dialog->exec();
 }

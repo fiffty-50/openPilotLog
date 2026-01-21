@@ -42,7 +42,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Fi
 
     // Approach Combo Box and Function Combo Box
     OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
-    OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+    OPL::GLOBALS->loadPilotFunctions(ui->functionComboBox);
     OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
 
     // Style combo box

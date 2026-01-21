@@ -279,7 +279,7 @@ class OplGlobals : public QObject {
 
     void fillLanguageComboBox(QComboBox *combo_box) const;
     void fillViewNamesComboBox(QComboBox *combo_box) const;
-    void loadPilotFunctios(QComboBox *combo_box) const;
+    void loadPilotFunctions(QComboBox *combo_box) const;
     void loadSimulatorTypes(QComboBox *combo_box) const;
     void loadApproachTypes(QComboBox *combo_box) const;
     void loadFlightRules(QComboBox *combo_box) const;

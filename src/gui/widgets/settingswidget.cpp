@@ -51,7 +51,7 @@ void SettingsWidget::setupComboBoxes()
         // Set up Combo Boxes
         OPL::Style::loadStylesComboBox(ui->styleComboBox);
         OPL::GLOBALS->loadApproachTypes(ui->approachComboBox);
-        OPL::GLOBALS->loadPilotFunctios(ui->functionComboBox);
+        OPL::GLOBALS->loadPilotFunctions(ui->functionComboBox);
         OPL::GLOBALS->fillViewNamesComboBox(ui->logbookViewComboBox);
         OPL::GLOBALS->fillLanguageComboBox(ui->languageComboBox);
 
