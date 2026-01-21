@@ -144,15 +144,6 @@ void DatabaseCache::updateTails()
     convertIdMapToKeyMap(tailsRegistrationMap, tailsRegistrationKeyMap);
 
     aircraftTailsList = fetchList(ListType::Tails);
-    for (auto &reg : aircraftTailsList) {
-        // For the QCompleter list we want to enable "AB-CDE" as well as "ABCDE"
-        // this solution is terrible. TODO -> create a QSortFilterProxyModel that ignores dashes
-        if (reg.contains(QLatin1Char('-'))) { // check to avoid duplication if reg has no '-'
-            QString copy = reg;
-            reg.remove(QLatin1Char('-'));
-            reg = copy + " (" + reg + QLatin1Char(')');
-        }
-    }
 }
 
 void DatabaseCache::updateAirports()

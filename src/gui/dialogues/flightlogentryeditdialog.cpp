@@ -113,7 +113,6 @@ void FlightLogEntryEditDialog::init()
     addRight(flightNumberLabel, flightNumberLineEdit);
 
     // Row
-    DEB << "x";
     // Left
     timeOnLabel = new QLabel(this);
     timeOnEdit  = new QTimeEdit(this);
@@ -136,20 +135,17 @@ void FlightLogEntryEditDialog::init()
     addRight(takeOffCountLabel, takeOffCountSpinBox);
 
     // Row
-    DEB << "x";
     // Left
     flightRulesLabel    = new QLabel(this);
     flightRulesComboBox = new QComboBox(this);
     addLeft(flightRulesLabel, flightRulesComboBox);
 
-    DEB << "x";
     // Right
     landingCountLabel   = new QLabel(this);
     landingCountSpinBox = new QSpinBox(this);
     addRight(landingCountLabel, landingCountSpinBox);
 
     // Row
-    DEB << "x";
     // Left
     remarksLabel    = new QLabel(this);
     remarksTextEdit = new QPlainTextEdit(this);
@@ -227,13 +223,15 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
     m_nameLineEdits[0] = picLineEdit;
     m_nameLineEdits[1] = sicLineEdit;
 
-    for (const auto &line_edit : m_locationLineEdits) {
+    LOG << "2";
+    for (const auto &line_edit : std::as_const(m_locationLineEdits)) {
         const auto val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
         line_edit->setValidator(val);
         line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
     }
 
-    for (const auto &line_edit : m_nameLineEdits) {
+    LOG << "33";
+    for (const auto &line_edit : std::as_const(m_nameLineEdits)) {
         line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Pilots));
     }
 

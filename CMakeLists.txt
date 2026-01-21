@@ -102,6 +102,8 @@ set(PROJECT_SOURCES
     src/gui/verification/pilotinput.cpp
     src/gui/verification/completerprovider.h
     src/gui/verification/completerprovider.cpp
+    src/gui/verification/diacriticignoringstringlistmodel.h
+    src/gui/verification/diacriticignoringcompleter.h
     src/gui/verification/tailinput.h
     src/gui/verification/tailinput.cpp
     src/gui/widgets/currencywidget.h

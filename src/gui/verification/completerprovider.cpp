@@ -1,21 +1,30 @@
 #include "completerprovider.h"
 #include "src/database/databasecache.h"
+#include "src/gui/verification/diacriticignoringcompleter.h"
 
 // namespace OPL {
 
 CompleterProvider::CompleterProvider()
 {
-    pilotCompleter   = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::PilotNames));
-    tailsCompleter   = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::Tails));
+    // create normal completers
     airportCompleter = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::AirportCodes));
     companyCompleter = new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::Companies));
     aircraftCompleter =
         new QCompleter(DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes));
 
-    QList<QCompleter *> completers = {
+    // use custom completers for tails and names with improved matching
+    auto tailsList = DBCache->getList(OPL::DatabaseCache::ListType::Tails);
+    tailsCompleter = DiacriticIgnoringCompleter::createCompleter(tailsList, this);
+
+    auto pilotList = DBCache->getList(OPL::DatabaseCache::ListType::PilotNames);
+    pilotCompleter = DiacriticIgnoringCompleter::createCompleter(pilotList, this);
+
+
+    const QList<QCompleter *> completers = {
         pilotCompleter, tailsCompleter, airportCompleter, companyCompleter, aircraftCompleter,
     };
-    for (const auto completer : completers) {
+
+    for (const auto &completer : completers) {
         completer->setCaseSensitivity(Qt::CaseInsensitive);
         completer->setCompletionMode(QCompleter::PopupCompletion);
         completer->setFilterMode(Qt::MatchContains);
