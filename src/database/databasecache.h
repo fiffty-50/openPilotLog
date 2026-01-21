@@ -73,6 +73,7 @@ class DatabaseCache : public QObject {
     enum class MapType {
         AirportCodesIcao,
         AirportCodesIata,
+        AirportCodesAll,
         AirportNames,
         AircraftTypes,
         TailRegistrations,
@@ -90,6 +91,7 @@ class DatabaseCache : public QObject {
     const QStringList &getList(ListType type);
     const IdMap &getMap(MapType type);
     const KeyMap &getKeyMap(MapType type);
+    const KeyMultiMap &getMultiMap(MapType type);
 
   private:
     Q_OBJECT
@@ -142,9 +144,14 @@ class DatabaseCache : public QObject {
     QStringList airportCodesList;
     QStringList companiesList;
 
+
+    // Multi Maps
+    KeyMultiMap airportCodesAllMultiMap;
+
     // Query the database to update a map
     const IdMap fetchMap(MapType target);
     const QStringList fetchList(ListType target);
+    const KeyMultiMap fetchMultiMap(MapType target);
 
     void updateTails();
     void updateAirports();

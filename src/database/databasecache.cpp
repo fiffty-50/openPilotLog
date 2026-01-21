@@ -42,19 +42,31 @@ const IdMap DatabaseCache::fetchMap(MapType target)
 
     switch (target) {
     case MapType::AirportCodesIcao:
-        statement.append(QStringLiteral("SELECT ROWID, icao FROM airports"));
+        statement = (QStringLiteral("SELECT "
+                                        "airport_id, "
+                                        "airport_code "
+                                        "FROM airport_codes "
+                                        "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                                        "AND valid_from_jd <= julianday('now') "
+                                        "AND code_type = 'ICAO';"));
         break;
     case MapType::AirportCodesIata:
-        statement.append(QStringLiteral("SELECT ROWID, iata FROM airports WHERE iata NOT NULL"));
+        statement = (QStringLiteral("SELECT "
+                                    "airport_id, "
+                                    "airport_code "
+                                    "FROM airport_codes "
+                                    "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                                    "AND valid_from_jd <= julianday('now') "
+                                    "AND code_type = 'IATA';"));
         break;
     case MapType::AirportNames:
-        statement.append(QStringLiteral("SELECT ROWID, name FROM airports"));
+        statement.append(QStringLiteral("SELECT ROWID, airport_name FROM airports"));
         break;
     case MapType::PilotNames:
-        statement.append(QStringLiteral("SELECT ROWID, lastname||', '||firstname FROM pilots"));
+        statement.append(QStringLiteral("SELECT ROWID, pilot_name FROM pilots"));
         break;
     case MapType::TailRegistrations:
-        statement.append(QStringLiteral("SELECT ROWID, registration FROM tails"));
+        statement.append(QStringLiteral("SELECT ROWID, registration FROM aircraft_tails"));
         break;
     case MapType::AircraftTypes:
         statement.append(QStringLiteral("SELECT ROWID, make||' '||model AS ident "
@@ -138,6 +150,41 @@ const QStringList DatabaseCache::fetchList(ListType target)
     return completer_list;
 }
 
+const KeyMultiMap DatabaseCache::fetchMultiMap(MapType target)
+{
+    QString statement;
+    switch (target) {
+    case MapType::AirportCodesAll:
+        statement = QStringLiteral("WITH CurrentCode AS ( "
+                                   "SELECT "
+                                   "airport_code, "
+                                   "airport_id, "
+                                   "valid_from_jd, "
+                                   "valid_to_jd "
+                                   "FROM airport_codes "
+                                   "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                                   "AND valid_from_jd <= julianday('now')) "
+                                   "SELECT "
+                                   "airport_code, "
+                                   "airport_id "
+                                   "FROM CurrentCode ");
+        break;
+    default:
+        break;
+    }
+
+    QSqlQuery query;
+    query.setForwardOnly(true);
+    query.prepare(statement);
+    query.exec();
+
+    KeyMultiMap map;
+    while (query.next())
+        map.insert(query.value(0).toString(), query.value(1).toInt());
+    return map;
+
+}
+
 void DatabaseCache::updateTails()
 {
     tailsRegistrationMap = fetchMap(MapType::TailRegistrations);
@@ -156,6 +203,8 @@ void DatabaseCache::updateAirports()
 
     airportNamesMap = fetchMap(MapType::AirportNames);
     convertIdMapToKeyMap(airportNamesMap, airportNamesKeyMap);
+
+    airportCodesAllMultiMap = fetchMultiMap(MapType::AirportCodesAll);
 
     airportCodesList = fetchList(ListType::AirportCodes);
 }
@@ -238,7 +287,7 @@ const IdMap &DatabaseCache::getMap(MapType type)
         return airportsIataMap;
         break;
     case MapType::AirportNames:
-        return aircraftTypesMap;
+        return airportNamesMap;
         break;
     case MapType::AircraftTypes:
         return aircraftTypesMap;
@@ -276,6 +325,17 @@ const KeyMap &DatabaseCache::getKeyMap(MapType type)
         break;
     }
     Q_UNREACHABLE();
+}
+
+const KeyMultiMap &DatabaseCache::getMultiMap(MapType type)
+{
+    switch (type) {
+    case MapType::AirportCodesAll:
+        return airportCodesAllMultiMap;
+        break;
+    default:
+        return {};
+    }
 }
 
 void DatabaseCache::convertIdMapToKeyMap(IdMap &idMap, KeyMap &keyMap)

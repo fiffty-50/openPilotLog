@@ -2,9 +2,11 @@
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
+#include "src/database/databasecache.h"
 #include "src/database/flightlogentry.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/opl.h"
+#include <QCalendarWidget>
 #include <QDateEdit>
 #include <QTimeEdit>
 #include <qcombobox.h>
@@ -67,9 +69,6 @@ void FlightLogEntryEditDialog::init()
     datePushButton   = new QPushButton(this);
     dateEdit         = new QDateEdit(this);
     dateDisplayLabel = new QLabel(this);
-    QFont f          = dateDisplayLabel->font();
-    f.setItalic(true);
-    dateDisplayLabel->setFont(f);
     addLeft(datePushButton, dateEdit, dateDisplayLabel);
 
     // Right
@@ -162,11 +161,20 @@ void FlightLogEntryEditDialog::init()
     // buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
+    
+    // Save some line edits for later use
+    m_locationLineEdits.resize(2);
+    m_locationLineEdits[0] = deptLineEdit;
+    m_locationLineEdits[1] = destLineEdit;
+    m_nameLineEdits.resize(2);
+    m_nameLineEdits[0] = picLineEdit;
+    m_nameLineEdits[1] = sicLineEdit;
+
 
     setTabOrder({datePushButton, dateEdit, deptLineEdit, destLineEdit, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationLineEdit, picLineEdit,
                  sicLineEdit, flightNumberLineEdit, pilotFlyingCheckBox, takeOffCountSpinBox,
-                 landingCountSpinBox,  buttonBox});
+                 landingCountSpinBox, buttonBox});
 
     retranslateUi();
     setupValidationAndCompletion();
@@ -177,7 +185,7 @@ void FlightLogEntryEditDialog::init()
 void FlightLogEntryEditDialog::retranslateUi()
 {
     datePushButton->setText(tr("Date"));
-    dateDisplayLabel->setText(dateEdit->date().toString(QStringLiteral("ddd d MMM")));
+    dateDisplayLabel->setText(dateEdit->date().toString(QStringLiteral("ddd d MMM, yyyy")));
     deptLabel->setText(tr("Departure"));
     destLabel->setText(tr("Destination"));
     timeOffLabel->setText(tr("Off Blocks"));
@@ -206,6 +214,12 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
     dateEdit->setMaximumDate(OPL::Date::maximumDate());
     dateEdit->setDate(QDate::currentDate());
     dateDisplayLabel->setMinimumWidth(200);
+    dateDisplayLabel->setMaximumWidth(200);
+    QFont f = dateDisplayLabel->font();
+    f.setItalic(true);
+    dateDisplayLabel->setFont(f);
+    deptDisplayLabel->setFont(f);
+    destDisplayLabel->setFont(f);
 
     takeOffCountSpinBox->setMinimum(0);
     landingCountSpinBox->setMinimum(0);
@@ -216,21 +230,12 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
     OPL::GLOBALS->loadFlightRules(flightRulesComboBox);
 
     // Setup autocompletion and Basic Input Validation
-    m_locationLineEdits.resize(2);
-    m_locationLineEdits[0] = deptLineEdit;
-    m_locationLineEdits[1] = destLineEdit;
-    m_nameLineEdits.resize(2);
-    m_nameLineEdits[0] = picLineEdit;
-    m_nameLineEdits[1] = sicLineEdit;
-
-    LOG << "2";
     for (const auto &line_edit : std::as_const(m_locationLineEdits)) {
         const auto val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
         line_edit->setValidator(val);
         line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
     }
 
-    LOG << "33";
     for (const auto &line_edit : std::as_const(m_nameLineEdits)) {
         line_edit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Pilots));
     }
@@ -240,8 +245,41 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
 
 void FlightLogEntryEditDialog::setupSlots()
 {
+    // Button Box
     connect(buttonBox, &QDialogButtonBox::accepted, this, &FlightLogEntryEditDialog::on_accepted);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    // Registration Line Edit
+    connect(registrationLineEdit, &QLineEdit::editingFinished, this,
+            &FlightLogEntryEditDialog::on_registrationLineEdit_editingFinished);
+
+    // Pilot Name Line Edits
+    connect(picLineEdit, &QLineEdit::editingFinished, this,
+            [this]() { on_pilotNameLineEdit_editingFinished(picLineEdit); });
+    connect(sicLineEdit, &QLineEdit::editingFinished, this,
+            [this]() { on_pilotNameLineEdit_editingFinished(sicLineEdit); });
+
+    // Location Line Edits
+    connect(deptLineEdit, &QLineEdit::editingFinished, this,
+            [this]() { on_locationLineEdit_editingFinished(deptLineEdit, deptDisplayLabel); });
+    connect(destLineEdit, &QLineEdit::editingFinished, this,
+            [this]() { on_locationLineEdit_editingFinished(destLineEdit, destDisplayLabel); });
+
+    // Change text to upper case for location and acft line edits
+    connect(registrationLineEdit, &QLineEdit::textChanged, this, [this]() {
+        const QSignalBlocker b(registrationLineEdit);
+        registrationLineEdit->setText(registrationLineEdit->text().toUpper());
+    });
+    for (const auto &lineEdit : std::as_const(m_locationLineEdits)) {
+        QObject::connect(lineEdit, &QLineEdit::textChanged, this, [this, &lineEdit]() {
+            const QSignalBlocker b(lineEdit);
+            lineEdit->setText(lineEdit->text().toUpper());
+        });
+    }
+
+    // Add Take Off and Landing when Pilot Flying
+    connect(pilotFlyingCheckBox, &QCheckBox::checkStateChanged, this,
+            &FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged);
 }
 
 // Slots
@@ -249,4 +287,80 @@ void FlightLogEntryEditDialog::on_accepted()
 {
     DEB << "Dialog accepted";
     QDialog::accept();
+}
+
+void FlightLogEntryEditDialog::on_locationLineEdit_editingFinished(QLineEdit *caller,
+                                                                   QLabel *displayLabel)
+{
+
+    const auto &text = caller->text();
+    const auto &airportCodesMap =
+        DBCache->getMultiMap(OPL::DatabaseCache::MapType::AirportCodesAll);
+    const auto &airportNamesIdMap = DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames);
+
+    if (airportCodesMap.contains(text)) {
+        displayLabel->setText(airportNamesIdMap.value(airportCodesMap.value(text)));
+        on_GoodInputReceived(caller);
+        return;
+    }
+
+    on_badInputReceived(caller);
+}
+void FlightLogEntryEditDialog::on_registrationLineEdit_editingFinished()
+{
+    if (registrationLineEdit->text().isEmpty()) {
+        return;
+    }
+
+    if (DBCache->getKeyMap(OPL::DatabaseCache::MapType::TailRegistrations)
+            .contains(registrationLineEdit->text())) {
+        on_GoodInputReceived(registrationLineEdit);
+        return;
+    }
+    else {
+        QString completion = registrationLineEdit->completer()->currentCompletion();
+        if (completion == QString()) {
+            on_badInputReceived(registrationLineEdit);
+            DEB << "Add new Tail entry...";
+            // todo - prompt to add new
+        }
+        registrationLineEdit->setText(completion);
+        return;
+    }
+
+    on_badInputReceived(registrationLineEdit);
+}
+void FlightLogEntryEditDialog::on_pilotNameLineEdit_editingFinished(QLineEdit *caller)
+{
+    if (DBCache->getKeyMap(OPL::DatabaseCache::MapType::PilotNames).contains(caller->text())) {
+        on_GoodInputReceived(caller);
+        return;
+    }
+    else {
+        QString completion = caller->completer()->currentCompletion();
+        if (completion == QString()) {
+            on_badInputReceived(caller);
+            DEB << "Add new Pilot entry...";
+            // todo - prompt to add new
+        }
+        caller->setText(completion);
+        return;
+    }
+
+    on_badInputReceived(caller);
+}
+void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state)
+{
+    switch (state) {
+    case Qt::Checked:
+        takeOffCountSpinBox->setValue(1);
+        landingCountSpinBox->setValue(1);
+        break;
+    case Qt::Unchecked:
+        takeOffCountSpinBox->setValue(0);
+        landingCountSpinBox->setValue(0);
+        break;
+    default:
+        break;
+    }
 }
