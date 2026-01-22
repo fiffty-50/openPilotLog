@@ -172,6 +172,13 @@ set(PROJECT_SOURCES
     src/database/flightlogentry.cpp
     src/database/simlogentry.h
     src/database/simlogentry.cpp
+    src/database/movemententry.h
+    src/database/movemententry.cpp
+
+    src/database/flightdata.h
+    src/database/flightdata.cpp
+    src/database/flightdatabuilder.h
+    src/database/flightdatabuilder.cpp
 
     # Namespaces
     src/functions/calc.h
@@ -284,6 +291,7 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
+         src/database/flightsegmententry.h src/database/flightsegmententry.cpp
      )
     endif()
 endif()

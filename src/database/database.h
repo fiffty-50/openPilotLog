@@ -35,7 +35,11 @@
 #include "src/database/airportcodeentry.h"
 #include "src/database/airportentry.h"
 #include "src/database/currencyentry.h"
+#include "src/database/flightdata.h"
 #include "src/database/flightentry.h"
+#include "src/database/flightlogentry.h"
+#include "src/database/flightsegmententry.h"
+#include "src/database/logentry.h"
 #include "src/database/pilotentry.h"
 #include "src/database/row.h"
 #include "src/database/simulatorentry.h"
@@ -200,6 +204,14 @@ class Database : public QObject {
     RowData_T getRowData(const OPL::DbTable table, const int row_id);
 
     /*!
+     * \brief retreive a Map of <column name, column content> for a specific row in the database.
+     * \details in this overload, a column other than the row_id can be specified. This enables
+     * selection of entries "WHERE column = row_id", which is needed for retreiving content from
+     * tables based on a foreign key.
+     */
+    RowData_T getRowData(const OPL::DbTable table, const QString &filterColumn, int row_id);
+
+    /*!
      * \brief retreives a PilotEntry from the database. See row class for details.
      */
     inline OPL::PilotEntry getPilotEntry(int row_id)
@@ -245,6 +257,26 @@ class Database : public QObject {
         return OPL::FlightEntry(row_id, data);
     }
 
+    OPL::FlightData getFlightData(int event_id)
+    {
+        const auto log_data  = getRowData(OPL::DbTable::v2LogEvents, event_id);
+        const auto log_entry = OPL::LogEntry(event_id, log_data);
+
+        const auto flight_data =
+            getRowData(DbTable::v2Flights, QStringLiteral("event_id"), event_id);
+
+        const auto flight_entry = OPL::FlightLogEntry(
+            flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
+
+        const auto movements = getMovementEntries(event_id);
+
+        const auto segments = getFlightSegments(flight_entry.getRowId());
+
+        // collect approach data
+
+        return {log_entry, flight_entry, segments, movements};
+    }
+
     /*!
      * \brief retreives a Simulator entry from the database. See row class for details.
      */
@@ -278,6 +310,10 @@ class Database : public QObject {
      * \return
      */
     QList<OPL::AirportCodeEntry> getAirportCodeEntries(int airport_id);
+
+    QList<OPL::MovementEntry> getMovementEntries(int event_id);
+
+    QList<OPL::FlightSegmentEntry> getFlightSegments(int flight_id);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective table.

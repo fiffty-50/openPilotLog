@@ -46,8 +46,6 @@ bool FlightLogEntry::isValid() const
     allValid &= m_rowData.value(PILOT_PIC).toInt() > 0;
     allValid &= m_rowData.value(TAIL).toInt() > 0;
 
-    // A flight log entry must contain an associated valid LogEntry
-    allValid &= m_logEntry.isValid();
     return allValid;
 }
 
@@ -97,18 +95,6 @@ bool FlightLogEntry::setTimeOnBlocks(int time_ms)
     }
 
     m_rowData.insert(T_ON_BLOCK, time_ms);
-    return true;
-}
-
-bool FlightLogEntry::setLogEntry(const LogEntry &logEntry)
-{
-    if (!logEntry.isValid()) {
-        return false;
-    }
-    if (LogEntry::fromString(logEntry.getEventType()) != LogEntry::Flight) {
-        return false;
-    }
-    m_logEntry = logEntry;
     return true;
 }
 
@@ -188,7 +174,5 @@ QString FlightLogEntry::getFlightNumber() const
 {
     return m_rowData.value(FLIGHT_NUMBER).toString();
 }
-
-const LogEntry *FlightLogEntry::getLogEntry() const { return &m_logEntry; }
 
 } // namespace OPL

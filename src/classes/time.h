@@ -49,20 +49,10 @@ static constexpr bool isValidBlockTime(int milliseconds)
  */
 static constexpr int blockTimeMs(int start_ms, int end_ms)
 {
-    // make sure both times are in 24h range
-    if (!isValidTimeOfDay(start_ms) && isValidTimeOfDay(end_ms)) {
+    if (!isValidTimeOfDay(start_ms) || !isValidTimeOfDay(end_ms))
         return -1;
-    }
 
-    // calculate the block time - we assume no flight duration exceeds 24h
-    int block_time_ms = ((start_ms - end_ms + MSECS_PER_DAY) % MSECS_PER_DAY);
-
-    // Check the result is valid
-    if (block_time_ms < 0 || block_time_ms > MSECS_PER_DAY) {
-        return -1;
-    }
-
-    return block_time_ms;
+    return (end_ms - start_ms + MSECS_PER_DAY) % MSECS_PER_DAY;
 }
 
 /*!
@@ -71,23 +61,14 @@ static constexpr int blockTimeMs(int start_ms, int end_ms)
  */
 static const inline int blockTimeMs(const QTime &start, const QTime &end)
 {
-    // make sure both times are in 24h range
-    if (!isValidTimeOfDay(start.msecsSinceStartOfDay()) &&
-        isValidTimeOfDay(end.msecsSinceStartOfDay())) {
+    if (!start.isValid() || !end.isValid())
         return -1;
-    }
 
-    // calculate the block time - we assume no flight duration exceeds 24h
-    int block_time_ms =
-        ((start.msecsSinceStartOfDay() - end.msecsSinceStartOfDay()) + MSECS_PER_DAY) %
-        MSECS_PER_DAY;
+    int ms = start.msecsTo(end);
+    if (ms < 0)
+        ms += MSECS_PER_DAY;
 
-    // Check the result is valid
-    if (block_time_ms < 0 || block_time_ms > MSECS_PER_DAY) {
-        return -1;
-    }
-
-    return block_time_ms;
+    return ms;
 }
 
 } // namespace Time

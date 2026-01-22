@@ -42,22 +42,24 @@ const IdMap DatabaseCache::fetchMap(MapType target)
 
     switch (target) {
     case MapType::AirportCodesIcao:
-        statement = (QStringLiteral("SELECT "
-                                        "airport_id, "
-                                        "airport_code "
-                                        "FROM airport_codes "
-                                        "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
-                                        "AND valid_from_jd <= julianday('now') "
-                                        "AND code_type = 'ICAO';"));
+        statement =
+            (QStringLiteral("SELECT "
+                            "airport_id, "
+                            "airport_code "
+                            "FROM airport_codes "
+                            "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                            "AND valid_from_jd <= julianday('now') "
+                            "AND code_type = 'ICAO';"));
         break;
     case MapType::AirportCodesIata:
-        statement = (QStringLiteral("SELECT "
-                                    "airport_id, "
-                                    "airport_code "
-                                    "FROM airport_codes "
-                                    "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
-                                    "AND valid_from_jd <= julianday('now') "
-                                    "AND code_type = 'IATA';"));
+        statement =
+            (QStringLiteral("SELECT "
+                            "airport_id, "
+                            "airport_code "
+                            "FROM airport_codes "
+                            "WHERE (valid_to_jd IS NULL OR valid_to_jd >= julianday('now')) "
+                            "AND valid_from_jd <= julianday('now') "
+                            "AND code_type = 'IATA';"));
         break;
     case MapType::AirportNames:
         statement.append(QStringLiteral("SELECT ROWID, airport_name FROM airports"));
@@ -182,7 +184,6 @@ const KeyMultiMap DatabaseCache::fetchMultiMap(MapType target)
     while (query.next())
         map.insert(query.value(0).toString(), query.value(1).toInt());
     return map;
-
 }
 
 void DatabaseCache::updateTails()

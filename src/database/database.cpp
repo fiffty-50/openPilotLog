@@ -521,6 +521,132 @@ RowData_T Database::getRowData(const OPL::DbTable table, const int row_id)
     return entry_data;
 }
 
+RowData_T Database::getRowData(const OPL::DbTable table, const QString &filter_column, int row_id)
+{
+    QString statement = QLatin1String("SELECT * FROM ") + OPL::GLOBALS->getDbTableName(table) +
+                        QLatin1String(" WHERE ") + filter_column + QLatin1String(" = ?");
+    QSqlQuery q;
+    q.prepare(statement);
+    q.addBindValue(row_id);
+    q.setForwardOnly(true);
+
+    if (!q.exec()) {
+        DEB << "SQL error: " << q.lastError().text();
+        DEB << "Statement: " << q.lastQuery();
+        lastError = q.lastError();
+        return {}; // return invalid Row
+    }
+
+    RowData_T entry_data;
+    if (q.next()) {
+        auto r = q.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            return {};
+
+        for (int i = 0; i < r.count(); i++) { // iterate through fields to get key:value map
+            if (!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+    }
+
+    return entry_data;
+}
+
+QList<FlightSegmentEntry> Database::getFlightSegments(int flight_id)
+{
+    const QString statement = QStringLiteral("SELECT * FROM flight_segments WHERE flight_id = ?");
+
+    QSqlQuery q;
+    q.prepare(statement);
+    q.addBindValue(flight_id);
+    q.setForwardOnly(true);
+
+    if (!q.exec()) {
+        DEB << "SQL error: " << q.lastError().text();
+        DEB << "Statement: " << q.lastQuery();
+        lastError = q.lastError();
+        return {}; // return invalid Row
+    }
+
+    QList<RowData_T> rows;
+
+    while (q.next()) {
+        auto r = q.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            continue;
+
+        RowData_T entry_data;
+        for (int i = 0; i < r.count(); i++) { // iterate through fields to get key:value map
+            if (!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+
+        if (!entry_data.isEmpty()) {
+            rows.append(entry_data);
+            DEB << "Added Row: " << entry_data;
+        }
+    }
+
+    if (rows.isEmpty()) {
+        return {};
+    }
+
+    QList<FlightSegmentEntry> result;
+    for (const auto &rowData : rows) {
+        result.append(FlightSegmentEntry(flight_id, rowData));
+    }
+    return result;
+}
+
+QList<MovementEntry> Database::getMovementEntries(int event_id)
+{
+    const QString statement = QStringLiteral("SELECT * FROM movement_events WHERE event_id = ?");
+
+    QSqlQuery q;
+    q.prepare(statement);
+    q.addBindValue(event_id);
+    q.setForwardOnly(true);
+
+    if (!q.exec()) {
+        DEB << "SQL error: " << q.lastError().text();
+        DEB << "Statement: " << q.lastQuery();
+        lastError = q.lastError();
+        return {}; // return invalid Row
+    }
+
+    QList<RowData_T> rows;
+
+    while (q.next()) {
+        auto r = q.record(); // retreive record
+        if (r.count() == 0)  // row is empty
+            continue;
+
+        RowData_T entry_data;
+        for (int i = 0; i < r.count(); i++) { // iterate through fields to get key:value map
+            if (!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+
+        if (!entry_data.isEmpty()) {
+            rows.append(entry_data);
+            DEB << "Added Row: " << entry_data;
+        }
+    }
+
+    if (rows.isEmpty()) {
+        return {};
+    }
+
+    QList<MovementEntry> result;
+    for (const auto &rowData : rows) {
+        result.append(MovementEntry(event_id, rowData));
+    }
+    return result;
+}
+
 QList<AirportCodeEntry> Database::getAirportCodeEntries(int airport_id)
 {
     const QString statement = QStringLiteral("SELECT * FROM airport_codes WHERE airport_id = ?");

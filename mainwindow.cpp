@@ -269,5 +269,6 @@ void MainWindow::debug()
     // dbSetup.importTemplateData(false);
 
     auto dialog = new FlightLogEntryEditDialog(this);
+    dialog->loadEntry(1);
     dialog->exec();
 }

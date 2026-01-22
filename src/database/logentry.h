@@ -41,6 +41,9 @@ class LogEntry : public OPL::Row {
     bool setDate(const QDate &date);
     QDate getDate() const;
 
+    bool setRemarks(const QString &remarks);
+    QString getRemarks() const;
+
   protected:
     const static inline QString DATE          = QStringLiteral("event_date_jd");
     const static inline QString EVENT_TYPE    = QStringLiteral("event_type");

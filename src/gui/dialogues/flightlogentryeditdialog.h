@@ -27,6 +27,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     void retranslateUi();
     void setupValidationAndCompletion();
     void setupSlots();
+    void readSettings();
 
     // UI Elements
     QGridLayout *gridLayout;
@@ -69,6 +70,8 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
 
     QList<QLineEdit *> m_nameLineEdits;
     QList<QLineEdit *> m_locationLineEdits;
+
+    int m_eventId = 0;
 
   private slots:
     void on_accepted();

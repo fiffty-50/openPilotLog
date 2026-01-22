@@ -1,6 +1,7 @@
 #include "flightlogentryeditdialog.h"
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
+#include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/database/flightlogentry.h"
@@ -27,7 +28,41 @@ FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent) : EntryEditD
     setupSlots();
 }
 
-void FlightLogEntryEditDialog::loadEntry(int rowID) {}
+void FlightLogEntryEditDialog::loadEntry(int event_row_id)
+{
+    const auto flight_data = DB->getFlightData(event_row_id);
+    const auto logEntry    = flight_data.logEntry();
+    const auto flightEntry = flight_data.flightEntry();
+
+    DEB << "Log Entry:" << *logEntry;
+    DEB << "Flight Entry: " << *flightEntry;
+    DEB << "Movements: " << *flight_data.movementEntries();
+
+    m_eventId = event_row_id;
+
+    dateEdit->setDate(logEntry->getDate());
+    deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDepartureId()));
+    destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDestinationId()));
+    timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOffBlocksMs()));
+    timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOnBlocksMs()));
+    registrationLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(flightEntry->getTailId()));
+    picLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getPicId()));
+    sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getSecondPilotId()));
+    flightNumberLineEdit->setText(flightEntry->getFlightNumber());
+    remarksTextEdit->setPlainText(logEntry->getRemarks());
+
+    // Movements
+    takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
+    landingCountSpinBox->setValue(flight_data.getLandingCount());
+
+    // Segment Data
+    {
+        const QSignalBlocker b(pilotFlyingCheckBox);
+        pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
+    }
+    flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
+    pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
+}
 
 bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 
@@ -161,7 +196,7 @@ void FlightLogEntryEditDialog::init()
     // buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
-    
+
     // Save some line edits for later use
     m_locationLineEdits.resize(2);
     m_locationLineEdits[0] = deptLineEdit;
@@ -169,7 +204,6 @@ void FlightLogEntryEditDialog::init()
     m_nameLineEdits.resize(2);
     m_nameLineEdits[0] = picLineEdit;
     m_nameLineEdits[1] = sicLineEdit;
-
 
     setTabOrder({datePushButton, dateEdit, deptLineEdit, destLineEdit, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationLineEdit, picLineEdit,
@@ -179,6 +213,7 @@ void FlightLogEntryEditDialog::init()
     retranslateUi();
     setupValidationAndCompletion();
     setupSlots();
+    readSettings();
     dateEdit->setFocus();
 }
 
@@ -276,10 +311,28 @@ void FlightLogEntryEditDialog::setupSlots()
             lineEdit->setText(lineEdit->text().toUpper());
         });
     }
+    // Calculate Block Time when time edit is changed
+    connect(timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
+        const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
+            OPL::Time::blockTimeMs(timeOffEdit->time(), timeOnEdit->time()));
+        totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
+    });
+    connect(timeOnEdit, &QTimeEdit::timeChanged, this, [this]() {
+        const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
+            OPL::Time::blockTimeMs(timeOffEdit->time(), timeOnEdit->time()));
+        totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
+    });
 
     // Add Take Off and Landing when Pilot Flying
     connect(pilotFlyingCheckBox, &QCheckBox::checkStateChanged, this,
             &FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged);
+}
+
+void FlightLogEntryEditDialog::readSettings()
+{
+    pilotFunctionComboBox->setCurrentIndex(static_cast<int>(Settings::getPilotFunction()));
+    flightRulesComboBox->setCurrentIndex(Settings::getLogIfr());
+    flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
 }
 
 // Slots

@@ -77,8 +77,6 @@ class FlightLogEntry : public Row {
         EVENT_ID,  DEPARTURE,   DESTINATION, T_OFF_BLOCK, T_ON_BLOCK,    PILOT_PIC,
         PILOT_TWO, PILOT_THREE, PILOT_FOUR,  TAIL,        FLIGHT_NUMBER,
     };
-
-    LogEntry m_logEntry;
 };
 
 } // namespace OPL

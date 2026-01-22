@@ -23,11 +23,10 @@ Row::Row(DbTable table_name, const QList<QString> *fields)
     : m_table(table_name), m_fields(fields), m_rowId(0)
 {
     // make sure all fields are correctly initialized to NULL
-    const QVariant null = QVariant(QMetaType(QMetaType::QString));
     m_rowData.reserve(m_fields->size());
 
     for (const auto &field : *m_fields) {
-        m_rowData.insert(field, null);
+        m_rowData.insert(field, OPL::NullData);
     }
 }; // Used for a new entry
 

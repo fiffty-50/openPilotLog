@@ -126,6 +126,7 @@ class ANotificationHandler {
 }; // class ANotificationHandler
 
 using RowData_T = QHash<QString, QVariant>;
+inline const QVariant NullData{QMetaType(QMetaType::QString)};
 
 struct ToLdgCount_T {
     int toDay;

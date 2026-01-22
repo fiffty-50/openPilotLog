@@ -99,10 +99,17 @@ bool LogEntry::setDate(const QDate &date)
     m_rowData.insert(DATE, date_jd);
     return true;
 }
+bool LogEntry::setRemarks(const QString &remarks)
+{
+    m_rowData.insert(REMARKS, remarks);
+    return true;
+}
 
 // Getters
 QString LogEntry::getEventType() const { return m_rowData.value(EVENT_TYPE).toString(); }
 
 QDate LogEntry::getDate() const { return QDate::fromJulianDay(m_rowData.value(DATE).toInt()); }
+
+QString LogEntry::getRemarks() const { return m_rowData.value(REMARKS).toString(); }
 
 } // namespace OPL
