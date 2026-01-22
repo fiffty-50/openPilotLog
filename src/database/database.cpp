@@ -263,32 +263,61 @@ bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
 
 bool Database::exists(const OPL::Row &row)
 {
-    if (row.getRowId() == 0) return false;
+    // if (row.getRowId() == 0) return false;
 
-    // Check database for row id
-    QString statement = QLatin1String("SELECT COUNT(*) FROM ") +
-                        OPL::GLOBALS->getDbTableName(row.getTable()) +
-                        QLatin1String(" WHERE ROWID=?");
+    // // Check database for row id
+    // QString statement = QLatin1String("SELECT COUNT(*) FROM ") +
+    //                     OPL::GLOBALS->getDbTableName(row.getTable()) +
+    //                     QLatin1String(" WHERE ROWID=?");
+    // QSqlQuery query;
+    // query.prepare(statement);
+    // query.addBindValue(row.getRowId());
+    // query.setForwardOnly(true);
+    // query.exec();
+    // // this returns either 1 or 0 since row ids are unique
+    // if (!query.isActive()) {
+    //     lastError = query.lastError();
+    //     DEB << "Query Error: " << query.lastError().text() << statement;
+    //     return false;
+    // }
+    // query.next();
+    // int rowId = query.value(0).toInt();
+    // if (rowId) {
+    //     return true;
+    // }
+    // else {
+    //     LOG << "Database entry not found.";
+    //     return false;
+    // }
+    const int row_id = row.getRowId();
+    if (row_id == 0) return false;
+
+    QString statement =
+        "SELECT 1 FROM " + OPL::GLOBALS->getDbTableName(row.getTable()) + " WHERE ROWID=? LIMIT 1";
+
     QSqlQuery query;
     query.prepare(statement);
-    query.addBindValue(row.getRowId());
-    query.setForwardOnly(true);
-    query.exec();
-    // this returns either 1 or 0 since row ids are unique
-    if (!query.isActive()) {
-        lastError = query.lastError();
-        DEB << "Query Error: " << query.lastError().text() << statement;
-        return false;
-    }
-    query.next();
-    int rowId = query.value(0).toInt();
-    if (rowId) {
-        return true;
-    }
-    else {
-        LOG << "Database entry not found.";
-        return false;
-    }
+    query.addBindValue(row_id);
+
+    if (!query.exec()) return false;
+
+    return query.next(); // true only if a row exists
+}
+
+bool Database::exists(DbTable table, int row_id)
+{
+    if (row_id == 0) return false;
+
+    QString statement =
+        "SELECT 1 FROM " + OPL::GLOBALS->getDbTableName(table) + " WHERE ROWID=? LIMIT 1";
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row_id);
+
+    if (!query.exec()) return false;
+
+    return query.next(); // true only if a row exists
 }
 
 bool Database::clear()

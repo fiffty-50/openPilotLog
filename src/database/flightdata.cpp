@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightdata.h"
+#include "src/database/database.h"
 #include "src/database/flightsegmententry.h"
 namespace OPL {
 
@@ -119,6 +120,100 @@ bool FlightData::isMultiPilot() const
         return false;
     }
     return m_segments.first().isMultiPilot();
+}
+
+QList<RowData_T> FlightData::getData(DataType data_type, int event_id)
+{
+    QString statement;
+
+    switch (data_type) {
+    case Segments:
+        statement = QStringLiteral("SELECT * FROM flight_segments WHERE flight_id = ?");
+        break;
+    case Movements:
+        statement = QStringLiteral("SELECT * FROM movement_events WHERE event_id = ?");
+        break;
+    case Approaches:
+        LOG << "Approaches not yet implemented";
+        assert(false);
+        break;
+    }
+
+    QSqlQuery q;
+    q.prepare(statement);
+    q.addBindValue(event_id);
+    q.setForwardOnly(true);
+
+    if (!q.exec()) {
+        DEB << "SQL error: " << q.lastError().text();
+        DEB << "Statement: " << q.lastQuery();
+        return {};
+    }
+
+    QList<RowData_T> result;
+
+    while (q.next()) {
+        auto r = q.record();
+        if (r.count() == 0) continue;
+
+        RowData_T entry_data;
+        for (int i = 0; i < r.count(); i++) {
+            if (!r.value(i).isNull()) {
+                entry_data.insert(r.fieldName(i), r.value(i));
+            }
+        }
+
+        if (!entry_data.isEmpty()) {
+            result.append(entry_data);
+        }
+    }
+
+    return result;
+}
+
+// database
+std::optional<FlightData> FlightData::getFlightData(int event_id)
+{
+    const auto log_data = DB->getRowData(OPL::DbTable::v2LogEvents, event_id);
+    if (log_data.isEmpty()) {
+        LOG << QStringLiteral("Unable to retreive data - no log event found for event_id: ")
+            << event_id;
+        return std::nullopt;
+    }
+
+    // Get Log Event
+    const auto log_entry = OPL::LogEntry(event_id, log_data);
+
+    // Get FlightLogEntry
+    const auto flight_data =
+        DB->getRowData(DbTable::v2Flights, QStringLiteral("event_id"), event_id);
+    if (flight_data.isEmpty()) {
+        LOG << QStringLiteral("Unable to retreive data - no flight found for event_id: ")
+            << event_id;
+        return std::nullopt;
+    }
+    const auto flight_entry =
+        OPL::FlightLogEntry(flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
+
+    // get Flight Segment Data
+    QList<FlightSegmentEntry> segments;
+    for (const auto &data : getData(Segments, event_id)) {
+        segments.append(OPL::FlightSegmentEntry(event_id, data));
+    }
+    if (segments.isEmpty()) {
+        LOG << QStringLiteral("Unable to retreive data - no segment data found for event_id: ")
+            << event_id;
+        return std::nullopt;
+    }
+
+    // get Movement Events
+    QList<MovementEntry> movements;
+    for (const auto &data : getData(Movements, event_id)) {
+        movements.append(OPL::MovementEntry(event_id, data));
+    }
+
+    // Create and Return the FlightData object - movements may be empty but it is not required
+    return FlightData(log_entry, flight_entry, segments, movements);
 }
 
 } // namespace OPL

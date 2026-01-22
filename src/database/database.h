@@ -153,6 +153,11 @@ class Database : public QObject {
     bool exists(const OPL::Row &row);
 
     /*!
+     * \brief Checks if an entry exists in the database
+     */
+    bool exists(OPL::DbTable table, int row_id);
+
+    /*!
      * \brief clear resets the database, i.e. deletes all content in the tables containing
      * userdata (pilots, flights, tails)
      */

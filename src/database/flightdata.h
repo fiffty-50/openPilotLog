@@ -47,6 +47,11 @@ class FlightData {
                const QList<FlightSegmentEntry> &segments, const QList<MovementEntry> &movements);
     // FlightData(const LogEntry &log_entry, const FlightLogEntry &flight_entry, const
     // QList<MovementEntry> &movements, const QList<Approachentry> &approaches);
+    /*!
+     * \brief collect flight data for the given event ID from the database
+     * \return Flight Data from the Database or std::nullopt if the entry does not exist
+     */
+    static std::optional<FlightData> getFlightData(int event_id);
 
     const LogEntry *logEntry() const { return &m_log_entry; }
     const FlightLogEntry *flightEntry() const { return &m_flight_entry; }
@@ -99,11 +104,16 @@ class FlightData {
     bool isMultiPilot() const;
 
   private:
+    // flight data
     const LogEntry m_log_entry;
     const FlightLogEntry m_flight_entry;
     const QList<FlightSegmentEntry> m_segments;
     const QList<MovementEntry> m_movements;
     // const QList<ApproachEntry> m_approach_entries;
+
+    // logic for database interface
+    enum DataType { Segments, Movements, Approaches };
+    static QList<OPL::RowData_T> getData(DataType data_type, int event_id);
 };
 
 } // namespace OPL

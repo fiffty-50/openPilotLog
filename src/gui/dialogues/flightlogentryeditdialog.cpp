@@ -30,39 +30,92 @@ FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent) : EntryEditD
 
 void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 {
-    const auto flight_data = DB->getFlightData(event_row_id);
-    const auto logEntry    = flight_data.logEntry();
-    const auto flightEntry = flight_data.flightEntry();
+    // Try to load the flight data
+    if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
+        m_eventId = event_row_id;
 
-    DEB << "Log Entry:" << *logEntry;
-    DEB << "Flight Entry: " << *flightEntry;
-    DEB << "Movements: " << *flight_data.movementEntries();
+        const auto &flight_data = *flightOpt;
+        const auto &log_entry    = *flight_data.logEntry();
+        const auto &flight_entry = *flight_data.flightEntry();
 
-    m_eventId = event_row_id;
+        DEB << "Log Entry:" << log_entry;
+        DEB << "Flight Entry:" << flight_entry;
+        DEB << "Movements:" << *flight_data.movementEntries();
 
-    dateEdit->setDate(logEntry->getDate());
-    deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDepartureId()));
-    destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDestinationId()));
-    timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOffBlocksMs()));
-    timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOnBlocksMs()));
-    registrationLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(flightEntry->getTailId()));
-    picLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getPicId()));
-    sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getSecondPilotId()));
-    flightNumberLineEdit->setText(flightEntry->getFlightNumber());
-    remarksTextEdit->setPlainText(logEntry->getRemarks());
+        // Populate UI fields
+        dateEdit->setDate(log_entry.getDate());
+        deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao)
+                                  .value(flight_entry.getDepartureId()));
+        destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao)
+                                  .value(flight_entry.getDestinationId()));
+        timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
+        timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
+        registrationLineEdit->setText(
+            DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations)
+                .value(flight_entry.getTailId()));
+        picLineEdit->setText(
+            DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flight_entry.getPicId()));
+        sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames)
+                                 .value(flight_entry.getSecondPilotId()));
+        flightNumberLineEdit->setText(flight_entry.getFlightNumber());
+        remarksTextEdit->setPlainText(log_entry.getRemarks());
 
-    // Movements
-    takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
-    landingCountSpinBox->setValue(flight_data.getLandingCount());
+        // Movements
+        takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
+        landingCountSpinBox->setValue(flight_data.getLandingCount());
 
-    // Segment Data
-    {
-        const QSignalBlocker b(pilotFlyingCheckBox);
-        pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
+        // Segment Data
+        {
+            const QSignalBlocker b(pilotFlyingCheckBox);
+            pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
+        }
+        flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
+        pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
     }
-    flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
-    pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
+    else {
+        // Flight not found
+        WARN("Unable to load Flight with Log Event Id: " + QString::number(event_row_id));
+    }
 }
+// {
+//     if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
+//         // flightOpt is valid
+//         m_eventId = event_row_id;
+//         const auto &flight_data = *flightOpt;
+//         const auto logEntry    = flight_data.logEntry();
+//         const auto flightEntry = flight_data.flightEntry();
+
+//         DEB << "Log Entry:" << *logEntry;
+//         DEB << "Flight Entry: " << *flightEntry;
+//         DEB << "Movements: " << *flight_data.movementEntries();
+
+//         dateEdit->setDate(logEntry->getDate());
+//         deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDepartureId()));
+//         destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDestinationId()));
+//         timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOffBlocksMs()));
+//         timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOnBlocksMs()));
+//         registrationLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(flightEntry->getTailId()));
+//         picLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getPicId()));
+//         sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getSecondPilotId()));
+//         flightNumberLineEdit->setText(flightEntry->getFlightNumber());
+//         remarksTextEdit->setPlainText(logEntry->getRemarks());
+
+//                // Movements
+//         takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
+//         landingCountSpinBox->setValue(flight_data.getLandingCount());
+
+//                // Segment Data
+//         {
+//             const QSignalBlocker b(pilotFlyingCheckBox);
+//             pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
+//         }
+//         flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
+//         pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
+//     } else {
+//         // flight not found
+//         WARN("Unable to load Flight with Log Event Id: " + QString::number(event_row_id));
+//     }
+// }
 
 bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 
