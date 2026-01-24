@@ -45,6 +45,16 @@ class EntryEditDialog : public QDialog {
      */
     virtual bool deleteEntry(int rowID) = 0;
 
+    /*!
+     * \brief Return the row id of the currently edited entry.
+     * \details If a new entry is being created, the row id of that new entry is 0.
+     * Once it has been successfully submitted to the database, its row id is created
+     * and can be retreived with this function. 
+     *
+     * If an already existing entry is being edited, its row id can be retreived at any time.
+     * */
+    int getRowId() const { return m_rowId; }
+
   protected:
     int m_rowId;
 };

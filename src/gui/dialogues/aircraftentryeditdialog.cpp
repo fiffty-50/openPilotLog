@@ -17,6 +17,7 @@
  */
 #include "aircraftentryeditdialog.h"
 #include "src/database/database.h"
+#include "src/opl.h"
 
 AircraftEntryEditDialog::AircraftEntryEditDialog(QWidget *parent) : EntryEditDialog(0, parent)
 {
@@ -250,8 +251,8 @@ void AircraftEntryEditDialog::on_accepted()
                 "occurred:<br>%1")
                  .arg(DB->lastError.text()));
         return;
-    }
-    else {
+    } else {
+        m_rowId = DB->getLastEntry(OPL::DbTable::Aircraft);
         QDialog::accept();
     }
 }

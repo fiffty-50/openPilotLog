@@ -2,6 +2,11 @@
 #define FLIGHTLOGENTRYEDITDIALOG_H
 
 #include "entryeditdialog.h"
+#include "src/database/databasecache.h"
+#include "src/database/flightdata.h"
+#include "src/gui/dialogues/airportentryeditdialog.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
+#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/opl.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -16,6 +21,8 @@
 #include <QTimeEdit>
 #include <qtmetamacros.h>
 
+using MapType = OPL::DatabaseCache::MapType;
+
 class FlightLogEntryEditDialog : public EntryEditDialog {
   public:
     explicit FlightLogEntryEditDialog(QWidget *parent = nullptr);
@@ -23,11 +30,21 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     bool deleteEntry(int rowID);
 
   private:
+    // dialog setup
     void init();
     void retranslateUi();
     void setupValidationAndCompletion();
     void setupSlots();
     void readSettings();
+
+    // dialog flow
+    bool validateUserInput(QLineEdit *line_edit);
+    bool userWantsToAddNewDatabaseElement(QLineEdit *caller);
+    bool addNewDatabaseElement(QLineEdit *caller);
+
+    // data collection and verification
+    // create FlighDataBuilder
+    bool runSanityChecks();
 
     // UI Elements
     QGridLayout *gridLayout;
@@ -70,15 +87,17 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
 
     QList<QLineEdit *> m_nameLineEdits;
     QList<QLineEdit *> m_locationLineEdits;
+    QHash<QLineEdit *, OPL::DbTable> m_line_edit_table_map;
+    QHash<QLineEdit *, std::function<bool(const QString &)>> m_line_edit_validators;
 
     int m_eventId = 0;
+    const QString m_dateFormatString;
+    const QString m_timeFormatString;
 
   private slots:
     void on_accepted();
 
-    void on_locationLineEdit_editingFinished(QLineEdit *caller, QLabel *displayLabel);
-    void on_registrationLineEdit_editingFinished();
-    void on_pilotNameLineEdit_editingFinished(QLineEdit *caller);
+    void on_table_line_edit_editingFinished(QLineEdit *caller);
     void on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state);
     void inline on_badInputReceived(QWidget *caller)
     {

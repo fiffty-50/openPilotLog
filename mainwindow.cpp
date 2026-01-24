@@ -27,6 +27,7 @@
 #include "src/gui/dialogues/simentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
+#include "src/gui/widgets/flightsegmenteditorwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
@@ -271,4 +272,9 @@ void MainWindow::debug()
     auto dialog = new FlightLogEntryEditDialog(this);
     dialog->loadEntry(1);
     dialog->exec();
+    // auto data = OPL::FlightData::getFlightData(1);
+
+    // auto widget = new FlightSegmentEditorWidget();
+    // widget->loadSegments(*data->flightSegments());
+    // widget->show();
 }

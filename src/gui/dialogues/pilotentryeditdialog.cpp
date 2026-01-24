@@ -192,6 +192,7 @@ void PilotEntryEditDialog::submitForm()
         return;
     }
     else {
+        m_rowId = DB->getLastEntry(OPL::DbTable::v2Pilots);
         QDialog::accept();
     }
 }

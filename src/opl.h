@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QMessageBox>
 #include <QtCore>
+#include <qobject.h>
 
 #define APPNAME QStringLiteral("openPilotLog")
 #define ORGNAME QStringLiteral("opl")
@@ -93,6 +94,11 @@ const static auto STUB_AIRCRAFT_REG = QLatin1String("XX-XXX");
  * \brief The decimal seperator used internally
  */
 constexpr static char DECIMAL_SEPERATOR = '.';
+
+/*!
+ * \brief The logbook owner has ROWID 1 in the pilots table
+ */
+constexpr static int LOGBOOK_OWNER_ID = 1;
 
 /*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
@@ -304,6 +310,11 @@ class OplGlobals : public QObject {
     }
     inline const QStringList getDbTableNames() const { return DB_TABLES.values(); }
 
+    inline const QMap<PilotFunction, QString> *getPilotFunctions() const
+    {
+        return &PILOT_FUNCTIONS;
+    }
+
   private:
     Q_OBJECT
     const static inline QMap<Translation, QString> L10N_FilePaths{
@@ -468,5 +479,8 @@ const inline auto RX_AIRPORT_CODE = QRegularExpression(QStringLiteral("[a-zA-Z0-
 } // namespace RegEx
 
 } // namespace OPL
+
+// Types must be declared at global scope
+Q_DECLARE_METATYPE(OPL::PilotFunction);
 
 #endif // OPLCONSTANTS_H

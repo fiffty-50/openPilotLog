@@ -89,6 +89,8 @@ set(PROJECT_SOURCES
 
     src/gui/widgets/databaseeditwidget.h
     src/gui/widgets/databaseeditwidget.cpp
+    src/gui/widgets/flightsegmenteditorwidget.h
+    src/gui/widgets/flightsegmenteditorwidget.cpp
 
     # Verification
     src/gui/verification/validationstate.h
@@ -174,6 +176,10 @@ set(PROJECT_SOURCES
     src/database/simlogentry.cpp
     src/database/movemententry.h
     src/database/movemententry.cpp
+    src/database/flightsegmententry.h
+    src/database/flightsegmententry.cpp
+    src/database/approachentry.h
+    src/database/approachentry.cpp
 
     src/database/flightdata.h
     src/database/flightdata.cpp
@@ -291,7 +297,6 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
-         src/database/flightsegmententry.h src/database/flightsegmententry.cpp
      )
     endif()
 endif()

@@ -304,6 +304,7 @@ void TailEntryEditDialog::on_buttonBox_accepted()
         return;
     }
     else {
+        m_rowId = DB->getLastEntry(OPL::DbTable::v2AircraftTails);
         emit tailDataChanged();
         QDialog::accept();
     }

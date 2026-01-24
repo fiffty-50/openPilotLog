@@ -19,8 +19,10 @@ void OplGlobals::fillViewNamesComboBox(QComboBox *combo_box) const
 void OplGlobals::loadPilotFunctions(QComboBox *combo_box) const
 {
     const QSignalBlocker blocker(combo_box);
-    for (const auto &pilot_function : PILOT_FUNCTIONS)
-        combo_box->addItem(pilot_function);
+
+    for (auto it = PILOT_FUNCTIONS.cbegin(); it != PILOT_FUNCTIONS.cend(); ++it) {
+        combo_box->addItem(it.value(), QVariant::fromValue(it.key()));
+    }
 }
 
 void OplGlobals::loadSimulatorTypes(QComboBox *combo_box) const

@@ -64,7 +64,7 @@ QTime FlightData::getBlockTime() const
     int block_time_ms = 0;
 
     for (const auto &segment : m_segments) {
-        block_time_ms += (segment.endMs() - segment.startMs());
+        block_time_ms += (segment.getEndMs() - segment.getStartMs());
     }
 
     return QTime::fromMSecsSinceStartOfDay(block_time_ms);
@@ -75,7 +75,7 @@ QTime FlightData::getNightTime() const
     int night_time = 0;
     for (const auto &segment : m_segments) {
         if (segment.isNight()) {
-            night_time += (segment.endMs() - segment.startMs());
+            night_time += (segment.getEndMs() - segment.getStartMs());
         }
     }
 
@@ -87,7 +87,7 @@ QString FlightData::pilotFunction() const
     if (m_segments.isEmpty()) {
         return QString();
     }
-    return m_segments.first().pilotFunction();
+    return m_segments.first().getPilotFunction();
 }
 
 bool FlightData::isPilotFlying() const

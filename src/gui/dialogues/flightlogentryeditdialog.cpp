@@ -1,10 +1,14 @@
 #include "flightlogentryeditdialog.h"
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
+#include "src/classes/style.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/database/flightlogentry.h"
+#include "src/gui/dialogues/airportentryeditdialog.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
+#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/verification/completerprovider.h"
 #include "src/opl.h"
 #include <QCalendarWidget>
@@ -14,6 +18,7 @@
 #include <qdialog.h>
 #include <qdialogbuttonbox.h>
 #include <qlabel.h>
+#include <qmessagebox.h>
 #include <qnamespace.h>
 #include <qplaintextedit.h>
 #include <qregularexpression.h>
@@ -21,11 +26,14 @@
 #include <qtextformat.h>
 #include <qvalidator.h>
 
-FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent) : EntryEditDialog(parent)
+FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent)
+    : EntryEditDialog(parent), m_dateFormatString(Settings::getDateFormatString()),
+      m_timeFormatString(Settings::getTimeFormatString())
 {
     init();
     retranslateUi();
     setupSlots();
+    readSettings();
 }
 
 void FlightLogEntryEditDialog::loadEntry(int event_row_id)
@@ -34,7 +42,7 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
     if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
         m_eventId = event_row_id;
 
-        const auto &flight_data = *flightOpt;
+        const auto &flight_data  = *flightOpt;
         const auto &log_entry    = *flight_data.logEntry();
         const auto &flight_entry = *flight_data.flightEntry();
 
@@ -44,19 +52,17 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 
         // Populate UI fields
         dateEdit->setDate(log_entry.getDate());
-        deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao)
-                                  .value(flight_entry.getDepartureId()));
-        destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao)
-                                  .value(flight_entry.getDestinationId()));
+        deptLineEdit->setText(
+            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDepartureId()));
+        destLineEdit->setText(
+            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDestinationId()));
         timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
         timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
         registrationLineEdit->setText(
-            DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations)
-                .value(flight_entry.getTailId()));
-        picLineEdit->setText(
-            DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flight_entry.getPicId()));
-        sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames)
-                                 .value(flight_entry.getSecondPilotId()));
+            DBCache->getMap(MapType::TailRegistrations).value(flight_entry.getTailId()));
+        picLineEdit->setText(DBCache->getMap(MapType::PilotNames).value(flight_entry.getPicId()));
+        sicLineEdit->setText(
+            DBCache->getMap(MapType::PilotNames).value(flight_entry.getSecondPilotId()));
         flightNumberLineEdit->setText(flight_entry.getFlightNumber());
         remarksTextEdit->setPlainText(log_entry.getRemarks());
 
@@ -77,45 +83,6 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
         WARN("Unable to load Flight with Log Event Id: " + QString::number(event_row_id));
     }
 }
-// {
-//     if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
-//         // flightOpt is valid
-//         m_eventId = event_row_id;
-//         const auto &flight_data = *flightOpt;
-//         const auto logEntry    = flight_data.logEntry();
-//         const auto flightEntry = flight_data.flightEntry();
-
-//         DEB << "Log Entry:" << *logEntry;
-//         DEB << "Flight Entry: " << *flightEntry;
-//         DEB << "Movements: " << *flight_data.movementEntries();
-
-//         dateEdit->setDate(logEntry->getDate());
-//         deptLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDepartureId()));
-//         destLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportCodesIcao).value(flightEntry->getDestinationId()));
-//         timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOffBlocksMs()));
-//         timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flightEntry->getTimeOnBlocksMs()));
-//         registrationLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(flightEntry->getTailId()));
-//         picLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getPicId()));
-//         sicLineEdit->setText(DBCache->getMap(OPL::DatabaseCache::MapType::PilotNames).value(flightEntry->getSecondPilotId()));
-//         flightNumberLineEdit->setText(flightEntry->getFlightNumber());
-//         remarksTextEdit->setPlainText(logEntry->getRemarks());
-
-//                // Movements
-//         takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
-//         landingCountSpinBox->setValue(flight_data.getLandingCount());
-
-//                // Segment Data
-//         {
-//             const QSignalBlocker b(pilotFlyingCheckBox);
-//             pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
-//         }
-//         flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
-//         pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
-//     } else {
-//         // flight not found
-//         WARN("Unable to load Flight with Log Event Id: " + QString::number(event_row_id));
-//     }
-// }
 
 bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 
@@ -258,6 +225,33 @@ void FlightLogEntryEditDialog::init()
     m_nameLineEdits[0] = picLineEdit;
     m_nameLineEdits[1] = sicLineEdit;
 
+    m_line_edit_table_map = {
+        {deptLineEdit,         OPL::DbTable::v2Airports     },
+        {destLineEdit,         OPL::DbTable::v2Airports     },
+        {picLineEdit,          OPL::DbTable::v2Pilots       },
+        {sicLineEdit,          OPL::DbTable::v2Pilots       },
+        {registrationLineEdit, OPL::DbTable::v2AircraftTails},
+    };
+
+    // Create a map of validation functions for line edits that take user input
+    m_line_edit_validators = {
+        {deptLineEdit,
+         [this](auto text) {
+             return DBCache->getMultiMap(MapType::AirportCodesAll).contains(text);
+         }                                                                                   },
+        {destLineEdit,
+         [this](auto text) {
+             return DBCache->getMultiMap(MapType::AirportCodesAll).contains(text);
+         }                                                                                   },
+        {picLineEdit,
+         [this](auto text) { return DBCache->getKeyMap(MapType::PilotNames).contains(text); }},
+        {sicLineEdit,
+         [this](auto text) { return DBCache->getKeyMap(MapType::PilotNames).contains(text); }},
+        {registrationLineEdit, [this](auto text) {
+             return DBCache->getKeyMap(MapType::TailRegistrations).contains(text);
+         }                                                     }
+    };
+
     setTabOrder({datePushButton, dateEdit, deptLineEdit, destLineEdit, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationLineEdit, picLineEdit,
                  sicLineEdit, flightNumberLineEdit, pilotFlyingCheckBox, takeOffCountSpinBox,
@@ -295,7 +289,7 @@ void FlightLogEntryEditDialog::retranslateUi()
 void FlightLogEntryEditDialog::setupValidationAndCompletion()
 {
     // Setup Widegts
-    dateEdit->setDisplayFormat(Settings::getDateFormatString());
+    dateEdit->setDisplayFormat(m_dateFormatString);
     dateEdit->setCalendarPopup(true);
     dateEdit->setTimeZone(QTimeZone::UTC);
     dateEdit->setMinimumDate(OPL::Date::minimumDate());
@@ -311,8 +305,8 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
 
     takeOffCountSpinBox->setMinimum(0);
     landingCountSpinBox->setMinimum(0);
-    timeOnEdit->setDisplayFormat(Settings::getTimeFormatString());
-    timeOffEdit->setDisplayFormat(Settings::getTimeFormatString());
+    timeOnEdit->setDisplayFormat(m_timeFormatString);
+    timeOffEdit->setDisplayFormat(m_timeFormatString);
 
     OPL::GLOBALS->loadPilotFunctions(pilotFunctionComboBox);
     OPL::GLOBALS->loadFlightRules(flightRulesComboBox);
@@ -337,33 +331,30 @@ void FlightLogEntryEditDialog::setupSlots()
     connect(buttonBox, &QDialogButtonBox::accepted, this, &FlightLogEntryEditDialog::on_accepted);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
+    // User input line edits that contain mandatory inputs need to be verified
     // Registration Line Edit
     connect(registrationLineEdit, &QLineEdit::editingFinished, this,
-            &FlightLogEntryEditDialog::on_registrationLineEdit_editingFinished);
-
+            [this]() { on_table_line_edit_editingFinished(registrationLineEdit); });
     // Pilot Name Line Edits
-    connect(picLineEdit, &QLineEdit::editingFinished, this,
-            [this]() { on_pilotNameLineEdit_editingFinished(picLineEdit); });
-    connect(sicLineEdit, &QLineEdit::editingFinished, this,
-            [this]() { on_pilotNameLineEdit_editingFinished(sicLineEdit); });
-
-    // Location Line Edits
-    connect(deptLineEdit, &QLineEdit::editingFinished, this,
-            [this]() { on_locationLineEdit_editingFinished(deptLineEdit, deptDisplayLabel); });
-    connect(destLineEdit, &QLineEdit::editingFinished, this,
-            [this]() { on_locationLineEdit_editingFinished(destLineEdit, destDisplayLabel); });
-
-    // Change text to upper case for location and acft line edits
+    connect(picLineEdit, &QLineEdit::editingFinished,
+            [this]() { on_table_line_edit_editingFinished(picLineEdit); });
+    connect(sicLineEdit, &QLineEdit::editingFinished,
+            [this]() { on_table_line_edit_editingFinished(sicLineEdit); });
+    // Location Line Edits - also change text toUpper
+    for (const auto &line_edit : std::as_const(m_locationLineEdits)) {
+        connect(line_edit, &QLineEdit::textChanged, this, [this, &line_edit]() {
+            const QSignalBlocker b(line_edit);
+            line_edit->setText(line_edit->text().toUpper());
+        });
+        connect(line_edit, &QLineEdit::editingFinished,
+                [this, &line_edit]() { on_table_line_edit_editingFinished(line_edit); });
+    }
+    // Change text to upper case for acft line edit
     connect(registrationLineEdit, &QLineEdit::textChanged, this, [this]() {
         const QSignalBlocker b(registrationLineEdit);
         registrationLineEdit->setText(registrationLineEdit->text().toUpper());
     });
-    for (const auto &lineEdit : std::as_const(m_locationLineEdits)) {
-        QObject::connect(lineEdit, &QLineEdit::textChanged, this, [this, &lineEdit]() {
-            const QSignalBlocker b(lineEdit);
-            lineEdit->setText(lineEdit->text().toUpper());
-        });
-    }
+
     // Calculate Block Time when time edit is changed
     connect(timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
         const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
@@ -388,73 +379,192 @@ void FlightLogEntryEditDialog::readSettings()
     flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
 }
 
+// Data Collection and Submission
+
+bool FlightLogEntryEditDialog::runSanityChecks()
+{
+    // make sure the pilot function and pilot names make sense
+    int pic_id = DBCache->getKeyMap(MapType::PilotNames).value(picLineEdit->text());
+    int sic_id = DBCache->getKeyMap(MapType::PilotNames).value(sicLineEdit->text());
+
+    if (pic_id == sic_id) {
+        INFO(tr("PIC and SIC names are the same."));
+        return false;
+    }
+
+    QVariant v = pilotFunctionComboBox->currentData();
+    if (!v.canConvert<OPL::PilotFunction>()) {
+        INFO(tr("Invalid pilot function."));
+        return false;
+    }
+    auto function = v.value<OPL::PilotFunction>();
+
+    // if the logbook owner is entered as PIC, he must be the first pilot and vice versa
+    bool ownerIsPic = (pic_id == OPL::LOGBOOK_OWNER_ID);
+    bool functionIsPicCompatible =
+        (function == OPL::PilotFunction::PIC || function == OPL::PilotFunction::FI);
+
+    if (ownerIsPic != functionIsPicCompatible) {
+        INFO(tr("PIC and Pilot Function are inconsistent."));
+        return false;
+    }
+    return true;
+}
+
+bool FlightLogEntryEditDialog::userWantsToAddNewDatabaseElement(QLineEdit *caller)
+{
+    DEB << "Add new Database entry?";
+    assert(m_line_edit_table_map.contains(caller));
+    auto table = m_line_edit_table_map[caller];
+
+    QMessageBox::StandardButton reply;
+    switch (table) {
+    case OPL::DbTable::v2Pilots:
+        reply = QMessageBox::question(
+            this, tr("No Pilot found"),
+            tr("No pilot found.<br>Please enter the Name as"
+               "<br><br><center><b>Lastname, Firstname</b></center><br><br>"
+               "If this is the first time you log a flight with this pilot, "
+               "you have to add the pilot to the database first."
+               "<br><br>Would you like to add a new pilot to the database?"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    case OPL::DbTable::v2AircraftTails:
+        reply = QMessageBox::question(
+            this, tr("No Aircraft found"),
+            tr("No aircraft with this registration found.<br><br>"
+               "If this is the first time you log a flight with this aircraft, "
+               "you have to add the registration to the database first."
+               "<br><br>Would you like to add a new aircraft to the database?"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    case OPL::DbTable::v2Airports:
+        reply = QMessageBox::question(
+            this, tr("No Airport found"),
+            tr("No Airport with this identifier found.<br><br>"
+               "<b>Please verify the input. Airports can be entered with their ICAO or IATA "
+               "code.<br><br></b>"
+               "If this is the first time you log a flight to this airport, "
+               "and it is not yet in the database, "
+               "you have to add the airport to the database first."
+               "<br><br>Would you like to add a new airport to the database?"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
+        break;
+    default:
+        reply = QMessageBox::No;
+        break;
+    }
+
+    DEB << reply;
+
+    return reply == QMessageBox::Yes;
+}
+
+bool FlightLogEntryEditDialog::addNewDatabaseElement(QLineEdit *caller)
+{
+    if (!m_line_edit_table_map.contains(caller)) {
+        return false;
+    }
+    OPL::DbTable table = m_line_edit_table_map.value(caller);
+
+    // Create a Factory for entry edit dialogues associated with the line edits
+    static const QHash<OPL::DbTable, std::function<std::unique_ptr<EntryEditDialog>(QLineEdit *)>>
+        entry_edit_dialog_factory = {
+            {OPL::DbTable::v2Pilots,
+             [](QLineEdit *le) {
+                 return std::make_unique<PilotEntryEditDialog>(le->text(), le->parentWidget());
+             }},
+            {OPL::DbTable::v2AircraftTails,
+             [](QLineEdit *le) {
+                 return std::make_unique<TailEntryEditDialog>(le->text(), le->parentWidget());
+             }},
+            {OPL::DbTable::v2Airports,
+             [](QLineEdit *le) {
+                 return std::make_unique<AirportEntryEditDialog>(le->parentWidget());
+             }},
+    };
+
+    if (!entry_edit_dialog_factory.contains(table)) return false;
+    std::unique_ptr<EntryEditDialog> dlg(entry_edit_dialog_factory[table](caller));
+    bool success = dlg->exec() == QDialog::Accepted;
+
+    // Set the line edits text to the newly created entry
+    QHash<OPL::DbTable, const OPL::IdMap *> id_map = {
+        {OPL::DbTable::v2Pilots,        &DBCache->getMap(MapType::PilotNames)       },
+        {OPL::DbTable::v2AircraftTails, &DBCache->getMap(MapType::TailRegistrations)},
+        {OPL::DbTable::v2Airports,      &DBCache->getMap(MapType::AirportCodesIcao) },
+    };
+    int row_id      = dlg->getRowId();
+    const auto &map = id_map[table];
+
+    if (!map->contains(row_id)) return false;
+    caller->setText(map->value(row_id));
+    return success;
+}
+
+bool FlightLogEntryEditDialog::validateUserInput(QLineEdit *line_edit)
+{
+
+    bool contains = m_line_edit_validators[line_edit](line_edit->text());
+    if (contains) {
+        on_GoodInputReceived(line_edit);
+    }
+    else {
+        on_badInputReceived(line_edit);
+    }
+
+    return contains;
+}
+
 // Slots
+
 void FlightLogEntryEditDialog::on_accepted()
 {
     DEB << "Dialog accepted";
-    QDialog::accept();
+    /*
+    if (flight_data_opt) {
+        const auto &data = *flight_data_opt;
+        if (runSanityChecks()) {
+            if (false) {
+            //if (data.submit();) {
+                QDialog::accept();
+            }
+        }
+    }*/
 }
 
-void FlightLogEntryEditDialog::on_locationLineEdit_editingFinished(QLineEdit *caller,
-                                                                   QLabel *displayLabel)
+void FlightLogEntryEditDialog::on_table_line_edit_editingFinished(QLineEdit *caller)
 {
-
-    const auto &text = caller->text();
-    const auto &airportCodesMap =
-        DBCache->getMultiMap(OPL::DatabaseCache::MapType::AirportCodesAll);
-    const auto &airportNamesIdMap = DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames);
-
-    if (airportCodesMap.contains(text)) {
-        displayLabel->setText(airportNamesIdMap.value(airportCodesMap.value(text)));
-        on_GoodInputReceived(caller);
+    if (caller->text().isEmpty()) {
         return;
     }
 
-    on_badInputReceived(caller);
-}
-void FlightLogEntryEditDialog::on_registrationLineEdit_editingFinished()
-{
-    if (registrationLineEdit->text().isEmpty()) {
+    if (validateUserInput(caller)) {
+        DEB << "Valid input received: " << caller->text();
         return;
     }
 
-    if (DBCache->getKeyMap(OPL::DatabaseCache::MapType::TailRegistrations)
-            .contains(registrationLineEdit->text())) {
-        on_GoodInputReceived(registrationLineEdit);
-        return;
+    // Try to get a completion
+    auto *completer    = caller->completer();
+    QString completion = completer ? completer->currentCompletion() : QString();
+
+    if (completion.isEmpty()) {
+        DEB << "No completion available for: " << caller->text();
+        if (!userWantsToAddNewDatabaseElement(caller)) {
+            return;
+        }
+        if (!addNewDatabaseElement(caller)) {
+            return;
+        }
     }
     else {
-        QString completion = registrationLineEdit->completer()->currentCompletion();
-        if (completion == QString()) {
-            on_badInputReceived(registrationLineEdit);
-            DEB << "Add new Tail entry...";
-            // todo - prompt to add new
-        }
-        registrationLineEdit->setText(completion);
-        return;
-    }
-
-    on_badInputReceived(registrationLineEdit);
-}
-void FlightLogEntryEditDialog::on_pilotNameLineEdit_editingFinished(QLineEdit *caller)
-{
-    if (DBCache->getKeyMap(OPL::DatabaseCache::MapType::PilotNames).contains(caller->text())) {
-        on_GoodInputReceived(caller);
-        return;
-    }
-    else {
-        QString completion = caller->completer()->currentCompletion();
-        if (completion == QString()) {
-            on_badInputReceived(caller);
-            DEB << "Add new Pilot entry...";
-            // todo - prompt to add new
-        }
         caller->setText(completion);
-        return;
     }
 
-    on_badInputReceived(caller);
+    // re-validate
+    validateUserInput(caller);
 }
+
 void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state)
 {
     switch (state) {
