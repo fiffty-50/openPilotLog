@@ -27,7 +27,7 @@
 #include "src/gui/dialogues/simentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
-#include "src/gui/widgets/flightsegmenteditorwidget.h"
+#include "src/gui/verification/qcompleterfactory.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
@@ -112,6 +112,9 @@ void MainWindow::connectDatabase()
 
     // Load Cache
     DBCache->init();
+
+    // Initialise QCompleterFactory
+    QCompleterFactory::init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -168,6 +171,8 @@ void MainWindow::connectWidgets()
     //                 &LogbookTableEditWidget::addSimulatorEntryRequested);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, this,
                      &MainWindow::onStyleChanged);
+
+    // Update QCompleterFactory when database is changed
 }
 
 void MainWindow::onDatabaseInvalid()
@@ -270,7 +275,7 @@ void MainWindow::debug()
     // dbSetup.importTemplateData(false);
 
     auto dialog = new FlightLogEntryEditDialog(this);
-    dialog->loadEntry(1);
+    //dialog->loadEntry(1);
     dialog->exec();
     // auto data = OPL::FlightData::getFlightData(1);
 

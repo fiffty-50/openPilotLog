@@ -15,11 +15,20 @@
  *
  * It is used together with the DiacriticIgnoringStringListModel to enable completion
  * without having to type out diacritic characters.
+ *
+ * For the completer to work as intended the complionRole and model must be set correctly.
+ * It is recommended to use the static builder function getCompleter() to create a new
+ * instance.
+ *
  */
 class DiacriticIgnoringCompleter : public QCompleter
 {
 public:
     using QCompleter::QCompleter;
+    DiacriticIgnoringCompleter(const QStringList &completions, QObject *parent = nullptr)
+      : QCompleter(completions, parent)    {
+      setCompletionRole(Qt::UserRole + 10);
+    }
 
     QString pathFromIndex(const QModelIndex &index) const {
     // needed to use original value when value is selected

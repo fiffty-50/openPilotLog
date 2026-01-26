@@ -4,6 +4,7 @@
 #include "entryeditdialog.h"
 #include "src/database/databasecache.h"
 #include "src/database/flightdata.h"
+#include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
@@ -38,9 +39,8 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     void readSettings();
 
     // dialog flow
-    bool validateUserInput(QLineEdit *line_edit);
-    bool userWantsToAddNewDatabaseElement(QLineEdit *caller);
-    bool addNewDatabaseElement(QLineEdit *caller);
+    bool addNewEntry(DbSelectionComboBox *box);
+    bool addNewDatabaseElement(DbSelectionComboBox *box);
 
     // data collection and verification
     // create FlighDataBuilder
@@ -70,9 +70,9 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     QLineEdit *destLineEdit;
     QTimeEdit *timeOffEdit;
     QTimeEdit *timeOnEdit;
-    QLineEdit *registrationLineEdit;
-    QLineEdit *picLineEdit;
-    QLineEdit *sicLineEdit;
+    DbSelectionComboBox *registrationComboBox;
+    DbSelectionComboBox *picComboBox;
+    DbSelectionComboBox *sicComboBox;
     QLineEdit *flightNumberLineEdit;
     QPushButton *datePushButton;
     QCheckBox *pilotFlyingCheckBox;
@@ -85,19 +85,18 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
 
     QDialogButtonBox *buttonBox;
 
-    QList<QLineEdit *> m_nameLineEdits;
     QList<QLineEdit *> m_locationLineEdits;
-    QHash<QLineEdit *, OPL::DbTable> m_line_edit_table_map;
-    QHash<QLineEdit *, std::function<bool(const QString &)>> m_line_edit_validators;
 
-    int m_eventId = 0;
+    int m_eventId        = 0;
+    bool m_addNewOffered = false; // de-bounce repeated triggering of editing finished by QCompleter
+    bool m_addNewDialogExecuted = false;
+
     const QString m_dateFormatString;
     const QString m_timeFormatString;
 
   private slots:
     void on_accepted();
-
-    void on_table_line_edit_editingFinished(QLineEdit *caller);
+    void on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller);
     void on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state);
     void inline on_badInputReceived(QWidget *caller)
     {

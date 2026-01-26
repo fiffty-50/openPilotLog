@@ -108,7 +108,7 @@ void CompleterProvider::updateModel(CompleterTarget target)
     }
 
     if (newData == nullptr) return;
-
+    DEB << "New data:" << *newData;
     model->setStringList(*newData);
 }
 
