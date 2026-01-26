@@ -1,12 +1,29 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "flightlogentryeditdialog.h"
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
 #include "src/classes/time.h"
 #include "src/database/databasecache.h"
-#include "src/database/flightlogentry.h"
+#include "src/database/flightdata.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
+#include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
-#include "src/gui/verification/qcompleterfactory.h"
 #include "src/opl.h"
 #include <QCalendarWidget>
 #include <QDateEdit>
@@ -15,6 +32,7 @@
 #include <qdialog.h>
 #include <qdialogbuttonbox.h>
 #include <qlabel.h>
+#include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qnamespace.h>
 #include <qplaintextedit.h>
@@ -49,24 +67,30 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 
         // Create Signal Blockers for line edits that run verification logic
         auto setText = [](QLineEdit *line_edit, const QString &text) {
-            QSignalBlocker b(line_edit);
+            //QSignalBlocker b(line_edit);
             line_edit->setText(text);
+        };
+        auto setCurrentText = [](DbSelectionComboBox *box, const QString &text) {
+            //QSignalBlocker b(box);
+            box->setCurrentText(text);
         };
 
         // Populate UI fields
         dateEdit->setDate(log_entry.getDate());
         timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
         timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
-        setText(deptLineEdit,
-                DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDepartureId()));
-        setText(destLineEdit,
-                DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDestinationId()));
-        // setText(registrationLineEdit,
-        // DBCache->getMap(MapType::TailRegistrations).value(flight_entry.getTailId()));
-        // setText(picLineEdit,
-        // DBCache->getMap(MapType::PilotNames).value(flight_entry.getPicId()));
-        // setText(sicLineEdit,
-        // DBCache->getMap(MapType::PilotNames).value(flight_entry.getSecondPilotId()));
+        setCurrentText(
+            deptComboBox,
+            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDepartureId()));
+        setCurrentText(
+            destComboBox,
+            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDestinationId()));
+        setCurrentText(registrationComboBox,
+                       DBCache->getMap(MapType::TailRegistrations).value(flight_entry.getTailId()));
+        setCurrentText(picComboBox,
+                       DBCache->getMap(MapType::PilotNames).value(flight_entry.getPicId()));
+        setCurrentText(sicComboBox,
+                       DBCache->getMap(MapType::PilotNames).value(flight_entry.getSecondPilotId()));
         flightNumberLineEdit->setText(flight_entry.getFlightNumber());
         remarksTextEdit->setPlainText(log_entry.getRemarks());
 
@@ -139,9 +163,9 @@ void FlightLogEntryEditDialog::init()
     // Row
     // Left
     deptLabel        = new QLabel(this);
-    deptLineEdit     = new QLineEdit(this);
+    deptComboBox     = new DbSelectionComboBox(DbSelectionComboBox::AirportCodes, this);
     deptDisplayLabel = new QLabel(this);
-    addLeft(deptLabel, deptLineEdit, deptDisplayLabel);
+    addLeft(deptLabel, deptComboBox, deptDisplayLabel);
 
     // Right
     picLabel    = new QLabel(this);
@@ -151,9 +175,9 @@ void FlightLogEntryEditDialog::init()
     // Row
     // Left
     destLabel        = new QLabel(this);
-    destLineEdit     = new QLineEdit(this);
+    destComboBox     = new DbSelectionComboBox(DbSelectionComboBox::AirportCodes, this);
     destDisplayLabel = new QLabel(this);
-    addLeft(destLabel, destLineEdit, destDisplayLabel);
+    addLeft(destLabel, destComboBox, destDisplayLabel);
 
     // Right
     sicLabel    = new QLabel(this);
@@ -208,7 +232,7 @@ void FlightLogEntryEditDialog::init()
     // Left
     remarksLabel    = new QLabel(this);
     remarksTextEdit = new QPlainTextEdit(this);
-    remarksTextEdit->setMaximumHeight(deptLineEdit->sizeHint().height() * 2);
+    remarksTextEdit->setMaximumHeight(flightNumberLineEdit->sizeHint().height() * 2);
     addLeft(remarksLabel, remarksTextEdit);
 
     // Right
@@ -222,12 +246,7 @@ void FlightLogEntryEditDialog::init()
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
 
-    // Save some line edits for later use
-    m_locationLineEdits.resize(2);
-    m_locationLineEdits[0] = deptLineEdit;
-    m_locationLineEdits[1] = destLineEdit;
-
-    setTabOrder({datePushButton, dateEdit, deptLineEdit, destLineEdit, timeOffEdit, timeOnEdit,
+    setTabOrder({datePushButton, dateEdit, deptComboBox, destComboBox, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationComboBox, picComboBox,
                  sicComboBox, flightNumberLineEdit, pilotFlyingCheckBox, takeOffCountSpinBox,
                  landingCountSpinBox, buttonBox});
@@ -307,6 +326,18 @@ void FlightLogEntryEditDialog::setupSlots()
     connect(sicComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
     // Location Line Edits - also change text toUpper
+    connect(deptComboBox, &DbSelectionComboBox::newValueEntered, this,
+            &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
+    connect(destComboBox, &DbSelectionComboBox::newValueEntered, this,
+            &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
+    connect(deptComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
+        deptDisplayLabel->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames)
+                                      .value(deptComboBox->currentData().toInt()));
+    });
+    connect(destComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
+        destDisplayLabel->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames)
+                                      .value(destComboBox->currentData().toInt()));
+    });
 
     // Calculate Block Time when time edit is changed
     connect(timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
@@ -483,7 +514,6 @@ void FlightLogEntryEditDialog::on_accepted()
 void FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller)
 {
     if (m_addNewOffered) {
-        DEB << "ignoring newValueEntered signal";
         return;
     }
 

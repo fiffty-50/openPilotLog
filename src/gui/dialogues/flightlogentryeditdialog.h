@@ -1,13 +1,26 @@
+/*
+ *openPilotLog - A FOSS Pilot Logbook Application
+ *Copyright (C) 2020-2026 Felix Turowsky
+ *
+ *This program is free software: you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation, either version 3 of the License, or
+ *(at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef FLIGHTLOGENTRYEDITDIALOG_H
 #define FLIGHTLOGENTRYEDITDIALOG_H
 
 #include "entryeditdialog.h"
 #include "src/database/databasecache.h"
-#include "src/database/flightdata.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
-#include "src/gui/dialogues/airportentryeditdialog.h"
-#include "src/gui/dialogues/pilotentryeditdialog.h"
-#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/opl.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -41,6 +54,8 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     // dialog flow
     bool addNewEntry(DbSelectionComboBox *box);
     bool addNewDatabaseElement(DbSelectionComboBox *box);
+    bool m_addNewOffered = false; // de-bounce repeated triggering of editing finished by QCompleter
+    bool m_addNewDialogExecuted = false;
 
     // data collection and verification
     // create FlighDataBuilder
@@ -66,10 +81,10 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     QLabel *takeOffCountLabel;
     QLabel *landingCountLabel;
     QLabel *remarksLabel;
-    QLineEdit *deptLineEdit;
-    QLineEdit *destLineEdit;
     QTimeEdit *timeOffEdit;
     QTimeEdit *timeOnEdit;
+    DbSelectionComboBox *deptComboBox;
+    DbSelectionComboBox *destComboBox;
     DbSelectionComboBox *registrationComboBox;
     DbSelectionComboBox *picComboBox;
     DbSelectionComboBox *sicComboBox;
@@ -88,8 +103,6 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     QList<QLineEdit *> m_locationLineEdits;
 
     int m_eventId        = 0;
-    bool m_addNewOffered = false; // de-bounce repeated triggering of editing finished by QCompleter
-    bool m_addNewDialogExecuted = false;
 
     const QString m_dateFormatString;
     const QString m_timeFormatString;

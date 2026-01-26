@@ -20,14 +20,10 @@
 #include "src/classes/style.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
-#include "src/database/databasesetup.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/flightentryeditdialog.h"
-#include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
-#include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
-#include "src/gui/verification/qcompleterfactory.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
@@ -112,9 +108,6 @@ void MainWindow::connectDatabase()
 
     // Load Cache
     DBCache->init();
-
-    // Initialise QCompleterFactory
-    QCompleterFactory::init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -275,7 +268,7 @@ void MainWindow::debug()
     // dbSetup.importTemplateData(false);
 
     auto dialog = new FlightLogEntryEditDialog(this);
-    //dialog->loadEntry(1);
+    dialog->loadEntry(1);
     dialog->exec();
     // auto data = OPL::FlightData::getFlightData(1);
 
