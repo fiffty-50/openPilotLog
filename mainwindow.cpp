@@ -18,6 +18,7 @@
 #include "mainwindow.h"
 #include "src/classes/settings.h"
 #include "src/classes/style.h"
+#include "src/database/airportinfo.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/gui/dialogues/firstrundialog.h"
@@ -268,11 +269,8 @@ void MainWindow::debug()
     // dbSetup.importTemplateData(false);
 
     auto dialog = new FlightLogEntryEditDialog(this);
-    dialog->loadEntry(1);
+    //dialog->loadEntry(1);
+    DEB << "Airport Data name for rowid 1: " << airportData->nameFromRowId(1);
     dialog->exec();
     // auto data = OPL::FlightData::getFlightData(1);
-
-    // auto widget = new FlightSegmentEditorWidget();
-    // widget->loadSegments(*data->flightSegments());
-    // widget->show();
 }

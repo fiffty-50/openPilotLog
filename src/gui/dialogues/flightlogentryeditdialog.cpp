@@ -25,6 +25,7 @@
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/opl.h"
+#include "src/database/airportinfo.h"
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QTimeEdit>
@@ -67,11 +68,11 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 
         // Create Signal Blockers for line edits that run verification logic
         auto setText = [](QLineEdit *line_edit, const QString &text) {
-            //QSignalBlocker b(line_edit);
+            // QSignalBlocker b(line_edit);
             line_edit->setText(text);
         };
         auto setCurrentText = [](DbSelectionComboBox *box, const QString &text) {
-            //QSignalBlocker b(box);
+            // QSignalBlocker b(box);
             box->setCurrentText(text);
         };
 
@@ -325,18 +326,24 @@ void FlightLogEntryEditDialog::setupSlots()
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
     connect(sicComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
-    // Location Line Edits - also change text toUpper
+
+    // Location Line Edits
     connect(deptComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
     connect(destComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
+    // Display the airport name when the combobox is edited or the popup completer is used
     connect(deptComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
-        deptDisplayLabel->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames)
-                                      .value(deptComboBox->currentData().toInt()));
+        deptDisplayLabel->setText(airportData->nameFromRowId(deptComboBox->currentData().toInt()));
     });
     connect(destComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
-        destDisplayLabel->setText(DBCache->getMap(OPL::DatabaseCache::MapType::AirportNames)
-                                      .value(destComboBox->currentData().toInt()));
+        destDisplayLabel->setText(airportData->nameFromRowId(destComboBox->currentData().toInt()));
+    });
+    connect(deptComboBox, &QComboBox::highlighted, this, [this](int idx) {
+        deptDisplayLabel->setText(airportData->nameFromRowId(deptComboBox->currentData().toInt()));
+    });
+    connect(destComboBox, &QComboBox::highlighted, this, [this](int idx) {
+        destDisplayLabel->setText(airportData->nameFromRowId(idx));
     });
 
     // Calculate Block Time when time edit is changed
@@ -513,19 +520,25 @@ void FlightLogEntryEditDialog::on_accepted()
 
 void FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller)
 {
-    if (m_addNewOffered) {
-        return;
-    }
+    DEB << "Unknown Value entered...";
+    auto debounce = [this]() {
+        QTimer::singleShot(1000, this, [this]() { m_addNewOffered = false; });
+        QTimer::singleShot(1000, this, [this]() { m_addNewDialogExecuted = false; });
+    };
 
-    if (addNewEntry(caller)) {
-        if (!m_addNewDialogExecuted) {
-            addNewDatabaseElement(caller);
-        }
-    }
+    if (m_addNewOffered || m_addNewDialogExecuted) return;
 
-    // de-bounce the second editing finished event caused by the QCompleter coupled with the box
-    QTimer::singleShot(1000, this, [this]() { m_addNewOffered = false; });
-    QTimer::singleShot(1000, this, [this]() { m_addNewDialogExecuted = false; });
+    if (addNewEntry(caller)) addNewDatabaseElement(caller);
+    // const bool new_entry_added = addNewEntry(caller) && addNewDatabaseElement(caller);
+
+    /*
+    if (new_entry_added)
+        on_GoodInputReceived(caller);
+    else
+        on_badInputReceived(caller);
+    */
+
+    debounce();
 }
 
 void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state)

@@ -38,8 +38,13 @@ void DbSelectionComboBox::refresh()
     m_map.clear();
     QSqlQuery q(getQuery(m_completionTarget));
     q.exec();
+    int i = 0;
     while (q.next()) {
         m_map.insert(q.value(1).toString(), q.value(0).toInt());
+        if(i < 5 && m_completionTarget == AirportCodes) {
+            DEB << "Adding to map: " << q.value(1).toString() << " id: " << q.value(0).toInt();
+            i++;
+        }
     }
 
     // Save state, then re-fill the combobox (add rowid to data)
@@ -47,8 +52,11 @@ void DbSelectionComboBox::refresh()
     QString current = currentText();
 
     clear();
+    i = 0;
     for (auto it = m_map.constBegin(); it != m_map.constEnd(); ++it) {
         addItem(it.key(), it.value());
+        if(it.key() == "AYGA" || it.key() == "AYMD")
+            DEB << "Adding to box: " << it.key() << " with data: " << it.value();
     }
 
     setCurrentText(current);
@@ -72,6 +80,13 @@ void DbSelectionComboBox::connectSlots()
 
     // Update the model and completer when the database changes
     connect(DB, &OPL::Database::dataBaseUpdated, this, &DbSelectionComboBox::refresh);
+
+    // Make sure that Completion clears the style Sheet
+    connect(this, &QComboBox::activated, this, [this]() {
+        DEB << "CB activated...";
+        setStyleSheet(QString());
+    });
+    connect(this, &QComboBox::highlighted, this, [this](int idx) { setCurrentIndex(idx); });
 }
 
 void DbSelectionComboBox::on_editingFinished()
@@ -79,12 +94,16 @@ void DbSelectionComboBox::on_editingFinished()
     const auto &text = lineEdit()->text();
 
     if (text.isEmpty()) return;
-    if (m_map.contains(text)) return;
+    if (m_map.contains(text)) {
+        setStyleSheet(QString());
+        return;
+    }
 
     if (completionIsAvailable()) {
         setCurrentText(completer()->currentCompletion());
     }
     else {
+        setStyleSheet(OPL::CssStyles::RED_BORDER);
         emit newValueEntered(this);
     }
 }

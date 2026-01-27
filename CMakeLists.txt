@@ -214,6 +214,14 @@ set(PROJECT_SOURCES
     src/database/databasecache.cpp
 
     src/database/views/logbookviewinfo.h
+    src/database/airportinfo.h
+    src/database/airportinfo.cpp
+    src/database/pilotinfo.h
+    src/database/pilotinfo.cpp
+    src/database/tailregistrationsinfo.h
+    src/database/tailregistrationsinfo.cpp
+    src/database/aircrafttypesinfo.h
+    src/database/aircrafttypesinfo.cpp
 
     # Ressources
     assets/icons.qrc

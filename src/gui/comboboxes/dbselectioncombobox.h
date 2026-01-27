@@ -63,7 +63,7 @@ class DbSelectionComboBox : public QComboBox {
     bool completionIsAvailable();
 
     // value -> row_id
-    QHash<QString, int> m_map;
+    QMap<QString, int> m_map;
     CompletionTarget m_completionTarget;
 
     const static QString getQuery(CompletionTarget target)
