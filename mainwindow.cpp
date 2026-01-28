@@ -16,11 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
+#include "src/calc/greatcircletrack.h"
 #include "src/classes/settings.h"
 #include "src/classes/style.h"
+#include "src/database/airportgeographicalinfo.h"
 #include "src/database/airportinfo.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
+#include "src/functions/calc.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/flightentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
@@ -159,10 +162,10 @@ void MainWindow::connectWidgets()
 {
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, logbookWidget,
                      &LogbookTableEditWidget::viewSelectionChanged);
-    //QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
-    //                 &LogbookTableEditWidget::openEntryEdit);
-    //QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
-    //                 &LogbookTableEditWidget::addSimulatorEntryRequested);
+    // QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
+    //                  &LogbookTableEditWidget::openEntryEdit);
+    // QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
+    //                  &LogbookTableEditWidget::addSimulatorEntryRequested);
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, this,
                      &MainWindow::onStyleChanged);
 
@@ -259,18 +262,62 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-#include "src/gui/dialogues/flightlogentryeditdialog.h"
+#include "src/calc/nighttime.h"
+#include "src/calc/greatcircletrack.h"
+ extern "C" {
+ #include "src/calc/spa.c"
+ #include "src/calc/spa.h"
+ }
+
 void MainWindow::debug()
 {
+    // int pmi_id = 3788;
+    // int fra_id = 337;
+    // LatLon pmi = {airportGeoData->latitude(pmi_id), airportGeoData->longitude(pmi_id)};
+    // LatLon fra = {airportGeoData->latitude(fra_id), airportGeoData->longitude(fra_id)};
 
+    auto pmi = LatLon::fromIcao("LEPA");
+    auto fra = LatLon::fromIcao("EDDF");
+
+    DEB << "Flight from: " << pmi << " to: " << fra;
+
+    double distance_rad = GreatCircleTrack::greatCircleDistanceRadians(pmi, pmi);
+
+    DEB << "Distance (nm): " << (distance_rad * 6371.0088) * 0.5399568; // km->nm = *0.54
+    DEB << "Distance (km): " << (distance_rad * 6371.0088);             // km->nm = *0.54
+
+    auto route = GreatCircleTrack::greatCircleTrack(pmi, pmi, 600000);
+    for(const auto &r : route) {
+        DEB << "Step: " << r.lat << " - " << r.lon;
+    }
     // auto dbSetup = DatabaseSetup();
     // dbSetup.clearDatabase();
     // dbSetup.createTables();
     // dbSetup.importTemplateData(false);
 
-    auto dialog = new FlightLogEntryEditDialog(this);
-    //dialog->loadEntry(1);
-    DEB << "Airport Data name for rowid 1: " << airportData->nameFromRowId(1);
-    dialog->exec();
-    // auto data = OPL::FlightData::getFlightData(1);
+    // auto dialog = new FlightLogEntryEditDialog(this);
+    // dialog->loadEntry(1);
+    //  DEB << "Airport Data name for rowid 1: " << airportData->nameFromRowId(1);
+    //  dialog->exec();
+    //  auto data = OPL::FlightData::getFlightData(1);
+
+    spa_data spa;
+
+    spa.year        = 2026;
+    spa.month       = 1;
+    spa.day         = 27;
+    spa.hour        = 17;
+    spa.minute      = 32;
+    spa.second      = 0;
+    spa.timezone    = 0;
+    spa.delta_ut1   = 0;
+    spa.latitude    = 39.555;
+    spa.longitude   = 2.662;
+    spa.elevation   = 0;
+    spa.pressure    = 1013.25;
+    spa.temperature = 15;
+
+    spa_calculate(&spa);
+
+    DEB << "Elevation (spa) :" << spa.e;
 }

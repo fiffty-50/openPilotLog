@@ -57,6 +57,11 @@ class AircraftTypesInfo : public QObject {
      */
     QString typeString(int type_id);
 
+    /*!
+     * \brief Returns whether a row id exists in the database
+     */
+    bool exists(int type_id) const;
+
   private:
     QHash<QString, int> m_identToId;
     QHash<int, QString> m_idToIdent;

@@ -58,8 +58,8 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     bool m_addNewDialogExecuted = false;
 
     // data collection and verification
-    // create FlighDataBuilder
     bool runSanityChecks();
+    //std::optional<FlightDataBuilder> collectFlightdata() const;
 
     // UI Elements
     QGridLayout *gridLayout;
@@ -97,11 +97,9 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     QSpinBox *takeOffCountSpinBox;
     QSpinBox *landingCountSpinBox;
     QPlainTextEdit *remarksTextEdit;
-
     QDialogButtonBox *buttonBox;
 
     QList<QLineEdit *> m_locationLineEdits;
-
     int m_eventId        = 0;
 
     const QString m_dateFormatString;

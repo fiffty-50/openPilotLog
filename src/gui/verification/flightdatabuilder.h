@@ -15,14 +15,29 @@
  *You should have received a copy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "flightdatabuilder.h"
+#ifndef FLIGHTDATABUILDER_H
+#define FLIGHTDATABUILDER_H
+
+#include <array>
+#include <src/opl.h>
 
 namespace OPL {
 
-FlightDataBuilder::FlightDataBuilder() {}
+class FlightDataBuilder {
+  public:
+    FlightDataBuilder();
 
-// void FlightData::addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland)
-// {
-//     m_movements.append({airport_id, is_landing, is_night, is_autoland });
-// }
+    bool addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland);
+
+  private:
+    using MovementEventData = std::array<int, 4>;
+
+    int m_event_id;
+    QList<MovementEventData> m_movement_event_data;
+    RowData_T m_flight_data;
+    RowData_T m_log_entry_data;
+    // QList<ApproachEvent> m_approaches;
+};
+
 } // namespace OPL
+#endif // FLIGHTDATABUILDER_H

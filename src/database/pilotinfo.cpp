@@ -65,16 +65,18 @@ QString PilotsInfo::dataForPilotId(int pilotId, int column) const
 
 // Getters
 
-QString PilotsInfo::name(int pilotId) { return dataForPilotId(pilotId, COLUMN_NAME); }
+QString PilotsInfo::name(int pilotId) const { return dataForPilotId(pilotId, COLUMN_NAME); }
 
-QString PilotsInfo::alias(int pilotId) { return dataForPilotId(pilotId, COLUMN_ALIAS); }
+QString PilotsInfo::alias(int pilotId) const { return dataForPilotId(pilotId, COLUMN_ALIAS); }
 
-QString PilotsInfo::company(int pilotId) { return dataForPilotId(pilotId, COLUMN_COMPANY); }
+QString PilotsInfo::company(int pilotId) const { return dataForPilotId(pilotId, COLUMN_COMPANY); }
 
-QString PilotsInfo::phone(int pilotId) { return dataForPilotId(pilotId, COLUMN_PHONE); }
+QString PilotsInfo::phone(int pilotId) const { return dataForPilotId(pilotId, COLUMN_PHONE); }
 
-QString PilotsInfo::email(int pilotId) { return dataForPilotId(pilotId, COLUMN_EMAIL); }
+QString PilotsInfo::email(int pilotId) const { return dataForPilotId(pilotId, COLUMN_EMAIL); }
 
-QString PilotsInfo::remarks(int pilotId) { return dataForPilotId(pilotId, COLUMN_REMARKS); }
+QString PilotsInfo::remarks(int pilotId) const { return dataForPilotId(pilotId, COLUMN_REMARKS); }
 
-int PilotsInfo::idFromName(const QString &name) { return m_nameToPilotId.value(name, 0); }
+int PilotsInfo::idFromName(const QString &name) const { return m_nameToPilotId.value(name, 0); }
+
+bool PilotsInfo::exists(int pilot_id) const { return m_pilotIdToRow.contains(pilot_id); }

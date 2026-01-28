@@ -117,6 +117,8 @@ set(PROJECT_SOURCES
 
     src/gui/verification/flightentryparser.h
     src/gui/verification/flightentryparser.cpp
+    src/gui/verification/flightdatabuilder.h
+    src/gui/verification/flightdatabuilder.cpp
 
     # Classes
     src/classes/style.h
@@ -186,8 +188,6 @@ set(PROJECT_SOURCES
 
     src/database/flightdata.h
     src/database/flightdata.cpp
-    src/database/flightdatabuilder.h
-    src/database/flightdatabuilder.cpp
 
     # Namespaces
     src/functions/calc.h
@@ -199,6 +199,15 @@ set(PROJECT_SOURCES
     src/functions/statistics.cpp
     src/functions/datetime.h
     src/functions/datetime.cpp
+
+    # Math
+    src/calc/greatcircletrack.h
+    src/calc/greatcircletrack.cpp
+    src/calc/nighttime.h
+    src/calc/nighttime.cpp
+    src/calc/spa.h # external
+    src/calc/spa.c # external
+
 
 
     # Database
@@ -222,6 +231,8 @@ set(PROJECT_SOURCES
     src/database/tailregistrationsinfo.cpp
     src/database/aircrafttypesinfo.h
     src/database/aircrafttypesinfo.cpp
+    src/database/airportgeographicalinfo.h
+    src/database/airportgeographicalinfo.cpp
 
     # Ressources
     assets/icons.qrc
@@ -250,6 +261,7 @@ set(PROJECT_SOURCES
     src/testing/atimer.cpp
     src/testing/randomgenerator.h
     src/testing/randomgenerator.cpp
+
 )
 
 # This is currently a bit buggy, see
@@ -308,6 +320,7 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
+
      )
     endif()
 endif()

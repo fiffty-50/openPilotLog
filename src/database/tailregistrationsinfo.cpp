@@ -18,6 +18,7 @@
 #include "tailregistrationsinfo.h"
 #include "src/database/database.h"
 #include <QSqlQuery>
+#include <qcoreevent.h>
 
 TailRegistrationsInfo::TailRegistrationsInfo(QObject *parent) : QObject{parent}
 {
@@ -47,12 +48,17 @@ void TailRegistrationsInfo::refresh()
     }
 }
 
-int TailRegistrationsInfo::tailId(const QString &registration)
+int TailRegistrationsInfo::tailId(const QString &registration) const
 {
     return m_registrationToId.value(registration, 0);
 }
 
-QString TailRegistrationsInfo::registration(int tailId)
+QString TailRegistrationsInfo::registration(int tailId) const
 {
     return m_idToRegistration.value(tailId, {});
+}
+
+bool TailRegistrationsInfo::exists(int tail_id) const
+{
+    return m_idToRegistration.contains(tail_id);
 }

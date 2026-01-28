@@ -40,14 +40,19 @@ class TailRegistrationsInfo : public QObject {
     explicit TailRegistrationsInfo(QObject *parent = nullptr);
 
     /*!
+     * \brief Returns whether a row id exists in the database
+     */
+    bool exists(int tail_id) const;
+
+    /*!
      * \brief Returns the tail ID for the given registration.
      */
-    int tailId(const QString &registration);
+    int tailId(const QString &registration) const;
 
     /*!
      * \brief Returns the registration for the given tail ID.
      */
-    QString registration(int tailId);
+    QString registration(int tailId) const;
 
   private:
     QHash<QString, int> m_registrationToId;

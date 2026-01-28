@@ -19,13 +19,15 @@
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
 #include "src/classes/time.h"
+#include "src/database/airportinfo.h"
 #include "src/database/databasecache.h"
 #include "src/database/flightdata.h"
+#include "src/database/pilotinfo.h"
+#include "src/database/tailregistrationsinfo.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/opl.h"
-#include "src/database/airportinfo.h"
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QTimeEdit>
@@ -80,18 +82,11 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
         dateEdit->setDate(log_entry.getDate());
         timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
         timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
-        setCurrentText(
-            deptComboBox,
-            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDepartureId()));
-        setCurrentText(
-            destComboBox,
-            DBCache->getMap(MapType::AirportCodesIcao).value(flight_entry.getDestinationId()));
-        setCurrentText(registrationComboBox,
-                       DBCache->getMap(MapType::TailRegistrations).value(flight_entry.getTailId()));
-        setCurrentText(picComboBox,
-                       DBCache->getMap(MapType::PilotNames).value(flight_entry.getPicId()));
-        setCurrentText(sicComboBox,
-                       DBCache->getMap(MapType::PilotNames).value(flight_entry.getSecondPilotId()));
+        setCurrentText(deptComboBox, airportData->icao(flight_entry.getDepartureId()));
+        setCurrentText(destComboBox, airportData->icao(flight_entry.getDestinationId()));
+        setCurrentText(registrationComboBox, tailsData->registration(flight_entry.getTailId()));
+        setCurrentText(picComboBox, pilotsData->name(flight_entry.getPicId()));
+        setCurrentText(sicComboBox, pilotsData->name(flight_entry.getSecondPilotId()));
         flightNumberLineEdit->setText(flight_entry.getFlightNumber());
         remarksTextEdit->setPlainText(log_entry.getRemarks());
 
@@ -247,6 +242,8 @@ void FlightLogEntryEditDialog::init()
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
 
+    m_locationLineEdits = {deptComboBox->lineEdit(), destComboBox->lineEdit()}; 
+
     setTabOrder({datePushButton, dateEdit, deptComboBox, destComboBox, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationComboBox, picComboBox,
                  sicComboBox, flightNumberLineEdit, pilotFlyingCheckBox, takeOffCountSpinBox,
@@ -306,7 +303,7 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
     OPL::GLOBALS->loadPilotFunctions(pilotFunctionComboBox);
     OPL::GLOBALS->loadFlightRules(flightRulesComboBox);
 
-    // Setup autocompletion and Basic Input Validation
+    // Setup Basic Input Validation for the airport code entries
     for (const auto &line_edit : std::as_const(m_locationLineEdits)) {
         const auto val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
         line_edit->setValidator(val);
@@ -342,9 +339,8 @@ void FlightLogEntryEditDialog::setupSlots()
     connect(deptComboBox, &QComboBox::highlighted, this, [this](int idx) {
         deptDisplayLabel->setText(airportData->nameFromRowId(deptComboBox->currentData().toInt()));
     });
-    connect(destComboBox, &QComboBox::highlighted, this, [this](int idx) {
-        destDisplayLabel->setText(airportData->nameFromRowId(idx));
-    });
+    connect(destComboBox, &QComboBox::highlighted, this,
+            [this](int idx) { destDisplayLabel->setText(airportData->nameFromRowId(idx)); });
 
     // Calculate Block Time when time edit is changed
     connect(timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
@@ -529,15 +525,6 @@ void FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered(DbSelecti
     if (m_addNewOffered || m_addNewDialogExecuted) return;
 
     if (addNewEntry(caller)) addNewDatabaseElement(caller);
-    // const bool new_entry_added = addNewEntry(caller) && addNewDatabaseElement(caller);
-
-    /*
-    if (new_entry_added)
-        on_GoodInputReceived(caller);
-    else
-        on_badInputReceived(caller);
-    */
-
     debounce();
 }
 

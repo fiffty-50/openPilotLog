@@ -38,40 +38,45 @@ class PilotsInfo : public QObject {
   public:
     explicit PilotsInfo(QObject *parent = nullptr);
 
+   /*!
+     * \brief Returns whether a row id exists in the database
+     */
+    bool exists(int pilot_id) const;
+
     /*!
      * \brief Returns the pilot name for the given pilot ID.
      */
-    QString name(int pilotId);
+    QString name(int pilotId) const;
 
     /*!
      * \brief Returns the alias for the given pilot ID.
      */
-    QString alias(int pilotId);
+    QString alias(int pilotId) const;
 
     /*!
      * \brief Returns the company for the given pilot ID.
      */
-    QString company(int pilotId);
+    QString company(int pilotId) const;
 
     /*!
      * \brief Returns the phone number for the given pilot ID.
      */
-    QString phone(int pilotId);
+    QString phone(int pilotId) const;
 
     /*!
      * \brief Returns the email address for the given pilot ID.
      */
-    QString email(int pilotId);
+    QString email(int pilotId) const;
 
     /*!
      * \brief Returns the remarks for the given pilot ID.
      */
-    QString remarks(int pilotId);
+    QString remarks(int pilotId) const;
 
     /*!
      * \brief Returns the pilot ID for the given pilot name.
      */
-    int idFromName(const QString &name);
+    int idFromName(const QString &name) const;
 
   private:
     QSqlTableModel *m_model = nullptr;

@@ -227,8 +227,10 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest,
                                   const QDateTime &departureTime, int tblk, int night_angle)
 {
 
-    const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '") +
-                              dept + QLatin1String("' OR icao = '") + dest + QLatin1String("'");
+    // const QString statement = QLatin1String("SELECT lat, long FROM airports WHERE icao = '") +
+    //                           dept + QLatin1String("' OR icao = '") + dest + QLatin1String("'");
+    const QString statement =
+        "SELECT latitude, longitude FROM airports WHERE airport_id = 337 OR airport_id = 3788";
     auto lat_lon = DB->customQuery(statement, 2);
 
     double dept_lat;
@@ -261,6 +263,7 @@ int OPL::Calc::calculateNightTime(const QString &dept, const QString &dest,
     QVector<QVector<double>> route =
         intermediatePointsOnGreatCircle(dept_lat, dept_lon, dest_lat, dest_lon, tblk);
     for (int i = 0; i < tblk; i++) {
+        DEB << "Old: lat/long: " << route[i][0] << " / " << route[i][1];
         if (solarElevation(departureTime.addSecs(60 * i), route[i][0], route[i][1]) < night_angle) {
             night_time++;
         }

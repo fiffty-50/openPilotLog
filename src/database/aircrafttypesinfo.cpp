@@ -59,3 +59,5 @@ void AircraftTypesInfo::refresh()
 int AircraftTypesInfo::id(const QString &type_string) { return m_identToId.value(type_string, 0); }
 
 QString AircraftTypesInfo::typeString(int type_id) { return m_idToIdent.value(type_id, {}); }
+
+bool AircraftTypesInfo::exists(int type_id) const { return m_idToIdent.contains(type_id); }
