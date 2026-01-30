@@ -269,7 +269,7 @@ void SettingsWidget::on_aboutPushButton_clicked()
 
             "<h3><center>About</center></h3>"
             "<br>"
-            "&#169; 2020 - 2022 Felix Turowsky"
+            "&#169; 2020 - 2026 Felix Turowsky"
             "<br>"
             "<p>This is a collaboratively developed Free and Open Source Application. "
             "Visit us <a href=\"https://%1/\">here</a> for more information.</p>"
@@ -293,7 +293,11 @@ void SettingsWidget::on_aboutPushButton_clicked()
             "<br>"
 
             "<p>This program uses <a href=\"http://%4/\">Qt</a> version %5 and "
-            "<a href=\"https://%6/\">SQLite</a> version %7</p>")
+            "<a href=\"https://%6/\">SQLite</a> version %7</p>"
+
+            "<p>Night time calculation is performed using the "
+            "<a href=\"https://midcdmz.nrel.gov/spa/\">SPA algorithm</a> based on the NLR technical report "
+            "\"Solar Position Algorithm for Solar Radiation Application\" by I. Reda & A. Andreas.</p>")
             .arg(QStringLiteral("github.com/fiffty-50/openpilotlog"),
                  QStringLiteral("gnu.org/licenses/"), OPL_VERSION_STRING, QStringLiteral("qt.io"),
                  QT_VERSION_STR, QStringLiteral("sqlite.org/about.html"), SQLITE_VERSION);

@@ -18,15 +18,15 @@
 #ifndef NIGHTTIME_H
 #define NIGHTTIME_H
 
-#include "src/opl.h"
+#include "src/calc/latlon.h"
+#include <QDateTime>
 #include <QTime>
 #include <QVector>
-// extern "C" {
-// #include "src/calc/spa.c"
-// #include "src/calc/spa.h"
-// }
+extern "C" {
+#include "src/calc/spa.h"
+}
 
-/**
+/*!
  * @class NightTime
  * @brief Provides functionality to calculate night time during a flight.
  *
@@ -34,54 +34,111 @@
  * using a one-minute resolution along the great circle route between two airports.
  * Night is defined as periods when the sun's elevation is below a configurable threshold.
  *
- * Assumptions:
- * - Standard cruising altitude is 11 km (~FL360).
- * - Night angle (solar elevation threshold) is configurable to comply with different
- *   aviation regulations or definitions of night.
+ * The suns elevation is determined using the SPA algorithm based on the NLR technical report
+ * "Solar Position Algorithm for Solar Radiation Application" by I. Reda & A. Andreas
  */
 class NightTime {
   public:
-    /**
-     * @brief Calculates the total night time for a flight between two airports.
-     *
-     * This function divides the flight into one-minute intervals along the great circle
-     * route. At each step, it evaluates the solar elevation at the current position and
-     * counts minutes where the elevation is below the specified night_angle.
-     *
-     * @param dept_airport_id The ID of the departure airport.
-     * @param dest_airport_id The ID of the destination airport.
-     * @param departure_time_ms Departure time in milliseconds since start of day.
-     * @param flight_time_minutes Total flight duration in minutes.
-     * @param night_angle Solar elevation threshold (in degrees) below which it is considered night.
-     * @return Total night time in milliseconds.
+    /*!
+     * \brief Encapsulates a moment in time and whether it is day or night.
      */
-    static int calculateNightTime(int dept_airport_id, int dest_airport_id, int departure_time_ms,
-                                  int flight_time_minutes, double night_angle)
-    {
-        Q_UNIMPLEMENTED();
-        return -1;
-    }
+    struct Event {
+        int timeMs;
+        bool isNight;
+    };
 
-    /**
-     * @brief Determines if a specific airport is experiencing night at a given time.
-     *
-     * Evaluates the solar elevation at the airport's location for the specified time.
-     * Returns true if the elevation is below the provided night_angle.
-     *
-     * @param airport_id The ID of the airport to check.
-     * @param time_ms_since_start_of_day Time in milliseconds since start of day.
-     * @param night_angle Solar elevation threshold (in degrees) below which it is considered night.
-     * @return True if the location is in night conditions, false otherwise.
+    /*!
+     * \brief Calculates day/night status along a route.
+     * \details For each point in the route, one minute is assumed to pass.
+     * The solar elevation is evaluated at each step and compared to night_angle.
+     * \param route Sequence of geographic positions along the route.
+     * \param start_time_ms Start time in milliseconds since start of day.
+     * \param night_angle Solar elevation threshold in degrees.
+     * \return List of Event entries for each minute along the route.
      */
-    static bool isNight(int airport_id, int time_ms_since_start_of_day, double night_angle)
-    {
-        Q_UNIMPLEMENTED();
-        return false;
-    }
+    static QList<Event> nightTimeForRoute(const std::vector<LatLon> &route, const QDate &date,
+                                          int start_time_ms, double night_angle = -6.0);
+
+    /*!
+     * \brief Determines if an airport is in night conditions.
+     * \param airport_id Row id of the airport in the database.
+     * \param night_angle Solar elevation threshold in degrees.
+     */
+    static bool isNight(int airport_id, int date_jd, int time_ms, double night_angle = -6.0);
+
+    /*!
+     * \brief Determines if a position is in night conditions.
+     * \param night_angle Solar elevation threshold in degrees.
+     */
+    static bool isNight(const LatLon &position, const QDate &date, const QTime &time,
+                        double night_angle = -6.0);
+
+    /*!
+     * \brief Determines if a position is in night conditions.
+     * \param night_angle Solar elevation threshold in degrees.
+     */
+    static bool isNight(const LatLon &position, int date_jd, int time_ms,
+                        double night_angle = -6.0);
+
+    /*!
+     * \brief Determines if a position is in night conditions.
+     * \param night_angle Solar elevation threshold in degrees.
+     */
+    static bool isNight(double lat, double lon, int year, int month, int day, int hour, int minute,
+                        double night_angle = -6.0);
+
+    /*!
+     * \brief Calculates the solar elevation.
+     * \details Uses the SPA library to compute the sun's elevation angle
+     * relative to the local horizon.
+     */
+    static double solarElevation(const QDateTime &date_time, const LatLon &coordinate);
+
+    /*!
+     * \brief Calculates the solar elevation.
+     * \details Uses the SPA library to compute the sun's elevation angle
+     * relative to the local horizon.
+     */
+    static double solarElevation(int julian_day, int time_ms, const LatLon &coordinate);
 
   private:
-    static double solarElevation(int time_ms_since_start_of_day, double lat, double lon,
-                                 double sin_lat = NAN, double cos_lat = NAN);
+    static constexpr double deg_to_rad(double deg) { return deg * M_PI / 180.0; }
+    static constexpr double rad_to_deg(double rad) { return rad * 180.0 / M_PI; }
+    static constexpr int SECS_PER_MIN  = 60;
+    static constexpr int MINS_PER_HOUR = 60;
+    static constexpr int SECS_PER_HOUR = SECS_PER_MIN * MINS_PER_HOUR;
+    static constexpr int MS_PER_MINUTE = 60'000;
+    static constexpr int MS_PER_HOUR   = MS_PER_MINUTE * 60;
+    static constexpr int MS_PER_DAY    = MS_PER_HOUR * 24;
+
+    static double elevation(double lat, double lon, int year, int month, int day, int time_ms)
+    {
+        spa_data spa{};
+
+        // Zero-initialize the structure to avoid uninitialized fields
+        memset(&spa, 0, sizeof(spa));
+
+        spa.year      = year;
+        spa.month     = month;
+        spa.day       = day;
+        spa.hour      = time_ms / (1000 * 60 * 60);
+        spa.minute    = (time_ms / (1000 * 60)) % 60;
+        spa.second    = (time_ms / 1000) % 60;
+        spa.latitude  = lat;
+        spa.longitude = lon;
+        // spa.elevation  = 0.0; - observer elevation.. maybe set to typical flight level?
+
+        spa.pressure    = 1013;
+        spa.temperature = 15;
+        spa.delta_ut1   = 0;
+        spa.timezone    = 0;
+
+        int ret = spa_calculate(&spa);
+
+        return spa.e;
+    }
+
+    static void printSpa(const spa_data &spa);
 };
 
 #endif // NIGHTTIME_H

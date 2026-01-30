@@ -35,7 +35,7 @@ void AirportGeographicalInfo::refresh()
 
     QSqlQuery query;
     query.exec(QStringLiteral(
-        "SELECT airport_id, airport_name, latitude, longitude, timezone_olson FROM airports"));
+        "SELECT * FROM airports"));
 
     while (query.next()) {
         int airportId = query.value(0).toInt();
@@ -65,4 +65,14 @@ QString AirportGeographicalInfo::timezone(int airport_id) const
 bool AirportGeographicalInfo::exists(int airport_id) const
 {
     return m_airportGeoMap.contains(airport_id);
+}
+LatLon AirportGeographicalInfo::coordinates(int airport_id) const
+{
+    return {m_airportGeoMap.value(airport_id).lat, m_airportGeoMap.value(airport_id).lon};
+}
+
+LatLon AirportGeographicalInfo::coordinates(const QString &icao_code)
+{
+    int id = airportData->idFromIcao(icao_code);
+    return {m_airportGeoMap.value(id).lat, m_airportGeoMap.value(id).lon};
 }

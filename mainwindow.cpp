@@ -265,7 +265,6 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 #include "src/calc/nighttime.h"
 #include "src/calc/greatcircletrack.h"
  extern "C" {
- #include "src/calc/spa.c"
  #include "src/calc/spa.h"
  }
 
@@ -276,48 +275,31 @@ void MainWindow::debug()
     // LatLon pmi = {airportGeoData->latitude(pmi_id), airportGeoData->longitude(pmi_id)};
     // LatLon fra = {airportGeoData->latitude(fra_id), airportGeoData->longitude(fra_id)};
 
-    auto pmi = LatLon::fromIcao("LEPA");
-    auto fra = LatLon::fromIcao("EDDF");
+    auto dep = airportGeoData->coordinates("LEPA");
+    auto des = airportGeoData->coordinates("EDDH");
 
-    DEB << "Flight from: " << pmi << " to: " << fra;
+    QDateTime date_time = QDateTime::currentDateTimeUtc();
+    QDate date = QDate::currentDate();
+    int jd = date_time.date().toJulianDay();
+    QTime time = QTime::fromString("16:00","hh:mm");
+    DEB << "Time: " << time;
+    int start_time = time.msecsSinceStartOfDay();
+    int duration_ms = 60000 * 120;
 
-    double distance_rad = GreatCircleTrack::greatCircleDistanceRadians(pmi, pmi);
+    auto route = GreatCircleTrack::greatCircleTrack(dep, des, duration_ms);
 
-    DEB << "Distance (nm): " << (distance_rad * 6371.0088) * 0.5399568; // km->nm = *0.54
-    DEB << "Distance (km): " << (distance_rad * 6371.0088);             // km->nm = *0.54
 
-    auto route = GreatCircleTrack::greatCircleTrack(pmi, pmi, 600000);
-    for(const auto &r : route) {
-        DEB << "Step: " << r.lat << " - " << r.lon;
+
+    auto night = NightTime::nightTimeForRoute(route, date, start_time);
+
+    int nightMin = 0;
+    for (const auto &val : night) {
+        if(val.isNight) nightMin++;
     }
-    // auto dbSetup = DatabaseSetup();
-    // dbSetup.clearDatabase();
-    // dbSetup.createTables();
-    // dbSetup.importTemplateData(false);
 
-    // auto dialog = new FlightLogEntryEditDialog(this);
-    // dialog->loadEntry(1);
-    //  DEB << "Airport Data name for rowid 1: " << airportData->nameFromRowId(1);
-    //  dialog->exec();
-    //  auto data = OPL::FlightData::getFlightData(1);
+    DEB << "Route distance (nm): " << GreatCircleTrack::radiansToNm(GreatCircleTrack::greatCircleDistanceRadians(dep, des));
+    DEB << "Night time: " << nightMin;
 
-    spa_data spa;
+    //NightTime::isNight(dep, jd, start_time);
 
-    spa.year        = 2026;
-    spa.month       = 1;
-    spa.day         = 27;
-    spa.hour        = 17;
-    spa.minute      = 32;
-    spa.second      = 0;
-    spa.timezone    = 0;
-    spa.delta_ut1   = 0;
-    spa.latitude    = 39.555;
-    spa.longitude   = 2.662;
-    spa.elevation   = 0;
-    spa.pressure    = 1013.25;
-    spa.temperature = 15;
-
-    spa_calculate(&spa);
-
-    DEB << "Elevation (spa) :" << spa.e;
 }

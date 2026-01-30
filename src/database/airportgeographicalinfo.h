@@ -19,8 +19,9 @@
 #ifndef AIRPORTGEOGRAPHICALINFO_H
 #define AIRPORTGEOGRAPHICALINFO_H
 
-#include <QObject>
+#include "src/calc/latlon.h"
 #include <QHash>
+#include <QObject>
 /*!
  * \class AirportGeographicalInfo
  * \brief Provides geographical information for airports.
@@ -48,6 +49,17 @@ class AirportGeographicalInfo : public QObject {
      * \brief Returns the longitude for the given airport ID.
      */
     double longitude(int airport_id) const;
+
+    /*!
+     * \brief Returns the LatLon coordinates for the given airport ID.
+     */
+    LatLon coordinates(int airport_id) const;
+
+    /*!
+     * \brief Returns the LatLon coordinates for the given airport ICAO code.
+     * \param icao_code ICAO airport identifier.
+     */
+    LatLon coordinates(const QString &icao_code);
 
     /*!
      * \brief Returns the timezone (Olson string) for the given airport ID.

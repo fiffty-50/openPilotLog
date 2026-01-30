@@ -65,10 +65,22 @@ class GreatCircleTrack {
     static constexpr double greatCircleDistanceRadians(const LatLon &departure_deg,
                                                        const LatLon &destination_deg);
 
+    /*!
+     * \brief Convert radians to kilometers.
+     */
+    static constexpr double radiansToKm(double r) { return r * EARTH_RADIUS_KM; }
+
+    /*!
+     * \brief Convert radians to nautical miles.
+     */
+    static constexpr double radiansToNm(double r) { return r * EARTH_RADIUS_NM; }
+
   private:
     static constexpr double deg_to_rad(double deg) { return deg * M_PI / 180.0; }
     static constexpr double rad_to_deg(double rad) { return rad * 180.0 / M_PI; }
-    static constexpr int ONE_MINUTE_MS = 60'000;
+    static constexpr int ONE_MINUTE_MS      = 60'000;
+    static constexpr double EARTH_RADIUS_KM = 6371.0;
+    static constexpr double EARTH_RADIUS_NM = 3440.0;
 };
 
 #endif // GREATCIRCLETRACK_H

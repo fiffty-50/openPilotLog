@@ -18,7 +18,6 @@
 #ifndef LATLON_H
 #define LATLON_H
 
-#include "src/database/airportgeographicalinfo.h"
 #include "src/database/airportinfo.h"
 #include <QString>
 
@@ -53,14 +52,6 @@ struct LatLon {
      */
     operator QString() const { return QString("[%1,%2]").arg(lat).arg(lon); }
 
-    /*!
-     * \brief Creates a coordinate from an ICAO airport code.
-     * \param icao_code ICAO airport identifier.
-     */
-    const static inline LatLon fromIcao(const QString &icao_code) {
-        int id = airportData->idFromIcao(icao_code);
-        return {airportGeoData->latitude(id), airportGeoData->longitude(id)};
-    }
 };
 
 #endif
