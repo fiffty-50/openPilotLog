@@ -45,6 +45,11 @@ class AirportInfo : public QObject {
     QString nameFromRowId(int airport_id);
 
     /*!
+     * \brief Returns whether an airport id exists in the database.
+     */
+    bool exists(int airport_id) const;
+
+    /*!
      * \brief Returns the airport name for the given ICAO code.
      */
     QString nameFromIcao(const QString &icao);

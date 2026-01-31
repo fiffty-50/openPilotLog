@@ -270,36 +270,10 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 void MainWindow::debug()
 {
-    // int pmi_id = 3788;
-    // int fra_id = 337;
-    // LatLon pmi = {airportGeoData->latitude(pmi_id), airportGeoData->longitude(pmi_id)};
-    // LatLon fra = {airportGeoData->latitude(fra_id), airportGeoData->longitude(fra_id)};
+    OPL::LogEntry entry;
+    int date_jd = 2461071;
+    QVariant date = QDate::currentDate();
 
-    auto dep = airportGeoData->coordinates("LEPA");
-    auto des = airportGeoData->coordinates("EDDH");
-
-    QDateTime date_time = QDateTime::currentDateTimeUtc();
-    QDate date = QDate::currentDate();
-    int jd = date_time.date().toJulianDay();
-    QTime time = QTime::fromString("16:00","hh:mm");
-    DEB << "Time: " << time;
-    int start_time = time.msecsSinceStartOfDay();
-    int duration_ms = 60000 * 120;
-
-    auto route = GreatCircleTrack::greatCircleTrack(dep, des, duration_ms);
-
-
-
-    auto night = NightTime::nightTimeForRoute(route, date, start_time);
-
-    int nightMin = 0;
-    for (const auto &val : night) {
-        if(val.isNight) nightMin++;
-    }
-
-    DEB << "Route distance (nm): " << GreatCircleTrack::radiansToNm(GreatCircleTrack::greatCircleDistanceRadians(dep, des));
-    DEB << "Night time: " << nightMin;
-
-    //NightTime::isNight(dep, jd, start_time);
+    DEB << "Can Convert? " << date.canConvert<int>();
 
 }

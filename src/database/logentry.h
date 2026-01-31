@@ -39,6 +39,7 @@ class LogEntry : public OPL::Row {
     QString getEventType() const;
 
     bool setDate(const QDate &date);
+    bool setDate(int date_jd);
     QDate getDate() const;
 
     bool setRemarks(const QString &remarks);

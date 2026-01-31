@@ -102,3 +102,4 @@ QString AirportInfo::iata(const QString &icao)
 {
     return dataForAirportId(m_icaoToAirportId.value(icao, 0), COLUMN_IATA);
 }
+bool AirportInfo::exists(int airport_id) const { return m_airportIdToRow.contains(airport_id); }

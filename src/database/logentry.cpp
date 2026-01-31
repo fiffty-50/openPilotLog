@@ -99,6 +99,16 @@ bool LogEntry::setDate(const QDate &date)
     m_rowData.insert(DATE, date_jd);
     return true;
 }
+
+bool LogEntry::setDate(int date_jd) {
+    if (!OPL::Date::julianDayIsValid(date_jd)) {
+        return false;
+    }
+
+    m_rowData.insert(DATE, date_jd);
+    return true;
+}
+
 bool LogEntry::setRemarks(const QString &remarks)
 {
     m_rowData.insert(REMARKS, remarks);
