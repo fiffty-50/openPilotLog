@@ -19,13 +19,64 @@
 #include "src/classes/date.h"
 #include "src/classes/time.h"
 #include "src/database/airportinfo.h"
+#include "src/database/approachentry.h"
 #include "src/database/flightlogentry.h"
+#include "src/database/flightsegmententry.h"
+#include "src/database/movemententry.h"
 #include "src/database/pilotinfo.h"
 #include "src/database/tailregistrationsinfo.h"
 #include "src/opl.h"
-#include <optional>
+#include <utility>
 
 namespace OPL {
+
+// Validation
+bool FlightDataBuilder::validate()
+{
+    bool allValid = true;
+    m_errors.clear();
+    // Mandatory Log data
+    if (m_date_jd == OPL::NullData) {
+        m_errors << "Invalid Date.";
+        allValid = false;
+    }
+
+    // mandatory Flight Data
+    if (m_departure_id == OPL::NullData) {
+        m_errors << "Invalid Departure id.";
+        allValid = false;
+    }
+    if (m_destination_id == OPL::NullData) {
+        m_errors << "Invalid Destination id.";
+        allValid = false;
+    }
+    if (m_time_off_ms == OPL::NullData) {
+        m_errors << "Invalid Time Off Blocks.";
+        allValid = false;
+    }
+    if (m_time_on_ms == OPL::NullData) {
+        m_errors << "Invalid Time On Blocks.";
+        allValid = false;
+    }
+    if (m_pic_id == OPL::NullData) {
+        m_errors << "Invalid pic id.";
+        allValid = false;
+    }
+    if (m_tail_id == OPL::NullData) {
+        m_errors << "Invalid tail id.";
+        allValid = false;
+    }
+
+    // at least one segment must be present
+    if (m_segment_data.isEmpty()) {
+        m_errors << "Invalid Flight Segment Data.";
+        allValid = false;
+    }
+
+    return allValid;
+}
+
+// Mandatory Data setters
 
 bool FlightDataBuilder::addMovement(int airport_id, bool is_landing, bool is_night,
                                     bool is_autoland)
@@ -99,75 +150,93 @@ bool FlightDataBuilder::addTail(int tail_id)
 
     return true;
 }
-bool FlightDataBuilder::isValid() const
-{
-    if (m_date_jd == OPL::NullData) {
-        DEB << "Invalid Date.";
-        return false;
-    }
-    if (m_departure_id == OPL::NullData) {
-        DEB << "Invalid Departure id.";
-        return false;
-    }
-    if (m_destination_id == OPL::NullData) {
-        DEB << "Invalid Destinoation id.";
-        return false;
-    }
-    if (m_time_off_ms == OPL::NullData) {
-        DEB << "Invalid Time Off Blocks.";
-        return false;
-    }
-    if (m_time_on_ms == OPL::NullData) {
-        DEB << "Invalid Time On Blocks.";
-        return false;
-    }
-    if (m_pic_id == OPL::NullData) {
-        DEB << "Invalid pic id.";
-        return false;
-    }
-    if (m_tail_id == OPL::NullData) {
-        DEB << "Invalid tail id.";
-        return false;
-    }
-    return true;
-}
 
-// Optional Entries
+// Optional Data Setters
 void FlightDataBuilder::addRemarks(const QString &remarks) { m_remarks = remarks; }
 
 // Entry creation
-
-std::optional<LogEntry> FlightDataBuilder::createLogEntry()
+LogEntry FlightDataBuilder::logEntry() const
 {
-    if (!OPL::Date::julianDayIsValid(m_date_jd)) return std::nullopt;
-
     LogEntry entry;
-    if (!entry.setEventType(EVENT_TYPE)) return std::nullopt;
-    if (!entry.setDate(m_date_jd)) return std::nullopt;
-    entry.setRemarks(m_remarks);
+    entry.setEventType(EVENT_TYPE);
+    entry.setDate(m_date_jd);
+    if (m_remarks) entry.setRemarks(*m_remarks);
 
     return entry;
 }
 
-std::optional<FlightLogEntry> FlightDataBuilder::createFlightLogEntry()
+bool FlightDataBuilder::addSegmentData(const QList<FlightSegmentBuilder::SegmentData> &segments)
 {
-    if (m_event_id < 1) return std::nullopt;
+    if (segments.size() < 1) return false;
+    m_segment_data = segments;
+    return true;
+}
 
+FlightLogEntry FlightDataBuilder::flightLogEntry() const
+{
     FlightLogEntry entry;
-    if (!entry.setEventId(m_event_id)) return std::nullopt;
-    if (!entry.setDeparture(m_departure_id)) return std::nullopt;
-    if (!entry.setDestination(m_destination_id)) return std::nullopt;
-    if (!entry.setTimeOffBlocks(m_time_off_ms)) return std::nullopt;
-    if (!entry.setTimeOnBlocks(m_time_on_ms)) return std::nullopt;
-    if (!entry.setPic(m_pic_id)) return std::nullopt;
-    if (!entry.setTail(m_tail_id)) return std::nullopt;
 
-    entry.setSecondPilot(m_second_pilot_id);
-    entry.setThirdPilot(m_third_pilot_id);
-    entry.setFourthPilot(m_fourth_pilot_id);
-    entry.setFlightNumber(m_flight_number);
+    // mandatory data
+    entry.setEventId(m_event_id);
+    entry.setDeparture(m_departure_id);
+    entry.setDestination(m_destination_id);
+    entry.setTimeOffBlocks(m_time_off_ms);
+    entry.setTimeOnBlocks(m_time_on_ms);
+    entry.setPic(m_pic_id);
+    entry.setTail(m_tail_id);
+
+    // optional data
+    if (m_second_pilot_id) entry.setSecondPilot(*m_second_pilot_id);
+    if (m_third_pilot_id) entry.setThirdPilot(*m_third_pilot_id);
+    if (m_fourth_pilot_id) entry.setFourthPilot(*m_fourth_pilot_id);
+    if (m_flight_number) entry.setFlightNumber(*m_flight_number);
 
     return entry;
+}
+
+QList<FlightSegmentEntry> FlightDataBuilder::flightSegments() const
+{
+    if (m_flight_id < 1) return {};
+    if (m_segment_data.isEmpty()) return {};
+
+    QList<FlightSegmentEntry> ret;
+
+    for (const auto &s : std::as_const(m_segment_data)) {
+        FlightSegmentEntry entry(m_flight_id, s.start_ms, s.end_ms, s.opts);
+        ret.append(entry);
+    }
+
+    return ret;
+}
+
+QList<MovementEntry> FlightDataBuilder::movements() const
+{
+    if (m_event_id < 1) return {};
+    if (m_movement_event_data.isEmpty()) return {};
+
+    QList<MovementEntry> ret;
+    ret.reserve(m_movement_event_data.size());
+
+    for (const auto &m : std::as_const(m_movement_event_data)) {
+        ret.append(MovementEntry(m_event_id, m.airport_id, m.isLanding, m.isNight, m.isAutoland));
+    }
+
+    return ret;
+}
+
+QList<ApproachEntry> FlightDataBuilder::approaches() const
+{
+    if (m_event_id < 1) return {};
+    if (m_approach_data.isEmpty()) return {};
+
+    QList<ApproachEntry> ret;
+    ret.reserve(m_approach_data.size());
+
+    for (const auto &a : std::as_const(m_approach_data)) {
+        ret.append(ApproachEntry(m_event_id, a.approach_type, a.airport_id));
+    }
+
+    return ret;
 }
 
 } // namespace OPL

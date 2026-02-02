@@ -18,9 +18,12 @@
 #ifndef FLIGHTDATABUILDER_H
 #define FLIGHTDATABUILDER_H
 
+#include "src/database/approachentry.h"
 #include "src/database/flightlogentry.h"
+#include "src/database/flightsegmententry.h"
 #include "src/database/logentry.h"
-#include "src/gui/verification/validationstate.h"
+#include "src/database/movemententry.h"
+#include "src/gui/verification/flightsegmentbuilder.h"
 #include <optional>
 #include <src/opl.h>
 
@@ -29,7 +32,21 @@ namespace OPL {
 class FlightDataBuilder {
   public:
     FlightDataBuilder() = default;
-    bool isValid() const;
+
+    struct FlightData {
+        LogEntry logEntry;
+        FlightLogEntry flightEntry;
+        QList<FlightSegmentEntry> segments;
+        QList<MovementEntry> movements;
+        QList<ApproachEntry> approaches;
+    };
+
+    bool validate();
+    /*!
+     * \brief Returns a list of errors that ocurred when trying to compile the flight data.
+     * \note This list is empty before validate() has been called at least once.
+     */
+    QStringList errors() const { return m_errors; }
 
     // mandatory data
     bool addDate(int date_jd);
@@ -40,19 +57,28 @@ class FlightDataBuilder {
     bool addPic(int pilot_id);
     bool addTail(int tail_id);
 
+    bool addSegmentData(const QList<FlightSegmentBuilder::SegmentData> &segments);
+
     // optional data
     bool addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland);
     void addRemarks(const QString &remarks);
     // bool addApproach(const QString &approach_type);
 
-    std::optional<LogEntry> createLogEntry();
-    std::optional<FlightLogEntry> createFlightLogEntry();
+    void setFlightId(int flight_id) { m_flight_id = flight_id; };
+    int flightId() const { return m_flight_id; }
+    void setEventId(int event_id) { m_event_id = event_id; }
+    int eventId() const { return m_event_id; }
+
+    LogEntry logEntry() const;
+    FlightLogEntry flightLogEntry() const;
+    QList<FlightSegmentEntry> flightSegments() const;
+    QList<MovementEntry> movements() const;
+    QList<ApproachEntry> approaches() const;
 
   private:
-    ValidationState m_validationState;
+    QStringList m_errors;
 
     // Intialise mandatory entries as invalid
-    int m_event_id       = -1;
     int m_date_jd        = -1;
     int m_departure_id   = -1;
     int m_destination_id = -1;
@@ -60,25 +86,30 @@ class FlightDataBuilder {
     int m_time_on_ms     = -1;
     int m_pic_id         = -1;
     int m_tail_id        = -1;
+    int m_event_id       = -1;
+    int m_flight_id      = -1;
 
     // optional entries
-    QString m_remarks       = QString();
-    QString m_flight_number = QString();
-    int m_second_pilot_id   = -1;
-    int m_third_pilot_id    = -1;
-    int m_fourth_pilot_id   = -1;
+    std::optional<int> m_second_pilot_id;
+    std::optional<int> m_third_pilot_id;
+    std::optional<int> m_fourth_pilot_id;
+    std::optional<QString> m_remarks;
+    std::optional<QString> m_flight_number;
 
-    struct MovementEventData {
+    struct MovementData {
         int airport_id;
         bool isLanding;
         bool isNight;
         bool isAutoland;
     };
+    struct ApproachData {
+        int airport_id;
+        QString approach_type;
+    };
 
-    QList<MovementEventData> m_movement_event_data;
-    RowData_T m_flight_data;
-    RowData_T m_log_entry_data;
-    // QList<ApproachEvent> m_approaches;
+    QList<FlightSegmentBuilder::SegmentData> m_segment_data;
+    QList<MovementData> m_movement_event_data;
+    QList<ApproachData> m_approach_data;
     //
     const static inline QString EVENT_TYPE = QStringLiteral("FLT");
 };

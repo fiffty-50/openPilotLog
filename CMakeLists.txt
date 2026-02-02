@@ -119,6 +119,8 @@ set(PROJECT_SOURCES
     src/gui/verification/flightentryparser.cpp
     src/gui/verification/flightdatabuilder.h
     src/gui/verification/flightdatabuilder.cpp
+    src/gui/verification/flightsegmentbuilder.h
+    src/gui/verification/flightsegmentbuilder.cpp
 
     # Classes
     src/classes/style.h
@@ -320,7 +322,6 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
-
      )
     endif()
 endif()

@@ -17,7 +17,10 @@
  */
 #include "database.h"
 #include "src/classes/jsonhelper.h"
+#include "src/database/flightlogentry.h"
 #include "src/opl.h"
+#include <iterator>
+#include <utility>
 
 namespace OPL {
 
@@ -158,6 +161,67 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
         return true;
     else
         return false;
+}
+
+bool Database::commit(FlightDataBuilder &builder)
+{
+    if (exists(DbTable::v2LogEvents, builder.eventId())) {
+        LOG << "Log Event already exists. Update logic not yet implemented.";
+        return false;
+    }
+
+    // start a transaction
+    database().transaction();
+
+    // LogEntry, FlightLogEntry are mandatory, rollback on failure.
+    // LogEntry
+    auto log_entry = builder.flightLogEntry();
+    DEB << "Commiting LOG:" << log_entry;
+    if (!commit(log_entry)) {
+        database().rollback();
+        return false;
+    }
+    builder.setEventId(getLastEntry(DbTable::v2LogEvents));
+
+    // FlightLogEntry
+    auto flight_entry = builder.flightLogEntry();
+    DEB << "Commiting FLT:" << flight_entry;
+    if (!commit(flight_entry)) {
+        database().rollback();
+        return false;
+    }
+    builder.setFlightId(getLastEntry(DbTable::v2Flights));
+
+    // Flight Segment Entries
+    auto flight_segments = builder.flightSegments();
+    for (const auto &s : std::as_const(flight_segments)) {
+        DEB << "Commiting Segment:" << s;
+        if (!commit(s)) {
+            database().rollback();
+            return false;
+        }
+    }
+
+    // Optional part, don't rollback since those may be empty
+    // Movements
+    auto movements = builder.movements();
+    for (const auto &m : std::as_const(movements)) {
+        DEB << "Commiting Movement:" << m;
+        commit(m);
+    }
+
+    // Approaches
+    auto approaches = builder.approaches();
+    for (const auto a : std::as_const(approaches)) {
+        DEB << "Commiting Approach:" << a;
+        commit(a);
+    }
+
+    if (!database().commit()) {
+        lastError = database().lastError();
+        return false;
+    }
+    return true;
 }
 
 bool Database::remove(const OPL::Row &row)

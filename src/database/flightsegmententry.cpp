@@ -17,6 +17,7 @@
  */
 #include "flightsegmententry.h"
 #include "src/classes/time.h"
+#include "src/opl.h"
 
 namespace OPL {
 
@@ -47,6 +48,25 @@ FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms)
     m_rowData.insert(FLIGHT_ID, flight_id);
     m_rowData.insert(START_MS, start_ms);
     m_rowData.insert(END_MS, end_ms);
+}
+
+FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms, Optionals optionals)
+    : Row(DbTable::v2FlightSegments, &FIELDS)
+{
+    m_rowData.insert(FLIGHT_ID, flight_id);
+    m_rowData.insert(START_MS, start_ms);
+    m_rowData.insert(END_MS, end_ms);
+    if (optionals.is_ifr) m_rowData.insert(IS_IFR, *optionals.is_ifr);
+    if (optionals.is_simulated_ifr) m_rowData.insert(IS_SIM_IFR, *optionals.is_simulated_ifr);
+    if (optionals.is_night) m_rowData.insert(IS_NIGHT, *optionals.is_night);
+    if (optionals.is_multi_pilot) m_rowData.insert(IS_MULTI_PILOT, *optionals.is_multi_pilot);
+    if (optionals.is_pilot_flying) m_rowData.insert(IS_PILOT_FLYING, *optionals.is_pilot_flying);
+    if (optionals.pilot_function) {
+        const auto &func = *optionals.pilot_function;
+        if (!GLOBALS->getPilotFunctions()->values().contains(func)) {
+            m_rowData.insert(PILOT_FUNCTION, *optionals.pilot_function);
+        }
+    }
 }
 
 bool FlightSegmentEntry::isValid() const

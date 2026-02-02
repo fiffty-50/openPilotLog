@@ -44,6 +44,7 @@
 #include "src/database/row.h"
 #include "src/database/simulatorentry.h"
 #include "src/database/tailentry.h"
+#include "src/gui/verification/flightdatabuilder.h"
 #include "src/opl.h"
 
 namespace OPL {
@@ -138,7 +139,7 @@ class Database : public QObject {
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static QSqlDatabase database();
+    static inline QSqlDatabase database();
 
     /*!
      * \brief Can be used to send a complex query to the database.
@@ -176,6 +177,13 @@ class Database : public QObject {
      * Airport or Aircraft Type Data.
      */
     bool commit(const QJsonArray &json_arr, const OPL::DbTable table);
+
+    /*!
+     * \brief commits Flight Data to the database.
+     * \details Since a flight creates entries in separate tables, the FlightDataBuilder class
+     * is used to collect and commit all the relevant data.
+     */
+    bool commit(FlightDataBuilder &flight_data);
 
     /*!
      * \brief Create new entry in the databse based on UserInput
