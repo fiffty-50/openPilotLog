@@ -146,7 +146,8 @@ void CurrencyWidget::fillFlightTimeLimitations()
     for (const auto &pair : limits) {
         int accruedMinutes = OPL::Statistics::totalTime(pair.second);
         int limitMinutes   = EasaFTL::getLimit(pair.second);
-        pair.first->setText(QTime::fromMSecsSinceStartOfDay(accruedMinutes * 60000).toString(Settings::getTimeFormatString()));
+        pair.first->setText(QTime::fromMSecsSinceStartOfDay(accruedMinutes * 60000)
+                                .toString(Settings::getTimeFormatString()));
 
         if (accruedMinutes >= limitMinutes)
             setLabelColour(pair.first, Colour::Red);

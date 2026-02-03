@@ -98,6 +98,12 @@ set(PROJECT_SOURCES
     # Verification
     src/gui/comboboxes/dbselectioncombobox.h
     src/gui/comboboxes/dbselectioncombobox.cpp
+    src/gui/comboboxes/tailselectionbox.h
+    src/gui/comboboxes/tailselectionbox.cpp
+    src/gui/comboboxes/pilotselectionbox.h
+    src/gui/comboboxes/pilotselectionbox.cpp
+    src/gui/comboboxes/airportselectionbox.h
+    src/gui/comboboxes/airportselectionbox.cpp
 
     src/gui/verification/validationstate.h
     src/gui/verification/userinput.h

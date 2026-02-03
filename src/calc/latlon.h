@@ -40,18 +40,15 @@ struct LatLon {
      * \brief Compares two coordinates using a tolerance.
      * \param epsilon Maximum allowed difference.
      */
-    constexpr bool almostEquals(const LatLon &other,
-                      double epsilon = 1e-7) const noexcept
+    constexpr bool almostEquals(const LatLon &other, double epsilon = 1e-7) const noexcept
     {
-        return std::abs(lat - other.lat) < epsilon &&
-               std::abs(lon - other.lon) < epsilon;
+        return std::abs(lat - other.lat) < epsilon && std::abs(lon - other.lon) < epsilon;
     }
 
     /*!
      * \brief Overloads the QString operator for printing -> "[lat, lon]"
      */
     operator QString() const { return QString("[%1,%2]").arg(lat).arg(lon); }
-
 };
 
 #endif

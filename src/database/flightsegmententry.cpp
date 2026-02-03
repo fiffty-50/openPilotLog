@@ -81,9 +81,9 @@ bool FlightSegmentEntry::isValid() const
     allValid &= OPL::Time::isValidTimeOfDay(m_rowData.value(END_MS).toInt());
 
     // Pilot function must be valid if set
-    if(! m_rowData.value(PILOT_FUNCTION).isNull()) {
-        allValid &=
-            GLOBALS->getPilotFunctions()->values().contains(m_rowData.value(PILOT_FUNCTION).toString());
+    if (!m_rowData.value(PILOT_FUNCTION).isNull()) {
+        allValid &= GLOBALS->getPilotFunctions()->values().contains(
+            m_rowData.value(PILOT_FUNCTION).toString());
     }
 
     return allValid;

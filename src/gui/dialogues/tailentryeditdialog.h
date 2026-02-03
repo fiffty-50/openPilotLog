@@ -106,9 +106,6 @@ class TailEntryEditDialog : public EntryEditDialog {
     void showServiceDateEdits();
     void hideServiceDateEdits();
 
-    // Member variables
-    int m_rowId;
-
   private slots:
     void on_registrationLineEdit_editingFinished();
     void on_buttonBox_accepted();

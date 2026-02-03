@@ -22,7 +22,7 @@
 #include "src/opl.h"
 
 TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
-    : EntryEditDialog(parent), m_rowId(0)
+    : EntryEditDialog(0, parent)
 {
     LOG << "Editing New Tail Entry: " << new_registration;
     init();
@@ -33,7 +33,7 @@ TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidge
 }
 
 TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent)
-    : EntryEditDialog(parent), m_rowId(row_id)
+    : EntryEditDialog(row_id, parent)
 {
     init();
 

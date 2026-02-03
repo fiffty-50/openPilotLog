@@ -50,7 +50,7 @@ class CurrencyEntry : public Row {
     const QString getName() const;
 
     void setExpiryDate(int date_jd);
-    //const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
+    // const OPL::Date getExpiryDate(const OPL::DateTimeFormat &format) const;
 
   private:
     /*!

@@ -43,7 +43,7 @@ void Settings::resetToDefaults()
     setCurrencyWarningThreshold(90);
     setPilotSortColumn(0);
     setTailSortColumn(0);
-    //setDisplayFormat(OPL::DateTimeFormat());
+    // setDisplayFormat(OPL::DateTimeFormat());
 
     sync();
 }

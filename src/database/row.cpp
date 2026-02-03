@@ -127,14 +127,12 @@ OPL::Row::operator QString() const
 
         out += "\t" % resetColor % paddedKey % highlightColor % paddedValue;
 
-        if (++itemCount % itemsPerRow == 0)
-            out += "\n";
+        if (++itemCount % itemsPerRow == 0) out += "\n";
     }
 
     out += "\n";
     QTextStream(stdout) << out;
     return out;
 }
-
 
 } // namespace OPL

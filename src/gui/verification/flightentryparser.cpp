@@ -1,6 +1,6 @@
 #include "flightentryparser.h"
-#include "src/classes/time.h"
 #include "src/classes/settings.h"
+#include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/functions/calc.h"

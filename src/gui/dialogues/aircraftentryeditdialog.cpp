@@ -251,7 +251,8 @@ void AircraftEntryEditDialog::on_accepted()
                 "occurred:<br>%1")
                  .arg(DB->lastError.text()));
         return;
-    } else {
+    }
+    else {
         m_rowId = DB->getLastEntry(OPL::DbTable::Aircraft);
         QDialog::accept();
     }

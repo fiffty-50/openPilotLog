@@ -167,10 +167,11 @@ void SimEntryEditDialog::setupSlots()
 void SimEntryEditDialog::fillEntryData()
 {
     const auto &data = entry.getData();
-    dateLineEdit->setText(
-        QDate::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt()).toString(Settings::getDateFormatString()));
+    dateLineEdit->setText(QDate::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt())
+                              .toString(Settings::getDateFormatString()));
     timeLineEdit->setText(
-        QTime::fromMSecsSinceStartOfDay(data.value(OPL::SimulatorEntry::TIME).toInt()).toString(Settings::getTimeFormatString()));
+        QTime::fromMSecsSinceStartOfDay(data.value(OPL::SimulatorEntry::TIME).toInt())
+            .toString(Settings::getTimeFormatString()));
     simTypeComboBox->setCurrentText(data.value(OPL::SimulatorEntry::TYPE).toString());
     acftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
     registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
@@ -271,7 +272,8 @@ OPL::RowData_T SimEntryEditDialog::collectInput()
     new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
     // Time
     new_entry.insert(OPL::SimulatorEntry::TIME,
-                     QTime::fromString(timeLineEdit->text(), Settings::getTimeFormatString()).msecsSinceStartOfDay());
+                     QTime::fromString(timeLineEdit->text(), Settings::getTimeFormatString())
+                         .msecsSinceStartOfDay());
     // Device Type
     new_entry.insert(OPL::SimulatorEntry::TYPE, simTypeComboBox->currentText());
     // Aircraft Type

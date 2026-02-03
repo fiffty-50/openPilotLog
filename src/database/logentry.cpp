@@ -100,7 +100,8 @@ bool LogEntry::setDate(const QDate &date)
     return true;
 }
 
-bool LogEntry::setDate(int date_jd) {
+bool LogEntry::setDate(int date_jd)
+{
     if (!OPL::Date::julianDayIsValid(date_jd)) {
         return false;
     }

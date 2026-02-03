@@ -252,7 +252,8 @@ void AirportEntryEditDialog::on_buttonBox_accepted()
     if (DB->commit(entry)) {
         m_rowId = DB->getLastEntry(OPL::DbTable::v2Airports);
         QDialog::accept();
-    } else {
+    }
+    else {
         WARN(tr("Unable to add Airport to the database. The following error has ocurred:<br><br>%1")
                  .arg(DB->lastError.text()));
         return;

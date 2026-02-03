@@ -34,8 +34,7 @@ void AirportGeographicalInfo::refresh()
     m_airportGeoMap.reserve(size);
 
     QSqlQuery query;
-    query.exec(QStringLiteral(
-        "SELECT * FROM airports"));
+    query.exec(QStringLiteral("SELECT * FROM airports"));
 
     while (query.next()) {
         int airportId = query.value(0).toInt();

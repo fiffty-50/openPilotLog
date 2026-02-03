@@ -63,7 +63,7 @@ class LogbookTableEditWidget : public TableEditWidget {
   public slots:
     virtual void filterTextChanged(const QString &filterString) override;
 
-    //virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
+    // virtual void editEntryRequested(const QModelIndex &selectedIndex) override;
     virtual void deleteEntryRequested() override;
 
     /*!

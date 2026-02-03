@@ -1,12 +1,11 @@
 #ifndef DIACRITICIGNORINGSTRINGLISTMODEL_H
 #define DIACRITICIGNORINGSTRINGLISTMODEL_H
 
-#include <QStringListModel>
 #include <QRegularExpression>
+#include <QStringListModel>
 
-class DiacriticIgnoringStringListModel : public QStringListModel
-{
-public:
+class DiacriticIgnoringStringListModel : public QStringListModel {
+  public:
     using QStringListModel::QStringListModel;
 
     QVariant data(const QModelIndex &index, int role) const override
@@ -14,15 +13,17 @@ public:
         if (role == DiacriticFreeRole) {
             QString value = QStringListModel::data(index, Qt::DisplayRole).toString();
             return normalise(value);
-        } else {
+        }
+        else {
             return QStringListModel::data(index, role);
         }
     }
 
-private:
+  private:
     constexpr static int DiacriticFreeRole = Qt::UserRole + 10;
 
-    static QString normalise(const QString &input) {
+    static QString normalise(const QString &input)
+    {
         QString r = input.normalized(QString::NormalizationForm_D);
         static QRegularExpression diacritics("\\p{Mn}");
         r.remove(diacritics);

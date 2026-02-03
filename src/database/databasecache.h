@@ -144,7 +144,6 @@ class DatabaseCache : public QObject {
     QStringList airportCodesList;
     QStringList companiesList;
 
-
     // Multi Maps
     KeyMultiMap airportCodesAllMultiMap;
 

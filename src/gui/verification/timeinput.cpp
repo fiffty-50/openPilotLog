@@ -1,10 +1,13 @@
 #include "timeinput.h"
-#include "src/classes/time.h"
 #include "src/classes/settings.h"
+#include "src/classes/time.h"
 #include "src/opl.h"
 #include <QTime>
 
-bool TimeInput::isValid() const { return QTime::fromString(input, Settings::getTimeFormatString()).isValid(); }
+bool TimeInput::isValid() const
+{
+    return QTime::fromString(input, Settings::getTimeFormatString()).isValid();
+}
 
 /*!
  * \brief Tries to format user input to hh:mm.

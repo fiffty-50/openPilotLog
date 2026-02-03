@@ -57,6 +57,23 @@ FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent)
     init();
 }
 
+void FlightLogEntryEditDialog::init()
+{
+    ui = new Ui::FlightEntryEditUi();
+    ui->setupUi(this);
+
+    setTabOrder({ui->datePushButton, ui->dateEdit, ui->deptComboBox, ui->destComboBox,
+                 ui->timeOffEdit, ui->timeOnEdit, ui->pilotFunctionComboBox,
+                 ui->flightRulesComboBox, ui->registrationComboBox, ui->picComboBox,
+                 ui->sicComboBox, ui->flightNumberLineEdit, ui->pilotFlyingCheckBox,
+                 ui->takeOffCountSpinBox, ui->landingCountSpinBox, ui->buttonBox});
+
+    setupValidationAndCompletion();
+    setupSlots();
+    readSettings();
+    ui->dateEdit->setFocus();
+}
+
 void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 {
     // Try to load the flight data
@@ -80,30 +97,30 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
             // QSignalBlocker b(box);
             box->setCurrentText(text);
         };
-
         // Populate UI fields
-        dateEdit->setDate(log_entry.getDate());
-        timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
-        timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
-        setCurrentText(deptComboBox, airportData->icao(flight_entry.getDepartureId()));
-        setCurrentText(destComboBox, airportData->icao(flight_entry.getDestinationId()));
-        setCurrentText(registrationComboBox, tailsData->registration(flight_entry.getTailId()));
-        setCurrentText(picComboBox, pilotsData->name(flight_entry.getPicId()));
-        setCurrentText(sicComboBox, pilotsData->name(flight_entry.getSecondPilotId()));
-        flightNumberLineEdit->setText(flight_entry.getFlightNumber());
-        remarksTextEdit->setPlainText(log_entry.getRemarks());
+        ui->dateEdit->setDate(log_entry.getDate());
+        ui->timeOffEdit->setTime(
+            QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOffBlocksMs()));
+        ui->timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(flight_entry.getTimeOnBlocksMs()));
+        setCurrentText(ui->deptComboBox, airportData->icao(flight_entry.getDepartureId()));
+        setCurrentText(ui->destComboBox, airportData->icao(flight_entry.getDestinationId()));
+        setCurrentText(ui->registrationComboBox, tailsData->registration(flight_entry.getTailId()));
+        setCurrentText(ui->picComboBox, pilotsData->name(flight_entry.getPicId()));
+        setCurrentText(ui->sicComboBox, pilotsData->name(flight_entry.getSecondPilotId()));
+        ui->flightNumberLineEdit->setText(flight_entry.getFlightNumber());
+        ui->remarksTextEdit->setPlainText(log_entry.getRemarks());
 
         // Movements
-        takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
-        landingCountSpinBox->setValue(flight_data.getLandingCount());
+        ui->takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
+        ui->landingCountSpinBox->setValue(flight_data.getLandingCount());
 
         // Segment Data
         {
-            const QSignalBlocker b(pilotFlyingCheckBox);
-            pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
+            const QSignalBlocker b(ui->pilotFlyingCheckBox);
+            ui->pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
         }
-        flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
-        pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
+        ui->flightRulesComboBox->setCurrentIndex(flight_data.isIfr());
+        ui->pilotFunctionComboBox->setCurrentText(flight_data.pilotFunction());
     }
     else {
         // Flight not found
@@ -113,266 +130,102 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 
 bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 
-void FlightLogEntryEditDialog::init()
-{
-    // Main Layout
-    // 5 columns with the middle column used as a spacer or in some cases for display Labels
-    gridLayout         = new QGridLayout(this);
-    int row            = 0;
-    constexpr int col0 = 0;
-    constexpr int col1 = 1;
-    constexpr int col2 = 2; // middle separator
-    constexpr int col3 = 3;
-    constexpr int col4 = 4;
-
-    constexpr int singleSpan    = 1;
-    constexpr int spanRemaining = -1;
-
-    // Left side (cols 0–1), optionally fills col 2
-    auto addLeft = [&](QWidget *left, QWidget *right, QWidget *middle = nullptr) {
-        gridLayout->addWidget(left, row, col0, singleSpan, singleSpan);
-        gridLayout->addWidget(right, row, col1, singleSpan, singleSpan);
-
-        if (middle)
-            gridLayout->addWidget(middle, row, col2, singleSpan, singleSpan);
-        else
-            gridLayout->addWidget(new QLabel(this), row, col2, singleSpan, singleSpan);
-    };
-
-    // Right side (cols 3–4), advances row
-    auto addRight = [&](QWidget *left, QWidget *right) {
-        gridLayout->addWidget(left, row, col3, singleSpan, singleSpan);
-        gridLayout->addWidget(right, row, col4, singleSpan, singleSpan);
-        row++;
-    };
-
-    // Row
-    // Left
-    datePushButton   = new QPushButton(this);
-    dateEdit         = new QDateEdit(this);
-    dateDisplayLabel = new QLabel(this);
-    addLeft(datePushButton, dateEdit, dateDisplayLabel);
-
-    // Right
-    registrationLabel = new QLabel(this);
-    // registrationLineEdit = new QLineEdit(this);
-    registrationComboBox = new DbSelectionComboBox(DbSelectionComboBox::TailRegistrations, this);
-    addRight(registrationLabel, registrationComboBox);
-
-    // Row
-    // Left
-    deptLabel        = new QLabel(this);
-    deptComboBox     = new DbSelectionComboBox(DbSelectionComboBox::AirportCodes, this);
-    deptDisplayLabel = new QLabel(this);
-    addLeft(deptLabel, deptComboBox, deptDisplayLabel);
-
-    // Right
-    picLabel    = new QLabel(this);
-    picComboBox = new DbSelectionComboBox(DbSelectionComboBox::PilotNames, this);
-    addRight(picLabel, picComboBox);
-
-    // Row
-    // Left
-    destLabel        = new QLabel(this);
-    destComboBox     = new DbSelectionComboBox(DbSelectionComboBox::AirportCodes, this);
-    destDisplayLabel = new QLabel(this);
-    addLeft(destLabel, destComboBox, destDisplayLabel);
-
-    // Right
-    sicLabel    = new QLabel(this);
-    sicComboBox = new DbSelectionComboBox(DbSelectionComboBox::PilotNames, this);
-    addRight(sicLabel, sicComboBox);
-
-    // Row
-    // Left
-    timeOffLabel = new QLabel(this);
-    timeOffEdit  = new QTimeEdit(this);
-    addLeft(timeOffLabel, timeOffEdit);
-
-    // Right
-    flightNumberLabel    = new QLabel(this);
-    flightNumberLineEdit = new QLineEdit(this);
-    addRight(flightNumberLabel, flightNumberLineEdit);
-
-    // Row
-    // Left
-    timeOnLabel = new QLabel(this);
-    timeOnEdit  = new QTimeEdit(this);
-    addLeft(timeOnLabel, timeOnEdit);
-
-    // Right
-    pilotFlyingCheckBox = new QCheckBox(this);
-    gridLayout->addWidget(pilotFlyingCheckBox, row, col3, singleSpan, spanRemaining);
-    row++;
-
-    // Row
-    // Left
-    pilotFunctionLabel    = new QLabel(this);
-    pilotFunctionComboBox = new QComboBox(this);
-    addLeft(pilotFunctionLabel, pilotFunctionComboBox);
-
-    // Right
-    takeOffCountLabel   = new QLabel(this);
-    takeOffCountSpinBox = new QSpinBox(this);
-    addRight(takeOffCountLabel, takeOffCountSpinBox);
-
-    // Row
-    // Left
-    flightRulesLabel    = new QLabel(this);
-    flightRulesComboBox = new QComboBox(this);
-    addLeft(flightRulesLabel, flightRulesComboBox);
-
-    // Right
-    landingCountLabel   = new QLabel(this);
-    landingCountSpinBox = new QSpinBox(this);
-    addRight(landingCountLabel, landingCountSpinBox);
-
-    // Row
-    // Left
-    remarksLabel    = new QLabel(this);
-    remarksTextEdit = new QPlainTextEdit(this);
-    remarksTextEdit->setMaximumHeight(flightNumberLineEdit->sizeHint().height() * 2);
-    addLeft(remarksLabel, remarksTextEdit);
-
-    // Right
-    totalTimeLabel        = new QLabel(this);
-    totalTimeDisplayLabel = new QLabel(this);
-    addRight(totalTimeLabel, totalTimeDisplayLabel);
-
-    // Row
-    buttonBox = new QDialogButtonBox(this);
-    // buttonBox->setOrientation(Qt::Horizontal);
-    buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-    gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
-
-    m_locationLineEdits = {deptComboBox->lineEdit(), destComboBox->lineEdit()};
-
-    setTabOrder({datePushButton, dateEdit, deptComboBox, destComboBox, timeOffEdit, timeOnEdit,
-                 pilotFunctionComboBox, flightRulesComboBox, registrationComboBox, picComboBox,
-                 sicComboBox, flightNumberLineEdit, pilotFlyingCheckBox, takeOffCountSpinBox,
-                 landingCountSpinBox, buttonBox});
-
-    retranslateUi();
-    setupValidationAndCompletion();
-    setupSlots();
-    readSettings();
-    dateEdit->setFocus();
-}
-
-void FlightLogEntryEditDialog::retranslateUi()
-{
-    datePushButton->setText(tr("Date"));
-    dateDisplayLabel->setText(dateEdit->date().toString(QStringLiteral("ddd d MMM, yyyy")));
-    deptLabel->setText(tr("Departure"));
-    destLabel->setText(tr("Destination"));
-    timeOffLabel->setText(tr("Off Blocks"));
-    timeOnLabel->setText(tr("On Blocks"));
-    totalTimeLabel->setText(tr("Total"));
-    pilotFunctionLabel->setText(tr("Function"));
-    flightRulesLabel->setText(tr("Flight Rules"));
-    registrationLabel->setText(tr("Registration"));
-    picLabel->setText(tr("Pilot in Command"));
-    sicLabel->setText(tr("Second Pilot"));
-    flightNumberLabel->setText(tr("Flight Number"));
-    pilotFlyingCheckBox->setText(tr("Pilot Flying"));
-    takeOffCountLabel->setText(tr("Take Off"));
-    landingCountLabel->setText(tr("Landing"));
-    remarksLabel->setText(tr("Remarks"));
-    totalTimeDisplayLabel->setText(QStringLiteral("00:00"));
-}
-
 void FlightLogEntryEditDialog::setupValidationAndCompletion()
 {
     // Setup Widegts
-    dateEdit->setDisplayFormat(m_dateFormatString);
-    dateEdit->setCalendarPopup(true);
-    dateEdit->setTimeZone(QTimeZone::UTC);
-    dateEdit->setMinimumDate(OPL::Date::minimumDate());
-    dateEdit->setMaximumDate(OPL::Date::maximumDate());
-    dateEdit->setDate(QDate::currentDate());
-    dateDisplayLabel->setMinimumWidth(200);
-    dateDisplayLabel->setMaximumWidth(200);
-    QFont f = dateDisplayLabel->font();
+    ui->dateEdit->setDisplayFormat(m_dateFormatString);
+    ui->dateEdit->setCalendarPopup(true);
+    ui->dateEdit->setTimeZone(QTimeZone::UTC);
+    ui->dateEdit->setMinimumDate(OPL::Date::minimumDate());
+    ui->dateEdit->setMaximumDate(OPL::Date::maximumDate());
+    ui->dateEdit->setDate(QDate::currentDate());
+    ui->dateDisplayLabel->setMinimumWidth(200);
+    ui->dateDisplayLabel->setMaximumWidth(200);
+    QFont f = ui->dateDisplayLabel->font();
     f.setItalic(true);
-    dateDisplayLabel->setFont(f);
-    deptDisplayLabel->setFont(f);
-    destDisplayLabel->setFont(f);
+    ui->dateDisplayLabel->setFont(f);
+    ui->deptDisplayLabel->setFont(f);
+    ui->destDisplayLabel->setFont(f);
 
-    timeOffEdit->setDisplayFormat(m_timeFormatString);
-    timeOffEdit->setTimeZone(QTimeZone::UTC);
-    timeOnEdit->setDisplayFormat(m_timeFormatString);
-    timeOnEdit->setTimeZone(QTimeZone::UTC);
+    ui->timeOffEdit->setDisplayFormat(m_timeFormatString);
+    ui->timeOffEdit->setTimeZone(QTimeZone::UTC);
+    ui->timeOnEdit->setDisplayFormat(m_timeFormatString);
+    ui->timeOnEdit->setTimeZone(QTimeZone::UTC);
 
-    takeOffCountSpinBox->setMinimum(0);
-    landingCountSpinBox->setMinimum(0);
+    ui->takeOffCountSpinBox->setMinimum(0);
+    ui->landingCountSpinBox->setMinimum(0);
 
-    OPL::GLOBALS->loadPilotFunctions(pilotFunctionComboBox);
-    OPL::GLOBALS->loadFlightRules(flightRulesComboBox);
+    OPL::GLOBALS->loadPilotFunctions(ui->pilotFunctionComboBox);
+    OPL::GLOBALS->loadFlightRules(ui->flightRulesComboBox);
 
     // Setup Basic Input Validation for the airport code entries
-    for (const auto &line_edit : std::as_const(m_locationLineEdits)) {
-        const auto val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, line_edit);
-        line_edit->setValidator(val);
-    }
+    auto dept_val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, ui->deptComboBox);
+    ui->deptComboBox->setValidator(dept_val);
+    auto dest_val = new QRegularExpressionValidator(OPL::RegEx::RX_AIRPORT_CODE, ui->destComboBox);
+    ui->destComboBox->setValidator(dest_val);
 }
 
 void FlightLogEntryEditDialog::setupSlots()
 {
     // Button Box
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &FlightLogEntryEditDialog::on_accepted);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this,
+            &FlightLogEntryEditDialog::on_accepted);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     // Registration
-    connect(registrationComboBox, &DbSelectionComboBox::newValueEntered, this,
+    connect(ui->registrationComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
     // Pilot Name
-    connect(picComboBox, &DbSelectionComboBox::newValueEntered, this,
+    connect(ui->picComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
-    connect(sicComboBox, &DbSelectionComboBox::newValueEntered, this,
+    connect(ui->sicComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
 
     // Location Line Edits
-    connect(deptComboBox, &DbSelectionComboBox::newValueEntered, this,
+    connect(ui->deptComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
-    connect(destComboBox, &DbSelectionComboBox::newValueEntered, this,
+    connect(ui->destComboBox, &DbSelectionComboBox::newValueEntered, this,
             &FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered);
     // Display the airport name when the combobox is edited or the popup completer is used
-    connect(deptComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
-        deptDisplayLabel->setText(airportData->nameFromRowId(deptComboBox->currentData().toInt()));
+    connect(ui->deptComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
+        ui->deptDisplayLabel->setText(
+            airportData->nameFromRowId(ui->deptComboBox->currentData().toInt()));
     });
-    connect(destComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
-        destDisplayLabel->setText(airportData->nameFromRowId(destComboBox->currentData().toInt()));
+    connect(ui->destComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
+        ui->destDisplayLabel->setText(
+            airportData->nameFromRowId(ui->destComboBox->currentData().toInt()));
     });
-    connect(deptComboBox, &QComboBox::highlighted, this, [this](int idx) {
-        deptDisplayLabel->setText(airportData->nameFromRowId(deptComboBox->currentData().toInt()));
+    connect(ui->deptComboBox, &QComboBox::highlighted, this, [this](int idx) {
+        ui->deptDisplayLabel->setText(
+            airportData->nameFromRowId(ui->deptComboBox->currentData().toInt()));
     });
-    connect(destComboBox, &QComboBox::highlighted, this,
-            [this](int idx) { destDisplayLabel->setText(airportData->nameFromRowId(idx)); });
+    connect(ui->destComboBox, &QComboBox::highlighted, this,
+            [this](int idx) { ui->destDisplayLabel->setText(airportData->nameFromRowId(idx)); });
 
     // Calculate Block Time when time edit is changed
-    connect(timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
+    connect(ui->timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
         const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
-            OPL::Time::blockTimeMs(timeOffEdit->time(), timeOnEdit->time()));
-        totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
+            OPL::Time::blockTimeMs(ui->timeOffEdit->time(), ui->timeOnEdit->time()));
+        ui->totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
     });
-    connect(timeOnEdit, &QTimeEdit::timeChanged, this, [this]() {
+    connect(ui->timeOnEdit, &QTimeEdit::timeChanged, this, [this]() {
         const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
-            OPL::Time::blockTimeMs(timeOffEdit->time(), timeOnEdit->time()));
-        totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
+            OPL::Time::blockTimeMs(ui->timeOffEdit->time(), ui->timeOnEdit->time()));
+        ui->totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
     });
 
     // Add Take Off and Landing when Pilot Flying
-    connect(pilotFlyingCheckBox, &QCheckBox::checkStateChanged, this,
+    connect(ui->pilotFlyingCheckBox, &QCheckBox::checkStateChanged, this,
             &FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged);
 }
 
 void FlightLogEntryEditDialog::readSettings()
 {
     const auto pilot_function = Settings::getPilotFunction();
-    int index = pilotFunctionComboBox->findData(QVariant::fromValue(pilot_function));
-    if (index != -1) pilotFunctionComboBox->setCurrentIndex(index);
+    int index = ui->pilotFunctionComboBox->findData(QVariant::fromValue(pilot_function));
+    if (index != -1) ui->pilotFunctionComboBox->setCurrentIndex(index);
 
-    flightRulesComboBox->setCurrentIndex(Settings::getLogIfr());
-    flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
+    ui->flightRulesComboBox->setCurrentIndex(Settings::getLogIfr());
+    ui->flightNumberLineEdit->setText(Settings::getFlightNumberPrefix());
 }
 
 // Data Collection and Submission
@@ -380,15 +233,15 @@ void FlightLogEntryEditDialog::readSettings()
 bool FlightLogEntryEditDialog::runSanityChecks()
 {
     // make sure the pilot function and pilot names make sense
-    int pic_id = picComboBox->currentData().toInt();
-    int sic_id = sicComboBox->currentData().toInt();
+    int pic_id = ui->picComboBox->currentData().toInt();
+    int sic_id = ui->sicComboBox->currentData().toInt();
 
     if (pic_id == sic_id) {
         INFO(tr("PIC and SIC names are the same."));
         return false;
     }
 
-    QVariant v = pilotFunctionComboBox->currentData();
+    QVariant v = ui->pilotFunctionComboBox->currentData();
     if (!v.canConvert<OPL::PilotFunction>()) {
         INFO(tr("Invalid pilot function."));
         return false;
@@ -412,11 +265,11 @@ bool FlightLogEntryEditDialog::addNewEntry(DbSelectionComboBox *box)
     if (m_addNewOffered) return false;
     m_addNewOffered = true;
     DEB << "Add new Database entry?";
-    auto target = box->getCompletionTarget();
+    auto table = box->table();
 
     QMessageBox::StandardButton reply;
-    switch (target) {
-    case DbSelectionComboBox::CompletionTarget::PilotNames:
+    switch (table) {
+    case OPL::DbTable::v2Pilots:
         reply = QMessageBox::question(
             this, tr("No Pilot found"),
             tr("No pilot with name <b>%1</b> found.<br><br> "
@@ -426,7 +279,7 @@ bool FlightLogEntryEditDialog::addNewEntry(DbSelectionComboBox *box)
                 .arg(box->currentText()),
             QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
-    case DbSelectionComboBox::CompletionTarget::TailRegistrations:
+    case OPL::DbTable::v2AircraftTails:
         reply = QMessageBox::question(
             this, tr("No Aircraft found"),
             tr("No aircraft with registration <b>%1</b> found.<br><br>"
@@ -436,7 +289,7 @@ bool FlightLogEntryEditDialog::addNewEntry(DbSelectionComboBox *box)
                 .arg(box->currentText()),
             QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
-    case DbSelectionComboBox::CompletionTarget::AirportCodes:
+    case OPL::DbTable::v2AirportCodes:
         reply = QMessageBox::question(
             this, tr("No Airport found"),
             tr("No Airport with the identifier <b>%1</b> found.<br><br>"
@@ -461,22 +314,23 @@ bool FlightLogEntryEditDialog::addNewEntry(DbSelectionComboBox *box)
 
 bool FlightLogEntryEditDialog::addNewDatabaseElement(DbSelectionComboBox *box)
 {
+    DEB << "Add new called. Sender: " << box->objectName() << " " << sender();
     if (m_addNewDialogExecuted) return false;
     m_addNewDialogExecuted = true;
-    auto target            = box->getCompletionTarget();
+    auto target            = box->table();
     // Create a Factory for entry edit dialogues associated with the boxes
-    using FuncTable                             = QHash<DbSelectionComboBox::CompletionTarget,
-                                                        std::function<std::unique_ptr<EntryEditDialog>(DbSelectionComboBox *)>>;
+    using FuncTable =
+        QHash<OPL::DbTable, std::function<std::unique_ptr<EntryEditDialog>(DbSelectionComboBox *)>>;
     static const FuncTable entry_edit_dialogues = {
-        {DbSelectionComboBox::CompletionTarget::TailRegistrations,
+        {OPL::DbTable::v2AircraftTails,
          [this](DbSelectionComboBox *box) {
              return std::make_unique<TailEntryEditDialog>(box->currentText(), this);
          }},
-        {DbSelectionComboBox::CompletionTarget::PilotNames,
+        {OPL::DbTable::v2Pilots,
          [this](DbSelectionComboBox *box) {
              return std::make_unique<PilotEntryEditDialog>(box->currentText(), this);
          }},
-        {DbSelectionComboBox::CompletionTarget::AirportCodes,
+        {OPL::DbTable::v2AirportCodes,
          [this](DbSelectionComboBox *box) {
              return std::make_unique<PilotEntryEditDialog>(box->currentText(), this);
          }},
@@ -490,14 +344,20 @@ bool FlightLogEntryEditDialog::addNewDatabaseElement(DbSelectionComboBox *box)
 
     bool success = false;
     success      = dlg->exec() == QDialog::Accepted;
-    int row_id   = dlg->getRowId();
+
+    // success means the database has been updated
+    int row_id = dlg->getRowId();
     if (success) {
         int idx = box->findData(row_id);
         if (idx > 0) {
             QSignalBlocker b(box);
             DEB << "Setting box to index: " << row_id;
             box->setCurrentIndex(idx);
+            DEB << "Index set. text: " << box->currentText();
+            box->setStyleSheet({});
         }
+        else
+            DEB << "New index: " << idx << " for row_id: " << row_id << "not found in box data.";
     }
 
     return success;
@@ -507,28 +367,29 @@ bool FlightLogEntryEditDialog::addNewDatabaseElement(DbSelectionComboBox *box)
 
 void FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller)
 {
-    DEB << "Unknown Value entered...";
-    auto debounce = [this]() {
-        QTimer::singleShot(1000, this, [this]() { m_addNewOffered = false; });
-        QTimer::singleShot(1000, this, [this]() { m_addNewDialogExecuted = false; });
-    };
-
     if (m_addNewOffered || m_addNewDialogExecuted) return;
+    DEB << "Unknown Value entered: " << caller->currentText();
+    qDebug() << "Sender:" << sender();
 
-    if (addNewEntry(caller)) addNewDatabaseElement(caller);
-    debounce();
+    if (!addNewEntry(caller)) return;
+
+    addNewDatabaseElement(caller);
+
+    // de-bounce
+    QTimer::singleShot(1000, this, [this]() { m_addNewOffered = false; });
+    QTimer::singleShot(1000, this, [this]() { m_addNewDialogExecuted = false; });
 }
 
 void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state)
 {
     switch (state) {
     case Qt::Checked:
-        takeOffCountSpinBox->setValue(1);
-        landingCountSpinBox->setValue(1);
+        ui->takeOffCountSpinBox->setValue(1);
+        ui->landingCountSpinBox->setValue(1);
         break;
     case Qt::Unchecked:
-        takeOffCountSpinBox->setValue(0);
-        landingCountSpinBox->setValue(0);
+        ui->takeOffCountSpinBox->setValue(0);
+        ui->landingCountSpinBox->setValue(0);
         break;
     default:
         break;
@@ -539,7 +400,7 @@ void FlightLogEntryEditDialog::on_accepted()
 {
     DEB << "Dialog accepted";
 
-    if(!runSanityChecks()) return;
+    if (!runSanityChecks()) return;
 
     auto data = collectFlightDataFromUi();
     if (data.validate()) {
@@ -569,13 +430,13 @@ FlightDataBuilder FlightLogEntryEditDialog::collectFlightDataFromUi()
     FlightDataBuilder builder;
 
     // collect data
-    int date_jd     = dateEdit->date().toJulianDay();
-    int dept_id     = deptComboBox->currentData().toInt();
-    int dest_id     = destComboBox->currentData().toInt();
-    int time_off_ms = timeOffEdit->time().msecsSinceStartOfDay();
-    int time_on_ms  = timeOnEdit->time().msecsSinceStartOfDay();
-    int pic_id      = picComboBox->currentData().toInt();
-    int tail_id     = registrationComboBox->currentData().toInt();
+    int date_jd     = ui->dateEdit->date().toJulianDay();
+    int dept_id     = ui->deptComboBox->currentData().toInt();
+    int dest_id     = ui->destComboBox->currentData().toInt();
+    int time_off_ms = ui->timeOffEdit->time().msecsSinceStartOfDay();
+    int time_on_ms  = ui->timeOnEdit->time().msecsSinceStartOfDay();
+    int pic_id      = ui->picComboBox->currentData().toInt();
+    int tail_id     = ui->registrationComboBox->currentData().toInt();
 
     // add mandatory data
     builder.addDate(date_jd);
@@ -587,27 +448,29 @@ FlightDataBuilder FlightLogEntryEditDialog::collectFlightDataFromUi()
     builder.addTail(tail_id);
 
     // add optional data
-    const QString remarks = remarksTextEdit->toPlainText();
+    const QString remarks = ui->remarksTextEdit->toPlainText();
     if (!remarks.isEmpty()) builder.addRemarks(remarks);
-    if (!sicComboBox->currentText().isEmpty()) builder.addSecondPilot(sicComboBox->currentData().toInt());
+    if (!ui->sicComboBox->currentText().isEmpty())
+        builder.addSecondPilot(ui->sicComboBox->currentData().toInt());
 
     // movements
-    if (takeOffCountSpinBox->value() > 0) {
+    if (ui->takeOffCountSpinBox->value() > 0) {
         bool is_night   = NightTime::isNight(dept_id, date_jd, time_off_ms, m_night_angle);
         bool is_landing = false;
         builder.addMovement(dept_id, is_landing, is_night);
     }
-    if (landingCountSpinBox->value() > 0) {
+    if (ui->landingCountSpinBox->value() > 0) {
         bool is_night   = NightTime::isNight(dest_id, date_jd, time_on_ms, m_night_angle);
         bool is_landing = true;
         builder.addMovement(dest_id, is_landing, is_night);
     }
 
     // Calculate automatic segments
-    int duration_ms = Time::blockTimeMs(time_off_ms, time_on_ms);
-    const auto route      = GreatCircleTrack::greatCircleTrack(
+    int duration_ms  = Time::blockTimeMs(time_off_ms, time_on_ms);
+    const auto route = GreatCircleTrack::greatCircleTrack(
         airportGeoData->coordinates(dept_id), airportGeoData->coordinates(dest_id), duration_ms);
-    const auto day_night_segments = NightTime::nightTimeForRoute(route, dateEdit->date(), time_off_ms);
+    const auto day_night_segments =
+        NightTime::nightTimeForRoute(route, ui->dateEdit->date(), time_off_ms);
     const auto segment_data = FlightSegmentBuilder::fromNightTime(day_night_segments);
 
     builder.addSegmentData(segment_data);

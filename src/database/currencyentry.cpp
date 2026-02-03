@@ -33,10 +33,7 @@ void CurrencyEntry::setName(const QString &displayName)
 
 const QString CurrencyEntry::getName() const { return getData().value(NAME).toString(); }
 
-void CurrencyEntry::setExpiryDate(int date_jd)
-{
-    m_rowData.insert(EXPIRYDATE, date_jd);
-}
+void CurrencyEntry::setExpiryDate(int date_jd) { m_rowData.insert(EXPIRYDATE, date_jd); }
 
 // const Date CurrencyEntry::getExpiryDate(const OPL::DateTimeFormat &format) const
 // {

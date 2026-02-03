@@ -21,6 +21,7 @@
 #include "entryeditdialog.h"
 #include "src/database/databasecache.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
+#include "src/gui/dialogues/flightentryeditui.h"
 #include "src/gui/verification/flightdatabuilder.h"
 #include "src/opl.h"
 #include <QCheckBox>
@@ -43,10 +44,14 @@ using MapType = DatabaseCache::MapType;
 class FlightLogEntryEditDialog : public EntryEditDialog {
   public:
     explicit FlightLogEntryEditDialog(QWidget *parent = nullptr);
+    ~FlightLogEntryEditDialog() { delete ui; }
+
     void loadEntry(int rowID);
     bool deleteEntry(int rowID);
 
   private:
+    // Ui
+    Ui::FlightEntryEditUi *ui;
     // dialog setup
     void init();
     void retranslateUi();
@@ -65,44 +70,6 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     FlightDataBuilder collectFlightDataFromUi();
 
     // UI Elements
-    QGridLayout *gridLayout;
-    QLabel *dateDisplayLabel;
-    QLabel *deptLabel;
-    QLabel *deptDisplayLabel;
-    QLabel *destLabel;
-    QLabel *destDisplayLabel;
-    QLabel *timeOffLabel;
-    QLabel *timeOnLabel;
-    QLabel *totalTimeLabel;
-    QLabel *totalTimeDisplayLabel;
-    QLabel *pilotFunctionLabel;
-    QLabel *flightRulesLabel;
-    QLabel *registrationLabel;
-    QLabel *picLabel;
-    QLabel *sicLabel;
-    QLabel *flightNumberLabel;
-    QLabel *takeOffCountLabel;
-    QLabel *landingCountLabel;
-    QLabel *remarksLabel;
-    QTimeEdit *timeOffEdit;
-    QTimeEdit *timeOnEdit;
-    DbSelectionComboBox *deptComboBox;
-    DbSelectionComboBox *destComboBox;
-    DbSelectionComboBox *registrationComboBox;
-    DbSelectionComboBox *picComboBox;
-    DbSelectionComboBox *sicComboBox;
-    QLineEdit *flightNumberLineEdit;
-    QPushButton *datePushButton;
-    QCheckBox *pilotFlyingCheckBox;
-    QDateEdit *dateEdit;
-    QComboBox *pilotFunctionComboBox;
-    QComboBox *flightRulesComboBox;
-    QSpinBox *takeOffCountSpinBox;
-    QSpinBox *landingCountSpinBox;
-    QPlainTextEdit *remarksTextEdit;
-    QDialogButtonBox *buttonBox;
-
-    QList<QLineEdit *> m_locationLineEdits;
     int m_eventId = 0;
     double m_night_angle;
 

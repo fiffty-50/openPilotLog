@@ -19,10 +19,10 @@
 
 namespace OPL {
 
-PilotEntry::PilotEntry() : Row(DbTable::Pilots, &FIELDS) {}
+PilotEntry::PilotEntry() : Row(DbTable::v2Pilots, &FIELDS) {}
 
 PilotEntry::PilotEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Pilots, row_id, row_data, &FIELDS)
+    : Row(DbTable::v2Pilots, row_id, row_data, &FIELDS)
 {
 }
 

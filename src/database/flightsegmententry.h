@@ -49,7 +49,6 @@ namespace OPL {
  */
 class FlightSegmentEntry : public OPL::Row {
   public:
-
     struct Optionals {
         std::optional<bool> is_ifr;
         std::optional<bool> is_simulated_ifr;
@@ -70,7 +69,6 @@ class FlightSegmentEntry : public OPL::Row {
     FlightSegmentEntry(int flight_id, int start_ms, int end_ms, bool is_ifr, bool is_simulated_ifr,
                        bool is_night, bool is_multi_pilot, bool is_pilot_flying,
                        const QString &pilot_function);
-
 
     /*!
      * \brief Create a new FlightSegmentEntry for an associated flight_id
@@ -101,8 +99,6 @@ class FlightSegmentEntry : public OPL::Row {
     bool isMultiPilot() const { return m_rowData.value(IS_MULTI_PILOT).toBool(); }
     bool isPilotFlying() const { return m_rowData.value(IS_PILOT_FLYING).toBool(); }
     QString getPilotFunction() const { return m_rowData.value(PILOT_FUNCTION).toString(); }
-
-
 
   private:
     const static inline QString TABLE_NAME      = QStringLiteral("flight_segments");

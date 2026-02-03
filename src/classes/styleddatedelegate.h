@@ -31,6 +31,7 @@ class StyledDateDelegate : public QStyledItemDelegate {
     StyledDateDelegate(const QString &date_format, QObject *parent = nullptr);
 
     QString displayText(const QVariant &value, const QLocale &locale) const override;
+
   private:
     const QString m_format;
 };

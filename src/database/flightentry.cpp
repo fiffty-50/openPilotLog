@@ -50,13 +50,17 @@ QString FlightEntry::getFlightSummary() const
     auto tableData = getData();
     QString flight_summary;
     constexpr auto space = QLatin1Char(' ');
-    flight_summary.append(
-        QDate::fromJulianDay(tableData.value(FlightEntry::DOFT).toInt()).toString(Settings::getDateFormatString()));
+    flight_summary.append(QDate::fromJulianDay(tableData.value(FlightEntry::DOFT).toInt())
+                              .toString(Settings::getDateFormatString()));
     flight_summary.append(tableData.value(FlightEntry::DEPT).toString() + space);
     flight_summary.append(
-        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TOFB).toInt()).toString(Settings::getTimeFormatString()) + space);
+        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TOFB).toInt())
+            .toString(Settings::getTimeFormatString()) +
+        space);
     flight_summary.append(
-        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TONB).toInt()).toString(Settings::getTimeFormatString()) + space);
+        QTime::fromMSecsSinceStartOfDay(tableData.value(FlightEntry::TONB).toInt())
+            .toString(Settings::getTimeFormatString()) +
+        space);
     flight_summary.append(tableData.value(FlightEntry::DEST).toString());
 
     return flight_summary;

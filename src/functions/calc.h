@@ -160,10 +160,10 @@ struct NightTimeValues {
         }
     };
 
-       NightTimeValues(bool to_night, bool ldg_night, int night_minutes, int night_time_ms,
-       int total_time_ms)
-           : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes),
-           nightTimeMs(night_time_ms), totalTimeMs(total_time_ms){};
+    NightTimeValues(bool to_night, bool ldg_night, int night_minutes, int night_time_ms,
+                    int total_time_ms)
+        : takeOffNight(to_night), landingNight(ldg_night), nightMinutes(night_minutes),
+          nightTimeMs(night_time_ms), totalTimeMs(total_time_ms) {};
     bool takeOffNight;
     bool landingNight;
     int nightMinutes;

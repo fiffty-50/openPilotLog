@@ -172,7 +172,8 @@ void TotalsWidget::timeLineEditEditingFinished()
 
     // write the updated value to the database
     const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value   = QTime::fromString(line_edit->text(), Settings::getTimeFormatString()).msecsSinceStartOfDay();
+    const QVariant value   = QTime::fromString(line_edit->text(), Settings::getTimeFormatString())
+                               .msecsSinceStartOfDay();
 
     m_rowData.insert(db_field, value);
     LOG << "Added row data: " + db_field + ": " + value.toString();
@@ -182,7 +183,7 @@ void TotalsWidget::timeLineEditEditingFinished()
 
     // Read back the value and set the line edit to confirm input is correct and provide user
     // feedback
-    m_rowData          = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+    m_rowData      = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
     QTime new_time = QTime::fromMSecsSinceStartOfDay(m_rowData.value(db_field).toInt());
     line_edit->setText(new_time.toString(Settings::getTimeFormatString()));
 }

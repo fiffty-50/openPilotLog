@@ -38,7 +38,7 @@ class PilotsInfo : public QObject {
   public:
     explicit PilotsInfo(QObject *parent = nullptr);
 
-   /*!
+    /*!
      * \brief Returns whether a row id exists in the database
      */
     bool exists(int pilot_id) const;

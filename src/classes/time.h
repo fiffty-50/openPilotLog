@@ -49,8 +49,7 @@ static constexpr bool isValidBlockTime(int milliseconds)
  */
 static constexpr int blockTimeMs(int start_ms, int end_ms)
 {
-    if (!isValidTimeOfDay(start_ms) || !isValidTimeOfDay(end_ms))
-        return -1;
+    if (!isValidTimeOfDay(start_ms) || !isValidTimeOfDay(end_ms)) return -1;
 
     return (end_ms - start_ms + MSECS_PER_DAY) % MSECS_PER_DAY;
 }
@@ -61,12 +60,10 @@ static constexpr int blockTimeMs(int start_ms, int end_ms)
  */
 static const inline int blockTimeMs(const QTime &start, const QTime &end)
 {
-    if (!start.isValid() || !end.isValid())
-        return -1;
+    if (!start.isValid() || !end.isValid()) return -1;
 
     int ms = start.msecsTo(end);
-    if (ms < 0)
-        ms += MSECS_PER_DAY;
+    if (ms < 0) ms += MSECS_PER_DAY;
 
     return ms;
 }

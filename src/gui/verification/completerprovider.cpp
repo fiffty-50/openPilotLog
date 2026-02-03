@@ -19,7 +19,6 @@ CompleterProvider::CompleterProvider()
     auto pilotList = DBCache->getList(OPL::DatabaseCache::ListType::PilotNames);
     pilotCompleter = DiacriticIgnoringCompleter::createCompleter(pilotList, this);
 
-
     const QList<QCompleter *> completers = {
         pilotCompleter, tailsCompleter, airportCompleter, companyCompleter, aircraftCompleter,
     };

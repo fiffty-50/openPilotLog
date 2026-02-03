@@ -19,40 +19,37 @@
 #include "src/database/database.h"
 #include "src/gui/verification/diacriticignoringcompleter.h"
 #include "src/opl.h"
-#include <qassert.h>
-#include <qcompleter.h>
-#include <qobject.h>
+#include <QCompleter>
+#include <QObject>
+#include <QSqlQuery>
 
-DbSelectionComboBox::DbSelectionComboBox(CompletionTarget target, QWidget *parent)
-    : QComboBox(parent), m_completionTarget(target)
+DbSelectionComboBox::DbSelectionComboBox(OPL::DbTable table, QWidget *parent)
+    : QComboBox(parent), m_table(table)
 {
     setEditable(true);
-    refresh();
     connectSlots();
 }
 
 void DbSelectionComboBox::refresh()
 {
+    DEB << "Refreshing DB Selection Combo Box for table: " << OPL::GLOBALS->getDbTableName(m_table);
+    this->blockSignals(true);
+    this->lineEdit()->blockSignals(true);
+
+    m_map.clear(); // clear map data
+    clear();       // clear the box
 
     // Get the data from the DB and fill the map
-    m_map.clear();
-    QSqlQuery q(getQuery(m_completionTarget));
+    QSqlQuery q(getQuery());
     q.exec();
-    int i = 0;
+
     while (q.next()) {
         m_map.insert(q.value(1).toString(), q.value(0).toInt());
     }
 
-    // Save state, then re-fill the combobox (add rowid to data)
-    QSignalBlocker b(this);
-    QString current = currentText();
-
-    clear();
     for (auto it = m_map.constBegin(); it != m_map.constEnd(); ++it) {
         addItem(it.key(), it.value());
     }
-
-    setCurrentText(current);
 
     // re-set the completer
     setCompleter(nullptr);
@@ -62,6 +59,8 @@ void DbSelectionComboBox::refresh()
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
     setCompleter(completer);
+    this->blockSignals(false);
+    this->lineEdit()->blockSignals(false);
 }
 
 void DbSelectionComboBox::connectSlots()
@@ -71,33 +70,43 @@ void DbSelectionComboBox::connectSlots()
     connect(lineEdit(), &QLineEdit::editingFinished, this,
             &DbSelectionComboBox::on_editingFinished);
 
-    // Update the model and completer when the database changes
-    connect(DB, &OPL::Database::dataBaseUpdated, this, &DbSelectionComboBox::refresh);
+    // call refresh when the database table has been updated
+    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+        if (table == m_table) refresh();
+    });
 
     // Make sure that Completion clears the style Sheet
-    connect(this, &QComboBox::activated, this, [this]() {
-        setStyleSheet(QString());
-    });
+    connect(this, &QComboBox::activated, this, [this]() { setStyleSheet(QString()); });
     connect(this, &QComboBox::highlighted, this, [this](int idx) { setCurrentIndex(idx); });
 }
 
 void DbSelectionComboBox::on_editingFinished()
 {
-    const auto &text = lineEdit()->text();
+    {
+        // Block Signals while trying to fix the input using the completer
+        QSignalBlocker b(lineEdit());
+        QSignalBlocker c(this);
+        const auto &text = lineEdit()->text();
+        if (text.isEmpty()) return;
 
-    if (text.isEmpty()) return;
-    if (m_map.contains(text)) {
-        setStyleSheet(QString());
-        return;
-    }
+        // if the input is contained in the map, it is valid
+        if (m_map.contains(text)) {
+            setStyleSheet(QString());
+            return;
+        }
 
-    if (completionIsAvailable()) {
-        setCurrentText(completer()->currentCompletion());
-    }
-    else {
-        setStyleSheet(OPL::CssStyles::RED_BORDER);
-        emit newValueEntered(this);
-    }
+        // try to use a completion
+        if (completionIsAvailable()) {
+            setCurrentText(completer()->currentCompletion());
+            setStyleSheet({});
+            return;
+        }
+        else {
+            setStyleSheet(OPL::CssStyles::RED_BORDER);
+        }
+
+    } // Signal blockers go out of scope
+    emit newValueEntered(this);
 }
 
 bool DbSelectionComboBox::completionIsAvailable()

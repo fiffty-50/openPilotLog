@@ -18,8 +18,8 @@ const FlightEntry RandomGenerator::randomFlight()
     const QDateTime dest_dt = dept_dt.addSecs(QRandomGenerator::global()->bounded(900, 50000));
 
     const QString doft = dept_dt.date().toString(Qt::ISODate);
-    QTime tofb = dept_dt.time();
-    QTime tonb = dest_dt.time();
+    QTime tofb         = dept_dt.time();
+    QTime tonb         = dest_dt.time();
 
     int pic  = randomPilot();
     int acft = randomTail();

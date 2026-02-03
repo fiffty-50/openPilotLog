@@ -42,8 +42,7 @@ bool AirportCodeEntry::isValid() const
 
 bool AirportCodeEntry::setAirportCode(CodeType type, const QDate &validFrom, const QDate &validTo)
 {
-    if (validFrom < OPL::Date::minimumDate() || validFrom > OPL::Date::maximumDate())
-        return false;
+    if (validFrom < OPL::Date::minimumDate() || validFrom > OPL::Date::maximumDate()) return false;
 
     if (validTo > OPL::Date::maximumDate()) return false;
     // QDate comparison operator is defined such that an invalid QDate is less than any
@@ -63,8 +62,7 @@ bool AirportCodeEntry::setAirportCode(CodeType type, const QDate &validFrom, con
 QDate AirportCodeEntry::getValidFromDate() const
 {
     int validFromJd = m_rowData.value(VALID_FROM).toInt();
-    if (validFromJd < OPL::Date::minimumDateJd() ||
-        validFromJd > OPL::Date::maximumDateJd()) {
+    if (validFromJd < OPL::Date::minimumDateJd() || validFromJd > OPL::Date::maximumDateJd()) {
         return QDate();
     }
     return QDate::fromJulianDay(validFromJd);
@@ -73,8 +71,7 @@ QDate AirportCodeEntry::getValidFromDate() const
 QDate AirportCodeEntry::getValidToDate() const
 {
     int validToJd = m_rowData.value(VALID_FROM).toInt();
-    if (validToJd < OPL::Date::minimumDateJd() ||
-        validToJd > OPL::Date::maximumDateJd()) {
+    if (validToJd < OPL::Date::minimumDateJd() || validToJd > OPL::Date::maximumDateJd()) {
         return QDate();
     }
     return QDate::fromJulianDay(validToJd);
