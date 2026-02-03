@@ -53,6 +53,9 @@ set(PROJECT_SOURCES
     src/gui/dialogues/flightentryeditdialog.cpp
     src/gui/dialogues/aircraftentryeditdialog.h
     src/gui/dialogues/aircraftentryeditdialog.cpp
+
+    src/gui/dialogues/flightentryeditui.h
+    src/gui/dialogues/flightentryeditui.cpp
     src/gui/dialogues/flightlogentryeditdialog.h
     src/gui/dialogues/flightlogentryeditdialog.cpp
 

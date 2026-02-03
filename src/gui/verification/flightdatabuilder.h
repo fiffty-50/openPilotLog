@@ -25,7 +25,6 @@
 #include "src/database/movemententry.h"
 #include "src/gui/verification/flightsegmentbuilder.h"
 #include <optional>
-#include <src/opl.h>
 
 namespace OPL {
 
@@ -60,8 +59,9 @@ class FlightDataBuilder {
     bool addSegmentData(const QList<FlightSegmentBuilder::SegmentData> &segments);
 
     // optional data
-    bool addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland);
+    bool addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland = false);
     void addRemarks(const QString &remarks);
+    bool addSecondPilot(int pilot_id);
     // bool addApproach(const QString &approach_type);
 
     void setFlightId(int flight_id) { m_flight_id = flight_id; };
@@ -76,7 +76,7 @@ class FlightDataBuilder {
     QList<ApproachEntry> approaches() const;
 
   private:
-    QStringList m_errors;
+    QStringList m_errors = {};
 
     // Intialise mandatory entries as invalid
     int m_date_jd        = -1;

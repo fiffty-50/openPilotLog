@@ -169,9 +169,6 @@ QList<NightTime::Event> NightTime::nightTimeForRoute(const std::vector<LatLon> &
 
         spa_calculate(&spa);
         ret.append({time_ms, spa.e < night_angle});
-        DEB << "Position: " << pos;
-        DEB << "Angle: " << spa.e;
-
         time_ms += MS_PER_MINUTE;
         if (time_ms >= MS_PER_DAY) time_ms = time_ms % MS_PER_DAY;
     }

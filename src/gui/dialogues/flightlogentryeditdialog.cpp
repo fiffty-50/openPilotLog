@@ -12,46 +12,49 @@
  *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *GNU General Public License for more details.
  *
- *You should have received a copy of the GNU General Public License
+ *You should have received acopy of the GNU General Public License
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightlogentryeditdialog.h"
+#include "src/calc/greatcircletrack.h"
+#include "src/calc/nighttime.h"
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
 #include "src/classes/time.h"
+#include "src/database/airportgeographicalinfo.h"
 #include "src/database/airportinfo.h"
-#include "src/database/databasecache.h"
+#include "src/database/database.h"
 #include "src/database/flightdata.h"
 #include "src/database/pilotinfo.h"
 #include "src/database/tailregistrationsinfo.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
+#include "src/gui/verification/flightdatabuilder.h"
+#include "src/gui/verification/flightsegmentbuilder.h"
 #include "src/opl.h"
 #include <QCalendarWidget>
+#include <QComboBox>
 #include <QDateEdit>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QRegularExpression>
+#include <QSpinBox>
+#include <QTextFormat>
 #include <QTimeEdit>
-#include <qcombobox.h>
-#include <qdialog.h>
-#include <qdialogbuttonbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qnamespace.h>
-#include <qplaintextedit.h>
-#include <qregularexpression.h>
-#include <qspinbox.h>
-#include <qtextformat.h>
-#include <qvalidator.h>
+#include <QValidator>
+
+namespace OPL {
 
 FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent)
     : EntryEditDialog(parent), m_dateFormatString(Settings::getDateFormatString()),
-      m_timeFormatString(Settings::getTimeFormatString())
+      m_timeFormatString(Settings::getTimeFormatString()), m_night_angle(Settings::getNightAngle())
 {
     init();
-    retranslateUi();
-    setupSlots();
-    readSettings();
 }
 
 void FlightLogEntryEditDialog::loadEntry(int event_row_id)
@@ -242,7 +245,7 @@ void FlightLogEntryEditDialog::init()
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, row, col4, singleSpan, singleSpan);
 
-    m_locationLineEdits = {deptComboBox->lineEdit(), destComboBox->lineEdit()}; 
+    m_locationLineEdits = {deptComboBox->lineEdit(), destComboBox->lineEdit()};
 
     setTabOrder({datePushButton, dateEdit, deptComboBox, destComboBox, timeOffEdit, timeOnEdit,
                  pilotFunctionComboBox, flightRulesComboBox, registrationComboBox, picComboBox,
@@ -295,10 +298,13 @@ void FlightLogEntryEditDialog::setupValidationAndCompletion()
     deptDisplayLabel->setFont(f);
     destDisplayLabel->setFont(f);
 
+    timeOffEdit->setDisplayFormat(m_timeFormatString);
+    timeOffEdit->setTimeZone(QTimeZone::UTC);
+    timeOnEdit->setDisplayFormat(m_timeFormatString);
+    timeOnEdit->setTimeZone(QTimeZone::UTC);
+
     takeOffCountSpinBox->setMinimum(0);
     landingCountSpinBox->setMinimum(0);
-    timeOnEdit->setDisplayFormat(m_timeFormatString);
-    timeOffEdit->setDisplayFormat(m_timeFormatString);
 
     OPL::GLOBALS->loadPilotFunctions(pilotFunctionComboBox);
     OPL::GLOBALS->loadFlightRules(flightRulesComboBox);
@@ -499,21 +505,6 @@ bool FlightLogEntryEditDialog::addNewDatabaseElement(DbSelectionComboBox *box)
 
 // Slots
 
-void FlightLogEntryEditDialog::on_accepted()
-{
-    DEB << "Dialog accepted";
-    /*
-    if (flight_data_opt) {
-        const auto &data = *flight_data_opt;
-        if (runSanityChecks()) {
-            if (false) {
-            //if (data.submit();) {
-                QDialog::accept();
-            }
-        }
-    }*/
-}
-
 void FlightLogEntryEditDialog::on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller)
 {
     DEB << "Unknown Value entered...";
@@ -543,3 +534,87 @@ void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState
         break;
     }
 }
+
+void FlightLogEntryEditDialog::on_accepted()
+{
+    DEB << "Dialog accepted";
+
+    if(!runSanityChecks()) return;
+
+    auto data = collectFlightDataFromUi();
+    if (data.validate()) {
+        if (DB->commit(data)) {
+            QDialog::accept();
+            return;
+        }
+        else {
+            WARN(tr("Unable to submit flight. The following error has ocurred:<br><br>%1")
+                     .arg(DB->lastError.text()));
+            return;
+        }
+    }
+    else {
+        auto warn_string =
+            tr("Unable to submit flight. The following error(s) have ocurred:<br><br>");
+        for (const auto &s : data.errors()) {
+            warn_string.append(s);
+            warn_string.append("<br>");
+        }
+        WARN(warn_string);
+    }
+}
+
+FlightDataBuilder FlightLogEntryEditDialog::collectFlightDataFromUi()
+{
+    FlightDataBuilder builder;
+
+    // collect data
+    int date_jd     = dateEdit->date().toJulianDay();
+    int dept_id     = deptComboBox->currentData().toInt();
+    int dest_id     = destComboBox->currentData().toInt();
+    int time_off_ms = timeOffEdit->time().msecsSinceStartOfDay();
+    int time_on_ms  = timeOnEdit->time().msecsSinceStartOfDay();
+    int pic_id      = picComboBox->currentData().toInt();
+    int tail_id     = registrationComboBox->currentData().toInt();
+
+    // add mandatory data
+    builder.addDate(date_jd);
+    builder.addDepartureLocation(dept_id);
+    builder.addDestinationLocation(dest_id);
+    builder.addTimeOffBlocks(time_off_ms);
+    builder.addTimeOnBlocks(time_on_ms);
+    builder.addPic(pic_id);
+    builder.addTail(tail_id);
+
+    // add optional data
+    const QString remarks = remarksTextEdit->toPlainText();
+    if (!remarks.isEmpty()) builder.addRemarks(remarks);
+    if (!sicComboBox->currentText().isEmpty()) builder.addSecondPilot(sicComboBox->currentData().toInt());
+
+    // movements
+    if (takeOffCountSpinBox->value() > 0) {
+        bool is_night   = NightTime::isNight(dept_id, date_jd, time_off_ms, m_night_angle);
+        bool is_landing = false;
+        builder.addMovement(dept_id, is_landing, is_night);
+    }
+    if (landingCountSpinBox->value() > 0) {
+        bool is_night   = NightTime::isNight(dest_id, date_jd, time_on_ms, m_night_angle);
+        bool is_landing = true;
+        builder.addMovement(dest_id, is_landing, is_night);
+    }
+
+    // Calculate automatic segments
+    int duration_ms = Time::blockTimeMs(time_off_ms, time_on_ms);
+    const auto route      = GreatCircleTrack::greatCircleTrack(
+        airportGeoData->coordinates(dept_id), airportGeoData->coordinates(dest_id), duration_ms);
+    const auto day_night_segments = NightTime::nightTimeForRoute(route, dateEdit->date(), time_off_ms);
+    const auto segment_data = FlightSegmentBuilder::fromNightTime(day_night_segments);
+
+    builder.addSegmentData(segment_data);
+    // approach
+    // builder.addApproach(airport_id, approach_type);
+    //
+    return builder;
+}
+
+} // namespace OPL

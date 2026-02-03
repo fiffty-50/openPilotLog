@@ -262,18 +262,11 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-#include "src/calc/nighttime.h"
-#include "src/calc/greatcircletrack.h"
- extern "C" {
- #include "src/calc/spa.h"
- }
+#include "src/gui/dialogues/flightlogentryeditdialog.h"
 
 void MainWindow::debug()
 {
-    OPL::LogEntry entry;
-    int date_jd = 2461071;
-    QVariant date = QDate::currentDate();
-
-    DEB << "Can Convert? " << date.canConvert<int>();
+    auto d = OPL::FlightLogEntryEditDialog(this);
+    d.exec();
 
 }

@@ -175,7 +175,7 @@ bool Database::commit(FlightDataBuilder &builder)
 
     // LogEntry, FlightLogEntry are mandatory, rollback on failure.
     // LogEntry
-    auto log_entry = builder.flightLogEntry();
+    auto log_entry = builder.logEntry();
     DEB << "Commiting LOG:" << log_entry;
     if (!commit(log_entry)) {
         database().rollback();
@@ -212,7 +212,7 @@ bool Database::commit(FlightDataBuilder &builder)
 
     // Approaches
     auto approaches = builder.approaches();
-    for (const auto a : std::as_const(approaches)) {
+    for (const auto &a : std::as_const(approaches)) {
         DEB << "Commiting Approach:" << a;
         commit(a);
     }

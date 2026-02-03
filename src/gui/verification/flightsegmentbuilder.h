@@ -40,7 +40,7 @@ namespace OPL {
 class FlightSegmentBuilder {
 
   public:
-    FlightSegmentBuilder() = default;
+    FlightSegmentBuilder() = delete;
 
     /*!
      * \brief Encapsulates all data needed to create a FlightSegmentEntry

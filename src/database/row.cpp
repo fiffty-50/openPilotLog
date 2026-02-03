@@ -53,19 +53,62 @@ const QString Row::getPosition() const
 }
 
 // Used for debugging
+// OPL::Row::operator QString() const
+// {
+//     if (!isValid()) {
+//         return QStringLiteral("Invalid Row: ") + getPosition();
+//     }
+//     constexpr int columnWidth = 14;
+//     constexpr int itemsPerRow = 3;
+
+//     const QString resetColor     = "\033[m";
+//     const QString highlightColor = "\033[35m";
+
+//     QString out;
+//     out.reserve(1024);
+
+//     out += "[Entry Data]: " + getPosition() + "\n";
+
+//     int itemCount = 0;
+
+//     for (auto it = m_rowData.cbegin(); it != m_rowData.cend(); ++it) {
+//         const QString key   = it.key();
+//         const QString value = it.value().toString();
+
+//         QString paddedKey = key;
+//         paddedKey += QLatin1Char(':');
+//         paddedKey = paddedKey.leftJustified(columnWidth);
+
+//         const QString displayVal  = value.isEmpty() ? "-NULL-" : value;
+//         const QString paddedValue = displayVal.leftJustified(columnWidth);
+
+//         out += "\t" % resetColor % paddedKey % highlightColor % paddedValue;
+
+//         if (++itemCount % itemsPerRow == 0) out += "\n";
+//     }
+
+//     out += "\n";
+//     QTextStream(stdout) << out;
+//     return QString();
+// }
+
 OPL::Row::operator QString() const
 {
-    if (!isValid()) {
-        return QStringLiteral("Invalid Row: ") + getPosition();
-    }
     constexpr int columnWidth = 14;
     constexpr int itemsPerRow = 3;
 
     const QString resetColor     = "\033[m";
     const QString highlightColor = "\033[35m";
+    const QString errorColor     = "\033[31m"; // red
 
     QString out;
     out.reserve(1024);
+
+    if (!isValid()) {
+        out += errorColor;
+        out += "Invalid Row: " + getPosition() + "\n";
+        out += resetColor;
+    }
 
     out += "[Entry Data]: " + getPosition() + "\n";
 
@@ -84,12 +127,14 @@ OPL::Row::operator QString() const
 
         out += "\t" % resetColor % paddedKey % highlightColor % paddedValue;
 
-        if (++itemCount % itemsPerRow == 0) out += "\n";
+        if (++itemCount % itemsPerRow == 0)
+            out += "\n";
     }
 
     out += "\n";
     QTextStream(stdout) << out;
-    return QString();
+    return out;
 }
+
 
 } // namespace OPL

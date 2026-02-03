@@ -154,6 +154,14 @@ bool FlightDataBuilder::addTail(int tail_id)
 // Optional Data Setters
 void FlightDataBuilder::addRemarks(const QString &remarks) { m_remarks = remarks; }
 
+bool FlightDataBuilder::addSecondPilot(int pilot_id)
+{
+    if (!pilotsData->exists(pilot_id)) return false;
+    m_pic_id = pilot_id;
+
+    return true;
+}
+
 // Entry creation
 LogEntry FlightDataBuilder::logEntry() const
 {

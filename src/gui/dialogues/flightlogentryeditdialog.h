@@ -21,6 +21,7 @@
 #include "entryeditdialog.h"
 #include "src/database/databasecache.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
+#include "src/gui/verification/flightdatabuilder.h"
 #include "src/opl.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -35,7 +36,9 @@
 #include <QTimeEdit>
 #include <qtmetamacros.h>
 
-using MapType = OPL::DatabaseCache::MapType;
+namespace OPL {
+
+using MapType = DatabaseCache::MapType;
 
 class FlightLogEntryEditDialog : public EntryEditDialog {
   public:
@@ -59,7 +62,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
 
     // data collection and verification
     bool runSanityChecks();
-    //std::optional<FlightDataBuilder> collectFlightdata() const;
+    FlightDataBuilder collectFlightDataFromUi();
 
     // UI Elements
     QGridLayout *gridLayout;
@@ -100,7 +103,8 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     QDialogButtonBox *buttonBox;
 
     QList<QLineEdit *> m_locationLineEdits;
-    int m_eventId        = 0;
+    int m_eventId = 0;
+    double m_night_angle;
 
     const QString m_dateFormatString;
     const QString m_timeFormatString;
@@ -115,5 +119,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     }
     void inline on_GoodInputReceived(QWidget *caller) { caller->setStyleSheet(QString()); }
 };
+
+} // namespace OPL
 
 #endif // FLIGHTLOGENTRYEDITDIALOG_H
