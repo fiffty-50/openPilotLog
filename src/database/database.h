@@ -126,7 +126,10 @@ class Database : public QObject {
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static inline QSqlDatabase database();
+    static inline QSqlDatabase database() {
+        return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
+    }
+
 
     /*!
      * \brief Can be used to send a complex query to the database.
@@ -326,14 +329,6 @@ class Database : public QObject {
      * 'home/Sully/myBackups/backupFromOpl.db'
      */
     bool restoreBackup(const QString &backup_file);
-
-    /*!
-     * @brief Retreive the total time of all flight entries in the databas
-     * @param includePreviousExperience determines whether experience from previous logbooks
-     * is included.
-     * @return The sum of all entries in the flights table
-     */
-    const RowData_T getTotals(bool includePreviousExperience);
 
     void on_database_updated(OPL::DbTable table);
   signals:

@@ -79,38 +79,6 @@ void TotalsWidget::setup(const WidgetType widgetType)
  */
 void TotalsWidget::fillTotals(const WidgetType widgetType)
 {
-    OPL::RowData_T time_data;
-
-    // retreive times from database
-    switch (widgetType) {
-    case TotalTimeWidget:
-        time_data = DB->getTotals(true);
-        break;
-    case PreviousExperienceWidget:
-        //time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
-        break;
-    }
-
-    // fill the line edits with the data obtained
-    const OPL::RowData_T &const_time_data = std::as_const(time_data);
-    for (const auto &field : const_time_data) {
-        // match the db entries to the line edits using their object name
-        const QString search_term = time_data.key(field) + QLatin1String("LineEdit");
-        QLineEdit *line_edit      = this->findChild<QLineEdit *>(search_term);
-        // fill the line edit with the corresponding data
-        if (line_edit != nullptr) {
-            const QString &le_name = line_edit->objectName();
-            if (le_name.contains("to") || le_name.contains("ldg")) {
-                // line edits for take offs and landings
-                line_edit->setText(field.toString());
-            }
-            else {
-                // line edits for total time
-                QTime time = QTime::fromMSecsSinceStartOfDay(field.toInt());
-                line_edit->setText(time.toString(Settings::getTimeFormatString()));
-            }
-        }
-    }
 }
 
 /*!
@@ -119,90 +87,15 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
  */
 void TotalsWidget::connectSignalsAndSlots()
 {
-    connect(ui->tblkLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tSPSELineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tSPMELineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tMPLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
 
-    connect(ui->tPICLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tSICLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tDUALLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tFILineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tPICUSLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tIFRLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tNIGHTLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-    connect(ui->tSIMLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::timeLineEditEditingFinished);
-
-    connect(ui->toDayLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::movementLineEditEditingFinished);
-    connect(ui->toNightLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::movementLineEditEditingFinished);
-    connect(ui->ldgDayLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::movementLineEditEditingFinished);
-    connect(ui->ldgNightLineEdit, &QLineEdit::editingFinished, this,
-            &TotalsWidget::movementLineEditEditingFinished);
 }
 
 void TotalsWidget::timeLineEditEditingFinished()
 {
-    LOG << sender()->objectName() + "Editing finished.";
-    QLineEdit *line_edit = this->findChild<QLineEdit *>(sender()->objectName());
-    const QString &text  = line_edit->text();
 
-    // make sure the input is usable
-    if (!text.contains(QChar(':'))) {
-        WARN(tr("Please enter the time as: <br><br> hh:mm"));
-        line_edit->setText(QString());
-        return;
-    }
-
-    // write the updated value to the database
-    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value   = QTime::fromString(line_edit->text(), Settings::getTimeFormatString())
-                               .msecsSinceStartOfDay();
-
-    m_rowData.insert(db_field, value);
-    LOG << "Added row data: " + db_field + ": " + value.toString();
-
-    //const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
-    //DB->commit(previous_experience);
-
-    // Read back the value and set the line edit to confirm input is correct and provide user
-    // feedback
-    //m_rowData      = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
-    QTime new_time = QTime::fromMSecsSinceStartOfDay(m_rowData.value(db_field).toInt());
-    line_edit->setText(new_time.toString(Settings::getTimeFormatString()));
 }
 
 void TotalsWidget::movementLineEditEditingFinished()
 {
-    // input validation is done by the QValidator
-    QLineEdit *line_edit = this->findChild<QLineEdit *>(sender()->objectName());
-    LOG << line_edit->objectName() + "Editing finished.";
 
-    // extract the value from the input and update the DB
-    const QString db_field = line_edit->objectName().remove(QLatin1String("LineEdit"));
-    const QVariant value   = line_edit->text().toInt();
-
-    m_rowData.insert(db_field, value);
-
-    //const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
-    //DB->commit(previous_experience);
-
-    // read back the value and set the line edit to the retreived value to give user feedback
-    //m_rowData               = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
-    const QString new_value = QString::number(m_rowData.value(db_field).toInt());
-    line_edit->setText(new_value);
 }

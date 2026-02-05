@@ -36,8 +36,9 @@ class LogbookTableEditWidget : public TableEditWidget {
      */
     void setupDelegates();
 
-    static constexpr int COL_ROWID             = 0;
-    const QList<int> HIDDEN_COLUMNS            = {0};
+    static constexpr int COL_EVENT_ID          = 0;
+    static constexpr int COL_FLIGHT_ID         = 1;
+    const QList<int> HIDDEN_COLUMNS            = {0, 1};
     const QList<int> VISIBLE_COLUMNS           = {}; // TODO
     const QMap<int, QString> COLUMN_HEADER_MAP = {};
     const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }

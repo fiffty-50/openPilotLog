@@ -25,7 +25,7 @@
 TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
     : EntryEditDialog(0, parent)
 {
-    LOG << "Editing New Tail Entry: " << new_registration;
+    //LOG << "Editing New Tail Entry: " << new_registration;
     init();
 
     registrationLineEdit->setText(new_registration);
@@ -44,7 +44,7 @@ TailEntryEditDialog::TailEntryEditDialog(int row_id, QWidget *parent)
 
     // retreive the entry to be edited
     const auto entry = DB->getTailEntry(m_rowId);
-    LOG << "Editing Tail Entry: " << entry;
+    //LOG << "Editing Tail Entry: " << entry;
     fillForm(entry);
 }
 

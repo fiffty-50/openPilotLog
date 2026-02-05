@@ -2,12 +2,9 @@
 #include "QtSql/qsqltablemodel.h"
 #include "QtWidgets/qheaderview.h"
 #include "qgridlayout.h"
-#include "src/classes/easaftl.h"
 #include "src/classes/settings.h"
 #include "src/gui/styleddelegates/styleddatedelegate.h"
-#include "src/classes/time.h"
 #include "src/database/database.h"
-#include "src/functions/statistics.h"
 #include <QCalendarWidget>
 #include <QInputDialog>
 #include <QLabel>
@@ -117,43 +114,43 @@ void CurrencyWidget::setupUI()
 
 void CurrencyWidget::fillTakeOffAndLandingCurrencies()
 {
-    const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
-    LOG << "Currencies: " << takeoff_landings;
-    if (takeoff_landings.isEmpty() || takeoff_landings.size() != 2) return;
+    // const auto takeoff_landings = OPL::Statistics::countTakeOffLanding();
+    // LOG << "Currencies: " << takeoff_landings;
+    // if (takeoff_landings.isEmpty() || takeoff_landings.size() != 2) return;
 
-    QList<QLabel *> displayLabels = {takeOffCountDisplayLabel, landingCountDisplayLabel};
+    // QList<QLabel *> displayLabels = {takeOffCountDisplayLabel, landingCountDisplayLabel};
 
-    for (int i = 0; i < 2; i++) {
-        int count = takeoff_landings[i].toInt();
-        if (count < 3) setLabelColour(displayLabels[i], Colour::Red);
-        displayLabels[i]->setText(displayLabels[i]->text().arg(count));
-    }
-    QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
-    if (expiration_date <= QDate::currentDate())
-        setLabelColour(takeOffLandingExpiryDisplayLabel, Colour::Red);
-    takeOffLandingExpiryDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
+    // for (int i = 0; i < 2; i++) {
+    //     int count = takeoff_landings[i].toInt();
+    //     if (count < 3) setLabelColour(displayLabels[i], Colour::Red);
+    //     displayLabels[i]->setText(displayLabels[i]->text().arg(count));
+    // }
+    // QDate expiration_date = OPL::Statistics::currencyTakeOffLandingExpiry();
+    // if (expiration_date <= QDate::currentDate())
+    //     setLabelColour(takeOffLandingExpiryDisplayLabel, Colour::Red);
+    // takeOffLandingExpiryDisplayLabel->setText(expiration_date.toString(Qt::TextDate));
 }
 
 void CurrencyWidget::fillFlightTimeLimitations()
 {
-    const QList<QPair<QLabel *, OPL::Statistics::TimeFrame>> limits = {
-        {flightTime28DaysDisplayLabel,       OPL::Statistics::TimeFrame::Rolling28Days  },
-        {flightTime365DaysDisplayLabel,      OPL::Statistics::TimeFrame::Rolling12Months},
-        {flightTimeCalendarYearDisplayLabel, OPL::Statistics::TimeFrame::CalendarYear   },
-    };
+    // const QList<QPair<QLabel *, OPL::Statistics::TimeFrame>> limits = {
+    //     {flightTime28DaysDisplayLabel,       OPL::Statistics::TimeFrame::Rolling28Days  },
+    //     {flightTime365DaysDisplayLabel,      OPL::Statistics::TimeFrame::Rolling12Months},
+    //     {flightTimeCalendarYearDisplayLabel, OPL::Statistics::TimeFrame::CalendarYear   },
+    // };
 
-    double ftlWarningThreshold = Settings::getFtlWarningThreshold();
-    for (const auto &pair : limits) {
-        int accruedMinutes = OPL::Statistics::totalTime(pair.second);
-        int limitMinutes   = EasaFTL::getLimit(pair.second);
-        pair.first->setText(QTime::fromMSecsSinceStartOfDay(accruedMinutes * 60000)
-                                .toString(Settings::getTimeFormatString()));
+    // double ftlWarningThreshold = Settings::getFtlWarningThreshold();
+    // for (const auto &pair : limits) {
+    //     int accruedMinutes = OPL::Statistics::totalTime(pair.second);
+    //     int limitMinutes   = EasaFTL::getLimit(pair.second);
+    //     pair.first->setText(QTime::fromMSecsSinceStartOfDay(accruedMinutes * 60000)
+    //                             .toString(Settings::getTimeFormatString()));
 
-        if (accruedMinutes >= limitMinutes)
-            setLabelColour(pair.first, Colour::Red);
-        else if (accruedMinutes >= limitMinutes * ftlWarningThreshold)
-            setLabelColour(pair.first, Colour::Orange);
-    }
+    //     if (accruedMinutes >= limitMinutes)
+    //         setLabelColour(pair.first, Colour::Red);
+    //     else if (accruedMinutes >= limitMinutes * ftlWarningThreshold)
+    //         setLabelColour(pair.first, Colour::Orange);
+    // }
 }
 
 void CurrencyWidget::editRequested(const QModelIndex &index)

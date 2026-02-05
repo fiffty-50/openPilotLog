@@ -20,7 +20,6 @@
 #include "src/gui/styleddelegates/styleddatedelegate.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
-#include "src/functions/datetime.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/opl.h"
 #include "ui_backupwidget.h"
@@ -89,11 +88,12 @@ const QString BackupWidget::absoluteBackupPath()
 
 const QString BackupWidget::backupName()
 {
-    auto owner = DB->getPilotEntry(1);
-    return QStringLiteral("logbook_backup_%1_%2.db")
-        .arg(OPL::DateTime::dateTimeToString(QDateTime::currentDateTime(),
-                                             OPL::DateTimeFormat_deprecated::Backup),
-             owner.getName());
+    // auto owner = DB->getPilotEntry(1);
+    // return QStringLiteral("logbook_backup_%1_%2.db")
+    //     .arg((QDateTime::currentDateTime(),
+    //                                          OPL::DateTimeFormat_deprecated::Backup),
+    //          owner.getName());
+    return "logbook-bak" + QDateTime::currentDateTime().toString(Qt::ISODate);
 }
 
 void BackupWidget::on_tableView_clicked(const QModelIndex &index)

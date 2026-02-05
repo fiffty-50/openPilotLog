@@ -147,8 +147,6 @@ set(PROJECT_SOURCES
     src/classes/md5sum.h
     src/classes/md5sum.cpp
     src/classes/time.h
-    src/classes/easaftl.h
-    src/classes/easaftl.cpp
     src/classes/date.h
 
     # Database Entries
@@ -179,15 +177,9 @@ set(PROJECT_SOURCES
     src/database/flightdata.cpp
 
     # Namespaces
-    src/functions/calc.h
-    src/functions/calc.cpp
     src/functions/log.h
     src/functions/log.cpp
     src/functions/readcsv.h
-    src/functions/statistics.h
-    src/functions/statistics.cpp
-    src/functions/datetime.h
-    src/functions/datetime.cpp
 
     # Math
     src/calc/greatcircletrack.h
@@ -309,6 +301,7 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
+         src/gui/styleddelegates/styledairportdelegate.h src/gui/styleddelegates/styledairportdelegate.cpp
      )
     endif()
 endif()

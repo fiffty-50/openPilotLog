@@ -32,12 +32,27 @@ class LogbookViewInfo : public QObject {
         return TYPE_COLUMNS.at(static_cast<int>(view));
     }
 
+    static constexpr int getTailColumn(LogbookView view) {
+        return TAIL_COLUMNS.at(static_cast<int>(view));
+    }
+
     /*!
      * \brief Return the column(s) in the view which contain pilot names
      */
     static constexpr int getPicColumn(LogbookView view)
     {
         return PIC_COLUMNS.at(static_cast<int>(view));
+    }
+
+    static const QList<int> getAirportColumns(LogbookView view) {
+        switch (view) {
+        case LogbookView::Default:
+            return {3, 5};
+            break;
+        default:
+            return {};
+            break;
+        }
     }
 
     /*!
@@ -47,7 +62,7 @@ class LogbookViewInfo : public QObject {
     {
         switch (view) {
         case LogbookView::Default:
-            return {3, 5, 6};
+            return {4, 6, 7};
         case LogbookView::DefaultWithSim:
             return {3, 5, 6, 11};
         case LogbookView::Easa:
@@ -66,6 +81,7 @@ class LogbookViewInfo : public QObject {
         switch (view) {
         case LogbookView::Default:
             return {
+                QStringLiteral("event_id"), // event id column - hidden
                 QStringLiteral("flight_id"), // flight id column - hidden
                 tr("Date of Flight"),
                 tr("Dept"),
@@ -155,7 +171,7 @@ class LogbookViewInfo : public QObject {
 
   private:
     static constexpr std::array DATE_COLUMNS{
-        1, // Default
+        2, // Default
         1, // Default With Sim
         1, // Easa
         1, // Easa With Sim
@@ -163,7 +179,7 @@ class LogbookViewInfo : public QObject {
     };
 
     static constexpr std::array TYPE_COLUMNS{
-        8, // Default
+        9, // Default
         8, // Default With Sim
         6, // Easa
         6, // Easa With Sim
@@ -171,11 +187,15 @@ class LogbookViewInfo : public QObject {
     };
 
     static constexpr std::array PIC_COLUMNS{
-        7,  // Default
+        8,  // Default
         7,  // Default With Sim
         12, // Easa
         12, // Easa With Sim
         -1, // Simulator Only
+    };
+
+    static constexpr std::array TAIL_COLUMNS {
+        10,
     };
 };
 

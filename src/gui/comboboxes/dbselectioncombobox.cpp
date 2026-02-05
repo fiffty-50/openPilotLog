@@ -31,7 +31,7 @@ DbSelectionComboBox::DbSelectionComboBox(OPL::DbTable table, QWidget *parent)
 
 void DbSelectionComboBox::refresh()
 {
-    LOG << "Updating combo box for table: " << OPL::GLOBALS->getDbTableName(m_table);
+    //LOG << "Updating combo box for table: " << OPL::GLOBALS->getDbTableName(m_table);
     this->blockSignals(true);
     this->lineEdit()->blockSignals(true);
 

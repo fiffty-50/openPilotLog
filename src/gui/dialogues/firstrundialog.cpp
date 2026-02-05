@@ -16,14 +16,10 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "firstrundialog.h"
-#include "src/classes/downloadhelper.h"
-#include "src/classes/md5sum.h"
 #include "src/classes/settings.h"
 #include "src/classes/style.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
-#include "src/database/row.h"
-#include "src/functions/datetime.h"
 #include "src/gui/widgets/backupwidget.h"
 #include "src/opl.h"
 #include "ui_firstrundialog.h"
@@ -52,7 +48,7 @@ FirstRunDialog::FirstRunDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Fi
     // Prepare Date Edits
     const auto date_edits = this->findChildren<QDateEdit *>();
     for (const auto &date_edit : date_edits) {
-        date_edit->setDisplayFormat(OPL::DateTime::getFormatString(OPL::DateFormat::ISODate));
+        //date_edit->setDisplayFormat(OPL::DateTime::getFormatString(OPL::DateFormat::ISODate));
         date_edit->setDate(QDate::currentDate());
     }
     // Debug - use ctrl + t to enable branchLineEdit to select from which git branch the templates

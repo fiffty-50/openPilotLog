@@ -197,7 +197,8 @@ void TableEditWidget::setupSignalsAndSlots()
                      [this](const QModelIndex &current, const QModelIndex &previous) {
                          Q_UNUSED(previous);
                          const int rowId = current.sibling(current.row(), 0).data().toInt();
-                         openEntryEdit(rowId);
+                         DEB << "entry edit blocked.";
+                         //openEntryEdit(rowId);
                      });
 
     // Add a new Entry
