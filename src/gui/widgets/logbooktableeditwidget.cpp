@@ -6,7 +6,7 @@
 #include "src/classes/styledtypedelegate.h"
 #include "src/database/database.h"
 #include "src/database/views/logbookviewinfo.h"
-#include "src/gui/dialogues/flightentryeditdialog.h"
+#include "src/gui/dialogues/flightlogentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
 
 LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent) : TableEditWidget(Vertical, parent)
@@ -59,54 +59,55 @@ QString LogbookTableEditWidget::deleteErrorString(int rowId)
 
 QString LogbookTableEditWidget::confirmDeleteString(int rowId)
 {
-    if (rowId > 0) {
-        const auto selectedEntry = DB->getFlightEntry(rowId);
-        return tr("The following flight will be deleted:<br><br><b><tt>"
-                  "%1<br></b></tt><br><br>"
-                  "Deleting flights is irreversible.<br>Do you want to proceed?")
-            .arg(selectedEntry.getFlightSummary());
-    }
+    return "UNIMPLEMENTED";
+    // if (rowId > 0) {
+    //     const auto selectedEntry = DB->getFlightEntry(rowId);
+    //     return tr("The following flight will be deleted:<br><br><b><tt>"
+    //               "%1<br></b></tt><br><br>"
+    //               "Deleting flights is irreversible.<br>Do you want to proceed?")
+    //         .arg(selectedEntry.getFlightSummary());
+    // }
 
-    return tr("Deleting entries is irreversible.<br>Do you want to proceed?");
+    // return tr("Deleting entries is irreversible.<br>Do you want to proceed?");
 }
 
 EntryEditDialog *LogbookTableEditWidget::createEntryEditDialog()
 {
-    return new FlightEntryEditDialog(this);
+    return new OPL::FlightLogEntryEditDialog(this);
 }
 
 void LogbookTableEditWidget::filterTextChanged(const QString &filterString) {}
 
 void LogbookTableEditWidget::deleteEntryRequested()
 {
-    const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
-    if (!selectedIndex.isValid()) {
-        WARN(tr("No entry selected."));
-        return;
-    }
-    m_stackedWidget->hide();
+    // const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
+    // if (!selectedIndex.isValid()) {
+    //     WARN(tr("No entry selected."));
+    //     return;
+    // }
+    // m_stackedWidget->hide();
 
-    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
-    m_view->selectionModel()->reset();
+    // int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    // m_view->selectionModel()->reset();
 
-    // get user confirmation
-    QMessageBox confirm(this);
-    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    confirm.setDefaultButton(QMessageBox::No);
-    confirm.setIcon(QMessageBox::Question);
-    confirm.setWindowTitle(tr("Confirm Deletion"));
+    // // get user confirmation
+    // QMessageBox confirm(this);
+    // confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    // confirm.setDefaultButton(QMessageBox::No);
+    // confirm.setIcon(QMessageBox::Question);
+    // confirm.setWindowTitle(tr("Confirm Deletion"));
 
-    confirm.setText(confirmDeleteString(rowId));
-    if (confirm.exec() == QMessageBox::Yes) {
-        if (rowId > 0) {
-            const auto selectedEntry = DB->getFlightEntry(rowId);
-            if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
-        }
-        else {
-            const auto selectedEntry = DB->getSimEntry(rowId * -1);
-            if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
-        }
-    }
+    // confirm.setText(confirmDeleteString(rowId));
+    // if (confirm.exec() == QMessageBox::Yes) {
+    //     if (rowId > 0) {
+    //         const auto selectedEntry = DB->getFlightEntry(rowId);
+    //         if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
+    //     }
+    //     else {
+    //         // const auto selectedEntry = DB->getSimEntry(rowId * -1);
+    //         // if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
+    //     }
+    // }
 }
 
 // private implementations

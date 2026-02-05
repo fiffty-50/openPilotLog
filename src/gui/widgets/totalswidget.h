@@ -19,7 +19,6 @@
 #define TOTALSWIDGET_H
 
 #include "QtWidgets/qlineedit.h"
-#include "src/gui/verification/timeinput.h"
 #include "src/opl.h"
 #include <QRegularExpressionValidator>
 #include <QWidget>
@@ -63,7 +62,7 @@ class TotalsWidget : public QWidget {
     void fillTotals(const WidgetType widgetType);
     void setup(const WidgetType widgetType);
     void connectSignalsAndSlots();
-    bool verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input);
+    //bool verifyUserTimeInput(QLineEdit *line_edit, const TimeInput &input);
     bool updateTimeEntry(const QLineEdit *line_edit);
     bool updateMovementEntry(const QLineEdit *line_edit);
 

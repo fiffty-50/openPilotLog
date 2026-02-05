@@ -27,7 +27,7 @@
 #include "src/database/tailregistrationsinfo.h"
 #include "src/functions/calc.h"
 #include "src/gui/dialogues/firstrundialog.h"
-#include "src/gui/dialogues/flightentryeditdialog.h"
+#include "src/gui/dialogues/flightlogentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
@@ -225,7 +225,7 @@ void MainWindow::on_actionHome_triggered() { ui->stackedWidget->setCurrentWidget
 
 void MainWindow::on_actionNewFlight_triggered()
 {
-    auto newFlightDialog = new FlightEntryEditDialog(0, this);
+    auto newFlightDialog = new OPL::FlightLogEntryEditDialog(this);
     newFlightDialog->exec();
 }
 
@@ -268,7 +268,6 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 // WIP area - pressing SHIFT + ENTER executes this function
 // this is to provide easy and quick access to a currently worked on functionality
-#include "src/gui/dialogues/flightlogentryeditdialog.h"
 
 void MainWindow::debug()
 {

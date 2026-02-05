@@ -9,6 +9,8 @@
 #include <QWidget>
 class CurrencyWidget : public QWidget {
     Q_OBJECT
+  public:
+    explicit CurrencyWidget(QWidget *parent = nullptr);
     QLayout *layout;
     QTableView *view;
     QSqlTableModel *model;
@@ -74,8 +76,6 @@ class CurrencyWidget : public QWidget {
   public slots:
     void refresh();
 
-  public:
-    explicit CurrencyWidget(QWidget *parent = nullptr);
 
   signals:
 };

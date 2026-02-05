@@ -30,43 +30,44 @@ void TailTableEditWidget::retranslateUi()
 
 QString TailTableEditWidget::deleteErrorString(int rowId)
 {
-    QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId, OPL::DbTable::Tails);
-    QList<OPL::FlightEntry> constrained_flights;
-    for (const auto &row_id : std::as_const(foreign_key_constraints)) {
-        constrained_flights.append(DB->getFlightEntry(row_id));
-    }
+    return "UNIMPLEMENTED";
+    // QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId, OPL::DbTable::v2AircraftTails);
+    // QList<OPL::FlightEntry> constrained_flights;
+    // for (const auto &row_id : std::as_const(foreign_key_constraints)) {
+    //     constrained_flights.append(DB->getFlightEntry(row_id));
+    // }
 
-    QMessageBox message_box(this);
-    if (constrained_flights.isEmpty()) {
-        // error is a database error
-        return tr("<br>Unable to delete.<br><br>The following error has "
-                  "ocurred: "
-                  "%1")
-            .arg(DB->lastError.text());
-    }
-    else {
-        QString constrained_flights_string;
-        for (int i = 0; i < constrained_flights.length(); i++) {
-            constrained_flights_string.append(constrained_flights[i].getFlightSummary() +
-                                              QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
-            if (i > 10) {
-                constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
-                break;
-            }
-        }
-        return (
-            tr("Unable to delete.<br><br>"
-               "This is most likely the case because a flight exists with the "
-               "aircraft "
-               "you are trying to delete.<br><br>"
-               "%1 flight(s) with this aircraft have been "
-               "found:<br><br><br><b><tt>"
-               "%2"
-               "</b></tt><br><br>You have to change or remove the conflicting "
-               "flight(s) "
-               "before removing this aircraft from the database.<br><br>")
-                .arg(QString::number(constrained_flights.length()), constrained_flights_string));
-    }
+    // QMessageBox message_box(this);
+    // if (constrained_flights.isEmpty()) {
+    //     // error is a database error
+    //     return tr("<br>Unable to delete.<br><br>The following error has "
+    //               "ocurred: "
+    //               "%1")
+    //         .arg(DB->lastError.text());
+    // }
+    // else {
+    //     QString constrained_flights_string;
+    //     for (int i = 0; i < constrained_flights.length(); i++) {
+    //         constrained_flights_string.append(constrained_flights[i].getFlightSummary() +
+    //                                           QLatin1String("&nbsp;&nbsp;&nbsp;&nbsp;<br>"));
+    //         if (i > 10) {
+    //             constrained_flights_string.append(QLatin1String("<br>[...]<br>"));
+    //             break;
+    //         }
+    //     }
+    //     return (
+    //         tr("Unable to delete.<br><br>"
+    //            "This is most likely the case because a flight exists with the "
+    //            "aircraft "
+    //            "you are trying to delete.<br><br>"
+    //            "%1 flight(s) with this aircraft have been "
+    //            "found:<br><br><br><b><tt>"
+    //            "%2"
+    //            "</b></tt><br><br>You have to change or remove the conflicting "
+    //            "flight(s) "
+    //            "before removing this aircraft from the database.<br><br>")
+    //             .arg(QString::number(constrained_flights.length()), constrained_flights_string));
+    // }
 }
 
 QString TailTableEditWidget::confirmDeleteString(int rowId)

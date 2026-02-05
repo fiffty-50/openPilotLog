@@ -20,7 +20,6 @@
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
-#include "src/gui/verification/timeinput.h"
 #include "src/opl.h"
 #include <QCompleter>
 /*!
@@ -39,7 +38,7 @@ SimEntryEditDialog::SimEntryEditDialog(int row_id, QWidget *parent) : EntryEditD
 {
     init();
 
-    entry = DB->getSimEntry(row_id);
+    //entry = DB->getSimEntry(row_id);
     fillEntryData();
 }
 
@@ -166,16 +165,16 @@ void SimEntryEditDialog::setupSlots()
  */
 void SimEntryEditDialog::fillEntryData()
 {
-    const auto &data = entry.getData();
-    dateLineEdit->setText(QDate::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt())
-                              .toString(Settings::getDateFormatString()));
-    timeLineEdit->setText(
-        QTime::fromMSecsSinceStartOfDay(data.value(OPL::SimulatorEntry::TIME).toInt())
-            .toString(Settings::getTimeFormatString()));
-    simTypeComboBox->setCurrentText(data.value(OPL::SimulatorEntry::TYPE).toString());
-    acftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
-    registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
-    remarksLineEdit->setText(data.value(OPL::SimulatorEntry::REMARKS).toString());
+    // const auto &data = entry.getData();
+    // dateLineEdit->setText(QDate::fromJulianDay(data.value(OPL::SimulatorEntry::DATE).toInt())
+    //                           .toString(Settings::getDateFormatString()));
+    // timeLineEdit->setText(
+    //     QTime::fromMSecsSinceStartOfDay(data.value(OPL::SimulatorEntry::TIME).toInt())
+    //         .toString(Settings::getTimeFormatString()));
+    // simTypeComboBox->setCurrentText(data.value(OPL::SimulatorEntry::TYPE).toString());
+    // acftTypeLineEdit->setText(data.value(OPL::SimulatorEntry::ACFT).toString());
+    // registrationLineEdit->setText(data.value(OPL::SimulatorEntry::REG).toString());
+    // remarksLineEdit->setText(data.value(OPL::SimulatorEntry::REMARKS).toString());
 }
 
 void SimEntryEditDialog::on_dateLineEdit_editingFinished()
@@ -194,19 +193,19 @@ void SimEntryEditDialog::on_dateLineEdit_editingFinished()
 
 void SimEntryEditDialog::on_timeLineEdit_editingFinished()
 {
-    const auto input = TimeInput(timeLineEdit->text(), m_format);
-    if (input.isValid())
-        return;
-    else {
-        QString fixed = input.fixup();
-        if (fixed == QString()) {
-            timeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
-        }
-        else {
-            timeLineEdit->setText(fixed);
-            timeLineEdit->setStyleSheet(QString());
-        }
-    }
+    // const auto input = TimeInput(timeLineEdit->text(), m_format);
+    // if (input.isValid())
+    //     return;
+    // else {
+    //     QString fixed = input.fixup();
+    //     if (fixed == QString()) {
+    //         timeLineEdit->setStyleSheet(OPL::CssStyles::RED_BORDER);
+    //     }
+    //     else {
+    //         timeLineEdit->setText(fixed);
+    //         timeLineEdit->setStyleSheet(QString());
+    //     }
+    // }
 }
 
 void SimEntryEditDialog::on_registrationLineEdit_editingFinished()
@@ -268,55 +267,56 @@ OPL::RowData_T SimEntryEditDialog::collectInput()
 {
     OPL::RowData_T new_entry;
     // Date
-    const auto date = QDate::fromString(dateLineEdit->text(), Settings::getDateFormatString());
-    new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
-    // Time
-    new_entry.insert(OPL::SimulatorEntry::TIME,
-                     QTime::fromString(timeLineEdit->text(), Settings::getTimeFormatString())
-                         .msecsSinceStartOfDay());
-    // Device Type
-    new_entry.insert(OPL::SimulatorEntry::TYPE, simTypeComboBox->currentText());
-    // Aircraft Type
-    new_entry.insert(OPL::SimulatorEntry::ACFT, acftTypeLineEdit->text());
-    // Registration
-    if (!registrationLineEdit->text().isEmpty())
-        new_entry.insert(OPL::SimulatorEntry::REG, registrationLineEdit->text());
-    // Remarks
-    if (!remarksLineEdit->text().isEmpty())
-        new_entry.insert(OPL::SimulatorEntry::REMARKS, remarksLineEdit->text());
+    // const auto date = QDate::fromString(dateLineEdit->text(), Settings::getDateFormatString());
+    // new_entry.insert(OPL::SimulatorEntry::DATE, date.toJulianDay());
+    // // Time
+    // new_entry.insert(OPL::SimulatorEntry::TIME,
+    //                  QTime::fromString(timeLineEdit->text(), Settings::getTimeFormatString())
+    //                      .msecsSinceStartOfDay());
+    // // Device Type
+    // new_entry.insert(OPL::SimulatorEntry::TYPE, simTypeComboBox->currentText());
+    // // Aircraft Type
+    // new_entry.insert(OPL::SimulatorEntry::ACFT, acftTypeLineEdit->text());
+    // // Registration
+    // if (!registrationLineEdit->text().isEmpty())
+    //     new_entry.insert(OPL::SimulatorEntry::REG, registrationLineEdit->text());
+    // // Remarks
+    // if (!remarksLineEdit->text().isEmpty())
+    //     new_entry.insert(OPL::SimulatorEntry::REMARKS, remarksLineEdit->text());
 
     return new_entry;
 }
 
 void SimEntryEditDialog::on_buttonBox_accepted()
 {
-    QString error_msg;
-    if (!verifyInput(error_msg)) {
-        INFO(error_msg);
-        return;
-    }
+    // QString error_msg;
+    // if (!verifyInput(error_msg)) {
+    //     INFO(error_msg);
+    //     return;
+    // }
 
-    entry.setData(collectInput());
+    // entry.setData(collectInput());
 
-    DEB << entry;
+    // DEB << entry;
 
-    if (DB->commit(entry))
-        QDialog::accept();
-    else
-        WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1")
-                 .arg(DB->lastError.text()));
+    // if (DB->commit(entry))
+    //     QDialog::accept();
+    // else
+    //     WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1")
+    //              .arg(DB->lastError.text()));
 }
 
 // EntryEdit interface
 void SimEntryEditDialog::loadEntry(int rowID)
 {
-    entry = DB->getSimEntry(rowID);
+    //entry = DB->getSimEntry(rowID);
     init();
     fillEntryData();
 }
 
 bool SimEntryEditDialog::deleteEntry(int rowID)
 {
-    const auto entry = DB->getSimEntry(rowID);
-    return DB->remove(entry);
+    //const auto entry = DB->getSimEntry(rowID);
+    //return DB->remove(entry);
+    return false;
 }

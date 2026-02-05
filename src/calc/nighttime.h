@@ -19,12 +19,10 @@
 #define NIGHTTIME_H
 
 #include "src/calc/latlon.h"
+#include "src/calc/spawrapper.h"
 #include <QDateTime>
 #include <QTime>
 #include <QVector>
-extern "C" {
-#include "src/calc/spa.h"
-}
 
 /*!
  * @class NightTime
@@ -113,7 +111,7 @@ class NightTime {
 
     static double elevation(double lat, double lon, int year, int month, int day, int time_ms)
     {
-        spa_data spa{};
+        SPA::data spa{};
 
         // Zero-initialize the structure to avoid uninitialized fields
         memset(&spa, 0, sizeof(spa));
@@ -133,12 +131,11 @@ class NightTime {
         spa.delta_ut1   = 0;
         spa.timezone    = 0;
 
-        int ret = spa_calculate(&spa);
-
+        SPA::calculate(&spa);
         return spa.e;
     }
 
-    static void printSpa(const spa_data &spa);
+    static void printSpa(const SPA::data &spa);
 };
 
 #endif // NIGHTTIME_H

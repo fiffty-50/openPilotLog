@@ -19,7 +19,6 @@
 #include "src/classes/downloadhelper.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
-#include "src/gui/verification/completerprovider.h"
 #include "src/opl.h"
 #include "src/testing/atimer.h"
 #include "ui_debugwidget.h"
@@ -49,7 +48,7 @@ void DebugWidget::on_debugPushButton_clicked()
     // DEB << "Parsed Flight Data:" << flight_data;
 
     // NewFlightDialog nfd(flight_data, this);
-    flight_data.insert(OPL::FlightEntry::DOFT, 22000);
+    //flight_data.insert(OPL::FlightEntry::DOFT, 22000);
     // NewFlightDialog nfd(flight_data, this);
 }
 
@@ -61,8 +60,8 @@ DebugWidget::DebugWidget(QWidget *parent) : QWidget(parent), ui(new Ui::DebugWid
             ui->tableComboBox->addItem(table);
         }
     }
-    ui->debugLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
-    ui->debug2LineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
+    // ui->debugLineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
+    // ui->debug2LineEdit->setCompleter(QCompleterProvider.getCompleter(CompleterProvider::Airports));
 }
 
 DebugWidget::~DebugWidget() { delete ui; }

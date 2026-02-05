@@ -18,8 +18,8 @@
 #ifndef SIMENTRYEDITDIALOG_H
 #define SIMENTRYEDITDIALOG_H
 
-#include "src/database/simulatorentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
+#include "src/opl.h"
 #include <QCalendarWidget>
 #include <QComboBox>
 #include <QDialog>
@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QDialogButtonBox>
 
 /*!
  * \brief The SimEntryEditDialog class enables adding a new Simulator Session to the database or
@@ -87,7 +88,7 @@ class SimEntryEditDialog : public EntryEditDialog {
     void fillEntryData();
     bool verifyInput(QString &error_msg);
     OPL::RowData_T collectInput();
-    OPL::SimulatorEntry entry;
+    //OPL::SimulatorEntry entry;
 
     // EntryEditDialog interface
   public:

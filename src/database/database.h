@@ -34,15 +34,12 @@
 #include "src/database/aircraftentry.h"
 #include "src/database/airportcodeentry.h"
 #include "src/database/airportentry.h"
-#include "src/database/currencyentry.h"
 #include "src/database/flightdata.h"
-#include "src/database/flightentry.h"
 #include "src/database/flightlogentry.h"
 #include "src/database/flightsegmententry.h"
 #include "src/database/logentry.h"
 #include "src/database/pilotentry.h"
 #include "src/database/row.h"
-#include "src/database/simulatorentry.h"
 #include "src/database/tailentry.h"
 #include "src/gui/verification/flightdatabuilder.h"
 #include "src/opl.h"
@@ -261,15 +258,6 @@ class Database : public QObject {
         return OPL::AircraftEntry(row_id, data);
     }
 
-    /*!
-     * \brief retreives a flight entry from the database. See row class for details.
-     */
-    inline OPL::FlightEntry getFlightEntry(int row_id)
-    {
-        const auto data = getRowData(OPL::DbTable::Flights, row_id);
-        return OPL::FlightEntry(row_id, data);
-    }
-
     OPL::FlightData getFlightData(int event_id)
     {
         const auto log_data  = getRowData(OPL::DbTable::v2LogEvents, event_id);
@@ -288,24 +276,6 @@ class Database : public QObject {
         // collect approach data
 
         return {log_entry, flight_entry, segments, movements};
-    }
-
-    /*!
-     * \brief retreives a Simulator entry from the database. See row class for details.
-     */
-    inline OPL::SimulatorEntry getSimEntry(int row_id)
-    {
-        const auto data = getRowData(OPL::DbTable::Simulators, row_id);
-        return OPL::SimulatorEntry(row_id, data);
-    }
-
-    /*!
-     * \brief Retreives a currency entry from the database. See row class for details.
-     */
-    inline OPL::CurrencyEntry getCurrencyEntry(OPL::CurrencyEntry::Currency currency)
-    {
-        const auto data = getRowData(OPL::DbTable::Currencies, currency);
-        return OPL::CurrencyEntry(currency, data);
     }
 
     /*!

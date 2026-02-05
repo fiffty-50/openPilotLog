@@ -20,6 +20,7 @@
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
 #include "src/opl.h"
+#include "src/classes/date.h"
 
 TailEntryEditDialog::TailEntryEditDialog(const QString &new_registration, QWidget *parent)
     : EntryEditDialog(0, parent)

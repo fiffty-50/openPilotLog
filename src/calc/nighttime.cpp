@@ -16,7 +16,6 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "nighttime.h"
-#include "src/calc/spa.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
 #include "src/database/airportgeographicalinfo.h"
@@ -26,7 +25,7 @@ double NightTime::solarElevation(int julian_day, int time_ms, const LatLon &coor
 {
     assert(OPL::Date::julianDayIsValid(julian_day));
     assert(OPL::Time::isValidBlockTime(time_ms));
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
 
     const QDate date = QDate::fromJulianDay(julian_day);
@@ -41,11 +40,11 @@ double NightTime::solarElevation(int julian_day, int time_ms, const LatLon &coor
     spa.longitude    = coordinate.lon;
 
     printSpa(spa);
-    spa_calculate(&spa);
+    SPA::calculate(&spa);
     return spa.e;
 }
 
-void NightTime::printSpa(const spa_data &spa)
+void NightTime::printSpa(const SPA::data &spa)
 {
     DEB << "Spa: " << "Date Time: " << spa.year << '/' << spa.month << '/' << spa.day << " - "
         << spa.hour << ':' << spa.minute;
@@ -55,7 +54,7 @@ void NightTime::printSpa(const spa_data &spa)
 double NightTime::solarElevation(const QDateTime &date_time, const LatLon &coordinate)
 {
     assert(date_time.isValid());
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
 
     spa.year      = date_time.date().year();
@@ -66,7 +65,7 @@ double NightTime::solarElevation(const QDateTime &date_time, const LatLon &coord
     spa.latitude  = coordinate.lat;
     spa.longitude = coordinate.lon;
 
-    spa_calculate(&spa);
+    SPA::calculate(&spa);
     return spa.e;
 }
 
@@ -81,7 +80,7 @@ bool NightTime::isNight(const LatLon &position, const QDate &date, const QTime &
 {
     assert(date.isValid());
     assert(time.isValid());
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
 
     spa.year  = date.year();
@@ -93,7 +92,7 @@ bool NightTime::isNight(const LatLon &position, const QDate &date, const QTime &
     spa.latitude  = position.lat;
     spa.longitude = position.lon;
 
-    spa_calculate(&spa);
+    SPA::calculate(&spa);
 
     return spa.e < night_angle;
 }
@@ -102,7 +101,7 @@ bool NightTime::isNight(const LatLon &position, int date_jd, int time_ms, double
 {
     assert(OPL::Date::julianDayIsValid(date_jd));
     assert(OPL::Time::isValidBlockTime(time_ms));
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
 
     const QDate date = QDate::fromJulianDay(date_jd);
@@ -116,7 +115,7 @@ bool NightTime::isNight(const LatLon &position, int date_jd, int time_ms, double
     spa.latitude     = position.lat;
     spa.longitude    = position.lon;
 
-    spa_calculate(&spa);
+    SPA::calculate(&spa);
 
     return spa.e < night_angle;
 }
@@ -124,7 +123,7 @@ bool NightTime::isNight(const LatLon &position, int date_jd, int time_ms, double
 bool NightTime::isNight(double lat, double lon, int year, int month, int day, int hour, int minute,
                         double night_angle)
 {
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
 
     spa.year  = year;
@@ -136,7 +135,7 @@ bool NightTime::isNight(double lat, double lon, int year, int month, int day, in
     spa.latitude  = lat;
     spa.longitude = lon;
 
-    spa_calculate(&spa);
+    SPA::calculate(&spa);
 
     return spa.e < night_angle;
 }
@@ -148,7 +147,7 @@ QList<NightTime::Event> NightTime::nightTimeForRoute(const std::vector<LatLon> &
     // We ignore midnight crossings and assume the same date for all calculations as the changes in
     // sun elevation from one day to another are negligigble
 
-    spa_data spa;
+    SPA::data spa;
     memset(&spa, 0, sizeof(spa));
     // Set constants
     spa.year        = date.year();

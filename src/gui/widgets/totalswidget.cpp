@@ -18,9 +18,7 @@
 #include "totalswidget.h"
 #include "QtWidgets/qlineedit.h"
 #include "src/classes/settings.h"
-#include "src/classes/time.h"
 #include "src/database/database.h"
-#include "src/database/previousexperienceentry.h"
 #include "src/opl.h"
 #include "ui_totalswidget.h"
 
@@ -178,8 +176,8 @@ void TotalsWidget::timeLineEditEditingFinished()
     m_rowData.insert(db_field, value);
     LOG << "Added row data: " + db_field + ": " + value.toString();
 
-    const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
-    DB->commit(previous_experience);
+    //const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
+    //DB->commit(previous_experience);
 
     // Read back the value and set the line edit to confirm input is correct and provide user
     // feedback
@@ -200,8 +198,8 @@ void TotalsWidget::movementLineEditEditingFinished()
 
     m_rowData.insert(db_field, value);
 
-    const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
-    DB->commit(previous_experience);
+    //const auto previous_experience = OPL::PreviousExperienceEntry(ROW_ID, m_rowData);
+    //DB->commit(previous_experience);
 
     // read back the value and set the line edit to the retreived value to give user feedback
     m_rowData               = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);

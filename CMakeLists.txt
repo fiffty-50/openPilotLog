@@ -49,8 +49,6 @@ set(PROJECT_SOURCES
 
     src/gui/dialogues/entryeditdialog.h
     src/gui/dialogues/entryeditdialog.cpp
-    src/gui/dialogues/flightentryeditdialog.h
-    src/gui/dialogues/flightentryeditdialog.cpp
     src/gui/dialogues/aircraftentryeditdialog.h
     src/gui/dialogues/aircraftentryeditdialog.cpp
 
@@ -105,27 +103,12 @@ set(PROJECT_SOURCES
     src/gui/comboboxes/airportselectionbox.h
     src/gui/comboboxes/airportselectionbox.cpp
 
-    src/gui/verification/validationstate.h
-    src/gui/verification/userinput.h
-    src/gui/verification/userinput.cpp
-    src/gui/verification/timeinput.h
-    src/gui/verification/timeinput.cpp
-    src/gui/verification/airportinput.h
-    src/gui/verification/airportinput.cpp
-    src/gui/verification/pilotinput.h
-    src/gui/verification/pilotinput.cpp
-    src/gui/verification/completerprovider.h
-    src/gui/verification/completerprovider.cpp
     src/gui/verification/diacriticignoringstringlistmodel.h
     src/gui/verification/diacriticignoringcompleter.h
-    src/gui/verification/tailinput.h
-    src/gui/verification/tailinput.cpp
     src/gui/widgets/currencywidget.h
     src/gui/widgets/currencywidget.cpp
     src/gui/verification/entrybuilder.h
 
-    src/gui/verification/flightentryparser.h
-    src/gui/verification/flightentryparser.cpp
     src/gui/verification/flightdatabuilder.h
     src/gui/verification/flightdatabuilder.cpp
     src/gui/verification/flightsegmentbuilder.h
@@ -166,8 +149,6 @@ set(PROJECT_SOURCES
     src/classes/styledenginecountdelegate.cpp
 
     # Database Entries
-    src/database/flightentry.h
-    src/database/flightentry.cpp
     src/database/aircraftentry.h
     src/database/aircraftentry.cpp
     src/database/tailentry.h
@@ -176,12 +157,6 @@ set(PROJECT_SOURCES
     src/database/airportentry.cpp
     src/database/pilotentry.h
     src/database/pilotentry.cpp
-    src/database/simulatorentry.h
-    src/database/simulatorentry.cpp
-    src/database/currencyentry.h
-    src/database/currencyentry.cpp
-    src/database/previousexperienceentry.h
-    src/database/previousexperienceentry.cpp
     src/database/airportcodeentry.h
     src/database/airportcodeentry.cpp
     src/database/logentry.h
@@ -216,6 +191,7 @@ set(PROJECT_SOURCES
     src/calc/greatcircletrack.cpp
     src/calc/nighttime.h
     src/calc/nighttime.cpp
+    src/calc/spawrapper.h
     src/calc/spa.h # external
     src/calc/spa.c # external
 
@@ -260,18 +236,18 @@ set(PROJECT_SOURCES
 
 
     # Testing / Debug
-    src/testing/importCrewlounge/importcrewlounge.h
-    src/testing/importCrewlounge/importcrewlounge.cpp
-    src/testing/importCrewlounge/processpilots.h
-    src/testing/importCrewlounge/processpilots.cpp
-    src/testing/importCrewlounge/processaircraft.h
-    src/testing/importCrewlounge/processaircraft.cpp
-    src/testing/importCrewlounge/processflights.h
-    src/testing/importCrewlounge/processflights.cpp
+    #src/testing/importCrewlounge/importcrewlounge.h
+    #src/testing/importCrewlounge/importcrewlounge.cpp
+    #src/testing/importCrewlounge/processpilots.h
+    #src/testing/importCrewlounge/processpilots.cpp
+    #src/testing/importCrewlounge/processaircraft.h
+    #src/testing/importCrewlounge/processaircraft.cpp
+    #src/testing/importCrewlounge/processflights.h
+    #src/testing/importCrewlounge/processflights.cpp
     src/testing/atimer.h
     src/testing/atimer.cpp
-    src/testing/randomgenerator.h
-    src/testing/randomgenerator.cpp
+    #src/testing/randomgenerator.h
+    #src/testing/randomgenerator.cpp
 
 )
 

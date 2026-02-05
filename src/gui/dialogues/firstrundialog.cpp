@@ -22,7 +22,6 @@
 #include "src/classes/style.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
-#include "src/database/previousexperienceentry.h"
 #include "src/database/row.h"
 #include "src/functions/datetime.h"
 #include "src/gui/widgets/backupwidget.h"
@@ -329,20 +328,22 @@ bool FirstRunDialog::setupDatabase()
 
 bool FirstRunDialog::createUserEntry()
 {
-    auto owner = OPL::PilotEntry();
-    if (!owner.setName(ui->lastnameLineEdit->text())) {
-        WARN(tr("Invalid Name."));
-    }
+    // auto owner = OPL::PilotEntry();
+    // if (!owner.setName(ui->lastnameLineEdit->text())) {
+    //     WARN(tr("Invalid Name."));
+    // }
 
-    return DB->commit(owner);
+    // return DB->commit(owner);
+    return false;
 }
 
 bool FirstRunDialog::setupPreviousExperienceEntry()
 {
-    OPL::RowData_T prevData;
-    prevData.insert(OPL::PreviousExperienceEntry::TBLK, 0);
-    auto pXpEntry = OPL::PreviousExperienceEntry(1, prevData);
-    return DB->commit(pXpEntry);
+    // OPL::RowData_T prevData;
+    // prevData.insert(OPL::PreviousExperienceEntry::TBLK, 0);
+    // auto pXpEntry = OPL::PreviousExperienceEntry(1, prevData);
+    // return DB->commit(pXpEntry);
+    return false;
 }
 
 bool FirstRunDialog::writeCurrencies()
@@ -358,23 +359,23 @@ bool FirstRunDialog::writeCurrencies()
 
     const QDate today = QDate::currentDate();
 
-    for (const auto &pair : currencies) {
-        // list 0-indexed, db row indexes start at 1
-        OPL::CurrencyEntry currencyEntry =
-            OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
+    // for (const auto &pair : currencies) {
+    //     // list 0-indexed, db row indexes start at 1
+    //     OPL::CurrencyEntry currencyEntry =
+    //         OPL::CurrencyEntry(currencies.indexOf(pair) + 1, OPL::RowData_T());
 
-        currencyEntry.setName(pair.first);
+    //     currencyEntry.setName(pair.first);
 
-        // only set expiry date if user has modified it
-        const QDate date = pair.second->date();
-        if (date != today) {
-            int julianDay = date.toJulianDay();
-            currencyEntry.setExpiryDate(julianDay);
-        }
+    //     // only set expiry date if user has modified it
+    //     const QDate date = pair.second->date();
+    //     if (date != today) {
+    //         int julianDay = date.toJulianDay();
+    //         currencyEntry.setExpiryDate(julianDay);
+    //     }
 
-        if (!DB->commit(currencyEntry)) return false;
-    }
-    return true;
+    //     if (!DB->commit(currencyEntry)) return false;
+    // }
+    return false;
 }
 
 void FirstRunDialog::reject()

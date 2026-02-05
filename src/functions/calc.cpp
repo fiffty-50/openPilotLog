@@ -293,36 +293,36 @@ bool OPL::Calc::isNight(const QString &icao, const QDateTime &event_time, int ni
     }
 }
 
-/*!
- * \brief OPL::Calc::updateNightTimes updates the night times in the database,
- * used when changing night angle setting for example
- */
-void OPL::Calc::updateNightTimes()
-{
-    int night_angle = Settings::getNightAngle();
+// /*!
+//  * \brief OPL::Calc::updateNightTimes updates the night times in the database,
+//  * used when changing night angle setting for example
+//  */
+// void OPL::Calc::updateNightTimes()
+// {
+//     int night_angle = Settings::getNightAngle();
 
-    // find all flights for aircraft
-    auto statement   = QStringLiteral("SELECT ROWID FROM flights");
-    auto flight_list = DB->customQuery(statement, 1);
+//     // find all flights for aircraft
+//     auto statement   = QStringLiteral("SELECT ROWID FROM flights");
+//     auto flight_list = DB->customQuery(statement, 1);
 
-    if (flight_list.isEmpty()) {
-        DEB << "No flights found.";
-        return;
-    }
-    DEB << "Updating " << flight_list.length() << " flights in the database.";
+//     if (flight_list.isEmpty()) {
+//         DEB << "No flights found.";
+//         return;
+//     }
+//     DEB << "Updating " << flight_list.length() << " flights in the database.";
 
-    for (const auto &item : std::as_const(flight_list)) {
+//     for (const auto &item : std::as_const(flight_list)) {
 
-        auto flt      = DB->getFlightEntry(item.toInt());
-        auto data     = flt.getData();
-        auto dateTime = QDateTime(
-            QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
-            QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60), QTimeZone::UTC);
-        data.insert(OPL::FlightEntry::TNIGHT,
-                    calculateNightTime(data.value(OPL::FlightEntry::DEPT).toString(),
-                                       data.value(OPL::FlightEntry::DEST).toString(), dateTime,
-                                       data.value(OPL::FlightEntry::TBLK).toInt(), night_angle));
-        flt.setData(data);
-        DB->commit(flt);
-    }
-}
+//         auto flt      = DB->getFlightEntry(item.toInt());
+//         auto data     = flt.getData();
+//         auto dateTime = QDateTime(
+//             QDate::fromString(data.value(OPL::FlightEntry::DOFT).toString(), Qt::ISODate),
+//             QTime().addSecs(data.value(OPL::FlightEntry::TOFB).toInt() * 60), QTimeZone::UTC);
+//         data.insert(OPL::FlightEntry::TNIGHT,
+//                     calculateNightTime(data.value(OPL::FlightEntry::DEPT).toString(),
+//                                        data.value(OPL::FlightEntry::DEST).toString(), dateTime,
+//                                        data.value(OPL::FlightEntry::TBLK).toInt(), night_angle));
+//         flt.setData(data);
+//         DB->commit(flt);
+//     }
+// }

@@ -16,9 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "pilotentryeditdialog.h"
-#include "src/gui/verification/completerprovider.h"
 #include "src/opl.h"
-
 #include "src/database/database.h"
 
 /*!
@@ -79,9 +77,6 @@ void PilotEntryEditDialog::init()
     companyLabel    = new QLabel(this);
     companyLineEdit = new QLineEdit(this);
     companyLineEdit->setObjectName(QStringLiteral("companyLineEdit"));
-    auto completer = QCompleterProvider.getCompleter(CompleterProvider::Companies);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
-    companyLineEdit->setCompleter(completer);
     addWidgets(companyLabel, companyLineEdit);
 
     // Row 2

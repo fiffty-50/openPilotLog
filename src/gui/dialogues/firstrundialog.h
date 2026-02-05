@@ -18,7 +18,7 @@
 #ifndef FIRSTRUNDIALOG_H
 #define FIRSTRUNDIALOG_H
 
-#include "src/database/currencyentry.h"
+#include "src/opl.h"
 #include <QButtonGroup>
 #include <QDateEdit>
 #include <QDialog>

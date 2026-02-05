@@ -19,10 +19,10 @@
 
 namespace OPL {
 
-AirportEntry::AirportEntry() : Row(DbTable::Airports, &FIELDS) {}
+AirportEntry::AirportEntry() : Row(DbTable::v2Airports, &FIELDS) {}
 
 AirportEntry::AirportEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::Airports, row_id, row_data, &FIELDS)
+    : Row(DbTable::v2Airports, row_id, row_data, &FIELDS)
 {
 }
 
