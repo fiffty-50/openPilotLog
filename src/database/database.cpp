@@ -20,6 +20,7 @@
 #include "src/database/flightlogentry.h"
 #include "src/opl.h"
 #include <iterator>
+#include <qsqlerror.h>
 #include <utility>
 
 namespace OPL {
@@ -88,7 +89,7 @@ void Database::updateLayout()
         }
         tableColumns.insert(table_name, table_columns);
     }
-    emit dataBaseUpdated(DbTable::Any);
+    on_database_updated(DbTable::Any);
 }
 
 const QString Database::sqliteVersion() const
@@ -167,6 +168,7 @@ bool Database::commit(FlightDataBuilder &builder)
 {
     if (exists(DbTable::v2LogEvents, builder.eventId())) {
         LOG << "Log Event already exists. Update logic not yet implemented.";
+        lastError = QSqlError("Log event already exists. Update logic not yet implemented");
         return false;
     }
 
@@ -243,7 +245,7 @@ bool Database::remove(const OPL::Row &row)
     if (query.exec()) {
         LOG << "Entry removed:";
         LOG << row;
-        emit dataBaseUpdated(row.getTable());
+        on_database_updated(row.getTable());
         return true;
     }
     else {
@@ -270,7 +272,7 @@ bool Database::remove(OPL::DbTable table, int row_id)
         DEB << statement;
         DEB << query.lastQuery();
         LOG << "Entry removed: Table " << table_name << ", ROWID " << row_id;
-        emit dataBaseUpdated(table);
+        on_database_updated(table);
         return true;
     }
     else {
@@ -304,7 +306,7 @@ bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
     if (errorCount == 0) {
         query.prepare(QStringLiteral("COMMIT"));
         if (query.exec()) {
-            emit dataBaseUpdated(table);
+            on_database_updated(table);
             LOG << "Transaction successfull.";
             return true;
         }
@@ -432,7 +434,7 @@ bool Database::update(const OPL::Row &updated_row)
     //     if (query.exec())
     //     {
     //         LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
-    //         emit dataBaseUpdated(updated_row.getTable());
+    //         on_database_updated(updated_row.getTable());
     //         return true;
     //     } else {
     //         DEB << "Unable to commit.";
@@ -485,7 +487,7 @@ bool Database::update(const OPL::Row &updated_row)
     }
 
     LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
-    emit dataBaseUpdated(updated_row.getTable());
+    on_database_updated(updated_row.getTable());
     return true;
 }
 
@@ -526,7 +528,7 @@ bool Database::insert(const OPL::Row &new_row)
     //     if (query.exec())
     //     {
     //         LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
-    //         emit dataBaseUpdated(new_row.getTable());
+    //         on_database_updated(new_row.getTable());
     //         return true;
     //     } else {
     //         DEB << "Unable to commit.";
@@ -578,7 +580,7 @@ bool Database::insert(const OPL::Row &new_row)
     }
 
     LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
-    emit dataBaseUpdated(new_row.getTable());
+    on_database_updated(new_row.getTable());
     return true;
 }
 
@@ -901,6 +903,12 @@ const RowData_T Database::getTotals(bool includePreviousExperience)
     }
 
     return entry_data;
+}
+
+void Database::on_database_updated(DbTable table)
+{
+    LOG << "Emitting database update for table: " << OPL::GLOBALS->getDbTableName(table);
+    emit dataBaseUpdated(table);
 }
 
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)

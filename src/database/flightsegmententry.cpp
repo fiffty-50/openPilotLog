@@ -63,8 +63,8 @@ FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms, 
     if (optionals.is_pilot_flying) m_rowData.insert(IS_PILOT_FLYING, *optionals.is_pilot_flying);
     if (optionals.pilot_function) {
         const auto &func = *optionals.pilot_function;
-        if (!GLOBALS->getPilotFunctions()->values().contains(func)) {
-            m_rowData.insert(PILOT_FUNCTION, *optionals.pilot_function);
+        if (GLOBALS->getPilotFunctions()->values().contains(func)) {
+            m_rowData.insert(PILOT_FUNCTION, func);
         }
     }
 }

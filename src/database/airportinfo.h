@@ -39,6 +39,8 @@ class AirportInfo : public QObject {
   public:
     explicit AirportInfo(QObject *parent = nullptr);
 
+    void init() { refreshIndices(); }
+
     /*!
      * \brief Returns the airport name for the given row ID.
      */
@@ -89,6 +91,8 @@ class AirportInfo : public QObject {
      */
     QString iata(const QString &icao);
 
+    const QMap<QString, int>& allCodesMap() const { return m_allCodesToAirportId; }
+
   private:
     QSqlTableModel *m_model = nullptr;
 
@@ -96,6 +100,7 @@ class AirportInfo : public QObject {
     QHash<int, int> m_airportIdToRow; // airport_id → row in model
     QHash<QString, int> m_icaoToAirportId;
     QHash<QString, int> m_iataToAirportId;
+    QMap<QString, int> m_allCodesToAirportId;
 
     const static inline QString FIELD_IATA  = QStringLiteral("iata_code");
     const static inline QString FIELD_ICAO  = QStringLiteral("icao_code");

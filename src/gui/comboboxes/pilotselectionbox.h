@@ -2,16 +2,14 @@
 #define PILOTSELECTIONBOX_H
 
 #include "dbselectioncombobox.h"
+#include "src/database/pilotinfo.h"
 
 class PilotSelectionBox : public DbSelectionComboBox {
   public:
     PilotSelectionBox(QWidget *parent = nullptr);
 
   protected:
-    QString getQuery() const override
-    {
-        return QStringLiteral("SELECT pilot_id, pilot_name FROM pilots");
-    }
+    const QMap<QString, int> &getMap() const { return pilotsData->nameMap(); }
 };
 
 #endif // PILOTSELECTIONBOX_H

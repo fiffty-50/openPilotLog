@@ -30,12 +30,18 @@ PilotsInfo::PilotsInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTable
     refreshIndices();
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::v2Pilots) {
+            LOG << "Updating Pilot Info.";
             m_model->select();
             while (m_model->canFetchMore())
                 m_model->fetchMore();
             refreshIndices();
         }
     });
+
+
+    for (auto it = m_nameToPilotId.constBegin(); it != m_nameToPilotId.constEnd(); ++it) {
+        m_nameToPilotIdMap.insert(it.key(), it.value());
+    }
 }
 
 void PilotsInfo::refreshIndices()
@@ -44,6 +50,7 @@ void PilotsInfo::refreshIndices()
 
     m_pilotIdToRow.clear();
     m_nameToPilotId.clear();
+    m_nameToPilotIdMap.clear();
 
     m_pilotIdToRow.reserve(rows);
     m_nameToPilotId.reserve(rows);
@@ -53,7 +60,10 @@ void PilotsInfo::refreshIndices()
         QString name = m_model->data(m_model->index(row, COLUMN_NAME)).toString();
 
         m_pilotIdToRow.insert(pilotId, row);
-        if (!name.isEmpty()) m_nameToPilotId.insert(name, pilotId);
+        if (!name.isEmpty()) {
+            m_nameToPilotId.insert(name, pilotId);
+            m_nameToPilotIdMap.insert(name, pilotId);
+        }
     }
 }
 

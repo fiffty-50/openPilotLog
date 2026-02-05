@@ -23,6 +23,8 @@
 #include "src/database/airportinfo.h"
 #include "src/database/database.h"
 #include "src/database/databasecache.h"
+#include "src/database/pilotinfo.h"
+#include "src/database/tailregistrationsinfo.h"
 #include "src/functions/calc.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/flightentryeditdialog.h"
@@ -111,6 +113,10 @@ void MainWindow::connectDatabase()
     }
 
     // Load Cache
+    tailsData->init();
+    airportData->init();
+    airportGeoData->init();
+    pilotsData->init();
     DBCache->init();
 }
 
@@ -266,7 +272,9 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 
 void MainWindow::debug()
 {
-    auto d = OPL::FlightLogEntryEditDialog(this);
-    d.exec();
 
+
+    auto d = OPL::FlightLogEntryEditDialog(this);
+    d.loadEntry(8);
+    d.exec();
 }

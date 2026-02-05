@@ -35,7 +35,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTimeEdit>
-#include <qtmetamacros.h>
 
 namespace OPL {
 
@@ -60,25 +59,23 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     void readSettings();
 
     // dialog flow
-    bool addNewEntry(DbSelectionComboBox *box);
-    bool addNewDatabaseElement(DbSelectionComboBox *box);
-    bool m_addNewOffered = false; // de-bounce repeated triggering of editing finished by QCompleter
-    bool m_addNewDialogExecuted = false;
+    bool offerToAddNewDatabaseElement(const DbSelectionComboBox *box);
+    std::optional<int> addNewEntry(const DbSelectionComboBox *box);
+    EntryEditDialog *getEntryEditDialog(const DbSelectionComboBox *box);
+    bool setComboBoxValue(DbSelectionComboBox *box, int row_id);
 
     // data collection and verification
-    bool runSanityChecks();
     FlightDataBuilder collectFlightDataFromUi();
 
     // UI Elements
     int m_eventId = 0;
-    double m_night_angle;
-
+    const double m_night_angle;
     const QString m_dateFormatString;
     const QString m_timeFormatString;
 
   private slots:
     void on_accepted();
-    void on_selectionComboBox_unkownValueEntered(DbSelectionComboBox *caller);
+    void on_unknown_value_entered(DbSelectionComboBox *box);
     void on_pilotFlyingCheckBoxStateChanged(Qt::CheckState state);
     void inline on_badInputReceived(QWidget *caller)
     {

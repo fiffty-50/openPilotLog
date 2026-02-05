@@ -19,6 +19,7 @@
 #define TAILREGISTRATIONSINFO_H
 
 #include <QHash>
+#include <QMap>
 #include <QObject>
 
 /*!
@@ -39,6 +40,8 @@ class TailRegistrationsInfo : public QObject {
   public:
     explicit TailRegistrationsInfo(QObject *parent = nullptr);
 
+    void init() { refresh(); }
+
     /*!
      * \brief Returns whether a row id exists in the database
      */
@@ -54,9 +57,13 @@ class TailRegistrationsInfo : public QObject {
      */
     QString registration(int tailId) const;
 
+    const QMap<QString, int>& registrationsMap() const { return m_registrationMap; }
+
   private:
     QHash<QString, int> m_registrationToId;
     QHash<int, QString> m_idToRegistration;
+    QMap<QString, int> m_registrationMap;
+
 
     void refresh();
 };

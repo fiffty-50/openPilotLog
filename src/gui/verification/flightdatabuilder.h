@@ -24,6 +24,7 @@
 #include "src/database/logentry.h"
 #include "src/database/movemententry.h"
 #include "src/gui/verification/flightsegmentbuilder.h"
+#include "src/opl.h"
 #include <optional>
 
 namespace OPL {
@@ -61,6 +62,8 @@ class FlightDataBuilder {
     // optional data
     bool addMovement(int airport_id, bool is_landing, bool is_night, bool is_autoland = false);
     void addRemarks(const QString &remarks);
+    void addFlightNumber(const QString &flight_number);
+    void addPilotFunction(OPL::PilotFunction funcion);
     bool addSecondPilot(int pilot_id);
     // bool addApproach(const QString &approach_type);
 
@@ -90,11 +93,12 @@ class FlightDataBuilder {
     int m_flight_id      = -1;
 
     // optional entries
-    std::optional<int> m_second_pilot_id;
-    std::optional<int> m_third_pilot_id;
-    std::optional<int> m_fourth_pilot_id;
-    std::optional<QString> m_remarks;
-    std::optional<QString> m_flight_number;
+    std::optional<int> m_second_pilot_id_opt;
+    std::optional<int> m_third_pilot_id_opt;
+    std::optional<int> m_fourth_pilot_id_opt;
+    std::optional<QString> m_remarks_opt;
+    std::optional<QString> m_flight_number_opt;
+    std::optional<OPL::PilotFunction> m_pilot_function_opt;
 
     struct MovementData {
         int airport_id;

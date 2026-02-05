@@ -2,16 +2,14 @@
 #define TAILSELECTIONBOX_H
 
 #include "dbselectioncombobox.h"
+#include "src/database/tailregistrationsinfo.h"
 
 class TailSelectionBox : public DbSelectionComboBox {
   public:
     TailSelectionBox(QWidget *parent = nullptr);
 
   protected:
-    QString getQuery() const override
-    {
-        return QStringLiteral("SELECT tail_id, registration FROM aircraft_tails");
-    }
+    const QMap<QString, int> &getMap() const { return tailsData->registrationsMap(); }
 };
 
 #endif // TAILSELECTIONBOX_H

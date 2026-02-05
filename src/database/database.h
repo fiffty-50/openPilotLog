@@ -403,6 +403,8 @@ class Database : public QObject {
      * @return The sum of all entries in the flights table
      */
     const RowData_T getTotals(bool includePreviousExperience);
+
+    void on_database_updated(OPL::DbTable table);
   signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.
@@ -416,6 +418,7 @@ class Database : public QObject {
      * example when creating or restoring a backup.
      */
     void connectionReset();
+
 };
 
 } // namespace OPL

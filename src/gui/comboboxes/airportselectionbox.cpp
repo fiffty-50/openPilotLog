@@ -1,8 +1,12 @@
 #include "airportselectionbox.h"
+#include "src/database/database.h"
 
 AirportSelectionBox::AirportSelectionBox(QWidget *parent)
     : DbSelectionComboBox(OPL::DbTable::v2AirportCodes, parent)
 {
     refresh();
+    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+        if (table == m_table) refresh();
+    });
     this->setCurrentText({});
 }

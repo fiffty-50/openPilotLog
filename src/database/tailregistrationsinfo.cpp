@@ -26,6 +26,7 @@ TailRegistrationsInfo::TailRegistrationsInfo(QObject *parent) : QObject{parent}
 
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::v2AircraftTails) refresh();
+        LOG << "Updating Tail Registration Info.";
     });
 }
 
@@ -33,6 +34,7 @@ void TailRegistrationsInfo::refresh()
 {
     m_registrationToId.clear();
     m_idToRegistration.clear();
+    m_registrationMap.clear();
 
     QSqlQuery query;
     query.exec("SELECT ROWID, registration FROM aircraft_tails");
@@ -43,6 +45,7 @@ void TailRegistrationsInfo::refresh()
 
         if (!reg.isEmpty()) {
             m_registrationToId.insert(reg, id);
+            m_registrationMap.insert(reg, id);
             m_idToRegistration.insert(id, reg);
         }
     }

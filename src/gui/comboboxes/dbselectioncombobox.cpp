@@ -16,7 +16,6 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "dbselectioncombobox.h"
-#include "src/database/database.h"
 #include "src/gui/verification/diacriticignoringcompleter.h"
 #include "src/opl.h"
 #include <QCompleter>
@@ -32,28 +31,20 @@ DbSelectionComboBox::DbSelectionComboBox(OPL::DbTable table, QWidget *parent)
 
 void DbSelectionComboBox::refresh()
 {
-    DEB << "Refreshing DB Selection Combo Box for table: " << OPL::GLOBALS->getDbTableName(m_table);
+    LOG << "Updating combo box for table: " << OPL::GLOBALS->getDbTableName(m_table);
     this->blockSignals(true);
     this->lineEdit()->blockSignals(true);
 
-    m_map.clear(); // clear map data
-    clear();       // clear the box
-
-    // Get the data from the DB and fill the map
-    QSqlQuery q(getQuery());
-    q.exec();
-
-    while (q.next()) {
-        m_map.insert(q.value(1).toString(), q.value(0).toInt());
-    }
-
-    for (auto it = m_map.constBegin(); it != m_map.constEnd(); ++it) {
+    // clear and re-set the box
+    clear();
+    auto map = getMap();
+    for (auto it = map.constBegin(); it != map.constEnd(); ++it) {
         addItem(it.key(), it.value());
     }
 
     // re-set the completer
     setCompleter(nullptr);
-    auto completer = DiacriticIgnoringCompleter::createCompleter(m_map.keys(), this);
+    auto completer = DiacriticIgnoringCompleter::createCompleter(map.keys(), this);
 
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -63,21 +54,32 @@ void DbSelectionComboBox::refresh()
     this->lineEdit()->blockSignals(false);
 }
 
+bool DbSelectionComboBox::verifyContent()
+{
+    const auto &text = currentText();
+    if(text.isEmpty()) return false;
+
+    if(getMap().contains(text)) {
+        setStyleSheet({});
+        return true;
+    } else {
+        setStyleSheet(OPL::CssStyles::RED_BORDER);
+        return false;
+    }
+}
+
 void DbSelectionComboBox::connectSlots()
 {
+
+    // trigger validation when content is changed by user or programatically
+    connect(this, &QComboBox::activated, this, [this]() { verifyContent(); });
+    connect(this, &QComboBox::highlighted, this, [this](int idx) { setCurrentIndex(idx); });
+    connect(this, &QComboBox::currentIndexChanged, this, [this]() { verifyContent(); });
+
     // When the widget loses focus while the user has been typing, try to use an autocompletion.
     // If unable, emit newValueEntered
     connect(lineEdit(), &QLineEdit::editingFinished, this,
             &DbSelectionComboBox::on_editingFinished);
-
-    // call refresh when the database table has been updated
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == m_table) refresh();
-    });
-
-    // Make sure that Completion clears the style Sheet
-    connect(this, &QComboBox::activated, this, [this]() { setStyleSheet(QString()); });
-    connect(this, &QComboBox::highlighted, this, [this](int idx) { setCurrentIndex(idx); });
 }
 
 void DbSelectionComboBox::on_editingFinished()
@@ -90,7 +92,7 @@ void DbSelectionComboBox::on_editingFinished()
         if (text.isEmpty()) return;
 
         // if the input is contained in the map, it is valid
-        if (m_map.contains(text)) {
+        if (getMap().contains(text)) {
             setStyleSheet(QString());
             return;
         }

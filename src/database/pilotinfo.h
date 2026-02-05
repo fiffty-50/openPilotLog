@@ -38,6 +38,8 @@ class PilotsInfo : public QObject {
   public:
     explicit PilotsInfo(QObject *parent = nullptr);
 
+    void init() { refreshIndices(); }
+
     /*!
      * \brief Returns whether a row id exists in the database
      */
@@ -78,12 +80,15 @@ class PilotsInfo : public QObject {
      */
     int idFromName(const QString &name) const;
 
+    const QMap<QString, int> &nameMap() const { return m_nameToPilotIdMap; }
+
   private:
     QSqlTableModel *m_model = nullptr;
 
     // Maps
     QHash<int, int> m_pilotIdToRow;      // pilot_id → row
     QHash<QString, int> m_nameToPilotId; // name → pilot_id
+    QMap<QString, int> m_nameToPilotIdMap;
 
     static constexpr int COLUMN_PILOT_ID = 0;
     static constexpr int COLUMN_NAME     = 1;

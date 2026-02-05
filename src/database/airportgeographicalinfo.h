@@ -40,6 +40,8 @@ class AirportGeographicalInfo : public QObject {
   public:
     explicit AirportGeographicalInfo(QObject *parent = nullptr);
 
+    void inline init() { refresh(); }
+
     /*!
      * \brief Returns the latitude for the given airport ID.
      */

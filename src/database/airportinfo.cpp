@@ -33,6 +33,7 @@ AirportInfo::AirportInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTab
 
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::v2Airports || table == OPL::DbTable::v2AirportCodes) {
+            LOG << "Updating Airport Info.";
             m_model->select();
             while (m_model->canFetchMore())
                 m_model->fetchMore();
@@ -47,6 +48,7 @@ void AirportInfo::refreshIndices()
     m_airportIdToRow.clear();
     m_icaoToAirportId.clear();
     m_iataToAirportId.clear();
+    m_allCodesToAirportId.clear();
     m_icaoToAirportId.reserve(row_count);
     m_iataToAirportId.reserve(row_count);
     m_airportIdToRow.reserve(row_count);
@@ -57,8 +59,14 @@ void AirportInfo::refreshIndices()
         QString iata  = m_model->data(m_model->index(row, COLUMN_IATA)).toString();
 
         m_airportIdToRow.insert(airportId, row);
-        if (!icao.isEmpty()) m_icaoToAirportId.insert(icao, airportId);
-        if (!iata.isEmpty()) m_iataToAirportId.insert(iata, airportId);
+        if (!icao.isEmpty()){
+            m_icaoToAirportId.insert(icao, airportId);
+            m_allCodesToAirportId.insert(icao, airportId);
+        }
+        if (!iata.isEmpty()) {
+            m_iataToAirportId.insert(iata, airportId);
+            m_allCodesToAirportId.insert(iata, airportId);
+        }
     }
 }
 

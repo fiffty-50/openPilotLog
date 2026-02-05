@@ -44,6 +44,8 @@ class DbSelectionComboBox : public QComboBox {
   public:
     DbSelectionComboBox(OPL::DbTable table, QWidget *parent = nullptr);
     OPL::DbTable table() const { return m_table; }
+    void refresh();
+    bool verifyContent();
 
   signals:
     /*!
@@ -59,13 +61,10 @@ class DbSelectionComboBox : public QComboBox {
     void connectSlots();
     bool completionIsAvailable();
 
-    // value -> row_id
-    QMap<QString, int> m_map;
-
   protected:
-    virtual QString getQuery() const = 0;
-    void refresh();
     OPL::DbTable m_table;
+    virtual const QMap<QString, int>& getMap() const = 0;
+
 };
 
 #endif // DBSELECTIONCOMBOBOX_H

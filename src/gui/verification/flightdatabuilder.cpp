@@ -26,6 +26,7 @@
 #include "src/database/pilotinfo.h"
 #include "src/database/tailregistrationsinfo.h"
 #include "src/opl.h"
+#include <QObject>
 #include <utility>
 
 namespace OPL {
@@ -33,45 +34,66 @@ namespace OPL {
 // Validation
 bool FlightDataBuilder::validate()
 {
+    LOG << QStringLiteral("Validating flight data...");
     bool allValid = true;
     m_errors.clear();
     // Mandatory Log data
     if (m_date_jd == OPL::NullData) {
-        m_errors << "Invalid Date.";
+        m_errors << QStringLiteral("Invalid Date.");
         allValid = false;
     }
 
     // mandatory Flight Data
     if (m_departure_id == OPL::NullData) {
-        m_errors << "Invalid Departure id.";
+        m_errors << QStringLiteral("Invalid Departure id.");
         allValid = false;
     }
     if (m_destination_id == OPL::NullData) {
-        m_errors << "Invalid Destination id.";
+        m_errors << QStringLiteral("Invalid Destination id.");
         allValid = false;
     }
     if (m_time_off_ms == OPL::NullData) {
-        m_errors << "Invalid Time Off Blocks.";
+        m_errors << QStringLiteral("Invalid Time Off Blocks.");
         allValid = false;
     }
     if (m_time_on_ms == OPL::NullData) {
-        m_errors << "Invalid Time On Blocks.";
+        m_errors << QStringLiteral("Invalid Time On Blocks.");
         allValid = false;
     }
     if (m_pic_id == OPL::NullData) {
-        m_errors << "Invalid pic id.";
+        m_errors << QStringLiteral("Invalid pic id.");
         allValid = false;
     }
     if (m_tail_id == OPL::NullData) {
-        m_errors << "Invalid tail id.";
+        m_errors << QStringLiteral("Invalid tail id.");
         allValid = false;
     }
 
     // at least one segment must be present
     if (m_segment_data.isEmpty()) {
-        m_errors << "Invalid Flight Segment Data.";
+        m_errors << QStringLiteral("Invalid Flight Segment Data.");
         allValid = false;
     }
+    LOG << QStringLiteral("Mandatory flight data valid.");
+
+    // run some sanity checks on the data that has been collected
+    if (m_pic_id == m_second_pilot_id_opt) {
+        m_errors << QStringLiteral("PIC and SIC are the same.");
+        allValid &= false;
+    }
+
+    bool owner_is_pic = m_pic_id == OPL::LOGBOOK_OWNER_ID;
+    if (m_pilot_function_opt) {
+        auto function = m_pilot_function_opt.value();
+        bool function_is_pic_compatible =
+            (function == OPL::PilotFunction::PIC || function == OPL::PilotFunction::FI);
+        if (owner_is_pic != function_is_pic_compatible) {
+            m_errors << QStringLiteral("PIC and Pilot Function are inconsistent.");
+            allValid &= false;
+        }
+    }
+
+    LOG << QStringLiteral("All cheks passed.");
 
     return allValid;
 }
@@ -152,14 +174,24 @@ bool FlightDataBuilder::addTail(int tail_id)
 }
 
 // Optional Data Setters
-void FlightDataBuilder::addRemarks(const QString &remarks) { m_remarks = remarks; }
+void FlightDataBuilder::addRemarks(const QString &remarks) { m_remarks_opt = remarks; }
 
 bool FlightDataBuilder::addSecondPilot(int pilot_id)
 {
     if (!pilotsData->exists(pilot_id)) return false;
-    m_pic_id = pilot_id;
+    m_second_pilot_id_opt = pilot_id;
 
     return true;
+}
+
+void FlightDataBuilder::addFlightNumber(const QString &flight_number)
+{
+    if (!flight_number.isEmpty()) m_flight_number_opt = flight_number;
+}
+
+void FlightDataBuilder::addPilotFunction(OPL::PilotFunction function)
+{
+    m_pilot_function_opt = function;
 }
 
 // Entry creation
@@ -168,7 +200,7 @@ LogEntry FlightDataBuilder::logEntry() const
     LogEntry entry;
     entry.setEventType(EVENT_TYPE);
     entry.setDate(m_date_jd);
-    if (m_remarks) entry.setRemarks(*m_remarks);
+    if (m_remarks_opt) entry.setRemarks(*m_remarks_opt);
 
     return entry;
 }
@@ -194,10 +226,10 @@ FlightLogEntry FlightDataBuilder::flightLogEntry() const
     entry.setTail(m_tail_id);
 
     // optional data
-    if (m_second_pilot_id) entry.setSecondPilot(*m_second_pilot_id);
-    if (m_third_pilot_id) entry.setThirdPilot(*m_third_pilot_id);
-    if (m_fourth_pilot_id) entry.setFourthPilot(*m_fourth_pilot_id);
-    if (m_flight_number) entry.setFlightNumber(*m_flight_number);
+    if (m_second_pilot_id_opt) entry.setSecondPilot(*m_second_pilot_id_opt);
+    if (m_third_pilot_id_opt) entry.setThirdPilot(*m_third_pilot_id_opt);
+    if (m_fourth_pilot_id_opt) entry.setFourthPilot(*m_fourth_pilot_id_opt);
+    if (m_flight_number_opt) entry.setFlightNumber(*m_flight_number_opt);
 
     return entry;
 }

@@ -132,7 +132,7 @@ OPL::Row::operator QString() const
 
     out += "\n";
     QTextStream(stdout) << out;
-    return out;
+    return {};
 }
 
 } // namespace OPL
