@@ -60,7 +60,7 @@ class SettingsWidget : public QWidget {
     void on_employeeidLineEdit_editingFinished();
     void on_emailLineEdit_editingFinished();
     void on_phoneLineEdit_editingFinished();
-    void on_aliasComboBox_currentIndexChanged(int index);
+    void on_aliasComboBox_currentTextChanged(const QString &text);
     void on_functionComboBox_currentIndexChanged(int arg1);
     void on_rulesComboBox_currentIndexChanged(int arg1);
     void on_approachComboBox_currentIndexChanged(int arg1);

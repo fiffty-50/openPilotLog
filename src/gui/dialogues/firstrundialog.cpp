@@ -284,7 +284,7 @@ void FirstRunDialog::writeSettings()
         break;
     }
 
-    Settings::setShowSelfAs(ui->aliasComboBox->currentIndex());
+    Settings::setShowSelfAs(ui->aliasComboBox->currentText());
     Settings::sync();
 }
 

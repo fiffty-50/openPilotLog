@@ -99,6 +99,8 @@ class PilotsInfo : public QObject {
     static constexpr int COLUMN_EMAIL    = 6;
     static constexpr int COLUMN_REMARKS  = 7;
 
+    static inline std::optional<QString> S_OWNER_ALIAS;
+
     void refreshIndices();
     QString dataForPilotId(int pilotId, int column) const;
 };

@@ -275,6 +275,6 @@ void MainWindow::debug()
 
 
     auto d = OPL::FlightLogEntryEditDialog(this);
-    d.loadEntry(8);
+    //d.loadEntry(8);
     d.exec();
 }

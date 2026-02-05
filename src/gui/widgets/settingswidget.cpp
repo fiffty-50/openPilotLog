@@ -102,7 +102,7 @@ void SettingsWidget::readSettings()
     ui->apiKeyLineEdit->setText(Settings::getFlightAwareApiKey());
 
     ui->logbookViewComboBox->setCurrentIndex(static_cast<int>(Settings::getLogbookView()));
-    ui->aliasComboBox->setCurrentIndex(Settings::getShowSelfAs());
+    ui->aliasComboBox->setCurrentText(Settings::getShowSelfAs());
 
     // Misc Tab
     ui->acftSortComboBox->setCurrentIndex(Settings::getTailSortColumn());
@@ -190,9 +190,9 @@ void SettingsWidget::on_phoneLineEdit_editingFinished() { updatePersonalDetails(
  * Flight Logging Tab
  */
 
-void SettingsWidget::on_aliasComboBox_currentIndexChanged(int index)
+void SettingsWidget::on_aliasComboBox_currentTextChanged(const QString &text)
 {
-    Settings::setShowSelfAs(index);
+    Settings::setShowSelfAs(text);
     updatePersonalDetails();
 }
 

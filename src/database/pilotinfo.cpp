@@ -16,6 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "pilotinfo.h"
+#include "src/classes/settings.h"
 #include "src/database/database.h"
 #include "src/opl.h"
 
@@ -38,10 +39,15 @@ PilotsInfo::PilotsInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTable
         }
     });
 
+    const QString owner_alias = Settings::getShowSelfAs();
 
-    for (auto it = m_nameToPilotId.constBegin(); it != m_nameToPilotId.constEnd(); ++it) {
-        m_nameToPilotIdMap.insert(it.key(), it.value());
+    if (!owner_alias.isEmpty()) {
+        S_OWNER_ALIAS = owner_alias;
     }
+
+    // for (auto it = m_nameToPilotId.constBegin(); it != m_nameToPilotId.constEnd(); ++it) {
+    //     m_nameToPilotIdMap.insert(it.key(), it.value());
+    // }
 }
 
 void PilotsInfo::refreshIndices()
@@ -64,6 +70,12 @@ void PilotsInfo::refreshIndices()
             m_nameToPilotId.insert(name, pilotId);
             m_nameToPilotIdMap.insert(name, pilotId);
         }
+    }
+
+    // add the logbook owner alias to the maps
+    if(S_OWNER_ALIAS) {
+        m_nameToPilotId.insert(S_OWNER_ALIAS.value(), OPL::LOGBOOK_OWNER_ID);
+        m_nameToPilotIdMap.insert(S_OWNER_ALIAS.value(), OPL::LOGBOOK_OWNER_ID);
     }
 }
 

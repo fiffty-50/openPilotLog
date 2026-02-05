@@ -266,9 +266,9 @@ class Settings {
      * <li> 0 - self
      *
      */
-    static int getShowSelfAs() { return settingsInstance->value(SHOW_SELF_AS).toInt(); }
+    static QString getShowSelfAs() { return settingsInstance->value(SHOW_SELF_AS).toString(); }
 
-    static void setShowSelfAs(int value) { settingsInstance->setValue(SHOW_SELF_AS, value); }
+    static void setShowSelfAs(const QString &text) { settingsInstance->setValue(SHOW_SELF_AS, text); }
 
     static int getTailSortColumn() { return settingsInstance->value(TAIL_SORT_COLUMN).toInt(); }
     static void setTailSortColumn(int value)
