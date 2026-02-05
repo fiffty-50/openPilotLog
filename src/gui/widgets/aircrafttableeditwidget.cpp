@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aircrafttableeditwidget.h"
-#include "src/classes/styledenginecountdelegate.h"
+#include "src/gui/styleddelegates/styledenginecountdelegate.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/aircraftentryeditdialog.h"
 

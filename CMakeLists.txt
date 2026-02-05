@@ -135,18 +135,18 @@ set(PROJECT_SOURCES
     src/classes/easaftl.h
     src/classes/easaftl.cpp
     src/classes/date.h
-    src/classes/styleddatedelegate.h
-    src/classes/styleddatedelegate.cpp
-    src/classes/styledtimedelegate.h
-    src/classes/styledtimedelegate.cpp
-    src/classes/styledpilotdelegate.h
-    src/classes/styledpilotdelegate.cpp
-    src/classes/styledregistrationdelegate.h
-    src/classes/styledregistrationdelegate.cpp
-    src/classes/styledtypedelegate.h
-    src/classes/styledtypedelegate.cpp
-    src/classes/styledenginecountdelegate.h
-    src/classes/styledenginecountdelegate.cpp
+    src/gui/styleddelegates/styleddatedelegate.h
+    src/gui/styleddelegates/styleddatedelegate.cpp
+    src/gui/styleddelegates/styledtimedelegate.h
+    src/gui/styleddelegates/styledtimedelegate.cpp
+    src/gui/styleddelegates/styledpilotdelegate.h
+    src/gui/styleddelegates/styledpilotdelegate.cpp
+    src/gui/styleddelegates/styledregistrationdelegate.h
+    src/gui/styleddelegates/styledregistrationdelegate.cpp
+    src/gui/styleddelegates/styledtypedelegate.h
+    src/gui/styleddelegates/styledtypedelegate.cpp
+    src/gui/styleddelegates/styledenginecountdelegate.h
+    src/gui/styleddelegates/styledenginecountdelegate.cpp
 
     # Database Entries
     src/database/aircraftentry.h

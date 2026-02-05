@@ -17,7 +17,7 @@
  */
 #include "backupwidget.h"
 #include "src/classes/settings.h"
-#include "src/classes/styleddatedelegate.h"
+#include "src/gui/styleddelegates/styleddatedelegate.h"
 #include "src/database/database.h"
 #include "src/database/dbsummary.h"
 #include "src/functions/datetime.h"

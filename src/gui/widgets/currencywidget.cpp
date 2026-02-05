@@ -4,7 +4,7 @@
 #include "qgridlayout.h"
 #include "src/classes/easaftl.h"
 #include "src/classes/settings.h"
-#include "src/classes/styleddatedelegate.h"
+#include "src/gui/styleddelegates/styleddatedelegate.h"
 #include "src/classes/time.h"
 #include "src/database/database.h"
 #include "src/functions/statistics.h"
