@@ -162,17 +162,17 @@ class Settings {
     /*!
      * Sets the default aircraft type for new tails
      */
-    static void setDefaultAircraftType(const QString &typeString)
+    static void setDefaultAircraftType(int type_id)
     {
-        settingsInstance->setValue(TAILS_DEFAULT_TYPE, typeString);
+        settingsInstance->setValue(TAILS_DEFAULT_TYPE, type_id);
     }
 
     /*!
      * Gets the default aircraft type for new tails
      */
-    static QString getDefaultAircraftType()
+    static int getDefaultAircraftType()
     {
-        return settingsInstance->value(TAILS_DEFAULT_TYPE).toString();
+        return settingsInstance->value(TAILS_DEFAULT_TYPE).toInt();
     }
 
     /*!

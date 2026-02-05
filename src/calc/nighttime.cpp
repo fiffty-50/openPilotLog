@@ -18,7 +18,7 @@
 #include "nighttime.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
-#include "src/database/airportgeographicalinfo.h"
+#include "src/database/cache/airportgeographicalinfo.h"
 #include <qdatetime.h>
 
 double NightTime::solarElevation(int julian_day, int time_ms, const LatLon &coordinate)

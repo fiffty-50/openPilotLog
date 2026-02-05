@@ -19,11 +19,9 @@
 #define FLIGHTLOGENTRYEDITDIALOG_H
 
 #include "entryeditdialog.h"
-#include "src/database/databasecache.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/flightentryeditui.h"
 #include "src/gui/verification/flightdatabuilder.h"
-#include "src/opl.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDateEdit>
@@ -37,8 +35,6 @@
 #include <QTimeEdit>
 
 namespace OPL {
-
-using MapType = DatabaseCache::MapType;
 
 class FlightLogEntryEditDialog : public EntryEditDialog {
   public:

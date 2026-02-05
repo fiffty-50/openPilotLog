@@ -102,6 +102,8 @@ set(PROJECT_SOURCES
     src/gui/comboboxes/pilotselectionbox.cpp
     src/gui/comboboxes/airportselectionbox.h
     src/gui/comboboxes/airportselectionbox.cpp
+    src/gui/comboboxes/aircrafttypeselectionbox.h
+    src/gui/comboboxes/aircrafttypeselectionbox.cpp
 
     src/gui/verification/diacriticignoringstringlistmodel.h
     src/gui/verification/diacriticignoringcompleter.h
@@ -113,6 +115,19 @@ set(PROJECT_SOURCES
     src/gui/verification/flightdatabuilder.cpp
     src/gui/verification/flightsegmentbuilder.h
     src/gui/verification/flightsegmentbuilder.cpp
+
+    src/gui/styleddelegates/styleddatedelegate.h
+    src/gui/styleddelegates/styleddatedelegate.cpp
+    src/gui/styleddelegates/styledtimedelegate.h
+    src/gui/styleddelegates/styledtimedelegate.cpp
+    src/gui/styleddelegates/styledpilotdelegate.h
+    src/gui/styleddelegates/styledpilotdelegate.cpp
+    src/gui/styleddelegates/styledregistrationdelegate.h
+    src/gui/styleddelegates/styledregistrationdelegate.cpp
+    src/gui/styleddelegates/styledtypedelegate.h
+    src/gui/styleddelegates/styledtypedelegate.cpp
+    src/gui/styleddelegates/styledenginecountdelegate.h
+    src/gui/styleddelegates/styledenginecountdelegate.cpp
 
     # Classes
     src/classes/style.h
@@ -135,18 +150,6 @@ set(PROJECT_SOURCES
     src/classes/easaftl.h
     src/classes/easaftl.cpp
     src/classes/date.h
-    src/gui/styleddelegates/styleddatedelegate.h
-    src/gui/styleddelegates/styleddatedelegate.cpp
-    src/gui/styleddelegates/styledtimedelegate.h
-    src/gui/styleddelegates/styledtimedelegate.cpp
-    src/gui/styleddelegates/styledpilotdelegate.h
-    src/gui/styleddelegates/styledpilotdelegate.cpp
-    src/gui/styleddelegates/styledregistrationdelegate.h
-    src/gui/styleddelegates/styledregistrationdelegate.cpp
-    src/gui/styleddelegates/styledtypedelegate.h
-    src/gui/styleddelegates/styledtypedelegate.cpp
-    src/gui/styleddelegates/styledenginecountdelegate.h
-    src/gui/styleddelegates/styledenginecountdelegate.cpp
 
     # Database Entries
     src/database/aircraftentry.h
@@ -206,20 +209,19 @@ set(PROJECT_SOURCES
     src/database/row.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
-    src/database/databasecache.h
-    src/database/databasecache.cpp
 
+    # Database Cache
     src/database/views/logbookviewinfo.h
-    src/database/airportinfo.h
-    src/database/airportinfo.cpp
-    src/database/pilotinfo.h
-    src/database/pilotinfo.cpp
-    src/database/tailregistrationsinfo.h
-    src/database/tailregistrationsinfo.cpp
-    src/database/aircrafttypesinfo.h
-    src/database/aircrafttypesinfo.cpp
-    src/database/airportgeographicalinfo.h
-    src/database/airportgeographicalinfo.cpp
+    src/database/cache/airportinfo.h
+    src/database/cache/airportinfo.cpp
+    src/database/cache/pilotinfo.h
+    src/database/cache/pilotinfo.cpp
+    src/database/cache/tailregistrationsinfo.h
+    src/database/cache/tailregistrationsinfo.cpp
+    src/database/cache/aircrafttypesinfo.h
+    src/database/cache/aircrafttypesinfo.cpp
+    src/database/cache/airportgeographicalinfo.h
+    src/database/cache/airportgeographicalinfo.cpp
 
     # Ressources
     assets/icons.qrc

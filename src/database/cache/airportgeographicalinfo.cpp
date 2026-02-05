@@ -61,7 +61,7 @@ QString AirportGeographicalInfo::timezone(int airport_id) const
     return m_airportGeoMap.value(airport_id).tz;
 }
 
-bool AirportGeographicalInfo::exists(int airport_id) const
+bool AirportGeographicalInfo::contains(int airport_id) const
 {
     return m_airportGeoMap.contains(airport_id);
 }

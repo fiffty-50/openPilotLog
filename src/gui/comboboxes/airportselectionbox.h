@@ -2,7 +2,7 @@
 #define AIRPORTSELECTIONBOX_H
 
 #include "dbselectioncombobox.h"
-#include "src/database/airportinfo.h"
+#include "src/database/cache/airportinfo.h"
 
 class AirportSelectionBox : public DbSelectionComboBox {
   public:

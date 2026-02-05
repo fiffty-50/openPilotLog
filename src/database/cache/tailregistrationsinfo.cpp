@@ -61,7 +61,7 @@ QString TailRegistrationsInfo::registration(int tailId) const
     return m_idToRegistration.value(tailId, {});
 }
 
-bool TailRegistrationsInfo::exists(int tail_id) const
+bool TailRegistrationsInfo::contains(int tail_id) const
 {
     return m_idToRegistration.contains(tail_id);
 }

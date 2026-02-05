@@ -41,9 +41,9 @@ class PilotsInfo : public QObject {
     void init() { refreshIndices(); }
 
     /*!
-     * \brief Returns whether a row id exists in the database
+     * \brief Returns whether a row id contains in the database
      */
-    bool exists(int pilot_id) const;
+    bool contains(int pilot_id) const;
 
     /*!
      * \brief Returns the pilot name for the given pilot ID.

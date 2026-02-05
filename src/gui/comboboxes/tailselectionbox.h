@@ -2,7 +2,7 @@
 #define TAILSELECTIONBOX_H
 
 #include "dbselectioncombobox.h"
-#include "src/database/tailregistrationsinfo.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 
 class TailSelectionBox : public DbSelectionComboBox {
   public:

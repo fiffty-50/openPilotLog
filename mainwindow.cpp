@@ -16,16 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
-#include "src/calc/greatcircletrack.h"
 #include "src/classes/settings.h"
 #include "src/classes/style.h"
-#include "src/database/airportgeographicalinfo.h"
-#include "src/database/airportinfo.h"
+#include "src/database/cache/aircrafttypesinfo.h"
+#include "src/database/cache/airportgeographicalinfo.h"
+#include "src/database/cache/airportinfo.h"
+#include "src/database/cache/pilotinfo.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 #include "src/database/database.h"
-#include "src/database/databasecache.h"
-#include "src/database/pilotinfo.h"
-#include "src/database/tailregistrationsinfo.h"
-#include "src/functions/calc.h"
 #include "src/gui/dialogues/firstrundialog.h"
 #include "src/gui/dialogues/flightlogentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
@@ -113,11 +111,11 @@ void MainWindow::connectDatabase()
     }
 
     // Load Cache
-    tailsData->init();
-    airportData->init();
+    aircraftTypesData->init();
     airportGeoData->init();
+    airportData->init();
     pilotsData->init();
-    DBCache->init();
+    tailsData->init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)

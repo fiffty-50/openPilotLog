@@ -18,7 +18,7 @@
 #ifndef LATLON_H
 #define LATLON_H
 
-#include "src/database/airportinfo.h"
+#include "src/database/cache/airportinfo.h"
 #include <QString>
 
 /*!

@@ -43,9 +43,9 @@ class TailRegistrationsInfo : public QObject {
     void init() { refresh(); }
 
     /*!
-     * \brief Returns whether a row id exists in the database
+     * \brief Returns whether a row id contains in the database
      */
-    bool exists(int tail_id) const;
+    bool contains(int tail_id) const;
 
     /*!
      * \brief Returns the tail ID for the given registration.

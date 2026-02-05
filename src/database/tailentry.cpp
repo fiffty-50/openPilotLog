@@ -16,7 +16,7 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "tailentry.h"
-#include "src/database/databasecache.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 
 namespace OPL {
 
@@ -34,8 +34,7 @@ bool TailEntry::isValid() const
         LOG << QStringLiteral("Type ID missing.");
         return false;
     }
-    if (!(DBCache->getMap(DatabaseCache::MapType::AircraftTypes)
-              .value(m_rowData.value(TYPE_ID).toInt()) != QString())) {
+    if (!tailsData->contains(m_rowData.value(TYPE_ID).toInt())) {
         LOG << QStringLiteral("Type ID invalid.");
         return false;
     }
@@ -87,15 +86,15 @@ bool TailEntry::setOutOfServiceDate(const QDate &date)
     return true;
 }
 
-bool TailEntry::setTypeId(int typeId)
+bool TailEntry::setTypeId(int type_id)
 {
-    bool isValid = typeId != 0;
+    bool isValid = type_id != 0;
 
-    isValid &= DBCache->getMap(DatabaseCache::MapType::AircraftTypes).value(typeId) != QString();
+    isValid &= tailsData->contains(type_id);
 
     if (!isValid) return false;
 
-    m_rowData.insert(TYPE_ID, typeId);
+    m_rowData.insert(TYPE_ID, type_id);
     return true;
 }
 

@@ -19,6 +19,7 @@
 #define AIRCRAFTTYPESINFO_H
 
 #include <QHash>
+#include <QMap>
 #include <QObject>
 
 /*!
@@ -58,13 +59,17 @@ class AircraftTypesInfo : public QObject {
     QString typeString(int type_id);
 
     /*!
-     * \brief Returns whether a row id exists in the database
+     * \brief Returns whether a row id contains in the database
      */
-    bool exists(int type_id) const;
+    bool contains(int type_id) const;
 
+    const QMap<QString, int>& typeStringMap() const { return m_typeStringmap; }
+
+    void init() { refresh(); }
   private:
     QHash<QString, int> m_identToId;
     QHash<int, QString> m_idToIdent;
+    QMap<QString, int> m_typeStringmap;
 
     void refresh();
 };

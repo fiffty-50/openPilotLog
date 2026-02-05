@@ -18,7 +18,8 @@
 
 #include "simlogentry.h"
 #include "src/classes/time.h"
-#include "src/database/databasecache.h"
+#include "src/database/cache/aircrafttypesinfo.h"
+#include "src/database/cache/pilotinfo.h"
 #include "src/opl.h"
 
 namespace OPL {
@@ -64,27 +65,21 @@ bool SimLogEntry::setSimType(const QString &sim_type)
 
 bool SimLogEntry::setAircraftTypeId(int aircraft_type_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::AircraftTypes).contains(aircraft_type_id)) {
-        return false;
-    }
+    if (! aircraftTypesData->contains(aircraft_type_id)) return false;
     m_rowData.insert(AIRCRAFT_TYPE_ID, aircraft_type_id);
     return true;
 }
 
 bool SimLogEntry::setInstructorId(int instructor_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(instructor_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(instructor_id)) return false;
     m_rowData.insert(INSTRUCTOR_ID, instructor_id);
     return true;
 }
 
 bool SimLogEntry::setSecondPilotId(int second_pilot_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(second_pilot_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(second_pilot_id)) return false;
     m_rowData.insert(SECOND_PILOT_ID, second_pilot_id);
     return true;
 }

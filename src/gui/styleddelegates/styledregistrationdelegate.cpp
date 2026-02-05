@@ -1,5 +1,5 @@
 #include "styledregistrationdelegate.h"
-#include "src/database/databasecache.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 
 StyledRegistrationDelegate::StyledRegistrationDelegate(QObject *parent)
     : QStyledItemDelegate{parent}
@@ -8,5 +8,6 @@ StyledRegistrationDelegate::StyledRegistrationDelegate(QObject *parent)
 
 QString StyledRegistrationDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
-    return DBCache->getMap(OPL::DatabaseCache::MapType::TailRegistrations).value(value.toInt());
+    Q_UNUSED(locale);
+    return tailsData->registration(value.toInt());
 }

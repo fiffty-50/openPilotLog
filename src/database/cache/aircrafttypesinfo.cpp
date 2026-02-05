@@ -52,6 +52,7 @@ void AircraftTypesInfo::refresh()
         if (!ident.isEmpty()) {
             m_identToId.insert(ident, id);
             m_idToIdent.insert(id, ident);
+            m_typeStringmap.insert(ident, id);
         }
     }
 }
@@ -60,4 +61,4 @@ int AircraftTypesInfo::id(const QString &type_string) { return m_identToId.value
 
 QString AircraftTypesInfo::typeString(int type_id) { return m_idToIdent.value(type_id, {}); }
 
-bool AircraftTypesInfo::exists(int type_id) const { return m_idToIdent.contains(type_id); }
+bool AircraftTypesInfo::contains(int type_id) const { return m_idToIdent.contains(type_id); }

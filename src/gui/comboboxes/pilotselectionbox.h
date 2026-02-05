@@ -2,7 +2,7 @@
 #define PILOTSELECTIONBOX_H
 
 #include "dbselectioncombobox.h"
-#include "src/database/pilotinfo.h"
+#include "src/database/cache/pilotinfo.h"
 
 class PilotSelectionBox : public DbSelectionComboBox {
   public:

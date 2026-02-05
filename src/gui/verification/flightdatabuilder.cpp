@@ -18,13 +18,13 @@
 #include "flightdatabuilder.h"
 #include "src/classes/date.h"
 #include "src/classes/time.h"
-#include "src/database/airportinfo.h"
+#include "src/database/cache/airportinfo.h"
+#include "src/database/cache/pilotinfo.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 #include "src/database/approachentry.h"
 #include "src/database/flightlogentry.h"
 #include "src/database/flightsegmententry.h"
 #include "src/database/movemententry.h"
-#include "src/database/pilotinfo.h"
-#include "src/database/tailregistrationsinfo.h"
 #include "src/opl.h"
 #include <QObject>
 #include <utility>
@@ -124,7 +124,7 @@ bool FlightDataBuilder::addDate(int date_jd)
 bool FlightDataBuilder::addDepartureLocation(int departure_id)
 {
     if (departure_id < 1) return false;
-    if (!airportData->exists(departure_id)) return false;
+    if (!airportData->contains(departure_id)) return false;
 
     m_departure_id = departure_id;
 
@@ -134,7 +134,7 @@ bool FlightDataBuilder::addDepartureLocation(int departure_id)
 bool FlightDataBuilder::addDestinationLocation(int destination_id)
 {
     if (destination_id < 1) return false;
-    if (!airportData->exists(destination_id)) return false;
+    if (!airportData->contains(destination_id)) return false;
 
     m_destination_id = destination_id;
 
@@ -160,14 +160,14 @@ bool FlightDataBuilder::addTimeOnBlocks(int time_ms)
 
 bool FlightDataBuilder::addPic(int pilot_id)
 {
-    if (!pilotsData->exists(pilot_id)) return false;
+    if (!pilotsData->contains(pilot_id)) return false;
     m_pic_id = pilot_id;
 
     return true;
 }
 bool FlightDataBuilder::addTail(int tail_id)
 {
-    if (!tailsData->exists(tail_id)) return false;
+    if (!tailsData->contains(tail_id)) return false;
     m_tail_id = tail_id;
 
     return true;
@@ -178,7 +178,7 @@ void FlightDataBuilder::addRemarks(const QString &remarks) { m_remarks_opt = rem
 
 bool FlightDataBuilder::addSecondPilot(int pilot_id)
 {
-    if (!pilotsData->exists(pilot_id)) return false;
+    if (!pilotsData->contains(pilot_id)) return false;
     m_second_pilot_id_opt = pilot_id;
 
     return true;

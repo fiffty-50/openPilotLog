@@ -31,6 +31,7 @@
 #include <QRegularExpression>
 
 #include "src/database/tailentry.h"
+#include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 
 /*!
@@ -81,7 +82,7 @@ class TailEntryEditDialog : public EntryEditDialog {
   private:
     // Widgets
     QGridLayout *gridLayout;
-    QComboBox *aircraftTypeComboBox;
+    DbSelectionComboBox *aircraftTypeComboBox;
     QLabel *aircraftTypeLabel;
     QPushButton *setDefaultPushButton;
     QFrame *seperator;
@@ -110,7 +111,6 @@ class TailEntryEditDialog : public EntryEditDialog {
     void on_registrationLineEdit_editingFinished();
     void on_buttonBox_accepted();
     void on_searchCompleter_activated(const QModelIndex &index);
-    void on_aircraftTypeLineEdit_editingFinished();
     void on_dateEditCheckBox_changed(Qt::CheckState state);
     void on_setDefaultPushButton_clicked();
     // EntryEditDialog interface

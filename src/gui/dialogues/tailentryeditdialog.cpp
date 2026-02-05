@@ -18,7 +18,7 @@
 #include "tailentryeditdialog.h"
 #include "src/classes/settings.h"
 #include "src/database/database.h"
-#include "src/database/databasecache.h"
+#include "src/gui/comboboxes/aircrafttypeselectionbox.h"
 #include "src/opl.h"
 #include "src/classes/date.h"
 
@@ -68,9 +68,8 @@ void TailEntryEditDialog::init()
 
     // Header Row
     aircraftTypeLabel    = new QLabel(this);
-    aircraftTypeComboBox = new QComboBox(this);
+    aircraftTypeComboBox = new AircraftTypeSelectionBox(this);
     setDefaultPushButton = new QPushButton(this);
-    aircraftTypeComboBox->addItems(DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes));
     gridLayout->addWidget(aircraftTypeLabel, row, firstCol, singleSpan, singleSpan);
     gridLayout->addWidget(aircraftTypeComboBox, row, secondCol, singleSpan, singleSpan);
     gridLayout->addWidget(setDefaultPushButton, row, thirdCol, singleSpan, singleSpan);
@@ -145,33 +144,18 @@ void TailEntryEditDialog::init()
     retranslateUi();
     hideServiceDateEdits();
 
-    // Set the type Combo box up to be editable
-    aircraftTypeComboBox->setEditable(true);
-    QCompleter *boxCompleter = new QCompleter(
-        DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes), aircraftTypeComboBox);
-    boxCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-    boxCompleter->setCompletionMode(QCompleter::PopupCompletion);
-    boxCompleter->setFilterMode(Qt::MatchContains);
-    aircraftTypeComboBox->setCompleter(boxCompleter);
     // Read the default value from settings
-    const QString defaultType = Settings::getDefaultAircraftType();
-    if (!defaultType.isEmpty()) {
-        aircraftTypeComboBox->setCurrentText(defaultType);
+    int default_type_id = Settings::getDefaultAircraftType();
+    int idx = aircraftTypeComboBox->findData(default_type_id);
+    if (idx > -1) {
+        aircraftTypeComboBox->setCurrentIndex(idx);
     }
 
     // Connect Slots
-    QObject::connect(aircraftTypeComboBox->lineEdit(), &QLineEdit::editingFinished, this,
-                     &TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished);
     QObject::connect(registrationLineEdit, &QLineEdit::editingFinished, this,
                      &TailEntryEditDialog::on_registrationLineEdit_editingFinished);
     QObject::connect(setDefaultPushButton, &QPushButton::clicked, this,
                      &TailEntryEditDialog::on_setDefaultPushButton_clicked);
-
-    // auto fill on activation and highlighting in case tab is pressed during completion
-    QObject::connect(boxCompleter, qOverload<const QModelIndex &>(&QCompleter::activated), this,
-                     &TailEntryEditDialog::on_searchCompleter_activated);
-    QObject::connect(boxCompleter, qOverload<const QModelIndex &>(&QCompleter::highlighted), this,
-                     &TailEntryEditDialog::on_searchCompleter_activated);
 
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, this,
@@ -220,8 +204,10 @@ void TailEntryEditDialog::fillForm(const OPL::TailEntry &entry)
         outOfServiceDateEdit->setDate(outOfService);
     }
 
-    aircraftTypeComboBox->setCurrentText(
-        DBCache->getMap(OPL::DatabaseCache::MapType::AircraftTypes).value(entry.getTypeId()));
+    int idx = aircraftTypeComboBox->findData(entry.getTypeId());
+    if (idx > -1) {
+        aircraftTypeComboBox->setCurrentIndex(idx);
+    }
 }
 
 void TailEntryEditDialog::showServiceDateEdits()
@@ -267,11 +253,11 @@ void TailEntryEditDialog::on_buttonBox_accepted()
         WARN(tr("The registration is invalid."));
         return;
     }
-    const int typeId = DBCache->getKeyMap(OPL::DatabaseCache::MapType::AircraftTypes)
-                           .value(aircraftTypeComboBox->currentText());
-    DEB << "Type ID: " << typeId;
 
-    if (!entry.setTypeId(typeId)) {
+    const int type_id = aircraftTypeComboBox->currentData().toInt();
+    DEB << "Type ID: " << type_id;
+
+    if (!entry.setTypeId(type_id)) {
         WARN(tr("Unknown aircraft type: <b>%1</b><br>"
                 "If this is the first time you are adding a tail with this "
                 "aircraft type and it is not yet present in the database, you must "
@@ -316,11 +302,6 @@ void TailEntryEditDialog::on_searchCompleter_activated(const QModelIndex &index)
     aircraftTypeComboBox->setCurrentText(index.data().toString());
 }
 
-void TailEntryEditDialog::on_aircraftTypeLineEdit_editingFinished()
-{
-    aircraftTypeComboBox->setCurrentText(aircraftTypeComboBox->completer()->currentCompletion());
-}
-
 void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
 {
     switch (state) {
@@ -352,10 +333,10 @@ void TailEntryEditDialog::on_dateEditCheckBox_changed(Qt::CheckState state)
 
 void TailEntryEditDialog::on_setDefaultPushButton_clicked()
 {
-    const QString selectedType = aircraftTypeComboBox->currentText();
-    Settings::setDefaultAircraftType(selectedType);
+    int type_id = aircraftTypeComboBox->currentData().toInt();
+    Settings::setDefaultAircraftType(type_id);
     INFO(tr("The default aircraft type for new aircraft has been set to<br><br><b>%1</b>")
-             .arg(selectedType));
+             .arg(aircraftTypeComboBox->currentText()));
 }
 
 // EntryEditDialog Interface Implementation

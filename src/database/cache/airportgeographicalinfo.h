@@ -69,9 +69,9 @@ class AirportGeographicalInfo : public QObject {
     QString timezone(int airport_id) const;
 
     /*!
-     * \brief Returns whether a row id exists in the database
+     * \brief Returns whether a row id contains in the database
      */
-    bool exists(int airport_id) const;
+    bool contains(int airport_id) const;
 
   private:
     struct GeoData {

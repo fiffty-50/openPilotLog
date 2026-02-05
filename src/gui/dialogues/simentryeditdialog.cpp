@@ -17,9 +17,6 @@
  */
 #include "simentryeditdialog.h"
 #include "src/classes/settings.h"
-#include "src/classes/time.h"
-#include "src/database/database.h"
-#include "src/database/databasecache.h"
 #include "src/opl.h"
 #include <QCompleter>
 /*!
@@ -110,12 +107,12 @@ void SimEntryEditDialog::init()
 
     OPL::GLOBALS->loadSimulatorTypes(simTypeComboBox);
 
-    const QStringList aircraft_list = DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes);
-    auto completer                  = new QCompleter(aircraft_list, acftTypeLineEdit);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setFilterMode(Qt::MatchContains);
-    acftTypeLineEdit->setCompleter(completer);
+    // const QStringList aircraft_list = DBCache->getList(OPL::DatabaseCache::ListType::AircraftTypes);
+    // auto completer                  = new QCompleter(aircraft_list, acftTypeLineEdit);
+    // completer->setCaseSensitivity(Qt::CaseInsensitive);
+    // completer->setCompletionMode(QCompleter::PopupCompletion);
+    // completer->setFilterMode(Qt::MatchContains);
+    // acftTypeLineEdit->setCompleter(completer);
 
     m_format = OPL::DateTimeFormat();
 

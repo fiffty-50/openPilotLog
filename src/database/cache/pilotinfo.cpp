@@ -101,4 +101,4 @@ QString PilotsInfo::remarks(int pilotId) const { return dataForPilotId(pilotId, 
 
 int PilotsInfo::idFromName(const QString &name) const { return m_nameToPilotId.value(name, 0); }
 
-bool PilotsInfo::exists(int pilot_id) const { return m_pilotIdToRow.contains(pilot_id); }
+bool PilotsInfo::contains(int pilot_id) const { return m_pilotIdToRow.contains(pilot_id); }

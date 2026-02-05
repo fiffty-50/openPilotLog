@@ -18,8 +18,9 @@
 
 #include "flightlogentry.h"
 #include "src/classes/time.h"
-#include "src/database/databasecache.h"
-#include "src/database/logentry.h"
+#include "src/database/cache/airportinfo.h"
+#include "src/database/cache/pilotinfo.h"
+#include "src/database/cache/tailregistrationsinfo.h"
 #include "src/database/row.h"
 #include "src/opl.h"
 
@@ -62,18 +63,14 @@ bool FlightLogEntry::setEventId(int event_id)
 
 bool FlightLogEntry::setDeparture(int airport_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::AirportNames).contains(airport_id)) {
-        return false;
-    }
+    if (!airportData->contains(airport_id)) return false;
     m_rowData.insert(DEPARTURE, airport_id);
     return true;
 }
 
 bool FlightLogEntry::setDestination(int airport_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::AirportNames).contains(airport_id)) {
-        return false;
-    }
+    if (!airportData->contains(airport_id)) return false;
     m_rowData.insert(DESTINATION, airport_id);
     return true;
 }
@@ -100,45 +97,35 @@ bool FlightLogEntry::setTimeOnBlocks(int time_ms)
 
 bool FlightLogEntry::setPic(int pilot_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(pilot_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(pilot_id)) return false;
     m_rowData.insert(PILOT_PIC, pilot_id);
     return true;
 }
 
 bool FlightLogEntry::setSecondPilot(int pilot_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(pilot_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(pilot_id)) return false;
     m_rowData.insert(PILOT_TWO, pilot_id);
     return true;
 }
 
 bool FlightLogEntry::setThirdPilot(int pilot_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(pilot_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(pilot_id)) return false;
     m_rowData.insert(PILOT_THREE, pilot_id);
     return true;
 }
 
 bool FlightLogEntry::setFourthPilot(int pilot_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::PilotNames).contains(pilot_id)) {
-        return false;
-    }
+    if (!pilotsData->contains(pilot_id)) return false;
     m_rowData.insert(PILOT_FOUR, pilot_id);
     return true;
 }
 
 bool FlightLogEntry::setTail(int tail_id)
 {
-    if (!DBCache->getMap(DatabaseCache::MapType::TailRegistrations).contains(tail_id)) {
-        return false;
-    }
+    if (!tailsData->contains(tail_id)) return false;
     m_rowData.insert(TAIL, tail_id);
     return true;
 }
