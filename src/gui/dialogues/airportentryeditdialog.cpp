@@ -250,7 +250,7 @@ void AirportEntryEditDialog::on_buttonBox_accepted()
 
     entry.setRowId(m_rowId);
     if (DB->commit(entry)) {
-        m_rowId = DB->getLastEntry(OPL::DbTable::v2Airports);
+        m_rowId = DB->getLastEntry(OPL::DbTable::Airports);
         QDialog::accept();
     }
     else {

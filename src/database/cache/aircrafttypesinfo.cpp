@@ -24,7 +24,7 @@ AircraftTypesInfo::AircraftTypesInfo(QObject *parent) : QObject{parent}
     refresh();
 
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == OPL::DbTable::v2AircraftTypes) refresh();
+        if (table == OPL::DbTable::AircraftTypes) refresh();
     });
 }
 

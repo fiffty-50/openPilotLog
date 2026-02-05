@@ -193,74 +193,76 @@ bool FirstRunDialog::finishSetup()
 bool FirstRunDialog::downloadTemplates(QString branch_name)
 {
     // Create url string
-    auto template_url_string =
-        QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
-    template_url_string.append(branch_name);
-    template_url_string.append(QLatin1String("/assets/database/templates/"));
+    // auto template_url_string =
+    //     QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    // template_url_string.append(branch_name);
+    // template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
+    // QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
 
-    QStringList template_table_names;
-    for (const auto table : DB->getTemplateTables())
-        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+    // QStringList template_table_names;
+    // for (const auto table : DB->getTemplateTables())
+    //     template_table_names.append(OPL::GLOBALS->getDbTableName(table));
 
-    // Download json files
-    for (const auto &table_name : template_table_names) {
-        QEventLoop loop;
-        DownloadHelper *dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
-        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
-        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
-        DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
-        dl->download();
-        dl->deleteLater();
-        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+    // // Download json files
+    // for (const auto &table_name : template_table_names) {
+    //     QEventLoop loop;
+    //     DownloadHelper *dl = new DownloadHelper;
+    //     QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
+    //     dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
+    //     dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
+    //     DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
+    //     dl->download();
+    //     dl->deleteLater();
+    //     loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
-        if (downloaded_file.size() == 0) {
-            LOG << "Unable to download template files (SSL / Network Error)";
-            return false; // ssl/network error
-        }
-    }
-    // Download checksum files
-    for (const auto &table_name : template_table_names) {
-        QEventLoop loop;
-        DownloadHelper *dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
-        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
-        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
+    //     QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
+    //     if (downloaded_file.size() == 0) {
+    //         LOG << "Unable to download template files (SSL / Network Error)";
+    //         return false; // ssl/network error
+    //     }
+    // }
+    // // Download checksum files
+    // for (const auto &table_name : template_table_names) {
+    //     QEventLoop loop;
+    //     DownloadHelper *dl = new DownloadHelper;
+    //     QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
+    //     dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".md5")));
+    //     dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".md5")));
 
-        LOG << "Downloading: " << template_url_string + table_name + QLatin1String(".md5");
+    //     LOG << "Downloading: " << template_url_string + table_name + QLatin1String(".md5");
 
-        dl->download();
-        dl->deleteLater();
-        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+    //     dl->download();
+    //     dl->deleteLater();
+    //     loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".md5")));
-        if (downloaded_file.size() == 0) {
-            LOG << "Unable to download checksum files (SSL / Network Error)";
-            return false; // ssl/network error
-        }
-    }
-    // check downloadad files
-    return verifyTemplates();
+    //     QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".md5")));
+    //     if (downloaded_file.size() == 0) {
+    //         LOG << "Unable to download checksum files (SSL / Network Error)";
+    //         return false; // ssl/network error
+    //     }
+    // }
+    // // check downloadad files
+    // return verifyTemplates();
+    return false;
 }
 
 bool FirstRunDialog::verifyTemplates()
 {
-    QStringList template_table_names;
-    for (const auto table : DB->getTemplateTables())
-        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
-    for (const auto &table_name : template_table_names) {
-        const QString path = OPL::Paths::filePath(OPL::Paths::Templates, table_name);
+    // QStringList template_table_names;
+    // for (const auto table : DB->getTemplateTables())
+    //     template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+    // for (const auto &table_name : template_table_names) {
+    //     const QString path = OPL::Paths::filePath(OPL::Paths::Templates, table_name);
 
-        QFileInfo check_file(path + QLatin1String(".json"));
-        Md5Sum hash(check_file);
+    //     QFileInfo check_file(path + QLatin1String(".json"));
+    //     Md5Sum hash(check_file);
 
-        QFileInfo md5_file(path + QLatin1String(".md5"));
-        if (!hash.compare(md5_file)) return false;
-    }
-    return true;
+    //     QFileInfo md5_file(path + QLatin1String(".md5"));
+    //     if (!hash.compare(md5_file)) return false;
+    // }
+    // return true;
+    return false;
 }
 
 void FirstRunDialog::writeSettings()
@@ -310,20 +312,21 @@ bool FirstRunDialog::setupDatabase()
         useRessourceData = true;
     }
 
-    if (!DB->createSchema()) {
-        WARN(tr("Database creation has been unsuccessful. The following error has "
-                "ocurred:<br><br>%1<br><br>%2")
-                 .arg(FUNC_IDENT, DB->lastError.text()));
-        return false;
-    }
+    // if (!DB->createSchema()) {
+    //     WARN(tr("Database creation has been unsuccessful. The following error has "
+    //             "ocurred:<br><br>%1<br><br>%2")
+    //              .arg(FUNC_IDENT, DB->lastError.text()));
+    //     return false;
+    // }
 
-    if (!DB->importTemplateData(useRessourceData)) {
-        WARN(tr("Database creation has been unsuccessful. Unable to fill template "
-                "data.<br><br>%1<br><br>%2")
-                 .arg(FUNC_IDENT, DB->lastError.text()));
-        return false;
-    }
-    return true;
+    // if (!DB->importTemplateData(useRessourceData)) {
+    //     WARN(tr("Database creation has been unsuccessful. Unable to fill template "
+    //             "data.<br><br>%1<br><br>%2")
+    //              .arg(FUNC_IDENT, DB->lastError.text()));
+    //     return false;
+    // }
+    //return true;
+    return false;
 }
 
 bool FirstRunDialog::createUserEntry()

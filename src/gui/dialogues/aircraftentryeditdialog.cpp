@@ -253,7 +253,7 @@ void AircraftEntryEditDialog::on_accepted()
         return;
     }
     else {
-        m_rowId = DB->getLastEntry(OPL::DbTable::Aircraft);
+        m_rowId = DB->getLastEntry(OPL::DbTable::AircraftTypes);
         QDialog::accept();
     }
 }
@@ -267,5 +267,5 @@ void AircraftEntryEditDialog::loadEntry(int rowID)
 
 bool AircraftEntryEditDialog::deleteEntry(int rowID)
 {
-    return DB->remove(OPL::DbTable::v2AircraftTypes, rowID);
+    return DB->remove(OPL::DbTable::AircraftTypes, rowID);
 }

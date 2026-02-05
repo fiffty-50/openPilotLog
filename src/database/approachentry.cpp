@@ -20,7 +20,7 @@
 namespace OPL {
 
 ApproachEntry::ApproachEntry(int event_id, const QString &app_type, int airport_id)
-    : Row(OPL::DbTable::v2ApproachEvents, &FIELDS)
+    : Row(OPL::DbTable::ApproachEvents, &FIELDS)
 {
     m_rowData.insert(EVENT_ID, event_id);
     m_rowData.insert(APP_TYPE, app_type);
@@ -30,7 +30,7 @@ ApproachEntry::ApproachEntry(int event_id, const QString &app_type, int airport_
 }
 
 ApproachEntry::ApproachEntry(int row_id, const RowData_T &row_data)
-    : Row(OPL::DbTable::v2ApproachEvents, row_id, row_data, &FIELDS)
+    : Row(OPL::DbTable::ApproachEvents, row_id, row_data, &FIELDS)
 {
 }
 

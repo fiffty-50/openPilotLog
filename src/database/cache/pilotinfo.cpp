@@ -22,7 +22,7 @@
 
 PilotsInfo::PilotsInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTableModel(this))
 {
-    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::v2Pilots));
+    m_model->setTable(OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots));
     m_model->select();
 
     while (m_model->canFetchMore())
@@ -30,7 +30,7 @@ PilotsInfo::PilotsInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTable
 
     refreshIndices();
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == OPL::DbTable::v2Pilots) {
+        if (table == OPL::DbTable::Pilots) {
             LOG << "Updating Pilot Info.";
             m_model->select();
             while (m_model->canFetchMore())

@@ -370,7 +370,7 @@ bool FlightLogEntryEditDialog::offerToAddNewDatabaseElement(const DbSelectionCom
 
     QMessageBox::StandardButton reply;
     switch (table) {
-    case OPL::DbTable::v2Pilots:
+    case OPL::DbTable::Pilots:
         reply = QMessageBox::question(
             this, tr("No Pilot found"),
             tr("No pilot with name <b>%1</b> found.<br><br> "
@@ -380,7 +380,7 @@ bool FlightLogEntryEditDialog::offerToAddNewDatabaseElement(const DbSelectionCom
                 .arg(box->currentText()),
             QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
-    case OPL::DbTable::v2AircraftTails:
+    case OPL::DbTable::AircraftTails:
         reply = QMessageBox::question(
             this, tr("No Aircraft found"),
             tr("No aircraft with registration <b>%1</b> found.<br><br>"
@@ -390,7 +390,7 @@ bool FlightLogEntryEditDialog::offerToAddNewDatabaseElement(const DbSelectionCom
                 .arg(box->currentText()),
             QMessageBox::Yes | QMessageBox::No, QMessageBox::StandardButton::Yes);
         break;
-    case OPL::DbTable::v2AirportCodes:
+    case OPL::DbTable::AirportCodes:
         reply = QMessageBox::question(
             this, tr("No Airport found"),
             tr("No Airport with the identifier <b>%1</b> found.<br><br>"
@@ -445,13 +445,13 @@ EntryEditDialog *FlightLogEntryEditDialog::getEntryEditDialog(const DbSelectionC
     EntryEditDialog *dlg = nullptr;
 
     switch (target) {
-    case OPL::DbTable::v2AircraftTails:
+    case OPL::DbTable::AircraftTails:
         dlg = new TailEntryEditDialog(box->currentText(), this);
         break;
-    case OPL::DbTable::v2Pilots:
+    case OPL::DbTable::Pilots:
         dlg = new PilotEntryEditDialog(box->currentText(), this);
         break;
-    case OPL::DbTable::v2AirportCodes:
+    case OPL::DbTable::AirportCodes:
         dlg = new AirportEntryEditDialog(this);
         break;
     default:

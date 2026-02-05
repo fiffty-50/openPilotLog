@@ -90,7 +90,7 @@ class AircraftTableEditWidget : public TableEditWidget {
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
     const QString tableName() const override
     {
-        return OPL::GLOBALS->getDbTableName(OPL::DbTable::v2AircraftTypes);
+        return OPL::GLOBALS->getDbTableName(OPL::DbTable::AircraftTypes);
     }
 };
 

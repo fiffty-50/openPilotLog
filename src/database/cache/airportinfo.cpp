@@ -32,7 +32,7 @@ AirportInfo::AirportInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTab
     refreshIndices();
 
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == OPL::DbTable::v2Airports || table == OPL::DbTable::v2AirportCodes) {
+        if (table == OPL::DbTable::Airports || table == OPL::DbTable::AirportCodes) {
             LOG << "Updating Airport Info.";
             m_model->select();
             while (m_model->canFetchMore())

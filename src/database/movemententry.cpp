@@ -21,7 +21,7 @@ namespace OPL {
 
 MovementEntry::MovementEntry(int event_id, int airport_id, bool is_landing, bool is_night,
                              bool is_autoland)
-    : Row(OPL::DbTable::v2MovementEvents, &FIELDS)
+    : Row(OPL::DbTable::MovementEvents, &FIELDS)
 {
     assert(event_id > 0);
     m_rowData.insert(EVENT_ID, event_id);
@@ -36,7 +36,7 @@ MovementEntry::MovementEntry(int event_id, int airport_id, bool is_landing, bool
 }
 
 MovementEntry::MovementEntry(int row_id, const RowData_T &row_data)
-    : Row(OPL::DbTable::v2MovementEvents, row_id, row_data, &FIELDS)
+    : Row(OPL::DbTable::MovementEvents, row_id, row_data, &FIELDS)
 {
 }
 

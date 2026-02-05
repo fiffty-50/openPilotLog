@@ -61,7 +61,7 @@ class JsonHelper {
      * \brief holds the tables with userdata that need to be processed.
      */
     const static inline QList<OPL::DbTable> TABLES = {
-        OPL::DbTable::Tails,
+        OPL::DbTable::AircraftTails,
         OPL::DbTable::Pilots,
         OPL::DbTable::Currencies,
         OPL::DbTable::Flights,

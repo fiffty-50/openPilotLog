@@ -63,7 +63,7 @@ void TotalsWidget::setup(const WidgetType widgetType)
             }
         }
         // initialise m_rowData
-        m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+        //m_rowData = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
 
         // populate the UI
         fillTotals(widgetType);
@@ -87,7 +87,7 @@ void TotalsWidget::fillTotals(const WidgetType widgetType)
         time_data = DB->getTotals(true);
         break;
     case PreviousExperienceWidget:
-        time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+        //time_data = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
         break;
     }
 
@@ -181,7 +181,7 @@ void TotalsWidget::timeLineEditEditingFinished()
 
     // Read back the value and set the line edit to confirm input is correct and provide user
     // feedback
-    m_rowData      = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+    //m_rowData      = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
     QTime new_time = QTime::fromMSecsSinceStartOfDay(m_rowData.value(db_field).toInt());
     line_edit->setText(new_time.toString(Settings::getTimeFormatString()));
 }
@@ -202,7 +202,7 @@ void TotalsWidget::movementLineEditEditingFinished()
     //DB->commit(previous_experience);
 
     // read back the value and set the line edit to the retreived value to give user feedback
-    m_rowData               = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
+    //m_rowData               = DB->getRowData(OPL::DbTable::PreviousExperience, ROW_ID);
     const QString new_value = QString::number(m_rowData.value(db_field).toInt());
     line_edit->setText(new_value);
 }

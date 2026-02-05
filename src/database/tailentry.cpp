@@ -20,10 +20,10 @@
 
 namespace OPL {
 
-TailEntry::TailEntry() : Row(DbTable::v2AircraftTails, &FIELDS) {}
+TailEntry::TailEntry() : Row(DbTable::AircraftTails, &FIELDS) {}
 
 TailEntry::TailEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::v2AircraftTails, row_id, row_data, &FIELDS)
+    : Row(DbTable::AircraftTails, row_id, row_data, &FIELDS)
 {
 }
 

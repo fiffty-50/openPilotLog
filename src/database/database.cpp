@@ -64,10 +64,6 @@ void Database::disconnect()
     LOG << "Database connection closed.";
 }
 
-const QList<OPL::DbTable> &Database::getTemplateTables() const { return TEMPLATE_TABLES; }
-
-const QList<OPL::DbTable> &Database::getUserTables() const { return USER_TABLES; }
-
 const QStringList Database::getTableColumns(OPL::DbTable table_name) const
 {
     return tableColumns.value(OPL::GLOBALS->getDbTableName(table_name));
@@ -166,7 +162,7 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
 
 bool Database::commit(FlightDataBuilder &builder)
 {
-    if (exists(DbTable::v2LogEvents, builder.eventId())) {
+    if (exists(DbTable::LogEvents, builder.eventId())) {
         LOG << "Log Event already exists. Update logic not yet implemented.";
         lastError = QSqlError("Log event already exists. Update logic not yet implemented");
         return false;
@@ -183,7 +179,7 @@ bool Database::commit(FlightDataBuilder &builder)
         database().rollback();
         return false;
     }
-    builder.setEventId(getLastEntry(DbTable::v2LogEvents));
+    builder.setEventId(getLastEntry(DbTable::LogEvents));
 
     // FlightLogEntry
     auto flight_entry = builder.flightLogEntry();
@@ -192,7 +188,7 @@ bool Database::commit(FlightDataBuilder &builder)
         database().rollback();
         return false;
     }
-    builder.setFlightId(getLastEntry(DbTable::v2Flights));
+    builder.setFlightId(getLastEntry(DbTable::Flights));
 
     // Flight Segment Entries
     auto flight_segments = builder.flightSegments();
@@ -384,21 +380,6 @@ bool Database::exists(DbTable table, int row_id)
     if (!query.exec()) return false;
 
     return query.next(); // true only if a row exists
-}
-
-bool Database::clear()
-{
-    QSqlQuery q;
-
-    for (const auto &table : USER_TABLES) {
-        q.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
-        if (!q.exec()) {
-            DEB << "Error: " << q.lastError().text();
-            lastError = q.lastError();
-            return false;
-        }
-    }
-    return true;
 }
 
 bool Database::update(const OPL::Row &updated_row)
@@ -916,13 +897,13 @@ QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable t
     QString statement;
 
     switch (table) {
-    case OPL::DbTable::v2Pilots:
+    case OPL::DbTable::Pilots:
         statement = QStringLiteral("SELECT ROWID FROM flights WHERE pic=?");
         break;
-    case OPL::DbTable::v2AircraftTails:
+    case OPL::DbTable::AircraftTails:
         statement = QStringLiteral("SELECT ROWID FROM flights WHERE tail_id=?");
         break;
-    case OPL::DbTable::v2AircraftTypes:
+    case OPL::DbTable::AircraftTypes:
         statement = QStringLiteral("SELECT ROWID FROM aircraft_tails WHERE aircraft_type_id=?");
         break;
     default:
@@ -1054,104 +1035,6 @@ bool Database::restoreBackup(const QString &backup_file)
     LOG << "Backup successfully restored!";
     Database::connect();
     emit connectionReset();
-    return true;
-}
-
-QT_DEPRECATED
-bool Database::createSchema()
-{
-    // Read Database layout from sql file
-    QFile f(OPL::Assets::DATABASE_SCHEMA);
-    if (!f.open(QIODevice::ReadOnly)) {
-        LOG << "Unable to read database schema - " << f.errorString();
-    }
-    QByteArray filedata = f.readAll();
-    // create individual queries for each table/view
-    auto list = filedata.split(';');
-
-    // make sure last empty line in sql file has not been parsed
-    if (list.last() == QByteArray("\n") || list.last() == QByteArray("\r\n")) list.removeLast();
-
-    // Create Tables
-    QSqlQuery q;
-    QVector<QSqlError> errors;
-    for (const auto &query_string : std::as_const(list)) {
-        q.prepare(query_string);
-        if (!q.exec()) {
-            errors.append(q.lastError());
-            LOG << "Unable to execute query: ";
-            LOG << q.lastQuery();
-            LOG << q.lastError();
-        }
-    }
-    DB->updateLayout();
-
-    if (errors.isEmpty()) {
-        LOG << "Database succesfully created.";
-        return true;
-    }
-    else {
-        LOG << "Database creation has failed. The following error(s) have ocurred: ";
-        for (const auto &error : std::as_const(errors)) {
-            LOG << error.type() << error.text();
-        }
-        return false;
-    }
-}
-
-QT_DEPRECATED
-bool Database::importTemplateData(bool use_local_ressources)
-{
-    for (const auto &table : DB->getTemplateTables()) {
-        const QString table_name = OPL::GLOBALS->getDbTableName(table);
-
-        // clear table
-        QSqlQuery q;
-        q.prepare(QLatin1String("DELETE FROM ") + table_name);
-        if (!q.exec()) {
-            LOG << "Error clearing tables: " << q.lastError().text();
-            return false;
-        }
-
-        // Prepare data
-        QJsonArray data_to_commit;
-        QString error_message("Error importing data ");
-
-        if (use_local_ressources) {
-            data_to_commit = JsonHelper::readFileToDoc(QLatin1String(":database/templates/") +
-                                                       table_name + QLatin1String(".json"))
-                                 .array();
-            error_message.append(QLatin1String(" (ressource) "));
-        }
-        else {
-            const QString file_path =
-                OPL::Paths::filePath(OPL::Paths::Templates, table_name + QLatin1String(".json"));
-            data_to_commit = JsonHelper::readFileToDoc(file_path).array();
-            // data_to_commit = AJson::readFileToDoc(AStandardPaths::directory(
-            //                               AStandardPaths::Templates).absoluteFilePath(
-            //                               table_name + QLatin1String(".json"))).array();
-            error_message.append(QLatin1String(" (downloaded) "));
-        }
-
-        // commit Data from Array
-        if (!DB->commit(data_to_commit, table)) {
-            LOG << error_message;
-            return false;
-        }
-    } // for table_name
-    return true;
-}
-
-bool Database::resetUserData()
-{
-    QSqlQuery query;
-    for (const auto &table : DB->getUserTables()) {
-        query.prepare(QLatin1String("DELETE FROM ") + OPL::GLOBALS->getDbTableName(table));
-        if (!query.exec()) {
-            lastError = query.lastError();
-            return false;
-        }
-    }
     return true;
 }
 

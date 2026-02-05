@@ -24,10 +24,10 @@
 
 namespace OPL {
 
-SimLogEntry::SimLogEntry() : Row(DbTable::v2Simulators, &FIELDS) {}
+SimLogEntry::SimLogEntry() : Row(DbTable::Simulators, &FIELDS) {}
 
 SimLogEntry::SimLogEntry(int row_id, const RowData_T &row_data)
-    : Row(OPL::DbTable::v2Simulators, row_id, row_data, &FIELDS)
+    : Row(OPL::DbTable::Simulators, row_id, row_data, &FIELDS)
 {
 }
 

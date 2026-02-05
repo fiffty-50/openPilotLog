@@ -110,9 +110,9 @@ class DatabaseSetup {
     };
 
     const QMap<OPL::DbTable, QString> m_templateData = {
-        {OPL::DbTable::v2AircraftTypes, QStringLiteral(":/db/data/aircraft_types.json")},
-        {OPL::DbTable::v2Airports,      QStringLiteral(":/db/data/airports.json")      },
-        {OPL::DbTable::v2AirportCodes,  QStringLiteral(":/db/data/airport_codes.json") },
+        {OPL::DbTable::AircraftTypes, QStringLiteral(":/db/data/aircraft_types.json")},
+        {OPL::DbTable::Airports,      QStringLiteral(":/db/data/airports.json")      },
+        {OPL::DbTable::AirportCodes,  QStringLiteral(":/db/data/airport_codes.json") },
     };
 };
 

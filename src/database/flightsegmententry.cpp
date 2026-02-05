@@ -22,14 +22,14 @@
 namespace OPL {
 
 FlightSegmentEntry::FlightSegmentEntry(int segment_id, const RowData_T &row_data)
-    : Row(OPL::DbTable::v2FlightSegments, segment_id, row_data, &FIELDS)
+    : Row(OPL::DbTable::FlightSegments, segment_id, row_data, &FIELDS)
 {
 }
 
 FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms, bool is_ifr,
                                        bool is_simulated_ifr, bool is_night, bool is_multi_pilot,
                                        bool is_pilot_flying, const QString &pilot_function)
-    : Row(OPL::DbTable::v2FlightSegments, &FIELDS)
+    : Row(OPL::DbTable::FlightSegments, &FIELDS)
 {
     m_rowData.insert(FLIGHT_ID, flight_id);
     m_rowData.insert(START_MS, start_ms);
@@ -43,7 +43,7 @@ FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms, 
 }
 
 FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms)
-    : Row(OPL::DbTable::v2FlightSegments, &FIELDS)
+    : Row(OPL::DbTable::FlightSegments, &FIELDS)
 {
     m_rowData.insert(FLIGHT_ID, flight_id);
     m_rowData.insert(START_MS, start_ms);
@@ -51,7 +51,7 @@ FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms)
 }
 
 FlightSegmentEntry::FlightSegmentEntry(int flight_id, int start_ms, int end_ms, Optionals optionals)
-    : Row(DbTable::v2FlightSegments, &FIELDS)
+    : Row(DbTable::FlightSegments, &FIELDS)
 {
     m_rowData.insert(FLIGHT_ID, flight_id);
     m_rowData.insert(START_MS, start_ms);

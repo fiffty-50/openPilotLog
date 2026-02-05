@@ -2,7 +2,7 @@
 #include "src/database/database.h"
 
 TailSelectionBox::TailSelectionBox(QWidget *parent)
-    : DbSelectionComboBox(OPL::DbTable::v2AircraftTails, parent)
+    : DbSelectionComboBox(OPL::DbTable::AircraftTails, parent)
 {
     refresh();
     connect(this->lineEdit(), &QLineEdit::textChanged, this,

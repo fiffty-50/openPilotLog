@@ -23,7 +23,7 @@ AirportGeographicalInfo::AirportGeographicalInfo(QObject *parent) : QObject{pare
     refresh();
 
     connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == OPL::DbTable::v2Airports) refresh();
+        if (table == OPL::DbTable::Airports) refresh();
     });
 }
 

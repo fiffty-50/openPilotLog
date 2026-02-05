@@ -43,7 +43,7 @@ QString AircraftTableEditWidget::deleteErrorString(int rowId)
 {
     const auto toDelete = DB->getAircraftEntry(rowId);
     const auto foreign_key_constraints =
-        DB->getForeignKeyConstraints(rowId, OPL::DbTable::v2AircraftTypes);
+        DB->getForeignKeyConstraints(rowId, OPL::DbTable::AircraftTypes);
     if (!foreign_key_constraints.isEmpty()) {
         QList<OPL::TailEntry> constrained_tails;
         for (const auto &fk_row_id : foreign_key_constraints) {

@@ -63,7 +63,7 @@ class PilotTableEditWidget : public TableEditWidget {
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
     const QString tableName() const override
     {
-        return OPL::GLOBALS->getDbTableName(OPL::DbTable::v2Pilots);
+        return OPL::GLOBALS->getDbTableName(OPL::DbTable::Pilots);
     }
 
     /*!

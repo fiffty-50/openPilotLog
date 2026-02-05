@@ -69,16 +69,6 @@ class Database : public QObject {
     QHash<QString, QStringList> tableColumns;
 
     inline const static QString SQLITE_DRIVER           = QStringLiteral("QSQLITE");
-    inline const static QList<OPL::DbTable> USER_TABLES = {
-        OPL::DbTable::Flights,
-        OPL::DbTable::Pilots,
-        OPL::DbTable::Tails,
-        OPL::DbTable::Currencies,
-    };
-    inline const static QList<OPL::DbTable> TEMPLATE_TABLES = {
-        OPL::DbTable::Aircraft,
-        OPL::DbTable::Airports,
-    };
 
   public:
     Database(const Database &)       = delete;
@@ -154,12 +144,6 @@ class Database : public QObject {
      * \brief Checks if an entry exists in the database
      */
     bool exists(OPL::DbTable table, int row_id);
-
-    /*!
-     * \brief clear resets the database, i.e. deletes all content in the tables containing
-     * userdata (pilots, flights, tails)
-     */
-    bool clear();
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
@@ -245,7 +229,7 @@ class Database : public QObject {
      */
     inline OPL::TailEntry getTailEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::v2AircraftTails, row_id);
+        const auto data = getRowData(OPL::DbTable::AircraftTails, row_id);
         return OPL::TailEntry(row_id, data);
     }
 
@@ -254,17 +238,17 @@ class Database : public QObject {
      */
     inline OPL::AircraftEntry getAircraftEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::v2AircraftTypes, row_id);
+        const auto data = getRowData(OPL::DbTable::AircraftTypes, row_id);
         return OPL::AircraftEntry(row_id, data);
     }
 
     OPL::FlightData getFlightData(int event_id)
     {
-        const auto log_data  = getRowData(OPL::DbTable::v2LogEvents, event_id);
+        const auto log_data  = getRowData(OPL::DbTable::LogEvents, event_id);
         const auto log_entry = OPL::LogEntry(event_id, log_data);
 
         const auto flight_data =
-            getRowData(DbTable::v2Flights, QStringLiteral("event_id"), event_id);
+            getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
 
         const auto flight_entry = OPL::FlightLogEntry(
             flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
@@ -326,29 +310,6 @@ class Database : public QObject {
      * (aiports, aircraft,..)
      */
     const QList<OPL::DbTable> &getTemplateTables() const;
-
-    // Maintenance and setup
-
-    /*!
-     * \brief Create or restore the database to its ready-to-use but empty state
-     * \details The SQL code for the database creation is stored in a .sql file which is available
-     * as a ressource. This file gets read, and the querys executed. If errors occur, returns false.
-     */
-    bool createSchema();
-    /*!
-     * \brief importTemplateData fills an empty database with the template
-     * data (Aircraft, Airports) as read from the JSON
-     * templates.
-     * \param use_local_ressources determines whether the included ressource files
-     * or a previously downloaded file should be used.
-     * \return
-     */
-    bool importTemplateData(bool use_local_ressources);
-
-    /*!
-     * \brief Delete all rows from the user data tables (flights, pliots, tails)
-     */
-    bool resetUserData();
 
     /*!
      * \brief Database::createBackup copies the currently used database to an external backup

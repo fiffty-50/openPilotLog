@@ -187,14 +187,14 @@ void PilotEntryEditDialog::submitForm()
         return;
     }
     else {
-        m_rowId = DB->getLastEntry(OPL::DbTable::v2Pilots);
+        m_rowId = DB->getLastEntry(OPL::DbTable::Pilots);
         QDialog::accept();
     }
 }
 
 bool PilotEntryEditDialog::deleteEntry(int rowId)
 {
-    return DB->remove(OPL::DbTable::v2Pilots, rowId);
+    return DB->remove(OPL::DbTable::Pilots, rowId);
 }
 
 void PilotEntryEditDialog::loadEntry(int rowId)

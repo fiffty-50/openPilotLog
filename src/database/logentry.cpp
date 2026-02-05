@@ -23,9 +23,9 @@
 
 namespace OPL {
 
-LogEntry::LogEntry() : Row(DbTable::v2LogEvents, &FIELDS) {}
+LogEntry::LogEntry() : Row(DbTable::LogEvents, &FIELDS) {}
 LogEntry::LogEntry(int rowId, const RowData_T &rowData)
-    : Row(DbTable::v2LogEvents, rowId, rowData, &FIELDS)
+    : Row(DbTable::LogEvents, rowId, rowData, &FIELDS)
 {
 }
 

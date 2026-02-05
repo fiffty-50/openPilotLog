@@ -21,10 +21,10 @@
 
 namespace OPL {
 
-AirportCodeEntry::AirportCodeEntry() : Row(DbTable::v2AirportCodes, &FIELDS) {}
+AirportCodeEntry::AirportCodeEntry() : Row(DbTable::AirportCodes, &FIELDS) {}
 
 AirportCodeEntry::AirportCodeEntry(int rowId, const RowData_T &rowData)
-    : Row(DbTable::v2AirportCodes, rowId, rowData, &FIELDS)
+    : Row(DbTable::AirportCodes, rowId, rowData, &FIELDS)
 {
 }
 

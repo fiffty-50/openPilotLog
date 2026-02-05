@@ -26,10 +26,10 @@
 
 namespace OPL {
 
-FlightLogEntry::FlightLogEntry() : Row(DbTable::v2Flights, &FIELDS) {}
+FlightLogEntry::FlightLogEntry() : Row(DbTable::Flights, &FIELDS) {}
 
 FlightLogEntry::FlightLogEntry(int rowId, const RowData_T &rowData)
-    : Row(OPL::DbTable::v2Flights, rowId, rowData, &FIELDS)
+    : Row(OPL::DbTable::Flights, rowId, rowData, &FIELDS)
 {
 }
 

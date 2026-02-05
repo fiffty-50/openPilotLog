@@ -68,86 +68,86 @@ DebugWidget::~DebugWidget() { delete ui; }
 
 void DebugWidget::on_resetUserTablesPushButton_clicked()
 {
-    ATimer timer(this);
-    if (DB->resetUserData()) {
-        LOG << "Database successfully reset";
-        emit DB->dataBaseUpdated(OPL::DbTable::Any);
-    }
-    else
-        LOG << "Errors have occurred. Check console for Debug output. ";
-    Settings::resetToDefaults();
+    // ATimer timer(this);
+    // if (DB->resetUserData()) {
+    //     LOG << "Database successfully reset";
+    //     emit DB->dataBaseUpdated(OPL::DbTable::Any);
+    // }
+    // else
+    //     LOG << "Errors have occurred. Check console for Debug output. ";
+    // Settings::resetToDefaults();
 }
 
 void DebugWidget::on_resetDatabasePushButton_clicked()
 {
-    // disconnect and remove old database
-    DB->disconnect();
-    QFile db_file(OPL::Paths::databaseFileInfo().absoluteFilePath());
-    if (!db_file.remove()) {
-        WARN(tr("Unable to delete existing database file."));
-        return;
-    }
+    // // disconnect and remove old database
+    // DB->disconnect();
+    // QFile db_file(OPL::Paths::databaseFileInfo().absoluteFilePath());
+    // if (!db_file.remove()) {
+    //     WARN(tr("Unable to delete existing database file."));
+    //     return;
+    // }
 
-    // Download templates
-    QString branch_name = ui->branchLineEdit->text();
+    // // Download templates
+    // QString branch_name = ui->branchLineEdit->text();
 
-    // Create url string
-    auto template_url_string =
-        QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
-    template_url_string.append(branch_name);
-    template_url_string.append(QLatin1String("/assets/database/templates/"));
+    // // Create url string
+    // auto template_url_string =
+    //     QStringLiteral("https://raw.githubusercontent.com/fiffty-50/openpilotlog/");
+    // template_url_string.append(branch_name);
+    // template_url_string.append(QLatin1String("/assets/database/templates/"));
 
-    QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
-    QStringList template_table_names;
-    for (const auto table : DB->getTemplateTables())
-        template_table_names.append(OPL::GLOBALS->getDbTableName(table));
-    // Download json files
-    for (const auto &table_name : template_table_names) {
-        QEventLoop loop;
-        DownloadHelper *dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
-        dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
-        dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
-        DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
-        dl->download();
-        dl->deleteLater();
-        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+    // QDir template_dir(OPL::Paths::directory(OPL::Paths::Templates));
+    // QStringList template_table_names;
+    // for (const auto table : DB->getTemplateTables())
+    //     template_table_names.append(OPL::GLOBALS->getDbTableName(table));
+    // // Download json files
+    // for (const auto &table_name : template_table_names) {
+    //     QEventLoop loop;
+    //     DownloadHelper *dl = new DownloadHelper;
+    //     QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
+    //     dl->setTarget(QUrl(template_url_string + table_name + QLatin1String(".json")));
+    //     dl->setFileName(template_dir.absoluteFilePath(table_name + QLatin1String(".json")));
+    //     DEB << "Downloading: " << template_url_string + table_name + QLatin1String(".json");
+    //     dl->download();
+    //     dl->deleteLater();
+    //     loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
-        if (downloaded_file.size() == 0) LOG << "ssl/network error";
-    }
-    // Download checksum files
-    for (const auto &table : template_table_names) {
-        QEventLoop loop;
-        DownloadHelper *dl = new DownloadHelper;
-        QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
-        dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
-        dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
+    //     QFileInfo downloaded_file(template_dir.filePath(table_name + QLatin1String(".json")));
+    //     if (downloaded_file.size() == 0) LOG << "ssl/network error";
+    // }
+    // // Download checksum files
+    // for (const auto &table : template_table_names) {
+    //     QEventLoop loop;
+    //     DownloadHelper *dl = new DownloadHelper;
+    //     QObject::connect(dl, &DownloadHelper::done, &loop, &QEventLoop::quit);
+    //     dl->setTarget(QUrl(template_url_string + table + QLatin1String(".md5")));
+    //     dl->setFileName(template_dir.absoluteFilePath(table + QLatin1String(".md5")));
 
-        DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
+    //     DEB << "Downloading: " << template_url_string + table + QLatin1String(".md5");
 
-        dl->download();
-        dl->deleteLater();
-        loop.exec(); // event loop waits for download done signal before allowing loop to continue
+    //     dl->download();
+    //     dl->deleteLater();
+    //     loop.exec(); // event loop waits for download done signal before allowing loop to continue
 
-        QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
-        if (downloaded_file.size() == 0) LOG << "ssl/network error";
-    }
-    // Create Database
-    if (!DB->createSchema()) {
-        WARN(QString("Unable to create database.<br>%1").arg(DB->lastError.text()));
-        return;
-    }
+    //     QFileInfo downloaded_file(template_dir.filePath(table + QLatin1String(".md5")));
+    //     if (downloaded_file.size() == 0) LOG << "ssl/network error";
+    // }
+    // // Create Database
+    // if (!DB->createSchema()) {
+    //     WARN(QString("Unable to create database.<br>%1").arg(DB->lastError.text()));
+    //     return;
+    // }
 
-    // Load ressources
-    bool use_ressource_data = false; // do not use local data, download from github
-    if (!DB->importTemplateData(use_ressource_data)) {
-        WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-                 .arg(DB->lastError.text()));
-        return;
-    }
+    // // Load ressources
+    // bool use_ressource_data = false; // do not use local data, download from github
+    // if (!DB->importTemplateData(use_ressource_data)) {
+    //     WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
+    //              .arg(DB->lastError.text()));
+    //     return;
+    // }
 
-    DB->connect();
+    // DB->connect();
 }
 
 void DebugWidget::downloadFinished() {}

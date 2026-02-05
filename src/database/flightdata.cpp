@@ -174,7 +174,7 @@ QList<RowData_T> FlightData::getData(DataType data_type, int event_id)
 // database
 std::optional<FlightData> FlightData::getFlightData(int event_id)
 {
-    const auto log_data = DB->getRowData(OPL::DbTable::v2LogEvents, event_id);
+    const auto log_data = DB->getRowData(OPL::DbTable::LogEvents, event_id);
     if (log_data.isEmpty()) {
         LOG << QStringLiteral("Unable to retreive data - no log event found for event_id: ")
             << event_id;
@@ -186,7 +186,7 @@ std::optional<FlightData> FlightData::getFlightData(int event_id)
 
     // Get FlightLogEntry
     const auto flight_data =
-        DB->getRowData(DbTable::v2Flights, QStringLiteral("event_id"), event_id);
+        DB->getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
     if (flight_data.isEmpty()) {
         LOG << QStringLiteral("Unable to retreive data - no flight found for event_id: ")
             << event_id;

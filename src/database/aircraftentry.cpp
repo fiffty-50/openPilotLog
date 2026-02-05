@@ -20,10 +20,10 @@
 
 namespace OPL {
 
-AircraftEntry::AircraftEntry() : Row(DbTable::v2AircraftTypes, &FIELDS) {}
+AircraftEntry::AircraftEntry() : Row(DbTable::AircraftTypes, &FIELDS) {}
 
 AircraftEntry::AircraftEntry(int row_id, const RowData_T &row_data)
-    : Row(DbTable::v2AircraftTypes, row_id, row_data, &FIELDS)
+    : Row(DbTable::AircraftTypes, row_id, row_data, &FIELDS)
 {
 }
 
