@@ -78,6 +78,7 @@ class AirportEntryEditDialog : public EntryEditDialog {
   public:
     void loadEntry(int rowId) override;
     bool deleteEntry(int rowId) override;
+    void reset() override;
 };
 
 #endif // AIRPORTENTRYEDITDIALOG_H

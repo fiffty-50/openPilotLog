@@ -132,6 +132,26 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 
 bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 
+void FlightLogEntryEditDialog::reset()
+{
+    m_rowId = OPL::NEW_ROW_ID;
+    ui->timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(0));
+    ui->timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(0));
+    ui->deptComboBox->setCurrentText({});
+    ui->destComboBox->setCurrentText({});
+    ui->registrationComboBox->setCurrentText({});
+    ui->picComboBox->setCurrentText({});
+    ui->sicComboBox->setCurrentText({});
+    ui->flightNumberLineEdit->setText({});
+    ui->pilotFlyingCheckBox->setCheckState(Qt::Unchecked);
+    ui->dateEdit->setDate(QDate::currentDate());
+    ui->pilotFunctionComboBox->setCurrentIndex(0);
+    ui->flightRulesComboBox->setCurrentIndex(0);
+    ui->takeOffCountSpinBox->setValue(0);
+    ui->landingCountSpinBox->setValue(0);
+    ui->remarksTextEdit->setPlainText({});
+}
+
 // Dialog Setup
 
 void FlightLogEntryEditDialog::setupValidationAndCompletion()

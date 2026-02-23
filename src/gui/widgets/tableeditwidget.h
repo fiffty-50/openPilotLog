@@ -135,12 +135,6 @@ class TableEditWidget : public QWidget {
     virtual void hideEditWidget();
 
     /*!
-     * \brief makes sure heap allocated widgets are destroyed when a user requests another add or
-     * edit before completing a proviously opened one.
-     */
-    void cleanUpOldEditDialog();
-
-    /*!
      * \brief return a SQL filter statement for a given column name and filter text
      */
     QString getFilterStatement(const QString &column, const QString &filterText);

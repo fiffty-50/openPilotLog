@@ -93,6 +93,9 @@ set(PROJECT_SOURCES
     src/gui/widgets/flightsegmenteditorwidget.h
     src/gui/widgets/flightsegmenteditorwidget.cpp
 
+    # Views
+    src/gui/views/logbookviewinfo.h
+
     # Verification
     src/gui/comboboxes/dbselectioncombobox.h
     src/gui/comboboxes/dbselectioncombobox.cpp
@@ -128,6 +131,8 @@ set(PROJECT_SOURCES
     src/gui/styleddelegates/styledtypedelegate.cpp
     src/gui/styleddelegates/styledenginecountdelegate.h
     src/gui/styleddelegates/styledenginecountdelegate.cpp
+    src/gui/styleddelegates/styledairportdelegate.h
+    src/gui/styleddelegates/styledairportdelegate.cpp
 
     # Classes
     src/classes/style.h
@@ -301,7 +306,6 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
-         src/gui/styleddelegates/styledairportdelegate.h src/gui/styleddelegates/styledairportdelegate.cpp
      )
     endif()
 endif()

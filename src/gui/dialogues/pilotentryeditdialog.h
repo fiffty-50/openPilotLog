@@ -91,8 +91,9 @@ class PilotEntryEditDialog : public EntryEditDialog {
 
     // EntryEditDialog interface
   public:
-    virtual bool deleteEntry(int rowId) override;
-    virtual void loadEntry(int rowId) override;
+    bool deleteEntry(int rowId) override;
+    void loadEntry(int rowId) override;
+    void reset() override;
 };
 
 #endif // NEWPILOT_H

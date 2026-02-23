@@ -68,7 +68,7 @@ void AirportEntryEditDialog::init()
     // Row 1
     latitudeLabel    = new QLabel(this);
     latDoubleSpinBox = new QDoubleSpinBox(this);
-    latDoubleSpinBox->setObjectName("latitideDoubleSpinBox");
+    latDoubleSpinBox->setObjectName("latitudeDoubleSpinBox");
     latDoubleSpinBox->setDecimals(10);
     latDoubleSpinBox->setMinimum(-90.000000000000000);
     latDoubleSpinBox->setMaximum(90.000000000000000);
@@ -174,10 +174,9 @@ void AirportEntryEditDialog::loadAirportData(int row_id)
         WARN(tr("Unable to read timezone data for this airport. Please verify."));
     timeZoneComboBox->setCurrentText(timezone);
 
-    icaoDisplayLabel->setText(
-        OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::ICAO));
-    iataDisplayLabel->setText(
-        OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::IATA));
+    icaoDisplayLabel->setText(airportData->icao(m_rowId));
+    iataDisplayLabel->setText(airportData->iata(m_rowId));
+    // TODO - include other codes in airportData
     otherCodeDisplayLabel->setText(
         OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::OTHER));
 }
@@ -271,4 +270,16 @@ bool AirportEntryEditDialog::deleteEntry(int rowId)
 {
     auto entry = DB->getAirportEntry(rowId);
     return DB->remove(entry);
+}
+
+void AirportEntryEditDialog::reset()
+{
+    m_rowId = OPL::NEW_ROW_ID;
+    nameLineEdit->setText({});
+    icaoDisplayLabel->setText({});
+    iataDisplayLabel->setText({});
+    otherCodeDisplayLabel->setText({});
+    lonDoubleSpinBox->setValue(0.0);
+    latDoubleSpinBox->setValue(0.0);
+    timeZoneComboBox->setCurrentIndex(0);
 }

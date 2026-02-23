@@ -317,3 +317,8 @@ bool SimEntryEditDialog::deleteEntry(int rowID)
     //return DB->remove(entry);
     return false;
 }
+
+void SimEntryEditDialog::reset()
+{
+
+}

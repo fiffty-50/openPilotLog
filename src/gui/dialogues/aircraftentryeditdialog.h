@@ -35,6 +35,7 @@ class AircraftEntryEditDialog : public EntryEditDialog {
     // EntryEditDialog interface
     void loadEntry(int rowID) override;
     bool deleteEntry(int rowID) override;
+    void reset() override;
 
   private:
     void init();

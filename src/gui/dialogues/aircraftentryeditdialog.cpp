@@ -269,3 +269,21 @@ bool AircraftEntryEditDialog::deleteEntry(int rowID)
 {
     return DB->remove(OPL::DbTable::AircraftTypes, rowID);
 }
+
+void AircraftEntryEditDialog::reset()
+{
+    m_rowId = OPL::NEW_ROW_ID;
+    makeLineEdit->setText({});
+    modelLineEdit->setText({});
+    variantLineEdit->setText({});
+    icaoDesignatorLineEdit->setText({});
+    typeRatingLineEdit->setText({});
+    remarksTextEdit->setPlainText({});
+
+    engineTypeComboBox->setCurrentIndex(0);
+    multiEngineComboBox->setCurrentIndex(0);
+    multiPilotComboBox->setCurrentIndex(0);
+    classComboBox->setCurrentIndex(0);
+    subClassComboBox->setCurrentIndex(0);
+    wakeCategoryComboBox->setCurrentIndex(0);
+}

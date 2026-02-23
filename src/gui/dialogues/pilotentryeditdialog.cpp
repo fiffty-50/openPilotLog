@@ -203,3 +203,15 @@ void PilotEntryEditDialog::loadEntry(int rowId)
     formFiller();
     nameLineEdit->setFocus();
 }
+
+void PilotEntryEditDialog::reset()
+{
+    m_rowId = OPL::NEW_ROW_ID;
+    nameLineEdit->setText({});
+    companyLineEdit->setText({});
+    aliasLineEdit->setText({});
+    employeeidLineEdit->setText({});
+    phoneLineEdit->setText({});
+    emailLineEdit->setText({});
+    remarksLineEdit->setText({});
+}

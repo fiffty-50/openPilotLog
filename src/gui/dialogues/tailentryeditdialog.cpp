@@ -353,3 +353,15 @@ void TailEntryEditDialog::loadEntry(int rowId)
     const auto entry = DB->getTailEntry(rowId);
     fillForm(entry);
 }
+
+void TailEntryEditDialog::reset()
+{
+    m_rowId = OPL::NEW_ROW_ID;
+    aircraftTypeComboBox->setCurrentIndex(Settings::getDefaultAircraftType());
+    registrationLineEdit->setText({});
+    companyLineEdit->setText({});
+    remarksLineEdit->setText({});
+    editServiceDatesCheckBox->setCheckState(Qt::Unchecked);
+    inServiceDateEdit->setDate(OPL::Date::minimumDate());
+    outOfServiceDateEdit->setDate(OPL::Date::maximumDate());
+}

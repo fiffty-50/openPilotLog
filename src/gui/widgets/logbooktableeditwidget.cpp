@@ -1,50 +1,27 @@
 #include "logbooktableeditwidget.h"
 #include "src/classes/settings.h"
-#include "src/gui/styleddelegates/styledairportdelegate.h"
-#include "src/gui/styleddelegates/styleddatedelegate.h"
-#include "src/gui/styleddelegates/styledpilotdelegate.h"
-#include "src/gui/styleddelegates/styledregistrationdelegate.h"
-#include "src/gui/styleddelegates/styledtimedelegate.h"
-#include "src/gui/styleddelegates/styledtypedelegate.h"
 #include "src/database/database.h"
-#include "src/database/views/logbookviewinfo.h"
+#include "src/gui/views/logbookviewinfo.h"
 #include "src/gui/dialogues/flightlogentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
 
 LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent) : TableEditWidget(Vertical, parent)
 {
-    DEB << "Logbook Widget constructor";
 }
 
 // TableEditWidget implementation
 
 void LogbookTableEditWidget::setupModelAndView()
 {
-    DEB << "setup";
     m_logbookView = Settings::getLogbookView();
-    auto view = Settings::getLogbookView();
-    LOG << "Loading " << OPL::GLOBALS->getLogbookViewName(view);
-    m_model       = new QSqlTableModel(this, DB->database());
+    LOG << "Loading Logbook View: " << OPL::GLOBALS->getLogbookViewName(m_logbookView);
+
+    m_model = new QSqlTableModel(this, DB->database());
     m_model->setTable(OPL::GLOBALS->getLogbookViewName(m_logbookView));
     m_model->select();
-
-    const auto headers = OPL::LogbookViewInfo::getTableHeaders(m_logbookView);
-    for (int i = 0; i < headers.size(); i++) {
-        m_model->setHeaderData(i, Qt::Horizontal, headers[i]);
-    }
-
     m_view->setModel(m_model);
-    m_view->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_view->horizontalHeader()->setStretchLastSection(QHeaderView::Stretch);
-    m_view->verticalHeader()->hide();
-    m_view->setAlternatingRowColors(true);
-    m_view->hideColumn(COL_EVENT_ID);
-    m_view->hideColumn(COL_FLIGHT_ID);
 
-    setupDelegates();
-    m_view->resizeColumnsToContents();
+    LogbookView::setupView(m_logbookView, m_model, m_view);
 }
 
 void LogbookTableEditWidget::setupUI()
@@ -88,34 +65,35 @@ void LogbookTableEditWidget::filterTextChanged(const QString &filterString) {}
 
 void LogbookTableEditWidget::deleteEntryRequested()
 {
-    // const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
-    // if (!selectedIndex.isValid()) {
-    //     WARN(tr("No entry selected."));
-    //     return;
-    // }
-    // m_stackedWidget->hide();
+    const QModelIndex selectedIndex = m_view->selectionModel()->currentIndex();
+    if (!selectedIndex.isValid()) {
+        WARN(tr("No entry selected."));
+        return;
+    }
+    m_stackedWidget->hide();
 
-    // int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
-    // m_view->selectionModel()->reset();
+    int rowId = m_model->index(selectedIndex.row(), 0).data().toInt();
+    m_view->selectionModel()->reset();
 
-    // // get user confirmation
-    // QMessageBox confirm(this);
-    // confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    // confirm.setDefaultButton(QMessageBox::No);
-    // confirm.setIcon(QMessageBox::Question);
-    // confirm.setWindowTitle(tr("Confirm Deletion"));
+    // get user confirmation
+    QMessageBox confirm(this);
+    confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirm.setDefaultButton(QMessageBox::No);
+    confirm.setIcon(QMessageBox::Question);
+    confirm.setWindowTitle(tr("Confirm Deletion"));
 
-    // confirm.setText(confirmDeleteString(rowId));
-    // if (confirm.exec() == QMessageBox::Yes) {
-    //     if (rowId > 0) {
-    //         const auto selectedEntry = DB->getFlightEntry(rowId);
-    //         if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
-    //     }
-    //     else {
-    //         // const auto selectedEntry = DB->getSimEntry(rowId * -1);
-    //         // if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
-    //     }
-    // }
+    confirm.setText(confirmDeleteString(rowId));
+    if (confirm.exec() == QMessageBox::Yes) {
+        DEB << "UNIMPLEMENTED.";
+        // if (rowId > 0) {
+        //     const auto selectedEntry = DB->getFlightEntry(rowId);
+        //     if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
+        // }
+        // else {
+        //     // const auto selectedEntry = DB->getSimEntry(rowId * -1);
+        //     // if (!DB->remove(selectedEntry)) WARN(deleteErrorString(rowId));
+        // }
+    }
 }
 
 // private implementations
@@ -134,56 +112,5 @@ void LogbookTableEditWidget::addSimulatorEntryRequested()
 
 void LogbookTableEditWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
 {
-    for (auto i = m_defaultDelegates.constBegin(); i != m_defaultDelegates.constEnd(); i++) {
-        m_view->setItemDelegateForColumn(i.key(), i.value());
-        // should probably delete the old custom delegate, Qt docs say the
-        // view does not take ownership of the delegates so they might be leaking
-        // https://doc.qt.io/qt-6/qabstractitemdelegate.html
-    }
-
     if (widget == SettingsWidget::SettingSignal::LogbookWidget) setupModelAndView();
-}
-
-void LogbookTableEditWidget::setupDelegates()
-{
-    // minutes to hh:mm
-    const auto timeDelegate =
-        new StyledTimeDelegate(Settings::getTimeFormatString(), m_view);
-    for (const auto col : OPL::LogbookViewInfo::getTimeColumns(m_logbookView)) {
-        m_defaultDelegates.insert(col, m_view->itemDelegateForColumn(col));
-        m_view->setItemDelegateForColumn(col, timeDelegate);
-    }
-
-    // julian day to Date Format
-    const int dateCol       = OPL::LogbookViewInfo::getDateColumn(m_logbookView);
-    const auto dateDelegate = new StyledDateDelegate(Settings::getDateFormatString(), m_view);
-    m_defaultDelegates.insert(dateCol, m_view->itemDelegateForColumn(dateCol));
-    m_view->setItemDelegateForColumn(dateCol, dateDelegate);
-
-
-    // pilot_id to names
-    const int pilCol         = OPL::LogbookViewInfo::getPicColumn(m_logbookView);
-    const auto pilotDelegate = new StyledPilotDelegate(m_view);
-    m_defaultDelegates.insert(pilCol, m_view->itemDelegateForColumn(pilCol));
-    m_view->setItemDelegateForColumn(pilCol, pilotDelegate);
-
-    // type_id to aircraft type
-    const int typeCol       = OPL::LogbookViewInfo::getTypeColumn(m_logbookView);
-    const auto typeDelegate = new StyledTypeDelegate(m_view);
-    m_defaultDelegates.insert(typeCol, m_view->itemDelegateForColumn(typeCol));
-    m_view->setItemDelegateForColumn(typeCol, typeDelegate);
-
-    // tail_id to registration
-    const int tailCol = OPL::LogbookViewInfo::getTailColumn(m_logbookView);
-    const auto tailDelegate = new StyledRegistrationDelegate(m_view);
-    m_defaultDelegates.insert(tailCol, m_view->itemDelegateForColumn(tailCol));
-    m_view->setItemDelegateForColumn(tailCol, tailDelegate);
-
-    // airport_id to display text
-    const auto airportDelegate = new StyledAirportDelegate(StyledAirportDelegate::Icao, m_view); // TODO style setting
-    for (const auto &col : OPL::LogbookViewInfo::getAirportColumns(m_logbookView)) {
-        m_defaultDelegates.insert(col, m_view->itemDelegateForColumn(col));
-        m_view->setItemDelegateForColumn(col, airportDelegate);
-    }
-
 }

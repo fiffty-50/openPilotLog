@@ -92,8 +92,9 @@ class SimEntryEditDialog : public EntryEditDialog {
 
     // EntryEditDialog interface
   public:
-    virtual void loadEntry(int rowID) override;
-    virtual bool deleteEntry(int rowID) override;
+    void loadEntry(int rowID) override;
+    bool deleteEntry(int rowID) override;
+    void reset() override;
 };
 
 #endif // SIMENTRYEDITDIALOG_H

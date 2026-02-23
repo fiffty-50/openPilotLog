@@ -101,6 +101,11 @@ constexpr static char DECIMAL_SEPERATOR = '.';
 constexpr static int LOGBOOK_OWNER_ID = 1;
 
 /*!
+ * \brief When creating a new entry in the database, no row id is yet assigned so 0 is treated as a new entry.
+ */
+constexpr static int NEW_ROW_ID = 0;
+
+/*!
  * \brief The ANotificationHandler class handles displaying of user-directed messages. It displays
  * information to the user in a QMessageBox and forwards the displayed message to ALog so it is
  * written to the console and log files. The INFO, WARN and CRIT makros provide convenient access.

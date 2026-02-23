@@ -46,6 +46,11 @@ class EntryEditDialog : public QDialog {
     virtual bool deleteEntry(int rowID) = 0;
 
     /*!
+     * \brief resets the dialog to an empty state
+     */
+    virtual void reset() = 0;
+
+    /*!
      * \brief Return the row id of the currently edited entry.
      * \details If a new entry is being created, the row id of that new entry is 0.
      * Once it has been successfully submitted to the database, its row id is created

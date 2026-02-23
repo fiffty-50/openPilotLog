@@ -41,8 +41,10 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     explicit FlightLogEntryEditDialog(QWidget *parent = nullptr);
     ~FlightLogEntryEditDialog() { delete ui; }
 
-    void loadEntry(int rowID);
-    bool deleteEntry(int rowID);
+    // Entry Edit Interface
+    void loadEntry(int rowID) override;
+    bool deleteEntry(int rowID) override;
+    void reset() override;
 
   private:
     // Ui

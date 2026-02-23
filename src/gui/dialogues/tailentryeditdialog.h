@@ -113,10 +113,12 @@ class TailEntryEditDialog : public EntryEditDialog {
     void on_searchCompleter_activated(const QModelIndex &index);
     void on_dateEditCheckBox_changed(Qt::CheckState state);
     void on_setDefaultPushButton_clicked();
+
     // EntryEditDialog interface
   public:
-    virtual bool deleteEntry(int rowID) override;
-    virtual void loadEntry(int rowId) override;
+    bool deleteEntry(int rowID) override;
+    void loadEntry(int rowId) override;
+    void reset() override;
 };
 
 #endif // NEWTAIL_H

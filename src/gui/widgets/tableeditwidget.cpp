@@ -99,7 +99,7 @@ void TableEditWidget::setupVerticalUI()
     setupFilterWidget();
     m_stackedWidget->addWidget(m_filterWidget);
     m_stackedWidget->setCurrentWidget(m_filterWidget);
-    gridLayout->addWidget(m_stackedWidget);
+    //gridLayout->addWidget(m_stackedWidget);
 }
 
 void TableEditWidget::setupFilterWidget()
@@ -187,19 +187,22 @@ void TableEditWidget::setupSignalsAndSlots()
                      &TableEditWidget::sortColumnChanged);
 
     // Force the view to update the selected row when a column is selected
-    connect(m_view->selectionModel(), &QItemSelectionModel::currentChanged, this,
+    QObject::connect(m_view->selectionModel(), &QItemSelectionModel::currentChanged, this,
             [this](const QModelIndex &current, const QModelIndex &) {
                 if (current.isValid()) m_view->selectRow(current.row());
             });
 
-    // Edit an entry when selected with arrow keys
-    QObject::connect(m_view->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
-                     [this](const QModelIndex &current, const QModelIndex &previous) {
-                         Q_UNUSED(previous);
-                         const int rowId = current.sibling(current.row(), 0).data().toInt();
-                         DEB << "entry edit blocked.";
-                         //openEntryEdit(rowId);
-                     });
+    // Edit an entry when selected
+    QObject::connect(m_view, &QTableView::clicked,
+            this, [this](const QModelIndex &index) {
+                const int rowId =
+                    index.sibling(index.row(), 0).data().toInt();
+                openEntryEdit(rowId);
+            });
+    // Hide the edit widget when editing is finished
+    QObject::connect(m_entryEditDialog, &QDialog::finished, this, [this]() {
+        hideEditWidget();
+    });
 
     // Add a new Entry
     QObject::connect(m_addNewEntryPushButton, &QPushButton::clicked, this,
@@ -212,18 +215,18 @@ void TableEditWidget::setupSignalsAndSlots()
 
 void TableEditWidget::openEntryEdit(std::optional<int> rowId)
 {
-    cleanUpOldEditDialog();
-
-    m_entryEditDialog = createEntryEditDialog();
+    if(!m_entryEditDialog) {
+        m_entryEditDialog = createEntryEditDialog();
+        m_stackedWidget->addWidget(m_entryEditDialog);
+    }
 
     if (rowId) m_entryEditDialog->loadEntry(*rowId);
+    else m_entryEditDialog->reset();
 
-    m_stackedWidget->addWidget(m_entryEditDialog);
     m_stackedWidget->setCurrentWidget(m_entryEditDialog);
 
     showEditWidget();
-    m_entryEditDialog->exec();
-    hideEditWidget();
+    m_entryEditDialog->open();
 }
 
 void TableEditWidget::deleteEntryRequested()
@@ -285,15 +288,6 @@ QString TableEditWidget::getFilterStatement(const QString &column, const QString
 {
     return QString(QLatin1Char('\"') + column + QLatin1String("\" LIKE '%") + filterText +
                    QLatin1String("%'"));
-}
-
-void TableEditWidget::cleanUpOldEditDialog()
-{
-    if (!m_entryEditDialog) return;
-
-    m_stackedWidget->removeWidget(m_entryEditDialog);
-    m_entryEditDialog->deleteLater();
-    m_entryEditDialog = nullptr;
 }
 
 void TableEditWidget::filterTextChanged(const QString &filterText)

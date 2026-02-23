@@ -18,6 +18,7 @@
 #include "airportcodeentry.h"
 #include "src/classes/date.h"
 #include <QSqlQuery>
+#include <qsqlerror.h>
 
 namespace OPL {
 
@@ -133,7 +134,10 @@ QString AirportCodeEntry::getCurrentCode(int airport_id, CodeType type)
     }
 
     if (!q.exec() || !q.next()) {
-        LOG << QStringLiteral("No airport code found for airport_id: ") << airport_id;
+        LOG << QStringLiteral("No airport code found for airport_id: ") << airport_id << " and code type: " << q.boundValue(1).toString();
+        DEB << q.lastError().text();
+        DEB << q.lastQuery();
+        DEB << q.boundValues();
         return {};
     }
 
