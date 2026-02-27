@@ -21,7 +21,8 @@
 #include <QComboBox>
 #include <QMessageBox>
 #include <QtCore>
-#include <qobject.h>
+#include <QObject>
+#include <qtpreprocessorsupport.h>
 
 #define APPNAME QStringLiteral("openPilotLog")
 #define ORGNAME QStringLiteral("opl")
@@ -239,6 +240,14 @@ enum class DatabaseView { Airports, Tails };
  * Simulation Training Device
  */
 enum class SimulatorType { FNPTI = 0, FNPTII = 1, FSTD = 2 };
+
+/*!
+ * \brief Enumerates the two types of log events: Flights and Simulator Events.
+ */
+enum class LogEvent { Flight, Sim };
+const static inline QString EVENT_TYPE_FLT = QStringLiteral("FLT");
+const static inline QString EVENT_TYPE_SIM = QStringLiteral("SIM");
+
 
 /*!
  * \brief Enumerates the tables in the database

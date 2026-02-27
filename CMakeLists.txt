@@ -87,6 +87,10 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbooktableeditwidget.cpp
     src/gui/widgets/aircrafttableeditwidget.h
     src/gui/widgets/aircrafttableeditwidget.cpp
+    src/gui/widgets/logbookwidgetui.h
+    src/gui/widgets/logbookwidgetui.cpp
+    src/gui/widgets/logbookwidget.h
+    src/gui/widgets/logbookwidget.cpp
 
     src/gui/widgets/databaseeditwidget.h
     src/gui/widgets/databaseeditwidget.cpp
@@ -94,7 +98,9 @@ set(PROJECT_SOURCES
     src/gui/widgets/flightsegmenteditorwidget.cpp
 
     # Views
-    src/gui/views/logbookviewinfo.h
+    src/gui/views/logbookview.h
+    src/gui/views/viewdefault.h
+    src/gui/views/viewdefaultwithsim.h
 
     # Verification
     src/gui/comboboxes/dbselectioncombobox.h
@@ -208,7 +214,6 @@ set(PROJECT_SOURCES
     src/database/dbsummary.cpp
 
     # Database Cache
-    src/database/views/logbookviewinfo.h
     src/database/cache/airportinfo.h
     src/database/cache/airportinfo.cpp
     src/database/cache/pilotinfo.h

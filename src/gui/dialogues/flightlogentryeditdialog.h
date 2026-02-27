@@ -51,7 +51,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     Ui::FlightEntryEditUi *ui;
     // dialog setup
     void init();
-    void retranslateUi();
+    //void retranslateUi();
     void setupValidationAndCompletion();
     void setupSlots();
     void readSettings();

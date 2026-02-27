@@ -29,6 +29,7 @@
 #include "src/gui/dialogues/simentryeditdialog.h"
 #include "src/gui/widgets/databaseeditwidget.h"
 #include "src/gui/widgets/logbooktableeditwidget.h"
+#include "src/gui/widgets/logbookwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
 #include "ui_mainwindow.h"
@@ -77,8 +78,7 @@ void MainWindow::initialiseWidgets()
     homeWidget = new HomeWidget(this);
     ui->stackedWidget->addWidget(homeWidget);
 
-    logbookWidget = new LogbookTableEditWidget(this);
-    logbookWidget->init();
+    logbookWidget = new LogbookWidget(this);
     ui->stackedWidget->addWidget(logbookWidget);
 
     tailsWidget = new TailTableEditWidget(this);
@@ -165,7 +165,7 @@ void MainWindow::nope()
 void MainWindow::connectWidgets()
 {
     QObject::connect(settingsWidget, &SettingsWidget::settingChanged, logbookWidget,
-                     &LogbookTableEditWidget::viewSelectionChanged);
+                     &LogbookWidget::viewSelectionChanged);
     // QObject::connect(this, &MainWindow::addFlightEntryRequested, logbookWidget,
     //                  &LogbookTableEditWidget::openEntryEdit);
     // QObject::connect(this, &MainWindow::addSimulatorEntryRequested, logbookWidget,
