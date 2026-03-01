@@ -25,5 +25,6 @@ StyledTimeDelegate::StyledTimeDelegate(const QString &format, QObject *parent)
 
 QString StyledTimeDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
+    if(value.toInt() == 0) return {};
     return QTime::fromMSecsSinceStartOfDay(value.toInt()).toString(m_format);
 }

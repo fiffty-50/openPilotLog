@@ -335,9 +335,9 @@ class OplGlobals : public QObject {
     };
     const static inline QMap<LogbookView, QString> LOGBOOK_VIEWS = {
         {LogbookView::Default,        QStringLiteral("viewDefault")   },
-        {LogbookView::DefaultWithSim, QStringLiteral("viewDefaultSim")},
+        {LogbookView::DefaultWithSim, QStringLiteral("viewDefault")},
         {LogbookView::Easa,           QStringLiteral("viewEasa")      },
-        {LogbookView::EasaWithSim,    QStringLiteral("viewEasaSim")   },
+        {LogbookView::EasaWithSim,    QStringLiteral("viewEasa")   },
         {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")},
     };
     const static inline QMap<DatabaseView, QString> DATABASE_VIEWS = {

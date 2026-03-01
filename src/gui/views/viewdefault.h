@@ -31,6 +31,8 @@
 
 class ViewDefault : public LogbookViewInfo {
   public:
+    ViewDefault() : m_hideSimulator(true) {}
+
     QString databaseName() override
     {
         return OPL::GLOBALS->getLogbookViewName(OPL::LogbookView::Default);
@@ -64,26 +66,36 @@ class ViewDefault : public LogbookViewInfo {
             model->setHeaderData(i, Qt::Horizontal, S_HEADER_NAMES[i]);
         }
 
+        if (m_hideSimulator) {
+            view->hideColumn(COL_SIM_TYPE);
+            view->hideColumn(COL_SIM_DURATION);
+        }
+
         view->resizeColumnsToContents();
     }
 
   protected:
+    bool m_hideSimulator;
+    ViewDefault(bool hideSimulator) : m_hideSimulator(hideSimulator) {}
     QList<int> getFlightSummaryColumns() override
     {
         return {COLUMN_DATE_JD, COL_DEPT_ID, COL_TIME_OFF_MS, COL_TIME_ON_MS, COL_TIME_TOTAL_MS};
     }
-    QList<int> getSimSummaryColumns() override { return {}; } // no SIM data in this view
+    QList<int> getSimSummaryColumns() override
+    {
+        return {COLUMN_DATE_JD, COL_SIM_TYPE, COL_SIM_DURATION, COL_REMARKS};
+    }
 
   private:
     static const inline QStringList S_HEADER_NAMES = {
-        QStringLiteral("event_id"),    // event id column - hidden
-        QStringLiteral("event_type"),  // event type - hidden
-        QObject::tr("Date of Flight"), //
-        QStringLiteral("flight_id"),   // flight id column - hidden
+        QStringLiteral("event_id"),   // event id column - hidden
+        QStringLiteral("event_type"), // event type - hidden
+        QObject::tr("Date of Flight"),
+        QStringLiteral("flight_id"), // flight id column - hidden
         QObject::tr("Dept"),           QObject::tr("Time"),         QObject::tr("Dest"),
         QObject::tr("Time"),           QObject::tr("Total"),        QObject::tr("Name PIC"),
         QObject::tr("Type"),           QObject::tr("Registration"), QObject::tr("Flight Number"),
-        QObject::tr("Remarks"),
+        QObject::tr("Sim Type"),       QObject::tr("Sim Duration"), QObject::tr("Remarks"),
     };
 
     static constexpr int COL_DEPT_ID       = 4;
@@ -95,7 +107,17 @@ class ViewDefault : public LogbookViewInfo {
     static constexpr int COL_TYPE_ID       = 10;
     static constexpr int COL_TAIL_ID       = 11;
     static constexpr int COL_FLIGHT_NR     = 12;
-    static constexpr int COL_REMARKS       = 13;
+    static constexpr int COL_SIM_TYPE      = 13;
+    static constexpr int COL_SIM_DURATION  = 14;
+    static constexpr int COL_REMARKS       = 15;
 };
 
+class ViewDefaultWithSim : public ViewDefault {
+  public:
+    ViewDefaultWithSim() : ViewDefault(false) {}
+    QString databaseName() override
+    {
+        return OPL::GLOBALS->getLogbookViewName(OPL::LogbookView::DefaultWithSim);
+    }
+};
 #endif // VIEWDEFAULT_H

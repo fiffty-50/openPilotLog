@@ -100,7 +100,7 @@ set(PROJECT_SOURCES
     # Views
     src/gui/views/logbookview.h
     src/gui/views/viewdefault.h
-    src/gui/views/viewdefaultwithsim.h
+    src/gui/views/vieweasa.h
 
     # Verification
     src/gui/comboboxes/dbselectioncombobox.h
@@ -139,6 +139,8 @@ set(PROJECT_SOURCES
     src/gui/styleddelegates/styledenginecountdelegate.cpp
     src/gui/styleddelegates/styledairportdelegate.h
     src/gui/styleddelegates/styledairportdelegate.cpp
+    src/gui/styleddelegates/styledcountdelegate.h
+    src/gui/styleddelegates/styledcountdelegate.cpp
 
     # Classes
     src/classes/style.h

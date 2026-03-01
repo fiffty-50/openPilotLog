@@ -5,8 +5,9 @@
 #include "src/gui/dialogues/simentryeditdialog.h"
 #include "src/gui/views/logbookview.h"
 #include "src/gui/views/viewdefault.h"
-#include "src/gui/views/viewdefaultwithsim.h"
+#include "src/gui/views/vieweasa.h"
 #include "src/opl.h"
+#include <memory>
 #include <qabstractitemmodel.h>
 #include <qassert.h>
 #include <qnamespace.h>
@@ -140,6 +141,7 @@ QString LogbookWidget::errorOnDeleteString(const QModelIndex &index)
     case OPL::LogEvent::Sim:
         return DB->lastError.text();
     }
+    return {};
 }
 
 void LogbookWidget::openEntryEdit(const QModelIndex &index)
@@ -177,12 +179,16 @@ bool LogbookWidget::setViewHelper()
         m_viewHelper = std::make_unique<ViewDefault>();
         return true;
     case OPL::LogbookView::DefaultWithSim:
+        DEB << "with sim";
         m_viewHelper = std::make_unique<ViewDefaultWithSim>();
         return true;
     case OPL::LogbookView::Easa:
-        return false;
+        m_viewHelper = std::make_unique<ViewEasa>();
+        return true;
     case OPL::LogbookView::EasaWithSim:
-        return false;
+        DEB << "with sim";
+        m_viewHelper = std::make_unique<ViewEasaWithSim>();
+        return true;
     case OPL::LogbookView::SimulatorOnly:
         return false;
     }
