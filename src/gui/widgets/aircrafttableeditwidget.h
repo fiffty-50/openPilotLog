@@ -34,7 +34,7 @@ class AircraftTableEditWidget : public TableEditWidget {
     EntryEditDialog *createEntryEditDialog() override;
 
   private:
-    void retranslateUi();
+    void retranslateUi() override;
     void setupFilterComboBox();
 
     static constexpr int COL_ROWID           = 0;

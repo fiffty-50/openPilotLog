@@ -56,6 +56,7 @@ class ViewDefault : public LogbookViewInfo {
             {COL_PIC_ID,        pilot_delegate  },
             {COL_TYPE_ID,       type_delegate   },
             {COL_TAIL_ID,       tail_delegate   },
+            {COL_SIM_DURATION,  time_delegate   },
         };
 
         for (auto it = s_delegate_map.cbegin(); it != s_delegate_map.cend(); ++it) {

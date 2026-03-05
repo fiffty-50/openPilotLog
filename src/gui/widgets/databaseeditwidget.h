@@ -21,6 +21,7 @@ class DatabaseEditWidget : public QWidget {
     TableEditWidget *tailsTab;
     TableEditWidget *airportsTab;
     TableEditWidget *aircraftTab;
+    TableEditWidget *approachTab;
     // TableEditWidget *airportCodesTab;
     // TableEditWidget *approachTypesTab;
     // TableEditWidget *currenciesTab;

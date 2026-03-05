@@ -9,7 +9,8 @@ class AirportSelectionBox : public DbSelectionComboBox {
     AirportSelectionBox(QWidget *parent = nullptr);
 
   protected:
-    const QMap<QString, int> &getMap() const { return airportData->allCodesMap(); }
+    const QMap<QString, int> &getMap() const override { return airportData->allCodesMap(); }
+
 };
 
 #endif // AIRPORTSELECTIONBOX_H

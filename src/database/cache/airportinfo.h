@@ -19,8 +19,8 @@
 #define AIRPORTINFO_H
 
 #include <QObject>
-#include <qglobalstatic.h>
-#include <qsqltablemodel.h>
+#include <QGlobalStatic>
+#include <QSqlTableModel>
 /*!
  * \class AirportInfo
  * \brief Provides access to airport information from the database.

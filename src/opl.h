@@ -20,8 +20,8 @@
 
 #include <QComboBox>
 #include <QMessageBox>
-#include <QtCore>
 #include <QObject>
+#include <QtCore>
 #include <qtpreprocessorsupport.h>
 
 #define APPNAME QStringLiteral("openPilotLog")
@@ -102,7 +102,8 @@ constexpr static char DECIMAL_SEPERATOR = '.';
 constexpr static int LOGBOOK_OWNER_ID = 1;
 
 /*!
- * \brief When creating a new entry in the database, no row id is yet assigned so 0 is treated as a new entry.
+ * \brief When creating a new entry in the database, no row id is yet assigned so 0 is treated as a
+ * new entry.
  */
 constexpr static int NEW_ROW_ID = 0;
 
@@ -248,7 +249,6 @@ enum class LogEvent { Flight, Sim };
 const static inline QString EVENT_TYPE_FLT = QStringLiteral("FLT");
 const static inline QString EVENT_TYPE_SIM = QStringLiteral("SIM");
 
-
 /*!
  * \brief Enumerates the tables in the database
  */
@@ -260,6 +260,7 @@ enum class DbTable {
     Pilots,
     AircraftTypes,
     AircraftTails,
+    ApproachTypes,
     Airports,
     FlightSegments,
     MovementEvents,
@@ -334,11 +335,11 @@ class OplGlobals : public QObject {
         {Translation::Spanish, QStringLiteral("Español")},
     };
     const static inline QMap<LogbookView, QString> LOGBOOK_VIEWS = {
-        {LogbookView::Default,        QStringLiteral("viewDefault")   },
-        {LogbookView::DefaultWithSim, QStringLiteral("viewDefault")},
-        {LogbookView::Easa,           QStringLiteral("viewEasa")      },
-        {LogbookView::EasaWithSim,    QStringLiteral("viewEasa")   },
-        {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")},
+        {LogbookView::Default,        QStringLiteral("viewDefaultFlightOnly")},
+        {LogbookView::DefaultWithSim, QStringLiteral("viewDefault")          },
+        {LogbookView::Easa,           QStringLiteral("viewEasaFlightOnly")   },
+        {LogbookView::EasaWithSim,    QStringLiteral("viewEasa")             },
+        {LogbookView::SimulatorOnly,  QStringLiteral("viewSimulators")       },
     };
     const static inline QMap<DatabaseView, QString> DATABASE_VIEWS = {
         {DatabaseView::Airports, QStringLiteral("AirportView")},
@@ -364,18 +365,20 @@ class OplGlobals : public QObject {
         {SimulatorType::FSTD,   QStringLiteral("FSTD")   },
     };
     const static inline QMap<DbTable, QString> DB_TABLES = {
-        {DbTable::LogEvents,        QStringLiteral("log_events")        },
-        {DbTable::Flights,          QStringLiteral("flights")           },
-        {DbTable::Simulators,       QStringLiteral("simulators")        },
-        {DbTable::Pilots,           QStringLiteral("pilots")            },
-        {DbTable::AircraftTypes,    QStringLiteral("aircraft_types")    },
-        {DbTable::AircraftTails,    QStringLiteral("aircraft_tails")    },
-        {DbTable::Airports,         QStringLiteral("airports")          },
-        {DbTable::FlightSegments,   QStringLiteral("flight_segments")   },
-        {DbTable::MovementEvents,   QStringLiteral("movement_events")   },
-        {DbTable::ApproachEvents,   QStringLiteral("approach_events")   },
-        {DbTable::AirportCodes,     QStringLiteral("airport_codes")     },
-        {DbTable::Currencies,       QStringLiteral("currencies")        },
+        {DbTable::Any,            QStringLiteral("any")     },
+        {DbTable::LogEvents,      QStringLiteral("log_events")     },
+        {DbTable::Flights,        QStringLiteral("flights")        },
+        {DbTable::Simulators,     QStringLiteral("simulators")     },
+        {DbTable::Pilots,         QStringLiteral("pilots")         },
+        {DbTable::AircraftTypes,  QStringLiteral("aircraft_types") },
+        {DbTable::AircraftTails,  QStringLiteral("aircraft_tails") },
+        {DbTable::Airports,       QStringLiteral("airports")       },
+        {DbTable::FlightSegments, QStringLiteral("flight_segments")},
+        {DbTable::MovementEvents, QStringLiteral("movement_events")},
+        {DbTable::ApproachEvents, QStringLiteral("approach_events")},
+        {DbTable::AirportCodes,   QStringLiteral("airport_codes")  },
+        {DbTable::Currencies,     QStringLiteral("currencies")     },
+        {DbTable::ApproachTypes,  QStringLiteral("approach_types") },
     };
 
     const static inline QStringList APPROACH_TYPES = {QStringLiteral("VISUAL"),

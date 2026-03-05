@@ -21,6 +21,7 @@
 #include "src/database/cache/aircrafttypesinfo.h"
 #include "src/database/cache/airportgeographicalinfo.h"
 #include "src/database/cache/airportinfo.h"
+#include "src/database/cache/approachtypeinfo.h"
 #include "src/database/cache/pilotinfo.h"
 #include "src/database/cache/tailregistrationsinfo.h"
 #include "src/database/database.h"
@@ -116,6 +117,7 @@ void MainWindow::connectDatabase()
     airportData->init();
     pilotsData->init();
     tailsData->init();
+    approachData->init();
 }
 
 void MainWindow::setActionIcons(OPL::Style::StyleType style)
@@ -270,8 +272,7 @@ void MainWindow::on_actionDebug_triggered() { ui->stackedWidget->setCurrentWidge
 void MainWindow::debug()
 {
 
-
-    //auto d = OPL::FlightLogEntryEditDialog(this);
-    //d.loadEntry(8);
-    //d.exec();
+    // auto d = OPL::FlightLogEntryEditDialog(this);
+    // d.loadEntry(8);
+    // d.exec();
 }

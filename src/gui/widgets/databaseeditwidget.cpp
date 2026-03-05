@@ -1,6 +1,7 @@
 #include "databaseeditwidget.h"
 #include "src/gui/widgets/aircrafttableeditwidget.h"
 #include "src/gui/widgets/airporttableeditwidget.h"
+#include "src/gui/widgets/approachtypeseditwidget.h"
 #include "src/gui/widgets/pilottableeditwidget.h"
 #include "src/gui/widgets/tailtableeditwidget.h"
 
@@ -32,6 +33,10 @@ void DatabaseEditWidget::setupUi()
     airportsTab->init();
     tabWidget->addTab(airportsTab, {});
 
+    approachTab = new ApproachTypesEditWidget(this);
+    approachTab->init();
+    tabWidget->addTab(approachTab, {});
+
     gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
 }
 
@@ -41,6 +46,7 @@ void DatabaseEditWidget::retranslateUi()
     tabWidget->setTabText(tabWidget->indexOf(tailsTab), tr("Tails"));
     tabWidget->setTabText(tabWidget->indexOf(aircraftTab), tr("Aircraft"));
     tabWidget->setTabText(tabWidget->indexOf(airportsTab), tr("Airports"));
+    tabWidget->setTabText(tabWidget->indexOf(approachTab), tr("Approach Types"));
 }
 
 void DatabaseEditWidget::addEntry(Table table)
@@ -66,7 +72,8 @@ void DatabaseEditWidget::addEntry(Table table)
         // airportCodesTab->on_addNewEntryPushButton_clicked();
         break;
     case ApproachTypes:
-        // approachTypesTab->on_addNewEntryPushButton_clicked();
+        tabWidget->setCurrentWidget(approachTab);
+        approachTab->openEntryEdit(std::nullopt);
         break;
     case Currencies:
         // currenciesTab->on_addNewEntryPushButton_clicked();

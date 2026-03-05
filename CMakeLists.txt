@@ -87,6 +87,8 @@ set(PROJECT_SOURCES
     src/gui/widgets/logbooktableeditwidget.cpp
     src/gui/widgets/aircrafttableeditwidget.h
     src/gui/widgets/aircrafttableeditwidget.cpp
+    src/gui/widgets/approachtypeseditwidget.h
+    src/gui/widgets/approachtypeseditwidget.cpp
     src/gui/widgets/logbookwidgetui.h
     src/gui/widgets/logbookwidgetui.cpp
     src/gui/widgets/logbookwidget.h
@@ -113,6 +115,8 @@ set(PROJECT_SOURCES
     src/gui/comboboxes/airportselectionbox.cpp
     src/gui/comboboxes/aircrafttypeselectionbox.h
     src/gui/comboboxes/aircrafttypeselectionbox.cpp
+    src/gui/comboboxes/approachtypeselectionbox.h
+    src/gui/comboboxes/approachtypeselectionbox.cpp
 
     src/gui/verification/diacriticignoringstringlistmodel.h
     src/gui/verification/diacriticignoringcompleter.h
@@ -226,6 +230,8 @@ set(PROJECT_SOURCES
     src/database/cache/aircrafttypesinfo.cpp
     src/database/cache/airportgeographicalinfo.h
     src/database/cache/airportgeographicalinfo.cpp
+    src/database/cache/approachtypeinfo.h
+    src/database/cache/approachtypeinfo.cpp
 
     # Ressources
     assets/icons.qrc
