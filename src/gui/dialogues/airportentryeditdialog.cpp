@@ -177,8 +177,8 @@ void AirportEntryEditDialog::loadAirportData(int row_id)
     icaoDisplayLabel->setText(airportData->icao(m_rowId));
     iataDisplayLabel->setText(airportData->iata(m_rowId));
     // TODO - include other codes in airportData
-    otherCodeDisplayLabel->setText(
-        OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::OTHER));
+    //otherCodeDisplayLabel->setText(
+    //    OPL::AirportCodeEntry::getCurrentCode(m_rowId, OPL::AirportCodeEntry::CodeType::OTHER));
 }
 
 bool AirportEntryEditDialog::userWantsToEditCode()

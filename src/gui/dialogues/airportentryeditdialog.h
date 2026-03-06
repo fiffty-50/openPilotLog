@@ -62,9 +62,6 @@ class AirportEntryEditDialog : public EntryEditDialog {
     QDoubleSpinBox *latDoubleSpinBox;
     QComboBox *timeZoneComboBox;
 
-    // Member Variables
-    int m_rowId;
-
     // Member Functions
     void init();
     void retranslateUi();

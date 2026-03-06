@@ -51,6 +51,8 @@ set(PROJECT_SOURCES
     src/gui/dialogues/entryeditdialog.cpp
     src/gui/dialogues/aircraftentryeditdialog.h
     src/gui/dialogues/aircraftentryeditdialog.cpp
+    src/gui/dialogues/approachentryeditdialog.h
+    src/gui/dialogues/approachentryeditdialog.cpp
 
     src/gui/dialogues/flightentryeditui.h
     src/gui/dialogues/flightentryeditui.cpp
@@ -319,6 +321,7 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
+         src/database/entries/approachtypeentry.h src/database/entries/approachtypeentry.cpp
      )
     endif()
 endif()

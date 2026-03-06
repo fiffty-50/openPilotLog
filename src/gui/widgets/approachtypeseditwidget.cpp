@@ -18,7 +18,7 @@
 #include "approachtypeseditwidget.h"
 #include "src/database/cache/approachtypeinfo.h"
 #include "src/database/database.h"
-#include "src/gui/dialogues/airportentryeditdialog.h"
+#include "src/gui/dialogues/approachentryeditdialog.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 #include "src/gui/widgets/tableeditwidget.h"
 #include <qabstractitemmodel.h>
@@ -46,4 +46,4 @@ QString ApproachTypesEditWidget::confirmDeleteString(int row_id)
         .arg(approach_name);
 }
 
-EntryEditDialog *ApproachTypesEditWidget::createEntryEditDialog() { return new AirportEntryEditDialog(this); }
+EntryEditDialog *ApproachTypesEditWidget::createEntryEditDialog() { return new ApproachEntryEditDialog(this); }
