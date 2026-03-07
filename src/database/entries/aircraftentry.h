@@ -17,7 +17,7 @@
  */
 #ifndef AIRCRAFTENTRY_H
 #define AIRCRAFTENTRY_H
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

@@ -18,11 +18,11 @@
 #ifndef FLIGHTDATABUILDER_H
 #define FLIGHTDATABUILDER_H
 
-#include "src/database/approachentry.h"
-#include "src/database/flightlogentry.h"
-#include "src/database/flightsegmententry.h"
-#include "src/database/logentry.h"
-#include "src/database/movemententry.h"
+#include "src/database/entries/approachentry.h"
+#include "src/database/entries/flightlogentry.h"
+#include "src/database/entries/flightsegmententry.h"
+#include "src/database/entries/logentry.h"
+#include "src/database/entries/movemententry.h"
 #include "src/gui/verification/flightsegmentbuilder.h"
 #include "src/opl.h"
 #include <optional>

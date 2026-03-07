@@ -16,10 +16,8 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "database.h"
-#include "src/classes/jsonhelper.h"
-#include "src/database/flightlogentry.h"
+#include "src/database/entries/flightlogentry.h"
 #include "src/opl.h"
-#include <iterator>
 #include <qdir.h>
 #include <qsqlerror.h>
 #include <utility>

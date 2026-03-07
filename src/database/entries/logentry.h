@@ -19,7 +19,7 @@
 #ifndef LOGENTRY_H
 #define LOGENTRY_H
 
-#include "row.h"
+#include "src/database/entries/row.h"
 #include <qobject.h>
 
 namespace OPL {

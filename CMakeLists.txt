@@ -168,32 +168,6 @@ set(PROJECT_SOURCES
     src/classes/time.h
     src/classes/date.h
 
-    # Database Entries
-    src/database/aircraftentry.h
-    src/database/aircraftentry.cpp
-    src/database/tailentry.h
-    src/database/tailentry.cpp
-    src/database/airportentry.h
-    src/database/airportentry.cpp
-    src/database/pilotentry.h
-    src/database/pilotentry.cpp
-    src/database/airportcodeentry.h
-    src/database/airportcodeentry.cpp
-    src/database/logentry.h
-    src/database/logentry.cpp
-    src/database/flightlogentry.h
-    src/database/flightlogentry.cpp
-    src/database/simlogentry.h
-    src/database/simlogentry.cpp
-    src/database/movemententry.h
-    src/database/movemententry.cpp
-    src/database/flightsegmententry.h
-    src/database/flightsegmententry.cpp
-    src/database/approachentry.h
-    src/database/approachentry.cpp
-
-    src/database/flightdata.h
-    src/database/flightdata.cpp
 
     # Namespaces
     src/functions/log.h
@@ -216,8 +190,6 @@ set(PROJECT_SOURCES
     src/database/database.cpp
     src/database/databasesetup.h
     src/database/databasesetup.cpp
-    src/database/row.h
-    src/database/row.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
 
@@ -234,6 +206,37 @@ set(PROJECT_SOURCES
     src/database/cache/airportgeographicalinfo.cpp
     src/database/cache/approachtypeinfo.h
     src/database/cache/approachtypeinfo.cpp
+
+    # Database Entries
+    src/database/entries/row.h
+    src/database/entries/row.cpp
+    src/database/entries/aircraftentry.h
+    src/database/entries/aircraftentry.cpp
+    src/database/entries/approachentry.h
+    src/database/entries/approachentry.cpp
+    src/database/entries/approachtypeentry.h
+    src/database/entries/approachtypeentry.cpp
+    src/database/entries/airportentry.h
+    src/database/entries/airportentry.cpp
+    src/database/entries/airportcodeentry.h
+    src/database/entries/airportcodeentry.cpp
+    src/database/entries/flightlogentry.h
+    src/database/entries/flightlogentry.cpp
+    src/database/entries/flightsegmententry.h
+    src/database/entries/flightsegmententry.cpp
+    src/database/entries/logentry.h
+    src/database/entries/logentry.cpp
+    src/database/entries/movemententry.h
+    src/database/entries/movemententry.cpp
+    src/database/entries/pilotentry.h
+    src/database/entries/pilotentry.cpp
+    src/database/entries/simlogentry.h
+    src/database/entries/simlogentry.cpp
+    src/database/entries/tailentry.h
+    src/database/entries/tailentry.cpp
+
+    src/database/entries/flightdata.h
+    src/database/entries/flightdata.cpp
 
     # Ressources
     assets/icons.qrc
@@ -321,7 +324,6 @@ if(QT_VERSION_MAJOR GREATER_EQUAL 6)
          ${PROJECT_SOURCES}
          ${QM_FILES}
          ${app_icon_macos}
-         src/database/entries/approachtypeentry.h src/database/entries/approachtypeentry.cpp
      )
     endif()
 endif()

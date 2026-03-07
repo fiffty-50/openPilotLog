@@ -18,7 +18,7 @@
 #ifndef NEWPILOT_H
 #define NEWPILOT_H
 
-#include "src/database/pilotentry.h"
+#include "src/database/entries/pilotentry.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 #include <QCompleter>
 #include <QDialog>

@@ -18,7 +18,7 @@
 #ifndef PILOTTABLEEDITWIDGET_H
 #define PILOTTABLEEDITWIDGET_H
 
-#include "src/database/pilotentry.h"
+#include "src/database/entries/pilotentry.h"
 #include "tableeditwidget.h"
 
 class PilotTableEditWidget : public TableEditWidget {

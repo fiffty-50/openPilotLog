@@ -24,7 +24,7 @@
 #include "src/database/cache/airportgeographicalinfo.h"
 #include "src/database/cache/airportinfo.h"
 #include "src/database/database.h"
-#include "src/database/flightdata.h"
+#include "src/database/entries/flightdata.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
 #include "src/gui/dialogues/entryeditdialog.h"

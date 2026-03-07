@@ -18,7 +18,7 @@
 #ifndef FLIGHTSEGMENTENTRY_H
 #define FLIGHTSEGMENTENTRY_H
 
-#include "row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

@@ -17,7 +17,7 @@
  */
 #ifndef PILOTENTRY_H
 #define PILOTENTRY_H
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

@@ -21,7 +21,7 @@
 #include "src/database/cache/airportinfo.h"
 #include "src/database/cache/pilotinfo.h"
 #include "src/database/cache/tailregistrationsinfo.h"
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 #include "src/opl.h"
 
 namespace OPL {

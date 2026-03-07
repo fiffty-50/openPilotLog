@@ -19,8 +19,8 @@
 #ifndef FLIGHTLOGENTRY_H
 #define FLIGHTLOGENTRY_H
 
-#include "logentry.h"
-#include "row.h"
+#include "src/database/entries/logentry.h"
+#include "src/database/entries/row.h"
 #include "src/opl.h"
 #include <qobject.h>
 

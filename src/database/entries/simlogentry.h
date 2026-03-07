@@ -19,9 +19,9 @@
 #ifndef SIMLOGENTRY_H
 #define SIMLOGENTRY_H
 
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 #include "src/opl.h"
-#include <qobject.h>
+#include <QObject>
 
 namespace OPL {
 

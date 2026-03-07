@@ -18,7 +18,7 @@
 #ifndef APPROACHTYPEENTRY_H
 #define APPROACHTYPEENTRY_H
 
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 #include "src/opl.h"
 #include <QObject>
 

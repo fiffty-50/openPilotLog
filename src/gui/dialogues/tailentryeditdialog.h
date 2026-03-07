@@ -30,7 +30,7 @@
 #include <QPushButton>
 #include <QRegularExpression>
 
-#include "src/database/tailentry.h"
+#include "src/database/entries/tailentry.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 

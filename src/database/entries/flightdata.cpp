@@ -17,7 +17,7 @@
  */
 #include "flightdata.h"
 #include "src/database/database.h"
-#include "src/database/flightsegmententry.h"
+#include "src/database/entries/flightsegmententry.h"
 namespace OPL {
 
 FlightData::FlightData(const LogEntry &log_entry, const FlightLogEntry &flight_entry,

@@ -18,7 +18,7 @@
 #ifndef MOVEMENTENTRY_H
 #define MOVEMENTENTRY_H
 
-#include "row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

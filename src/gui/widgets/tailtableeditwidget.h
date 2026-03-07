@@ -18,7 +18,7 @@
 #ifndef TAILTABLEEDITWIDGET_H
 #define TAILTABLEEDITWIDGET_H
 
-#include "src/database/tailentry.h"
+#include "src/opl.h"
 #include "tableeditwidget.h"
 
 class TailTableEditWidget : public TableEditWidget {

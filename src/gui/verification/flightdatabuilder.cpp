@@ -21,10 +21,10 @@
 #include "src/database/cache/airportinfo.h"
 #include "src/database/cache/pilotinfo.h"
 #include "src/database/cache/tailregistrationsinfo.h"
-#include "src/database/approachentry.h"
-#include "src/database/flightlogentry.h"
-#include "src/database/flightsegmententry.h"
-#include "src/database/movemententry.h"
+#include "src/database/entries/approachentry.h"
+#include "src/database/entries/flightlogentry.h"
+#include "src/database/entries/flightsegmententry.h"
+#include "src/database/entries/movemententry.h"
 #include "src/opl.h"
 #include <QObject>
 #include <utility>

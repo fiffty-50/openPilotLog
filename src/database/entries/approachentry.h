@@ -18,7 +18,7 @@
 #ifndef APPROACHENTRY_H
 #define APPROACHENTRY_H
 
-#include "row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

@@ -1,7 +1,7 @@
 #ifndef FLIGHTSEGMENTEDITORWIDGET_H
 #define FLIGHTSEGMENTEDITORWIDGET_H
 
-#include "src/database/flightsegmententry.h"
+#include "src/database/entries/flightsegmententry.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>

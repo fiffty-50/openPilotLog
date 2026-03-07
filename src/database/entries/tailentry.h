@@ -17,7 +17,7 @@
  */
 #ifndef TAILENTRY_H
 #define TAILENTRY_H
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

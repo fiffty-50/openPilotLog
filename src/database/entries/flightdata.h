@@ -18,10 +18,10 @@
 #ifndef FLIGHTDATA_H
 #define FLIGHTDATA_H
 
-#include "src/database/flightlogentry.h"
-#include "src/database/flightsegmententry.h"
-#include "src/database/logentry.h"
-#include "src/database/movemententry.h"
+#include "src/database/entries/flightlogentry.h"
+#include "src/database/entries/flightsegmententry.h"
+#include "src/database/entries/logentry.h"
+#include "src/database/entries/movemententry.h"
 
 namespace OPL {
 

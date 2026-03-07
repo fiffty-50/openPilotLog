@@ -19,7 +19,7 @@
 #define FLIGHTSEGMENTBUILDER_H
 
 #include "src/calc/nighttime.h"
-#include "src/database/flightsegmententry.h"
+#include "src/database/entries/flightsegmententry.h"
 
 namespace OPL {
 

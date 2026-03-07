@@ -17,7 +17,7 @@
  */
 #ifndef AIRPORTENTRY_H
 #define AIRPORTENTRY_H
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 
 namespace OPL {
 

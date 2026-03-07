@@ -1,6 +1,6 @@
 #ifndef ENTRYBUILDER_H
 #define ENTRYBUILDER_H
-#include "src/database/row.h"
+#include "src/database/entries/row.h"
 
 class EntryBuilder {
   public:
