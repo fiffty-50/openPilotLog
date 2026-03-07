@@ -290,7 +290,7 @@ void FlightLogEntryEditDialog::on_accepted()
         }
         else {
             WARN(tr("Unable to submit flight. The following error has ocurred:<br><br>%1")
-                     .arg(DB->lastError.text()));
+                     .arg(DB->lastErrorText()));
             return;
         }
     }

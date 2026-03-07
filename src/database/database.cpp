@@ -20,6 +20,7 @@
 #include "src/database/flightlogentry.h"
 #include "src/opl.h"
 #include <iterator>
+#include <qdir.h>
 #include <qsqlerror.h>
 #include <utility>
 
@@ -33,17 +34,17 @@ bool Database::connect()
     }
 
     QSqlDatabase db = QSqlDatabase::addDatabase(SQLITE_DRIVER);
-    db.setDatabaseName(databaseFile.absoluteFilePath());
+    db.setDatabaseName(m_databaseFile.absoluteFilePath());
 
     if (!db.open()) {
         LOG << QString("Unable to establish database connection.<br>The following error has "
                        "ocurred:<br><br>%1")
                    .arg(db.lastError().databaseText());
-        lastError = db.lastError();
+        m_lastError = db.lastError();
         return false;
     }
 
-    LOG << "Database connection established: " + databaseFile.absoluteFilePath();
+    LOG << "Database connection established: " + m_databaseFile.absoluteFilePath();
     // Enable foreign key restrictions
     QSqlQuery query;
     query.prepare(QStringLiteral("PRAGMA foreign_keys = ON;"));
@@ -66,24 +67,24 @@ void Database::disconnect()
 
 const QStringList Database::getTableColumns(OPL::DbTable table_name) const
 {
-    return tableColumns.value(OPL::GLOBALS->getDbTableName(table_name));
+    return m_tableColumns.value(OPL::GLOBALS->getDbTableName(table_name));
 }
 
-const QStringList Database::getTableNames() const { return tableNames; }
+const QStringList Database::getTableNames() const { return m_tableNames; }
 
 void Database::updateLayout()
 {
     auto db    = Database::database();
-    tableNames = db.tables();
+    m_tableNames = db.tables();
 
-    tableColumns.clear();
-    for (const auto &table_name : std::as_const(tableNames)) {
+    m_tableColumns.clear();
+    for (const auto &table_name : std::as_const(m_tableNames)) {
         QStringList table_columns;
         QSqlRecord fields = db.record(table_name);
         for (int i = 0; i < fields.count(); i++) {
             table_columns.append(fields.field(i).name());
         }
-        tableColumns.insert(table_name, table_columns);
+        m_tableColumns.insert(table_name, table_columns);
     }
     on_database_updated(DbTable::Any);
 }
@@ -157,12 +158,239 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
 
 bool Database::commit(FlightDataBuilder &builder)
 {
+    if (!builder.validate()) {
+        LOG << "Unable to validate flight data.";
+        DEB << builder.errors();
+        return false;
+    }
     if (exists(DbTable::LogEvents, builder.eventId())) {
         LOG << "Log Event already exists. Update logic not yet implemented.";
-        lastError = QSqlError("Log event already exists. Update logic not yet implemented");
+        m_lastError = QSqlError("Log event already exists. Update logic not yet implemented");
+        return false;
+    }
+    else {
+        return insert(builder);
+    }
+}
+
+bool Database::remove(const OPL::Row &row)
+{
+    if (!exists(row)) {
+        LOG << "Error: Database entry not found.";
         return false;
     }
 
+    const QString table_name = OPL::GLOBALS->getDbTableName(row.getTable());
+
+    QString statement =
+        QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row.getRowId());
+
+    if (query.exec()) {
+        LOG << "Entry removed:";
+        LOG << row;
+        on_database_updated(row.getTable());
+        return true;
+    }
+    else {
+        DEB << "Unable to delete.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
+        m_lastError = query.lastError();
+        return false;
+    }
+}
+
+bool Database::remove(OPL::DbTable table, int row_id)
+{
+    const QString table_name = OPL::GLOBALS->getDbTableName(table);
+
+    QString statement =
+        QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row_id);
+
+    if (query.exec()) {
+        DEB << statement;
+        DEB << query.lastQuery();
+        LOG << "Entry removed: Table " << table_name << ", ROWID " << row_id;
+        on_database_updated(table);
+        return true;
+    }
+    else {
+        DEB << "Unable to delete.";
+        DEB << "Query: " << statement;
+        DEB << "Query Error: " << query.lastError().text();
+        m_lastError = query.lastError();
+        return false;
+    }
+}
+
+bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
+{
+    const QString table_name = OPL::GLOBALS->getDbTableName(table);
+    int errorCount           = 0;
+
+    QSqlQuery query;
+    query.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
+    query.exec();
+
+    for (const auto row_id : row_id_list) {
+        const QString statement =
+            QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
+
+        query.prepare(statement);
+        query.addBindValue(row_id);
+
+        if (!query.exec()) errorCount++;
+    }
+
+    if (errorCount == 0) {
+        query.prepare(QStringLiteral("COMMIT"));
+        if (query.exec()) {
+            on_database_updated(table);
+            LOG << "Transaction successfull.";
+            return true;
+        }
+        else {
+            LOG << "Transaction unsuccessful (Interrupted). Error count: " +
+                       QString::number(errorCount);
+            DEB << query.lastError().text();
+            m_lastError = query.lastError();
+            return false;
+        }
+    }
+    else {
+        query.prepare(QStringLiteral("ROLLBACK"));
+        query.exec();
+        LOG << "Transaction unsuccessful (no changes have been made). Error count: " +
+                   QString::number(errorCount);
+        return false;
+    }
+}
+
+bool Database::exists(const OPL::Row &row)
+{
+    const int row_id = row.getRowId();
+    if (row_id == 0) return false;
+
+    // QString statement = "SELECT 1 FROM " + OPL::GLOBALS->getDbTableName(row.getTable()) + " WHERE
+    // ROWID=? LIMIT 1";
+
+    QString statement = QStringLiteral("SELECT 1 FROM %1 WHERE ROWID=? LIMIT 1")
+                            .arg(OPL::GLOBALS->getDbTableName(row.getTable()));
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row_id);
+
+    if (!query.exec()) return false;
+
+    return query.next(); // true only if a row exists
+}
+
+bool Database::exists(DbTable table, int row_id)
+{
+    if (row_id == 0) return false;
+
+    QString statement =
+        QStringLiteral("SELECT 1 FROM %1 WHERE ROWID=?").arg(OPL::GLOBALS->getDbTableName(table));
+
+    QSqlQuery query;
+    query.prepare(statement);
+    query.addBindValue(row_id);
+
+    if (!query.exec()) return false;
+
+    return query.next(); // true only if a row exists
+}
+
+bool Database::update(const OPL::Row &updated_row)
+{
+    const auto &data          = updated_row.getData();
+    const QString quote       = QStringLiteral("\"");
+    const QString placeholder = QStringLiteral("\"=?");
+
+    QStringList columns;
+    for (const auto &key : data.keys()) {
+        columns << quote + key + placeholder;
+    }
+
+    QString statement = QString("UPDATE %1 SET %2 WHERE ROWID=?")
+                            .arg(updated_row.getTableName(), columns.join(','));
+
+    QSqlQuery query;
+    query.prepare(statement);
+
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        if (it.value().isNull() || it.value().toString() == QString()) {
+            query.addBindValue(QVariant(it.value().metaType()));
+        }
+        else {
+            query.addBindValue(it.value());
+        }
+    }
+
+    query.addBindValue(updated_row.getRowId());
+
+    DEB << "Statement: " << statement;
+    DEB << "Bound values: " << query.boundValues();
+
+    if (!query.exec()) {
+        DEB << "Unable to commit." << query.lastError().text();
+        m_lastError = query.lastError();
+        return false;
+    }
+
+    LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
+    on_database_updated(updated_row.getTable());
+    return true;
+}
+
+bool Database::insert(const OPL::Row &new_row)
+{
+    const auto &data = new_row.getData();
+    DEB << data;
+    const QString quote       = QStringLiteral("\"");
+    const QString placeholder = QStringLiteral("?");
+    QStringList columns, placeholders;
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        columns << (quote + it.key() + quote);
+        placeholders << placeholder;
+    }
+
+    QString statement = QString("INSERT INTO %1 (%2) VALUES (%3)")
+                            .arg(new_row.getTableName(), columns.join(','), placeholders.join(','));
+
+    QSqlQuery query;
+    query.prepare(statement);
+
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        if (it.value().isNull() || it.value().toString() == QString()) {
+            query.addBindValue(QVariant(it.value().metaType()));
+        }
+        else {
+            query.addBindValue(it.value());
+        }
+    }
+
+    if (!query.exec()) {
+        DEB << "Unable to commit." << statement << query.boundValues() << query.lastError().text();
+        m_lastError = query.lastError();
+        return false;
+    }
+
+    LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
+    on_database_updated(new_row.getTable());
+    return true;
+}
+
+bool Database::insert(FlightDataBuilder &builder)
+{
     // start a transaction
     database().transaction();
 
@@ -210,353 +438,11 @@ bool Database::commit(FlightDataBuilder &builder)
         commit(a);
     }
 
+    // commit the transaction
     if (!database().commit()) {
-        lastError = database().lastError();
+        m_lastError = database().lastError();
         return false;
     }
-    return true;
-}
-
-bool Database::remove(const OPL::Row &row)
-{
-    if (!exists(row)) {
-        LOG << "Error: Database entry not found.";
-        return false;
-    }
-
-    const QString table_name = OPL::GLOBALS->getDbTableName(row.getTable());
-
-    QString statement =
-        QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
-
-    QSqlQuery query;
-    query.prepare(statement);
-    query.addBindValue(row.getRowId());
-
-    if (query.exec()) {
-        LOG << "Entry removed:";
-        LOG << row;
-        on_database_updated(row.getTable());
-        return true;
-    }
-    else {
-        DEB << "Unable to delete.";
-        DEB << "Query: " << statement;
-        DEB << "Query Error: " << query.lastError().text();
-        lastError = query.lastError();
-        return false;
-    }
-}
-
-bool Database::remove(OPL::DbTable table, int row_id)
-{
-    const QString table_name = OPL::GLOBALS->getDbTableName(table);
-
-    QString statement =
-        QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
-
-    QSqlQuery query;
-    query.prepare(statement);
-    query.addBindValue(row_id);
-
-    if (query.exec()) {
-        DEB << statement;
-        DEB << query.lastQuery();
-        LOG << "Entry removed: Table " << table_name << ", ROWID " << row_id;
-        on_database_updated(table);
-        return true;
-    }
-    else {
-        DEB << "Unable to delete.";
-        DEB << "Query: " << statement;
-        DEB << "Query Error: " << query.lastError().text();
-        lastError = query.lastError();
-        return false;
-    }
-}
-
-bool Database::removeMany(OPL::DbTable table, const QList<int> &row_id_list)
-{
-    const QString table_name = OPL::GLOBALS->getDbTableName(table);
-    int errorCount           = 0;
-
-    QSqlQuery query;
-    query.prepare(QStringLiteral("BEGIN EXCLUSIVE TRANSACTION"));
-    query.exec();
-
-    for (const auto row_id : row_id_list) {
-        const QString statement =
-            QLatin1String("DELETE FROM ") + table_name + QLatin1String(" WHERE ROWID=?");
-
-        query.prepare(statement);
-        query.addBindValue(row_id);
-
-        if (!query.exec()) errorCount++;
-    }
-
-    if (errorCount == 0) {
-        query.prepare(QStringLiteral("COMMIT"));
-        if (query.exec()) {
-            on_database_updated(table);
-            LOG << "Transaction successfull.";
-            return true;
-        }
-        else {
-            LOG << "Transaction unsuccessful (Interrupted). Error count: " +
-                       QString::number(errorCount);
-            DEB << query.lastError().text();
-            lastError = query.lastError();
-            return false;
-        }
-    }
-    else {
-        query.prepare(QStringLiteral("ROLLBACK"));
-        query.exec();
-        LOG << "Transaction unsuccessful (no changes have been made). Error count: " +
-                   QString::number(errorCount);
-        return false;
-    }
-}
-
-bool Database::exists(const OPL::Row &row)
-{
-    // if (row.getRowId() == 0) return false;
-
-    // // Check database for row id
-    // QString statement = QLatin1String("SELECT COUNT(*) FROM ") +
-    //                     OPL::GLOBALS->getDbTableName(row.getTable()) +
-    //                     QLatin1String(" WHERE ROWID=?");
-    // QSqlQuery query;
-    // query.prepare(statement);
-    // query.addBindValue(row.getRowId());
-    // query.setForwardOnly(true);
-    // query.exec();
-    // // this returns either 1 or 0 since row ids are unique
-    // if (!query.isActive()) {
-    //     lastError = query.lastError();
-    //     DEB << "Query Error: " << query.lastError().text() << statement;
-    //     return false;
-    // }
-    // query.next();
-    // int rowId = query.value(0).toInt();
-    // if (rowId) {
-    //     return true;
-    // }
-    // else {
-    //     LOG << "Database entry not found.";
-    //     return false;
-    // }
-    const int row_id = row.getRowId();
-    if (row_id == 0) return false;
-
-    QString statement =
-        "SELECT 1 FROM " + OPL::GLOBALS->getDbTableName(row.getTable()) + " WHERE ROWID=? LIMIT 1";
-
-    QSqlQuery query;
-    query.prepare(statement);
-    query.addBindValue(row_id);
-
-    if (!query.exec()) return false;
-
-    return query.next(); // true only if a row exists
-}
-
-bool Database::exists(DbTable table, int row_id)
-{
-    if (row_id == 0) return false;
-
-    QString statement =
-        "SELECT 1 FROM " + OPL::GLOBALS->getDbTableName(table) + " WHERE ROWID=? LIMIT 1";
-
-    QSqlQuery query;
-    query.prepare(statement);
-    query.addBindValue(row_id);
-
-    if (!query.exec()) return false;
-
-    return query.next(); // true only if a row exists
-}
-
-bool Database::update(const OPL::Row &updated_row)
-{
-    //     QString statement = QLatin1String("UPDATE ") +
-    //     OPL::GLOBALS->getDbTableName(updated_row.getTable()) + QLatin1String(" SET "); const
-    //     auto& data = updated_row.getData(); for (auto i = data.constBegin(); i !=
-    //     data.constEnd(); ++i) {
-    //         statement.append(i.key() + "=?,");
-    //     }
-    //     statement.chop(1);
-    //     statement.append(QLatin1String(" WHERE ROWID=?"));
-    //     QSqlQuery query;
-    //     query.prepare(statement);
-    //     DEB << "Statement: " << statement;
-    //     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-    // //use QMetaType for binding null value in QT >= 6
-    // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    //         if (i.value() == QVariant(QString())) {
-    //             query.addBindValue(QVariant(QMetaType(QMetaType::Int)));
-    // #else
-    //         if (i.value() == QVariant(QString())) {
-    //             query.addBindValue(QVariant(QVariant::String));
-    // #endif
-    //         } else {
-    //             query.addBindValue(i.value());
-    //         }
-
-    //     }
-    //     query.addBindValue(updated_row.getRowId());
-    //     DEB << "Bound values: " << query.boundValues();
-
-    //     if (query.exec())
-    //     {
-    //         LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
-    //         on_database_updated(updated_row.getTable());
-    //         return true;
-    //     } else {
-    //         DEB << "Unable to commit.";
-    //         DEB << "Query: " << statement;
-    //         DEB << "Query Error: " << query.lastError().text();
-    //         lastError = query.lastError();
-    //         return false;
-    //     }
-    const auto &data          = updated_row.getData();
-    const QString quote       = QStringLiteral("\"");
-    const QString placeholder = QStringLiteral("\"=?");
-
-    QStringList columns;
-    for (const auto &key : data.keys()) {
-        columns << quote + key + placeholder;
-    }
-
-    QString statement = QString("UPDATE %1 SET %2 WHERE ROWID=?")
-                            .arg(updated_row.getTableName(), columns.join(','));
-
-    QSqlQuery query;
-    query.prepare(statement);
-
-    for (auto it = data.cbegin(); it != data.cend(); ++it) {
-        if (it.value().isNull() || it.value().toString() == QString()) {
-            query.addBindValue(QVariant(it.value().metaType()));
-        }
-        else {
-            query.addBindValue(it.value());
-        }
-    }
-
-    // for (const auto &value : data) {
-    //     // make sure to correctly bind NULL variants
-    //     if (value.isNull() || value.toString() == QString()) {
-    //         query.addBindValue(QVariant(value.metaType()));
-    //     } else {
-    //         query.addBindValue(value);
-    //     }
-    // }
-    query.addBindValue(updated_row.getRowId());
-
-    DEB << "Statement: " << statement;
-    DEB << "Bound values: " << query.boundValues();
-
-    if (!query.exec()) {
-        DEB << "Unable to commit." << query.lastError().text();
-        lastError = query.lastError();
-        return false;
-    }
-
-    LOG << QString("Entry successfully committed. %1").arg(updated_row.getPosition());
-    on_database_updated(updated_row.getTable());
-    return true;
-}
-
-bool Database::insert(const OPL::Row &new_row)
-{
-    //     QString statement = QLatin1String("INSERT INTO ") +
-    //     OPL::GLOBALS->getDbTableName(new_row.getTable()) + QLatin1String(" ("); const auto& data
-    //     = new_row.getData(); for(auto i = data.cbegin(); i != data.cend(); ++i) {
-    //         statement.append(i.key() + QLatin1Char(','));
-    //     }
-    //     statement.chop(1);
-    //     statement += QLatin1String(") VALUES (");
-
-    //     for (int i=0; i < new_row.getData().size(); ++i) {
-    //         statement += QLatin1String("?,");
-    //     }
-    //     statement.chop(1);
-    //     statement += QLatin1Char(')');
-
-    //     QSqlQuery query;
-    //     query.prepare(statement);
-
-    //     for (auto i = data.constBegin(); i != data.constEnd(); ++i) {
-    // //use QMetaType for binding null value in QT >= 6
-    // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    //         if (i.value().isNull()) {
-    //             query.addBindValue(QVariant(QMetaType(i.value().metaType())));
-    // #else
-    //         if (i.value() == QVariant(QString())) {
-    //             query.addBindValue(QVariant(QVariant::String));
-    // #endif
-    //         } else {
-    //             query.addBindValue(i.value());
-    //         }
-    //     }
-
-    //     //check result.
-    //     if (query.exec())
-    //     {
-    //         LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
-    //         on_database_updated(new_row.getTable());
-    //         return true;
-    //     } else {
-    //         DEB << "Unable to commit.";
-    //         DEB << "Query: " << statement;
-    //         DEB << "Bound Values: " << query.boundValues();
-    //         DEB << "Query Error: " << query.lastError().text();
-    //         lastError = query.lastError();
-    //         return false;
-    //     }
-
-    const auto &data = new_row.getData();
-    DEB << data;
-    const QString quote       = QStringLiteral("\"");
-    const QString placeholder = QStringLiteral("?");
-    QStringList columns, placeholders;
-    for (auto it = data.cbegin(); it != data.cend(); ++it) {
-        columns << (quote + it.key() + quote);
-        placeholders << placeholder;
-    }
-
-    QString statement = QString("INSERT INTO %1 (%2) VALUES (%3)")
-                            .arg(new_row.getTableName(), columns.join(','), placeholders.join(','));
-
-    QSqlQuery query;
-    query.prepare(statement);
-
-    // for (const auto &value : data) {
-    //     // make sure to correctly bind NULL variants
-    //     if (value.isNull() || value.toString() == QString()) {
-    //         query.addBindValue(QVariant(value.metaType()));
-    //     } else {
-    //         query.addBindValue(value);
-    //     }
-    // }
-
-    for (auto it = data.cbegin(); it != data.cend(); ++it) {
-        if (it.value().isNull() || it.value().toString() == QString()) {
-            query.addBindValue(QVariant(it.value().metaType()));
-        }
-        else {
-            query.addBindValue(it.value());
-        }
-    }
-
-    if (!query.exec()) {
-        DEB << "Unable to commit." << statement << query.boundValues() << query.lastError().text();
-        lastError = query.lastError();
-        return false;
-    }
-
-    LOG << QString("Entry successfully committed. %1").arg(new_row.getPosition());
-    on_database_updated(new_row.getTable());
     return true;
 }
 
@@ -572,7 +458,7 @@ RowData_T Database::getRowData(const OPL::DbTable table, const int row_id)
     if (!q.exec()) {
         DEB << "SQL error: " << q.lastError().text();
         DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {}; // return invalid Row
     }
 
@@ -604,7 +490,7 @@ RowData_T Database::getRowData(const OPL::DbTable table, const QString &filter_c
     if (!q.exec()) {
         DEB << "SQL error: " << q.lastError().text();
         DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {}; // return invalid Row
     }
 
@@ -636,7 +522,7 @@ QList<FlightSegmentEntry> Database::getFlightSegments(int flight_id)
     if (!q.exec()) {
         DEB << "SQL error: " << q.lastError().text();
         DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {}; // return invalid Row
     }
 
@@ -683,7 +569,7 @@ QList<MovementEntry> Database::getMovementEntries(int event_id)
     if (!q.exec()) {
         DEB << "SQL error: " << q.lastError().text();
         DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {}; // return invalid Row
     }
 
@@ -730,7 +616,7 @@ QList<AirportCodeEntry> Database::getAirportCodeEntries(int airport_id)
     if (!q.exec()) {
         DEB << "SQL error: " << q.lastError().text();
         DEB << "Statement: " << q.lastQuery();
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {}; // return invalid Row
     }
 
@@ -812,7 +698,7 @@ QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable t
     query.exec();
 
     if (!query.isActive()) {
-        lastError = query.lastError();
+        m_lastError = query.lastError();
         DEB << "Error";
         DEB << statement;
         DEB << query.lastError().text();
@@ -826,36 +712,6 @@ QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable t
     return row_ids;
 }
 
-QVector<QVariant> Database::customQuery(QString statement, int return_values)
-{
-    QSqlQuery query(statement);
-    if (!query.exec()) {
-        lastError = query.lastError();
-        DEB << query.lastQuery();
-        DEB << "Query Error: " << lastError.text();
-        return {};
-    }
-
-    if (!query.first()) {
-        LOG << "No result found. Check Query and Error.";
-        DEB << "Error: " << query.lastError().text();
-        DEB << "Statement: " << statement;
-        return QVector<QVariant>();
-    }
-    else {
-        query.first();
-        query.previous();
-        QVector<QVariant> result;
-        while (query.next()) {
-            for (int i = 0; i < return_values; i++) {
-                result.append(query.value(i));
-            }
-        }
-        lastError = QString();
-        return result;
-    }
-}
-
 QVector<RowData_T> Database::getTable(OPL::DbTable table)
 {
     const QString query_str = QStringLiteral("SELECT * FROM ") + GLOBALS->getDbTableName(table);
@@ -867,7 +723,7 @@ QVector<RowData_T> Database::getTable(OPL::DbTable table)
     if (!q.exec()) {
         LOG << "SQL error: " << q.lastError().text();
         LOG << "Statement: " << query_str;
-        lastError = q.lastError();
+        m_lastError = q.lastError();
         return {};
     }
 
@@ -890,7 +746,7 @@ bool Database::createBackup(const QString &dest_file)
 {
     LOG << "Backing up current database to: " << dest_file;
     Database::disconnect();
-    QFile db_file(QDir::toNativeSeparators(databaseFile.absoluteFilePath()));
+    QFile db_file(QDir::toNativeSeparators(m_databaseFile.absoluteFilePath()));
 
     if (!db_file.copy(QDir::toNativeSeparators(dest_file))) {
         LOG << "Unable to backup old database:" << db_file.errorString();
@@ -908,7 +764,7 @@ bool Database::restoreBackup(const QString &backup_file)
     Database::disconnect();
     LOG << "Restoring backup from file:" << backup_file;
 
-    QString databaseFilePath = QDir::toNativeSeparators(databaseFile.absoluteFilePath());
+    QString databaseFilePath = QDir::toNativeSeparators(m_databaseFile.absoluteFilePath());
     DEB << "DB File Path: " << databaseFilePath;
     QString backupFilePath = QDir::toNativeSeparators(backup_file);
 
@@ -930,6 +786,25 @@ bool Database::restoreBackup(const QString &backup_file)
     Database::connect();
     emit connectionReset();
     return true;
+}
+
+OPL::FlightData Database::getFlightData(int event_id)
+{
+    const auto log_data  = getRowData(OPL::DbTable::LogEvents, event_id);
+    const auto log_entry = OPL::LogEntry(event_id, log_data);
+
+    const auto flight_data = getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
+
+    const auto flight_entry =
+        OPL::FlightLogEntry(flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
+
+    const auto movements = getMovementEntries(event_id);
+
+    const auto segments = getFlightSegments(flight_entry.getRowId());
+
+    // collect approach data
+
+    return {log_entry, flight_entry, segments, movements};
 }
 
 } // namespace OPL

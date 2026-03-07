@@ -135,7 +135,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // }
     // // Create Database
     // if (!DB->createSchema()) {
-    //     WARN(QString("Unable to create database.<br>%1").arg(DB->lastError.text()));
+    //     WARN(QString("Unable to create database.<br>%1").arg(DB->lastErrorText()));
     //     return;
     // }
 
@@ -143,7 +143,7 @@ void DebugWidget::on_resetDatabasePushButton_clicked()
     // bool use_ressource_data = false; // do not use local data, download from github
     // if (!DB->importTemplateData(use_ressource_data)) {
     //     WARN(tr("Database creation has been unsuccessful. Unable to fill template data.<br><br>%1")
-    //              .arg(DB->lastError.text()));
+    //              .arg(DB->lastErrorText()));
     //     return;
     // }
 

@@ -16,17 +16,15 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "approachentry.h"
+#include "src/database/cache/approachtypeinfo.h"
 
 namespace OPL {
 
-ApproachEntry::ApproachEntry(int event_id, const QString &app_type, int airport_id)
+ApproachEntry::ApproachEntry(int event_id, int approach_type_id)
     : Row(OPL::DbTable::ApproachEvents, &FIELDS)
 {
     m_rowData.insert(EVENT_ID, event_id);
-    m_rowData.insert(APP_TYPE, app_type);
-    if (airport_id != 0) {
-        m_rowData.insert(AIRPORT_ID, airport_id);
-    }
+    m_rowData.insert(APP_TYPE, approach_type_id);
 }
 
 ApproachEntry::ApproachEntry(int row_id, const RowData_T &row_data)
@@ -42,7 +40,7 @@ bool ApproachEntry::isValid() const
     allValid &= m_rowData.value(EVENT_ID).toInt() > 0;
 
     // Approach Type must not be empty
-    allValid &= !m_rowData.value(APP_TYPE).toString().isEmpty();
+    allValid &= m_rowData.value(APP_TYPE).toInt() > 0;
 
     return allValid;
 }
@@ -57,23 +55,14 @@ bool ApproachEntry::setEventId(int event_id)
     return true;
 }
 
-bool ApproachEntry::setAirportId(int airport_id)
+bool ApproachEntry::setApproachType(int approach_id)
 {
-    if (airport_id == 0) {
+    if(approachData->exists(approach_id)) {
+        m_rowData.insert(APP_TYPE, approach_id);
+        return true;
+    } else {
         return false;
     }
-
-    return true;
-}
-
-bool ApproachEntry::setApproachType(const QString &app_type)
-{
-    if (app_type.isEmpty()) {
-        return false;
-    }
-
-    m_rowData.insert(APP_TYPE, app_type);
-    return true;
 }
 
 } // namespace OPL

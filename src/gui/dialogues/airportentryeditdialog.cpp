@@ -254,7 +254,7 @@ void AirportEntryEditDialog::on_buttonBox_accepted()
     }
     else {
         WARN(tr("Unable to add Airport to the database. The following error has ocurred:<br><br>%1")
-                 .arg(DB->lastError.text()));
+                 .arg(DB->lastErrorText()));
         return;
     }
 }

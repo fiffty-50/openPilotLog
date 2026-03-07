@@ -300,7 +300,7 @@ void SimEntryEditDialog::on_buttonBox_accepted()
     //     QDialog::accept();
     // else
     //     WARN(tr("Unable to commit entry to database. The following error has ocurred <br><br>%1")
-    //              .arg(DB->lastError.text()));
+    //              .arg(DB->lastErrorText()));
 }
 
 // EntryEdit interface

@@ -133,13 +133,13 @@ QString LogbookWidget::errorOnDeleteString(const QModelIndex &index)
     case OPL::LogEvent::Flight: {
         auto constraints = DB->getForeignKeyConstraints(event.rowId, OPL::DbTable::Flights);
         if (constraints.isEmpty()) {
-            return DB->lastError.text();
+            return DB->lastErrorText();
         }
         TODO << "Show constraints";
         return {};
     }
     case OPL::LogEvent::Sim:
-        return DB->lastError.text();
+        return DB->lastErrorText();
     }
     return {};
 }

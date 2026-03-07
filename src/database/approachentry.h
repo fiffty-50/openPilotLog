@@ -29,7 +29,7 @@ namespace OPL {
  * seperate.
  *
  * There are two constructors available. Use
- * - ApproachEntry(int event_id, const QString &app_type, int airport_id = 0)
+ * - ApproachEntry(int event_id, const QString &app_type)
  * for creating a new ApproachEntry for an associated log_event
  * - ApproachEntry(int row_id, const RowData &row_data)
  * when retreiving values from the datbase.
@@ -44,7 +44,7 @@ class ApproachEntry : public OPL::Row {
     /*!
      * \brief Create a new approach entry for an associated event_id
      */
-    ApproachEntry(int event_id, const QString &app_type, int airport_id = 0);
+    ApproachEntry(int event_id, int approach_type_id);
 
     /*!
      * \brief Create an approach entry based on databasa values
@@ -54,18 +54,15 @@ class ApproachEntry : public OPL::Row {
     bool isValid() const override;
 
     bool setEventId(int event_id);
-    bool setAirportId(int airport_id);
-    bool setApproachType(const QString &app_type);
+    bool setApproachType(int approach_id);
 
     int getEventId() const { return m_rowData.value(EVENT_ID).toInt(); }
-    int getAirportId() const { return m_rowData.value(AIRPORT_ID).toInt(); }
-    QString getApproachType() const { return m_rowData.value(APP_TYPE).toString(); }
+    int getApproachId() const { return m_rowData.value(APP_TYPE).toInt(); }
 
   private:
     const static inline QString EVENT_ID   = QStringLiteral("event_id");
-    const static inline QString AIRPORT_ID = QStringLiteral("airport_id");
     const static inline QString APP_TYPE   = QStringLiteral("approach_type");
-    const static inline QStringList FIELDS = {EVENT_ID, AIRPORT_ID, APP_TYPE};
+    const static inline QStringList FIELDS = {EVENT_ID, APP_TYPE};
 };
 
 } // namespace OPL

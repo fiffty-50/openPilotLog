@@ -119,7 +119,7 @@ bool DatabaseSetup::importLocalTemplateData()
         // Commit data
         if (!DB->commit(dataToCommit, table)) {
             LOG << "Error importing template data into table: " << table_name << " - "
-                << DB->lastError.text();
+                << DB->lastErrorText();
             return false;
         }
     }

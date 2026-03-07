@@ -212,12 +212,12 @@ void AircraftEntryEditDialog::on_accepted()
     if (!entry.setMake(makeLineEdit->text())) {
         WARN(tr("Unable to set aircraft make (manufacturer)<br><br>The following error has "
                 "occurred:<br>%1")
-                 .arg(DB->lastError.text()));
+                 .arg(DB->lastErrorText()));
     }
     if (!entry.setModel(modelLineEdit->text())) {
         WARN(tr("Unable to set aircraft model (required)<br><br>The following error has "
                 "occurred:<br>%1")
-                 .arg(DB->lastError.text()));
+                 .arg(DB->lastErrorText()));
     }
     entry.setVariant(variantLineEdit->text());
     entry.setIcaoDesignator(icaoDesignatorLineEdit->text());
@@ -249,7 +249,7 @@ void AircraftEntryEditDialog::on_accepted()
     if (!DB->commit(entry)) {
         WARN(tr("Unable to save aircraft entry to database<br><br>The following error has "
                 "occurred:<br>%1")
-                 .arg(DB->lastError.text()));
+                 .arg(DB->lastErrorText()));
         return;
     }
     else {

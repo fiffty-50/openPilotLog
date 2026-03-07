@@ -60,7 +60,7 @@ QString AircraftTableEditWidget::deleteErrorString(int rowId)
     else {
         return tr("Unable to delete aircraft type '%1'. The following error has "
                   "occurred.<br><br>%2")
-            .arg(OPL::AircraftEntry::getTypeString(rowId), DB->lastError.text());
+            .arg(OPL::AircraftEntry::getTypeString(rowId), DB->lastErrorText());
     }
 }
 

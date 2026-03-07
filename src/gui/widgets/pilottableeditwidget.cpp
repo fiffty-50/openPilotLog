@@ -57,7 +57,7 @@ QString PilotTableEditWidget::deleteErrorString(int pilotId)
     // // the error is a database error
     // if (constrained_flights.isEmpty()) {
     //     return (tr("<br>Unable to delete.<br><br>The following error has ocurred:<br>%1")
-    //                 .arg(DB->lastError.text()));
+    //                 .arg(DB->lastErrorText()));
     // }
     // else {
     //     // the error is a foreign key constraint

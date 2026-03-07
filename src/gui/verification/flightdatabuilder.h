@@ -65,7 +65,7 @@ class FlightDataBuilder {
     void addFlightNumber(const QString &flight_number);
     void addPilotFunction(OPL::PilotFunction funcion);
     bool addSecondPilot(int pilot_id);
-    // bool addApproach(const QString &approach_type);
+    bool addApproach(int approach_id);
 
     void setFlightId(int flight_id) { m_flight_id = flight_id; };
     int flightId() const { return m_flight_id; }
@@ -106,14 +106,10 @@ class FlightDataBuilder {
         bool isNight;
         bool isAutoland;
     };
-    struct ApproachData {
-        int airport_id;
-        QString approach_type;
-    };
 
     QList<FlightSegmentBuilder::SegmentData> m_segment_data;
     QList<MovementData> m_movement_event_data;
-    QList<ApproachData> m_approach_data;
+    QList<int> m_approach_data;
     //
     const static inline QString EVENT_TYPE = QStringLiteral("FLT");
 };

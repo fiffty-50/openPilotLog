@@ -273,7 +273,7 @@ QList<ApproachEntry> FlightDataBuilder::approaches() const
     ret.reserve(m_approach_data.size());
 
     for (const auto &a : std::as_const(m_approach_data)) {
-        ret.append(ApproachEntry(m_event_id, a.approach_type, a.airport_id));
+        ret.append(ApproachEntry(m_event_id, a));
     }
 
     return ret;

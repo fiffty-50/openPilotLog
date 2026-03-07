@@ -108,7 +108,7 @@ void MainWindow::connectDatabase()
     if (!DB->connect()) {
         WARN(
             tr("Error establishing database connection. The following error has ocurred:<br><br>%1")
-                .arg(DB->lastError.text()));
+                .arg(DB->lastErrorText()));
     }
 
     // Load Cache

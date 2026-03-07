@@ -93,7 +93,7 @@ void ApproachEntryEditDialog::on_accepted()
 
     if (!DB->commit(entry)) {
         WARN(tr("Unable to commit. The following error has ocurred: <br><br><b>%1")
-                 .arg(DB->lastError.text()));
+                 .arg(DB->lastErrorText()));
         return;
     }
     else {

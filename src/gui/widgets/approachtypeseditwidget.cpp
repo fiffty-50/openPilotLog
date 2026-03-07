@@ -34,7 +34,7 @@ void ApproachTypesEditWidget::retranslateUi()
     m_deleteEntryPushButton->setText(tr("Delete Selected Approach Type"));
 }
 
-QString ApproachTypesEditWidget::deleteErrorString(int row_id) { return DB->lastError.text(); }
+QString ApproachTypesEditWidget::deleteErrorString(int row_id) { return DB->lastErrorText(); }
 
 QString ApproachTypesEditWidget::confirmDeleteString(int row_id)
 {

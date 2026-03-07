@@ -47,7 +47,7 @@
 namespace OPL {
 
 /*!
- * \brief Convenience macro that returns instance of DataBase.
+ * \brief Returns a pointer to the instance of the DataBase.
  * Instead of this:
  * OPL::DataBase::getInstance().commit(...)
  * Use this:
@@ -63,12 +63,12 @@ class Database : public QObject {
 
   private:
     Q_OBJECT
-    Database() : databaseFile(OPL::Paths::databaseFileInfo()) {}
-    const QFileInfo databaseFile;
-    QStringList tableNames;
-    QHash<QString, QStringList> tableColumns;
-
-    inline const static QString SQLITE_DRIVER           = QStringLiteral("QSQLITE");
+    Database() : m_databaseFile(Paths::databaseFileInfo()) {}
+    const QFileInfo m_databaseFile;
+    QStringList m_tableNames;
+    QHash<QString, QStringList> m_tableColumns;
+    QSqlError m_lastError;
+    inline const static QString SQLITE_DRIVER = QStringLiteral("QSQLITE");
 
   public:
     Database(const Database &)       = delete;
@@ -81,13 +81,22 @@ class Database : public QObject {
 
     /*!
      * \brief Holds information about the last error that ocurred during
-     * a SQL operation. If the error type is QSqlError::UnknownError, the error is related to data
+     * a SQL operation.
+     * \details If the error type is QSqlError::UnknownError, the error is related to data
      * from the database (entry not found,...), otherwise the error is related to SQL execution. In
      * this case error.type() provides further information.
      *
      * If the error type is QSqlError::NoError, the last executed database query was successful.
      */
-    QSqlError lastError;
+    inline QSqlError lastError() { return m_lastError; }
+
+    /*!
+     * \brief Holds information about the last error that ocurred during
+     * a SQL operation.
+     * \details This is a convenience function that returns the error text. To get the
+     * full QSqlError, call lastError()
+     */
+    inline QString lastErrorText() { return m_lastError.text(); }
 
     /*!
      * \brief Connect to the database and populate database information.
@@ -120,39 +129,33 @@ class Database : public QObject {
     /*!
      * \brief Return the names of a given table in the database.
      */
-    const QStringList getTableColumns(OPL::DbTable table_name) const;
+    const QStringList getTableColumns(DbTable table_name) const;
 
     /*!
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static inline QSqlDatabase database() {
+    static inline QSqlDatabase database()
+    {
         return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
     }
 
 
     /*!
-     * \brief Can be used to send a complex query to the database.
-     * \param query - the full sql query statement
-     * \param returnValues - the number of return values
-     */
-    QVector<QVariant> customQuery(QString statement, int return_values);
-
-    /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
-    bool exists(const OPL::Row &row);
+    bool exists(const Row &row);
 
     /*!
      * \brief Checks if an entry exists in the database
      */
-    bool exists(OPL::DbTable table, int row_id);
+    bool exists(DbTable table, int row_id);
 
     /*!
      * \brief commits an entry to the database, calls either insert or update,
      * based on position data
      */
-    bool commit(const OPL::Row &row);
+    bool commit(const Row &row);
 
     /*!
      * \brief commits data imported from JSON
@@ -160,7 +163,7 @@ class Database : public QObject {
      * documents. These entries are pre-filled data used for providing completion data, such as
      * Airport or Aircraft Type Data.
      */
-    bool commit(const QJsonArray &json_arr, const OPL::DbTable table);
+    bool commit(const QJsonArray &json_arr, const DbTable table);
 
     /*!
      * \brief commits Flight Data to the database.
@@ -170,35 +173,25 @@ class Database : public QObject {
     bool commit(FlightDataBuilder &flight_data);
 
     /*!
-     * \brief Create new entry in the databse based on UserInput
+     * \brief deletes an entry from the database
      */
-    bool insert(const OPL::Row &new_row);
-
-    /*!
-     * \brief Updates entry in database from existing entry tweaked by the user.
-     */
-    bool update(const OPL::Row &updated_row);
-
-    /*!
-     * \brief deletes an entry from the database.
-     */
-    bool remove(const OPL::Row &row);
+    bool remove(DbTable table, int row_id);
 
     /*!
      * \brief deletes an entry from the database
      */
-    bool remove(OPL::DbTable table, int row_id);
+    bool remove(const Row &row);
 
     /*!
      * \brief deletes a batch of entries from the database. Optimised for speed when
      * deleting many entries. The entries are identified using their row id
      */
-    bool removeMany(OPL::DbTable table, const QList<int> &row_id_list);
+    bool removeMany(DbTable table, const QList<int> &row_id_list);
 
     /*!
      * \brief retreive a Map of <column name, column content> for a specific row in the database.
      */
-    RowData_T getRowData(const OPL::DbTable table, const int row_id);
+    RowData_T getRowData(const DbTable table, const int row_id);
 
     /*!
      * \brief retreive a Map of <column name, column content> for a specific row in the database.
@@ -206,72 +199,54 @@ class Database : public QObject {
      * selection of entries "WHERE column = row_id", which is needed for retreiving content from
      * tables based on a foreign key.
      */
-    RowData_T getRowData(const OPL::DbTable table, const QString &filterColumn, int row_id);
+    RowData_T getRowData(const DbTable table, const QString &filterColumn, int row_id);
 
     /*!
      * \brief retreives a PilotEntry from the database. See row class for details.
      */
-    inline OPL::PilotEntry getPilotEntry(int row_id)
+    inline PilotEntry getPilotEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::Pilots, row_id);
-        return OPL::PilotEntry(row_id, data);
+        const auto data = getRowData(DbTable::Pilots, row_id);
+        return PilotEntry(row_id, data);
     }
 
     /*!
      * \brief get the database entry for the logbook owner (self)
      */
-    inline OPL::PilotEntry getLogbookOwner()
+    inline PilotEntry getLogbookOwner()
     {
-        auto data = getRowData(OPL::DbTable::Pilots, 1);
-        data.insert(OPL::PilotEntry::ROWID, 1);
-        return OPL::PilotEntry(1, data);
+        auto data = getRowData(DbTable::Pilots, 1);
+        data.insert(PilotEntry::ROWID, 1);
+        return PilotEntry(1, data);
     }
 
     /*!
      * \brief retreives a TailEntry from the database. See row class for details.
      */
-    inline OPL::TailEntry getTailEntry(int row_id)
+    inline TailEntry getTailEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::AircraftTails, row_id);
-        return OPL::TailEntry(row_id, data);
+        const auto data = getRowData(DbTable::AircraftTails, row_id);
+        return TailEntry(row_id, data);
     }
 
     /*!
      * \brief retreives a TailEntry from the database. See row class for details.
      */
-    inline OPL::AircraftEntry getAircraftEntry(int row_id)
+    inline AircraftEntry getAircraftEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::AircraftTypes, row_id);
-        return OPL::AircraftEntry(row_id, data);
+        const auto data = getRowData(DbTable::AircraftTypes, row_id);
+        return AircraftEntry(row_id, data);
     }
 
-    OPL::FlightData getFlightData(int event_id)
-    {
-        const auto log_data  = getRowData(OPL::DbTable::LogEvents, event_id);
-        const auto log_entry = OPL::LogEntry(event_id, log_data);
-
-        const auto flight_data =
-            getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
-
-        const auto flight_entry = OPL::FlightLogEntry(
-            flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
-
-        const auto movements = getMovementEntries(event_id);
-
-        const auto segments = getFlightSegments(flight_entry.getRowId());
-
-        // collect approach data
-
-        return {log_entry, flight_entry, segments, movements};
-    }
+    FlightData getFlightData(int event_id);
 
     /*!
      * \brief Retreives an airport entry from the database. See row class for details.
      */
-    inline OPL::AirportEntry getAirportEntry(int row_id)
+    inline AirportEntry getAirportEntry(int row_id)
     {
-        const auto data = getRowData(OPL::DbTable::Airports, row_id);
-        return OPL::AirportEntry(row_id, data);
+        const auto data = getRowData(DbTable::Airports, row_id);
+        return AirportEntry(row_id, data);
     }
 
     /*!
@@ -279,40 +254,40 @@ class Database : public QObject {
      * \param airport_id - the airport_id of an airport in the airports table
      * \return
      */
-    QList<OPL::AirportCodeEntry> getAirportCodeEntries(int airport_id);
+    QList<AirportCodeEntry> getAirportCodeEntries(int airport_id);
 
-    QList<OPL::MovementEntry> getMovementEntries(int event_id);
+    QList<MovementEntry> getMovementEntries(int event_id);
 
-    QList<OPL::FlightSegmentEntry> getFlightSegments(int flight_id);
+    QList<FlightSegmentEntry> getFlightSegments(int flight_id);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective table.
      */
-    int getLastEntry(OPL::DbTable table);
+    int getLastEntry(DbTable table);
 
     /*!
      * \brief returns a list of ROWID's in the flights table for which foreign key constraints
      * exist.
      */
-    QList<int> getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table);
+    QList<int> getForeignKeyConstraints(int foreign_row_id, DbTable table);
 
     /*!
      * \brief getTable returns all contents of a given table from the database
      * \return
      */
-    QVector<RowData_T> getTable(OPL::DbTable table);
+    QVector<RowData_T> getTable(DbTable table);
 
     /*!
      * \brief getUserTables returns a list of the of the tables that contain user-created data
      * (flights, pilots,..)
      */
-    const QList<OPL::DbTable> &getUserTables() const;
+    const QList<DbTable> &getUserTables() const;
 
     /*!
      * \brief getTemplateTables returns a list of the tables that contain template data
      * (aiports, aircraft,..)
      */
-    const QList<OPL::DbTable> &getTemplateTables() const;
+    const QList<DbTable> &getTemplateTables() const;
 
     /*!
      * \brief Database::createBackup copies the currently used database to an external backup
@@ -330,7 +305,16 @@ class Database : public QObject {
      */
     bool restoreBackup(const QString &backup_file);
 
-    void on_database_updated(OPL::DbTable table);
+    void on_database_updated(DbTable table);
+
+  private:
+    bool insert(const Row &new_row);
+
+    bool insert(FlightDataBuilder &flight_data);
+
+    bool update(const Row &updated_row);
+
+
   signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.
@@ -338,13 +322,12 @@ class Database : public QObject {
      * trigger an update to the models of the views displaying database contents in
      * the user interface so that a user is always presented with up-to-date information.
      */
-    void dataBaseUpdated(const OPL::DbTable table);
+    void dataBaseUpdated(const DbTable table);
     /*!
      * \brief connectionReset is emitted whenever the database connection is reset, for
      * example when creating or restoring a backup.
      */
     void connectionReset();
-
 };
 
 } // namespace OPL

@@ -45,7 +45,7 @@ namespace OPL {
  * Row is an abstract class. Derived classes exists for each table in the database that needs to be
  * accessed from the application. These subclasses <ul> <li> Must provide a List<QString> with the
  * names of the fields in the table </li> <li> Implement the isValid() method to check if the row
- * contains valid data for the table </li>
+ * contains valid data for the table </li> <li> The fields list excludes the row id </li>
  * </ul>
  *
  */

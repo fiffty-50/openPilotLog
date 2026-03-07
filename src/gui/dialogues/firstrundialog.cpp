@@ -155,7 +155,7 @@ bool FirstRunDialog::finishSetup()
             tr("Errors have ocurred creating the database."
                "Without a working database The application will not be usable.<br>"
                "The following error has ocurred:<br>%1")
-                .arg(DB->lastError.text()));
+                .arg(DB->lastErrorText()));
         message_box.exec();
         return false;
     }
@@ -164,7 +164,7 @@ bool FirstRunDialog::finishSetup()
         QMessageBox message_box(QMessageBox::Critical, tr("Database setup failed (user entry)"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1")
-                                    .arg(DB->lastError.text()));
+                                    .arg(DB->lastErrorText()));
         message_box.exec();
         return false;
     }
@@ -174,7 +174,7 @@ bool FirstRunDialog::finishSetup()
                                 tr("Database setup failed (previous Experience)"),
                                 tr("Unable to execute database query<br>"
                                    "The following error has occured:<br>%1")
-                                    .arg(DB->lastError.text()));
+                                    .arg(DB->lastErrorText()));
         message_box.exec();
         return false;
     }
@@ -311,14 +311,14 @@ bool FirstRunDialog::setupDatabase()
     // if (!DB->createSchema()) {
     //     WARN(tr("Database creation has been unsuccessful. The following error has "
     //             "ocurred:<br><br>%1<br><br>%2")
-    //              .arg(FUNC_IDENT, DB->lastError.text()));
+    //              .arg(FUNC_IDENT, DB->lastErrorText()));
     //     return false;
     // }
 
     // if (!DB->importTemplateData(useRessourceData)) {
     //     WARN(tr("Database creation has been unsuccessful. Unable to fill template "
     //             "data.<br><br>%1<br><br>%2")
-    //              .arg(FUNC_IDENT, DB->lastError.text()));
+    //              .arg(FUNC_IDENT, DB->lastErrorText()));
     //     return false;
     // }
     //return true;

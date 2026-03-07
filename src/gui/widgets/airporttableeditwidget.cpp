@@ -33,7 +33,7 @@ void AirportTableEditWidget::retranslateUi()
 QString AirportTableEditWidget::deleteErrorString(int rowId)
 {
     return tr("<br>Unable to delete.<br><br>The following error has ocurred: %1")
-        .arg(DB->lastError.text());
+        .arg(DB->lastErrorText());
 }
 
 QString AirportTableEditWidget::confirmDeleteString(int rowId)

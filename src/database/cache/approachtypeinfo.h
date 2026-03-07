@@ -43,6 +43,8 @@ class ApproachTypeInfo : public QObject {
 
     void init() { refreshIndices(); }
 
+    bool exists(int approach_type_id) { return m_approachTypeIdMap.contains(approach_type_id); }
+
     const QMap<QString, int> &approachNamesMap() const { return m_approachNameMap; }
 
     /*!

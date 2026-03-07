@@ -165,7 +165,7 @@ void SettingsWidget::updatePersonalDetails()
     user_data.insert(OPL::PilotEntry::EMAIL, ui->emailLineEdit->text());
 
     if (true)
-        WARN(tr("Unable to update Database:<br>") + DB->lastError.text());
+        WARN(tr("Unable to update Database:<br>") + DB->lastErrorText());
     else
         LOG << "User updated successfully.";
 }

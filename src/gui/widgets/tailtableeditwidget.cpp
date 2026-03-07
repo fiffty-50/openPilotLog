@@ -43,7 +43,7 @@ QString TailTableEditWidget::deleteErrorString(int rowId)
     //     return tr("<br>Unable to delete.<br><br>The following error has "
     //               "ocurred: "
     //               "%1")
-    //         .arg(DB->lastError.text());
+    //         .arg(DB->lastErrorText());
     // }
     // else {
     //     QString constrained_flights_string;

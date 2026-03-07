@@ -182,7 +182,7 @@ void PilotEntryEditDialog::submitForm()
         message_box.setText(tr("The following error has ocurred:"
                                "<br><br>%1<br><br>"
                                "The entry has not been saved.")
-                                .arg(DB->lastError.text()));
+                                .arg(DB->lastErrorText()));
         message_box.exec();
         return;
     }
