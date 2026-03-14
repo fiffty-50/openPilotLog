@@ -19,10 +19,7 @@
 #include "src/database/database.h"
 #include "src/gui/dialogues/airportentryeditdialog.h"
 
-AirportTableEditWidget::AirportTableEditWidget(QWidget *parent)
-    : TableEditWidget(Horizontal, parent)
-{
-}
+AirportTableEditWidget::AirportTableEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 void AirportTableEditWidget::retranslateUi()
 {

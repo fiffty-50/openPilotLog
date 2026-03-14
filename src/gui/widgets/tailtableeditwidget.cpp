@@ -20,7 +20,7 @@
 #include "src/database/database.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 
-TailTableEditWidget::TailTableEditWidget(QWidget *parent) : TableEditWidget(Horizontal, parent) {}
+TailTableEditWidget::TailTableEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 void TailTableEditWidget::retranslateUi()
 {
@@ -31,9 +31,9 @@ void TailTableEditWidget::retranslateUi()
 QString TailTableEditWidget::deleteErrorString(int rowId)
 {
     return "UNIMPLEMENTED";
-    // QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId, OPL::DbTable::v2AircraftTails);
-    // QList<OPL::FlightEntry> constrained_flights;
-    // for (const auto &row_id : std::as_const(foreign_key_constraints)) {
+    // QList<int> foreign_key_constraints = DB->getForeignKeyConstraints(rowId,
+    // OPL::DbTable::v2AircraftTails); QList<OPL::FlightEntry> constrained_flights; for (const auto
+    // &row_id : std::as_const(foreign_key_constraints)) {
     //     constrained_flights.append(DB->getFlightEntry(row_id));
     // }
 

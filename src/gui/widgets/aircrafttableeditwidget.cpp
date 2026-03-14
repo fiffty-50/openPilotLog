@@ -16,14 +16,11 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "aircrafttableeditwidget.h"
-#include "src/gui/styleddelegates/styledenginecountdelegate.h"
 #include "src/database/database.h"
 #include "src/gui/dialogues/aircraftentryeditdialog.h"
+#include "src/gui/styleddelegates/styledenginecountdelegate.h"
 
-AircraftTableEditWidget::AircraftTableEditWidget(QWidget *parent)
-    : TableEditWidget(Horizontal, parent)
-{
-}
+AircraftTableEditWidget::AircraftTableEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 void AircraftTableEditWidget::setupModelAndView()
 {

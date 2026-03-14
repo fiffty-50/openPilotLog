@@ -21,6 +21,7 @@ MESSAGE ("Enabling QStringBuilder")
 # find_package(OpenSSL REQUIRED) # Pending testing
 # find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Sql Network REQUIRED)
 find_package(Qt6 COMPONENTS Widgets Sql Network REQUIRED)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(PROJECT_SOURCES
 
     main.cpp

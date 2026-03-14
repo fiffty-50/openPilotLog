@@ -21,9 +21,7 @@
 #include "src/gui/dialogues/flightlogentryeditdialog.h"
 #include "src/gui/dialogues/simentryeditdialog.h"
 
-LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent) : TableEditWidget(Vertical, parent)
-{
-}
+LogbookTableEditWidget::LogbookTableEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 // TableEditWidget implementation
 

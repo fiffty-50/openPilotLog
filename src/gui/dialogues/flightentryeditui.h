@@ -38,6 +38,7 @@ class FlightEntryEditUi {
     void retranslateUi();
 
     QGridLayout *gridLayout;
+    QLabel *dateLabel;
     QLabel *dateDisplayLabel;
     QLabel *deptLabel;
     QLabel *deptDisplayLabel;
@@ -64,7 +65,6 @@ class FlightEntryEditUi {
     DbSelectionComboBox *picComboBox;
     DbSelectionComboBox *sicComboBox;
     QLineEdit *flightNumberLineEdit;
-    QPushButton *datePushButton;
     QCheckBox *pilotFlyingCheckBox;
     QDateEdit *dateEdit;
     QComboBox *pilotFunctionComboBox;

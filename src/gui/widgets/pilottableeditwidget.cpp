@@ -19,10 +19,9 @@
 #include "src/database/database.h"
 #include "src/gui/dialogues/entryeditdialog.h"
 #include "src/gui/dialogues/pilotentryeditdialog.h"
-#include "src/opl.h"
 #include <QGridLayout>
 
-PilotTableEditWidget::PilotTableEditWidget(QWidget *parent) : TableEditWidget(Horizontal, parent) {}
+PilotTableEditWidget::PilotTableEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 void PilotTableEditWidget::setupModelAndView()
 {

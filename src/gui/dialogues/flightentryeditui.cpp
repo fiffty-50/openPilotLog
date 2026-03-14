@@ -30,7 +30,7 @@ void FlightEntryEditUi::setupUi(QWidget *parent)
 
 void FlightEntryEditUi::retranslateUi()
 {
-    datePushButton->setText(QObject::tr("Date"));
+    dateLabel->setText(QObject::tr("Date"));
     dateDisplayLabel->setText(dateEdit->date().toString(QStringLiteral("ddd d MMM, yyyy")));
     deptLabel->setText(QObject::tr("Departure"));
     destLabel->setText(QObject::tr("Destination"));
@@ -85,10 +85,10 @@ void FlightEntryEditUi::createLayout(QWidget *parent)
 
     // Row
     // Left
-    datePushButton   = new QPushButton(parent);
+    dateLabel        = new QLabel(parent);
     dateEdit         = new QDateEdit(parent);
     dateDisplayLabel = new QLabel(parent);
-    addLeft(datePushButton, dateEdit, dateDisplayLabel);
+    addLeft(dateLabel, dateEdit, dateDisplayLabel);
 
     // Right
     registrationLabel = new QLabel(parent);

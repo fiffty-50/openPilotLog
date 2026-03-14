@@ -64,7 +64,7 @@ void FlightLogEntryEditDialog::init()
     ui = new Ui::FlightEntryEditUi();
     ui->setupUi(this);
 
-    setTabOrder({ui->datePushButton, ui->dateEdit, ui->deptComboBox, ui->destComboBox,
+    setTabOrder({ui->dateLabel, ui->dateEdit, ui->deptComboBox, ui->destComboBox,
                  ui->timeOffEdit, ui->timeOnEdit, ui->pilotFunctionComboBox,
                  ui->flightRulesComboBox, ui->registrationComboBox, ui->picComboBox,
                  ui->sicComboBox, ui->flightNumberLineEdit, ui->pilotFlyingCheckBox,

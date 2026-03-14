@@ -23,10 +23,7 @@
 #include "src/gui/widgets/tableeditwidget.h"
 #include <qabstractitemmodel.h>
 
-ApproachTypesEditWidget::ApproachTypesEditWidget(QWidget *parent)
-    : TableEditWidget(Horizontal, parent)
-{
-}
+ApproachTypesEditWidget::ApproachTypesEditWidget(QWidget *parent) : TableEditWidget(parent) {}
 
 void ApproachTypesEditWidget::retranslateUi()
 {
@@ -46,4 +43,7 @@ QString ApproachTypesEditWidget::confirmDeleteString(int row_id)
         .arg(approach_name);
 }
 
-EntryEditDialog *ApproachTypesEditWidget::createEntryEditDialog() { return new ApproachEntryEditDialog(this); }
+EntryEditDialog *ApproachTypesEditWidget::createEntryEditDialog()
+{
+    return new ApproachEntryEditDialog(this);
+}

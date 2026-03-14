@@ -166,7 +166,7 @@ void LogbookWidget::openEntryEdit(const QModelIndex &index)
 
     ui->stackedWidget->setCurrentWidget(dialog);
     ui->stackedWidget->show();
-    dialog->open();
+    dialog->show();
 }
 
 bool LogbookWidget::setViewHelper()

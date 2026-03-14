@@ -102,3 +102,4 @@ build/
 l10n/
 # DS files
 *.DS_Store
+.clangd

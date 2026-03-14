@@ -21,11 +21,10 @@
  * for editing in a suitable EntryEditDialog which is responsible for the verification of
  * the user input as well as reading and writing to and from the database.
  *
- * The TableEditWidget has two Orientation options: Horizontal and Vertical
  *
- * In the Horizontal layout, the table view is split horizontally to make space
- * for the TableEditWidget on the right hand side, whereas on the Vertical layout
- * it is split vertically with the TableEditWidget occupying the lower half of the screen.
+ * The table view is split horizontally to make space for the TableEditWidget on the right hand
+ * side. The Dialog is shown in a non-modal way for editing and as a modal dialog when adding
+ * a new entry.
  *
  * When implementing the TableEditWidget it is important to set up the model and call the
  * Base Class implementation of setupUI before performing any specialisations. Before the
@@ -35,18 +34,9 @@ class TableEditWidget : public QWidget {
     Q_OBJECT
   public:
     /*!
-     * \brief Determines how the layout is created
-     * \details <ul>
-     * <li> Horizontal: The edit widget is shown besides the table </li>
-     * <li> Vertical: The edit widget is shown below the table </li>
-     * </ul>
-     */
-    enum Orientation { Horizontal, Vertical };
-
-    /*!
      * \brief Create a new TableEditWidget
      */
-    explicit TableEditWidget(Orientation orientation = Horizontal, QWidget *parent = nullptr);
+    explicit TableEditWidget(QWidget *parent = nullptr);
 
     /*!
      * \brief Initialises the dialog by calling its virtual setup functions.
@@ -100,19 +90,17 @@ class TableEditWidget : public QWidget {
     virtual EntryEditDialog *createEntryEditDialog() = 0;
 
   protected:
-    Orientation m_orientation;
-    QSqlTableModel *m_model            = nullptr;
-    QTableView *m_view                 = new QTableView(this);
-    QWidget *m_filterWidget            = nullptr;
-    QWidget *m_buttonWidget            = nullptr;
     EntryEditDialog *m_entryEditDialog = nullptr;
 
+    QStackedWidget *m_stackedWidget      = new QStackedWidget(this);
+    QTableView *m_view                   = new QTableView(this);
     QPushButton *m_addNewEntryPushButton = new QPushButton(this);
     QPushButton *m_deleteEntryPushButton = new QPushButton(this);
-
-    QStackedWidget *m_stackedWidget      = new QStackedWidget(this);
     QLineEdit *m_filterLineEdit          = new QLineEdit(this);
     QComboBox *m_filterSelectionComboBox = new QComboBox(this);
+    QSqlTableModel *m_model              = nullptr;
+    QWidget *m_filterWidget              = nullptr;
+    QWidget *m_buttonWidget              = nullptr;
 
     /*!
      * \brief Return an array of column numbers of the model that are visible in the UI
@@ -140,8 +128,6 @@ class TableEditWidget : public QWidget {
     QString getFilterStatement(const QString &column, const QString &filterText);
 
   private:
-    void setupHorizontalUI();
-    void setupVerticalUI();
     void setupSignalsAndSlots();
 
     /*!

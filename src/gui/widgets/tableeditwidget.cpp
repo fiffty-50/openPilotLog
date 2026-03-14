@@ -21,10 +21,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-TableEditWidget::TableEditWidget(Orientation orientation, QWidget *parent)
-    : QWidget{parent}, m_orientation(orientation)
-{
-}
+TableEditWidget::TableEditWidget(QWidget *parent) : QWidget{parent} {}
 
 void TableEditWidget::init()
 {
@@ -39,21 +36,6 @@ void TableEditWidget::setupUI()
     m_stackedWidget->addWidget(m_entryEditDialog);
 
     // set up the UI
-    switch (m_orientation) {
-    case Horizontal:
-        setupHorizontalUI();
-        break;
-    case Vertical:
-        setupVerticalUI();
-    default:
-        break;
-    }
-    retranslateUi();
-}
-
-void TableEditWidget::setupHorizontalUI()
-{
-    // In the horizontal view, the editing widget is hidden on the right hand side
     m_stackedWidget->hide();
 
     // create a 2-column grid layout and fill the cells
@@ -77,29 +59,7 @@ void TableEditWidget::setupHorizontalUI()
 
     // add here so that it spans all rows properly
     gridLayout->addWidget(m_stackedWidget, 0, colR, allSpan, singleSpan);
-}
-
-void TableEditWidget::setupVerticalUI()
-{
-    // create a single column grid layout and fill the cells
-    constexpr int col = 0;
-    int row           = 0;
-    auto gridLayout   = new QGridLayout(this);
-
-    gridLayout->addWidget(m_view, row, col);
-    row++;
-
-    gridLayout->addWidget(m_stackedWidget, row, col);
-    row++;
-
-    setupButtonWidget();
-    gridLayout->addWidget(m_buttonWidget);
-    row++;
-
-    setupFilterWidget();
-    m_stackedWidget->addWidget(m_filterWidget);
-    m_stackedWidget->setCurrentWidget(m_filterWidget);
-    //gridLayout->addWidget(m_stackedWidget);
+    retranslateUi();
 }
 
 void TableEditWidget::setupFilterWidget()
@@ -128,17 +88,8 @@ void TableEditWidget::setupButtonWidget()
     auto buttonWidget     = new QWidget(this);
     auto buttonGridLayout = new QGridLayout(buttonWidget);
 
-    switch (m_orientation) {
-    case Horizontal:
-        buttonGridLayout->addWidget(m_addNewEntryPushButton, 0, 0);
-        buttonGridLayout->addWidget(m_deleteEntryPushButton, 1, 0);
-        break;
-    case Vertical:
-        buttonGridLayout->addWidget(m_addNewEntryPushButton, 0, 0);
-        buttonGridLayout->addWidget(m_deleteEntryPushButton, 0, 1);
-    default:
-        break;
-    }
+    buttonGridLayout->addWidget(m_addNewEntryPushButton, 0, 0);
+    buttonGridLayout->addWidget(m_deleteEntryPushButton, 1, 0);
 
     m_buttonWidget = buttonWidget;
 }
@@ -188,21 +139,17 @@ void TableEditWidget::setupSignalsAndSlots()
 
     // Force the view to update the selected row when a column is selected
     QObject::connect(m_view->selectionModel(), &QItemSelectionModel::currentChanged, this,
-            [this](const QModelIndex &current, const QModelIndex &) {
-                if (current.isValid()) m_view->selectRow(current.row());
-            });
+                     [this](const QModelIndex &current, const QModelIndex &) {
+                         if (current.isValid()) m_view->selectRow(current.row());
+                     });
 
     // Edit an entry when selected
-    QObject::connect(m_view, &QTableView::clicked,
-            this, [this](const QModelIndex &index) {
-                const int rowId =
-                    index.sibling(index.row(), 0).data().toInt();
-                openEntryEdit(rowId);
-            });
-    // Hide the edit widget when editing is finished
-    QObject::connect(m_entryEditDialog, &QDialog::finished, this, [this]() {
-        hideEditWidget();
+    QObject::connect(m_view, &QTableView::clicked, this, [this](const QModelIndex &index) {
+        const int rowId = index.sibling(index.row(), 0).data().toInt();
+        openEntryEdit(rowId);
     });
+    // Hide the edit widget when editing is finished
+    QObject::connect(m_entryEditDialog, &QDialog::finished, this, [this]() { hideEditWidget(); });
 
     // Add a new Entry
     QObject::connect(m_addNewEntryPushButton, &QPushButton::clicked, this,
@@ -215,18 +162,25 @@ void TableEditWidget::setupSignalsAndSlots()
 
 void TableEditWidget::openEntryEdit(std::optional<int> rowId)
 {
-    if(!m_entryEditDialog) {
+    // on first pass, create the edit dialog
+    if (!m_entryEditDialog) {
         m_entryEditDialog = createEntryEditDialog();
         m_stackedWidget->addWidget(m_entryEditDialog);
     }
 
-    if (rowId) m_entryEditDialog->loadEntry(*rowId);
-    else m_entryEditDialog->reset();
-
-    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+    // The Entry edit can be used to edit an existing entry or to add a new one
+    if (rowId)
+        m_entryEditDialog->loadEntry(*rowId);
+    else
+        m_entryEditDialog->reset();
 
     showEditWidget();
-    m_entryEditDialog->open();
+    m_stackedWidget->setCurrentWidget(m_entryEditDialog);
+
+    m_entryEditDialog->show();
+    // show(), open() and exec() seem to behave slightly different
+    // between Linux and macOS. Test and consider adding a #define
+    // to use the appropriate one for each.
 }
 
 void TableEditWidget::deleteEntryRequested()
@@ -254,11 +208,9 @@ void TableEditWidget::deleteEntryRequested()
         if (!dialog->deleteEntry(rowId)) WARN(deleteErrorString(rowId));
     }
 
-    // re-set for vertical layout
-    if (m_orientation == Vertical) {
-        m_stackedWidget->setCurrentWidget(m_filterWidget);
-        m_stackedWidget->show();
-    }
+    // re-set the layout
+    m_stackedWidget->setCurrentWidget(m_filterWidget);
+    m_stackedWidget->show();
 }
 
 void TableEditWidget::sortColumnChanged(int newSortColumn)
