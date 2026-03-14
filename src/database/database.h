@@ -138,7 +138,6 @@ class Database : public QObject {
         return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
     }
 
-
     /*!
      * \brief Checks if an entry exists in the database, based on position data
      */
@@ -312,6 +311,7 @@ class Database : public QObject {
 
     bool update(const Row &updated_row);
 
+    bool update(FlightDataBuilder &flight_data);
 
   signals:
     /*!

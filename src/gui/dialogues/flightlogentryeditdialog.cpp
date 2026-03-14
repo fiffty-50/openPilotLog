@@ -83,6 +83,7 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
     // Try to load the flight data
     if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
         m_eventId = event_row_id;
+        m_flightId = flightOpt->flightEntry()->getRowId();
 
         const auto &flight_data  = *flightOpt;
         const auto &log_entry    = *flight_data.logEntry();
@@ -313,6 +314,7 @@ FlightDataBuilder FlightLogEntryEditDialog::collectFlightDataFromUi()
     if (m_eventId > 0) {
         LOG << "Building from existing entry";
         builder.setEventId(m_eventId);
+        builder.setFlightId(m_flightId);
     } else {
         LOG << "Bulding new entry";
     }

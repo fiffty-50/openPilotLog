@@ -18,6 +18,7 @@
 #include "database.h"
 #include "src/database/entries/flightlogentry.h"
 #include "src/opl.h"
+#include <QtSql/qsqlquery.h>
 #include <qdir.h>
 #include <qsqlerror.h>
 #include <utility>
@@ -72,7 +73,7 @@ const QStringList Database::getTableNames() const { return m_tableNames; }
 
 void Database::updateLayout()
 {
-    auto db    = Database::database();
+    auto db      = Database::database();
     m_tableNames = db.tables();
 
     m_tableColumns.clear();
@@ -162,9 +163,7 @@ bool Database::commit(FlightDataBuilder &builder)
         return false;
     }
     if (exists(DbTable::LogEvents, builder.eventId())) {
-        LOG << "Log Event already exists. Update logic not yet implemented.";
-        m_lastError = QSqlError("Log event already exists. Update logic not yet implemented");
-        return false;
+        return update(builder);
     }
     else {
         return insert(builder);
@@ -437,6 +436,95 @@ bool Database::insert(FlightDataBuilder &builder)
     }
 
     // commit the transaction
+    if (!database().commit()) {
+        m_lastError = database().lastError();
+        return false;
+    }
+    return true;
+}
+
+bool Database::update(FlightDataBuilder &flight_data)
+{
+    // helper function to clear entries that are built from scratch
+    auto deleteWhere = [this](const QString &table_name, const QString &column_name,
+                              int row_id) -> bool {
+        QString query = QStringLiteral("DELETE FROM %1 WHERE %2=?").arg(table_name, column_name);
+        QSqlQuery q;
+        q.prepare(query);
+        q.addBindValue(row_id);
+
+        if (!q.exec()) {
+            DEB << "Unable to commit." << query << q.boundValues() << q.lastError().text();
+            m_lastError = q.lastError();
+            return false;
+        }
+
+        return true;
+    };
+    auto static S_COL_FLIGHT_ID = QStringLiteral("flight_id");
+    auto static S_COL_EVENT_ID  = QStringLiteral("event_id");
+
+    // start a transaction to enable rollback on failure
+    database().transaction();
+
+    // Update LogEntry
+    auto log_entry = flight_data.logEntry();
+    DEB << "Updating LOG:" << log_entry;
+    if (!commit(log_entry)) {
+        database().rollback();
+        return false;
+    }
+
+    // Update FlightLogEntry
+    auto flight_entry = flight_data.flightLogEntry();
+    DEB << "Commiting FLT:" << flight_entry;
+    if (!commit(flight_entry)) {
+        database().rollback();
+        return false;
+    }
+
+    // Delete and re-enter those values instead of updating
+    // Flight Segment Entries
+    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::FlightSegments), S_COL_FLIGHT_ID,
+                     flight_data.flightId())) {
+        database().rollback();
+        return false;
+    }
+
+    auto flight_segments = flight_data.flightSegments();
+    for (const auto &s : std::as_const(flight_segments)) {
+        DEB << "Commiting Segment:" << s;
+        if (!commit(s)) {
+            database().rollback();
+            return false;
+        }
+    }
+
+    // Optional part, don't rollback since those may be empty
+    // Movements
+    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::MovementEvents), S_COL_EVENT_ID,
+                     flight_data.eventId())) {
+        return false;
+    }
+    auto movements = flight_data.movements();
+    for (const auto &m : std::as_const(movements)) {
+        DEB << "Commiting Movement:" << m;
+        commit(m);
+    }
+
+    // Approaches
+    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::ApproachEvents), S_COL_EVENT_ID,
+                     flight_data.eventId())) {
+        return false;
+    }
+    auto approaches = flight_data.approaches();
+    for (const auto &a : std::as_const(approaches)) {
+        DEB << "Commiting Approach:" << a;
+        commit(a);
+    }
+
+    // commit the transaction
+    DEB << "All flight elements processed. Commiting transaction";
     if (!database().commit()) {
         m_lastError = database().lastError();
         return false;
@@ -804,5 +892,4 @@ OPL::FlightData Database::getFlightData(int event_id)
 
     return {log_entry, flight_entry, segments, movements};
 }
-
 } // namespace OPL

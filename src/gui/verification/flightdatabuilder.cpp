@@ -200,6 +200,7 @@ LogEntry FlightDataBuilder::logEntry() const
     LogEntry entry;
     entry.setEventType(EVENT_TYPE);
     entry.setDate(m_date_jd);
+    if(m_event_id > 0) entry.setRowId(m_event_id);
     if (m_remarks_opt) entry.setRemarks(*m_remarks_opt);
 
     return entry;
@@ -224,6 +225,7 @@ FlightLogEntry FlightDataBuilder::flightLogEntry() const
     entry.setTimeOnBlocks(m_time_on_ms);
     entry.setPic(m_pic_id);
     entry.setTail(m_tail_id);
+    if(m_flight_id > 0) entry.setRowId(m_flight_id);
 
     // optional data
     if (m_second_pilot_id_opt) entry.setSecondPilot(*m_second_pilot_id_opt);

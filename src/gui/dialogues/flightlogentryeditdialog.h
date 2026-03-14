@@ -67,6 +67,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
 
     // UI Elements
     int m_eventId = 0;
+    int m_flightId = 0;
     const double m_night_angle;
     const QString m_dateFormatString;
     const QString m_timeFormatString;
