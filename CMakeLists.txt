@@ -193,6 +193,9 @@ set(PROJECT_SOURCES
     src/database/databasesetup.cpp
     src/database/dbsummary.h
     src/database/dbsummary.cpp
+    src/database/queryfactory.h
+    src/database/queryfactory.cpp
+
 
     # Database Cache
     src/database/cache/airportinfo.h

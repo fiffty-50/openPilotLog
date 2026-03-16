@@ -1,6 +1,6 @@
 /*
  *openPilotLog - A FOSS Pilot Logbook Application
- *Copyright (C) 2020-2023 Felix Turowsky
+ *Copyright (C) 2020-2026 Felix Turowsky
  *
  *This program is free software: you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -180,12 +180,6 @@ class Database : public QObject {
     bool remove(const Row &row);
 
     /*!
-     * \brief deletes a batch of entries from the database. Optimised for speed when
-     * deleting many entries. The entries are identified using their row id
-     */
-    bool removeMany(DbTable table, const QList<int> &row_id_list);
-
-    /*!
      * \brief retreive a Map of <column name, column content> for a specific row in the database.
      */
     RowData_T getRowData(const DbTable table, const int row_id);
@@ -197,6 +191,14 @@ class Database : public QObject {
      * tables based on a foreign key.
      */
     RowData_T getRowData(const DbTable table, const QString &filterColumn, int row_id);
+
+    /*!
+     * \brief retreive a List of Maps of <column name, column content> representing rows in the
+     * database.
+     * \details This function can be used when more than one row of data is to be retreived from the
+     * database. For a single row, use getRowData
+     * */
+    QList<RowData_T> getRowsData(const DbTable table, const QString &filterColumn, int row_id);
 
     /*!
      * \brief retreives a PilotEntry from the database. See row class for details.
@@ -305,6 +307,15 @@ class Database : public QObject {
     void on_database_updated(DbTable table);
 
   private:
+    /*!
+     * \brief execute the query and emit databaseUpdated
+     */
+    bool exec(QSqlQuery &q, DbTable table = DbTable::Any);
+    /*!
+     * \brief execute the query but don't emit databaseUpdated
+     */
+    bool execQuietly(QSqlQuery &q);
+
     bool insert(const Row &new_row);
 
     bool insert(FlightDataBuilder &flight_data);
