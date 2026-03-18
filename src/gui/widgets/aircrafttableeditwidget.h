@@ -88,6 +88,7 @@ class AircraftTableEditWidget : public TableEditWidget {
     const QMap<int, QString> *getColumnHeaderMap() const override { return &COLUMN_HEADERS_MAP; }
     const QList<int> *getHiddenColumns() const override { return &HIDDEN_COLUMNS; }
     const QList<int> *getVisibleColumns() const override { return &VISIBLE_COLUMNS; }
+
     const QString tableName() const override
     {
         return OPL::GLOBALS->getDbTableName(OPL::DbTable::AircraftTypes);

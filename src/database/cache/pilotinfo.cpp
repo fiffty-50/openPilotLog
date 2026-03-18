@@ -29,7 +29,7 @@ PilotsInfo::PilotsInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTable
         m_model->fetchMore();
 
     refreshIndices();
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::Pilots) {
             LOG << "Updating Pilot Info.";
             m_model->select();
@@ -73,7 +73,7 @@ void PilotsInfo::refreshIndices()
     }
 
     // add the logbook owner alias to the maps
-    if(S_OWNER_ALIAS) {
+    if (S_OWNER_ALIAS) {
         m_nameToPilotId.insert(S_OWNER_ALIAS.value(), OPL::LOGBOOK_OWNER_ID);
         m_nameToPilotIdMap.insert(S_OWNER_ALIAS.value(), OPL::LOGBOOK_OWNER_ID);
     }

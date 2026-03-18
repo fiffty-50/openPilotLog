@@ -122,7 +122,7 @@ void TableEditWidget::setupModelAndView()
 void TableEditWidget::setupSignalsAndSlots()
 {
     // refresh the view when the database is updated
-    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
+    QObject::connect(DB, &OPL::Database::databaseUpdated, this,
                      &TableEditWidget::databaseContentChanged);
 
     // filter the view

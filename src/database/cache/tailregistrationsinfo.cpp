@@ -24,8 +24,8 @@ TailRegistrationsInfo::TailRegistrationsInfo(QObject *parent) : QObject{parent}
 {
     refresh();
 
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
-        if (table == OPL::DbTable::AircraftTails){
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
+        if (table == OPL::DbTable::AircraftTails) {
             refresh();
             LOG << "Updating Tail Registration Info.";
         }

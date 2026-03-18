@@ -82,7 +82,7 @@ void SettingsWidget::readSettings()
     // const QSignalBlocker blocker(this); // don't emit editing finished for setting these values
 
     // Personal Data Tab
-    const auto user_data = DB->getLogbookOwner().getData();
+    const auto user_data = DB->getPilotEntry(OPL::LOGBOOK_OWNER_ID).getData();
     QString lastName     = user_data.value(OPL::PilotEntry::NAME).toString();
     if (lastName.isEmpty()) {
         lastName = "Please enter your last name.";

@@ -8,7 +8,7 @@ TailSelectionBox::TailSelectionBox(QWidget *parent)
     connect(this->lineEdit(), &QLineEdit::textChanged, this,
             [this]() { this->lineEdit()->setText(this->lineEdit()->text().toUpper()); });
     // call refresh when the database table has been updated
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
         if (table == m_table) refresh();
     });
 

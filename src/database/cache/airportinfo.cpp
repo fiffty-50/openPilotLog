@@ -31,7 +31,7 @@ AirportInfo::AirportInfo(QObject *parent) : QObject{parent}, m_model(new QSqlTab
 
     refreshIndices();
 
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::Airports || table == OPL::DbTable::AirportCodes) {
             LOG << "Updating Airport Info.";
             m_model->select();
@@ -59,7 +59,7 @@ void AirportInfo::refreshIndices()
         QString iata  = m_model->data(m_model->index(row, COLUMN_IATA)).toString();
 
         m_airportIdToRow.insert(airportId, row);
-        if (!icao.isEmpty()){
+        if (!icao.isEmpty()) {
             m_icaoToAirportId.insert(icao, airportId);
             m_allCodesToAirportId.insert(icao, airportId);
         }

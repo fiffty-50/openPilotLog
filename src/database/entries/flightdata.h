@@ -18,6 +18,7 @@
 #ifndef FLIGHTDATA_H
 #define FLIGHTDATA_H
 
+#include "src/database/entries/approachentry.h"
 #include "src/database/entries/flightlogentry.h"
 #include "src/database/entries/flightsegmententry.h"
 #include "src/database/entries/logentry.h"
@@ -44,7 +45,8 @@ namespace OPL {
 class FlightData {
   public:
     FlightData(const LogEntry &log_entry, const FlightLogEntry &flight_entry,
-               const QList<FlightSegmentEntry> &segments, const QList<MovementEntry> &movements);
+               const QList<FlightSegmentEntry> &segments, const QList<MovementEntry> &movements,
+               const QList<ApproachEntry> &approaches);
     // FlightData(const LogEntry &log_entry, const FlightLogEntry &flight_entry, const
     // QList<MovementEntry> &movements, const QList<Approachentry> &approaches);
     /*!
@@ -57,6 +59,7 @@ class FlightData {
     const FlightLogEntry *flightEntry() const { return &m_flight_entry; }
     const QList<MovementEntry> *movementEntries() const { return &m_movements; }
     const QList<FlightSegmentEntry> *flightSegments() const { return &m_segments; }
+    const QList<ApproachEntry> *approaches() const { return &m_approaches; }
 
     /*!
      * \brief return the total amount of take offs performed on this flight
@@ -109,7 +112,7 @@ class FlightData {
     const FlightLogEntry m_flight_entry;
     const QList<FlightSegmentEntry> m_segments;
     const QList<MovementEntry> m_movements;
-    // const QList<ApproachEntry> m_approach_entries;
+    const QList<ApproachEntry> m_approaches;
 
     // logic for database interface
     enum DataType { Segments, Movements, Approaches };

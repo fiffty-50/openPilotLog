@@ -56,22 +56,18 @@ bool Database::connect()
 
 void Database::disconnect()
 {
-    QString connection_name;
-    {
-        auto db         = Database::database();
-        connection_name = db.connectionName();
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(connection_name);
-    LOG << "Database connection closed.";
+    auto db = database();
+    db.close();
+    QSqlDatabase::removeDatabase(CONNECTION_NAME);
+    LOG << "Database connection closed: " << CONNECTION_NAME;
 }
 
-const QStringList Database::getTableColumns(OPL::DbTable table_name) const
+QStringList Database::getTableColumns(OPL::DbTable table_name) const
 {
-    return m_tableColumns.value(OPL::GLOBALS->getDbTableName(table_name));
+    return m_tableColumns.value(tableName(table_name));
 }
 
-const QStringList Database::getTableNames() const { return m_tableNames; }
+QStringList Database::getTableNames() const { return m_tableNames; }
 
 void Database::updateLayout()
 {
@@ -87,35 +83,26 @@ void Database::updateLayout()
         }
         m_tableColumns.insert(table_name, table_columns);
     }
-    on_database_updated(DbTable::Any);
-}
-
-const QString Database::sqliteVersion() const
-{
-    QSqlQuery query;
-    query.prepare(QStringLiteral("SELECT sqlite_version()"));
-    query.exec();
-    query.next();
-    return query.value(0).toString();
+    emit databaseUpdated(DbTable::Any);
 }
 
 bool Database::exec(QSqlQuery &q, DbTable table)
 {
     if (!q.exec()) {
-        DEB << "Query failed: " << q.lastQuery();
+        LOG << "Query failed: " << q.lastQuery();
         DEB << "Values" << q.boundValues();
         DEB << q.lastError().text();
         m_lastError = q.lastError();
         return false;
     }
 
-    emit dataBaseUpdated(table);
+    emit databaseUpdated(table);
     return true;
 }
 bool Database::execQuietly(QSqlQuery &q)
 {
     if (!q.exec()) {
-        DEB << "Query failed: " << q.lastQuery();
+        LOG << "Query failed: " << q.lastQuery();
         DEB << "Values" << q.boundValues();
         DEB << q.lastError().text();
         m_lastError = q.lastError();
@@ -168,7 +155,7 @@ bool Database::commit(const QJsonArray &json_arr, const OPL::DbTable table)
         return false;
     }
 
-    emit dataBaseUpdated(table);
+    emit databaseUpdated(table);
     return true;
 }
 
@@ -203,7 +190,7 @@ bool Database::remove(OPL::DbTable table, int row_id)
 {
     if (!exists(table, row_id)) {
         LOG << "Unable to delete: Database entry not found.";
-        DEB << GLOBALS->getDbTableName(table) << '/' << row_id;
+        DEB << tableName(table) << '/' << row_id;
         return false;
     }
 
@@ -314,20 +301,9 @@ bool Database::insert(FlightDataBuilder &builder)
 bool Database::update(FlightDataBuilder &flight_data)
 {
     // helper function to clear entries that are built from scratch
-    auto deleteWhere = [this](const QString &table_name, const QString &column_name,
-                              int row_id) -> bool {
-        QString query = QStringLiteral("DELETE FROM %1 WHERE %2=?").arg(table_name, column_name);
-        QSqlQuery q;
-        q.prepare(query);
-        q.addBindValue(row_id);
-
-        if (!q.exec()) {
-            DEB << "Unable to commit." << query << q.boundValues() << q.lastError().text();
-            m_lastError = q.lastError();
-            return false;
-        }
-
-        return true;
+    auto deleteWhere = [this](DbTable table, const QString &column_name, int value) -> bool {
+        QSqlQuery q = QUERIES->deleteFromWhere(table, column_name, value);
+        return execQuietly(q);
     };
     auto static S_COL_FLIGHT_ID = QStringLiteral("flight_id");
     auto static S_COL_EVENT_ID  = QStringLiteral("event_id");
@@ -353,8 +329,7 @@ bool Database::update(FlightDataBuilder &flight_data)
 
     // Delete and re-enter those values instead of updating
     // Flight Segment Entries
-    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::FlightSegments), S_COL_FLIGHT_ID,
-                     flight_data.flightId())) {
+    if (!deleteWhere(DbTable::FlightSegments, S_COL_FLIGHT_ID, flight_data.flightId())) {
         database().rollback();
         return false;
     }
@@ -370,10 +345,10 @@ bool Database::update(FlightDataBuilder &flight_data)
 
     // Optional part, don't rollback since those may be empty
     // Movements
-    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::MovementEvents), S_COL_EVENT_ID,
-                     flight_data.eventId())) {
+    if (!deleteWhere(DbTable::MovementEvents, S_COL_EVENT_ID, flight_data.eventId())) {
         return false;
     }
+
     auto movements = flight_data.movements();
     for (const auto &m : std::as_const(movements)) {
         DEB << "Commiting Movement:" << m;
@@ -381,10 +356,10 @@ bool Database::update(FlightDataBuilder &flight_data)
     }
 
     // Approaches
-    if (!deleteWhere(GLOBALS->getDbTableName(DbTable::ApproachEvents), S_COL_EVENT_ID,
-                     flight_data.eventId())) {
+    if (!deleteWhere(DbTable::ApproachEvents, S_COL_EVENT_ID, flight_data.eventId())) {
         return false;
     }
+
     auto approaches = flight_data.approaches();
     for (const auto &a : std::as_const(approaches)) {
         DEB << "Commiting Approach:" << a;
@@ -467,48 +442,9 @@ QList<RowData_T> Database::getRowsData(const DbTable table, const QString &filte
     return rows;
 }
 
-QList<FlightSegmentEntry> Database::getFlightSegments(int flight_id)
-{
-    static auto S_FLIGHT_ID = QStringLiteral("flight_id");
-    const auto segment_data       = getRowsData(DbTable::FlightSegments, S_FLIGHT_ID, flight_id);
-
-    QList<FlightSegmentEntry> result;
-    for (const auto &rowData : segment_data) {
-        result.append(FlightSegmentEntry(flight_id, rowData));
-    }
-    return result;
-}
-
-QList<MovementEntry> Database::getMovementEntries(int event_id)
-{
-    static auto S_EVENT_ID  = QStringLiteral("event_id");
-    const auto movement_events    = getRowsData(DbTable::MovementEvents, S_EVENT_ID, event_id);
-
-    QList<MovementEntry> result;
-    for (const auto &rowData : movement_events) {
-        result.append(MovementEntry(event_id, rowData));
-    }
-
-    return result;
-}
-
-QList<AirportCodeEntry> Database::getAirportCodeEntries(int airport_id)
-{
-    static auto S_AIRPORT_ID = QStringLiteral("airport_id");
-    const auto airport_ids         = getRowsData(DbTable::AirportCodes, S_AIRPORT_ID, airport_id);
-
-    QList<AirportCodeEntry> result;
-    for (const auto &rowData : airport_ids) {
-        result.append(AirportCodeEntry(airport_id, rowData));
-    }
-
-    return result;
-}
-
 int Database::getLastEntry(OPL::DbTable table)
 {
-    QString statement =
-        QLatin1String("SELECT MAX(ROWID) FROM ") + OPL::GLOBALS->getDbTableName(table);
+    QString statement = QLatin1String("SELECT MAX(ROWID) FROM ") + tableName(table);
 
     auto query = QSqlQuery(statement);
     if (query.first()) {
@@ -518,12 +454,6 @@ int Database::getLastEntry(OPL::DbTable table)
         LOG << "No entry found. (Database empty?)" << query.lastError().text();
         return 0;
     }
-}
-
-void Database::on_database_updated(DbTable table)
-{
-    LOG << "Emitting database update for table: " << OPL::GLOBALS->getDbTableName(table);
-    emit dataBaseUpdated(table);
 }
 
 QList<int> Database::getForeignKeyConstraints(int foreign_row_id, OPL::DbTable table)
@@ -621,22 +551,4 @@ bool Database::restoreBackup(const QString &backup_file)
     return true;
 }
 
-OPL::FlightData Database::getFlightData(int event_id)
-{
-    const auto log_data  = getRowData(OPL::DbTable::LogEvents, event_id);
-    const auto log_entry = OPL::LogEntry(event_id, log_data);
-
-    const auto flight_data = getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
-
-    const auto flight_entry =
-        OPL::FlightLogEntry(flight_data.value(QStringLiteral("flight_id")).toInt(), flight_data);
-
-    const auto movements = getMovementEntries(event_id);
-
-    const auto segments = getFlightSegments(flight_entry.getRowId());
-
-    // collect approach data
-
-    return {log_entry, flight_entry, segments, movements};
-}
 } // namespace OPL

@@ -32,7 +32,7 @@ HomeWidget::HomeWidget(QWidget *parent) : QWidget(parent), ui(new Ui::HomeWidget
     fillTotals();
     fillCurrencies();
 
-    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this,
+    QObject::connect(DB, &OPL::Database::databaseUpdated, this,
                      &HomeWidget::onPilotsDatabaseChanged);
 }
 
@@ -64,7 +64,7 @@ void HomeWidget::changeEvent(QEvent *event)
 
 const QString HomeWidget::getLogbookOwnerName() const
 {
-    OPL::PilotEntry owner = DB->getLogbookOwner();
+    OPL::PilotEntry owner = DB->getPilotEntry(OPL::LOGBOOK_OWNER_ID);
     QString name          = owner.getName();
     if (name.isEmpty()) {
         name = owner.getName();

@@ -59,7 +59,7 @@ void LogbookWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
 void LogbookWidget::setupSignals()
 {
     // refresh the view when the database is updated
-    QObject::connect(DB, &OPL::Database::dataBaseUpdated, this, [this]() { ui->model->select(); });
+    QObject::connect(DB, &OPL::Database::databaseUpdated, this, [this]() { ui->model->select(); });
     // sort the view by column
     QObject::connect(
         ui->view->horizontalHeader(), &QHeaderView::sectionClicked, this,

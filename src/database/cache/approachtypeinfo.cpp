@@ -24,7 +24,7 @@ ApproachTypeInfo::ApproachTypeInfo(QObject *parent) : QObject{parent}
 
     refreshIndices();
 
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
         if (table == OPL::DbTable::ApproachTypes) {
             LOG << "Updating ApproachTypes Info.";
             refreshIndices();
@@ -39,7 +39,7 @@ void ApproachTypeInfo::refreshIndices()
     auto query = SELECT_ALL.arg(OPL::GLOBALS->getDbTableName(OPL::DbTable::ApproachTypes));
     QSqlQuery q;
     q.prepare(query);
-    if(!q.exec()) DEB << "Query failed: " << q.lastQuery();
+    if (!q.exec()) DEB << "Query failed: " << q.lastQuery();
 
     while (q.next()) {
         int id       = q.value(COLUMN_TYPE_ID).toInt();

@@ -5,7 +5,7 @@ AirportSelectionBox::AirportSelectionBox(QWidget *parent)
     : DbSelectionComboBox(OPL::DbTable::AirportCodes, parent)
 {
     refresh();
-    connect(DB, &OPL::Database::dataBaseUpdated, this, [this](OPL::DbTable table) {
+    connect(DB, &OPL::Database::databaseUpdated, this, [this](OPL::DbTable table) {
         if (table == m_table) refresh();
     });
     this->setCurrentText({});

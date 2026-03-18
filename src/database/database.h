@@ -32,10 +32,7 @@
 
 #include "src/classes/paths.h"
 #include "src/database/entries/aircraftentry.h"
-#include "src/database/entries/airportcodeentry.h"
 #include "src/database/entries/airportentry.h"
-#include "src/database/entries/flightdata.h"
-#include "src/database/entries/flightsegmententry.h"
 #include "src/database/entries/pilotentry.h"
 #include "src/database/entries/row.h"
 #include "src/database/entries/tailentry.h"
@@ -47,26 +44,70 @@ namespace OPL {
 /*!
  * \brief Returns a pointer to the instance of the DataBase.
  * Instead of this:
- * OPL::DataBase::getInstance().commit(...)
+ * OPL::Database::instance().commit(...)
  * Use this:
  * DB->commit(...)
  */
 #define DB OPL::Database::instance()
 
 /*!
- * \brief The DB class encapsulates the SQL database by providing fast access
- * to hot database data.
+ * \brief The Database class encapsulates access to the SQLite database holding
+ * the application data.
+ *
+ * \details The Database class is designed as a singleton with a macro "DB" providing
+ * access to the public API which improves readability.
+ *
+ * \code{.cpp}
+ * {
+ *      DB->commit(data);                        // use this
+ *      OPL::Database::instance()::commit(data); // instead of this
+ * }
+ * \endcode
+ *
+ * All database access in the application has to be run through this class.
+ * Raw SQL code should only exist in this class and the QueryFactory class.
+ *
+ * User input taken from the UI (QLineEdits, QComboBoxes, etc.) shall never be directly concatenated
+ * into a query but instead be passed as a parameter to queries with ":column" or "?" placeholders
+ * to prevent sql incjection.
+ *
  */
 class Database : public QObject {
 
   private:
     Q_OBJECT
     Database() : m_databaseFile(Paths::databaseFileInfo()) {}
+
     const QFileInfo m_databaseFile;
     QStringList m_tableNames;
     QHash<QString, QStringList> m_tableColumns;
     QSqlError m_lastError;
-    inline const static QString SQLITE_DRIVER = QStringLiteral("QSQLITE");
+
+    const static inline auto SQLITE_DRIVER   = QStringLiteral("QSQLITE");
+    const static inline auto CONNECTION_NAME = QStringLiteral("qt_sql_default_connection");
+
+    /*!
+     * \brief static wrapper for readability
+     */
+    static inline QString tableName(DbTable table) { return OPL::GLOBALS->getDbTableName(table); }
+
+    /*!
+     * \brief execute the query and emit databaseUpdated
+     */
+    bool exec(QSqlQuery &q, DbTable table = DbTable::Any);
+
+    /*!
+     * \brief execute the query but don't emit databaseUpdated
+     */
+    bool execQuietly(QSqlQuery &q);
+
+    bool insert(const Row &new_row);
+
+    bool insert(FlightDataBuilder &flight_data);
+
+    bool update(const Row &updated_row);
+
+    bool update(FlightDataBuilder &flight_data);
 
   public:
     Database(const Database &)       = delete;
@@ -107,6 +148,16 @@ class Database : public QObject {
     void disconnect();
 
     /*!
+     * \brief Return the sqlite Version
+     */
+    inline QString sqliteVersion() const
+    {
+        QSqlQuery query;
+        query.exec(QStringLiteral("SELECT sqlite_version()"));
+        return query.next() ? query.value(0).toString() : QString();
+    }
+
+    /*!
      * \brief Updates the member variables tableNames and tableColumns with up-to-date layout
      * information if the database has been altered. This function is normally only required during
      * database setup or maintenance.
@@ -114,29 +165,20 @@ class Database : public QObject {
     void updateLayout();
 
     /*!
-     * \brief Database::sqliteVersion returns the database sqlite version. See also dbRevision()
-     * \return sqlite version string
-     */
-    const QString sqliteVersion() const;
-
-    /*!
      * \brief Return the names of all tables in the database
      */
-    const QStringList getTableNames() const;
+    QStringList getTableNames() const;
 
     /*!
-     * \brief Return the names of a given table in the database.
+     * \brief Return the column names of a given table.
      */
-    const QStringList getTableColumns(DbTable table_name) const;
+    QStringList getTableColumns(DbTable table_name) const;
 
     /*!
      * \brief Can be used to access the database connection.
      * \return The QSqlDatabase object pertaining to the connection.
      */
-    static inline QSqlDatabase database()
-    {
-        return QSqlDatabase::database(QStringLiteral("qt_sql_default_connection"));
-    }
+    static inline QSqlDatabase database() { return QSqlDatabase::database(CONNECTION_NAME); }
 
     /*!
      * \brief Checks if an entry exists in the database, based on position data
@@ -198,25 +240,14 @@ class Database : public QObject {
      * \details This function can be used when more than one row of data is to be retreived from the
      * database. For a single row, use getRowData
      * */
-    QList<RowData_T> getRowsData(const DbTable table, const QString &filterColumn, int row_id);
+    QList<RowData_T> getRowsData(const DbTable table, const QString &filterColumn, int value);
 
     /*!
      * \brief retreives a PilotEntry from the database. See row class for details.
      */
     inline PilotEntry getPilotEntry(int row_id)
     {
-        const auto data = getRowData(DbTable::Pilots, row_id);
-        return PilotEntry(row_id, data);
-    }
-
-    /*!
-     * \brief get the database entry for the logbook owner (self)
-     */
-    inline PilotEntry getLogbookOwner()
-    {
-        auto data = getRowData(DbTable::Pilots, 1);
-        data.insert(PilotEntry::ROWID, 1);
-        return PilotEntry(1, data);
+        return PilotEntry(row_id, getRowData(DbTable::Pilots, row_id));
     }
 
     /*!
@@ -224,8 +255,7 @@ class Database : public QObject {
      */
     inline TailEntry getTailEntry(int row_id)
     {
-        const auto data = getRowData(DbTable::AircraftTails, row_id);
-        return TailEntry(row_id, data);
+        return TailEntry(row_id, getRowData(DbTable::AircraftTails, row_id));
     }
 
     /*!
@@ -233,31 +263,16 @@ class Database : public QObject {
      */
     inline AircraftEntry getAircraftEntry(int row_id)
     {
-        const auto data = getRowData(DbTable::AircraftTypes, row_id);
-        return AircraftEntry(row_id, data);
+        return AircraftEntry(row_id, getRowData(DbTable::AircraftTypes, row_id));
     }
-
-    FlightData getFlightData(int event_id);
 
     /*!
      * \brief Retreives an airport entry from the database. See row class for details.
      */
     inline AirportEntry getAirportEntry(int row_id)
     {
-        const auto data = getRowData(DbTable::Airports, row_id);
-        return AirportEntry(row_id, data);
+        return AirportEntry(row_id, getRowData(DbTable::Airports, row_id));
     }
-
-    /*!
-     * \brief Retreives all airport code entries for a given airport_id
-     * \param airport_id - the airport_id of an airport in the airports table
-     * \return
-     */
-    QList<AirportCodeEntry> getAirportCodeEntries(int airport_id);
-
-    QList<MovementEntry> getMovementEntries(int event_id);
-
-    QList<FlightSegmentEntry> getFlightSegments(int flight_id);
 
     /*!
      * \brief returns the ROWID for the newest entry in the respective table.
@@ -304,26 +319,6 @@ class Database : public QObject {
      */
     bool restoreBackup(const QString &backup_file);
 
-    void on_database_updated(DbTable table);
-
-  private:
-    /*!
-     * \brief execute the query and emit databaseUpdated
-     */
-    bool exec(QSqlQuery &q, DbTable table = DbTable::Any);
-    /*!
-     * \brief execute the query but don't emit databaseUpdated
-     */
-    bool execQuietly(QSqlQuery &q);
-
-    bool insert(const Row &new_row);
-
-    bool insert(FlightDataBuilder &flight_data);
-
-    bool update(const Row &updated_row);
-
-    bool update(FlightDataBuilder &flight_data);
-
   signals:
     /*!
      * \brief updated is emitted whenever the database contents have been updated.
@@ -331,7 +326,7 @@ class Database : public QObject {
      * trigger an update to the models of the views displaying database contents in
      * the user interface so that a user is always presented with up-to-date information.
      */
-    void dataBaseUpdated(const DbTable table);
+    void databaseUpdated(const DbTable table);
     /*!
      * \brief connectionReset is emitted whenever the database connection is reset, for
      * example when creating or restoring a backup.

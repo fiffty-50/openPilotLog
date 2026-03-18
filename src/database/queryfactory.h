@@ -114,8 +114,8 @@ class QueryFactory : public QObject {
     const static inline auto Q_FOREIGN_KEY  = QStringLiteral("SELECT ROWID FROM %1 WHERE %2=?");
     const static inline auto Q_GET_TABLE    = QStringLiteral("SELECT * FROM %1");
 
-    const static inline QString tableName(DbTable table) { return GLOBALS->getDbTableName(table); }
-    const static inline QSqlQuery prepare(const QString &query)
+    static inline QString tableName(DbTable table) { return GLOBALS->getDbTableName(table); }
+    static inline QSqlQuery prepare(const QString &query)
     {
         QSqlQuery q;
         q.prepare(query);

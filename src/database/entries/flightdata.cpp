@@ -17,16 +17,18 @@
  */
 #include "flightdata.h"
 #include "src/database/database.h"
+#include "src/database/entries/approachentry.h"
 #include "src/database/entries/flightsegmententry.h"
 namespace OPL {
 
 FlightData::FlightData(const LogEntry &log_entry, const FlightLogEntry &flight_entry,
                        const QList<FlightSegmentEntry> &segments,
-                       const QList<MovementEntry> &movements)
+                       const QList<MovementEntry> &movements,
+                       const QList<ApproachEntry> &approaches)
     : m_log_entry(log_entry), m_flight_entry(flight_entry), m_segments(segments),
-      m_movements(movements)
+      m_movements(movements), m_approaches(approaches)
 {
-    assert(m_segments.size() > 0);
+    if (m_segments.size() < 1) DEB << "Error: flight data contains no flight segments.";
 }
 
 int FlightData::getTakeOffCount() const
@@ -134,8 +136,7 @@ QList<RowData_T> FlightData::getData(DataType data_type, int event_id)
         statement = QStringLiteral("SELECT * FROM movement_events WHERE event_id = ?");
         break;
     case Approaches:
-        LOG << "Approaches not yet implemented";
-        assert(false);
+        statement = QStringLiteral("SELECT * FROM approach_events WHERE event_id = ?");
         break;
     }
 
@@ -185,8 +186,7 @@ std::optional<FlightData> FlightData::getFlightData(int event_id)
     const auto log_entry = OPL::LogEntry(event_id, log_data);
 
     // Get FlightLogEntry
-    const auto flight_data =
-        DB->getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
+    const auto flight_data = DB->getRowData(DbTable::Flights, QStringLiteral("event_id"), event_id);
     if (flight_data.isEmpty()) {
         LOG << QStringLiteral("Unable to retreive data - no flight found for event_id: ")
             << event_id;
@@ -212,8 +212,14 @@ std::optional<FlightData> FlightData::getFlightData(int event_id)
         movements.append(OPL::MovementEntry(event_id, data));
     }
 
+    // get Approach Data
+    QList<ApproachEntry> approaches;
+    for (const auto &data : getData(Movements, event_id)) {
+        approaches.append(OPL::ApproachEntry(event_id, data));
+    }
+
     // Create and Return the FlightData object - movements may be empty but it is not required
-    return FlightData(log_entry, flight_entry, segments, movements);
+    return FlightData(log_entry, flight_entry, segments, movements, approaches);
 }
 
 } // namespace OPL
