@@ -17,8 +17,10 @@
  */
 #include "flightentryeditui.h"
 #include "src/gui/comboboxes/airportselectionbox.h"
+#include "src/gui/comboboxes/approachtypeselectionbox.h"
 #include "src/gui/comboboxes/pilotselectionbox.h"
 #include "src/gui/comboboxes/tailselectionbox.h"
+#include <QObject>
 
 namespace Ui {
 
@@ -43,9 +45,10 @@ void FlightEntryEditUi::retranslateUi()
     picLabel->setText(QObject::tr("Pilot in Command"));
     sicLabel->setText(QObject::tr("Second Pilot"));
     flightNumberLabel->setText(QObject::tr("Flight Number"));
-    pilotFlyingCheckBox->setText(QObject::tr("Pilot Flying"));
+    pilotFlyingLabel->setText(QObject::tr("Pilot Flying"));
     takeOffCountLabel->setText(QObject::tr("Take Off"));
     landingCountLabel->setText(QObject::tr("Landing"));
+    approachLabel->setText(QObject::tr("Approach Type"));
     remarksLabel->setText(QObject::tr("Remarks"));
     totalTimeDisplayLabel->setText(QStringLiteral("00:00"));
 }
@@ -127,9 +130,11 @@ void FlightEntryEditUi::createLayout(QWidget *parent)
     addLeft(timeOffLabel, timeOffEdit);
 
     // Right
-    flightNumberLabel    = new QLabel(parent);
-    flightNumberLineEdit = new QLineEdit(parent);
-    addRight(flightNumberLabel, flightNumberLineEdit);
+    pilotFlyingLabel = new QLabel(parent);
+    pilotFlyingCheckBox = new QCheckBox(parent);
+    addRight(pilotFlyingLabel, pilotFlyingCheckBox);
+    //gridLayout->addWidget(pilotFlyingCheckBox, row, col3, singleSpan, spanRemaining);
+    row++;
 
     // Row
     // Left
@@ -138,9 +143,9 @@ void FlightEntryEditUi::createLayout(QWidget *parent)
     addLeft(timeOnLabel, timeOnEdit);
 
     // Right
-    pilotFlyingCheckBox = new QCheckBox(parent);
-    gridLayout->addWidget(pilotFlyingCheckBox, row, col3, singleSpan, spanRemaining);
-    row++;
+    approachLabel = new QLabel(parent);
+    approachBox   = new ApproachTypeSelectionBox(parent);
+    addRight(approachLabel, approachBox);
 
     // Row
     // Left
@@ -166,11 +171,17 @@ void FlightEntryEditUi::createLayout(QWidget *parent)
 
     // Row
     // Left
+    flightNumberLabel    = new QLabel(parent);
+    flightNumberLineEdit = new QLineEdit(parent);
+    addLeft(flightNumberLabel, flightNumberLineEdit);
+
+    // Right
     remarksLabel    = new QLabel(parent);
     remarksTextEdit = new QPlainTextEdit(parent);
     remarksTextEdit->setMaximumHeight(flightNumberLineEdit->sizeHint().height() * 2);
-    addLeft(remarksLabel, remarksTextEdit);
+    addRight(remarksLabel, remarksTextEdit);
 
+    // Row
     // Right
     totalTimeLabel        = new QLabel(parent);
     totalTimeDisplayLabel = new QLabel(parent);

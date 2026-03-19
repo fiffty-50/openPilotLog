@@ -53,10 +53,12 @@ class FlightEntryEditUi {
     QLabel *registrationLabel;
     QLabel *picLabel;
     QLabel *sicLabel;
+    QLabel *pilotFlyingLabel;
     QLabel *flightNumberLabel;
     QLabel *takeOffCountLabel;
     QLabel *landingCountLabel;
     QLabel *remarksLabel;
+    QLabel *approachLabel;
     QTimeEdit *timeOffEdit;
     QTimeEdit *timeOnEdit;
     DbSelectionComboBox *deptComboBox;
@@ -64,6 +66,7 @@ class FlightEntryEditUi {
     DbSelectionComboBox *registrationComboBox;
     DbSelectionComboBox *picComboBox;
     DbSelectionComboBox *sicComboBox;
+    DbSelectionComboBox *approachBox;
     QLineEdit *flightNumberLineEdit;
     QCheckBox *pilotFlyingCheckBox;
     QDateEdit *dateEdit;

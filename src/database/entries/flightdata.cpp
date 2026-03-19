@@ -92,6 +92,12 @@ QString FlightData::pilotFunction() const
     return m_segments.first().getPilotFunction();
 }
 
+int FlightData::getFirstApproachId() const
+{
+    if(m_approaches.isEmpty()) return -1;
+    else return m_approaches.first().getApproachId();
+}
+
 bool FlightData::isPilotFlying() const
 {
     if (m_segments.isEmpty()) {
@@ -214,7 +220,7 @@ std::optional<FlightData> FlightData::getFlightData(int event_id)
 
     // get Approach Data
     QList<ApproachEntry> approaches;
-    for (const auto &data : getData(Movements, event_id)) {
+    for (const auto &data : getData(Approaches, event_id)) {
         approaches.append(OPL::ApproachEntry(event_id, data));
     }
 

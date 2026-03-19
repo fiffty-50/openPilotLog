@@ -87,6 +87,11 @@ class FlightData {
     QString pilotFunction() const;
 
     /*!
+     * \brief returns the id of the first approach event
+     */
+    int getFirstApproachId() const;
+
+    /*!
      * \brief retuns whether the pilot was pilot flying on the first segment of the flight
      */
     bool isPilotFlying() const;

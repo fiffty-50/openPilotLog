@@ -16,9 +16,14 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightdatabuilder.h"
+#include "src/calc/greatcircletrack.h"
+#include "src/calc/nighttime.h"
 #include "src/classes/date.h"
+#include "src/classes/settings.h"
 #include "src/classes/time.h"
+#include "src/database/cache/airportgeographicalinfo.h"
 #include "src/database/cache/airportinfo.h"
+#include "src/database/cache/approachtypeinfo.h"
 #include "src/database/cache/pilotinfo.h"
 #include "src/database/cache/tailregistrationsinfo.h"
 #include "src/database/entries/approachentry.h"
@@ -184,6 +189,13 @@ bool FlightDataBuilder::addSecondPilot(int pilot_id)
     return true;
 }
 
+bool FlightDataBuilder::addApproach(int approach_id)
+{
+    if (!approachData->contains(approach_id)) return false;
+    m_approach_data.append(approach_id);
+    return true;
+}
+
 void FlightDataBuilder::addFlightNumber(const QString &flight_number)
 {
     if (!flight_number.isEmpty()) m_flight_number_opt = flight_number;
@@ -200,7 +212,7 @@ LogEntry FlightDataBuilder::logEntry() const
     LogEntry entry;
     entry.setEventType(EVENT_TYPE);
     entry.setDate(m_date_jd);
-    if(m_event_id > 0) entry.setRowId(m_event_id);
+    if (m_event_id > 0) entry.setRowId(m_event_id);
     if (m_remarks_opt) entry.setRemarks(*m_remarks_opt);
 
     return entry;
@@ -225,7 +237,7 @@ FlightLogEntry FlightDataBuilder::flightLogEntry() const
     entry.setTimeOnBlocks(m_time_on_ms);
     entry.setPic(m_pic_id);
     entry.setTail(m_tail_id);
-    if(m_flight_id > 0) entry.setRowId(m_flight_id);
+    if (m_flight_id > 0) entry.setRowId(m_flight_id);
 
     // optional data
     if (m_second_pilot_id_opt) entry.setSecondPilot(*m_second_pilot_id_opt);
@@ -279,6 +291,77 @@ QList<ApproachEntry> FlightDataBuilder::approaches() const
     }
 
     return ret;
+}
+
+bool FlightDataBuilder::collect(Ui::FlightEntryEditUi *ui)
+{
+    bool ok         = true;
+    int dept_id     = ui->deptComboBox->currentData().toInt();
+    int dest_id     = ui->destComboBox->currentData().toInt();
+    int date_jd     = ui->dateEdit->date().toJulianDay();
+    int time_off_ms = ui->timeOffEdit->time().msecsSinceStartOfDay();
+    int time_on_ms  = ui->timeOnEdit->time().msecsSinceStartOfDay();
+
+    // add mandatory data
+    ok &= addDate(date_jd);
+    ok &= addDepartureLocation(dept_id);
+    ok &= addDestinationLocation(dest_id);
+    ok &= addTimeOffBlocks(time_off_ms);
+    ok &= addTimeOnBlocks(time_on_ms);
+    ok &= addPic(ui->picComboBox->currentData().toInt());
+    ok &= addTail(ui->registrationComboBox->currentData().toInt());
+
+    // add optional data
+    const QString remarks = ui->remarksTextEdit->toPlainText();
+    if (!remarks.isEmpty()) addRemarks(remarks);
+
+    const QString flight_number = ui->flightNumberLineEdit->text();
+    if (!flight_number.isEmpty()) addFlightNumber(flight_number);
+    if (!ui->sicComboBox->currentText().isEmpty())
+        addSecondPilot(ui->sicComboBox->currentData().toInt());
+
+    const QVariant v    = ui->pilotFunctionComboBox->currentData();
+    const auto function = v.value<OPL::PilotFunction>();
+    addPilotFunction(function);
+
+    // movements
+    int night_angle = Settings::getNightAngle();
+    if (ui->takeOffCountSpinBox->value() > 0) {
+        bool is_night   = NightTime::isNight(dept_id, date_jd, time_off_ms, night_angle);
+        bool is_landing = false;
+        addMovement(dept_id, is_landing, is_night);
+    }
+    if (ui->landingCountSpinBox->value() > 0) {
+        bool is_night   = NightTime::isNight(dest_id, date_jd, time_on_ms, night_angle);
+        bool is_landing = true;
+        addMovement(dest_id, is_landing, is_night);
+    }
+
+    // Calculate automatic segments
+    int duration_ms  = Time::blockTimeMs(time_off_ms, time_on_ms);
+    const auto route = GreatCircleTrack::greatCircleTrack(
+        airportGeoData->coordinates(dept_id), airportGeoData->coordinates(dest_id), duration_ms);
+    const auto day_night_segments =
+        NightTime::nightTimeForRoute(route, ui->dateEdit->date(), time_off_ms);
+
+    // Build optionals
+    bool is_ifr            = ui->flightRulesComboBox->currentData().toBool();
+    bool is_pilot_flying   = ui->pilotFlyingCheckBox->isChecked();
+    QString pilot_function = ui->pilotFunctionComboBox->currentText();
+    FlightSegmentEntry::Optionals opts;
+    opts.is_ifr          = is_ifr;
+    opts.is_pilot_flying = is_pilot_flying;
+    opts.pilot_function  = pilot_function;
+
+    const auto segment_data = FlightSegmentBuilder::fromNightTime(day_night_segments, opts);
+
+    ok &= addSegmentData(segment_data);
+
+    // approach
+    ok &= addApproach(ui->approachBox->currentData().toInt());
+
+    return ok;
+
 }
 
 } // namespace OPL

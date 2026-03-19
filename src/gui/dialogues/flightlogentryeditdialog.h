@@ -21,7 +21,6 @@
 #include "entryeditdialog.h"
 #include "src/gui/comboboxes/dbselectioncombobox.h"
 #include "src/gui/dialogues/flightentryeditui.h"
-#include "src/gui/verification/flightdatabuilder.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDateEdit>
@@ -51,7 +50,7 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     Ui::FlightEntryEditUi *ui;
     // dialog setup
     void init();
-    //void retranslateUi();
+    // void retranslateUi();
     void setupValidationAndCompletion();
     void setupSlots();
     void readSettings();
@@ -62,13 +61,9 @@ class FlightLogEntryEditDialog : public EntryEditDialog {
     EntryEditDialog *getEntryEditDialog(const DbSelectionComboBox *box);
     bool setComboBoxValue(DbSelectionComboBox *box, int row_id);
 
-    // data collection and verification
-    FlightDataBuilder collectFlightDataFromUi();
-
     // UI Elements
-    int m_eventId = 0;
+    int m_eventId  = 0;
     int m_flightId = 0;
-    const double m_night_angle;
     const QString m_dateFormatString;
     const QString m_timeFormatString;
 

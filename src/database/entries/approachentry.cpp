@@ -57,7 +57,7 @@ bool ApproachEntry::setEventId(int event_id)
 
 bool ApproachEntry::setApproachType(int approach_id)
 {
-    if(approachData->exists(approach_id)) {
+    if(approachData->contains(approach_id)) {
         m_rowData.insert(APP_TYPE, approach_id);
         return true;
     } else {

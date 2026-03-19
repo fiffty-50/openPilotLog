@@ -16,12 +16,9 @@
  *along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "flightlogentryeditdialog.h"
-#include "src/calc/greatcircletrack.h"
-#include "src/calc/nighttime.h"
 #include "src/classes/date.h"
 #include "src/classes/settings.h"
 #include "src/classes/time.h"
-#include "src/database/cache/airportgeographicalinfo.h"
 #include "src/database/cache/airportinfo.h"
 #include "src/database/database.h"
 #include "src/database/entries/flightdata.h"
@@ -31,7 +28,6 @@
 #include "src/gui/dialogues/pilotentryeditdialog.h"
 #include "src/gui/dialogues/tailentryeditdialog.h"
 #include "src/gui/verification/flightdatabuilder.h"
-#include "src/gui/verification/flightsegmentbuilder.h"
 #include "src/opl.h"
 #include <QCalendarWidget>
 #include <QComboBox>
@@ -48,13 +44,15 @@
 #include <QTimeEdit>
 #include <QValidator>
 #include <optional>
+#include <qdatetimeedit.h>
+#include <qnamespace.h>
 #include <qobject.h>
 
 namespace OPL {
 
 FlightLogEntryEditDialog::FlightLogEntryEditDialog(QWidget *parent)
     : EntryEditDialog(parent), m_dateFormatString(Settings::getDateFormatString()),
-      m_timeFormatString(Settings::getTimeFormatString()), m_night_angle(Settings::getNightAngle())
+      m_timeFormatString(Settings::getTimeFormatString())
 {
     init();
 }
@@ -64,11 +62,11 @@ void FlightLogEntryEditDialog::init()
     ui = new Ui::FlightEntryEditUi();
     ui->setupUi(this);
 
-    setTabOrder({ui->dateLabel, ui->dateEdit, ui->deptComboBox, ui->destComboBox,
-                 ui->timeOffEdit, ui->timeOnEdit, ui->pilotFunctionComboBox,
-                 ui->flightRulesComboBox, ui->registrationComboBox, ui->picComboBox,
-                 ui->sicComboBox, ui->flightNumberLineEdit, ui->pilotFlyingCheckBox,
-                 ui->takeOffCountSpinBox, ui->landingCountSpinBox, ui->buttonBox});
+    setTabOrder({ui->dateLabel, ui->dateEdit, ui->deptComboBox, ui->destComboBox, ui->timeOffEdit,
+                 ui->timeOnEdit, ui->pilotFunctionComboBox, ui->flightRulesComboBox,
+                 ui->registrationComboBox, ui->picComboBox, ui->sicComboBox,
+                 ui->flightNumberLineEdit, ui->pilotFlyingCheckBox, ui->takeOffCountSpinBox,
+                 ui->landingCountSpinBox, ui->buttonBox});
 
     setupValidationAndCompletion();
     setupSlots();
@@ -82,7 +80,7 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
 {
     // Try to load the flight data
     if (auto flightOpt = OPL::FlightData::getFlightData(event_row_id); flightOpt) {
-        m_eventId = event_row_id;
+        m_eventId  = event_row_id;
         m_flightId = flightOpt->flightEntry()->getRowId();
 
         const auto &flight_data  = *flightOpt;
@@ -105,6 +103,7 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
         setBox(ui->registrationComboBox, flight_entry.getTailId());
         setBox(ui->picComboBox, flight_entry.getPicId());
         setBox(ui->sicComboBox, flight_entry.getSecondPilotId());
+        setBox(ui->approachBox, flight_data.getFirstApproachId());
 
         ui->dateEdit->setDate(log_entry.getDate());
         ui->timeOffEdit->setTime(
@@ -117,7 +116,6 @@ void FlightLogEntryEditDialog::loadEntry(int event_row_id)
         ui->takeOffCountSpinBox->setValue(flight_data.getTakeOffCount());
         ui->landingCountSpinBox->setValue(flight_data.getLandingCount());
 
-        // Segment Data
         {
             const QSignalBlocker b(ui->pilotFlyingCheckBox);
             ui->pilotFlyingCheckBox->setChecked(flight_data.isPilotFlying());
@@ -136,6 +134,7 @@ bool FlightLogEntryEditDialog::deleteEntry(int row_id) { return false; }
 void FlightLogEntryEditDialog::reset()
 {
     m_rowId = OPL::NEW_ROW_ID;
+    ui->dateEdit->setDate(QDate::currentDate());
     ui->timeOffEdit->setTime(QTime::fromMSecsSinceStartOfDay(0));
     ui->timeOnEdit->setTime(QTime::fromMSecsSinceStartOfDay(0));
     ui->deptComboBox->setCurrentText({});
@@ -211,31 +210,39 @@ void FlightLogEntryEditDialog::setupSlots()
     connect(ui->destComboBox, &DbSelectionComboBox::newValueEntered, this,
             &::OPL::FlightLogEntryEditDialog::on_unknown_value_entered);
     // Display the airport name when the combobox is edited or the popup completer is used
+    connect(ui->deptComboBox, &QComboBox::highlighted, this, [this]() {
+        ui->deptDisplayLabel->setText(
+            airportData->nameFromRowId(ui->deptComboBox->currentData().toInt()));
+    });
     connect(ui->deptComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
         ui->deptDisplayLabel->setText(
             airportData->nameFromRowId(ui->deptComboBox->currentData().toInt()));
     });
+
+    connect(ui->destComboBox, &QComboBox::highlighted, this, [this]() {
+        ui->destDisplayLabel->setText(
+            airportData->nameFromRowId(ui->destComboBox->currentData().toInt()));
+    });
+
     connect(ui->destComboBox->lineEdit(), &QLineEdit::editingFinished, this, [this]() {
         ui->destDisplayLabel->setText(
             airportData->nameFromRowId(ui->destComboBox->currentData().toInt()));
     });
-    connect(ui->deptComboBox, &QComboBox::highlighted, this, [this](int idx) {
-        ui->deptDisplayLabel->setText(
-            airportData->nameFromRowId(ui->deptComboBox->currentData().toInt()));
-    });
-    connect(ui->destComboBox, &QComboBox::highlighted, this,
-            [this](int idx) { ui->destDisplayLabel->setText(airportData->nameFromRowId(idx)); });
-
     // Calculate Block Time when time edit is changed
     connect(ui->timeOffEdit, &QTimeEdit::timeChanged, this, [this]() {
         const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
             OPL::Time::blockTimeMs(ui->timeOffEdit->time(), ui->timeOnEdit->time()));
         ui->totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
     });
+
+    // set Display Labels for date and time when content changes
     connect(ui->timeOnEdit, &QTimeEdit::timeChanged, this, [this]() {
         const QTime blockTime = QTime::fromMSecsSinceStartOfDay(
             OPL::Time::blockTimeMs(ui->timeOffEdit->time(), ui->timeOnEdit->time()));
         ui->totalTimeDisplayLabel->setText(blockTime.toString(QStringLiteral("hh:mm")));
+    });
+    connect(ui->dateEdit, &QDateEdit::dateChanged, this, [this]() {
+        ui->dateDisplayLabel->setText(ui->dateEdit->date().toString(Qt::TextDate));
     });
 
     // Add Take Off and Landing when Pilot Flying
@@ -282,8 +289,17 @@ void FlightLogEntryEditDialog::on_pilotFlyingCheckBoxStateChanged(Qt::CheckState
 void FlightLogEntryEditDialog::on_accepted()
 {
     DEB << "Dialog accepted";
+    FlightDataBuilder data;
+    if (m_eventId > 0) {
+        LOG << "Building from existing entry";
+        data.setEventId(m_eventId);
+        data.setFlightId(m_flightId);
+    }
+    else {
+        LOG << "Bulding new entry";
+    }
+    data.collect(ui);
 
-    auto data = collectFlightDataFromUi();
     if (data.validate()) {
         if (DB->commit(data)) {
             QDialog::accept();
@@ -304,86 +320,6 @@ void FlightLogEntryEditDialog::on_accepted()
         }
         WARN(warn_string);
     }
-}
-
-// Data Collection and Submission
-
-FlightDataBuilder FlightLogEntryEditDialog::collectFlightDataFromUi()
-{
-    FlightDataBuilder builder;
-    if (m_eventId > 0) {
-        LOG << "Building from existing entry";
-        builder.setEventId(m_eventId);
-        builder.setFlightId(m_flightId);
-    } else {
-        LOG << "Bulding new entry";
-    }
-
-    // collect data
-    int date_jd     = ui->dateEdit->date().toJulianDay();
-    int dept_id     = ui->deptComboBox->currentData().toInt();
-    int dest_id     = ui->destComboBox->currentData().toInt();
-    int time_off_ms = ui->timeOffEdit->time().msecsSinceStartOfDay();
-    int time_on_ms  = ui->timeOnEdit->time().msecsSinceStartOfDay();
-    int pic_id      = ui->picComboBox->currentData().toInt();
-    int tail_id     = ui->registrationComboBox->currentData().toInt();
-
-    // add mandatory data
-    builder.addDate(date_jd);
-    builder.addDepartureLocation(dept_id);
-    builder.addDestinationLocation(dest_id);
-    builder.addTimeOffBlocks(time_off_ms);
-    builder.addTimeOnBlocks(time_on_ms);
-    builder.addPic(pic_id);
-    builder.addTail(tail_id);
-
-    // add optional data
-    const QString remarks = ui->remarksTextEdit->toPlainText();
-    if (!remarks.isEmpty()) builder.addRemarks(remarks);
-    const QString flight_number = ui->flightNumberLineEdit->text();
-    if (!flight_number.isEmpty()) builder.addFlightNumber(flight_number);
-    if (!ui->sicComboBox->currentText().isEmpty())
-        builder.addSecondPilot(ui->sicComboBox->currentData().toInt());
-
-    const QVariant v = ui->pilotFunctionComboBox->currentData();
-    const auto function = v.value<OPL::PilotFunction>();
-    builder.addPilotFunction(function);
-
-    // movements
-    if (ui->takeOffCountSpinBox->value() > 0) {
-        bool is_night   = NightTime::isNight(dept_id, date_jd, time_off_ms, m_night_angle);
-        bool is_landing = false;
-        builder.addMovement(dept_id, is_landing, is_night);
-    }
-    if (ui->landingCountSpinBox->value() > 0) {
-        bool is_night   = NightTime::isNight(dest_id, date_jd, time_on_ms, m_night_angle);
-        bool is_landing = true;
-        builder.addMovement(dest_id, is_landing, is_night);
-    }
-
-    // Calculate automatic segments
-    int duration_ms  = Time::blockTimeMs(time_off_ms, time_on_ms);
-    const auto route = GreatCircleTrack::greatCircleTrack(
-        airportGeoData->coordinates(dept_id), airportGeoData->coordinates(dest_id), duration_ms);
-    const auto day_night_segments =
-        NightTime::nightTimeForRoute(route, ui->dateEdit->date(), time_off_ms);
-
-    // Build optionals
-    bool is_ifr            = ui->flightRulesComboBox->currentData().toBool();
-    bool is_pilot_flying   = ui->pilotFlyingCheckBox->isChecked();
-    QString pilot_function = ui->pilotFunctionComboBox->currentText();
-    FlightSegmentEntry::Optionals opts;
-    opts.is_ifr          = is_ifr;
-    opts.is_pilot_flying = is_pilot_flying;
-    opts.pilot_function  = pilot_function;
-
-    const auto segment_data = FlightSegmentBuilder::fromNightTime(day_night_segments, opts);
-
-    builder.addSegmentData(segment_data);
-    // approach
-    // builder.addApproach(airport_id, approach_type);
-    //
-    return builder;
 }
 
 bool FlightLogEntryEditDialog::offerToAddNewDatabaseElement(const DbSelectionComboBox *box)

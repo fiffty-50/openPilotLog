@@ -17,7 +17,6 @@
  */
 #include "database.h"
 #include "queryfactory.h"
-#include "src/database/entries/flightlogentry.h"
 #include "src/opl.h"
 #include <QDir>
 #include <QSqlError>
@@ -91,7 +90,7 @@ bool Database::exec(QSqlQuery &q, DbTable table)
     if (!q.exec()) {
         LOG << "Query failed: " << q.lastQuery();
         DEB << "Values" << q.boundValues();
-        DEB << q.lastError().text();
+        LOG << q.lastError().text();
         m_lastError = q.lastError();
         return false;
     }
@@ -104,7 +103,7 @@ bool Database::execQuietly(QSqlQuery &q)
     if (!q.exec()) {
         LOG << "Query failed: " << q.lastQuery();
         DEB << "Values" << q.boundValues();
-        DEB << q.lastError().text();
+        LOG << q.lastError().text();
         m_lastError = q.lastError();
         return false;
     }

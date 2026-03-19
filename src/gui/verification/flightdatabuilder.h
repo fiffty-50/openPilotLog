@@ -23,6 +23,7 @@
 #include "src/database/entries/flightsegmententry.h"
 #include "src/database/entries/logentry.h"
 #include "src/database/entries/movemententry.h"
+#include "src/gui/dialogues/flightentryeditui.h"
 #include "src/gui/verification/flightsegmentbuilder.h"
 #include "src/opl.h"
 #include <optional>
@@ -32,6 +33,8 @@ namespace OPL {
 class FlightDataBuilder {
   public:
     FlightDataBuilder() = default;
+
+    bool collect(Ui::FlightEntryEditUi *ui);
 
     struct FlightData {
         LogEntry logEntry;

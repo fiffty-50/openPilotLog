@@ -292,18 +292,6 @@ class Database : public QObject {
     QVector<RowData_T> getTable(DbTable table);
 
     /*!
-     * \brief getUserTables returns a list of the of the tables that contain user-created data
-     * (flights, pilots,..)
-     */
-    const QList<DbTable> &getUserTables() const;
-
-    /*!
-     * \brief getTemplateTables returns a list of the tables that contain template data
-     * (aiports, aircraft,..)
-     */
-    const QList<DbTable> &getTemplateTables() const;
-
-    /*!
      * \brief Database::createBackup copies the currently used database to an external backup
      * location provided by the user
      * \param dest_file This is the full path and filename of where the backup will be created, e.g.
