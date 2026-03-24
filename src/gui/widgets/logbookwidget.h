@@ -43,12 +43,14 @@ class LogbookWidget : public QWidget {
     QString summaryString(const QModelIndex &index);
 
     bool setViewHelper();
+    //QString getFilterStatement(const QString &column, const QString &filterText);
 
   public slots:
     void viewSelectionChanged(SettingsWidget::SettingSignal widget);
   private slots:
     void openEntryEdit(const QModelIndex &index);
     void deleteEntryRequested(const QModelIndex &index);
+    //void filterTextChanged(const QString &filterText);
 };
 
 #endif // LOGBOOKWIDGET_H

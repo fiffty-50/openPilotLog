@@ -111,7 +111,7 @@ class LogbookViewInfo {
         if (index.sibling(row, COLUMN_EVENT_TYPE).data().toString() == S_FLIGHT_STRING) {
             // is flight event
             QString summary = S_FLIGHT_STRING + space;
-            for (const auto &col : getFlightSummaryColumns()) {
+            for (const auto &col : *getFlightSummaryColumns()) {
                 summary.append(index.sibling(row, col).data().toString() + space); // Date
             }
             return summary;
@@ -119,12 +119,19 @@ class LogbookViewInfo {
         else {
             // is sim event
             QString summary = S_SIM_STRING + space;
-            for (const auto &col : getSimSummaryColumns()) {
+            for (const auto &col : *getSimSummaryColumns()) {
                 summary.append(index.sibling(row, col).data().toString() + space); // Date
             }
             return summary;
         }
     }
+
+    /*
+     * \brief Get a list of the column numbers of columns that are visible to the user
+     */
+    virtual const QList<int> *getVisibleColumns() const = 0;
+
+    virtual const QMap<int, QString> *getColumnHeaderMap() const = 0;
 
   protected:
     /*!
@@ -153,12 +160,12 @@ class LogbookViewInfo {
     /*!
      * \brief return columns for Date, Departure, Time Off, Destination, Time On
      */
-    virtual QList<int> getFlightSummaryColumns() = 0;
+    virtual const QList<int> *getFlightSummaryColumns() = 0;
 
     /*!
      * \brief return columns for Sim Type, Duration
      */
-    virtual QList<int> getSimSummaryColumns() = 0;
+    virtual const QList<int> *getSimSummaryColumns() = 0;
 
     const static inline QString S_FLIGHT_STRING = QStringLiteral("FLT");
     const static inline QString S_SIM_STRING    = QStringLiteral("SIM");
@@ -168,11 +175,15 @@ class LogbookViewInfo {
     static constexpr int COLUMN_EVENT_TYPE              = 1;
     static constexpr int COLUMN_DATE_JD                 = 2;
     static constexpr int COLUMN_FOREIGN_ID              = 3;
-    static constexpr std::array<int, 4> COLUMNS_TO_HIDE = {
+    static constexpr std::array<int, 3> COLUMNS_TO_HIDE = {
         COLUMN_LOG_EVENT_ID,
         COLUMN_EVENT_TYPE,
         COLUMN_FOREIGN_ID,
     };
+
+    static const inline QString HEADER_EVENT_ID   = QStringLiteral("event_id");
+    static const inline QString HEADER_EVENT_TYPE = QStringLiteral("event_type");
+    static const inline QString HEADER_FOREIGN_ID = QStringLiteral("foreign_id");
 };
 
 #endif // LOGBOOKVIEW_H

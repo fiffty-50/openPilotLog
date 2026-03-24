@@ -84,51 +84,30 @@ class ViewEasa : public LogbookViewInfo {
             view->hideColumn(COL_SIM_TYPE);
             view->hideColumn(COL_SIM_DURATION);
         }
+        else {
+            view->setItemDelegateForColumn(COL_SIM_DURATION, time_delegate);
+        }
 
         view->resizeColumnsToContents();
     }
-
-  protected:
-    bool m_hideSimulator;
-    ViewEasa(bool hideSimulator) : m_hideSimulator(hideSimulator) {};
-    QList<int> getFlightSummaryColumns() override
+    const QMap<int, QString> *getColumnHeaderMap() const override
     {
-        return {COLUMN_DATE_JD, COL_DEPT_ID, COL_TIME_OFF_MS, COL_TIME_ON_MS, COL_TIME_TOTAL_MS};
+        if (m_hideSimulator)
+            return &S_HEADER_MAP;
+        else
+            return &S_HEADER_MAP_SIM;
     }
-    QList<int> getSimSummaryColumns() override
+
+    const QList<int> *getVisibleColumns() const override
     {
-        return {COLUMN_DATE_JD, COL_SIM_TYPE, COL_SIM_DURATION, COL_REMARKS};
+        if (m_hideSimulator)
+            return &S_VISIBLE_COLUMNS;
+        else
+            return &S_VISIBLE_COLUMNS_SIM;
     }
 
   private:
-    static const inline QStringList S_HEADER_NAMES = {
-        QStringLiteral("event_id"),   // event id column - hidden
-        QStringLiteral("event_type"), // event type - hidden
-        QObject::tr("Date of Flight"),
-        QStringLiteral("flight_id"), // flight id column - hidden
-        QObject::tr("Dept"),
-        QObject::tr("Time"),
-        QObject::tr("Dest"),
-        QObject::tr("Time"),
-        QObject::tr("Type"),
-        QObject::tr("Registration"),
-        QObject::tr("SP SE"),
-        QObject::tr("SP ME"),
-        QObject::tr("MP"),
-        QObject::tr("Total"),
-        QObject::tr("Name PIC"),
-        QObject::tr("L/D"),
-        QObject::tr("L/N"),
-        QObject::tr("Night"),
-        QObject::tr("IFR"),
-        QObject::tr("PIC"),
-        QObject::tr("SIC"),
-        QObject::tr("DUAL"),
-        QObject::tr("FI"),
-        QObject::tr("Sim Type"),
-        QObject::tr("Sim Duration"),
-        QObject::tr("Remarks"),
-    };
+    bool m_hideSimulator;
 
     static constexpr int COL_DEPT_ID       = 4;
     static constexpr int COL_TIME_OFF_MS   = 5;
@@ -152,6 +131,104 @@ class ViewEasa : public LogbookViewInfo {
     static constexpr int COL_SIM_TYPE      = 23;
     static constexpr int COL_SIM_DURATION  = 24;
     static constexpr int COL_REMARKS       = 25;
+
+    static const inline QString HEADER_DATE         = QStringLiteral("Date of Flight");
+    static const inline QString HEADER_DEPT         = QStringLiteral("Dept");
+    static const inline QString HEADER_TIME_OFF     = QStringLiteral("Time");
+    static const inline QString HEADER_DEST         = QStringLiteral("Dest");
+    static const inline QString HEADER_TIME_ON      = HEADER_TIME_OFF;
+    static const inline QString HEADER_TYPE         = QStringLiteral("Type");
+    static const inline QString HEADER_TAIL         = QStringLiteral("Registration");
+    static const inline QString HEADER_TIME_SPSE    = QStringLiteral("SP SE");
+    static const inline QString HEADER_TIME_SPME    = QStringLiteral("SP ME");
+    static const inline QString HEADER_TIME_MP      = QStringLiteral("MP");
+    static const inline QString HEADER_TIME_TOTAL   = QStringLiteral("Total");
+    static const inline QString HEADER_PIC          = QStringLiteral("Name PIC");
+    static const inline QString HEADER_LDG_DAY      = QStringLiteral("L/D");
+    static const inline QString HEADER_LDG_NIGHT    = QStringLiteral("L/N");
+    static const inline QString HEADER_TIME_NIGHT   = QStringLiteral("Night");
+    static const inline QString HEADER_TIME_IFR     = QStringLiteral("IFR");
+    static const inline QString HEADER_TIME_PIC     = QStringLiteral("PIC");
+    static const inline QString HEADER_TIME_SIC     = QStringLiteral("SIC");
+    static const inline QString HEADER_TIME_DUAL    = QStringLiteral("DUAL");
+    static const inline QString HEADER_TIME_FI      = QStringLiteral("FI");
+    static const inline QString HEADER_SIM_TYPE     = QStringLiteral("Sim Type");
+    static const inline QString HEADER_SIM_DURATION = QStringLiteral("Sim Duration");
+    static const inline QString HEADER_REMARKS      = QStringLiteral("Remarks");
+
+    // This needs to include invisible columns so that we can easily iterate through all headers
+    static const inline QStringList S_HEADER_NAMES = {
+        HEADER_EVENT_ID,     HEADER_EVENT_TYPE, HEADER_DATE,      HEADER_FOREIGN_ID,
+        HEADER_DEPT,         HEADER_TIME_OFF,   HEADER_DEST,      HEADER_TIME_ON,
+        HEADER_TYPE,         HEADER_TAIL,       HEADER_TIME_SPSE, HEADER_TIME_SPME,
+        HEADER_TIME_MP,      HEADER_TIME_TOTAL, HEADER_PIC,       HEADER_LDG_DAY,
+        HEADER_LDG_NIGHT,    HEADER_TIME_NIGHT, HEADER_TIME_IFR,  HEADER_TIME_PIC,
+        HEADER_TIME_SIC,     HEADER_TIME_DUAL,  HEADER_TIME_FI,   HEADER_SIM_TYPE,
+        HEADER_SIM_DURATION, HEADER_REMARKS};
+
+    static const inline QMap<int, QString> S_HEADER_MAP{
+        {COLUMN_DATE_JD,    HEADER_DATE      },
+        {COL_DEPT_ID,       HEADER_DEPT      },
+        {COL_TIME_OFF_MS,   HEADER_TIME_OFF  },
+        {COL_DEST_ID,       HEADER_DEST      },
+        {COL_TIME_ON_MS,    HEADER_TIME_ON   },
+        {COL_TYPE_ID,       HEADER_TYPE      },
+        {COL_TAIL_ID,       HEADER_TAIL      },
+        {COL_SP_SE,         HEADER_TIME_SPSE },
+        {COL_SP_ME,         HEADER_TIME_SPME },
+        {COL_MP,            HEADER_TIME_MP   },
+        {COL_TIME_TOTAL_MS, HEADER_TIME_TOTAL},
+        {COL_PIC_ID,        HEADER_PIC       },
+        {COL_LDG_DAY,       HEADER_LDG_DAY   },
+        {COL_LDG_NIGHT,     HEADER_LDG_NIGHT },
+        {COL_T_NIGHT,       HEADER_TIME_NIGHT},
+        {COL_T_IFR,         HEADER_TIME_IFR  },
+        {COL_T_PIC,         HEADER_TIME_PIC  },
+        {COL_T_SIC,         HEADER_TIME_SIC  },
+        {COL_T_DUAL,        HEADER_TIME_DUAL },
+        {COL_T_FI,          HEADER_TIME_FI   },
+        {COL_REMARKS,       HEADER_REMARKS   },
+    };
+
+    static const inline QMap<int, QString> S_HEADER_MAP_SIM{
+        {COLUMN_DATE_JD,    HEADER_DATE        },
+        {COL_DEPT_ID,       HEADER_DEPT        },
+        {COL_TIME_OFF_MS,   HEADER_TIME_OFF    },
+        {COL_DEST_ID,       HEADER_DEST        },
+        {COL_TIME_ON_MS,    HEADER_TIME_ON     },
+        {COL_TYPE_ID,       HEADER_TYPE        },
+        {COL_TAIL_ID,       HEADER_TAIL        },
+        {COL_SP_SE,         HEADER_TIME_SPSE   },
+        {COL_SP_ME,         HEADER_TIME_SPME   },
+        {COL_MP,            HEADER_TIME_MP     },
+        {COL_TIME_TOTAL_MS, HEADER_TIME_TOTAL  },
+        {COL_PIC_ID,        HEADER_PIC         },
+        {COL_LDG_DAY,       HEADER_LDG_DAY     },
+        {COL_LDG_NIGHT,     HEADER_LDG_NIGHT   },
+        {COL_T_NIGHT,       HEADER_TIME_NIGHT  },
+        {COL_T_IFR,         HEADER_TIME_IFR    },
+        {COL_T_PIC,         HEADER_TIME_PIC    },
+        {COL_T_SIC,         HEADER_TIME_SIC    },
+        {COL_T_DUAL,        HEADER_TIME_DUAL   },
+        {COL_T_FI,          HEADER_TIME_FI     },
+        {COL_SIM_TYPE,      HEADER_SIM_TYPE    },
+        {COL_SIM_DURATION,  HEADER_SIM_DURATION},
+        {COL_REMARKS,       HEADER_REMARKS     },
+    };
+
+    const QList<int> *getFlightSummaryColumns() override { return &S_FLIGHT_SUMMARY_COLUMNS; }
+    const QList<int> *getSimSummaryColumns() override { return &S_SIM_SUMMARY_COLUMNS; }
+
+    const static inline QList<int> S_SIM_SUMMARY_COLUMNS    = {COLUMN_DATE_JD, COL_SIM_TYPE,
+                                                               COL_SIM_DURATION, COL_REMARKS};
+    const static inline QList<int> S_FLIGHT_SUMMARY_COLUMNS = {
+        COLUMN_DATE_JD, COL_DEPT_ID, COL_TIME_OFF_MS, COL_TIME_ON_MS, COL_TIME_TOTAL_MS};
+
+    const static inline QList<int> S_VISIBLE_COLUMNS     = S_HEADER_MAP.keys();
+    const static inline QList<int> S_VISIBLE_COLUMNS_SIM = S_HEADER_MAP_SIM.keys();
+
+  protected:
+    ViewEasa(bool hideSimulator) : m_hideSimulator(hideSimulator) {};
 };
 
 class ViewEasaWithSim : public ViewEasa {

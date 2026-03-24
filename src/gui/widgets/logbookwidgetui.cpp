@@ -32,6 +32,7 @@ void LogbookWidgetUi::retranslateUi()
     newFlightButton->setText(QObject::tr("New Flight"));
     newSimButton->setText(QObject::tr("New Simulator Session"));
     deleteButton->setText(QObject::tr("Delete Selected Entry"));
+    //filterLabel->setText(QObject::tr("Search"));
 }
 
 void LogbookWidgetUi::createLayout(QWidget *parent)
@@ -59,14 +60,30 @@ void LogbookWidgetUi::createLayout(QWidget *parent)
 
 void LogbookWidgetUi::setupButtonWidget(QWidget *parent)
 {
-    buttonWidget     = new QWidget(parent);
-    buttonGridLayout = new QGridLayout(buttonWidget);
-    newFlightButton  = new QPushButton(parent);
-    newSimButton     = new QPushButton(parent);
-    deleteButton     = new QPushButton(parent);
+    buttonWidget            = new QWidget(parent);
+    buttonGridLayout        = new QGridLayout(buttonWidget);
+    newFlightButton         = new QPushButton(parent);
+    newSimButton            = new QPushButton(parent);
+    deleteButton            = new QPushButton(parent);
+    // filterLabel             = new QLabel(parent);
+    // filterLineEdit          = new QLineEdit(parent);
+    // filterSelectionComboBox = new QComboBox(parent);
+
     buttonGridLayout->addWidget(newFlightButton, 0, 0);
     buttonGridLayout->addWidget(newSimButton, 1, 0);
     buttonGridLayout->addWidget(deleteButton, 2, 0);
+
+
+    // place the filter items in a grid layout so they occupy one cell in parent layout
+    // filterWidget     = new QWidget(parent);
+    // filterWidgetLayout = new QGridLayout(filterWidget);
+
+    // // one row, three columns
+    // filterWidgetLayout->addWidget(filterLabel);
+    // filterWidgetLayout->addWidget(filterLineEdit, 0, 1);
+    // filterWidgetLayout->addWidget(filterSelectionComboBox, 0, 2);
+
+    // buttonGridLayout->addWidget(filterWidget, 3, 0);
 }
 
 } // namespace Ui

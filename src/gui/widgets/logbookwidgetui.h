@@ -21,10 +21,12 @@
 #include "src/gui/dialogues/entryeditdialog.h"
 #include <QComboBox>
 #include <QGridLayout>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QSqlTableModel>
 #include <QStackedWidget>
 #include <QTableView>
+#include <QLabel>
 
 namespace Ui {
 
@@ -35,16 +37,18 @@ class LogbookWidgetUi {
 
     QGridLayout *mainGridLayout;
     QGridLayout *buttonGridLayout;
+    //QGridLayout *filterWidgetLayout;
     QSqlTableModel *model;
     QTableView *view;
-    // QWidget *filterWidget;
+    //QWidget *filterWidget;
     QWidget *buttonWidget;
     QPushButton *newFlightButton;
     QPushButton *newSimButton;
     QPushButton *deleteButton;
     QStackedWidget *stackedWidget;
-    // QLineEdit *filterLineEdit;
-    // QComboBox *filterSelectionComboBox;
+    //QLabel *filterLabel;
+    //QLineEdit *filterLineEdit;
+    //QComboBox *filterSelectionComboBox;
 
     EntryEditDialog *flightEntryEditDialog;
     EntryEditDialog *simEntryEditDialog;

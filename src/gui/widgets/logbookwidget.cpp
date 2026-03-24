@@ -40,9 +40,23 @@ void LogbookWidget::setupModelAndView()
     ui->model = new QSqlTableModel(this, DB->database());
     ui->model->setTable(view_name);
     ui->model->select();
+
+    // reset the view and un-hide previously hidden columns
+    for (int col = 0; col < ui->model->columnCount(); ++col) {
+        ui->view->showColumn(col);
+    }
+    ui->view->reset();
     ui->view->setModel(ui->model);
 
     m_viewHelper->setupView(ui->model, ui->view);
+
+    // Set Up the Filtering Box
+    // ui->filterSelectionComboBox->clear();
+    // ui->filterSelectionComboBox->addItem("All Columns", 0);
+
+    // for (auto it = m_viewHelper->getColumnHeaderMap()->cbegin(); it != m_viewHelper->getColumnHeaderMap()->cend(); ++it) {
+    //     ui->filterSelectionComboBox->addItem(it.value(), it.key());
+    // }
 }
 
 void LogbookWidget::viewSelectionChanged(SettingsWidget::SettingSignal widget)
@@ -92,6 +106,13 @@ void LogbookWidget::setupSignals()
         }
         deleteEntryRequested(index);
     });
+    // filter the view
+    // QObject::connect(ui->filterLineEdit, &QLineEdit::textChanged, this,
+    //                  &LogbookWidget::filterTextChanged);
+
+    // // update filter when combo box is changed
+    // QObject::connect(ui->filterSelectionComboBox, &QComboBox::currentIndexChanged, this,
+    //                  [this]() { filterTextChanged(ui->filterLineEdit->text()); });
 }
 
 void LogbookWidget::deleteEntryRequested(const QModelIndex &index)
@@ -194,3 +215,41 @@ bool LogbookWidget::setViewHelper()
     }
     return true;
 }
+
+
+/* This part is pending a decision on how to handle filtering. Since the underlying model
+ * holds raw sql data (integers in most cases) it is not trivial to filter the view based
+ * on user input and would require either a QSortFilterProxyModel or some custom logic that
+ * maps id's to what the delegates display.
+ */
+// QString LogbookWidget::getFilterStatement(const QString &column, const QString &filterText)
+// {
+//     return QString(QLatin1Char('\"') + column + QLatin1String("\" LIKE '%") + filterText +
+//                    QLatin1String("%'"));
+// }
+
+// void LogbookWidget::filterTextChanged(const QString &filterText)
+// {
+//     // Retreive selected column for filtering
+//     int column = ui->filterSelectionComboBox->currentData().toInt();
+
+//     if (column == 0) {
+//         // search in all columns
+//         QString filter;
+//         const QString SQL_OR = QStringLiteral(" OR ");
+//         for (const auto &col : *m_viewHelper->getVisibleColumns()) {
+//             filter.append(getFilterStatement(ui->model->record().fieldName(col), filterText));
+//             filter.append(SQL_OR);
+//         }
+//         // remove last "or"
+//         filter.chop(SQL_OR.size());
+//         ui->model->setFilter(filter);
+//         DEB << "Setting filter: " << filter;
+//     }
+//     else {
+//         // filter based on selected column
+//         const QString filterColumn = ui->model->record().fieldName(column);
+//         DEB << "Setting filter: " << getFilterStatement(filterColumn, filterText);
+//         ui->model->setFilter(getFilterStatement(filterColumn, filterText));
+//     }
+// }

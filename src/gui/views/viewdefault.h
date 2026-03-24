@@ -28,6 +28,7 @@
 #include <QModelIndex>
 #include <QObject>
 #include <QTableView>
+#include <ctime>
 
 class ViewDefault : public LogbookViewInfo {
   public:
@@ -71,33 +72,23 @@ class ViewDefault : public LogbookViewInfo {
             view->hideColumn(COL_SIM_TYPE);
             view->hideColumn(COL_SIM_DURATION);
         }
+        else {
+            view->setItemDelegateForColumn(COL_SIM_DURATION, time_delegate);
+        }
 
         view->resizeColumnsToContents();
     }
 
-  protected:
-    bool m_hideSimulator;
-    ViewDefault(bool hideSimulator) : m_hideSimulator(hideSimulator) {}
-    QList<int> getFlightSummaryColumns() override
+    const QList<int> *getVisibleColumns() const override
     {
-        return {COLUMN_DATE_JD, COL_DEPT_ID, COL_TIME_OFF_MS, COL_TIME_ON_MS, COL_TIME_TOTAL_MS};
-    }
-    QList<int> getSimSummaryColumns() override
-    {
-        return {COLUMN_DATE_JD, COL_SIM_TYPE, COL_SIM_DURATION, COL_REMARKS};
+        if (m_hideSimulator)
+            return &S_VISIBLE_COLUMNS;
+        else
+            return &S_VISIBLE_COLUMNS_SIM;
     }
 
   private:
-    static const inline QStringList S_HEADER_NAMES = {
-        QStringLiteral("event_id"),   // event id column - hidden
-        QStringLiteral("event_type"), // event type - hidden
-        QObject::tr("Date of Flight"),
-        QStringLiteral("flight_id"), // flight id column - hidden
-        QObject::tr("Dept"),           QObject::tr("Time"),         QObject::tr("Dest"),
-        QObject::tr("Time"),           QObject::tr("Total"),        QObject::tr("Name PIC"),
-        QObject::tr("Type"),           QObject::tr("Registration"), QObject::tr("Flight Number"),
-        QObject::tr("Sim Type"),       QObject::tr("Sim Duration"), QObject::tr("Remarks"),
-    };
+    bool m_hideSimulator;
 
     static constexpr int COL_DEPT_ID       = 4;
     static constexpr int COL_TIME_OFF_MS   = 5;
@@ -111,6 +102,87 @@ class ViewDefault : public LogbookViewInfo {
     static constexpr int COL_SIM_TYPE      = 13;
     static constexpr int COL_SIM_DURATION  = 14;
     static constexpr int COL_REMARKS       = 15;
+
+    const static inline QString HEADER_DATE         = QObject::tr("Date of Flight");
+    const static inline QString HEADER_DEPT         = QObject::tr("Dept");
+    const static inline QString HEADER_TIME_OFF     = QObject::tr("Time");
+    const static inline QString HEADER_DEST         = QObject::tr("Dest");
+    const static inline QString HEADER_TIME_ON      = QObject::tr("Time");
+    const static inline QString HEADER_TIME_TOTAL   = QObject::tr("Total");
+    const static inline QString HEADER_PIC          = QObject::tr("PIC");
+    const static inline QString HEADER_TYPE         = QObject::tr("Type");
+    const static inline QString HEADER_TAIL         = QObject::tr("Registration");
+    const static inline QString HEADER_FLIGHTT_NO   = QObject::tr("Flight #");
+    const static inline QString HEADER_SIM_TYPE     = QObject::tr("Sim Type");
+    const static inline QString HEADER_SIM_DURATION = QObject::tr("Sim Duration");
+    const static inline QString HEADER_REMARKS      = QObject::tr("Remarks");
+
+    const static inline QMap<int, QString> S_HEADER_MAP = {
+        {2,  HEADER_DATE      },
+        {4,  HEADER_DEPT      },
+        {5,  HEADER_TIME_OFF  },
+        {6,  HEADER_DEST      },
+        {7,  HEADER_TIME_ON   },
+        {8,  HEADER_TIME_TOTAL},
+        {9,  HEADER_PIC       },
+        {10, HEADER_TYPE      },
+        {11, HEADER_TAIL      },
+        {12, HEADER_FLIGHTT_NO},
+        {15, HEADER_REMARKS   },
+    };
+
+    const static inline QMap<int, QString> S_HEADER_MAP_SIM = {
+        {2,  HEADER_DATE        },
+        {4,  HEADER_DEPT        },
+        {5,  HEADER_TIME_OFF    },
+        {6,  HEADER_DEST        },
+        {7,  HEADER_TIME_ON     },
+        {8,  HEADER_TIME_TOTAL  },
+        {9,  HEADER_PIC         },
+        {10, HEADER_TYPE        },
+        {11, HEADER_TAIL        },
+        {12, HEADER_FLIGHTT_NO  },
+        {13, HEADER_SIM_TYPE    },
+        {14, HEADER_SIM_DURATION},
+        {15, HEADER_REMARKS     },
+    };
+
+    static const inline QStringList S_HEADER_NAMES = {
+        HEADER_EVENT_ID,   HEADER_EVENT_TYPE, HEADER_DATE,         HEADER_FOREIGN_ID,
+        HEADER_DEPT,       HEADER_TIME_OFF,   HEADER_DEST,         HEADER_TIME_ON,
+        HEADER_TIME_TOTAL, HEADER_PIC,        HEADER_TYPE,         HEADER_TAIL,
+        HEADER_FLIGHTT_NO, HEADER_SIM_TYPE,   HEADER_SIM_DURATION, HEADER_REMARKS};
+
+    const QList<int> *getFlightSummaryColumns() override { return &S_FLIGHT_SUMMARY_COLUMNS; }
+    const QList<int> *getSimSummaryColumns() override { return &S_SIM_SUMMARY_COLUMNS; }
+    const QMap<int, QString> *getColumnHeaderMap() const override
+    {
+        if (m_hideSimulator)
+            return &S_HEADER_MAP;
+        else
+            return &S_HEADER_MAP_SIM;
+    }
+
+    static const inline QList<int> S_FLIGHT_SUMMARY_COLUMNS = {
+        COLUMN_DATE_JD, COL_DEPT_ID, COL_TIME_OFF_MS, COL_TIME_ON_MS, COL_TIME_TOTAL_MS};
+    static const inline QList<int> S_SIM_SUMMARY_COLUMNS = {COLUMN_DATE_JD, COL_SIM_TYPE,
+                                                            COL_SIM_DURATION, COL_REMARKS};
+
+    static const inline QList<int> S_VISIBLE_COLUMNS_SIM = S_HEADER_MAP.keys();
+    // static const inline QList<int> S_VISIBLE_COLUMNS_SIM = {
+    //     COL_DEPT_ID, COL_TIME_OFF_MS, COL_DEST_ID, COL_TIME_ON_MS, COL_TIME_TOTAL_MS,
+    //     COL_PIC_ID,  COL_TYPE_ID,     COL_TAIL_ID, COL_FLIGHT_NR,  COL_REMARKS,
+    // };
+
+    static const inline QList<int> S_VISIBLE_COLUMNS = S_HEADER_MAP_SIM.keys();
+    // static const inline QList<int> S_VISIBLE_COLUMNS = {
+    //     COL_DEPT_ID, COL_TIME_OFF_MS, COL_DEST_ID,   COL_TIME_ON_MS, COL_TIME_TOTAL_MS,
+    //     COL_PIC_ID, COL_TYPE_ID, COL_TAIL_ID,     COL_FLIGHT_NR, COL_SIM_TYPE, COL_SIM_DURATION,
+    //     COL_REMARKS,
+    // };
+
+  protected:
+    ViewDefault(bool hideSimulator) : m_hideSimulator(hideSimulator) {}
 };
 
 class ViewDefaultWithSim : public ViewDefault {
